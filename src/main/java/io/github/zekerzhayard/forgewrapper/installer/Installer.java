@@ -93,6 +93,10 @@ public class Installer {
                 checkProcessorFiles(processor = super.getProcessors(side), super.getData("client".equals(side)), this.librariesDir);
                 this.processors.put(side, processor);
             }
+            // It can also be defined by JVM argument "-Dforgewrapper.skipHashCheck=true".
+            if (Boolean.getBoolean("forgewrapper.skipHashCheck")){
+                processor.forEach(proc -> proc.getOutputs().clear());
+            }
             return processor;
         }
 
