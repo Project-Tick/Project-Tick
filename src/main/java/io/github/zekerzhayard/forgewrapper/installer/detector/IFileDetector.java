@@ -29,9 +29,17 @@ public interface IFileDetector {
             return Paths.get(libraryDir).toAbsolutePath();
         }
         try {
-            Path launcher = Paths.get(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI()).toAbsolutePath();
-            //              /<version>  /modlauncher/mods       /cpw        /libraries
-            return launcher.getParent().getParent().getParent().getParent().getParent().toAbsolutePath();
+            Path launcher = Paths.get(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+
+            while (!launcher.getFileName().toString().equals("libraries")) {
+                launcher = launcher.getParent();
+
+                if (launcher == null || launcher.getFileName() == null) {
+                    throw new UnsupportedOperationException("Could not detect the libraries folder - it can be manually specified with `-Dforgewrapper.librariesDir=` (Java runtime argument)");
+                }
+            }
+
+            return launcher.toAbsolutePath();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
