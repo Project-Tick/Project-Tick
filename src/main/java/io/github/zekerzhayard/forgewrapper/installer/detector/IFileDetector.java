@@ -1,11 +1,10 @@
 package io.github.zekerzhayard.forgewrapper.installer.detector;
 
+import java.net.URL;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-
-import cpw.mods.modlauncher.Launcher;
 
 public interface IFileDetector {
     /**
@@ -29,7 +28,28 @@ public interface IFileDetector {
             return Paths.get(libraryDir).toAbsolutePath();
         }
         try {
-            Path launcher = Paths.get(Launcher.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            URL launcherLocation = null;
+            String[] classNames = {
+                "cpw.mods.modlauncher.Launcher",
+                "net.neoforged.fml.loading.FMLLoader"
+            };
+
+            for (String className : classNames) {
+                try {
+                    Class<?> clazz = Class.forName(className);
+                    // Return the location of the loaded class
+                    if (clazz.getProtectionDomain().getCodeSource() != null) {
+                        launcherLocation = clazz.getProtectionDomain().getCodeSource().getLocation();
+                    }
+                } catch (ClassNotFoundException e) {
+                    // ignore and try next
+                }
+            }
+
+            if (launcherLocation == null) {
+                    throw new UnsupportedOperationException("Could not detect the libraries folder - it can be manually specified with `-Dforgewrapper.librariesDir=` (Java runtime argument)");
+            }
+            Path launcher = Paths.get(launcherLocation.toURI());
 
             while (!launcher.getFileName().toString().equals("libraries")) {
                 launcher = launcher.getParent();
