@@ -4103,6 +4103,28 @@ template<typename BasicJsonType, typename CompatibleType>
 struct is_compatible_type
     : is_compatible_type_impl<BasicJsonType, CompatibleType> {};
 
+template<typename BasicJsonType, typename CompatibleReferenceType>
+struct is_compatible_reference_type_impl
+{
+    using JsonType = uncvref_t<BasicJsonType>;
+    using CVType = typename std::remove_reference<CompatibleReferenceType>::type;
+    using Type = typename std::remove_cv<CVType>::type;
+    constexpr static bool value = std::is_reference<CompatibleReferenceType>::value &&
+                                  (!std::is_const<typename std::remove_reference<BasicJsonType>::type>::value || std::is_const<CVType>::value) &&
+                                  (std::is_same<typename JsonType::boolean_t, Type>::value ||
+                                   std::is_same<typename JsonType::number_float_t, Type>::value ||
+                                   std::is_same<typename JsonType::number_integer_t, Type>::value ||
+                                   std::is_same<typename JsonType::number_unsigned_t, Type>::value ||
+                                   std::is_same<typename JsonType::string_t, Type>::value ||
+                                   std::is_same<typename JsonType::binary_t, Type>::value ||
+                                   std::is_same<typename JsonType::object_t, Type>::value ||
+                                   std::is_same<typename JsonType::array_t, Type>::value);
+};
+
+template<typename BasicJsonType, typename CompatibleReferenceType>
+struct is_compatible_reference_type
+    : is_compatible_reference_type_impl<BasicJsonType, CompatibleReferenceType> {};
+
 template<typename T1, typename T2>
 struct is_constructible_tuple : std::false_type {};
 
@@ -4860,6 +4882,63 @@ NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/meta/type_traits.hpp>
 
+// #include <nlohmann/detail/meta/logic.hpp>
+
+
+// #include <nlohmann/detail/macro_scope.hpp>
+
+
+NLOHMANN_JSON_NAMESPACE_BEGIN
+namespace detail
+{
+#ifdef JSON_HAS_CPP_17
+
+template<bool... Booleans>
+struct cxpr_or_impl : std::integral_constant < bool, (Booleans || ...) > {};
+
+template<bool... Booleans>
+struct cxpr_and_impl : std::integral_constant < bool, (Booleans &&...) > {};
+
+#else
+
+template<bool... Booleans>
+struct cxpr_or_impl : std::false_type {};
+
+template<bool... Booleans>
+struct cxpr_or_impl<true, Booleans...> : std::true_type {};
+
+template<bool... Booleans>
+struct cxpr_or_impl<false, Booleans...> : cxpr_or_impl<Booleans...> {};
+
+template<bool... Booleans>
+struct cxpr_and_impl : std::true_type {};
+
+template<bool... Booleans>
+struct cxpr_and_impl<true, Booleans...> : cxpr_and_impl<Booleans...> {};
+
+template<bool... Booleans>
+struct cxpr_and_impl<false, Booleans...> : std::false_type {};
+
+#endif
+
+template<class Boolean>
+struct cxpr_not : std::integral_constant < bool, !Boolean::value > {};
+
+template<class... Booleans>
+struct cxpr_or : cxpr_or_impl<Booleans::value...> {};
+
+template<bool... Booleans>
+struct cxpr_or_c : cxpr_or_impl<Booleans...> {};
+
+template<class... Booleans>
+struct cxpr_and : cxpr_and_impl<Booleans::value...> {};
+
+template<bool... Booleans>
+struct cxpr_and_c : cxpr_and_impl<Booleans...> {};
+
+}  // namespace detail
+NLOHMANN_JSON_NAMESPACE_END
+
 // #include <nlohmann/detail/string_concat.hpp>
 
 // #include <nlohmann/detail/value_t.hpp>
@@ -5282,13 +5361,36 @@ inline void from_json(const BasicJsonType& j, ArithmeticType& val)
     }
 }
 
-template<typename BasicJsonType, typename... Args, std::size_t... Idx>
-std::tuple<Args...> from_json_tuple_impl_base(BasicJsonType&& j, index_sequence<Idx...> /*unused*/)
+template<typename BasicJsonType, typename Type>
+detail::uncvref_t<Type> from_json_tuple_get_impl(BasicJsonType&& j, detail::identity_tag<Type> /*unused*/, detail::priority_tag<0> /*unused*/)
 {
-    return std::make_tuple(std::forward<BasicJsonType>(j).at(Idx).template get<Args>()...);
+    return std::forward<BasicJsonType>(j).template get<detail::uncvref_t<Type>>();
 }
 
-template<typename BasicJsonType>
+template<typename BasicJsonType, typename Type,
+         detail::enable_if_t<detail::is_compatible_reference_type<BasicJsonType, Type>::value, int> = 0>
+Type from_json_tuple_get_impl(BasicJsonType && j, detail::identity_tag<Type> /*unused*/, detail::priority_tag<1> /*unused*/)
+{
+    return std::forward<BasicJsonType>(j).template get_ref<Type>();
+}
+
+template<typename BasicJsonType, typename Type,
+         detail::enable_if_t<std::is_arithmetic<uncvref_t<Type>>::value, int> = 0>
+detail::uncvref_t<Type> from_json_tuple_get_impl(BasicJsonType && j, detail::identity_tag<Type> /*unused*/, detail::priority_tag<2> /*unused*/)
+{
+    return std::forward<BasicJsonType>(j).template get<detail::uncvref_t<Type>>();
+}
+
+template<std::size_t PTagValue, typename BasicJsonType, typename... Types>
+using tuple_type = std::tuple < decltype(from_json_tuple_get_impl(std::declval<BasicJsonType>(), detail::identity_tag<Types> {}, detail::priority_tag<PTagValue> {}))... >;
+
+template<std::size_t PTagValue, typename... Args, typename BasicJsonType, std::size_t... Idx>
+tuple_type<PTagValue, BasicJsonType, Args...> from_json_tuple_impl_base(BasicJsonType&& j, index_sequence<Idx...> /*unused*/)
+{
+    return tuple_type<PTagValue, BasicJsonType, Args...>(from_json_tuple_get_impl(std::forward<BasicJsonType>(j).at(Idx), detail::identity_tag<Args> {}, detail::priority_tag<PTagValue> {})...);
+}
+
+template<std::size_t PTagValue, typename BasicJsonType>
 std::tuple<> from_json_tuple_impl_base(BasicJsonType& /*unused*/, index_sequence<> /*unused*/)
 {
     return {};
@@ -5310,13 +5412,15 @@ inline void from_json_tuple_impl(BasicJsonType&& j, std::pair<A1, A2>& p, priori
 template<typename BasicJsonType, typename... Args>
 std::tuple<Args...> from_json_tuple_impl(BasicJsonType&& j, identity_tag<std::tuple<Args...>> /*unused*/, priority_tag<2> /*unused*/)
 {
-    return from_json_tuple_impl_base<BasicJsonType, Args...>(std::forward<BasicJsonType>(j), index_sequence_for<Args...> {});
+    static_assert(cxpr_and<cxpr_or<cxpr_not<std::is_reference<Args>>, is_compatible_reference_type<BasicJsonType, Args>>...>::value,
+                  "Can not return a tuple containing references to types not contained in a Json, try Json::get_to()");
+    return from_json_tuple_impl_base<1, Args...>(std::forward<BasicJsonType>(j), index_sequence_for<Args...> {});
 }
 
 template<typename BasicJsonType, typename... Args>
 inline void from_json_tuple_impl(BasicJsonType&& j, std::tuple<Args...>& t, priority_tag<3> /*unused*/)
 {
-    t = from_json_tuple_impl_base<BasicJsonType, Args...>(std::forward<BasicJsonType>(j), index_sequence_for<Args...> {});
+    t = from_json_tuple_impl_base<2, Args...>(std::forward<BasicJsonType>(j), index_sequence_for<Args...> {});
 }
 
 template<typename BasicJsonType, typename TupleRelated>
