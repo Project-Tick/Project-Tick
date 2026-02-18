@@ -2,7 +2,7 @@ name: Repack Existing Images
 
 on:
   push:
-    branches: ["main"]
+    branches: ["trunk"]
     paths:
       - "dockerfiles/**"
       - ".github/workflows/build.yml"
