@@ -15,7 +15,7 @@ Target format:
 - Push to `main` (when Dockerfiles/workflow/README change)
 - Daily schedule (`03:17 UTC`)
 
-The workflow builds and pushes all 40 images on each run.
+The workflow builds and pushes the **Qt6-compatible set** on each run (currently 35 targets).
 
 ## Installed Dependencies
 Each image is rebuilt with:
@@ -23,10 +23,12 @@ Each image is rebuilt with:
 - The Linux dependency set you provided (mapped per package manager family)
 
 Package profile highlights:
-- `apt`: `dpkg-dev`, `ninja-build`, `scdoc`, `appstream`, `libxcb-cursor-dev`, `openjdk-21-jdk`, `lcov`, `libdbus-1-dev`, `libinih-dev`, `libsystemd-dev`, Qt packages, and `libtiff6/libtiff5` fallback logic
-- `dnf`/`zypper`: equivalent dependency set + Qt packages
-- `yum`/`pacman`/`xbps`/`nix`/`emerge`: mapped best-effort equivalents + Qt
+- `apt`: Qt6 packages are required; build fails if unavailable
+- `dnf`: CRB/PowerTools and EPEL probing + package-name fallbacks for CentOS/RHEL family
+- `apk`: Alpine-specific package mapping (no `libsystemd-dev`)
+- `zypper`/`yum`/`pacman`/`xbps`/`nix`/`emerge`: mapped equivalents + Qt6 verification
 
 ## Notes
 - Qt6 is mandatory. If Qt6 packages/tools are unavailable, Docker build fails (no Qt5 fallback).
+- Some older bases are excluded from the active matrix because they do not provide Qt6 reliably.
 - If an upstream image tag disappears, update the corresponding file in `dockerfiles/`.

@@ -26,8 +26,8 @@ jobs:
           set -euo pipefail
 
           APT_CUSTOM='set -eu; apt-get update; PKGS="dpkg-dev ninja-build scdoc appstream lcov libdbus-1-dev libinih-dev libsystemd-dev"; if apt-cache show libxcb-cursor-dev >/dev/null 2>&1; then PKGS="$PKGS libxcb-cursor-dev"; elif apt-cache show libxcb-cursor0-dev >/dev/null 2>&1; then PKGS="$PKGS libxcb-cursor0-dev"; fi; if apt-cache show openjdk-21-jdk >/dev/null 2>&1; then PKGS="$PKGS openjdk-21-jdk"; elif apt-cache show openjdk-17-jdk >/dev/null 2>&1; then PKGS="$PKGS openjdk-17-jdk"; else PKGS="$PKGS default-jdk"; fi; if apt-cache show qt6-base-dev >/dev/null 2>&1 && apt-cache show qt6-declarative-dev >/dev/null 2>&1 && apt-cache show qt6-tools-dev >/dev/null 2>&1; then PKGS="$PKGS qt6-base-dev qt6-declarative-dev qt6-tools-dev qt6-tools-dev-tools"; else echo "Qt6 dev packages are required but not available" >&2; exit 1; fi; if apt-cache show libtiff6 >/dev/null 2>&1; then PKGS="$PKGS libtiff6"; elif apt-cache show libtiff5 >/dev/null 2>&1; then PKGS="$PKGS libtiff5"; else PKGS="$PKGS libtiff-dev"; fi; apt-get install -y --no-install-recommends $PKGS'
-          APK_PACKAGES='ninja scdoc appstream libxcb openjdk21-jdk lcov dbus-dev inih-dev libsystemd-dev tiff-dev qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qttools-dev'
-          DNF_PACKAGES='ninja-build scdoc appstream libxcb-devel java-21-openjdk-devel lcov dbus-devel inih-devel systemd-devel libtiff qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qttools-devel'
+          APK_PACKAGES='ninja scdoc appstream libxcb openjdk21-jdk lcov dbus-dev inih-dev tiff-dev qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qttools-dev'
+          DNF_CUSTOM='set -eu; dnf -y install dnf-plugins-core || true; dnf config-manager --set-enabled crb || dnf config-manager --set-enabled powertools || true; dnf -y install epel-release || dnf -y install epel-next-release || true; dnf -y makecache || true; dnf -y install appstream libxcb-devel dbus-devel systemd-devel libtiff qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qttools-devel; dnf -y install ninja-build || dnf -y install ninja; dnf -y install inih-devel || dnf -y install libinih-devel; dnf -y install lcov || true; dnf -y install scdoc || (dnf -y install cargo git && cargo install --locked scdoc && ln -sf /root/.cargo/bin/scdoc /usr/local/bin/scdoc); dnf -y install java-21-openjdk-devel || dnf -y install java-17-openjdk-devel || dnf -y install java-latest-openjdk-devel'
           YUM_CUSTOM='yum install -y ninja-build scdoc lcov dbus-devel systemd-devel libtiff qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qttools-devel && (yum install -y java-21-openjdk-devel || yum install -y java-17-openjdk-devel)'
           ZYPPER_PACKAGES='ninja scdoc appstream libxcb-devel java-21-openjdk-devel lcov dbus-1-devel inih-devel systemd-devel libtiff qt6-base-devel qt6-declarative-devel qt6-tools-devel'
           PACMAN_PACKAGES='base-devel ninja scdoc appstream libxcb jdk21-openjdk lcov dbus inih systemd-libs libtiff qt6-base qt6-declarative qt6-tools'
@@ -58,7 +58,7 @@ jobs:
                 clean_cmd='true'
                 ;;
               dnf)
-                packages="$DNF_PACKAGES"
+                custom_install="$DNF_CUSTOM"
                 clean_cmd='dnf clean all || true'
                 ;;
               yum)
@@ -121,16 +121,12 @@ jobs:
           entries=(
             "debian-bookworm-slim|dockerfiles/debian-bookworm-slim.Dockerfile|debian/bookworm-slim|apt"
             "debian-bookworm|dockerfiles/debian-bookworm.Dockerfile|debian/bookworm|apt"
-            "debian-bullseye-slim|dockerfiles/debian-bullseye-slim.Dockerfile|debian/bullseye-slim|apt"
-            "debian-bullseye|dockerfiles/debian-bullseye.Dockerfile|debian/bullseye|apt"
             "debian-trixie-slim|dockerfiles/debian-trixie-slim.Dockerfile|debian/trixie-slim|apt"
             "debian-stable-slim|dockerfiles/debian-stable-slim.Dockerfile|debian/stable-slim|apt"
             "ubuntu-2404|dockerfiles/ubuntu-2404.Dockerfile|ubuntu/24.04|apt"
             "ubuntu-2204|dockerfiles/ubuntu-2204.Dockerfile|ubuntu/22.04|apt"
-            "ubuntu-2004|dockerfiles/ubuntu-2004.Dockerfile|ubuntu/20.04|apt"
             "ubuntu-latest|dockerfiles/ubuntu-latest.Dockerfile|ubuntu/latest|apt"
             "devuan-daedalus|dockerfiles/devuan-daedalus.Dockerfile|devuan/daedalus|apt"
-            "devuan-chimaera|dockerfiles/devuan-chimaera.Dockerfile|devuan/chimaera|apt"
             "kali-rolling|dockerfiles/kali-rolling.Dockerfile|kali/rolling|apt"
             "alpine-322|dockerfiles/alpine-322.Dockerfile|alpine/3.22|apk"
             "alpine-321|dockerfiles/alpine-321.Dockerfile|alpine/3.21|apk"
@@ -151,7 +147,6 @@ jobs:
             "oraclelinux-9|dockerfiles/oraclelinux-9.Dockerfile|oraclelinux/9|dnf"
             "oraclelinux-8|dockerfiles/oraclelinux-8.Dockerfile|oraclelinux/8|dnf"
             "amazonlinux-2023|dockerfiles/amazonlinux-2023.Dockerfile|amazonlinux/2023|dnf"
-            "amazonlinux-2|dockerfiles/amazonlinux-2.Dockerfile|amazonlinux/2|yum"
             "opensuse-leap-156|dockerfiles/opensuse-leap-156.Dockerfile|opensuse-leap/15.6|zypper"
             "opensuse-leap-155|dockerfiles/opensuse-leap-155.Dockerfile|opensuse-leap/15.5|zypper"
             "opensuse-tumbleweed|dockerfiles/opensuse-tumbleweed.Dockerfile|opensuse-tumbleweed/latest|zypper"
