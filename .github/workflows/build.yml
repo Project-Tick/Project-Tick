@@ -197,7 +197,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           provenance: false
-          tags: ghcr.io/Project-Tick-Infra/images/${{ matrix.target_name }}:${{ matrix.target_tag }}
+          tags: ghcr.io/project-tick-infra/images/${{ matrix.target_name }}:${{ matrix.target_tag }}
           build-args: |
             PACKAGES=${{ matrix.packages }}
             CUSTOM_INSTALL=${{ matrix.custom_install }}

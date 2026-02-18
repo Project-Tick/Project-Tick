@@ -3,7 +3,7 @@
 This repository uses **40 separate Dockerfiles**. Each Dockerfile has its own fixed base image.
 
 Target format:
-- `ghcr.io/Project-Tick-Infra/images/<target_name>:<target_tag>`
+- `ghcr.io/project-tick-infra/images/<target_name>:<target_tag>`
 
 ## Repository Layout
 - `dockerfiles/*.Dockerfile` (40 files, one base image per file)
