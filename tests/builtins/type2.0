@@ -1,0 +1,34 @@
+
+failures=0
+
+check() {
+	if ! eval "$*"; then
+		echo "Failed: $*"
+		: $((failures += 1))
+	fi
+}
+
+mkdir pathbin
+cat >pathbin/typeprobe <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+chmod +x pathbin/typeprobe
+
+probe_dir=$PWD/pathbin
+
+check "PATH=$probe_dir type typeprobe >/dev/null"
+check "! PATH=$probe_dir type ls 2>/dev/null"
+
+PATH=$probe_dir:$PATH
+
+check 'type typeprobe >/dev/null'
+
+PATH=$probe_dir
+
+check 'type typeprobe >/dev/null'
+check '! type ls 2>/dev/null'
+check 'PATH=/bin type ls >/dev/null'
+check '! PATH=/bin type typeprobe 2>/dev/null'
+
+exit $((failures > 0))

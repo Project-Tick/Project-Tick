@@ -1,0 +1,75 @@
+
+failures=0
+
+check_eq() {
+	actual=$1
+	expected=$2
+	label=$3
+	if [ "$actual" != "$expected" ]; then
+		echo "Failed: $label"
+		echo "  expected: $expected"
+		echo "  actual:   $actual"
+		failures=$((failures + 1))
+	fi
+}
+
+check_match() {
+	actual=$1
+	pattern=$2
+	label=$3
+	case $actual in
+	$pattern)
+		;;
+	*)
+		echo "Failed: $label"
+		echo "  expected pattern: $pattern"
+		echo "  actual:           $actual"
+		failures=$((failures + 1))
+		;;
+	esac
+}
+
+mkdir pathbin
+cat >pathbin/cmdprobe <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+chmod +x pathbin/cmdprobe
+
+probe_dir=$PWD/pathbin
+probe_path=$probe_dir/cmdprobe
+
+check_eq "$(PATH=$probe_dir command -V cmdprobe)" \
+	"cmdprobe is $probe_path" \
+	'PATH=$probe_dir command -V cmdprobe'
+check_eq "$(PATH=$probe_dir command -V cmdprobe; :)" \
+	"cmdprobe is $probe_path" \
+	'PATH=$probe_dir command -V cmdprobe; :'
+check_eq "$(PATH=$probe_dir command -pv cmdprobe)" \
+	"" \
+	'PATH=$probe_dir command -pv cmdprobe'
+check_eq "$(PATH=$probe_dir command -pv cmdprobe; :)" \
+	"" \
+	'PATH=$probe_dir command -pv cmdprobe; :'
+
+PATH=$probe_dir:$PATH
+
+check_eq "$(command -V cmdprobe)" \
+	"cmdprobe is $probe_path" \
+	'PATH prefixed command -V cmdprobe'
+check_eq "$(command -V cmdprobe; :)" \
+	"cmdprobe is $probe_path" \
+	'PATH prefixed command -V cmdprobe; :'
+check_eq "$(command -pv cmdprobe)" \
+	"" \
+	'PATH prefixed command -pv cmdprobe'
+check_eq "$(command -pv cmdprobe; :)" \
+	"" \
+	'PATH prefixed command -pv cmdprobe; :'
+
+PATH=$probe_dir
+
+check_eq "$(command -v ls)" "" 'PATH isolated command -v ls'
+check_match "$(command -pv ls)" '/*/ls' 'PATH isolated command -pv ls'
+
+exit $((failures > 0))

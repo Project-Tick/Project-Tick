@@ -1,0 +1,20 @@
+
+# Character ranges outside the POSIX locale are unspecified. Keep this test
+# in the C locale so it remains deterministic across libc implementations.
+
+unset LC_CTYPE LC_COLLATE LANG LANGUAGE
+LC_ALL=C
+export LC_ALL
+
+c1=e
+c2=o
+
+case $c1$c2 in
+[a-z][a-z]) ;;
+*) echo wrong at $LINENO ;;
+esac
+
+case $c1$c2 in
+[a-f][n-p]) ;;
+*) echo wrong at $LINENO ;;
+esac

@@ -1,0 +1,41 @@
+
+failures=0
+
+check() {
+	testcase=$1
+	expect=$2
+	eval "set -- $testcase"
+	actual="$*"
+	if [ "$actual" != "$expect" ]; then
+		failures=$((failures+1))
+		printf '%s\n' "For $testcase, expected $expect actual $actual"
+	fi
+}
+
+set -e
+T=$(mktemp -d ${TMPDIR:-/tmp}/sh-test.XXXXXX)
+trap 'rm -rf $T' 0
+cd -P $T
+
+touch A B a b
+
+LC_ALL=C
+export LC_ALL
+unset LC_COLLATE
+check '*' 'A B a b'
+
+unset LC_ALL
+LC_COLLATE=en_US.US-ASCII
+export LC_COLLATE
+set -- *
+case "$*" in
+'a A b B'|'A B a b')
+	:
+	;;
+*)
+	failures=$((failures + 1))
+	printf '%s\n' "For *, expected locale-aware or C collation fallback actual $*"
+	;;
+esac
+
+exit $((failures != 0))

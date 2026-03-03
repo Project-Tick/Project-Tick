@@ -1,0 +1,13 @@
+
+unset LC_CTYPE LC_COLLATE LANG LANGUAGE
+LC_ALL=C
+export LC_ALL
+
+# a umlaut
+s=$(printf '\303\244')
+# euro sign
+s=$s$(printf '\342\202\254')
+# some sort of 't' outside BMP
+s=$s$(printf '\360\235\225\245')
+set -- "$s"
+[ ${#s} = 9 ] && [ ${#1} = 9 ]
