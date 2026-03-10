@@ -61,8 +61,8 @@ LOCAL_SRCS := \
 	termcap.c \
 	trap.c \
 	var.c
-BUILTIN_SRCS := bltin/echo.c
-EXTERNAL_SRCS := $(KILLDIR)/kill.c $(TESTDIR)/test.c $(PRINTFDIR)/printf.c
+BUILTIN_SRCS := bltin/echo.c testcmd.c
+EXTERNAL_SRCS := $(KILLDIR)/kill.c $(PRINTFDIR)/printf.c
 GEN_SRCS := $(GENDIR)/builtins.c $(GENDIR)/nodes.c $(GENDIR)/syntax.c
 GEN_HDRS := $(GENDIR)/builtins.h $(GENDIR)/nodes.h $(GENDIR)/syntax.h $(GENDIR)/token.h
 LIBEDIT_SRCS := \
