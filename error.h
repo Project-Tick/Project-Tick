@@ -43,6 +43,9 @@
  * inner scope, and restore handler on exit from the scope.
  */
 
+#ifndef SH_ERROR_H
+#define SH_ERROR_H
+
 #include <setjmp.h>
 #include <signal.h>
 
@@ -92,3 +95,5 @@ void errorwithstatus(int, const char *, ...) __printf0like(2, 3) __dead2;
 
 #define setjmp(jmploc)	_setjmp(jmploc)
 #define longjmp(jmploc, val)	_longjmp(jmploc, val)
+
+#endif /* SH_ERROR_H */
