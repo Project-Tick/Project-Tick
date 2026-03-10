@@ -1,0 +1,892 @@
+#!/bin/sh
+
+set -eu
+umask 022
+
+SELF_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$SELF_DIR"
+
+TMP_DIR="$SELF_DIR/build/configure"
+LOG_FILE="$TMP_DIR/config.log"
+CONFIG_MK="$SELF_DIR/config.mk"
+GNUMAKEFILE="$SELF_DIR/GNUmakefile"
+
+mkdir -p "$TMP_DIR"
+: >"$LOG_FILE"
+
+PREFIX="/usr/local"
+BINDIR=""
+BINDIR_SET=0
+LOCAL_DIR="/usr/local"
+ALLOW_GLIBC=0
+FAIL_IF_MISSING=0
+USER_CC=""
+HOST=""
+BUILD=""
+EXTRA_CPPFLAGS=""
+EXTRA_CFLAGS=""
+EXTRA_LDFLAGS=""
+
+ENV_CC=${CC-}
+ENV_CPPFLAGS=${CPPFLAGS-}
+ENV_CFLAGS=${CFLAGS-}
+ENV_LDFLAGS=${LDFLAGS-}
+
+usage() {
+	cat <<'USAGE'
+Usage: ./configure [options]
+
+General:
+  --help                         show this help
+  --prefix=PATH                  install prefix (default: /usr/local)
+  --bindir=PATH                  install bindir (default: <prefix>/bin)
+  --host=TRIPLE                  target host triple
+  --build=TRIPLE                 build triple
+
+Toolchain:
+  --cc=COMMAND                   force compiler command
+  --allow-glibc                  allow glibc toolchain fallback
+
+Flags:
+  --extra-cppflags=FLAGS         extra CPPFLAGS
+  --extra-cflags=FLAGS           extra CFLAGS
+  --extra-ldflags=FLAGS          extra LDFLAGS
+
+Local paths:
+  --with-local-dir=PATH          add PATH/include and PATH/lib when present
+  --without-local-dir            disable local include/lib probing
+
+Policy:
+  --enable-fail-if-missing       fail when optional probes are missing
+USAGE
+}
+
+msg_checking() {
+	printf 'checking %s... ' "$1"
+}
+
+msg_result() {
+	printf '%s\n' "$1"
+}
+
+warn() {
+	printf 'configure: warning: %s\n' "$*" >&2
+}
+
+die() {
+	printf 'configure: error: %s\n' "$*" >&2
+	exit 1
+}
+
+normalize_ws() {
+	printf '%s' "$1" | sed 's/[[:space:]][[:space:]]*/ /g; s/^ //; s/ $//'
+}
+
+escape_make() {
+	printf '%s' "$1" | sed 's/\$/$$/g'
+}
+
+escape_sed() {
+	printf '%s' "$1" | sed 's/[\\/&]/\\&/g'
+}
+
+to_macro() {
+	printf '%s' "$1" | tr '/.-' '___' | tr '[:lower:]' '[:upper:]'
+}
+
+choose_tool() {
+	tool_var=$1
+	shift
+	for candidate in "$@"; do
+		if [ -n "$candidate" ] && command -v "$candidate" >/dev/null 2>&1; then
+			eval "$tool_var=\$candidate"
+			return 0
+		fi
+	done
+	return 1
+}
+
+can_compile_with() {
+	cc_try=$1
+	cat >"$TMP_DIR/conftest.c" <<'SRC'
+int main(void) { return 0; }
+SRC
+	printf '$ %s\n' "$cc_try -x c $TMP_DIR/conftest.c -o $TMP_DIR/conftest" >>"$LOG_FILE"
+	if sh -c "$cc_try -x c '$TMP_DIR/conftest.c' -o '$TMP_DIR/conftest'" >>"$LOG_FILE" 2>&1; then
+		return 0
+	fi
+	return 1
+}
+
+can_run_with() {
+	cc_try=$1
+	cat >"$TMP_DIR/conftest.c" <<'SRC'
+#include <stdio.h>
+#include <stdlib.h>
+int main(void) {
+	char *ep = NULL;
+	long v = strtol("1", &ep, 10);
+	char buf[8];
+	(void)snprintf(buf, sizeof(buf), "%ld", v);
+	return (ep == NULL || buf[0] != '1');
+}
+SRC
+	printf '$ %s\n' "$cc_try -D_GNU_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700 -x c $TMP_DIR/conftest.c -o $TMP_DIR/conftest" >>"$LOG_FILE"
+	if ! sh -c "$cc_try -D_GNU_SOURCE -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700 -x c '$TMP_DIR/conftest.c' -o '$TMP_DIR/conftest'" >>"$LOG_FILE" 2>&1; then
+		return 1
+	fi
+	printf '$ %s\n' "$TMP_DIR/conftest" >>"$LOG_FILE"
+	if "$TMP_DIR/conftest" >>"$LOG_FILE" 2>&1; then
+		return 0
+	fi
+	return 1
+}
+
+can_compile_stdatomic_with() {
+	cc_try=$1
+	cat >"$TMP_DIR/conftest.c" <<'SRC'
+#include <stdatomic.h>
+int main(void) {
+	_Atomic int x = 1;
+	return (int)x - 1;
+}
+SRC
+	printf '$ %s\n' "$cc_try -x c $TMP_DIR/conftest.c -o $TMP_DIR/conftest" >>"$LOG_FILE"
+	if sh -c "$cc_try -x c '$TMP_DIR/conftest.c' -o '$TMP_DIR/conftest'" >>"$LOG_FILE" 2>&1; then
+		return 0
+	fi
+	return 1
+}
+
+pick_compiler() {
+	cc_try=$1
+	[ -n "$cc_try" ] || return 1
+	set -- $cc_try
+	cc_prog=$1
+	command -v "$cc_prog" >/dev/null 2>&1 || return 1
+	if can_compile_with "$cc_try"; then
+		if [ "$REQUIRE_RUNNABLE_CC" -eq 1 ] && ! can_run_with "$cc_try"; then
+			return 1
+		fi
+		if ! can_compile_stdatomic_with "$cc_try"; then
+			return 1
+		fi
+		CC_SELECTED=$cc_try
+		return 0
+	fi
+	return 1
+}
+
+try_cc() {
+	code=$1
+	extra_cppflags=${2-}
+	extra_ldflags=${3-}
+	cat >"$TMP_DIR/conftest.c" <<SRC
+$code
+SRC
+	printf '$ %s\n' "$CC_SELECTED $CFG_CPPFLAGS $extra_cppflags $CFG_CFLAGS $CFG_LDFLAGS $extra_ldflags $TMP_DIR/conftest.c -o $TMP_DIR/conftest" >>"$LOG_FILE"
+	if sh -c "$CC_SELECTED $CFG_CPPFLAGS $extra_cppflags $CFG_CFLAGS $CFG_LDFLAGS $extra_ldflags '$TMP_DIR/conftest.c' -o '$TMP_DIR/conftest'" >>"$LOG_FILE" 2>&1; then
+		return 0
+	fi
+	return 1
+}
+
+record_cpp_define() {
+	name=$1
+	value=$2
+	printf '%s := %s\n' "$name" "$value" >>"$CONFIG_MK_TMP"
+	if [ "$value" = "1" ]; then
+		CONF_CPPFLAGS="$CONF_CPPFLAGS -D${name}=1"
+	fi
+}
+
+check_header() {
+	hdr=$1
+	macro="HAVE_$(to_macro "$hdr")"
+	msg_checking "for $hdr"
+	if try_cc "#include <$hdr>
+int main(void) { return 0; }" "" ""; then
+		msg_result yes
+		record_cpp_define "$macro" 1
+	else
+		msg_result no
+		record_cpp_define "$macro" 0
+	fi
+}
+
+check_func() {
+	func=$1
+	includes=$2
+	macro="HAVE_$(to_macro "$func")"
+	msg_checking "for $func"
+	if try_cc "$includes
+#include <stdint.h>
+int main(void) { void *p = (void *)(uintptr_t)&$func; return p == 0; }" "" ""; then
+		msg_result yes
+		record_cpp_define "$macro" 1
+	else
+		msg_result no
+		record_cpp_define "$macro" 0
+	fi
+}
+
+check_lib_symbol() {
+	lib=$1
+	sym=$2
+	msg_checking "for $sym in -l$lib"
+	if try_cc "char $sym();
+int main(void) { return $sym() == 0; }" "" "-l$lib"; then
+		msg_result yes
+		return 0
+	fi
+	msg_result no
+	return 1
+}
+
+for arg in "$@"; do
+	case "$arg" in
+	--help)
+		usage
+		exit 0
+		;;
+	--prefix=*)
+		PREFIX=${arg#*=}
+		;;
+	--bindir=*)
+		BINDIR=${arg#*=}
+		BINDIR_SET=1
+		;;
+	--host=*)
+		HOST=${arg#*=}
+		;;
+	--build=*)
+		BUILD=${arg#*=}
+		;;
+	--cc=*)
+		USER_CC=${arg#*=}
+		;;
+	--allow-glibc)
+		ALLOW_GLIBC=1
+		;;
+	--enable-fail-if-missing)
+		FAIL_IF_MISSING=1
+		;;
+	--with-local-dir=*)
+		LOCAL_DIR=${arg#*=}
+		;;
+	--without-local-dir)
+		LOCAL_DIR=no
+		;;
+	--extra-cppflags=*)
+		EXTRA_CPPFLAGS=${arg#*=}
+		;;
+	--extra-cflags=*)
+		EXTRA_CFLAGS=${arg#*=}
+		;;
+	--extra-ldflags=*)
+		EXTRA_LDFLAGS=${arg#*=}
+		;;
+	*)
+		die "unknown option: $arg"
+		;;
+	esac
+done
+
+if [ "$BINDIR_SET" -ne 1 ]; then
+	BINDIR="$PREFIX/bin"
+fi
+
+HOST_OS=$(uname -s 2>/dev/null || echo unknown)
+HOST_ARCH=$(uname -m 2>/dev/null || echo unknown)
+DEFAULT_TRIPLE="${HOST_ARCH}-unknown-${HOST_OS}"
+[ -n "$HOST" ] || HOST="$DEFAULT_TRIPLE"
+[ -n "$BUILD" ] || BUILD="$DEFAULT_TRIPLE"
+REQUIRE_RUNNABLE_CC=0
+if [ "$HOST" = "$BUILD" ]; then
+	REQUIRE_RUNNABLE_CC=1
+fi
+
+msg_checking "for C compiler"
+CC_SELECTED=""
+if [ -n "$USER_CC" ]; then
+	pick_compiler "$USER_CC" || die "requested compiler is not usable: $USER_CC"
+elif [ -n "$ENV_CC" ]; then
+	if ! pick_compiler "$ENV_CC"; then
+		warn "environment CC unusable or disallowed: $ENV_CC"
+	fi
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "musl-clang" || true
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "clang --target=${HOST_ARCH}-linux-musl" || true
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "clang --target=${HOST_ARCH}-unknown-linux-musl" || true
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "musl-gcc" || true
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "clang" || true
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "cc" || true
+fi
+if [ -z "$CC_SELECTED" ]; then
+	pick_compiler "gcc" || true
+fi
+[ -n "$CC_SELECTED" ] || die "no usable compiler found"
+msg_result "$CC_SELECTED"
+
+msg_checking "for C preprocessor"
+if sh -c "$CC_SELECTED -E '$TMP_DIR/conftest.c'" >/dev/null 2>&1; then
+	CPP_SELECTED="$CC_SELECTED -E"
+	msg_result "$CPP_SELECTED"
+else
+	die "no working preprocessor via selected compiler"
+fi
+
+msg_checking "for make"
+if choose_tool MAKE gmake make; then
+	msg_result "$MAKE"
+else
+	die "no make tool found"
+fi
+
+msg_checking "for archiver"
+if choose_tool AR llvm-ar ar; then
+	msg_result "$AR"
+else
+	die "no archiver found"
+fi
+
+msg_checking "for ranlib"
+if choose_tool RANLIB llvm-ranlib ranlib; then
+	msg_result "$RANLIB"
+else
+	die "no ranlib found"
+fi
+
+msg_checking "for nm"
+if choose_tool NM llvm-nm nm; then
+	msg_result "$NM"
+else
+	msg_result no
+	NM=:
+fi
+
+msg_checking "for awk"
+if choose_tool AWK gawk mawk awk; then
+	msg_result "$AWK"
+else
+	die "no awk found"
+fi
+
+msg_checking "for shell"
+if choose_tool SH sh; then
+	msg_result "$SH"
+else
+	die "no POSIX shell found"
+fi
+
+msg_checking "for pkg-config"
+PKG_CONFIG=""
+if choose_tool PKG_CONFIG pkgconf pkg-config; then
+	msg_result "$PKG_CONFIG"
+else
+	msg_result no
+fi
+
+CC_MACHINE=$(sh -c "$CC_SELECTED -dumpmachine" 2>/dev/null || echo unknown)
+msg_checking "target compiler triplet"
+msg_result "$CC_MACHINE"
+
+LIBC_KIND=unknown
+
+if command -v file >/dev/null 2>&1; then
+	cat >"$TMP_DIR/conftest.c" <<'SRC'
+int main(void) { return 0; }
+SRC
+	printf '$ %s\n' "$CC_SELECTED -x c $TMP_DIR/conftest.c -o $TMP_DIR/conftest" >>"$LOG_FILE"
+	if sh -c "$CC_SELECTED -x c '$TMP_DIR/conftest.c' -o '$TMP_DIR/conftest'" >>"$LOG_FILE" 2>&1; then
+		FILE_TEXT=$(file "$TMP_DIR/conftest" 2>/dev/null || true)
+		case "$FILE_TEXT" in
+		*ld-musl*|*musl*)
+			LIBC_KIND=musl
+			;;
+		*ld-linux*|*GNU/Linux*)
+			LIBC_KIND=glibc
+			;;
+		esac
+	fi
+fi
+
+if [ "$LIBC_KIND" = "unknown" ]; then
+	CC_MACROS=$(printf '\n' | sh -c "$CC_SELECTED -dM -E -x c -" 2>/dev/null || true)
+	case "$CC_MACROS" in
+	*"__GLIBC__"*) LIBC_KIND=glibc ;;
+	*"__MUSL__"*) LIBC_KIND=musl ;;
+	esac
+fi
+if [ "$LIBC_KIND" = "unknown" ]; then
+	case "$CC_MACHINE" in
+	*musl*)
+		LIBC_KIND=musl
+		;;
+	*gnu*|*glibc*)
+		LIBC_KIND=glibc
+		;;
+	esac
+fi
+
+msg_checking "for libc type"
+msg_result "$LIBC_KIND"
+
+if [ "$LIBC_KIND" = "glibc" ] && [ "$ALLOW_GLIBC" -ne 1 ]; then
+	die "glibc toolchain detected; refusing by default (use --allow-glibc to override)"
+fi
+
+IS_MUSL=0
+if [ "$LIBC_KIND" = "musl" ]; then
+	IS_MUSL=1
+fi
+
+CFG_CPPFLAGS=$(normalize_ws "-D_DEFAULT_SOURCE -D_XOPEN_SOURCE=700 $ENV_CPPFLAGS $EXTRA_CPPFLAGS")
+CFG_CFLAGS=$(normalize_ws "-O2 -g -pipe $ENV_CFLAGS $EXTRA_CFLAGS")
+CFG_LDFLAGS=$(normalize_ws "$ENV_LDFLAGS $EXTRA_LDFLAGS")
+
+if [ "$LOCAL_DIR" != "no" ] && [ -n "$LOCAL_DIR" ]; then
+	msg_checking "for local include directory"
+	if [ -d "$LOCAL_DIR/include" ]; then
+		CFG_CPPFLAGS=$(normalize_ws "$CFG_CPPFLAGS -I$LOCAL_DIR/include")
+		msg_result "$LOCAL_DIR/include"
+	else
+		msg_result no
+	fi
+
+	msg_checking "for local library directory"
+	if [ -d "$LOCAL_DIR/lib" ]; then
+		CFG_LDFLAGS=$(normalize_ws "$CFG_LDFLAGS -L$LOCAL_DIR/lib")
+		msg_result "$LOCAL_DIR/lib"
+	else
+		msg_result no
+	fi
+fi
+
+msg_checking "whether we are cross compiling"
+CROSS_COMPILING=0
+if try_cc "int main(void) { return 0; }" "" ""; then
+	if "$TMP_DIR/conftest" >/dev/null 2>&1; then
+		msg_result no
+	else
+		CROSS_COMPILING=1
+		msg_result yes
+	fi
+else
+	CROSS_COMPILING=1
+	msg_result yes
+fi
+
+EXEEXT=""
+msg_checking "for executable suffix"
+if [ -x "$TMP_DIR/conftest.exe" ]; then
+	EXEEXT=.exe
+fi
+msg_result "${EXEEXT:-none}"
+
+JOBS_HINT=$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)
+if [ -z "$JOBS_HINT" ] && command -v nproc >/dev/null 2>&1; then
+	JOBS_HINT=$(nproc 2>/dev/null || true)
+fi
+case "$JOBS_HINT" in
+''|*[!0-9]*) JOBS_HINT=1 ;;
+esac
+
+CONFIG_MK_TMP="$TMP_DIR/config.mk.$$"
+: >"$CONFIG_MK_TMP"
+
+TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+printf '# Auto-generated by ./configure on %s\n' "$TIMESTAMP" >>"$CONFIG_MK_TMP"
+printf 'CONF_CPPFLAGS :=\n' >>"$CONFIG_MK_TMP"
+printf 'CONF_LDFLAGS :=\n' >>"$CONFIG_MK_TMP"
+printf 'CONF_LIBS :=\n' >>"$CONFIG_MK_TMP"
+printf 'CONFIGURE_TIMESTAMP := %s\n' "$TIMESTAMP" >>"$CONFIG_MK_TMP"
+printf 'CONFIGURE_HOST := %s\n' "$(escape_make "$HOST")" >>"$CONFIG_MK_TMP"
+printf 'CONFIGURE_BUILD := %s\n' "$(escape_make "$BUILD")" >>"$CONFIG_MK_TMP"
+printf 'CONFIGURE_CC_MACHINE := %s\n' "$(escape_make "$CC_MACHINE")" >>"$CONFIG_MK_TMP"
+printf 'CONFIGURE_LIBC := %s\n' "$(escape_make "$LIBC_KIND")" >>"$CONFIG_MK_TMP"
+printf 'CROSS_COMPILING := %s\n' "$CROSS_COMPILING" >>"$CONFIG_MK_TMP"
+printf 'EXEEXT := %s\n' "$(escape_make "$EXEEXT")" >>"$CONFIG_MK_TMP"
+
+CONF_CPPFLAGS=""
+
+msg_checking "for common system headers"
+msg_result "(probing)"
+for hdr in \
+	stdlib.h stdio.h stdint.h inttypes.h stdbool.h stddef.h \
+	string.h strings.h unistd.h errno.h fcntl.h signal.h \
+	sys/types.h sys/stat.h sys/time.h sys/resource.h sys/wait.h \
+	sys/select.h sys/ioctl.h sys/param.h sys/socket.h netdb.h \
+	poll.h sys/poll.h termios.h stropts.h pthread.h \
+	sys/event.h sys/timerfd.h sys/acl.h attr/xattr.h linux/xattr.h \
+	dlfcn.h langinfo.h locale.h wchar.h wctype.h; do
+	check_header "$hdr"
+done
+
+msg_checking "for common C library functions"
+msg_result "(probing)"
+check_func getcwd '#include <unistd.h>'
+check_func realpath '#include <stdlib.h>'
+check_func fchdir '#include <unistd.h>'
+check_func fstatat '#include <sys/stat.h>'
+check_func openat '#include <fcntl.h>'
+check_func copy_file_range '#include <unistd.h>'
+check_func memmove '#include <string.h>'
+check_func strlcpy '#include <string.h>'
+check_func strlcat '#include <string.h>'
+check_func explicit_bzero '#include <string.h>'
+check_func getline '#include <stdio.h>'
+check_func getentropy '#include <unistd.h>'
+check_func posix_spawn '#include <spawn.h>'
+check_func clock_gettime '#include <time.h>'
+check_func poll '#include <poll.h>'
+check_func kqueue '#include <sys/event.h>'
+check_func timerfd_create '#include <sys/timerfd.h>'
+check_func pipe2 '#include <unistd.h>'
+check_func closefrom '#include <unistd.h>'
+check_func getrandom '#include <sys/random.h>'
+
+msg_checking "for optional system libraries"
+msg_result "(probing)"
+CONF_LIBS=""
+if check_lib_symbol crypt crypt; then
+	CONF_LIBS="$CONF_LIBS -lcrypt"
+	CRYPTO_LIBS='-lcrypt'
+else
+	CRYPTO_LIBS=''
+	if [ "$FAIL_IF_MISSING" -eq 1 ]; then
+		die "libcrypt not found and --enable-fail-if-missing was requested"
+	fi
+fi
+if check_lib_symbol dl dlopen; then
+	CONF_LIBS="$CONF_LIBS -ldl"
+fi
+if check_lib_symbol pthread pthread_create; then
+	CONF_LIBS="$CONF_LIBS -lpthread"
+fi
+if check_lib_symbol rt clock_gettime; then
+	CONF_LIBS="$CONF_LIBS -lrt"
+fi
+if check_lib_symbol util openpty; then
+	CONF_LIBS="$CONF_LIBS -lutil"
+fi
+if check_lib_symbol attr setxattr; then
+	CONF_LIBS="$CONF_LIBS -lattr"
+fi
+if check_lib_symbol selinux is_selinux_enabled; then
+	CONF_LIBS="$CONF_LIBS -lselinux"
+fi
+
+EDITLINE_CPPFLAGS=""
+EDITLINE_LIBS=""
+msg_checking "for libedit via pkg-config"
+if [ -n "$PKG_CONFIG" ] && "$PKG_CONFIG" --exists libedit >/dev/null 2>&1; then
+	EDITLINE_CPPFLAGS=$($PKG_CONFIG --cflags libedit 2>/dev/null || true)
+	EDITLINE_LIBS=$($PKG_CONFIG --libs libedit 2>/dev/null || true)
+	msg_result yes
+else
+	msg_result no
+fi
+if [ -n "$EDITLINE_CPPFLAGS$EDITLINE_LIBS" ]; then
+	msg_checking "whether libedit pkg-config flags are usable"
+	if try_cc "int main(void) { return 0; }" "$EDITLINE_CPPFLAGS" "$EDITLINE_LIBS"; then
+		msg_result yes
+	else
+		msg_result no
+		EDITLINE_CPPFLAGS=""
+		EDITLINE_LIBS=""
+	fi
+fi
+
+printf 'CONF_CPPFLAGS += %s\n' "$(escape_make "$(normalize_ws "$CONF_CPPFLAGS")")" >>"$CONFIG_MK_TMP"
+printf 'CONF_LDFLAGS +=\n' >>"$CONFIG_MK_TMP"
+printf 'CONF_LIBS += %s\n' "$(escape_make "$(normalize_ws "$CONF_LIBS")")" >>"$CONFIG_MK_TMP"
+
+mv "$CONFIG_MK_TMP" "$CONFIG_MK"
+
+SUBDIR_LIST=$(
+	for mk in ./*/GNUmakefile; do
+		[ -f "$mk" ] || continue
+		d=${mk#./}
+		d=${d%/GNUmakefile}
+		printf '%s\n' "$d"
+	done | LC_ALL=C sort
+)
+[ -n "$SUBDIR_LIST" ] || die "no subdirectories with GNUmakefile found"
+SUBDIRS_ONE_LINE=$(printf '%s\n' "$SUBDIR_LIST" | tr '\n' ' ' | sed 's/ $//')
+
+CC_MAKE=$(escape_make "$CC_SELECTED")
+AR_MAKE=$(escape_make "$AR")
+RANLIB_MAKE=$(escape_make "$RANLIB")
+NM_MAKE=$(escape_make "$NM")
+AWK_MAKE=$(escape_make "$AWK")
+SH_MAKE=$(escape_make "$SH")
+CPPFLAGS_MAKE=$(escape_make "$CFG_CPPFLAGS")
+CFLAGS_MAKE=$(escape_make "$CFG_CFLAGS")
+LDFLAGS_MAKE=$(escape_make "$CFG_LDFLAGS")
+CRYPTO_LIBS_MAKE=$(escape_make "$CRYPTO_LIBS")
+EDITLINE_CPPFLAGS_MAKE=$(escape_make "$EDITLINE_CPPFLAGS")
+EDITLINE_LIBS_MAKE=$(escape_make "$EDITLINE_LIBS")
+PREFIX_MAKE=$(escape_make "$PREFIX")
+BINDIR_MAKE=$(escape_make "$BINDIR")
+SUBDIRS_MAKE=$(escape_make "$SUBDIRS_ONE_LINE")
+
+GNUMAKEFILE_TMP="$TMP_DIR/GNUmakefile.$$"
+cat >"$GNUMAKEFILE_TMP" <<'EOF_MK'
+# Auto-generated by ./configure on @TIMESTAMP@.
+# Regenerate with ./configure.
+
+.DEFAULT_GOAL := all
+
+-include $(CURDIR)/config.mk
+
+CONFIGURE_HOST := @HOST@
+CONFIGURE_BUILD := @BUILD@
+CONFIGURE_CC_MACHINE := @CC_MACHINE@
+CONFIGURE_LIBC := @LIBC@
+CONFIGURE_MUSL := @IS_MUSL@
+JOBS_HINT := @JOBS_HINT@
+
+ifeq ($(origin CC), default)
+CC := @CC@
+endif
+ifeq ($(origin CC), environment)
+CC := @CC@
+endif
+
+AR ?= @AR@
+ifeq ($(origin AR), default)
+AR := @AR@
+endif
+ifeq ($(origin AR), environment)
+AR := @AR@
+endif
+
+RANLIB ?= @RANLIB@
+ifeq ($(origin RANLIB), default)
+RANLIB := @RANLIB@
+endif
+ifeq ($(origin RANLIB), environment)
+RANLIB := @RANLIB@
+endif
+
+NM ?= @NM@
+AWK ?= @AWK@
+SH ?= @SH@
+
+CPPFLAGS += @CPPFLAGS@
+CPPFLAGS += $(CONF_CPPFLAGS)
+CFLAGS ?= @CFLAGS@
+LDFLAGS += @LDFLAGS@
+LDFLAGS += $(CONF_LDFLAGS)
+
+CRYPTO_LIBS ?= @CRYPTO_LIBS@
+EDITLINE_CPPFLAGS ?= @EDITLINE_CPPFLAGS@
+EDITLINE_LIBS ?= @EDITLINE_LIBS@
+
+PREFIX ?= @PREFIX@
+BINDIR ?= @BINDIR@
+DESTDIR ?=
+
+MONO_BUILDDIR ?= $(CURDIR)/build
+MONO_OUTDIR ?= $(CURDIR)/out
+MONO_BINDIR := $(MONO_OUTDIR)/bin
+
+SUBDIRS := @SUBDIRS@
+SUBDIR_ALIASES := $(filter-out test,$(SUBDIRS))
+
+SUBMAKE_OVERRIDES = \
+	CC="$(CC)" \
+	AR="$(AR)" \
+	AWK="$(AWK)" \
+	RANLIB="$(RANLIB)" \
+	NM="$(NM)" \
+	SH="$(SH)" \
+	CRYPTO_LIBS="$(CRYPTO_LIBS)" \
+	EDITLINE_CPPFLAGS="$(EDITLINE_CPPFLAGS)" \
+	EDITLINE_LIBS="$(EDITLINE_LIBS)" \
+	PREFIX="$(PREFIX)" \
+	BINDIR="$(BINDIR)" \
+	DESTDIR="$(DESTDIR)" \
+	CROSS_COMPILING="$(CROSS_COMPILING)" \
+	EXEEXT="$(EXEEXT)"
+
+.PHONY: all clean clean-% distclean maintainer-clean rebuild reconfigure \
+	check check-% test status stage install list print-config print-subdirs \
+	help prepare prepare-% unprepare
+
+all: $(addprefix build-,$(SUBDIRS))
+
+$(SUBDIR_ALIASES): %: build-%
+
+prepare: $(addprefix prepare-,$(SUBDIRS))
+
+prepare-%:
+	@mkdir -p "$(MONO_BUILDDIR)/$*" "$(MONO_OUTDIR)"
+	@if [ -e "$*/build" ] && [ ! -L "$*/build" ]; then rm -rf "$*/build"; fi
+	@ln -sfn "../build/$*" "$*/build"
+	@if [ -e "$*/out" ] && [ ! -L "$*/out" ]; then rm -rf "$*/out"; fi
+	@ln -sfn "../out" "$*/out"
+
+unprepare:
+	@set -e; \
+	for d in $(SUBDIRS); do \
+		if [ -L "$$d/build" ]; then rm -f "$$d/build"; fi; \
+		if [ -L "$$d/out" ]; then rm -f "$$d/out"; fi; \
+	done
+
+build-%: prepare-%
+	+env CPPFLAGS="$(CPPFLAGS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+		$(MAKE) -C "$*" -f GNUmakefile $(SUBMAKE_OVERRIDES) all
+
+clean: $(addprefix clean-,$(SUBDIRS))
+	@rm -rf "$(MONO_BUILDDIR)" "$(MONO_OUTDIR)"
+
+distclean: clean unprepare
+	@rm -f "$(CURDIR)/config.mk" "$(CURDIR)/GNUmakefile" "$(CURDIR)/GNUMakeFile"
+
+maintainer-clean: distclean
+
+rebuild: clean all
+
+reconfigure:
+	@$(SH) "$(CURDIR)/configure"
+
+clean-%:
+	+env CPPFLAGS="$(CPPFLAGS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+		$(MAKE) -C "$*" -f GNUmakefile $(SUBMAKE_OVERRIDES) clean
+
+check: $(addprefix check-,$(SUBDIRS))
+
+check-%: prepare-%
+	+env CPPFLAGS="$(CPPFLAGS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+		$(MAKE) -C "$*" -f GNUmakefile $(SUBMAKE_OVERRIDES) test
+
+test: check
+
+status:
+	@printf 'build root: %s\n' "$(MONO_BUILDDIR)"
+	@printf 'out root: %s\n' "$(MONO_OUTDIR)"
+	@ls -1 "$(MONO_OUTDIR)" 2>/dev/null || true
+
+stage: all
+	@mkdir -p "$(MONO_BINDIR)"
+	@set -e; \
+	for f in "$(MONO_OUTDIR)"/*; do \
+		[ -f "$$f" ] || continue; \
+		[ -x "$$f" ] || continue; \
+		case "$$f" in \
+			*.a|*.o|*.lo) continue ;; \
+		esac; \
+		cp -f "$$f" "$(MONO_BINDIR)/"; \
+	done
+
+install: stage
+	@mkdir -p "$(DESTDIR)$(BINDIR)"
+	@set -e; \
+	for f in "$(MONO_BINDIR)"/*; do \
+		[ -f "$$f" ] || continue; \
+		[ -x "$$f" ] || continue; \
+		cp -f "$$f" "$(DESTDIR)$(BINDIR)/"; \
+	done
+
+list:
+	@printf '%s\n' $(SUBDIRS)
+
+print-subdirs:
+	@printf '%s\n' $(SUBDIRS)
+
+print-config:
+	@printf 'CC=%s\n' "$(CC)"
+	@printf 'AR=%s\n' "$(AR)"
+	@printf 'RANLIB=%s\n' "$(RANLIB)"
+	@printf 'NM=%s\n' "$(NM)"
+	@printf 'CPPFLAGS=%s\n' "$(CPPFLAGS)"
+	@printf 'CFLAGS=%s\n' "$(CFLAGS)"
+	@printf 'LDFLAGS=%s\n' "$(LDFLAGS)"
+	@printf 'LDLIBS=%s\n' "$(CONF_LIBS)"
+	@printf 'MONO_BUILDDIR=%s\n' "$(MONO_BUILDDIR)"
+	@printf 'MONO_OUTDIR=%s\n' "$(MONO_OUTDIR)"
+	@printf 'CONFIGURE_LIBC=%s\n' "$(CONFIGURE_LIBC)"
+	@printf 'CONFIGURE_CC_MACHINE=%s\n' "$(CONFIGURE_CC_MACHINE)"
+
+help:
+	@printf '%s\n' 'Targets:'
+	@printf '%s\n' '  all prepare clean distclean maintainer-clean rebuild reconfigure'
+	@printf '%s\n' '  check test status stage install list print-subdirs print-config help'
+	@printf '%s\n' 'Suggested: make -f GNUmakefile -j$(JOBS_HINT) all'
+EOF_MK
+
+sed \
+	-e "s|@TIMESTAMP@|$(escape_sed "$TIMESTAMP")|g" \
+	-e "s|@HOST@|$(escape_sed "$HOST")|g" \
+	-e "s|@BUILD@|$(escape_sed "$BUILD")|g" \
+	-e "s|@CC_MACHINE@|$(escape_sed "$CC_MACHINE")|g" \
+	-e "s|@LIBC@|$(escape_sed "$LIBC_KIND")|g" \
+	-e "s|@IS_MUSL@|$(escape_sed "$IS_MUSL")|g" \
+	-e "s|@JOBS_HINT@|$(escape_sed "$JOBS_HINT")|g" \
+	-e "s|@CC@|$(escape_sed "$CC_MAKE")|g" \
+	-e "s|@AR@|$(escape_sed "$AR_MAKE")|g" \
+	-e "s|@RANLIB@|$(escape_sed "$RANLIB_MAKE")|g" \
+	-e "s|@NM@|$(escape_sed "$NM_MAKE")|g" \
+	-e "s|@AWK@|$(escape_sed "$AWK_MAKE")|g" \
+	-e "s|@SH@|$(escape_sed "$SH_MAKE")|g" \
+	-e "s|@CPPFLAGS@|$(escape_sed "$CPPFLAGS_MAKE")|g" \
+	-e "s|@CFLAGS@|$(escape_sed "$CFLAGS_MAKE")|g" \
+	-e "s|@LDFLAGS@|$(escape_sed "$LDFLAGS_MAKE")|g" \
+	-e "s|@CRYPTO_LIBS@|$(escape_sed "$CRYPTO_LIBS_MAKE")|g" \
+	-e "s|@EDITLINE_CPPFLAGS@|$(escape_sed "$EDITLINE_CPPFLAGS_MAKE")|g" \
+	-e "s|@EDITLINE_LIBS@|$(escape_sed "$EDITLINE_LIBS_MAKE")|g" \
+	-e "s|@PREFIX@|$(escape_sed "$PREFIX_MAKE")|g" \
+	-e "s|@BINDIR@|$(escape_sed "$BINDIR_MAKE")|g" \
+	-e "s|@SUBDIRS@|$(escape_sed "$SUBDIRS_MAKE")|g" \
+	"$GNUMAKEFILE_TMP" >"$GNUMAKEFILE"
+rm -f "$GNUMAKEFILE_TMP"
+rm -f "$SELF_DIR/GNUMakeFile"
+
+cat >>"$LOG_FILE" <<EOF_LOG
+--- configure summary ---
+configure timestamp: $TIMESTAMP
+host: $HOST
+build: $BUILD
+compiler: $CC_SELECTED
+compiler machine: $CC_MACHINE
+libc: $LIBC_KIND
+is musl: $IS_MUSL
+ar: $AR
+ranlib: $RANLIB
+nm: $NM
+awk: $AWK
+sh: $SH
+make: $MAKE
+pkg-config: ${PKG_CONFIG:-none}
+cppflags: ${CFG_CPPFLAGS:-<none>}
+cflags: ${CFG_CFLAGS:-<none>}
+ldflags: ${CFG_LDFLAGS:-<none>}
+conf_cppflags: ${CONF_CPPFLAGS:-<none>}
+conf_libs: ${CONF_LIBS:-<none>}
+crypto libs: ${CRYPTO_LIBS:-<none>}
+editline cppflags: ${EDITLINE_CPPFLAGS:-<none>}
+editline libs: ${EDITLINE_LIBS:-<none>}
+prefix: $PREFIX
+bindir: $BINDIR
+cross compiling: $CROSS_COMPILING
+subdirs: $SUBDIRS_ONE_LINE
+EOF_LOG
+
+msg_result ""
+printf 'configure: created %s\n' "$GNUMAKEFILE"
+printf 'configure: created %s\n' "$CONFIG_MK"
+printf 'configure: libc=%s compiler=%s subdirs=%s\n' "$LIBC_KIND" "$CC_SELECTED" "$(printf '%s\n' "$SUBDIR_LIST" | wc -l | tr -d ' ')"
+printf 'configure: run %s\n' "make -f GNUmakefile -j$JOBS_HINT all"
