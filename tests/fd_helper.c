@@ -99,6 +99,9 @@ main(int argc, char **argv)
 	if (dup2(slave_fd, fd) < 0)
 		die_errno("dup2");
 
+	if (!isatty(fd))
+		die_errno("isatty");
+
 	if (slave_fd != fd)
 		close(slave_fd);
 	close(master_fd);

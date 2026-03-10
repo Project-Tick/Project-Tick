@@ -5,6 +5,7 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 TEST_BIN=${TEST_BIN:-"$ROOT/out/test"}
 BRACKET_BIN=${BRACKET_BIN:-"$ROOT/out/["}
 FD_HELPER_BIN=${FD_HELPER_BIN:-"$ROOT/build/fd_helper"}
+SHELL_BIN=$(command -v sh)
 
 TMPDIR=${TMPDIR:-/tmp}
 WORKDIR=$(mktemp -d "$TMPDIR/test-test.XXXXXX")
@@ -413,14 +414,46 @@ assert_empty "closed fd tty stdout" "$LAST_STDOUT"
 assert_empty "closed fd tty stderr" "$LAST_STDERR"
 
 run_capture "$FD_HELPER_BIN" 9 "$TEST_BIN" -t 9
-if [ "$LAST_STATUS" -eq 126 ]; then
-	assert_contains "pty helper skip reason" "$LAST_STDERR" "posix_openpt"
-	skip "pty-backed -t positive test skipped because PTY allocation is blocked"
-else
-	assert_status "pty fd tty status" 0 "$LAST_STATUS"
-	assert_empty "pty fd tty stdout" "$LAST_STDOUT"
-	assert_empty "pty fd tty stderr" "$LAST_STDERR"
-fi
+case $LAST_STATUS in
+	0)
+		assert_empty "pty fd tty stdout" "$LAST_STDOUT"
+		assert_empty "pty fd tty stderr" "$LAST_STDERR"
+		;;
+	1)
+		run_capture "$FD_HELPER_BIN" 9 "$SHELL_BIN" -c 'test -t 9'
+		case $LAST_STATUS in
+			1)
+				skip "pty-backed -t positive test skipped because shell test also reports non-tty"
+				;;
+			126)
+				case $LAST_STDERR in
+					*"posix_openpt"*|*"grantpt"*|*"unlockpt"*|*"ptsname"*|*"open slave pty"*|*"isatty"*)
+						skip "pty-backed -t positive test skipped because PTY checks are blocked"
+						;;
+					*)
+						fail "pty helper unexpected failure: $LAST_STDERR"
+						;;
+				esac
+				;;
+			*)
+				fail "pty fd tty status mismatch: test returned 1 but shell test -t returned $LAST_STATUS"
+				;;
+		esac
+		;;
+	126)
+		case $LAST_STDERR in
+			*"posix_openpt"*|*"grantpt"*|*"unlockpt"*|*"ptsname"*|*"open slave pty"*|*"isatty"*)
+				skip "pty-backed -t positive test skipped because PTY checks are blocked"
+				;;
+			*)
+				fail "pty helper unexpected failure: $LAST_STDERR"
+				;;
+		esac
+		;;
+	*)
+		fail "pty helper unexpected status: $LAST_STATUS"
+		;;
+esac
 
 run_capture "$BRACKET_BIN" alpha = alpha ']'
 assert_status "bracket true status" 0 "$LAST_STATUS"
