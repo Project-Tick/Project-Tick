@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-package org.multimc.onesix;
+package org.projecttick.onesix;
 
-import org.multimc.*;
+import org.projecttick.*;
 
 import java.applet.Applet;
 import java.io.File;

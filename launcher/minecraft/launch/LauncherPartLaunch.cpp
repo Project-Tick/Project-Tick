@@ -107,7 +107,7 @@ void LauncherPartLaunch::executeTask()
 #else
     args << classPath.join(':');
 #endif
-    args << "org.multimc.EntryPoint";
+    args << "org.projecttick.EntryPoint";
 
     qDebug() << args.join(' ');
 

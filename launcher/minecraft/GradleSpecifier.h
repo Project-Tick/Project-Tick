@@ -124,7 +124,12 @@ struct GradleSpecifier
     }
     bool matchName(const GradleSpecifier & other) const
     {
-        return other.artifactId() == artifactId() && other.groupId() == groupId();
+        // Classifiers differentiate otherwise identical coordinates (e.g. the base
+        // lwjgl-glfw:3.3.2 jar vs lwjgl-glfw:3.3.2:natives-linux).  Two entries with
+        // different classifiers must be treated as distinct library entries.
+        return other.artifactId() == artifactId()
+            && other.groupId() == groupId()
+            && other.m_classifier == m_classifier;
     }
     bool operator==(const GradleSpecifier & other) const
     {

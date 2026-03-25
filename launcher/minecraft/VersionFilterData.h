@@ -27,5 +27,9 @@ struct VersionFilterData
     QDateTime java16BeginsDate;
     // release data of first version to require Java 17 (1.18 Pre Release 2)
     QDateTime java17BeginsDate;
+    // release date of first version to require Java 21 (24w14a / 1.20.5)
+    QDateTime java21BeginsDate;
+    // release date of first version to require Java 25
+    QDateTime java25BeginsDate;
 };
 extern VersionFilterData g_VersionFilterData;

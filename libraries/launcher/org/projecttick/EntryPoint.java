@@ -1,4 +1,4 @@
-package org.multimc;/*
+package org.projecttick;/*
  * Copyright 2012-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,8 @@ package org.multimc;/*
  * limitations under the License.
  */
 
-import org.multimc.onesix.OneSixLauncher;
+import org.projecttick.modern.ModernLauncher;
+import org.projecttick.onesix.OneSixLauncher;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -67,6 +68,13 @@ public class EntryPoint
             {
                 m_launcher = new OneSixLauncher();
                 Utils.log("Using onesix launcher.");
+                Utils.log();
+                return Action.Proceed;
+            }
+            else if(param.equals("modern"))
+            {
+                m_launcher = new ModernLauncher();
+                Utils.log("Using modern launcher (subprocess mode).");
                 Utils.log();
                 return Action.Proceed;
             }
@@ -147,5 +155,5 @@ public class EntryPoint
     }
 
     private ParamBucket m_params = new ParamBucket();
-    private org.multimc.Launcher m_launcher;
+    private org.projecttick.Launcher m_launcher;
 }

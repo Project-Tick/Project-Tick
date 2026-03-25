@@ -543,7 +543,36 @@ QString MinecraftInstance::createLaunchScript(AuthSessionPtr session, MinecraftS
     {
         launchScript += "traits " + trait + "\n";
     }
-    launchScript += "launcher onesix\n";
+
+    // Decide between legacy (in-process, applet-based) and modern (subprocess) launch.
+    // Instances with the "legacyLaunch" or "alphaLaunch" trait use the classic OneSix
+    // applet launcher path which runs everything in-process.  All other instances use
+    // the ModernLauncher which spawns the game as a child process with the configured
+    // Java binary, allowing Minecraft versions that require Java 21, 25 or newer to
+    // run even when the launcher library JVM is an older version.
+    auto profileTraits = profile->getTraits();
+    bool isLegacyApplet = profileTraits.contains("legacyLaunch") || profileTraits.contains("alphaLaunch");
+
+    if (isLegacyApplet)
+    {
+        launchScript += "launcher onesix\n";
+    }
+    else
+    {
+        // Pass the configured Java binary path so ModernLauncher can spawn the
+        // game process with the correct JVM.
+        launchScript += "javaPath " + settings()->get("JavaPath").toString() + "\n";
+
+        // Forward all JVM arguments (memory settings, platform flags, extra args, …)
+        // so the child process inherits the same tuning as the current process.
+        for (auto arg : javaArguments())
+        {
+            launchScript += "jvmArg " + arg + "\n";
+        }
+
+        launchScript += "launcher modern\n";
+    }
+
     // qDebug() << "Generated launch script:" << launchScript;
     return launchScript;
 }
