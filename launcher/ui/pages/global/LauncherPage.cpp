@@ -252,32 +252,35 @@ void LauncherPage::applySettings()
     switch (ui->themeComboBox->currentIndex())
     {
     case 1:
-        s->set("IconTheme", "pe_dark");
+        s->set("IconTheme", "multimc");
         break;
     case 2:
-        s->set("IconTheme", "pe_light");
+        s->set("IconTheme", "pe_dark");
         break;
     case 3:
-        s->set("IconTheme", "pe_blue");
+        s->set("IconTheme", "pe_light");
         break;
     case 4:
-        s->set("IconTheme", "pe_colored");
+        s->set("IconTheme", "pe_blue");
         break;
     case 5:
-        s->set("IconTheme", "OSX");
+        s->set("IconTheme", "pe_colored");
         break;
     case 6:
-        s->set("IconTheme", "iOS");
+        s->set("IconTheme", "OSX");
         break;
     case 7:
-        s->set("IconTheme", "flat");
+        s->set("IconTheme", "iOS");
         break;
     case 8:
+        s->set("IconTheme", "flat");
+        break;
+    case 9:
         s->set("IconTheme", "custom");
         break;
     case 0:
     default:
-        s->set("IconTheme", "multimc");
+        s->set("IconTheme", "pe_colored");
         break;
     }
 
@@ -336,37 +339,41 @@ void LauncherPage::loadSettings()
     m_currentUpdateChannel = s->get("UpdateChannel").toString();
     //FIXME: make generic
     auto theme = s->get("IconTheme").toString();
-    if (theme == "pe_dark")
+    if (theme == "multimc")
     {
         ui->themeComboBox->setCurrentIndex(1);
     }
-    else if (theme == "pe_light")
+    else if (theme == "pe_dark")
     {
         ui->themeComboBox->setCurrentIndex(2);
     }
-    else if (theme == "pe_blue")
+    else if (theme == "pe_light")
     {
         ui->themeComboBox->setCurrentIndex(3);
     }
-    else if (theme == "pe_colored")
+    else if (theme == "pe_blue")
     {
         ui->themeComboBox->setCurrentIndex(4);
     }
-    else if (theme == "OSX")
+    else if (theme == "pe_colored")
     {
         ui->themeComboBox->setCurrentIndex(5);
     }
-    else if (theme == "iOS")
+    else if (theme == "OSX")
     {
         ui->themeComboBox->setCurrentIndex(6);
     }
-    else if (theme == "flat")
+    else if (theme == "iOS")
     {
         ui->themeComboBox->setCurrentIndex(7);
     }
-    else if (theme == "custom")
+    else if (theme == "flat")
     {
         ui->themeComboBox->setCurrentIndex(8);
+    }
+    else if (theme == "custom")
+    {
+        ui->themeComboBox->setCurrentIndex(9);
     }
     else
     {

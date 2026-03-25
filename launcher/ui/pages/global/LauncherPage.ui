@@ -269,6 +269,11 @@
             </item>
             <item>
              <property name="text">
+              <string>MultiMC</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
               <string>Simple (Dark Icons)</string>
              </property>
             </item>
