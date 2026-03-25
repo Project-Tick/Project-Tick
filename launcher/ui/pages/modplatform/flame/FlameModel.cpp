@@ -158,17 +158,22 @@ void ListModel::fetchMore(const QModelIndex& parent)
 
 void ListModel::performPaginatedSearch()
 {
+    // API v1 sort fields (1-indexed): 1=Featured, 2=Popularity, 3=LastUpdated, 4=Name, 5=Author, 6=TotalDownloads
+    // Use desc for Featured/Popularity/LastUpdated/TotalDownloads, asc for Name/Author (A-Z)
+    static const char* sortOrders[] = { "desc", "desc", "desc", "asc", "asc", "desc" };
+    const char* sortOrder = (currentSort >= 0 && currentSort < 6) ? sortOrders[currentSort] : "desc";
+
     NetJob *netJob = new NetJob("Flame::Search", APPLICATION->network());
     auto searchUrl = QString(
-        "https://addons-ecs.forgesvc.net/api/v2/addon/search?"
-        "categoryId=0&"
+        "https://api.curseforge.com/v1/mods/search?"
         "gameId=432&"
+        "classId=4471&"
         "index=%1&"
         "pageSize=25&"
         "searchFilter=%2&"
-        "sectionId=4471&"
-        "sort=%3"
-    ).arg(nextSearchOffset).arg(currentSearchTerm).arg(currentSort);
+        "sortField=%3&"
+        "sortOrder=%4"
+    ).arg(nextSearchOffset).arg(currentSearchTerm).arg(currentSort + 1).arg(sortOrder);
     netJob->addNetAction(Net::Download::makeByteArray(QUrl(searchUrl), &response));
     jobPtr = netJob;
     jobPtr->start();
@@ -211,7 +216,16 @@ void Flame::ListModel::searchRequestFinished()
     }
 
     QList<Flame::IndexedPack> newList;
-    auto packs = doc.array();
+    // CurseForge API v1 wraps results in {"data": [...], "pagination": {...}}
+    QJsonArray packs;
+    if(doc.isObject() && doc.object().contains("data")) {
+        packs = doc.object().value("data").toArray();
+        qDebug() << "CurseForge: parsed" << packs.size() << "packs from 'data' key";
+    } else {
+        packs = doc.array();
+        qDebug() << "CurseForge: parsed" << packs.size() << "packs from root array";
+    }
+    qDebug() << "CurseForge raw response (first 500 chars):" << response.left(500);
     for(auto packRaw : packs) {
         auto packObj = packRaw.toObject();
 

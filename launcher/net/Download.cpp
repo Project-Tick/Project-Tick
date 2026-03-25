@@ -98,6 +98,11 @@ void Download::startImpl()
 
     request.setHeader(QNetworkRequest::UserAgentHeader, BuildConfig.USER_AGENT);
 
+    if(!BuildConfig.CURSEFORGE_API_KEY.isEmpty() && m_url.host() == "api.curseforge.com") {
+        request.setRawHeader("x-api-key", BuildConfig.CURSEFORGE_API_KEY.toUtf8());
+        request.setRawHeader("Accept", "application/json");
+    }
+
     QNetworkReply *rep = m_network->get(request);
 
     m_reply.reset(rep);
