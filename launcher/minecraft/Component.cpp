@@ -416,9 +416,9 @@ void Component::updateCachedData()
             m_cachedVolatile = file->m_volatile;
             changed = true;
         }
-        if(!deepCompare(m_cachedRequires, file->requires))
+        if(!deepCompare(m_cachedRequires, file->requirements))
         {
-            m_cachedRequires = file->requires;
+            m_cachedRequires = file->requirements;
             changed = true;
         }
         if(!deepCompare(m_cachedConflicts, file->conflicts))

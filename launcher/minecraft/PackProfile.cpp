@@ -412,7 +412,7 @@ static void upgradeDeprecatedFiles(QString root, QString instanceName)
 
         Meta::Require needsLwjgl;
         needsLwjgl.uid = "org.lwjgl";
-        file->requires.insert(needsLwjgl);
+        file->requirements.insert(needsLwjgl);
 
         if(!ProfileUtils::saveJsonFile(OneSixVersionFormat::versionFileToJson(file), mcJson))
         {
@@ -468,7 +468,7 @@ bool PackProfile::migratePreComponentConfig()
             // insert requirements if needed
             if(!req.uid.isEmpty())
             {
-                file->requires.insert(req);
+                file->requirements.insert(req);
             }
             // insert conflicts if needed
             if(!conflict.uid.isEmpty())
@@ -1043,7 +1043,7 @@ bool PackProfile::installJarMods_internal(QStringList filepaths)
         auto uuid = QUuid::createUuid();
         QString id = uuid.toString().remove('{').remove('}');
         QString target_filename = id + ".jar";
-        QString target_id = "org.multimc.jarmod." + id;
+        QString target_id = "org.projecttick.jarmod." + id;
         QString target_name = sourceInfo.completeBaseName() + " (jar mod)";
         QString finalPath = FS::PathCombine(d->m_instance->jarModsDir(), target_filename);
 
@@ -1060,7 +1060,7 @@ bool PackProfile::installJarMods_internal(QStringList filepaths)
 
         auto f = std::make_shared<VersionFile>();
         auto jarMod = std::make_shared<Library>();
-        jarMod->setRawName(GradleSpecifier("org.multimc.jarmods:" + id + ":1"));
+        jarMod->setRawName(GradleSpecifier("org.projecttick.jarmods:" + id + ":1"));
         jarMod->setFilename(target_filename);
         jarMod->setDisplayName(sourceInfo.completeBaseName());
         jarMod->setHint("local");
@@ -1100,7 +1100,7 @@ bool PackProfile::installCustomJar_internal(QString filepath)
         return false;
     }
 
-    auto specifier = GradleSpecifier("org.multimc:customjar:1");
+    auto specifier = GradleSpecifier("org.projecttick:customjar:1");
     QFileInfo sourceInfo(filepath);
     QString target_filename = specifier.getFileName();
     QString target_id = specifier.artifactId();

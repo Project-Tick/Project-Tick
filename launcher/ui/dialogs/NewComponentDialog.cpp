@@ -68,7 +68,7 @@ void NewComponentDialog::updateDialogState()
     }
     else
     {
-        QString suggestedUid = "org.multimc.custom." + protoUid;
+        QString suggestedUid = "org.projecttick.custom." + protoUid;
         ui->uidTextBox->setPlaceholderText(suggestedUid);
     }
     bool allowOK = !name().isEmpty() && !uid().isEmpty() && !uidBlacklist.contains(uid());

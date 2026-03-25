@@ -207,7 +207,7 @@ VersionFilePtr OneSixVersionFormat::versionFileFromJson(const QJsonDocument &doc
 
     if (root.contains("requires"))
     {
-        Meta::parseRequires(root, &out->requires);
+        Meta::parseRequires(root, &out->requirements);
     }
     QString dependsOnMinecraftVersion = root.value("mcVersion").toString();
     if(!dependsOnMinecraftVersion.isEmpty())
@@ -215,9 +215,9 @@ VersionFilePtr OneSixVersionFormat::versionFileFromJson(const QJsonDocument &doc
         Meta::Require mcReq;
         mcReq.uid = "net.minecraft";
         mcReq.equalsVersion = dependsOnMinecraftVersion;
-        if (out->requires.count(mcReq) == 0)
+        if (out->requirements.count(mcReq) == 0)
         {
-            out->requires.insert(mcReq);
+            out->requirements.insert(mcReq);
         }
     }
     if (root.contains("conflicts"))
@@ -309,9 +309,9 @@ QJsonDocument OneSixVersionFormat::versionFileToJson(const VersionFilePtr &patch
         }
         root.insert("mods", array);
     }
-    if(!patch->requires.empty())
+    if(!patch->requirements.empty())
     {
-        Meta::serializeRequires(root, &patch->requires, "requires");
+        Meta::serializeRequires(root, &patch->requirements, "requires");
     }
     if(!patch->conflicts.empty())
     {
@@ -345,7 +345,7 @@ LibraryPtr OneSixVersionFormat::plusJarModFromJson(
     // just make up something unique on the spot for the library name.
     auto uuid = QUuid::createUuid();
     QString id = uuid.toString().remove('{').remove('}');
-    out->setRawName(GradleSpecifier("org.multimc.jarmods:" + id + ":1"));
+    out->setRawName(GradleSpecifier("org.projecttick.jarmods:" + id + ":1"));
 
     // filename override is the old name
     out->setFilename(libObj.value("name").toString());

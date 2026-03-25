@@ -191,7 +191,7 @@ QString PackInstallTask::getVersionForLoader(QString uid)
         if(m_version.loader.recommended || m_version.loader.latest) {
             for (int i = 0; i < vlist->versions().size(); i++) {
                 auto version = vlist->versions().at(i);
-                auto reqs = version->requires();
+                auto reqs = version->requirements();
 
                 // filter by minecraft version, if the loader depends on a certain version.
                 // not all mod loaders depend on a given Minecraft version, so we won't do this
@@ -265,7 +265,7 @@ QString PackInstallTask::detectLibrary(VersionLibrary library)
         }
     }
 
-    return "org.multimc.atlauncher:" + library.md5 + ":1";
+    return "org.projecttick.atlauncher:" + library.md5 + ":1";
 }
 
 bool PackInstallTask::createLibrariesComponent(QString instanceRoot, std::shared_ptr<PackProfile> profile)
@@ -293,7 +293,7 @@ bool PackInstallTask::createLibrariesComponent(QString instanceRoot, std::shared
 
     auto uuid = QUuid::createUuid();
     auto id = uuid.toString().remove('{').remove('}');
-    auto target_id = "org.multimc.atlauncher." + id;
+    auto target_id = "org.projecttick.atlauncher." + id;
 
     auto patchDir = FS::PathCombine(instanceRoot, "patches");
     if(!FS::ensureFolderPathExists(patchDir))
@@ -363,7 +363,7 @@ bool PackInstallTask::createPackComponent(QString instanceRoot, std::shared_ptr<
 
     auto uuid = QUuid::createUuid();
     auto id = uuid.toString().remove('{').remove('}');
-    auto target_id = "org.multimc.atlauncher." + id;
+    auto target_id = "org.projecttick.atlauncher." + id;
 
     auto patchDir = FS::PathCombine(instanceRoot, "patches");
     if(!FS::ensureFolderPathExists(patchDir))
