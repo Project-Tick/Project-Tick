@@ -34,20 +34,17 @@ QString getCreditsHtml(QStringList patrons)
     stream.setCodec(QTextCodec::codecForName("UTF-8"));
     stream << "<center>\n";
     // TODO: possibly retrieve from git history at build time?
+    stream << "<h2> MeshMC Developers </h2>\n";
+    stream << "<h3>" << QObject::tr("Developers", "About Credits") << "</h3>\n";
+    stream << "<p>Mehmet Samet Duman &lt;<a href='mailto:yongdohyun@projecttick.org'>yongdohyun@projecttick.org</a>&gt;</p>\n";
+
+    stream << "<h2> MultiMC Developers </h2>\n";
     stream << "<h3>" << QObject::tr("Developers", "About Credits") << "</h3>\n";
     stream << "<p>Andrew Okin &lt;<a href='mailto:forkk@forkk.net'>forkk@forkk.net</a>&gt;</p>\n";
     stream << "<p>Petr Mrázek &lt;<a href='mailto:peterix@gmail.com'>peterix@gmail.com</a>&gt;</p>\n";
     stream << "<p>Sky Welch &lt;<a href='mailto:multimc@bunnies.io'>multimc@bunnies.io</a>&gt;</p>\n";
     stream << "<p>Jan (02JanDal) &lt;<a href='mailto:02jandal@gmail.com'>02jandal@gmail.com</a>&gt;</p>\n";
     stream << "<p>RoboSky &lt;<a href='https://twitter.com/RoboSky_'>@RoboSky_</a>&gt;</p>\n";
-    stream << "<br />\n";
-
-    stream << "<h3>" << QObject::tr("With thanks to", "About Credits") << "</h3>\n";
-    stream << "<p>Orochimarufan &lt;<a href='mailto:orochimarufan.x3@gmail.com'>orochimarufan.x3@gmail.com</a>&gt;</p>\n";
-    stream << "<p>TakSuyu &lt;<a href='mailto:taksuyu@gmail.com'>taksuyu@gmail.com</a>&gt;</p>\n";
-    stream << "<p>Kilobyte &lt;<a href='mailto:stiepen22@gmx.de'>stiepen22@gmx.de</a>&gt;</p>\n";
-    stream << "<p>Rootbear75 &lt;<a href='https://twitter.com/rootbear75'>@rootbear75</a>&gt;</p>\n";
-    stream << "<p>Zeker Zhayard &lt;<a href='https://twitter.com/zeker_zhayard'>@Zeker_Zhayard</a>&gt;</p>\n";
     stream << "<br />\n";
 
     stream << "</center>\n";
