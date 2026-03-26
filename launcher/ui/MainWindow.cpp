@@ -642,6 +642,12 @@ public:
         retranslateUi(MainWindow);
 
         QMetaObject::connectSlotsByName(MainWindow);
+
+        // Explicit connections for actions that connectSlotsByName can't auto-connect in Qt6
+        auto mainWin = qobject_cast<class MainWindow*>(MainWindow);
+        QObject::connect(actionREDDIT.operator->(), &QAction::triggered, mainWin, &MainWindow::on_actionREDDIT_triggered);
+        QObject::connect(actionDISCORD.operator->(), &QAction::triggered, mainWin, &MainWindow::on_actionDISCORD_triggered);
+        QObject::connect(actionReportBug.operator->(), &QAction::triggered, mainWin, &MainWindow::on_actionReportBug_triggered);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
@@ -1240,7 +1246,7 @@ void MainWindow::updateNotAvailable()
 
 QList<int> stringToIntList(const QString &string)
 {
-    QStringList split = string.split(',', QString::SkipEmptyParts);
+    QStringList split = string.split(',', Qt::SkipEmptyParts);
     QList<int> out;
     for (int i = 0; i < split.size(); ++i)
     {

@@ -197,7 +197,7 @@ QVariant WorldList::data(const QModelIndex &index, int role) const
     }
     case SeedRole:
     {
-        return qVariantFromValue<qlonglong>(world.seed());
+        return QVariant::fromValue<qlonglong>(world.seed());
     }
     case NameRole:
     {
@@ -286,7 +286,7 @@ protected:
             urls.append(QUrl::fromLocalFile(worldPath));
         }
         const_cast<WorldMimeData*>(this)->setUrls(urls);
-        return QMimeData::retrieveData(mimetype, type);
+        return QMimeData::retrieveData(mimetype, QMetaType(type));
     }
 private:
     QList<World> m_worlds;

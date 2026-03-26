@@ -123,7 +123,8 @@ private:
     QString key() const;
     bool hasIcon() const;
     void ensureLoaded();
-    void virtual_hook(int id, void *data);
+    QList<QSize> availableSizes(QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off) override;
+    QString iconName() override;
     QIconLoaderEngineEntry *entryForSize(const QSize &size);
     QIconLoaderEngineFixed(const QIconLoaderEngineFixed &other);
     QThemeIconEntries m_entries;

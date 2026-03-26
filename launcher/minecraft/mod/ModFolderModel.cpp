@@ -89,9 +89,11 @@ bool ModFolderModel::update()
 
 void ModFolderModel::finishUpdate()
 {
-    QSet<QString> currentSet = modsIndex.keys().toSet();
+    auto keys1 = modsIndex.keys();
+    QSet<QString> currentSet(keys1.begin(), keys1.end());
     auto & newMods = m_update->mods;
-    QSet<QString> newSet = newMods.keys().toSet();
+    auto keys2 = newMods.keys();
+    QSet<QString> newSet(keys2.begin(), keys2.end());
 
     // see if the kept mods changed in some way
     {
@@ -278,7 +280,7 @@ bool ModFolderModel::installMod(const QString &filename)
             return false;
         }
         FS::updateTimestamp(newpath);
-        installedMod.repath(newpath);
+        installedMod.repath(QFileInfo(newpath));
         update();
         return true;
     }
@@ -296,7 +298,7 @@ bool ModFolderModel::installMod(const QString &filename)
             qWarning() << "Copy of folder from" << originalPath << "to" << newpath << "has (potentially partially) failed.";
             return false;
         }
-        installedMod.repath(newpath);
+        installedMod.repath(QFileInfo(newpath));
         update();
         return true;
     }

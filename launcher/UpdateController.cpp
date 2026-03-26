@@ -245,7 +245,8 @@ void UpdateController::installUpdates()
 
         // we save it
         QFile scriptFile(scriptPath);
-        scriptFile.open(QIODevice::WriteOnly);
+        if (!scriptFile.open(QIODevice::WriteOnly))
+            return;
         scriptFile.write(script.toLocal8Bit().replace("\n", "\r\n"));
         scriptFile.close();
 

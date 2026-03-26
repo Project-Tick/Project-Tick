@@ -14,7 +14,8 @@ public:
     static QByteArray readFile(const QString &fileName)
     {
         QFile f(fileName);
-        f.open(QFile::ReadOnly);
+        if (!f.open(QFile::ReadOnly))
+            return QByteArray();
         return f.readAll();
     }
     static QString readFileUtf8(const QString &fileName)

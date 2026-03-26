@@ -24,11 +24,11 @@ void write(const QJsonArray &array, const QString &filename)
 
 QByteArray toBinary(const QJsonObject &obj)
 {
-    return QJsonDocument(obj).toBinaryData();
+    return QJsonDocument(obj).toJson(QJsonDocument::Compact);
 }
 QByteArray toBinary(const QJsonArray &array)
 {
-    return QJsonDocument(array).toBinaryData();
+    return QJsonDocument(array).toJson(QJsonDocument::Compact);
 }
 QByteArray toText(const QJsonObject &obj)
 {
@@ -41,19 +41,15 @@ QByteArray toText(const QJsonArray &array)
 
 static bool isBinaryJson(const QByteArray &data)
 {
-    decltype(QJsonDocument::BinaryFormatTag) tag = QJsonDocument::BinaryFormatTag;
-    return memcmp(data.constData(), &tag, sizeof(QJsonDocument::BinaryFormatTag)) == 0;
+    // Binary JSON is no longer supported in Qt6
+    Q_UNUSED(data);
+    return false;
 }
 QJsonDocument requireDocument(const QByteArray &data, const QString &what)
 {
     if (isBinaryJson(data))
     {
-        QJsonDocument doc = QJsonDocument::fromBinaryData(data);
-        if (doc.isNull())
-        {
-            throw JsonException(what + ": Invalid JSON (binary JSON detected)");
-        }
-        return doc;
+        throw JsonException(what + ": Binary JSON format is no longer supported");
     }
     else
     {

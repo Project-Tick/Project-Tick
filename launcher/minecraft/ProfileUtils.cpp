@@ -149,7 +149,7 @@ VersionFilePtr parseBinaryJsonFile(const QFileInfo &fileInfo)
         auto errorStr = QObject::tr("Unable to open the version file %1: %2.").arg(fileInfo.fileName(), file.errorString());
         return createErrorVersionFile(fileInfo.completeBaseName(), fileInfo.absoluteFilePath(), errorStr);
     }
-    QJsonDocument doc = QJsonDocument::fromBinaryData(file.readAll());
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
     file.close();
     if (doc.isNull())
     {

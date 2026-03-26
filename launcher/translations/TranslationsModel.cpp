@@ -17,7 +17,7 @@
 
 #include "Application.h"
 
-const static QLatin1Literal defaultLangCode("en_US");
+const static QLatin1String defaultLangCode("en_US");
 
 enum class FileType
 {
@@ -314,7 +314,7 @@ void TranslationsModel::reloadLocalFiles()
     {
         return;
     }
-    beginInsertRows(QModelIndex(), 0, d->m_languages.size() + languages.size() - 1);
+    beginResetModel();
     for(auto & language: languages)
     {
         d->m_languages.append(language);
@@ -322,7 +322,7 @@ void TranslationsModel::reloadLocalFiles()
     std::sort(d->m_languages.begin(), d->m_languages.end(), [](const Language& a, const Language& b) {
         return a.key.compare(b.key) < 0;
     });
-    endInsertRows();
+    endResetModel();
 }
 
 namespace {
@@ -359,7 +359,7 @@ QVariant TranslationsModel::data(const QModelIndex& index, int role) const
             case Column::Completeness:
             {
                 QString text;
-                text.sprintf("%3.1f %%", lang.percentTranslated());
+                text = QString::asprintf("%3.1f %%", lang.percentTranslated());
                 return text;
             }
         }
@@ -431,7 +431,7 @@ Language * TranslationsModel::findLanguage(const QString& key)
     }
     else
     {
-        return found;
+        return &(*found);
     }
 }
 
@@ -556,7 +556,7 @@ QModelIndex TranslationsModel::selectedIndex()
     if(found)
     {
         // QVector iterator freely converts to pointer to contained type
-        return index(found - d->m_languages.begin(), 0, QModelIndex());
+        return index(found - d->m_languages.data(), 0, QModelIndex());
     }
     return QModelIndex();
 }

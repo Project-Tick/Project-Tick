@@ -1,6 +1,7 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QPainter>
+#include <QRegularExpression>
 
 #include <FileSystem.h>
 
@@ -22,10 +23,10 @@ void SkinUploadDialog::on_buttonBox_accepted()
 {
     QString fileName;
     QString input = ui->skinPathTextBox->text();
-    QRegExp urlPrefixMatcher("^([a-z]+)://.+$");
+    QRegularExpression urlPrefixMatcher("^([a-z]+)://.+$");
     bool isLocalFile = false;
     // it has an URL prefix -> it is an URL
-    if(urlPrefixMatcher.exactMatch(input))
+    if(urlPrefixMatcher.match(input).hasMatch())
     {
         QUrl fileURL = input;
         if(fileURL.isValid())

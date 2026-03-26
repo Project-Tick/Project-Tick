@@ -98,7 +98,12 @@ void Flame::loadIndexedPackVersions(Flame::IndexedPack & pack, QJsonArray & arr)
 
         file.addonId = pack.addonId;
         file.fileId = Json::requireInteger(version, "id");
-        auto versionArray = Json::requireArray(version, "gameVersion");
+        QJsonArray versionArray;
+        if(version.contains("gameVersions")) {
+            versionArray = Json::requireArray(version, "gameVersions");
+        } else {
+            versionArray = Json::requireArray(version, "gameVersion");
+        }
         if(versionArray.size() < 1) {
             continue;
         }
@@ -106,7 +111,7 @@ void Flame::loadIndexedPackVersions(Flame::IndexedPack & pack, QJsonArray & arr)
         // pick the latest version supported
         file.mcVersion = versionArray[0].toString();
         file.version = Json::requireString(version, "displayName");
-        file.downloadUrl = Json::requireString(version, "downloadUrl");
+        file.downloadUrl = Json::ensureString(version, "downloadUrl", "");
         unsortedVersions.append(file);
     }
 

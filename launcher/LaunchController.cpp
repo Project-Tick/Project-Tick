@@ -55,7 +55,7 @@ void LaunchController::decideAccount()
         auto reply = CustomMessageBox::selectable(
             m_parentWidget,
             tr("No Accounts"),
-            tr("In order to play Minecraft, you must have at least one Mojang or Minecraft "
+            tr("In order to play Minecraft, you must have at least one Microsoft "
                "account logged in."
                "Would you like to open the account manager to add an account now?"),
             QMessageBox::Information,
@@ -275,7 +275,7 @@ void LaunchController::launchInstance()
         online_mode = "online";
 
         // Prepend Server Status
-        QStringList servers = {"authserver.mojang.com", "session.minecraft.net", "textures.minecraft.net", "api.mojang.com"};
+        QStringList servers = {"session.minecraft.net", "textures.minecraft.net", "api.mojang.com"};
         QString resolved_servers = "";
         QHostInfo host_info;
 

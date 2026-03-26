@@ -21,9 +21,49 @@
 #include "FileSystem.h"
 
 #include <QDebug>
+#include <QDirIterator>
+
+bool MMCZip::compressDir(QString zipFile, QString dir, FilterFunction excludeFilter)
+{
+    QuaZip zip(zipFile);
+    if (!zip.open(QuaZip::mdCreate))
+    {
+        return false;
+    }
+
+    QDir directory(dir);
+    if (!directory.exists())
+    {
+        return false;
+    }
+
+    QDirIterator it(dir, QDir::Files | QDir::Hidden, QDirIterator::Subdirectories);
+    bool success = true;
+    while (it.hasNext())
+    {
+        it.next();
+        QString relPath = directory.relativeFilePath(it.filePath());
+        if (excludeFilter && excludeFilter(relPath))
+        {
+            continue;
+        }
+        if (!JlCompress::compressFile(&zip, it.filePath(), relPath))
+        {
+            success = false;
+            break;
+        }
+    }
+
+    zip.close();
+    if (zip.getZipError() != 0)
+    {
+        return false;
+    }
+    return success;
+}
 
 // ours
-bool MMCZip::mergeZipFiles(QuaZip *into, QFileInfo from, QSet<QString> &contained, const JlCompress::FilterFunction filter)
+bool MMCZip::mergeZipFiles(QuaZip *into, QFileInfo from, QSet<QString> &contained, const FilterFunction filter)
 {
     QuaZip modZip(from.filePath());
     modZip.open(QuaZip::mdUnzip);
@@ -128,7 +168,7 @@ bool MMCZip::createModdedJar(QString sourceJarPath, QString targetJarPath, const
             QDir dir(what_to_zip);
             dir.cdUp();
             QString parent_dir = dir.absolutePath();
-            if (!JlCompress::compressSubDir(&zipOut, what_to_zip, parent_dir, addedFiles))
+            if (!JlCompress::compressSubDir(&zipOut, what_to_zip, parent_dir, true, QDir::NoFilter))
             {
                 zipOut.close();
                 QFile::remove(targetJarPath);

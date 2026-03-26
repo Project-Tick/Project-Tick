@@ -26,12 +26,13 @@
 
 namespace MMCZip
 {
+    using FilterFunction = std::function<bool(const QString &)>;
 
     /**
      * Merge two zip files, using a filter function
      */
     bool mergeZipFiles(QuaZip *into, QFileInfo from, QSet<QString> &contained,
-                                            const JlCompress::FilterFunction filter = nullptr);
+                                            const FilterFunction filter = nullptr);
 
     /**
      * take a source jar, add mods to it, resulting in target jar
@@ -56,6 +57,12 @@ namespace MMCZip
     /**
      * Extract a subdirectory from an archive
      */
+
+    /**
+     * Compress a directory, using a filter function to exclude entries
+     */
+    bool compressDir(QString zipFile, QString dir, FilterFunction excludeFilter);
+
     nonstd::optional<QStringList> extractSubDir(QuaZip *zip, const QString & subdir, const QString &target);
 
     bool extractRelFile(QuaZip *zip, const QString & file, const QString &target);

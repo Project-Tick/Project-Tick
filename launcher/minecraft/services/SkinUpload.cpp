@@ -44,7 +44,7 @@ void SkinUpload::executeTask()
 
     setStatus(tr("Uploading skin"));
     connect(rep, &QNetworkReply::uploadProgress, this, &Task::setProgress);
-    connect(rep, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(downloadError(QNetworkReply::NetworkError)));
+    connect(rep, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(downloadError(QNetworkReply::NetworkError)));
     connect(rep, SIGNAL(finished()), this, SLOT(downloadFinished()));
 }
 

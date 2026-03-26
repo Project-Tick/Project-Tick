@@ -21,6 +21,7 @@
 #include "NullInstance.h"
 #include "settings/INISettingsObject.h"
 #include "icons/IconUtils.h"
+#include <QRegularExpression>
 #include <QtConcurrentRun>
 
 // FIXME: this does not belong here, it's Minecraft/Flame specific
@@ -268,7 +269,7 @@ void InstanceImportTask::processFlame()
     // Hack to correct some 'special sauce'...
     if(mcVersion.endsWith('.'))
     {
-        mcVersion.remove(QRegExp("[.]+$"));
+        mcVersion.remove(QRegularExpression("[.]+$"));
         logWarning(tr("Mysterious trailing dots removed from Minecraft version while importing pack."));
     }
     auto components = instance.getPackProfile();

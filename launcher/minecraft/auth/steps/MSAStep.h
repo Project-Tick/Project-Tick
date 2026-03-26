@@ -5,7 +5,8 @@
 #include "QObjectPtr.h"
 #include "minecraft/auth/AuthStep.h"
 
-#include <katabasis/DeviceFlow.h>
+#include <QOAuth2AuthorizationCodeFlow>
+#include <QOAuthHttpServerReplyHandler>
 
 class MSAStep : public AuthStep {
     Q_OBJECT
@@ -24,9 +25,12 @@ public:
     QString describe() override;
 
 private slots:
-    void onOAuthActivityChanged(Katabasis::Activity activity);
+    void onGranted();
+    void onRequestFailed(QAbstractOAuth::Error error);
+    void onOpenBrowser(const QUrl &url);
 
 private:
-    Katabasis::DeviceFlow *m_oauth2 = nullptr;
+    QOAuth2AuthorizationCodeFlow *m_oauth2 = nullptr;
+    QOAuthHttpServerReplyHandler *m_replyHandler = nullptr;
     Action m_action;
 };

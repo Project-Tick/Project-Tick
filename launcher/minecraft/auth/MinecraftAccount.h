@@ -69,23 +69,14 @@ public: /* construction */
     //! Default constructor
     explicit MinecraftAccount(QObject *parent = 0);
 
-    static MinecraftAccountPtr createFromUsername(const QString &username);
-
     static MinecraftAccountPtr createBlankMSA();
 
-    static MinecraftAccountPtr loadFromJsonV2(const QJsonObject &json);
     static MinecraftAccountPtr loadFromJsonV3(const QJsonObject &json);
 
     //! Saves a MinecraftAccount to a JSON object and returns it.
     QJsonObject saveToJson() const;
 
 public: /* manipulation */
-
-    /**
-     * Attempt to login. Empty password means we use the token.
-     * If the attempt fails because we already are performing some task, it returns false.
-     */
-    shared_qobject_ptr<AccountTask> login(QString password);
 
     shared_qobject_ptr<AccountTask> loginMSA();
 
@@ -102,10 +93,6 @@ public: /* queries */
         return data.accountDisplayString();
     }
 
-    QString mojangUserName() const {
-        return data.userName();
-    }
-
     QString accessToken() const {
         return data.accessToken();
     }
@@ -120,10 +107,6 @@ public: /* queries */
 
     bool isActive() const;
 
-    bool canMigrate() const {
-        return data.canMigrateToMSA;
-    }
-
     bool isMSA() const {
         return data.type == AccountType::MSA;
     }
@@ -137,22 +120,7 @@ public: /* queries */
     }
 
     QString typeString() const {
-        switch(data.type) {
-            case AccountType::Mojang: {
-                if(data.legacy) {
-                    return "legacy";
-                }
-                return "mojang";
-            }
-            break;
-            case AccountType::MSA: {
                 return "msa";
-            }
-            break;
-            default: {
-                return "unknown";
-            }
-        }
     }
 
     QPixmap getFace() const;

@@ -25,8 +25,7 @@ public slots:
 
 signals:
     void finished(AccountTaskState resultingState, QString message);
-    void showVerificationUriAndCode(const QUrl &uri, const QString &code, int expiresIn);
-    void hideVerificationUriAndCode();
+    void authorizeWithBrowser(const QUrl &url);
 
 protected:
     AccountData *m_data;

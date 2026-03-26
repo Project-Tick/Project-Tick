@@ -15,7 +15,6 @@
 
 #include <QtNetwork>
 #include <QtXml>
-#include <QRegExp>
 
 #include <QDebug>
 
@@ -81,7 +80,7 @@ QVariant JavaInstallList::data(const QModelIndex &index, int role) const
     switch (role)
     {
         case VersionPointerRole:
-            return qVariantFromValue(m_vlist[index.row()]);
+            return QVariant::fromValue(m_vlist[index.row()]);
         case VersionIdRole:
             return version->descriptor();
         case VersionRole:

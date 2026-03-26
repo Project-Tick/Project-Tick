@@ -7,9 +7,6 @@
 #include <QNetworkReply>
 #include <QImage>
 
-#include <katabasis/DeviceFlow.h>
-
-#include "minecraft/auth/Yggdrasil.h"
 #include "minecraft/auth/AccountData.h"
 #include "minecraft/auth/AccountTask.h"
 #include "minecraft/auth/AuthStep.h"
@@ -30,7 +27,7 @@ public:
     void executeTask() override;
 
 signals:
-    void activityChanged(Katabasis::Activity activity);
+    // No extra signals needed - authorizeWithBrowser is on AccountTask
 
 private slots:
     void stepFinished(AccountTaskState resultingState, QString message);

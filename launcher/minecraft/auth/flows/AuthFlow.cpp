@@ -40,8 +40,7 @@ void AuthFlow::nextStep() {
     qDebug() << "AuthFlow:" << m_currentStep->describe();
     m_steps.pop_front();
     connect(m_currentStep.get(), &AuthStep::finished, this, &AuthFlow::stepFinished);
-    connect(m_currentStep.get(), &AuthStep::showVerificationUriAndCode, this, &AuthFlow::showVerificationUriAndCode);
-    connect(m_currentStep.get(), &AuthStep::hideVerificationUriAndCode, this, &AuthFlow::hideVerificationUriAndCode);
+    connect(m_currentStep.get(), &AuthStep::authorizeWithBrowser, this, &AuthFlow::authorizeWithBrowser);
 
     m_currentStep->perform();
 }

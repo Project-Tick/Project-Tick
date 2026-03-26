@@ -62,6 +62,7 @@ static PProcessIdToSessionId pProcessIdToSessionId = 0;
 #include <chrono>
 #include <thread>
 #include <QCryptographicHash>
+#include <QRegularExpression>
 
 static const char* ack = "ack";
 
@@ -72,7 +73,7 @@ ApplicationId ApplicationId::fromTraditionalApp()
     protoId = protoId.toLower();
 #endif
     auto prefix = protoId.section(QLatin1Char('/'), -1);
-    prefix.remove(QRegExp("[^a-zA-Z]"));
+    prefix.remove(QRegularExpression("[^a-zA-Z]"));
     prefix.truncate(6);
     QByteArray idc = protoId.toUtf8();
     quint16 idNum = qChecksum(idc.constData(), idc.size());

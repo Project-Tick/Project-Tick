@@ -17,7 +17,6 @@
 
 #include <QtWidgets/QDialog>
 #include <QtCore/QEventLoop>
-#include <QTimer>
 
 #include "minecraft/auth/MinecraftAccount.h"
 
@@ -47,17 +46,11 @@ slots:
     void onTaskSucceeded();
     void onTaskStatus(const QString &status);
     void onTaskProgress(qint64 current, qint64 total);
-    void showVerificationUriAndCode(const QUrl &uri, const QString &code, int expiresIn);
-    void hideVerificationUriAndCode();
-
-    void externalLoginTick();
+    void onAuthorizeWithBrowser(const QUrl &url);
 
 private:
     Ui::MSALoginDialog *ui;
     MinecraftAccountPtr m_account;
     shared_qobject_ptr<AccountTask> m_loginTask;
-    QTimer m_externalLoginTimer;
-    int m_externalLoginElapsed = 0;
-    int m_externalLoginTimeout = 0;
 };
 

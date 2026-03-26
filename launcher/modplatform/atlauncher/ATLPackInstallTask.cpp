@@ -18,6 +18,7 @@
 #include "ATLPackInstallTask.h"
 
 #include <QtConcurrent/QtConcurrent>
+#include <QRegularExpression>
 
 #include <quazip.h>
 
@@ -475,7 +476,11 @@ void PackInstallTask::extractConfigs()
         return;
     }
 
-    m_extractFuture = QtConcurrent::run(QThreadPool::globalInstance(), MMCZip::extractDir, archivePath, extractDir.absolutePath() + "/minecraft");
+    QString extractPath = extractDir.absolutePath() + "/minecraft";
+    QString archivePathCopy = archivePath;
+    m_extractFuture = QtConcurrent::run(QThreadPool::globalInstance(), [archivePathCopy, extractPath]() {
+        return MMCZip::extractDir(archivePathCopy, extractPath);
+    });
     connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::finished, this, [&]()
     {
         downloadMods();
@@ -623,7 +628,12 @@ void PackInstallTask::onModsDownloaded() {
     jobPtr.reset();
 
     if(!modsToExtract.empty() || !modsToDecomp.empty() || !modsToCopy.empty()) {
-        m_modExtractFuture = QtConcurrent::run(QThreadPool::globalInstance(), this, &PackInstallTask::extractMods, modsToExtract, modsToDecomp, modsToCopy);
+        auto modsToExtractCopy = modsToExtract;
+        auto modsToDecompCopy = modsToDecomp;
+        auto modsToCopyCopy = modsToCopy;
+        m_modExtractFuture = QtConcurrent::run(QThreadPool::globalInstance(), [this, modsToExtractCopy, modsToDecompCopy, modsToCopyCopy]() {
+            return this->extractMods(modsToExtractCopy, modsToDecompCopy, modsToCopyCopy);
+        });
         connect(&m_modExtractFutureWatcher, &QFutureWatcher<QStringList>::finished, this, &PackInstallTask::onModsExtracted);
         connect(&m_modExtractFutureWatcher, &QFutureWatcher<QStringList>::canceled, this, [&]()
         {
@@ -675,7 +685,7 @@ bool PackInstallTask::extractMods(
         QString folderToExtract = "";
         if(mod.type == ModType::Extract) {
             folderToExtract = mod.extractFolder;
-            folderToExtract.remove(QRegExp("^/"));
+            folderToExtract.remove(QRegularExpression("^/"));
         }
 
         qDebug() << "Extracting " + mod.file + " to " + extractToDir;

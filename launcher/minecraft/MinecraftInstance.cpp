@@ -5,6 +5,7 @@
 #include "settings/Setting.h"
 #include "settings/SettingsObject.h"
 #include "Application.h"
+#include <QRegularExpression>
 
 #include "MMCStrings.h"
 #include "pathmatcher/RegexpMatcher.h"
@@ -392,22 +393,20 @@ QProcessEnvironment MinecraftInstance::createEnvironment()
 static QString replaceTokensIn(QString text, QMap<QString, QString> with)
 {
     QString result;
-    QRegExp token_regexp("\\$\\{(.+)\\}");
-    token_regexp.setMinimal(true);
-    QStringList list;
+    QRegularExpression token_regexp("\\$\\{(.+?)\\}");
+    QRegularExpressionMatchIterator it = token_regexp.globalMatch(text);
     int tail = 0;
-    int head = 0;
-    while ((head = token_regexp.indexIn(text, head)) != -1)
+    while (it.hasNext())
     {
-        result.append(text.mid(tail, head - tail));
-        QString key = token_regexp.cap(1);
+        QRegularExpressionMatch match = it.next();
+        result.append(text.mid(tail, match.capturedStart() - tail));
+        QString key = match.captured(1);
         auto iter = with.find(key);
         if (iter != with.end())
         {
             result.append(*iter);
         }
-        head += token_regexp.matchedLength();
-        tail = head;
+        tail = match.capturedEnd();
     }
     result.append(text.mid(tail));
     return result;
@@ -459,7 +458,7 @@ QStringList MinecraftInstance::processMinecraftArgs(
     token_mapping["assets_root"] = absAssetsDir;
     token_mapping["assets_index_name"] = assets->id;
 
-    QStringList parts = args_pattern.split(' ', QString::SkipEmptyParts);
+    QStringList parts = args_pattern.split(' ', Qt::SkipEmptyParts);
     for (int i = 0; i < parts.length(); i++)
     {
         parts[i] = replaceTokensIn(parts[i], token_mapping);

@@ -55,8 +55,7 @@ public:
     }
 
 signals:
-    void showVerificationUriAndCode(const QUrl &uri, const QString &code, int expiresIn);
-    void hideVerificationUriAndCode();
+    void authorizeWithBrowser(const QUrl &url);
 
 protected:
 

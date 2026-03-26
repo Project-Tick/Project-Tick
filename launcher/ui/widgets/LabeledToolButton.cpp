@@ -81,7 +81,7 @@ QSize LabeledToolButton::sizeHint() const
         w += style()->pixelMetric(QStyle::PM_MenuButtonIndicator, &opt, this);
     
     QSize rawSize = style()->sizeFromContents(QStyle::CT_ToolButton, &opt, QSize(w, h), this);
-    QSize sizeHint = rawSize.expandedTo(QApplication::globalStrut());
+    QSize sizeHint = rawSize;
     return sizeHint;
 }
 

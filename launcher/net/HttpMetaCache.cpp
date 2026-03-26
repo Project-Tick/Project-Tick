@@ -96,7 +96,8 @@ MetaEntryPtr HttpMetaCache::resolveEntry(QString base, QString resource_path, QS
     if (file_last_changed != entry->local_changed_timestamp)
     {
         QFile input(real_path);
-        input.open(QIODevice::ReadOnly);
+        if (!input.open(QIODevice::ReadOnly))
+            return staleEntry(base, resource_path);
         QString md5sum = QCryptographicHash::hash(input.readAll(), QCryptographicHash::Md5)
                              .toHex()
                              .constData();

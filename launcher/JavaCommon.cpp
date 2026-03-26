@@ -1,10 +1,11 @@
 #include "JavaCommon.h"
 #include "ui/dialogs/CustomMessageBox.h"
 #include <MMCStrings.h>
+#include <QRegularExpression>
 
 bool JavaCommon::checkJVMArgs(QString jvmargs, QWidget *parent)
 {
-    if (jvmargs.contains("-XX:PermSize=") || jvmargs.contains(QRegExp("-Xm[sx]"))
+    if (jvmargs.contains("-XX:PermSize=") || jvmargs.contains(QRegularExpression("-Xm[sx]"))
         || jvmargs.contains("-XX-MaxHeapSize") || jvmargs.contains("-XX:InitialHeapSize"))
     {
         auto warnStr = QObject::tr(

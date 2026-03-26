@@ -106,13 +106,18 @@ void FlamePage::onSelectionChanged(QModelIndex first, QModelIndex second)
 
     ui->packDescription->setHtml(text + current.description);
 
+    if(isOpened)
+    {
+        dialog->setSuggestedPack(current.name);
+    }
+
     if (current.versionsLoaded == false)
     {
         qDebug() << "Loading flame modpack versions";
         NetJob *netJob = new NetJob(QString("Flame::PackVersions(%1)").arg(current.name), APPLICATION->network());
         std::shared_ptr<QByteArray> response = std::make_shared<QByteArray>();
         int addonId = current.addonId;
-        netJob->addNetAction(Net::Download::makeByteArray(QString("https://addons-ecs.forgesvc.net/api/v2/addon/%1/files").arg(addonId), response.get()));
+        netJob->addNetAction(Net::Download::makeByteArray(QString("https://api.curseforge.com/v1/mods/%1/files").arg(addonId), response.get()));
 
         QObject::connect(netJob, &NetJob::succeeded, this, [this, response]
         {
@@ -123,7 +128,12 @@ void FlamePage::onSelectionChanged(QModelIndex first, QModelIndex second)
                 qWarning() << *response;
                 return;
             }
-            QJsonArray arr = doc.array();
+            QJsonArray arr;
+            if(doc.isObject() && doc.object().contains("data")) {
+                arr = doc.object().value("data").toArray();
+            } else {
+                arr = doc.array();
+            }
             try
             {
                 Flame::loadIndexedPackVersions(current, arr);

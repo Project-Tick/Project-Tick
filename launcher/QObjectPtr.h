@@ -46,8 +46,12 @@ public:
 public:
     void reset(T * wrap)
     {
-        using namespace std::placeholders;
-        m_ptr.reset(wrap, std::bind(&QObject::deleteLater, _1));
+        if(wrap) {
+            using namespace std::placeholders;
+            m_ptr.reset(wrap, std::bind(&QObject::deleteLater, _1));
+        } else {
+            m_ptr.reset();
+        }
     }
     void reset(const shared_qobject_ptr<T> &other)
     {

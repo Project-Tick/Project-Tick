@@ -31,7 +31,6 @@ QString getCreditsHtml(QStringList patrons)
     QString patronsHeading = QObject::tr("Patrons", "About Credits");
     QString output;
     QTextStream stream(&output);
-    stream.setCodec(QTextCodec::codecForName("UTF-8"));
     stream << "<center>\n";
     // TODO: possibly retrieve from git history at build time?
     stream << "<h2> MeshMC Developers </h2>\n";
@@ -55,7 +54,10 @@ QString getLicenseHtml()
 {
     HoeDown hoedown;
     QFile dataFile(":/documents/COPYING.md");
-    dataFile.open(QIODevice::ReadOnly);
+    if (!dataFile.open(QIODevice::ReadOnly))
+    {
+        return QString();
+    }
     QString output = hoedown.process(dataFile.readAll());
     return output;
 }
@@ -93,15 +95,6 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::AboutDia
         ui->channelLabel->setText(tr("Channel") +": " + BuildConfig.VERSION_CHANNEL);
     else
         ui->channelLabel->setVisible(false);
-
-    ui->redistributionText->setHtml(tr(
-"<p>We keep MeshMC open source because we think it's important to be able to see the source code for a project like this, and we do so using the Apache license.</p>\n"
-"<p>Part of the reason for using the Apache license is we don't want people using the &quot;MeshMC&quot; name when redistributing the project. "
-"This means people must take the time to go through the source code and remove all references to &quot;MeshMC&quot;, including but not limited to the project "
-"icon and the title of windows, (no <b>MeshMC-fork</b> in the title).</p>\n"
-"<p>The Apache license covers reasonable use for the name - a mention of the project's origins in the About dialog and the license is acceptable. "
-"However, it should be abundantly clear that the project is a fork <b>without</b> implying that you have our blessing.</p>"
-    ));
 
     QString urlText("<html><head/><body><p><a href=\"%1\">%1</a></p></body></html>");
     ui->urlLabel->setText(urlText.arg(BuildConfig.LAUNCHER_GIT));

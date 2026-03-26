@@ -24,7 +24,6 @@
 #include "net/NetJob.h"
 
 #include "ui/dialogs/ProgressDialog.h"
-#include "ui/dialogs/LoginDialog.h"
 #include "ui/dialogs/MSALoginDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/dialogs/SkinUploadDialog.h"
@@ -43,7 +42,7 @@ AccountListPage::AccountListPage(QWidget *parent)
     ui->setupUi(this);
     ui->listView->setEmptyString(tr(
         "Welcome!\n"
-        "If you're new here, you can click the \"Add\" button to add your Mojang or Minecraft account."
+        "If you're new here, you can click the \"Add Microsoft\" button to add your Microsoft account."
     ));
     ui->listView->setEmptyMode(VersionListView::String);
     ui->listView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -51,12 +50,10 @@ AccountListPage::AccountListPage(QWidget *parent)
     m_accounts = APPLICATION->accounts();
 
     ui->listView->setModel(m_accounts.get());
+    // Expand the account column
     ui->listView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
     ui->listView->header()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->listView->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
-
-    // Expand the account column
 
     QItemSelectionModel *selectionModel = ui->listView->selectionModel();
 
@@ -109,22 +106,6 @@ void AccountListPage::listChanged()
     updateButtonStates();
 }
 
-void AccountListPage::on_actionAddMojang_triggered()
-{
-    MinecraftAccountPtr account = LoginDialog::newAccount(
-        this,
-        tr("Please enter your Mojang account email and password to add your account.")
-    );
-
-    if (account)
-    {
-        m_accounts->addAccount(account);
-        if (m_accounts->count() == 1) {
-            m_accounts->setDefaultAccount(account);
-        }
-    }
-}
-
 void AccountListPage::on_actionAddMicrosoft_triggered()
 {
     if(BuildConfig.BUILD_PLATFORM == "osx64") {
@@ -141,7 +122,7 @@ void AccountListPage::on_actionAddMicrosoft_triggered()
     }
     MinecraftAccountPtr account = MSALoginDialog::newAccount(
         this,
-        tr("Please enter your Mojang account email and password to add your account.")
+        tr("Log in with your Microsoft account to add it.")
     );
 
     if (account)

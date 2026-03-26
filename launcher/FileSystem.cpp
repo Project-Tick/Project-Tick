@@ -407,7 +407,8 @@ bool createShortCut(QString location, QString dest, QStringList args, QString na
     location = PathCombine(location, name + ".desktop");
 
     QFile f(location);
-    f.open(QIODevice::WriteOnly | QIODevice::Text);
+    if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+        return false;
     QTextStream stream(&f);
 
     QString argstring;

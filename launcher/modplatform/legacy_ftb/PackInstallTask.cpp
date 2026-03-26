@@ -88,7 +88,11 @@ void PackInstallTask::unzip()
         return;
     }
 
-    m_extractFuture = QtConcurrent::run(QThreadPool::globalInstance(), MMCZip::extractDir, archivePath, extractDir.absolutePath() + "/unzip");
+    QString extractPath = extractDir.absolutePath() + "/unzip";
+    QString archivePathCopy = archivePath;
+    m_extractFuture = QtConcurrent::run(QThreadPool::globalInstance(), [archivePathCopy, extractPath]() {
+        return MMCZip::extractDir(archivePathCopy, extractPath);
+    });
     connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::finished, this, &PackInstallTask::onUnzipFinished);
     connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::canceled, this, &PackInstallTask::onUnzipCanceled);
     m_extractFutureWatcher.setFuture(m_extractFuture);
@@ -137,7 +141,11 @@ void PackInstallTask::install()
     QDir jarmodDir = QDir(m_stagingPath + "/unzip/instMods");
     if(packJson.exists())
     {
-        packJson.open(QIODevice::ReadOnly | QIODevice::Text);
+        if (!packJson.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            emitFailed(tr("Failed to open pack.json!"));
+            return;
+        }
         QJsonDocument doc = QJsonDocument::fromJson(packJson.readAll());
         packJson.close();
 

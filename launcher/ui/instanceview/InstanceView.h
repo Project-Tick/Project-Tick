@@ -40,6 +40,12 @@ public:
     InstanceView(QWidget *parent = 0);
     ~InstanceView();
 
+    QStyleOptionViewItem viewOptions() const {
+        QStyleOptionViewItem option;
+        initViewItemOption(&option);
+        return option;
+    }
+
     void setModel(QAbstractItemModel *model) override;
 
     using visibilityFunction = std::function<bool(const QString &)>;

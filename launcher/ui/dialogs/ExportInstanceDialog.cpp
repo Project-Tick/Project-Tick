@@ -97,7 +97,7 @@ public:
             flags |= Qt::ItemIsUserCheckable;
             if (sourceIndex.model()->hasChildren(sourceIndex))
             {
-                flags |= Qt::ItemIsTristate;
+                flags |= Qt::ItemIsAutoTristate;
             }
         }
 
@@ -190,7 +190,7 @@ public:
                 QStack<QModelIndex> todo;
                 while (1)
                 {
-                    auto node = doing.child(row, 0);
+                    auto node = fsm->index(row, 0, doing);
                     if (!node.isValid())
                     {
                         if (!todo.size())
@@ -239,7 +239,7 @@ public:
             QStack<QModelIndex> todo;
             while (1)
             {
-                auto node = doing.child(row, 0);
+                auto node = doing.model()->index(row, 0, doing);
                 if (!node.isValid())
                 {
                     if (!todo.size())
@@ -403,7 +403,7 @@ bool ExportInstanceDialog::doExport()
 
     auto & blocked = proxyModel->blockedPaths();
     using std::placeholders::_1;
-    if (!JlCompress::compressDir(output, m_instance->instanceRoot(), name, std::bind(&SeparatorPrefixTree<'/'>::covers, blocked, _1)))
+    if (!MMCZip::compressDir(output, m_instance->instanceRoot(), std::bind(&SeparatorPrefixTree<'/'>::covers, blocked, _1)))
     {
         QMessageBox::warning(this, tr("Error"), tr("Unable to export instance"));
         return false;
@@ -434,7 +434,7 @@ void ExportInstanceDialog::rowsInserted(QModelIndex parent, int top, int bottom)
     //WARNING: possible off-by-one?
     for(int i = top; i < bottom; i++)
     {
-        auto node = parent.child(i, 0);
+        auto node = parent.model()->index(i, 0, parent);
         if(proxyModel->shouldExpand(node))
         {
             auto expNode = node.parent();
@@ -462,7 +462,7 @@ void ExportInstanceDialog::loadPackIgnore()
     }
     auto data = ignoreFile.readAll();
     auto string = QString::fromUtf8(data);
-    proxyModel->setBlockedPaths(string.split('\n', QString::SkipEmptyParts));
+    proxyModel->setBlockedPaths(string.split('\n', Qt::SkipEmptyParts));
 }
 
 void ExportInstanceDialog::savePackIgnore()

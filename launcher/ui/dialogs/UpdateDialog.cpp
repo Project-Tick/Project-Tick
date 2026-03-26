@@ -1,6 +1,7 @@
 #include "UpdateDialog.h"
 #include "ui_UpdateDialog.h"
 #include <QDebug>
+#include <QRegularExpression>
 #include "Application.h"
 #include <settings/SettingsObject.h>
 #include <Json.h>
@@ -58,7 +59,7 @@ QString reprocessMarkdown(QByteArray markdown)
     QString output = hoedown.process(markdown);
 
     // HACK: easier than customizing hoedown
-    output.replace(QRegExp("GH-([0-9]+)"), "<a href=\"https://github.com/Project-Tick/MeshMC/issues/\\1\">GH-\\1</a>");
+    output.replace(QRegularExpression("GH-([0-9]+)"), "<a href=\"https://github.com/Project-Tick/MeshMC/issues/\\1\">GH-\\1</a>");
     qDebug() << output;
     return output;
 }

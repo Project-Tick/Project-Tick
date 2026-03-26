@@ -794,7 +794,7 @@ QPair<VisualGroup *, VisualGroup::HitResults> InstanceView::rowDropPos(const QPo
 {
     VisualGroup::HitResults hitresult;
     auto group = categoryAt(pos + offset(), hitresult);
-    return qMakePair<VisualGroup*, int>(group, hitresult);
+    return qMakePair(group, hitresult);
 }
 
 QPoint InstanceView::offset() const

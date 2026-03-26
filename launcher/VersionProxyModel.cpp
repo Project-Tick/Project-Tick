@@ -208,15 +208,15 @@ QVariant VersionProxyModel::data(const QModelIndex &index, int role) const
                         {
                             return APPLICATION->getThemedIcon("bug");
                         }
-                        auto pixmap = QPixmapCache::find("placeholder");
-                        if(!pixmap)
+                        QPixmap pixmap;
+                        if(!QPixmapCache::find("placeholder", &pixmap))
                         {
                             QPixmap px(16,16);
                             px.fill(Qt::transparent);
                             QPixmapCache::insert("placeholder", px);
                             return px;
                         }
-                        return *pixmap;
+                        return pixmap;
                     }
                 }
                 default:
@@ -309,6 +309,7 @@ void VersionProxyModel::setSourceModel(QAbstractItemModel *replacingRaw)
     {
         roles.clear();
         filterModel->setSourceModel(replacing);
+        endResetModel();
         return;
     }
 

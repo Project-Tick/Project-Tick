@@ -1,9 +1,5 @@
-<p align="center">
-  <img src="https://avatars2.githubusercontent.com/u/5411890" alt="MeshMC logo"/>
-</p>
-
 MeshMC
-=======
+======
 
 MeshMC is a custom launcher for Minecraft that focuses on predictability, long term stability and simplicity.
 
