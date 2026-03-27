@@ -1,5 +1,6 @@
 MeshMC
 ======
+[![REUSE status](https://api.reuse.software/badge/github.com/Project-Tick/MeshMC)](https://api.reuse.software/info/github.com/Project-Tick/MeshMC) [![CLA assistant](https://cla-assistant.io/readme/badge/Project-Tick/MeshMC)](https://cla-assistant.io/Project-Tick/MeshMC) [![LICENSE](https://img.shields.io/badge/license-GPL--3.0--or--later-blue?logo=GNU)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 MeshMC is a custom launcher for Minecraft that focuses on predictability, long term stability and simplicity.
 
@@ -11,7 +12,7 @@ While blindly submitting PRs is definitely possible, they're not necessarily goi
 We aren't looking for flashy features, but expanding upon the existing feature set without distruption or endangering future viability of the project is OK.
 
 ### Building
-If you want to build the launcher yourself, check [BUILD.md](BUILD.md) for build instructions.
+If you want to build MeshMC yourself, check [BUILD.md](BUILD.md) for build instructions.
 
 ### Code formatting
 Just follow the existing formatting.

@@ -1,4 +1,4 @@
-# MultiMC
+# MeshMC
 
      MeshMC - A Custom Launcher for Minecraft
      Copyright (C) 2026 Project Tick
@@ -54,12 +54,12 @@
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
 
-# Qt 5
+# Qt 6
 
-    Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-    Contact: http://www.qt-project.org/legal
+    Copyright (C) 2022 The Qt Company Ltd and other contributors.
+    Contact: https://www.qt.io/licensing
 
-    Licensed under LGPL v2.1
+    Licensed under LGPL v3
 
 # libnbt++
 
