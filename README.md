@@ -1,6 +1,6 @@
 MeshMC
 ======
-[![REUSE status](https://api.reuse.software/badge/github.com/Project-Tick/MeshMC)](https://api.reuse.software/info/github.com/Project-Tick/MeshMC) [![CLA assistant](https://cla-assistant.io/readme/badge/Project-Tick/MeshMC)](https://cla-assistant.io/Project-Tick/MeshMC) [![LICENSE](https://img.shields.io/badge/license-GPL--3.0--or--later-blue?logo=GNU)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![REUSE status](https://api.reuse.software/badge/github.com/Project-Tick/MeshMC)](https://api.reuse.software/info/github.com/Project-Tick/MeshMC) [![CLA assistant](https://cla-assistant.io/readme/badge/Project-Tick/MeshMC)](https://cla-assistant.io/Project-Tick/MeshMC) [![LICENSE](https://img.shields.io/badge/license-GPL--3.0--or--later-blue?logo=GNU)](https://www.gnu.org/licenses/gpl-3.0.html) [![Crowdin](https://badges.crowdin.net/projtlauncher/localized.svg)](https://crowdin.com/project/projtlauncher)
 
 MeshMC is a custom launcher for Minecraft that focuses on predictability, long term stability and simplicity.
 
