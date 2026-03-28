@@ -244,6 +244,25 @@
         <file alias="32x32/accounts.png">32x32/noaccount.png</file>
         <file alias="48x48/accounts.png">48x48/noaccount.png</file>
 
+        <!-- delete, tag, rename, shortcut, about, new, checkupdate and server LGPL3, Oxygen icons.-->
+        <file>scalable/delete.svg</file>
+        <file>scalable/tag.svg</file>
+        <file>scalable/rename.svg</file>
+        <file>scalable/shortcut.svg</file>
+        <file>scalable/export.svg</file>
+        <file>scalable/launch.svg</file>
+        <file>scalable/server.svg</file>
+        <file>scalable/appearance.svg</file>
+        <file>scalable/about.svg</file>
+        <file>scalable/new.svg</file>
+        <file>scalable/checkupdate.svg</file>
+
+        <!-- java providers -->
+        <file>scalable/adoptium.svg</file>  <!-- The Adoptium Logo is a registered trademark of the Eclipse Foundation. -->
+        <file>scalable/azul.svg</file>  <!-- Azul, Zulu, Azul Systems, the Azul Systems logo, Azul Zulu are either registered trademarks or trademarks of Azul Systems, registered in the U.S. and elsewhere. -->
+        <file>scalable/mojang.svg</file>  <!-- The Mojang Logo is a registered trademark of Mojang AB. -->
+        <file>scalable/openj9_hex_custom.svg</file>  <!-- Adapted from the `OpenJ9-hex.svg` file by Ludgie. Source: https://github.com/eclipse-openj9/openj9/blob/master/artwork/OpenJ9-hex.svg -->
+
         <!-- Log file, LGPL, http://www.iconarchive.com/show/crystal-clear-icons-by-everaldo/Mimetype-text-icon.html -->
         <file>16x16/log.png</file>
         <file>24x24/log.png</file>
