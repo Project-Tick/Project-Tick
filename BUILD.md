@@ -1,215 +1,488 @@
-Build Instructions
-==================
+# MeshMC Build Guide
 
-# Contents
+This document explains how to build MeshMC from source on all supported platforms.
 
-* [Note](#note)
-* [Getting the source](#source)
-* [Linux](#linux)
-* [Windows](#windows)
-* [macOS](#macos)
+## Table of Contents
 
-# Note
+- [Requirements](#requirements)
+- [Quick Start (Bootstrap)](#quick-start-bootstrap)
+- [Dependencies](#dependencies)
+- [Cloning the Repository](#cloning-the-repository)
+- [CMake Presets](#cmake-presets)
+- [Building on Linux](#building-on-linux)
+- [Building on macOS](#building-on-macos)
+- [Building on Windows](#building-on-windows)
+- [Building with Nix](#building-with-nix)
+- [Building with Container (Podman/Docker)](#building-with-container-podmandocker)
+- [Running Tests](#running-tests)
+- [CMake Options](#cmake-options)
+- [Troubleshooting](#troubleshooting)
 
-MeshMC is a portable application and is not supposed to be installed into any system folders.
-That would be anything outside your home folder. Before running `make install`, make sure
-you set the install path to something you have write access to. Never build this under
-an administrator/root level account. Don't use `sudo`. It won't work and it's not supposed to work.
-Also note that this guide is for development purposes only.  
-**No support is given for building your own fork or special build for any reason whatsoever**.
+## Requirements
 
-# Getting the source
+- **CMake** >= 3.28
+- **Ninja** (recommended generator)
+- **C++ compiler** with C++23 support (GCC >= 13, Clang >= 17, MSVC >= 19.36)
+- **Qt 6** (Core, Widgets, Concurrent, Network, NetworkAuth, Test, Xml)
+- **Java Development Kit** (JDK 17) — for building Java launcher components
+- **Git** — for submodule management
 
-Clone the source code using git and grab all the submodules:
+## Quick Start (Bootstrap)
 
-```
-git clone https://github.com/Project-Tick/MeshMC.git
-git submodule init
-git submodule update
-```
+The fastest way to get started is to use the bootstrap script. It automatically
+detects your platform, installs missing dependencies, initializes submodules,
+and sets up lefthook git hooks.
 
-# Linux
-
-Getting the project to build and run on Linux is easy if you use any modern and up-to-date linux distribution.
-
-## Build dependencies
-* A C++ compiler capable of building C++11 code.
-* Qt 5.6+ Development tools (http://qt-project.org/downloads) ("Qt Online Installer for Linux (64 bit)") or the equivalent from your package manager. It is always better to use the Qt from your distribution, as long as it has a new enough version.
-* cmake 3.1 or newer
-* zlib (for example, `zlib1g-dev`)
-* Java JDK 8 (for example, `openjdk-8-jdk`)
-* GL headers (for example, `libgl1-mesa-dev`)
-
-### Building from command line
-You need a source folder, a build folder and an install folder.
-
-Let's say you want everything in `~/MeshMC/`:
-
-```
-# make all the folders
-mkdir ~/MeshMC && cd ~/MeshMC
-mkdir build
-mkdir install
-# clone the complete source
-git clone --recursive https://github.com/Project-Tick/MeshMC.git src
-# configure the project
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=../install ../src
-# build & install (use -j with the number of cores your CPU has)
-make -j8 install
-```
-
-You can use IDEs like KDevelop or QtCreator to open the CMake project if you want to work on the code.
-
-### Installing Qt using the installer (optional)
-1. Run the Qt installer.
-2. Choose a place to install Qt.
-3. Choose the components you want to install.
-    - You need Qt 5.6.x 64-bit ticked.
-    - You need Tools/Qt Creator ticked.
-    - Other components are selected by default, you can untick them if you don't need them.
-4. Accept the license agreements.
-5. Double check the install details and then click "Install".
-    - Installation can take a very long time, go grab a cup of tea or something and let it work.
-
-### Loading the project in Qt Creator (optional)
-1. Open Qt Creator.
-2. Choose `File->Open File or Project`.
-3. Navigate to MeshMC source folder you cloned and choose CMakeLists.txt.
-4. Read the instructions that just popped up about a build location and choose one.
-5. You should see "Run CMake" in the window.
-    - Make sure that Generator is set to "Unix Generator (Desktop Qt 5.6.x GCC 64bit)".
-    - Hit the "Run CMake" button.
-    - You'll see warnings and it might not be clear that it succeeded until you scroll to the bottom of the window.
-    - Hit "Finish" if CMake ran successfully.
-6. Cross your fingers and press the Run button (bottom left of Qt Creator).
-    - If the project builds successfully it will run and MeshMC window will pop up.
-
-**If this doesn't work for you, let us know on IRC ([Esper/#MultiMC](http://webchat.esper.net/?nick=&channels=MultiMC))!**
-
-# Windows
-
-Getting the project to build and run on Windows is easy if you use Qt's IDE, Qt Creator. The project will simply not compile using Microsoft build tools, because that's not something we do. If it does compile, it is by chance only.
-
-## Dependencies
-* [Qt 5.6+ Development tools](http://qt-project.org/downloads) -- Qt Online Installer for Windows
-    - http://download.qt.io/new_archive/qt/5.6/5.6.0/qt-opensource-windows-x86-mingw492-5.6.0.exe
-    - Download the MinGW version (MSVC version does not work).
-* [OpenSSL](https://github.com/IndySockets/OpenSSL-Binaries/tree/master/Archive/) -- Win32 OpenSSL, version 1.0.2g (from 2016)
-    - https://github.com/IndySockets/OpenSSL-Binaries/raw/master/Archive/openssl-1.0.2g-i386-win32.zip
-    - the usual OpenSSL for Windows (http://slproweb.com/products/Win32OpenSSL.html) only provides the newest version of OpenSSL, and we need the 1.0.2g version
-    - **Download the 32-bit version, not 64-bit.**
-    - Microsoft Visual C++ 2008 Redist is required for this, there's a link on the OpenSSL download page above next to the main download.
-    - We use a custom build of OpenSSL that doesn't have this dependency. For normal development, the custom build is not necessary though.
-* [zlib 1.2+](http://gnuwin32.sourceforge.net/packages/zlib.htm) - the Setup is fine
-* [Java JDK 8](https://adoptium.net/releases.html?variant=openjdk8) - Use the MSI installer.
-* [CMake](http://www.cmake.org/cmake/resources/software.html) -- Windows (Win32 Installer)
-
-Ensure that OpenSSL, zlib, Java and CMake are on `PATH`.
-
-## Getting set up
-
-### Installing Qt
-1. Run the Qt installer
-2. Choose a place to install Qt (C:\Qt is the default),
-3. Choose the components you want to install
-    - You need Qt 5.6 (32 bit) ticked,
-    - You need Tools/Qt Creator ticked,
-    - Other components are selected by default, you can untick them if you don't need them.
-4. Accept the license agreements,
-5. Double check the install details and then click "Install"
-    - Installation can take a very long time, go grab a cup of tea or something and let it work.
-
-### Installing OpenSSL
-1. Download .zip file from the link above.
-2. Unzip and add the directory to PATH, so CMake can find it.
-
-### Installing CMake
-1. Run the CMake installer,
-2. It's easiest if you choose to add CMake to the PATH for all users,
-    - If you don't choose to do this, remember where you installed CMake.
-
-### Loading the project
-1. Open Qt Creator,
-2. Choose File->Open File or Project,
-3. Navigate to MeshMC source folder you cloned and choose CMakeLists.txt,
-4. Read the instructions that just popped up about a build location and choose one,
-5. If you chose not to add CMake to the system PATH, tell Qt Creator where you installed it,
-    - Otherwise you can skip this step.
-6. You should see "Run CMake" in the window,
-    - Make sure that Generator is set to "MinGW Generator (Desktop Qt 5.6.x MinGW 32bit)",
-    - Hit the "Run CMake" button,
-    - You'll see warnings and it might not be clear that it succeeded until you scroll to the bottom of the window.
-    - Hit "Finish" if CMake ran successfully.
-7. Cross your fingers and press the Run button (bottom left of Qt Creator)!
-    - If the project builds successfully it will run and MeshMC window will pop up,
-    - Test OpenSSL by making an instance and trying to log in. If Qt Creator couldn't find OpenSSL during the CMake stage, login will fail and you'll get an error.
-
-The following .dlls are needed for the app to run (copy them to build directory if you want to be able to move the build to another pc):
-```
-platforms/qwindows.dll
-libeay32.dll
-libgcc_s_dw2-1.dll
-libssp-0.dll
-libstdc++-6.dll
-libwinpthread-1.dll
-Qt5Core.dll
-Qt5Gui.dll
-Qt5Network.dll
-Qt5Svg.dll
-Qt5Widgets.dll
-Qt5Xml.dll
-ssleay32.dll
-zlib1.dll
-```
-
-**These build instructions worked for me (Drayshak) on a fresh Windows 8 x64 Professional install. If they don't work for you, let us know on IRC ([Esper/#MultiMC](http://webchat.esper.net/?nick=&channels=MultiMC))!**
-### Compile from command line on Windows
-1. If you installed Qt with the web installer, there should be a shortcut called `Qt 5.4 for Desktop (MinGW 4.9 32-bit)` in the Start menu on Windows 7 and 10. Best way to find it is to search for it. Do note you cannot just use cmd.exe, you have to use the shortcut, otherwise the proper MinGW software will not be on the PATH.
-2. Once that is open, change into your user directory, and clone MeshMC by doing `git clone --recursive https://github.com/Project-Tick/MeshMC.git`, and change directory to the folder you cloned to.
-3. Make a build directory, and change directory to the directory and do `cmake -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX=C:\Path\that\makes\sense\for\you`. By default, it will install to C:\Program Files (x86), which you might not want, if you want a local installation. If you want to install it to that directory, make sure to run the command window as administrator.
-3. Do `mingw32-make -jX`, where X is the number of cores your CPU has plus one.
-4. Now to wait for it to compile. This could take some time. Hopefully it compiles properly.
-5. Run the command `mingw32-make install`, and it should install MeshMC, to whatever the `-DCMAKE_INSTALL_PREFIX` was.
-6. In most cases, whenever compiling, the OpenSSL dll's aren't put into the directory to where MeshMC installs, meaning you cannot log in. The best way to fix this is just to do `copy C:\OpenSSL-Win32\*.dll C:\Where\you\installed\MeshMC\to`. This should copy the required OpenSSL dll's to log in.
-
-# macOS
-
-### Install prerequisites:
-- Install XCode Command Line tools
-- Install the official build of CMake (https://cmake.org/download/)
-- Install JDK 8 (https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html)
-- Get Qt 5.6 and install it (https://download.qt.io/new_archive/qt/5.6/5.6.3/)
-
-### XCode Command Line tools
-
-If you don't have XCode CommandLine tools installed, you can install them by using this command in the Terminal App
+### Linux / macOS
 
 ```bash
-xcode-select --install
+./bootstrap.sh
+```
+
+Supported distributions: Debian, Ubuntu, Fedora, RHEL/CentOS, openSUSE, Arch Linux, macOS (via Homebrew).
+
+### Windows
+
+```cmd
+bootstrap.cmd
+```
+
+Uses [Scoop](https://scoop.sh) for CLI tools and [vcpkg](https://github.com/microsoft/vcpkg) for C/C++ libraries.
+
+## Dependencies
+
+### Build Dependencies
+
+| Dependency             | Purpose                         | pkg-config name    |
+|------------------------|---------------------------------|--------------------|
+| Qt 6 (Base)            | GUI framework                   | `Qt6Core`          |
+| Qt 6 NetworkAuth       | OAuth2 authentication           | —                  |
+| QuaZip (Qt6)           | ZIP archive support             | `quazip1-qt6`      |
+| zlib                   | Compression                     | `zlib`             |
+| Extra CMake Modules    | KDE CMake utilities             | `ECM`              |
+| cmark                  | Markdown rendering              | —                  |
+| tomlplusplus           | TOML parsing                    | —                  |
+| libarchive             | Archive extraction              | —                  |
+| libqrencode            | QR code generation              | —                  |
+| scdoc                  | Man page generation (optional)  | —                  |
+
+### Distro-Specific Package Names
+
+<details>
+<summary><strong>Debian / Ubuntu</strong></summary>
+
+```bash
+sudo apt-get install \
+    cmake ninja-build extra-cmake-modules pkg-config \
+    qt6-base-dev libquazip1-qt6-dev zlib1g-dev \
+    libcmark-dev libarchive-dev libqrencode-dev libtomlplusplus-dev \
+    scdoc
+```
+
+</details>
+
+<details>
+<summary><strong>Fedora</strong></summary>
+
+```bash
+sudo dnf install \
+    cmake ninja-build extra-cmake-modules pkgconf \
+    qt6-qtbase-devel quazip-qt6-devel zlib-devel \
+    cmark-devel libarchive-devel qrencode-devel tomlplusplus-devel \
+    scdoc
+```
+
+</details>
+
+<details>
+<summary><strong>Arch Linux</strong></summary>
+
+```bash
+sudo pacman -S --needed \
+    cmake ninja extra-cmake-modules pkgconf \
+    qt6-base quazip-qt6 zlib \
+    cmark libarchive qrencode tomlplusplus \
+    scdoc
+```
+
+</details>
+
+<details>
+<summary><strong>openSUSE</strong></summary>
+
+```bash
+sudo zypper install \
+    cmake ninja extra-cmake-modules pkg-config \
+    qt6-base-devel quazip-qt6-devel zlib-devel \
+    cmark-devel libarchive-devel qrencode-devel tomlplusplus-devel \
+    scdoc
+```
+
+</details>
+
+<details>
+<summary><strong>macOS (Homebrew)</strong></summary>
+
+```bash
+brew install \
+    cmake ninja extra-cmake-modules \
+    qt@6 quazip zlib \
+    cmark libarchive qrencode tomlplusplus \
+    scdoc
+```
+
+</details>
+
+### Developer Tooling (Optional)
+
+These are **not required** to build, but are used for development:
+
+| Tool       | Purpose                       |
+|------------|-------------------------------|
+| npm        | Frontend tooling              |
+| Go         | Installing lefthook           |
+| lefthook   | Git hooks manager             |
+| reuse       | REUSE license compliance      |
+| clang-format | Code formatting              |
+| clang-tidy | Static analysis               |
+
+## Cloning the Repository
+
+MeshMC uses git submodules. Make sure to clone recursively:
+
+```bash
+git clone --recursive https://github.com/Project-Tick/MeshMC.git
+cd MeshMC
+```
+
+If you already cloned without `--recursive`, initialize submodules manually:
+
+```bash
+git submodule update --init --recursive
+```
+
+## CMake Presets
+
+MeshMC ships a `CMakePresets.json` with pre-configured presets for each platform.
+All presets use the **Ninja Multi-Config** generator and output to the `build/`
+directory with install prefix `install/`.
+
+### Configure Presets
+
+| Preset             | Platform                  | Notes                                      |
+|--------------------|---------------------------|--------------------------------------------|
+| `linux`            | Linux                     | Available only on Linux hosts               |
+| `macos`            | macOS                     | Uses vcpkg toolchain (`$VCPKG_ROOT`)        |
+| `macos_universal`  | macOS (Universal Binary)  | Builds for both x86_64 and arm64            |
+| `windows_mingw`    | Windows (MinGW)           | Available only on Windows hosts             |
+| `windows_msvc`     | Windows (MSVC)            | Uses vcpkg toolchain (`$VCPKG_ROOT`)        |
+
+All presets inherit from a hidden `base` preset which sets:
+
+- **Generator:** `Ninja Multi-Config`
+- **Build directory:** `build/`
+- **Install directory:** `install/`
+- **LTO:** Enabled by default
+
+### Build Presets
+
+Each configure preset has a matching build preset with the same name:
+
+| Preset             | Configure Preset   |
+|--------------------|--------------------|
+| `linux`            | `linux`            |
+| `macos`            | `macos`            |
+| `macos_universal`  | `macos_universal`  |
+| `windows_mingw`    | `windows_mingw`    |
+| `windows_msvc`     | `windows_msvc`     |
+
+### Test Presets
+
+Test presets share the same names. They are configured with verbose output on
+failure and exclude example tests.
+
+### Environment Variables
+
+Some presets reference environment variables:
+
+| Variable          | Used By                        | Purpose                           |
+|-------------------|--------------------------------|-----------------------------------|
+| `VCPKG_ROOT`      | `macos`, `macos_universal`, `windows_msvc` | Path to vcpkg installation  |
+| `ARTIFACT_NAME`   | All (via `base`)               | Updater artifact identifier       |
+| `BUILD_PLATFORM`  | All (via `base`)               | Platform identifier string        |
+
+## Building on Linux
+
+### Configure
+
+```bash
+cmake --preset linux
 ```
 
 ### Build
 
-Pick an installation path - this is where the final `.app` will be constructed when you run `make install`. Supply it as the `CMAKE_INSTALL_PREFIX` argument during CMake configuration.
+```bash
+cmake --build --preset linux --config Release
+```
+
+For a debug build:
+
+```bash
+cmake --build --preset linux --config Debug
+```
+
+Since the generator is `Ninja Multi-Config`, you can switch between `Debug`,
+`Release`, `RelWithDebInfo`, and `MinSizeRel` without re-configuring.
+
+### Install
+
+```bash
+cmake --install build --config Release --prefix /usr/local
+```
+
+### Full One-Liner
+
+```bash
+cmake --preset linux && cmake --build --preset linux --config Release
+```
+
+## Building on macOS
+
+### Prerequisites
+
+Make sure `VCPKG_ROOT` is set:
+
+```bash
+export VCPKG_ROOT="$HOME/vcpkg"
+```
+
+### Standard Build (Native Architecture)
+
+```bash
+cmake --preset macos
+cmake --build --preset macos --config Release
+```
+
+### Universal Binary (x86_64 + arm64)
+
+```bash
+cmake --preset macos_universal
+cmake --build --preset macos_universal --config Release
+```
+
+This produces a fat binary supporting both Intel and Apple Silicon Macs.
+
+### Install
+
+```bash
+cmake --install build --config Release
+```
+
+## Building on Windows
+
+### Using MSVC
+
+Requires Visual Studio with C++ workload and vcpkg:
+
+```cmd
+set VCPKG_ROOT=C:\path\to\vcpkg
+cmake --preset windows_msvc
+cmake --build --preset windows_msvc --config Release
+```
+
+### Using MinGW
+
+```cmd
+cmake --preset windows_mingw
+cmake --build --preset windows_mingw --config Release
+```
+
+### Install
+
+```cmd
+cmake --install build --config Release
+```
+
+## Building with Nix
+
+MeshMC provides a Nix flake for reproducible builds.
+
+### Using the Nix Flake
+
+```bash
+# Build the package
+nix build .#meshmc
+
+# Enter the development shell
+nix develop
+
+# Inside the dev shell:
+cd "$cmakeBuildDir"
+ninjaBuildPhase
+ninjaInstallPhase
+```
+
+### Without Flakes
+
+```bash
+nix-build
+# or
+nix-shell
+```
+
+### Binary Cache
+
+A binary cache is available to speed up builds:
 
 ```
-git clone --recursive https://github.com/Project-Tick/MeshMC.git
-cd MeshMC
-mkdir build
+https://meshmc.cachix.org
+```
+
+The public key is:
+
+```
+meshmc.cachix.org-1:6ZNLcfqjVDKmN9/XNWGV3kcjBTL51v1v2V+cvanMkZA=
+```
+
+These are already configured in the flake's `nixConfig`.
+
+## Building with Container (Podman/Docker)
+
+A `Containerfile` (Debian-based) is provided for CI and reproducible builds.
+
+### Build the Container Image
+
+```bash
+podman build -t meshmc-build .
+```
+
+### Run a Build Inside the Container
+
+```bash
+podman run --rm -it -v "$(pwd):/work:z" meshmc-build
+
+# Inside the container:
+git submodule update --init --recursive
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+The container comes with Qt 6.10.2 (installed via `aqtinstall`), Clang, LLD,
+Ninja, CMake, and all required dependencies pre-installed.
+
+## Running Tests
+
+### Using CTest Presets
+
+```bash
+# Configure first (if not done)
+cmake --preset linux
+
+# Build including test targets
+cmake --build --preset linux --config Debug
+
+# Run tests
+ctest --preset linux --build-config Debug
+```
+
+### Running Tests Directly
+
+```bash
 cd build
-cmake \
- -DCMAKE_C_COMPILER=/usr/bin/clang \
- -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX:PATH="$(dirname $PWD)/dist/" \
- -DCMAKE_PREFIX_PATH="/path/to/Qt5.6/" \
- -DQt5_DIR="/path/to/Qt5.6/" \
- -DMeshMC_LAYOUT=mac-bundle \
- -DCMAKE_OSX_DEPLOYMENT_TARGET=10.7 \
- ..
-make install
+ctest --output-on-failure
 ```
 
-**Note:** The final app bundle may not run due to code signing issues, which
-need to be fixed with `codesign -fs -`.
+### Available Test Binaries
+
+After building, individual test binaries are available in `build/`:
+
+- `DownloadTask_test`
+- `FileSystem_test`
+- `GradleSpecifier_test`
+- `GZip_test`
+- `Index_test`
+- `INIFile_test`
+- `JavaVersion_test`
+- `Library_test`
+- `ModFolderModel_test`
+- `MojangVersionFormat_test`
+- `ParseUtils_test`
+- `UpdateChecker_test`
+- `sys_test`
+
+## CMake Options
+
+These options can be set during configuration with `-D<OPTION>=<VALUE>`:
+
+| Option                         | Default  | Description                                |
+|--------------------------------|----------|--------------------------------------------|
+| `ENABLE_LTO`                   | `OFF`\*  | Enable Link Time Optimization              |
+| `MeshMC_BUILD_PLATFORM`       | `""`     | Platform identifier string                 |
+| `MeshMC_BUILD_ARTIFACT`       | `""`     | Artifact name for the updater              |
+| `MeshMC_META_URL`             | (set)    | URL for meta server                        |
+| `MeshMC_NEWS_RSS_URL`         | (set)    | URL for news RSS feed                      |
+| `MeshMC_UPDATER_BASE`         | `""`     | Base URL for the updater                   |
+| `MeshMC_NOTIFICATION_URL`     | (set)    | URL for notifications                      |
+| `MeshMC_PASTE_EE_API_KEY`     | (set)    | paste.ee API key                           |
+| `MeshMC_IMGUR_CLIENT_ID`      | (set)    | Imgur API client ID                        |
+| `MeshMC_CURSEFORGE_API_KEY`   | (set)    | CurseForge API key                         |
+| `BUILD_TESTING`                | `ON`     | Build unit tests                           |
+
+> \* `ENABLE_LTO` defaults to `OFF` in the CMakeLists.txt, but presets set it
+> to `ON`.
+
+### Example
+
+```bash
+cmake --preset linux \
+    -DENABLE_LTO=OFF \
+    -DBUILD_TESTING=OFF \
+    -DMeshMC_BUILD_PLATFORM="linux-x86_64"
+```
+
+## Troubleshooting
+
+### In-Source Builds are Forbidden
+
+CMake will refuse to configure if the source and build directories are the same.
+Always use a separate build directory (the presets handle this automatically with `build/`).
+
+### WSL is Not Supported
+
+Building under Windows Subsystem for Linux is explicitly blocked. Use a native
+Linux environment, the Windows presets, or a container.
+
+### LTO Failures
+
+If you get linker errors with LTO enabled, disable it:
+
+```bash
+cmake --preset linux -DENABLE_LTO=OFF
+```
+
+### Missing Qt
+
+If CMake cannot find Qt, make sure the Qt 6 development packages are installed
+and that Qt's bin directory is in your `PATH` (or set `CMAKE_PREFIX_PATH`):
+
+```bash
+cmake --preset linux -DCMAKE_PREFIX_PATH=/path/to/qt6
+```
+
+### Missing ECM (Extra CMake Modules)
+
+ECM is required. Install it via your package manager:
+
+- **Debian/Ubuntu:** `sudo apt-get install extra-cmake-modules`
+- **Fedora:** `sudo dnf install extra-cmake-modules`
+- **Arch:** `sudo pacman -S extra-cmake-modules`
+- **macOS:** `brew install extra-cmake-modules`
+
+### Submodule Errors
+
+If you see errors about missing files in `libraries/`, ensure submodules are
+initialized:
+
+```bash
+git submodule update --init --recursive
+```
