@@ -32,7 +32,7 @@ body:
     label: This suggestion is unique
     options:
     - label: I have searched the issue tracker and did not find an issue describing my suggestion, especially not one that has been rejected.
-      required: true      
+      required: true
 - type: textarea
   attributes:
     label: You may use the editor below to elaborate further.
