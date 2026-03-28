@@ -60,8 +60,8 @@ public:
     }
     template<typename Derived>
     shared_qobject_ptr(const shared_qobject_ptr<Derived> &other)
+        : m_ptr(other.unwrap())
     {
-        m_ptr = other.unwrap();
     }
 
 public:

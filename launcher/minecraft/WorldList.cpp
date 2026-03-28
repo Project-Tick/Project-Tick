@@ -291,13 +291,13 @@ public:
         m_worlds = worlds;
 
     }
-    QStringList formats() const
+    QStringList formats() const override
     {
         return QMimeData::formats() << "text/uri-list";
     }
 
 protected:
-    QVariant retrieveData(const QString &mimetype, QVariant::Type type) const
+    QVariant retrieveData(const QString &mimetype, QMetaType type) const override
     {
         QList<QUrl> urls;
         for(auto &world: m_worlds)
@@ -309,7 +309,7 @@ protected:
             urls.append(QUrl::fromLocalFile(worldPath));
         }
         const_cast<WorldMimeData*>(this)->setUrls(urls);
-        return QMimeData::retrieveData(mimetype, QMetaType(type));
+        return QMimeData::retrieveData(mimetype, type);
     }
 private:
     QList<World> m_worlds;
