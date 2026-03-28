@@ -260,7 +260,7 @@ void VerifyJavaInstall::fetchRuntimes(const QString &versionId, int requiredMajo
                    .arg(requiredMajor).arg(myOS));
     });
 
-    connect(m_fetchJob.get(), &NetJob::failed, this, [this, requiredMajor](QString reason) {
+    connect(m_fetchJob.get(), &NetJob::failed, this, [this](QString reason) {
         m_fetchJob.reset();
         emitFailed(tr("Failed to fetch Java runtime details: %1").arg(reason));
     });
