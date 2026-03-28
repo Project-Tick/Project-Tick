@@ -39,7 +39,7 @@ public:
     using parts_type = QStringList;
 
     Path() = default;
-    Path(QString string) {
+    Path(QString string) {  // NOLINT(IMPLICIT_CONSTRUCTOR)
         auto parts_in = string.split('/');
         for(auto & part: parts_in) {
             if(part.isEmpty() || part == ".") {

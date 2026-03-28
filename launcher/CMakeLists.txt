@@ -527,6 +527,13 @@ set(ATLAUNCHER_SOURCES
     modplatform/atlauncher/ATLPackManifest.h
 )
 
+set(MODRINTH_SOURCES
+    modplatform/modrinth/ModrinthPackIndex.cpp
+    modplatform/modrinth/ModrinthPackIndex.h
+    modplatform/modrinth/ModrinthPackManifest.cpp
+    modplatform/modrinth/ModrinthPackManifest.h
+)
+
 add_unit_test(Index
     SOURCES meta/Index_test.cpp
     LIBS MeshMC_logic
@@ -559,6 +566,7 @@ set(LOGIC_SOURCES
     ${MODPACKSCH_SOURCES}
     ${TECHNIC_SOURCES}
     ${ATLAUNCHER_SOURCES}
+    ${MODRINTH_SOURCES}
 )
 
 SET(MESHMC_SOURCES
@@ -732,6 +740,11 @@ SET(MESHMC_SOURCES
     ui/pages/modplatform/flame/FlamePage.cpp
     ui/pages/modplatform/flame/FlamePage.h
 
+    ui/pages/modplatform/modrinth/ModrinthModel.cpp
+    ui/pages/modplatform/modrinth/ModrinthModel.h
+    ui/pages/modplatform/modrinth/ModrinthPage.cpp
+    ui/pages/modplatform/modrinth/ModrinthPage.h
+
     ui/pages/modplatform/technic/TechnicModel.cpp
     ui/pages/modplatform/technic/TechnicModel.h
     ui/pages/modplatform/technic/TechnicPage.cpp
@@ -851,6 +864,7 @@ qt6_wrap_ui(MESHMC_UI
     ui/pages/modplatform/atlauncher/AtlPage.ui
     ui/pages/modplatform/VanillaPage.ui
     ui/pages/modplatform/flame/FlamePage.ui
+    ui/pages/modplatform/modrinth/ModrinthPage.ui
     ui/pages/modplatform/legacy_ftb/Page.ui
     ui/pages/modplatform/ImportPage.ui
     ui/pages/modplatform/ftb/FtbPage.ui

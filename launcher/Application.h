@@ -28,6 +28,7 @@
 #include <QIcon>
 #include <QDateTime>
 #include <QUrl>
+#include <QHash>
 #include <updater/GoUpdate.h>
 
 #include <BaseInstance.h>
@@ -79,7 +80,7 @@ public:
 
 public:
     Application(int &argc, char **argv);
-    virtual ~Application();
+    ~Application() override;
 
     GAnalytics *analytics() const {
         return m_analytics;
@@ -193,6 +194,19 @@ private:
 
     // sets the fatal error message and m_status to Failed.
     void showFatalErrorMessage(const QString & title, const QString & content);
+
+    // Constructor initialization helpers
+    void initPlatform();
+    QHash<QString, QVariant> parseCommandLine(int &argc, char **argv);
+    bool resolveDataPath(const QHash<QString, QVariant> &args,
+                         QString &dataPath, QString &adjustedBy,
+                         QString &origcwdPath);
+    bool initPeerInstance();
+    bool initLogging(const QString &dataPath);
+    void setupPaths(const QString &binPath, const QString &origcwdPath, const QString &adjustedBy);
+    void initSettings();
+    void initSubsystems();
+    void initAnalytics();
 
 private:
     void addRunningInstance();

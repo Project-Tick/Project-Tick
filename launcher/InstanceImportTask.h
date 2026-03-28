@@ -17,7 +17,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  *  This file incorporates work covered by the following copyright and
  *  permission notice:
  *
@@ -52,6 +52,7 @@ class QuaZip;
 namespace Flame
 {
     class FileResolvingTask;
+    struct Manifest;
 }
 
 class InstanceImportTask : public InstanceTask
@@ -68,6 +69,9 @@ private:
     void processZipPack();
     void processMeshMC();
     void processFlame();
+    void configureFlameInstance(Flame::Manifest &pack);
+    void onFlameFileResolutionSucceeded();
+    void processModrinth();
     void processTechnic();
 
 private slots:
@@ -90,6 +94,7 @@ private: /* data */
         Unknown,
         MeshMC,
         Flame,
+        Modrinth,
         Technic
     } m_modpackType = ModpackType::Unknown;
 };

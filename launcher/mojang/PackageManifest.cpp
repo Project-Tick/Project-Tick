@@ -94,6 +94,36 @@ void Package::addSource(const FileSource& source) {
 
 
 namespace {
+
+FileSource parseFileDownloads(
+    const QJsonObject &fileObject, File &file)
+{
+    FileSource bestSource;
+    auto downloads = Json::requireObject(fileObject, "downloads");
+    for (auto iter2 = downloads.begin();
+         iter2 != downloads.end(); iter2++) {
+        FileSource source;
+
+        auto downloadObject = Json::requireObject(iter2.value());
+        source.hash = Json::requireString(downloadObject, "sha1");
+        source.size = Json::requireInteger(downloadObject, "size");
+        source.url = Json::requireString(downloadObject, "url");
+
+        auto compression = iter2.key();
+        if (compression == "raw") {
+            file.hash = source.hash;
+            file.size = source.size;
+            source.compression = Compression::Raw;
+        } else if (compression == "lzma") {
+            source.compression = Compression::Lzma;
+        } else {
+            continue;
+        }
+        bestSource.upgrade(source);
+    }
+    return bestSource;
+}
+
 void fromJson(QJsonDocument & doc, Package & out) {
     std::set<Path> seen_paths;
     if (!doc.isObject())
@@ -125,32 +155,9 @@ void fromJson(QJsonDocument & doc, Package & out) {
             continue;
         }
         else if(type == "file") {
-            FileSource bestSource;
             File file;
             file.executable = Json::ensureBoolean(fileObject, QString("executable"), false);
-            auto downloads = Json::requireObject(fileObject, "downloads");
-            for(auto iter2 = downloads.begin(); iter2 != downloads.end(); iter2++) {
-                FileSource source;
-
-                auto downloadObject = Json::requireObject(iter2.value());
-                source.hash = Json::requireString(downloadObject, "sha1");
-                source.size = Json::requireInteger(downloadObject, "size");
-                source.url = Json::requireString(downloadObject, "url");
-
-                auto compression = iter2.key();
-                if(compression == "raw") {
-                    file.hash = source.hash;
-                    file.size = source.size;
-                    source.compression = Compression::Raw;
-                }
-                else if (compression == "lzma") {
-                    source.compression = Compression::Lzma;
-                }
-                else {
-                    continue;
-                }
-                bestSource.upgrade(source);
-            }
+            auto bestSource = parseFileDownloads(fileObject, file);
             if(bestSource.isBad()) {
                 throw JSONValidationError("No valid compression method for file " + iter.key());
             }
@@ -211,7 +218,8 @@ Package Package::fromManifestFile(const QString & filename) {
 #include <sys/stat.h>
 
 namespace {
-// FIXME: Qt obscures symlink targets by making them absolute. that is useless. this is the workaround - we do it ourselves
+// FIXME: Qt obscures symlink targets by making them absolute.
+// This is the workaround - we do it ourselves
 bool actually_read_symlink_target(const QString & filepath, Path & out)
 {
     struct ::stat st;
@@ -225,20 +233,22 @@ bool actually_read_symlink_target(const QString & filepath, Path & out)
     }
 
     auto size = st.st_size ? st.st_size + 1 : PATH_MAX;
-    std::string temp(size, '\0');
-    // because we don't realiably know how long the damn thing actually is, we loop and expand. POSIX is naff
+    QByteArray temp(size, '\0');
+    // because we don't reliably know how long the link target is,
+    // we loop and expand. POSIX is naff
     do
     {
-        auto link_length = ::readlink(filepath_cstr, &temp[0], temp.size());
+        auto link_length = ::readlink(
+            filepath_cstr, temp.data(), temp.size());
         if(link_length == -1)
         {
             return false;
         }
-        if(std::string::size_type(link_length) < temp.size())
+        if(link_length < temp.size())
         {
-            // buffer was long enough and we managed to read the link target. RETURN here.
-            temp.resize(link_length);
-            out = Path(QString::fromUtf8(temp.c_str()));
+            // buffer was long enough
+            out = Path(QString::fromUtf8(
+                temp.constData(), link_length));
             return true;
         }
         temp.resize(temp.size() * 2);
@@ -254,7 +264,11 @@ Package Package::fromInspectedFolder(const QString& folderPath)
     QDir root(folderPath);
 
     Package out;
-    QDirIterator iterator(folderPath, QDir::NoDotAndDotDot | QDir::AllEntries | QDir::System | QDir::Hidden, QDirIterator::Subdirectories);
+    QDirIterator iterator(
+        folderPath,
+        QDir::NoDotAndDotDot | QDir::AllEntries
+            | QDir::System | QDir::Hidden,
+        QDirIterator::Subdirectories);
     while(iterator.hasNext()) {
         iterator.next();
 
@@ -305,7 +319,7 @@ Package Package::fromInspectedFolder(const QString& folderPath)
 }
 
 namespace {
-struct shallow_first_sort
+struct ShallowFirstSort
 {
     bool operator()(const Path &lhs, const Path &rhs) const
     {
@@ -326,7 +340,7 @@ struct shallow_first_sort
     }
 };
 
-struct deep_first_sort
+struct DeepFirstSort
 {
     bool operator()(const Path &lhs, const Path &rhs) const
     {
@@ -348,24 +362,18 @@ struct deep_first_sort
 };
 }
 
-UpdateOperations UpdateOperations::resolve(const Package& from, const Package& to)
+static void resolveFiles(
+    const Package &from, const Package &to,
+    UpdateOperations &out)
 {
-    UpdateOperations out;
-
-    if(!from.valid || !to.valid) {
-        out.valid = false;
-        return out;
-    }
-
-    // Files
-    for(auto iter = from.files.begin(); iter != from.files.end(); iter++) {
+    for (auto iter = from.files.begin();
+         iter != from.files.end(); iter++) {
         const auto &current_hash = iter->second.hash;
         const auto &current_executable = iter->second.executable;
         const auto &path = iter->first;
 
         auto iter2 = to.files.find(path);
-        if(iter2 == to.files.end()) {
-            // removed
+        if (iter2 == to.files.end()) {
             out.deletes.push_back(path);
             continue;
         }
@@ -373,74 +381,105 @@ UpdateOperations UpdateOperations::resolve(const Package& from, const Package& t
         auto new_executable = iter2->second.executable;
         if (current_hash != new_hash) {
             out.deletes.push_back(path);
+            auto sourceIt = to.sources.find(iter2->second.hash);
+            if (sourceIt == to.sources.end()) {
+                continue;
+            }
             out.downloads.emplace(
                 std::pair<Path, FileDownload>{
                     path,
-                    FileDownload(to.sources.at(iter2->second.hash), iter2->second.executable)
+                    FileDownload(sourceIt->second,
+                                 iter2->second.executable)
                 }
             );
-        }
-        else if (current_executable != new_executable) {
+        } else if (current_executable != new_executable) {
             out.executable_fixes[path] = new_executable;
         }
     }
-    for(auto iter = to.files.begin(); iter != to.files.end(); iter++) {
+    for (auto iter = to.files.begin();
+         iter != to.files.end(); iter++) {
         auto path = iter->first;
-        if(!from.files.count(path)) {
+        if (!from.files.count(path)) {
+            auto sourceIt = to.sources.find(iter->second.hash);
+            if (sourceIt == to.sources.end()) {
+                continue;
+            }
             out.downloads.emplace(
                 std::pair<Path, FileDownload>{
                     path,
-                    FileDownload(to.sources.at(iter->second.hash), iter->second.executable)
+                    FileDownload(sourceIt->second,
+                                 iter->second.executable)
                 }
             );
         }
     }
+}
 
-    // Folders
-    std::set<Path, deep_first_sort> remove_folders;
-    std::set<Path, shallow_first_sort> make_folders;
-    for(auto from_path: from.folders) {
-        auto iter = to.folders.find(from_path);
-        if(iter == to.folders.end()) {
+static void resolveFolders(
+    const Package &from, const Package &to,
+    UpdateOperations &out)
+{
+    std::set<Path, DeepFirstSort> remove_folders;
+    std::set<Path, ShallowFirstSort> make_folders;
+    for (auto from_path : from.folders) {
+        if (to.folders.find(from_path) == to.folders.end()) {
             remove_folders.insert(from_path);
         }
     }
-    for(auto & rmdir: remove_folders) {
+    for (auto &rmdir : remove_folders) {
         out.rmdirs.push_back(rmdir);
     }
-    for(auto to_path: to.folders) {
-        auto iter = from.folders.find(to_path);
-        if(iter == from.folders.end()) {
+    for (auto to_path : to.folders) {
+        if (from.folders.find(to_path) == from.folders.end()) {
             make_folders.insert(to_path);
         }
     }
-    for(auto & mkdir: make_folders) {
+    for (auto &mkdir : make_folders) {
         out.mkdirs.push_back(mkdir);
     }
+}
 
-    // Symlinks
-    for(auto iter = from.symlinks.begin(); iter != from.symlinks.end(); iter++) {
+static void resolveSymlinks(
+    const Package &from, const Package &to,
+    UpdateOperations &out)
+{
+    for (auto iter = from.symlinks.begin();
+         iter != from.symlinks.end(); iter++) {
         const auto &current_target = iter->second;
         const auto &path = iter->first;
 
         auto iter2 = to.symlinks.find(path);
-        if(iter2 == to.symlinks.end()) {
-            // removed
+        if (iter2 == to.symlinks.end()) {
             out.deletes.push_back(path);
             continue;
         }
-        const auto &new_target = iter2->second;
-        if (current_target != new_target) {
+        if (current_target != iter2->second) {
             out.deletes.push_back(path);
             out.mklinks[path] = iter2->second;
         }
     }
-    for(auto iter = to.symlinks.begin(); iter != to.symlinks.end(); iter++) {
-        auto path = iter->first;
-        if(!from.symlinks.count(path)) {
-            out.mklinks[path] = iter->second;
+    for (auto iter = to.symlinks.begin();
+         iter != to.symlinks.end(); iter++) {
+        if (!from.symlinks.count(iter->first)) {
+            out.mklinks[iter->first] = iter->second;
         }
     }
+}
+
+UpdateOperations UpdateOperations::resolve(
+    const Package& from, const Package& to)
+{
+    UpdateOperations out;
+
+    if (!from.valid || !to.valid) {
+        out.valid = false;
+        return out;
+    }
+
+    resolveFiles(from, to, out);
+    resolveFolders(from, to, out);
+    resolveSymlinks(from, to, out);
+
     out.valid = true;
     return out;
 }

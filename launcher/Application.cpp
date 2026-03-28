@@ -105,7 +105,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
-#include <stdio.h>
+#include <cstdio>
 #endif
 
 #define STRINGIFY(x) #x
@@ -115,8 +115,8 @@ static const QLatin1String liveCheckFile("live.check");
 
 using namespace Commandline;
 
-#define MACOS_HINT "If you are on macOS Sierra, you might have to move the app to your /Applications or ~/Applications folder. "\
-    "This usually fixes the problem and you can move the application elsewhere afterwards.\n"\
+#define MACOS_HINT "If you are on macOS Sierra, you might have to move the app to your /Applications or ~/Applications"\
+    "folder. This usually fixes the problem and you can move the application elsewhere afterwards.\n"\
     "\n"
 
 namespace {
@@ -154,24 +154,12 @@ QString getIdealPlatform(QString currentPlatform) {
             }
         }
         case Sys::KernelType::Windows: {
-            // FIXME: 5.15.2 is not stable on Windows, due to a large number of completely unpredictable and hard to reproduce issues
+            // FIXME: 5.15.2 is not stable on Windows, due to a large number
+            // of completely unpredictable and hard to reproduce issues
             break;
-/*
-            if(info.kernelMajor == 6 && info.kernelMinor >= 1) {
-                // Windows 7
-                return "win32-5.15.2";
-            }
-            else if (info.kernelMajor > 6) {
-                // Above Windows 7
-                return "win32-5.15.2";
-            }
-            else {
-                // Below Windows 7
-                return "win32";
-            }
-*/
         }
         case Sys::KernelType::Undetermined:
+            [[fallthrough]];
         case Sys::KernelType::Linux: {
             break;
         }
@@ -183,18 +171,104 @@ QString getIdealPlatform(QString currentPlatform) {
 
 Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 {
+    initPlatform();
+    if (m_status != StartingUp) return;
+
+    auto args = parseCommandLine(argc, argv);
+    if (m_status != StartingUp) return;
+
+    QString origcwdPath, adjustedBy, dataPath;
+    if (!resolveDataPath(args, dataPath, adjustedBy, origcwdPath)) return;
+
+    if(m_instanceIdToLaunch.isEmpty() && !m_serverToJoin.isEmpty())
+    {
+        qWarning() << "--server can only be used in combination with --launch!";
+        m_status = Application::Failed;
+        return;
+    }
+
+    if(m_instanceIdToLaunch.isEmpty() && !m_profileToUse.isEmpty())
+    {
+        qWarning() << "--account can only be used in combination with --launch!";
+        m_status = Application::Failed;
+        return;
+    }
+
+    if (!initPeerInstance()) return;
+    if (!initLogging(dataPath)) return;
+
+    QString binPath = applicationDirPath();
+    setupPaths(binPath, origcwdPath, adjustedBy);
+
+    initSettings();
+
+#ifndef QT_NO_ACCESSIBILITY
+    QAccessible::installFactory(groupViewAccessibleFactory);
+#endif /* !QT_NO_ACCESSIBILITY */
+
+    initSubsystems();
+    initAnalytics();
+
+    if(createSetupWizard())
+    {
+        return;
+    }
+    performMainStartupAction();
+}
+
+void Application::initAnalytics()
+{
+    const int analyticsVersion = 2;
+    if(BuildConfig.ANALYTICS_ID.isEmpty())
+    {
+        return;
+    }
+
+    auto analyticsSetting = m_settings->getSetting("Analytics");
+    connect(analyticsSetting.get(), &Setting::SettingChanged, this, &Application::analyticsSettingChanged);
+    QString clientID = m_settings->get("AnalyticsClientID").toString();
+    if(clientID.isEmpty())
+    {
+        clientID = QUuid::createUuid().toString();
+        clientID.remove(QLatin1Char('{'));
+        clientID.remove(QLatin1Char('}'));
+        m_settings->set("AnalyticsClientID", clientID);
+    }
+    m_analytics = new GAnalytics(BuildConfig.ANALYTICS_ID, clientID, analyticsVersion, this);
+    m_analytics->setLogLevel(GAnalytics::Debug);
+    m_analytics->setAnonymizeIPs(true);
+    // FIXME: the ganalytics library has no idea about our fancy shared pointers...
+    m_analytics->setNetworkAccessManager(network().get());
+
+    if(m_settings->get("AnalyticsSeen").toInt() < m_analytics->version())
+    {
+        qDebug() << "Analytics info not seen by user yet (or old version).";
+        return;
+    }
+    if(!m_settings->get("Analytics").toBool())
+    {
+        qDebug() << "Analytics disabled by user.";
+        return;
+    }
+
+    m_analytics->enable();
+    qDebug() << "<> Initialized analytics with tid" << BuildConfig.ANALYTICS_ID;
+}
+
+void Application::initPlatform()
+{
 #if defined Q_OS_WIN32
     // attach the parent console
     if(AttachConsole(ATTACH_PARENT_PROCESS))
     {
-        // if attach succeeds, reopen and sync all the i/o
+        // Reopen and sync all the I/O after attaching to parent console
         if(freopen("CON", "w", stdout))
         {
-            std::cout.sync_with_stdio();
+            std::ios_base::sync_with_stdio();
         }
         if(freopen("CON", "w", stderr))
         {
-            std::cerr.sync_with_stdio();
+            std::ios_base::sync_with_stdio();
         }
         if(freopen("CON", "r", stdin))
         {
@@ -203,7 +277,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         auto out = GetStdHandle (STD_OUTPUT_HANDLE);
         DWORD written;
         const char * endline = "\n";
-        WriteConsole(out, endline, strlen(endline), &written, NULL);
+        WriteConsole(out, endline, strlen(endline), &written, nullptr);
         consoleAttached = true;
     }
 #endif
@@ -238,86 +312,103 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
     // Don't quit on hiding the last window
     this->setQuitOnLastWindowClosed(false);
+}
 
-    // Commandline parsing
+QHash<QString, QVariant> Application::parseCommandLine(int &argc, char **argv)
+{
     QHash<QString, QVariant> args;
+
+    Parser parser(FlagStyle::GNU, ArgumentStyle::SpaceAndEquals);
+
+    // --help
+    parser.addSwitch("help");
+    parser.addShortOpt("help", 'h');
+    parser.addDocumentation("help", "Display this help and exit.");
+    // --version
+    parser.addSwitch("version");
+    parser.addShortOpt("version", 'V');
+    parser.addDocumentation("version", "Display program version and exit.");
+    // --dir
+    parser.addOption("dir");
+    parser.addShortOpt("dir", 'd');
+    parser.addDocumentation(
+        "dir",
+        "Use the supplied folder as application root "
+        "instead of the binary location (use '.' for current)");
+    // --launch
+    parser.addOption("launch");
+    parser.addShortOpt("launch", 'l');
+    parser.addDocumentation("launch", "Launch the specified instance (by instance ID)");
+    // --server
+    parser.addOption("server");
+    parser.addShortOpt("server", 's');
+    parser.addDocumentation("server", "Join the specified server on launch (only valid in combination with --launch)");
+    // --profile
+    parser.addOption("profile");
+    parser.addShortOpt("profile", 'a');
+    parser.addDocumentation(
+        "profile",
+        "Use the account specified by its profile name "
+        "(only valid in combination with --launch)");
+    // --alive
+    parser.addSwitch("alive");
+    parser.addDocumentation("alive", "Write a small '" + liveCheckFile + "' file after MeshMC starts");
+    // --import
+    parser.addOption("import");
+    parser.addShortOpt("import", 'I');
+    parser.addDocumentation("import", "Import instance from specified zip (local path or URL)");
+
+    // parse the arguments
+    try
     {
-        Parser parser(FlagStyle::GNU, ArgumentStyle::SpaceAndEquals);
-
-        // --help
-        parser.addSwitch("help");
-        parser.addShortOpt("help", 'h');
-        parser.addDocumentation("help", "Display this help and exit.");
-        // --version
-        parser.addSwitch("version");
-        parser.addShortOpt("version", 'V');
-        parser.addDocumentation("version", "Display program version and exit.");
-        // --dir
-        parser.addOption("dir");
-        parser.addShortOpt("dir", 'd');
-        parser.addDocumentation("dir", "Use the supplied folder as application root instead of the binary location (use '.' for current)");
-        // --launch
-        parser.addOption("launch");
-        parser.addShortOpt("launch", 'l');
-        parser.addDocumentation("launch", "Launch the specified instance (by instance ID)");
-        // --server
-        parser.addOption("server");
-        parser.addShortOpt("server", 's');
-        parser.addDocumentation("server", "Join the specified server on launch (only valid in combination with --launch)");
-        // --profile
-        parser.addOption("profile");
-        parser.addShortOpt("profile", 'a');
-        parser.addDocumentation("profile", "Use the account specified by its profile name (only valid in combination with --launch)");
-        // --alive
-        parser.addSwitch("alive");
-        parser.addDocumentation("alive", "Write a small '" + liveCheckFile + "' file after MeshMC starts");
-        // --import
-        parser.addOption("import");
-        parser.addShortOpt("import", 'I');
-        parser.addDocumentation("import", "Import instance from specified zip (local path or URL)");
-
-        // parse the arguments
-        try
-        {
-            args = parser.parse(arguments());
-        }
-        catch (const ParsingError &e)
-        {
-            std::cerr << "CommandLineError: " << e.what() << std::endl;
-            if(argc > 0)
-                std::cerr << "Try '" << argv[0] << " -h' to get help on command line parameters."
-                          << std::endl;
-            m_status = Application::Failed;
-            return;
-        }
-
-        // display help and exit
-        if (args["help"].toBool())
-        {
-            std::cout << qPrintable(parser.compileHelp(arguments()[0]));
-            m_status = Application::Succeeded;
-            return;
-        }
-
-        // display version and exit
-        if (args["version"].toBool())
-        {
-            std::cout << "Version " << BuildConfig.printableVersionString().toStdString() << std::endl;
-            std::cout << "Git " << BuildConfig.GIT_COMMIT.toStdString() << std::endl;
-            m_status = Application::Succeeded;
-            return;
-        }
+        args = parser.parse(arguments());
     }
+    catch (const ParsingError &e)
+    {
+        qCritical() << "CommandLineError:" << e.what();
+        if(argc > 0)
+            qCritical() << "Try '" << argv[0]
+                        << "' -h' to get help on command line parameters.";
+        m_status = Application::Failed;
+        return args;
+    }
+
+    // display help and exit
+    if (args["help"].toBool())
+    {
+        QTextStream(stdout) << parser.compileHelp(arguments()[0]);
+        m_status = Application::Succeeded;
+        return args;
+    }
+
+    // display version and exit
+    if (args["version"].toBool())
+    {
+        QTextStream(stdout) << "Version "
+            << BuildConfig.printableVersionString() << "\n";
+        QTextStream(stdout) << "Git "
+            << BuildConfig.GIT_COMMIT << "\n";
+        m_status = Application::Succeeded;
+        return args;
+    }
+
     m_instanceIdToLaunch = args["launch"].toString();
     m_serverToJoin = args["server"].toString();
     m_profileToUse = args["profile"].toString();
     m_liveCheck = args["alive"].toBool();
     m_zipToImport = args["import"].toUrl();
 
-    QString origcwdPath = QDir::currentPath();
-    QString binPath = applicationDirPath();
-    QString adjustedBy;
-    QString dataPath;
+    return args;
+}
+
+bool Application::resolveDataPath(
+    const QHash<QString, QVariant> &args,
+    QString &dataPath,
+    QString &adjustedBy,
+    QString &origcwdPath)
+{
+    origcwdPath = QDir::currentPath();
+
     // change folder
     QString dirParam = args["dir"].toString();
     if (!dirParam.isEmpty())
@@ -383,7 +474,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
                 "MeshMC cannot continue until you fix this problem."
             ).arg(dataPath)
         );
-        return;
+        return false;
     }
     if (!QDir::setCurrent(dataPath))
     {
@@ -401,28 +492,14 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
                 "MeshMC cannot continue until you fix this problem."
             ).arg(dataPath)
         );
-        return;
-    }
-
-    if(m_instanceIdToLaunch.isEmpty() && !m_serverToJoin.isEmpty())
-    {
-        std::cerr << "--server can only be used in combination with --launch!" << std::endl;
-        m_status = Application::Failed;
-        return;
-    }
-
-    if(m_instanceIdToLaunch.isEmpty() && !m_profileToUse.isEmpty())
-    {
-        std::cerr << "--account can only be used in combination with --launch!" << std::endl;
-        m_status = Application::Failed;
-        return;
+        return false;
     }
 
 #if defined(Q_OS_MAC)
     // move user data to new location if on macOS and it still exists in Contents/MacOS
     QDir fi(applicationDirPath());
     QString originalData = fi.absolutePath();
-    // if the config file exists in Contents/MacOS, then user data is still there and needs to moved
+    // Config file in Contents/MacOS means user data still there and needs moving
     if (QFileInfo::exists(FS::PathCombine(originalData, BuildConfig.MESHMC_CONFIGFILE)))
     {
         if (!QFileInfo::exists(FS::PathCombine(originalData, "dontmovemacdata")))
@@ -431,7 +508,14 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             askMoveDialogue = QMessageBox::question(
                 nullptr,
                 BuildConfig.MESHMC_DISPLAYNAME,
-                "Would you like to move application data to a new data location? It will improve MeshMC's performance, but if you switch to older versions it will look like instances have disappeared. If you select no, you can migrate later in settings. You should select yes unless you're commonly switching between different versions (eg. develop and stable).",
+                "Would you like to move application data to a new "
+                "data location? It will improve MeshMC's "
+                "performance, but if you switch to older versions "
+                "it will look like instances have disappeared. "
+                "If you select no, you can migrate later in "
+                "settings. You should select yes unless you're "
+                "commonly switching between different versions "
+                "(eg. develop and stable).",
                 QMessageBox::Yes | QMessageBox::No,
                 QMessageBox::Yes
             );
@@ -481,316 +565,325 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     }
 #endif
 
+    return true;
+}
+
+bool Application::initPeerInstance()
+{
     /*
      * Establish the mechanism for communication with an already running MeshMC that uses the same data path.
      * If there is one, tell it what the user actually wanted to do and exit.
      * We want to initialize this before logging to avoid messing with the log of a potential already running copy.
      */
     auto appID = ApplicationId::fromPathAndVersion(QDir::currentPath(), BuildConfig.printableVersionString());
-    {
-        // FIXME: you can run the same binaries with multiple data dirs and they won't clash. This could cause issues for updates.
-        m_peerInstance = new LocalPeer(this, appID);
-        connect(m_peerInstance, &LocalPeer::messageReceived, this, &Application::messageReceived);
-        if(m_peerInstance->isClient()) {
-            int timeout = 2000;
 
-            if(m_instanceIdToLaunch.isEmpty())
+    // FIXME: you can run the same binaries with multiple data dirs
+    // and they won't clash. This could cause issues for updates.
+    m_peerInstance = new LocalPeer(this, appID);
+    connect(m_peerInstance, &LocalPeer::messageReceived, this, &Application::messageReceived);
+    if(m_peerInstance->isClient()) {
+        int timeout = 2000;
+
+        if(m_instanceIdToLaunch.isEmpty())
+        {
+            ApplicationMessage activate;
+            activate.command = "activate";
+            m_peerInstance->sendMessage(activate.serialize(), timeout);
+
+            if(!m_zipToImport.isEmpty())
             {
-                ApplicationMessage activate;
-                activate.command = "activate";
-                m_peerInstance->sendMessage(activate.serialize(), timeout);
-
-                if(!m_zipToImport.isEmpty())
-                {
-                    ApplicationMessage import;
-                    import.command = "import";
-                    import.args.insert("path", m_zipToImport.toString());
-                    m_peerInstance->sendMessage(import.serialize(), timeout);
-                }
+                ApplicationMessage import;
+                import.command = "import";
+                import.args.insert("path", m_zipToImport.toString());
+                m_peerInstance->sendMessage(import.serialize(), timeout);
             }
-            else
-            {
-                ApplicationMessage launch;
-                launch.command = "launch";
-                launch.args["id"] = m_instanceIdToLaunch;
-
-                if(!m_serverToJoin.isEmpty())
-                {
-                    launch.args["server"] = m_serverToJoin;
-                }
-                if(!m_profileToUse.isEmpty())
-                {
-                    launch.args["profile"] = m_profileToUse;
-                }
-                m_peerInstance->sendMessage(launch.serialize(), timeout);
-            }
-            m_status = Application::Succeeded;
-            return;
-        }
-    }
-
-    // init the logger
-    {
-        static const QString logBase = BuildConfig.MESHMC_NAME + "-%0.log";
-        auto moveFile = [](const QString &oldName, const QString &newName)
-        {
-            QFile::remove(newName);
-            QFile::copy(oldName, newName);
-            QFile::remove(oldName);
-        };
-
-        moveFile(logBase.arg(3), logBase.arg(4));
-        moveFile(logBase.arg(2), logBase.arg(3));
-        moveFile(logBase.arg(1), logBase.arg(2));
-        moveFile(logBase.arg(0), logBase.arg(1));
-
-        logFile = std::unique_ptr<QFile>(new QFile(logBase.arg(0)));
-        if(!logFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
-        {
-            showFatalErrorMessage(
-                "MeshMC data folder is not writable!",
-                QString(
-                    "MeshMC couldn't create a log file - the data folder is not writable.\n"
-                    "\n"
-    #if defined(Q_OS_MAC)
-                    MACOS_HINT
-    #endif
-                    "Make sure you have write permissions to the data folder.\n"
-                    "(%1)\n"
-                    "\n"
-                    "MeshMC cannot continue until you fix this problem."
-                ).arg(dataPath)
-            );
-            return;
-        }
-        qInstallMessageHandler(appDebugOutput);
-        qDebug() << "<> Log initialized.";
-    }
-
-    // Set up paths
-    {
-        // Root path is used for updates.
-#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
-        QDir foo(FS::PathCombine(binPath, ".."));
-        m_rootPath = foo.absolutePath();
-#elif defined(Q_OS_WIN32)
-        m_rootPath = binPath;
-#elif defined(Q_OS_MAC)
-        QDir foo(FS::PathCombine(binPath, "../.."));
-        m_rootPath = foo.absolutePath();
-        // on macOS, touch the root to force Finder to reload the .app metadata (and fix any icon change issues)
-        FS::updateTimestamp(m_rootPath);
-#endif
-
-        qInfo() << BuildConfig.MESHMC_DISPLAYNAME << ", (c) 2026 " << BuildConfig.MESHMC_COPYRIGHT;
-        qInfo() << "Version                    : " << BuildConfig.printableVersionString();
-        qInfo() << "Git commit                 : " << BuildConfig.GIT_COMMIT;
-        qInfo() << "Git refspec                : " << BuildConfig.GIT_REFSPEC;
-        qInfo() << "Compiled for               : " << BuildConfig.systemID();
-        qInfo() << "Compiled by                : " << BuildConfig.compilerID();
-        qInfo() << "Build Artifact             : " << BuildConfig.BUILD_ARTIFACT;
-        if (adjustedBy.size())
-        {
-            qInfo() << "Work dir before adjustment : " << origcwdPath;
-            qInfo() << "Work dir after adjustment  : " << QDir::currentPath();
-            qInfo() << "Adjusted by                : " << adjustedBy;
         }
         else
         {
-            qInfo() << "Work dir                   : " << QDir::currentPath();
+            ApplicationMessage launch;
+            launch.command = "launch";
+            launch.args["id"] = m_instanceIdToLaunch;
+
+            if(!m_serverToJoin.isEmpty())
+            {
+                launch.args["server"] = m_serverToJoin;
+            }
+            if(!m_profileToUse.isEmpty())
+            {
+                launch.args["profile"] = m_profileToUse;
+            }
+            m_peerInstance->sendMessage(launch.serialize(), timeout);
         }
-        qInfo() << "Binary path                : " << binPath;
-        qInfo() << "Application root path      : " << m_rootPath;
-        if(!m_instanceIdToLaunch.isEmpty())
-        {
-            qInfo() << "ID of instance to launch   : " << m_instanceIdToLaunch;
-        }
-        if(!m_serverToJoin.isEmpty())
-        {
-            qInfo() << "Address of server to join  :" << m_serverToJoin;
-        }
-        qInfo() << "<> Paths set.";
+        m_status = Application::Succeeded;
+        return false;
     }
 
-    do // once
+    return true;
+}
+
+bool Application::initLogging(const QString &dataPath)
+{
+    static const QString logBase = BuildConfig.MESHMC_NAME + "-%0.log";
+    auto moveFile = [](const QString &oldName, const QString &newName)
     {
-        if(m_liveCheck)
+        static_cast<void>(QFile::remove(newName));
+        static_cast<void>(QFile::copy(oldName, newName));
+        static_cast<void>(QFile::remove(oldName));
+    };
+
+    moveFile(logBase.arg(3), logBase.arg(4));
+    moveFile(logBase.arg(2), logBase.arg(3));
+    moveFile(logBase.arg(1), logBase.arg(2));
+    moveFile(logBase.arg(0), logBase.arg(1));
+
+    logFile = std::make_unique<QFile>(logBase.arg(0));
+    if(!logFile->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+    {
+        showFatalErrorMessage(
+            "MeshMC data folder is not writable!",
+            QString(
+                "MeshMC couldn't create a log file - the data folder is not writable.\n"
+                "\n"
+#if defined(Q_OS_MAC)
+                MACOS_HINT
+#endif
+                "Make sure you have write permissions to the data folder.\n"
+                "(%1)\n"
+                "\n"
+                "MeshMC cannot continue until you fix this problem."
+            ).arg(dataPath)
+        );
+        return false;
+    }
+    qInstallMessageHandler(appDebugOutput);
+    qDebug() << "<> Log initialized.";
+    return true;
+}
+
+void Application::setupPaths(const QString &binPath, const QString &origcwdPath, const QString &adjustedBy)
+{
+    // Root path is used for updates.
+#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
+    QDir foo(FS::PathCombine(binPath, ".."));
+    m_rootPath = foo.absolutePath();
+#elif defined(Q_OS_WIN32)
+    m_rootPath = binPath;
+#elif defined(Q_OS_MAC)
+    QDir foo(FS::PathCombine(binPath, "../.."));
+    m_rootPath = foo.absolutePath();
+    // on macOS, touch the root to force Finder to reload the .app metadata (and fix any icon change issues)
+    FS::updateTimestamp(m_rootPath);
+#endif
+
+    qInfo() << BuildConfig.MESHMC_DISPLAYNAME << ", (c) 2026 " << BuildConfig.MESHMC_COPYRIGHT;
+    qInfo() << "Version                    : " << BuildConfig.printableVersionString();
+    qInfo() << "Git commit                 : " << BuildConfig.GIT_COMMIT;
+    qInfo() << "Git refspec                : " << BuildConfig.GIT_REFSPEC;
+    qInfo() << "Compiled for               : " << BuildConfig.systemID();
+    qInfo() << "Compiled by                : " << BuildConfig.compilerID();
+    qInfo() << "Build Artifact             : " << BuildConfig.BUILD_ARTIFACT;
+    if (adjustedBy.size())
+    {
+        qInfo() << "Work dir before adjustment : " << origcwdPath;
+        qInfo() << "Work dir after adjustment  : " << QDir::currentPath();
+        qInfo() << "Adjusted by                : " << adjustedBy;
+    }
+    else
+    {
+        qInfo() << "Work dir                   : " << QDir::currentPath();
+    }
+    qInfo() << "Binary path                : " << binPath;
+    qInfo() << "Application root path      : " << m_rootPath;
+    if(!m_instanceIdToLaunch.isEmpty())
+    {
+        qInfo() << "ID of instance to launch   : " << m_instanceIdToLaunch;
+    }
+    if(!m_serverToJoin.isEmpty())
+    {
+        qInfo() << "Address of server to join  :" << m_serverToJoin;
+    }
+    qInfo() << "<> Paths set.";
+
+    if(m_liveCheck)
+    {
+        auto appID = ApplicationId::fromPathAndVersion(QDir::currentPath(), BuildConfig.printableVersionString());
+        QFile check(liveCheckFile);
+        if(check.open(QIODevice::WriteOnly | QIODevice::Truncate))
         {
-            QFile check(liveCheckFile);
-            if(!check.open(QIODevice::WriteOnly | QIODevice::Truncate))
-            {
-                qWarning() << "Could not open" << liveCheckFile << "for writing!";
-                break;
-            }
             auto payload = appID.toString().toUtf8();
             if(check.write(payload) != payload.size())
             {
                 qWarning() << "Could not write into" << liveCheckFile << "!";
                 check.remove();
-                break;
             }
-            check.close();
+            else
+            {
+                check.close();
+            }
         }
-    } while(false);
+        else
+        {
+            qWarning() << "Could not open" << liveCheckFile << "for writing!";
+        }
+    }
+}
 
-    // Initialize application settings
-    {
-        m_settings.reset(new INISettingsObject(BuildConfig.MESHMC_CONFIGFILE, this));
-        // Updates
-        m_settings->registerSetting("UpdateChannel", BuildConfig.VERSION_CHANNEL);
-        m_settings->registerSetting("AutoUpdate", true);
+void Application::initSettings()
+{
+    m_settings.reset(new INISettingsObject(BuildConfig.MESHMC_CONFIGFILE, this));
+    // Updates
+    m_settings->registerSetting("UpdateChannel", BuildConfig.VERSION_CHANNEL);
+    m_settings->registerSetting("AutoUpdate", true);
 
-        // Theming
-        m_settings->registerSetting("IconTheme", QString("pe_colored"));
-        m_settings->registerSetting("ApplicationTheme", QString("system"));
+    // Theming
+    m_settings->registerSetting("IconTheme", QString("pe_colored"));
+    m_settings->registerSetting("ApplicationTheme", QString("system"));
 
-        // Notifications
-        m_settings->registerSetting("ShownNotifications", QString());
+    // Notifications
+    m_settings->registerSetting("ShownNotifications", QString());
 
-        // Remembered state
-        m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
+    // Remembered state
+    m_settings->registerSetting("LastUsedGroupForNewInstance", QString());
 
-        QString defaultMonospace;
-        int defaultSize = 11;
+    QString defaultMonospace;
+    int defaultSize = 11;
 #ifdef Q_OS_WIN32
-        defaultMonospace = "Courier";
-        defaultSize = 10;
+    defaultMonospace = "Courier";
+    defaultSize = 10;
 #elif defined(Q_OS_MAC)
-        defaultMonospace = "Menlo";
+    defaultMonospace = "Menlo";
 #else
-        defaultMonospace = "Monospace";
+    defaultMonospace = "Monospace";
 #endif
 
-        // resolve the font so the default actually matches
-        QFont consoleFont;
-        consoleFont.setFamily(defaultMonospace);
-        consoleFont.setStyleHint(QFont::Monospace);
-        consoleFont.setFixedPitch(true);
-        QFontInfo consoleFontInfo(consoleFont);
-        QString resolvedDefaultMonospace = consoleFontInfo.family();
-        QFont resolvedFont(resolvedDefaultMonospace);
-        qDebug() << "Detected default console font:" << resolvedDefaultMonospace
-            << ", substitutions:" << resolvedFont.substitutions().join(',');
+    // resolve the font so the default actually matches
+    QFont consoleFont;
+    consoleFont.setFamily(defaultMonospace);
+    consoleFont.setStyleHint(QFont::Monospace);
+    consoleFont.setFixedPitch(true);
+    QFontInfo consoleFontInfo(consoleFont);
+    QString resolvedDefaultMonospace = consoleFontInfo.family();
+    QFont resolvedFont(resolvedDefaultMonospace);
+    qDebug() << "Detected default console font:" << resolvedDefaultMonospace
+        << ", substitutions:" << resolvedFont.substitutions().join(',');
 
-        m_settings->registerSetting("ConsoleFont", resolvedDefaultMonospace);
-        m_settings->registerSetting("ConsoleFontSize", defaultSize);
-        m_settings->registerSetting("ConsoleMaxLines", 100000);
-        m_settings->registerSetting("ConsoleOverflowStop", true);
+    m_settings->registerSetting("ConsoleFont", resolvedDefaultMonospace);
+    m_settings->registerSetting("ConsoleFontSize", defaultSize);
+    m_settings->registerSetting("ConsoleMaxLines", 100000);
+    m_settings->registerSetting("ConsoleOverflowStop", true);
 
-        // Folders
-        m_settings->registerSetting("InstanceDir", "instances");
-        m_settings->registerSetting({"CentralModsDir", "ModsDir"}, "mods");
-        m_settings->registerSetting("IconsDir", "icons");
+    // Folders
+    m_settings->registerSetting("InstanceDir", "instances");
+    m_settings->registerSetting({"CentralModsDir", "ModsDir"}, "mods");
+    m_settings->registerSetting("IconsDir", "icons");
 
-        // Editors
-        m_settings->registerSetting("JsonEditor", QString());
+    // Editors
+    m_settings->registerSetting("JsonEditor", QString());
 
-        // Language
-        m_settings->registerSetting("Language", QString());
+    // Language
+    m_settings->registerSetting("Language", QString());
 
-        // Console
-        m_settings->registerSetting("ShowConsole", false);
-        m_settings->registerSetting("AutoCloseConsole", false);
-        m_settings->registerSetting("ShowConsoleOnError", true);
-        m_settings->registerSetting("LogPrePostOutput", true);
+    // Console
+    m_settings->registerSetting("ShowConsole", false);
+    m_settings->registerSetting("AutoCloseConsole", false);
+    m_settings->registerSetting("ShowConsoleOnError", true);
+    m_settings->registerSetting("LogPrePostOutput", true);
 
-        // Window Size
-        m_settings->registerSetting({"LaunchMaximized", "MCWindowMaximize"}, false);
-        m_settings->registerSetting({"MinecraftWinWidth", "MCWindowWidth"}, 854);
-        m_settings->registerSetting({"MinecraftWinHeight", "MCWindowHeight"}, 480);
+    // Window Size
+    m_settings->registerSetting({"LaunchMaximized", "MCWindowMaximize"}, false);
+    m_settings->registerSetting({"MinecraftWinWidth", "MCWindowWidth"}, 854);
+    m_settings->registerSetting({"MinecraftWinHeight", "MCWindowHeight"}, 480);
 
-        // Proxy Settings
-        m_settings->registerSetting("ProxyType", "None");
-        m_settings->registerSetting({"ProxyAddr", "ProxyHostName"}, "127.0.0.1");
-        m_settings->registerSetting("ProxyPort", 8080);
-        m_settings->registerSetting({"ProxyUser", "ProxyUsername"}, "");
-        m_settings->registerSetting({"ProxyPass", "ProxyPassword"}, "");
+    // Proxy Settings
+    m_settings->registerSetting("ProxyType", "None");
+    m_settings->registerSetting({"ProxyAddr", "ProxyHostName"}, "127.0.0.1");
+    m_settings->registerSetting("ProxyPort", 8080);
+    m_settings->registerSetting({"ProxyUser", "ProxyUsername"}, "");
+    m_settings->registerSetting({"ProxyPass", "ProxyPassword"}, "");
 
-        // Memory
-        m_settings->registerSetting({"MinMemAlloc", "MinMemoryAlloc"}, 512);
-        m_settings->registerSetting({"MaxMemAlloc", "MaxMemoryAlloc"}, 1024);
-        m_settings->registerSetting("PermGen", 128);
+    // Memory
+    m_settings->registerSetting({"MinMemAlloc", "MinMemoryAlloc"}, 512);
+    m_settings->registerSetting({"MaxMemAlloc", "MaxMemoryAlloc"}, 1024);
+    m_settings->registerSetting("PermGen", 128);
 
-        // Java Settings
-        m_settings->registerSetting("JavaPath", "");
-        m_settings->registerSetting("JavaTimestamp", 0);
-        m_settings->registerSetting("JavaArchitecture", "");
-        m_settings->registerSetting("JavaVersion", "");
-        m_settings->registerSetting("JavaVendor", "");
-        m_settings->registerSetting("LastHostname", "");
-        m_settings->registerSetting("JvmArgs", "");
+    // Java Settings
+    m_settings->registerSetting("JavaPath", "");
+    m_settings->registerSetting("JavaTimestamp", 0);
+    m_settings->registerSetting("JavaArchitecture", "");
+    m_settings->registerSetting("JavaVersion", "");
+    m_settings->registerSetting("JavaVendor", "");
+    m_settings->registerSetting("LastHostname", "");
+    m_settings->registerSetting("JvmArgs", "");
 
-        // Native library workarounds
-        m_settings->registerSetting("UseNativeOpenAL", false);
-        m_settings->registerSetting("UseNativeGLFW", false);
+    // Native library workarounds
+    m_settings->registerSetting("UseNativeOpenAL", false);
+    m_settings->registerSetting("UseNativeGLFW", false);
 
-        // Game time
-        m_settings->registerSetting("ShowGameTime", true);
-        m_settings->registerSetting("ShowGlobalGameTime", true);
-        m_settings->registerSetting("RecordGameTime", true);
+    // Game time
+    m_settings->registerSetting("ShowGameTime", true);
+    m_settings->registerSetting("ShowGlobalGameTime", true);
+    m_settings->registerSetting("RecordGameTime", true);
 
-        // Minecraft launch method
-        m_settings->registerSetting("MCLaunchMethod", "MeshMCPart");
+    // Minecraft launch method
+    m_settings->registerSetting("MCLaunchMethod", "MeshMCPart");
 
-        // Wrapper command for launch
-        m_settings->registerSetting("WrapperCommand", "");
+    // Wrapper command for launch
+    m_settings->registerSetting("WrapperCommand", "");
 
-        // Custom Commands
-        m_settings->registerSetting({"PreLaunchCommand", "PreLaunchCmd"}, "");
-        m_settings->registerSetting({"PostExitCommand", "PostExitCmd"}, "");
+    // Custom Commands
+    m_settings->registerSetting({"PreLaunchCommand", "PreLaunchCmd"}, "");
+    m_settings->registerSetting({"PostExitCommand", "PostExitCmd"}, "");
 
-        // The cat
-        m_settings->registerSetting("TheCat", false);
+    // The cat
+    m_settings->registerSetting("TheCat", false);
 
-        m_settings->registerSetting("InstSortMode", "Name");
-        m_settings->registerSetting("SelectedInstance", QString());
+    m_settings->registerSetting("InstSortMode", "Name");
+    m_settings->registerSetting("SelectedInstance", QString());
 
-        // Window state and geometry
-        m_settings->registerSetting("MainWindowState", "");
-        m_settings->registerSetting("MainWindowGeometry", "");
+    // Window state and geometry
+    m_settings->registerSetting("MainWindowState", "");
+    m_settings->registerSetting("MainWindowGeometry", "");
 
-        m_settings->registerSetting("ConsoleWindowState", "");
-        m_settings->registerSetting("ConsoleWindowGeometry", "");
+    m_settings->registerSetting("ConsoleWindowState", "");
+    m_settings->registerSetting("ConsoleWindowGeometry", "");
 
-        m_settings->registerSetting("SettingsGeometry", "");
+    m_settings->registerSetting("SettingsGeometry", "");
 
-        m_settings->registerSetting("PagedGeometry", "");
+    m_settings->registerSetting("PagedGeometry", "");
 
-        m_settings->registerSetting("NewInstanceGeometry", "");
+    m_settings->registerSetting("NewInstanceGeometry", "");
 
-        m_settings->registerSetting("UpdateDialogGeometry", "");
+    m_settings->registerSetting("UpdateDialogGeometry", "");
 
-        // paste.ee API key
-        m_settings->registerSetting("PasteEEAPIKey", "meshmc");
+    // paste.ee API key
+    m_settings->registerSetting("PasteEEAPIKey", "meshmc");
 
-        if(!BuildConfig.ANALYTICS_ID.isEmpty())
-        {
-            // Analytics
-            m_settings->registerSetting("Analytics", true);
-            m_settings->registerSetting("AnalyticsSeen", 0);
-            m_settings->registerSetting("AnalyticsClientID", QString());
-        }
-
-        // Init page provider
-        {
-            m_globalSettingsProvider = std::make_shared<GenericPageProvider>(tr("Settings"));
-            m_globalSettingsProvider->addPage<MeshMCPage>();
-            m_globalSettingsProvider->addPage<MinecraftPage>();
-            m_globalSettingsProvider->addPage<JavaPage>();
-            m_globalSettingsProvider->addPage<LanguagePage>();
-            m_globalSettingsProvider->addPage<CustomCommandsPage>();
-            m_globalSettingsProvider->addPage<ProxyPage>();
-            m_globalSettingsProvider->addPage<ExternalToolsPage>();
-            m_globalSettingsProvider->addPage<AccountListPage>();
-            m_globalSettingsProvider->addPage<PasteEEPage>();
-        }
-        qDebug() << "<> Settings loaded.";
+    if(!BuildConfig.ANALYTICS_ID.isEmpty())
+    {
+        // Analytics
+        m_settings->registerSetting("Analytics", true);
+        m_settings->registerSetting("AnalyticsSeen", 0);
+        m_settings->registerSetting("AnalyticsClientID", QString());
     }
 
-#ifndef QT_NO_ACCESSIBILITY
-    QAccessible::installFactory(groupViewAccessibleFactory);
-#endif /* !QT_NO_ACCESSIBILITY */
+    // Init page provider
+    {
+        m_globalSettingsProvider = std::make_shared<GenericPageProvider>(tr("Settings"));
+        m_globalSettingsProvider->addPage<MeshMCPage>();
+        m_globalSettingsProvider->addPage<MinecraftPage>();
+        m_globalSettingsProvider->addPage<JavaPage>();
+        m_globalSettingsProvider->addPage<LanguagePage>();
+        m_globalSettingsProvider->addPage<CustomCommandsPage>();
+        m_globalSettingsProvider->addPage<ProxyPage>();
+        m_globalSettingsProvider->addPage<ExternalToolsPage>();
+        m_globalSettingsProvider->addPage<AccountListPage>();
+        m_globalSettingsProvider->addPage<PasteEEPage>();
+    }
+    qDebug() << "<> Settings loaded.";
+}
 
+void Application::initSubsystems()
+{
     // initialize network access and proxy setup
     {
         m_network = new QNetworkAccessManager();
@@ -818,7 +911,10 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         auto platform = getIdealPlatform(BuildConfig.BUILD_PLATFORM);
         auto channelUrl = BuildConfig.UPDATER_BASE + platform + "/channels.json";
         qDebug() << "Initializing updater with platform: " << platform << " -- " << channelUrl;
-        m_updateChecker.reset(new UpdateChecker(m_network, channelUrl, BuildConfig.VERSION_CHANNEL, BuildConfig.VERSION_BUILD));
+        m_updateChecker.reset(new UpdateChecker(
+            m_network, channelUrl,
+            BuildConfig.VERSION_CHANNEL,
+            BuildConfig.VERSION_BUILD));
         qDebug() << "<> Updater started.";
     }
 
@@ -920,8 +1016,8 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     m_translations->downloadIndex();
 
     //FIXME: what to do with these?
-    m_profilers.insert("jprofiler", std::shared_ptr<BaseProfilerFactory>(new JProfilerFactory()));
-    m_profilers.insert("jvisualvm", std::shared_ptr<BaseProfilerFactory>(new JVisualVMFactory()));
+    m_profilers.insert("jprofiler", std::make_shared<JProfilerFactory>());
+    m_profilers.insert("jvisualvm", std::make_shared<JVisualVMFactory>());
     for (auto profiler : m_profilers.values())
     {
         profiler->registerSettings(m_settings);
@@ -951,52 +1047,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         setApplicationTheme(settings()->get("ApplicationTheme").toString(), true);
         qDebug() << "<> Application theme set.";
     }
-
-    // Initialize analytics
-    [this]()
-    {
-        const int analyticsVersion = 2;
-        if(BuildConfig.ANALYTICS_ID.isEmpty())
-        {
-            return;
-        }
-
-        auto analyticsSetting = m_settings->getSetting("Analytics");
-        connect(analyticsSetting.get(), &Setting::SettingChanged, this, &Application::analyticsSettingChanged);
-        QString clientID = m_settings->get("AnalyticsClientID").toString();
-        if(clientID.isEmpty())
-        {
-            clientID = QUuid::createUuid().toString();
-            clientID.remove(QLatin1Char('{'));
-            clientID.remove(QLatin1Char('}'));
-            m_settings->set("AnalyticsClientID", clientID);
-        }
-        m_analytics = new GAnalytics(BuildConfig.ANALYTICS_ID, clientID, analyticsVersion, this);
-        m_analytics->setLogLevel(GAnalytics::Debug);
-        m_analytics->setAnonymizeIPs(true);
-        // FIXME: the ganalytics library has no idea about our fancy shared pointers...
-        m_analytics->setNetworkAccessManager(network().get());
-
-        if(m_settings->get("AnalyticsSeen").toInt() < m_analytics->version())
-        {
-            qDebug() << "Analytics info not seen by user yet (or old version).";
-            return;
-        }
-        if(!m_settings->get("Analytics").toBool())
-        {
-            qDebug() << "Analytics disabled by user.";
-            return;
-        }
-
-        m_analytics->enable();
-        qDebug() << "<> Initialized analytics with tid" << BuildConfig.ANALYTICS_ID;
-    }();
-
-    if(createSetupWizard())
-    {
-        return;
-    }
-    performMainStartupAction();
 }
 
 bool Application::createSetupWizard()
@@ -1194,7 +1244,10 @@ void Application::messageReceived(const QByteArray& message)
         if(!profile.isEmpty()) {
             accountObject = accounts()->getAccountByProfileName(profile);
             if(!accountObject) {
-                qWarning() << "Launch command requires the specified profile to be valid. " << profile << "does not resolve to any account.";
+                qWarning() << "Launch command requires the specified"
+                           << "profile to be valid."
+                           << profile
+                           << "does not resolve to any account.";
                 return;
             }
         }
@@ -1292,7 +1345,6 @@ bool Application::openJsonEditor(const QString &filename)
     }
     else
     {
-        //return DesktopServices::openFile(m_settings->get("JsonEditor").toString(), file);
         return DesktopServices::run(m_settings->get("JsonEditor").toString(), {file});
     }
 }
@@ -1482,8 +1534,12 @@ MainWindow* Application::showMainWindow(bool minimized)
     else
     {
         m_mainWindow = new MainWindow();
-        m_mainWindow->restoreState(QByteArray::fromBase64(APPLICATION->settings()->get("MainWindowState").toByteArray()));
-        m_mainWindow->restoreGeometry(QByteArray::fromBase64(APPLICATION->settings()->get("MainWindowGeometry").toByteArray()));
+        m_mainWindow->restoreState(
+            QByteArray::fromBase64(
+                APPLICATION->settings()->get("MainWindowState").toByteArray()));
+        m_mainWindow->restoreGeometry(
+            QByteArray::fromBase64(
+                APPLICATION->settings()->get("MainWindowGeometry").toByteArray()));
         if(minimized)
         {
             m_mainWindow->showMinimized();
@@ -1698,7 +1754,18 @@ QString Application::getJarsPath()
 {
     if(m_jarsPath.isEmpty())
     {
+#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
+        auto appDir = QCoreApplication::applicationDirPath();
+        auto installedPath = FS::PathCombine(
+            appDir, "..", "share", BuildConfig.MESHMC_NAME);
+        if (QDir(installedPath).exists())
+        {
+            return installedPath;
+        }
+        return FS::PathCombine(appDir, "jars");
+#else
         return FS::PathCombine(QCoreApplication::applicationDirPath(), "jars");
+#endif
     }
     return m_jarsPath;
 }

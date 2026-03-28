@@ -96,6 +96,7 @@ my $g_warn_count   = 0;
 my $g_info_count   = 0;
 my $g_file_count   = 0;
 my $g_line_count   = 0;
+my @g_current_lines = ();
 
 # Options
 my $opt_diff       = 0;
@@ -432,6 +433,17 @@ sub severity_label {
 
 sub report {
     my ($file, $line, $severity, $rule, $message) = @_;
+
+    # Support NOLINT suppression comments in source lines
+    if ($line > 0 && $line <= scalar @g_current_lines) {
+        my $src = $g_current_lines[$line - 1];
+        if ($src =~ m{//\s*NOLINT\b(?:\(([^)]+)\))?}) {
+            my $nolint_rules = $1;
+            if (!defined $nolint_rules || $nolint_rules =~ /\b\Q$rule\E\b/i) {
+                return;  # Suppressed by NOLINT
+            }
+        }
+    }
 
     # Always track counts and store issues regardless of display mode
     if ($severity == SEV_ERROR) {
@@ -1009,6 +1021,7 @@ sub process_diff_content {
 
         # Pass the full file content but only mark diff-changed lines
         my %changed = %{$file_changes{$file}};
+        @g_current_lines = @lines;
         check_file_content($filepath, \@lines, \%changed);
     }
 }
@@ -1045,6 +1058,9 @@ sub process_file {
 
     $g_file_count++;
     $g_line_count += scalar @lines;
+
+    # Store current file lines for NOLINT support in report()
+    @g_current_lines = @lines;
 
     # All lines are considered "changed" when checking a file directly
     my %all_lines = map { ($_ + 1) => 1 } (0 .. $#lines);
@@ -2345,7 +2361,7 @@ sub check_constructor_patterns {
         next if $line =~ /^\s*\*/;
 
         # Check for single-parameter constructors without explicit
-        if ($line =~ /^\s*(\w+)\s*\(\s*(?:const\s+)?(?:\w+(?:::\w+)*)\s*[&*]?\s*\w+\s*\)\s*[;{]/ &&
+        if ($line =~ /^\s*(\w+)\s*\(\s*(?:const\s+)?(?:\w+(?:::\w+)*)(?:\s+[&*]?\s*\w+|\s*[&*]+\s*\w+)\s*\)\s*[;{]/ &&
             $line !~ /\bexplicit\b/ && $line !~ /\bvirtual\b/ && $line !~ /\boverride\b/) {
             my $class = $1;
             # Skip destructors, operators
@@ -2387,6 +2403,7 @@ sub check_function_length {
     my $function_start = -1;
     my $function_name = '';
     my $in_function = 0;
+    my $brace_counted_line = -1;
 
     for (my $i = 0; $i < scalar @$lines_ref; $i++) {
         my $line = $lines_ref->[$i];
@@ -2397,37 +2414,41 @@ sub check_function_length {
         # Detect function definition start
         if (!$in_function && $line =~ /^(?:\w[\w:*&<> ,]*\s+)?(\w+(?:::\w+)?)\s*\([^;]*$/) {
             my $name = $1;
-            # Check if next lines contain the opening brace
             if ($line =~ /{/) {
                 $function_start = $i;
                 $function_name = $name;
                 $in_function = 1;
                 $brace_depth = count_braces($line);
+                $brace_counted_line = $i;
             } elsif ($i + 1 < scalar @$lines_ref && $lines_ref->[$i + 1] =~ /^\s*{/) {
                 $function_start = $i;
                 $function_name = $name;
             }
         }
 
+        # Handle deferred function start (opening brace on next line)
         if ($function_start >= 0 && !$in_function && $line =~ /{/) {
             $in_function = 1;
-            $brace_depth = 0;
+            $brace_depth = count_braces($line);
+            $brace_counted_line = $i;
         }
 
-        if ($in_function) {
+        # Count braces for subsequent lines (skip already-counted start line)
+        if ($in_function && $i != $brace_counted_line) {
             $brace_depth += count_braces($line);
+        }
 
-            if ($brace_depth <= 0 && $line =~ /}/) {
-                my $length = $i - $function_start + 1;
-                if ($length > $MAX_FUNCTION_LENGTH) {
-                    report($filepath, $function_start + 1, SEV_WARNING, 'FUNCTION_TOO_LONG',
-                        "Function '$function_name' is $length lines (recommended maximum: $MAX_FUNCTION_LENGTH). Consider refactoring.");
-                }
-                $in_function = 0;
-                $function_start = -1;
-                $function_name = '';
-                $brace_depth = 0;
+        if ($in_function && $brace_depth <= 0 && $line =~ /}/) {
+            my $length = $i - $function_start + 1;
+            if ($length > $MAX_FUNCTION_LENGTH) {
+                report($filepath, $function_start + 1, SEV_WARNING, 'FUNCTION_TOO_LONG',
+                    "Function '$function_name' is $length lines (recommended maximum: $MAX_FUNCTION_LENGTH). Consider refactoring.");
             }
+            $in_function = 0;
+            $function_start = -1;
+            $function_name = '';
+            $brace_depth = 0;
+            $brace_counted_line = -1;
         }
     }
 }

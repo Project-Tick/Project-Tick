@@ -17,7 +17,7 @@
  *
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *  
+ *
  *  This file incorporates work covered by the following copyright and
  *  permission notice:
  *
@@ -61,10 +61,9 @@
 #include "ui/pages/modplatform/ftb/FtbPage.h"
 #include "ui/pages/modplatform/legacy_ftb/Page.h"
 #include "ui/pages/modplatform/flame/FlamePage.h"
+#include "ui/pages/modplatform/modrinth/ModrinthPage.h"
 #include "ui/pages/modplatform/ImportPage.h"
 #include "ui/pages/modplatform/technic/TechnicPage.h"
-
-
 
 NewInstanceDialog::NewInstanceDialog(const QString & initialGroup, const QString & url, QWidget *parent)
     : QDialog(parent), ui(new Ui::NewInstanceDialog)
@@ -92,8 +91,12 @@ NewInstanceDialog::NewInstanceDialog(const QString & initialGroup, const QString
     ui->groupBox->lineEdit()->setPlaceholderText(tr("No group"));
 
 
-    // NOTE: m_buttons must be initialized before PageContainer, because it indirectly accesses m_buttons through setSuggestedPack! Do not move this below.
-    m_buttons = new QDialogButtonBox(QDialogButtonBox::Help | QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    // NOTE: m_buttons must be initialized before PageContainer, because it
+    // indirectly accesses m_buttons through setSuggestedPack! Do not move
+    // this below.
+    m_buttons = new QDialogButtonBox(
+        QDialogButtonBox::Help | QDialogButtonBox::Ok |
+        QDialogButtonBox::Cancel);
 
     m_container = new PageContainer(this);
     m_container->setSizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Expanding);
@@ -155,6 +158,7 @@ QList<BasePage *> NewInstanceDialog::getPages()
         importPage,
         new AtlPage(this),
         flamePage,
+        new ModrinthPage(this),
         new FtbPage(this),
         new LegacyFTB::Page(this),
         technicPage

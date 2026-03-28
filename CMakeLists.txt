@@ -323,7 +323,7 @@ elseif(UNIX)
     set(JARS_DEST_DIR "share/${MeshMC_Name}")
 
     # Set RPATH
-    SET(MeshMC_BINARY_RPATH "$ORIGIN/")
+    SET(MeshMC_BINARY_RPATH "$ORIGIN/../lib${LIB_SUFFIX}")
 
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MeshMC_AppID}.desktop DESTINATION ${KDE_INSTALL_APPDIR})
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${MeshMC_AppID}.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
