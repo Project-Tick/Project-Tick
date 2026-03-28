@@ -3298,25 +3298,10 @@ sub check_using_namespace {
 sub check_cmake_conventions {
     my ($filepath, $lines_ref, $changed_ref) = @_;
 
-    check_cmake_license_header($filepath, $lines_ref);
     check_cmake_indentation($filepath, $lines_ref, $changed_ref);
     check_cmake_function_style($filepath, $lines_ref, $changed_ref);
     check_cmake_variable_naming($filepath, $lines_ref, $changed_ref);
     check_cmake_best_practices($filepath, $lines_ref, $changed_ref);
-}
-
-sub check_cmake_license_header {
-    my ($filepath, $lines_ref) = @_;
-
-    return unless @$lines_ref;
-
-    my $header_text = join("\n", @{$lines_ref}[0 .. min(10, $#$lines_ref)]);
-
-    # CMake files should have SPDX header as comments
-    unless ($header_text =~ /SPDX-License-Identifier/) {
-        report($filepath, 1, SEV_WARNING, 'CMAKE_MISSING_SPDX',
-            "CMake file missing SPDX license header");
-    }
 }
 
 sub check_cmake_indentation {

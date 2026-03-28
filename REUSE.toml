@@ -13,7 +13,9 @@ path = [
   "default.nix",
   "flake.lock",
   "flake.nix",
-  "shell.nix"
+  "shell.nix",
+  "vcpkg-configuration.json",
+  "vcpkg.json"
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "NONE"
