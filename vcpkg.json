@@ -25,6 +25,7 @@
         "zstd"
       ]
     },
+    "quazip",
     "tomlplusplus",
     "zlib",
     "vulkan-headers"

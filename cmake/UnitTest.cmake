@@ -34,6 +34,7 @@ function(add_unit_test name)
             add_dependencies(${name}_test ${DATA_TARGET_NAME})
             add_custom_command(
                 TARGET ${DATA_TARGET_NAME}
+                POST_BUILD
                 COMMAND ${CMAKE_COMMAND} "-DTEST_DATA_URL=${TEST_DATA_URL}" -DSOURCE=${TEST_DATA_PATH_SRC} -DDESTINATION=${TEST_DATA_PATH} -P ${TEST_RESOURCE_PATH}/UnitTest/generate_test_data.cmake
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             )

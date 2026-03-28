@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.28)
 # SPDX-FileCopyrightText: 2026 Project Tick
 # SPDX-FileContributor: Project Tick
 # SPDX-License-Identifier: GPL-3.0-or-later
-if(WIN32)
-    # In Qt 5.1+ we have our own main() function, don't autolink to qtmain on Windows
-    cmake_policy(SET CMP0020 OLD)
-endif()
-
 project(MeshMC)
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
@@ -64,16 +59,19 @@ else()
 endif()
 
 include(GenerateExportHeader)
-set(CMAKE_CXX_FLAGS " -Wall -pedantic -Werror -Wno-deprecated-declarations -fstack-protector-strong --param=ssp-buffer-size=4 -O3 -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS}")
-if(UNIX AND APPLE)
-    set(CMAKE_CXX_FLAGS " -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+if(MSVC)
+    set(CMAKE_CXX_FLAGS " /W4 /WX ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DQT_NO_DEPRECATED_WARNINGS=Y")
+else()
+    set(CMAKE_CXX_FLAGS " -Wall -pedantic -Werror -Wno-deprecated-declarations -fstack-protector-strong --param=ssp-buffer-size=4 -O3 -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS}")
+    if(UNIX AND APPLE)
+        set(CMAKE_CXX_FLAGS " -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+    endif()
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Werror=return-type")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_NO_DEPRECATED_WARNINGS=Y")
 endif()
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Werror=return-type")
 
 include(ECMQtDeclareLoggingCategory)
-
-# Fix build with Qt 5.13
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_NO_DEPRECATED_WARNINGS=Y")
 
 option(ENABLE_LTO "Enable Link Time Optimization" off)
 option(MeshMC_DISABLE_JAVA_DOWNLOADER "Disable the built-in Java downloader feature" OFF)
@@ -250,6 +248,9 @@ if(UNIX AND APPLE)
     set(FRAMEWORK_DEST_DIR "${MeshMC_Name}.app/Contents/Frameworks")
     set(RESOURCES_DEST_DIR "${MeshMC_Name}.app/Contents/Resources")
     set(JARS_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS/jars")
+    set(PLUGIN_DEST_DIR "plugins")
+    set(BUNDLE_DEST_DIR ".")
+    set(RESOURCES_DEST_DIR ".")
 
     # Mac bundle settings
     set(MACOSX_BUNDLE_BUNDLE_NAME "${MeshMC_DisplayName}")
