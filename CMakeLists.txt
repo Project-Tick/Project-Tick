@@ -9,6 +9,8 @@ endif()
 
 project(MeshMC)
 
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
 find_package(ECM NO_MODULE REQUIRED)
 set(CMAKE_MODULE_PATH "${ECM_MODULE_PATH};${CMAKE_MODULE_PATH}")
 

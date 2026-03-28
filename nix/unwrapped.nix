@@ -39,7 +39,7 @@ in
 
 stdenv.mkDerivation {
   pname = "meshmc-unwrapped";
-  version = "10.0-unstable-${date}";
+  version = "7.0-unstable-${date}";
 
   src = lib.fileset.toSource {
     root = ../.;
