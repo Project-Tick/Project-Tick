@@ -14,7 +14,7 @@ runs:
       shell: bash
       run: |
         brew update
-        brew install ninja extra-cmake-modules temurin@17 mono
+        brew install ninja extra-cmake-modules temurin@17 mono quazip
 
     - name: Set JAVA_HOME
       shell: bash
