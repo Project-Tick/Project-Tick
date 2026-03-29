@@ -14,6 +14,7 @@
     },
 
     "cmark",
+    "qtnetworkauth",
     {
       "name": "libarchive",
       "default-features": false,
