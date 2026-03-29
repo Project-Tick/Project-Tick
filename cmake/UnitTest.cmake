@@ -43,7 +43,7 @@ function(add_unit_test name)
 
     target_link_libraries(${name}_test Qt6::Test ${OPT_LIBS})
 
-    if(WIN32)
+    if(MSVC)
         target_link_options(${name}_test PRIVATE "/MANIFEST:NO")
     endif()
 
