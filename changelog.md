@@ -1,4 +1,42 @@
-# MultiMC 0.6.14
+# MeshMC 7.0.0
+
+Today, we aren't just talking about ~~MultiMC~~. This is not true. ~~PrismLauncher~~? Again no. Okay, ~~ProjTLauncher~~? Again and again, no. This is **MeshMC** 7.0.0. This release ports the project from Qt5 to Qt6, migrates from the old CurseForge API to the new one, adds Modrinth support, and more!
+
+### Welcome to customizable Catpacks
+
+Catpacks are now customizable. To build your own cat empire, you can add your catpacks to the catpacks folder located in the binary folder within `%AppData%\MeshMC` or `.local/share/MeshMC`, or if you are using a portable binary.
+
+### Modrinth support, now available
+
+Now you'll be able to install Modrinth packages, and I hope this will make everyone happy.
+
+### Say hello to a launcher that includes Qt6
+
+MeshMC 7.0.0 has completed the Qt6 migration by default, which is especially important for our future-proofing and for you to use the launcher more comfortably. If you encounter a bug or problem, please start an issue using <https://github.com/Project-Tick/MeshMC/issues>. Because this migration can cause tons of problems.
+
+### Other Changes
+
+- Download your Java applications easily through your launcher with **JavaDownloader**.
+- **Neoforge** and **Quilt** support has been added. You can quickly install **Neoforge** and **Quilt** from the instance edit menu.
+- The **libnbt++** module now comes with meticulously crafted patches from **Project Tick**.
+- We are now sharing our **Client IDs** so that developers and users can get custom builds.
+- Added more themes and icons.
+- Now you can log in to your Microsoft account more easily with endpoint.
+- Refined AboutPage.
+- Changed Quazip dependency to libarchive
+- Fixed more bugs.
+
+### CheckPatch.pl
+
+CheckPatch.pl, which I started writing while using ProjT Launcher and later introduced here, is now available! This CheckPatch.pl script is designed to lint all your code. It reads the SPDX headers in the files to see if they are correctly formatted and whether the code is properly formatted. Based on this, it will quietly warn you with a warning or error and then exit. Integrated with LeftHook; if you've run Bootstrap, LeftHook is installed, and before committing, reuse lint and checkpatch will start working on your diff. It has tons of modes; don't forget to examine its commands and parameters in detail. If you find any bugs, please report them using the address above.
+
+### Note
+
+MeshMC is a continuation of MultiMC. We've implemented AI Usage Policies and GPL transitions to make MeshMC more free, and you can be sure our code is more open to use. Our difference is that we aim to create a Minecraft launcher that people can compile even 20 years from now, freely package wherever they want, maintain the simplicity and iconic appeal of MultiMC, while also adding new features and always keeping that line. We are very happy to see you with this release, but we also want to guarantee that the problems that befell ProjT Launcher will not occur here. The reasons we abandoned ProjT Launcher were primarily licensing issues and problems with the codebase due to it being a PrismLauncher fork, but we want to preserve the MultiMC foundation in MeshMC. Therefore, we shut down ProjT Launcher. Thank you for your support. **Stay with your cats.**
+
+# Previous releases
+
+## MultiMC 0.6.14
 
 This further refines Microsoft account support, along with small fixes related to modpack platforms and Java runtime detection.
 
@@ -60,8 +98,6 @@ In general, this should make MultiMC much more forgiving towards various tempora
 ### Technical changes
 
 - Debranding is mostly finished. You may see some changes in the logo being used in less places.
-
-# Previous releases
 
 ## MultiMC 0.6.13
 

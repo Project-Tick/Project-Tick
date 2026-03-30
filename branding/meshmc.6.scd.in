@@ -1,14 +1,14 @@
-@MeshMC_APP_BINARY_NAME@(6)
+@MeshMC_AppBinaryName@(6)
 
 
 # NAME
 
-@MeshMC_APP_BINARY_NAME@ - a launcher and instance manager for Minecraft.
+@MeshMC_AppBinaryName@ - a launcher and instance manager for Minecraft.
 
 
 # SYNOPSIS
 
-*@MeshMC_APP_BINARY_NAME@* [OPTIONS...]
+*@MeshMC_AppBinaryName@* [OPTIONS...]
 
 
 # DESCRIPTION

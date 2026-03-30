@@ -25,7 +25,7 @@ OutFile "../@MeshMC_CommonName@-Setup.exe"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
-!define MUI_FINISHPAGE_RUN "$InstDir\@MeshMC_APP_BINARY_NAME@.exe"
+!define MUI_FINISHPAGE_RUN "$InstDir\@MeshMC_AppBinaryName@.exe"
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_CONFIRM
@@ -369,13 +369,11 @@ Section "@MeshMC_DisplayName@"
 
   SectionIn RO
 
-  nsExec::Exec /TIMEOUT=2000 'TaskKill /IM @MeshMC_APP_BINARY_NAME@.exe /F'
+  nsExec::Exec /TIMEOUT=2000 'TaskKill /IM @MeshMC_AppBinaryName@.exe /F'
 
   SetOutPath $INSTDIR
 
-  File "@MeshMC_APP_BINARY_NAME@.exe"
-  File "@MeshMC_APP_BINARY_NAME@_filelink.exe"
-  File "@MeshMC_APP_BINARY_NAME@_updater.exe"
+  File "@MeshMC_AppBinaryName@.exe"
   File "qt.conf"
   File "qtlogging.ini"
   File *.dll
@@ -391,15 +389,15 @@ Section "@MeshMC_DisplayName@"
 
   ; Write the URL Handler into registry for curseforge
   WriteRegStr HKCU Software\Classes\curseforge "URL Protocol" ""
-  WriteRegStr HKCU Software\Classes\curseforge\shell\open\command "" '"$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" "%1"'
+  WriteRegStr HKCU Software\Classes\curseforge\shell\open\command "" '"$INSTDIR\@MeshMC_AppBinaryName@.exe" "%1"'
 
   ; Write the URL Handler into registry for meshmc
-  WriteRegStr HKCU Software\Classes\@MeshMC_APP_BINARY_NAME@ "URL Protocol" ""
-  WriteRegStr HKCU Software\Classes\@MeshMC_APP_BINARY_NAME@\shell\open\command "" '"$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" "%1"'
+  WriteRegStr HKCU Software\Classes\@MeshMC_AppBinaryName@ "URL Protocol" ""
+  WriteRegStr HKCU Software\Classes\@MeshMC_AppBinaryName@\shell\open\command "" '"$INSTDIR\@MeshMC_AppBinaryName@.exe" "%1"'
 
   ; Write the URL Handler into registry for meshmc import
   WriteRegStr HKCU Software\Classes\meshmc "URL Protocol" ""
-  WriteRegStr HKCU Software\Classes\meshmc\shell\open\command "" '"$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" "%1"'
+  WriteRegStr HKCU Software\Classes\meshmc\shell\open\command "" '"$INSTDIR\@MeshMC_AppBinaryName@.exe" "%1"'
 
   ; Write the uninstall keys for Windows
   ; https://learn.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
@@ -407,7 +405,7 @@ Section "@MeshMC_DisplayName@"
   ${GetOptions} $R0 "/NoUninstaller" $R1
   ${If} ${Errors}
     WriteRegStr HKCU "${UNINST_KEY}" "DisplayName" "@MeshMC_DisplayName@"
-    WriteRegStr HKCU "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe"
+    WriteRegStr HKCU "${UNINST_KEY}" "DisplayIcon" "$INSTDIR\@MeshMC_AppBinaryName@.exe"
     WriteRegStr HKCU "${UNINST_KEY}" "UninstallString" '"$INSTDIR\uninstall.exe" _?=$INSTDIR'
     WriteRegStr HKCU "${UNINST_KEY}" "QuietUninstallString" '"$INSTDIR\uninstall.exe" /S _?=$INSTDIR'
     WriteRegStr HKCU "${UNINST_KEY}" "InstallLocation" "$INSTDIR"
@@ -430,19 +428,19 @@ SectionEnd
 
 Section "Start Menu Shortcut" SM_SHORTCUTS
 
-  CreateShortcut "$SMPROGRAMS\@MeshMC_DisplayName@.lnk" "$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" "" "$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" 0
+  CreateShortcut "$SMPROGRAMS\@MeshMC_DisplayName@.lnk" "$INSTDIR\@MeshMC_AppBinaryName@.exe" "" "$INSTDIR\@MeshMC_AppBinaryName@.exe" 0
 
 SectionEnd
 
 Section /o "Desktop Shortcut" DESKTOP_SHORTCUTS
 
-  CreateShortcut "$DESKTOP\@MeshMC_DisplayName@.lnk" "$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" "" "$INSTDIR\@MeshMC_APP_BINARY_NAME@.exe" 0
+  CreateShortcut "$DESKTOP\@MeshMC_DisplayName@.lnk" "$INSTDIR\@MeshMC_AppBinaryName@.exe" "" "$INSTDIR\@MeshMC_AppBinaryName@.exe" 0
 
 SectionEnd
 
 
 !define APPID "@MeshMC_CommonName@.App"
-!define APPEXE "@MeshMC_APP_BINARY_NAME@.exe"
+!define APPEXE "@MeshMC_AppBinaryName@.exe"
 !define APPICON "$INSTDIR\${APPEXE},0"
 !define APPDESCRIPTION "@MeshMC_DisplayName@"
 !define APPNAME "@MeshMC_DisplayName@"
@@ -465,14 +463,12 @@ SectionEnd
 
 Section "Uninstall"
 
-  nsExec::Exec /TIMEOUT=2000 'TaskKill /IM @MeshMC_APP_BINARY_NAME@.exe /F'
+  nsExec::Exec /TIMEOUT=2000 'TaskKill /IM @MeshMC_AppBinaryName@.exe /F'
 
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\@MeshMC_CommonName@"
   DeleteRegKey HKCU SOFTWARE\@MeshMC_CommonName@
 
-  Delete $INSTDIR\@MeshMC_APP_BINARY_NAME@.exe
-  Delete $INSTDIR\@MeshMC_APP_BINARY_NAME@_filelink.exe
-  Delete $INSTDIR\@MeshMC_APP_BINARY_NAME@_updater.exe
+  Delete $INSTDIR\@MeshMC_AppBinaryName@.exe
   Delete $INSTDIR\qt.conf
   Delete $INSTDIR\*.dll
 
