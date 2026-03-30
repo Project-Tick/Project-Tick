@@ -807,9 +807,28 @@ void Application::initSettings()
     m_settings->registerSetting({"ProxyUser", "ProxyUsername"}, "");
     m_settings->registerSetting({"ProxyPass", "ProxyPassword"}, "");
 
-    // Memory
-    m_settings->registerSetting({"MinMemAlloc", "MinMemoryAlloc"}, 512);
-    m_settings->registerSetting({"MaxMemAlloc", "MaxMemoryAlloc"}, 1024);
+    // Memory — compute reasonable defaults based on system RAM
+    int defaultMinMem = 512;
+    int defaultMaxMem = 1024;
+    {
+        uint64_t systemRamMiB = Sys::getSystemRam() / Sys::mebibyte;
+        if (systemRamMiB >= 32768) {       // 32+ GB
+            defaultMinMem = 1024;
+            defaultMaxMem = 8192;
+        } else if (systemRamMiB >= 16384) { // 16-32 GB
+            defaultMinMem = 1024;
+            defaultMaxMem = 6144;
+        } else if (systemRamMiB >= 8192) {  // 8-16 GB
+            defaultMinMem = 512;
+            defaultMaxMem = 4096;
+        } else if (systemRamMiB >= 4096) {  // 4-8 GB
+            defaultMinMem = 512;
+            defaultMaxMem = 2048;
+        }
+        // <4 GB: keep 512/1024 defaults
+    }
+    m_settings->registerSetting({"MinMemAlloc", "MinMemoryAlloc"}, defaultMinMem);
+    m_settings->registerSetting({"MaxMemAlloc", "MaxMemoryAlloc"}, defaultMaxMem);
     m_settings->registerSetting("PermGen", 128);
 
     // Java Settings

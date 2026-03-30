@@ -94,7 +94,6 @@ stdenv.mkDerivation {
     kdePackages.qtbase
     kdePackages.qtnetworkauth
     kdePackages.qt5compat
-    kdePackages.quazip
     qrencode
     libarchive
     tomlplusplus

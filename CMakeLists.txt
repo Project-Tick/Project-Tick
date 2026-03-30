@@ -113,7 +113,7 @@ find_package(Qt6 REQUIRED COMPONENTS
     Xml
 )
 
-find_package(QuaZip-Qt6 REQUIRED)
+find_package(LibArchive REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ####################################### Branding #######################################
@@ -143,6 +143,7 @@ set(MeshMC_Git "https://github.com/Project-Tick/MeshMC")
 
 set(MeshMC_SVGFileName "${MeshMC_AppID}.svg")
 set(MeshMC_Branding_ICNS "branding/${MeshMC_AppID}.icns")
+set(MeshMC_Branding_ICO "${MeshMC_AppID}.ico")
 set(MeshMC_Branding_WindowsRC "branding/${MeshMC_AppBinaryName}.rc")
 set(MeshMC_Branding_LogoQRC "branding/${MeshMC_AppBinaryName}.qrc")
 

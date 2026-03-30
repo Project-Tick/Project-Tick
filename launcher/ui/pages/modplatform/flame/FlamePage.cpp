@@ -190,13 +190,29 @@ void FlamePage::suggestCurrent()
         return;
     }
 
-    if (selectedVersion.isEmpty())
+    if (selectedVersionIndex < 0 || selectedVersionIndex >= current.versions.size())
     {
         dialog->setSuggestedPack();
         return;
     }
 
-    dialog->setSuggestedPack(current.name, new InstanceImportTask(selectedVersion));
+    auto &version = current.versions[selectedVersionIndex];
+
+    if (!version.downloadUrl.isEmpty())
+    {
+        // Normal download — direct URL available
+        dialog->setSuggestedPack(current.name, new InstanceImportTask(version.downloadUrl));
+    }
+    else
+    {
+        // Restricted download — construct CurseForge browser download URL
+        // This URL triggers a browser download when opened, respecting ToS
+        QString browserUrl = QString("https://www.curseforge.com/api/v1/mods/%1/files/%2/download")
+                             .arg(version.addonId).arg(version.fileId);
+        dialog->setSuggestedPack(current.name, new InstanceImportTask(browserUrl));
+        qDebug() << "Pack has no API download URL, using browser download URL:" << browserUrl;
+    }
+
     QString editedLogoName;
     editedLogoName = "curseforge_" + current.logoName.section(".", 0, 0);
     listModel->getLogo(current.logoName, current.logoUrl, [this, editedLogoName](QString logo)
@@ -210,8 +226,10 @@ void FlamePage::onVersionSelectionChanged(QString data)
     if(data.isNull() || data.isEmpty())
     {
         selectedVersion = "";
+        selectedVersionIndex = -1;
         return;
     }
     selectedVersion = ui->versionSelectionBox->currentData().toString();
+    selectedVersionIndex = ui->versionSelectionBox->currentIndex();
     suggestCurrent();
 }

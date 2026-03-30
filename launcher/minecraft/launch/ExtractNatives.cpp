@@ -40,8 +40,6 @@
 #include <minecraft/MinecraftInstance.h>
 #include <launch/LaunchTask.h>
 
-#include <quazip.h>
-#include <quazipdir.h>
 #include "MMCZip.h"
 #include "FileSystem.h"
 #include <QDir>
@@ -65,19 +63,14 @@ static QString replaceSuffix (QString target, const QString &suffix, const QStri
 
 static bool unzipNatives(QString source, QString targetFolder, bool applyJnilibHack, bool nativeOpenAL, bool nativeGLFW)
 {
-    QuaZip zip(source);
-    if(!zip.open(QuaZip::mdUnzip))
-    {
-        return false;
-    }
     QDir directory(targetFolder);
-    if (!zip.goToFirstFile())
+    QStringList entries = MMCZip::listEntries(source);
+    if (entries.isEmpty())
     {
         return false;
     }
-    do
+    for (const auto &name : entries)
     {
-        QString name = zip.getCurrentFileName();
         auto lowercase = name.toLower();
         if (nativeGLFW && name.contains("glfw")) {
             continue;
@@ -85,20 +78,20 @@ static bool unzipNatives(QString source, QString targetFolder, bool applyJnilibH
         if (nativeOpenAL && name.contains("openal")) {
             continue;
         }
+        // Skip directories
+        if (name.endsWith('/'))
+            continue;
+
+        QString outName = name;
         if(applyJnilibHack)
         {
-            name = replaceSuffix(name, ".jnilib", ".dylib");
+            outName = replaceSuffix(outName, ".jnilib", ".dylib");
         }
-        QString absFilePath = directory.absoluteFilePath(name);
-        if (!JlCompress::extractFile(&zip, "", absFilePath))
+        QString absFilePath = directory.absoluteFilePath(outName);
+        if (!MMCZip::extractRelFile(source, name, absFilePath))
         {
             return false;
         }
-    } while (zip.goToNextFile());
-    zip.close();
-    if(zip.getZipError()!=0)
-    {
-        return false;
     }
     return true;
 }

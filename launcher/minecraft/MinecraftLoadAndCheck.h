@@ -43,7 +43,6 @@
 #include <QUrl>
 
 #include "tasks/Task.h"
-#include <quazip.h>
 
 #include "QObjectPtr.h"
 

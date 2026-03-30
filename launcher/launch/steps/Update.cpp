@@ -67,15 +67,15 @@ void Update::updateFinished()
 {
     if(m_updateTask->wasSuccessful())
     {
-        m_updateTask.reset();
         emitSucceeded();
+        m_updateTask.reset();
     }
     else
     {
         QString reason = tr("Instance update failed because: %1\n\n").arg(m_updateTask->failReason());
-        m_updateTask.reset();
         emit logLine(reason, MessageLevel::Fatal);
         emitFailed(reason);
+        m_updateTask.reset();
     }
 }
 

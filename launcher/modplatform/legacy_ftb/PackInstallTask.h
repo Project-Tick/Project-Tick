@@ -22,8 +22,6 @@
 #pragma once
 #include "InstanceTask.h"
 #include "net/NetJob.h"
-#include "quazip.h"
-#include "quazipdir.h"
 #include "meta/Index.h"
 #include "meta/Version.h"
 #include "meta/VersionList.h"
@@ -66,7 +64,6 @@ private slots:
 private: /* data */
     shared_qobject_ptr<QNetworkAccessManager> m_network;
     bool abortable = false;
-    std::unique_ptr<QuaZip> m_packZip;
     QFuture<nonstd::optional<QStringList>> m_extractFuture;
     QFutureWatcher<nonstd::optional<QStringList>> m_extractFutureWatcher;
     NetJob::Ptr netJobContainer;

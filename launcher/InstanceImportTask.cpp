@@ -54,11 +54,14 @@
 #include "modplatform/flame/PackManifest.h"
 #include "modplatform/modrinth/ModrinthPackManifest.h"
 #include "Json.h"
-#include <quazipdir.h>
 #include "modplatform/technic/TechnicPackProcessor.h"
 
 #include "icons/IconList.h"
 #include "Application.h"
+#include "ui/dialogs/BlockedModsDialog.h"
+
+#include <QDir>
+#include <QStandardPaths>
 
 InstanceImportTask::InstanceImportTask(const QUrl sourceUrl)
 {
@@ -114,20 +117,13 @@ void InstanceImportTask::processZipPack()
     QDir extractDir(m_stagingPath);
     qDebug() << "Attempting to create instance from" << m_archivePath;
 
-    // open the zip and find relevant files in it
-    m_packZip.reset(new QuaZip(m_archivePath));
-    if (!m_packZip->open(QuaZip::mdUnzip))
-    {
-        emitFailed(tr("Unable to open supplied modpack zip file."));
-        return;
-    }
-
+    // find relevant files in the zip
     QStringList blacklist = {"instance.cfg", "manifest.json", "modrinth.index.json"};
-    QString mmcFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "instance.cfg");
-    bool technicFound = QuaZipDir(m_packZip.get()).exists("/bin/modpack.jar") ||
-                       QuaZipDir(m_packZip.get()).exists("/bin/version.json");
-    QString flameFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "manifest.json");
-    QString modrinthFound = MMCZip::findFolderOfFileInZip(m_packZip.get(), "modrinth.index.json");
+    QString mmcFound = MMCZip::findFolderOfFileInZip(m_archivePath, "instance.cfg");
+    bool technicFound = MMCZip::entryExists(m_archivePath, "bin/modpack.jar") ||
+                       MMCZip::entryExists(m_archivePath, "bin/version.json");
+    QString flameFound = MMCZip::findFolderOfFileInZip(m_archivePath, "manifest.json");
+    QString modrinthFound = MMCZip::findFolderOfFileInZip(m_archivePath, "modrinth.index.json");
     QString root;
     if(!mmcFound.isNull())
     {
@@ -165,9 +161,10 @@ void InstanceImportTask::processZipPack()
     }
 
     // make sure we extract just the pack
+    QString archivePath = m_archivePath;
     m_extractFuture = QtConcurrent::run(
         QThreadPool::globalInstance(), MMCZip::extractSubDir,
-        m_packZip.get(), root, extractDir.absolutePath());
+        archivePath, root, extractDir.absolutePath());
     connect(&m_extractFutureWatcher,
             &QFutureWatcher<QStringList>::finished,
             this, &InstanceImportTask::extractFinished);
@@ -179,7 +176,6 @@ void InstanceImportTask::processZipPack()
 
 void InstanceImportTask::extractFinished()
 {
-    m_packZip.reset();
     if (!m_extractFuture.result())
     {
         emitFailed(tr("Failed to extract modpack"));
@@ -419,6 +415,10 @@ void InstanceImportTask::onFlameFileResolutionSucceeded()
 {
     auto results = m_modIdResolver->getResults();
     m_filesNetJob = new NetJob(tr("Mod download"), APPLICATION->network());
+
+    // Collect restricted mods that need browser download
+    QList<BlockedMod> blockedMods;
+
     for(auto result: results.files)
     {
         QString filename = result.fileName;
@@ -441,9 +441,16 @@ void InstanceImportTask::onFlameFileResolutionSucceeded()
                 [[fallthrough]];
             case Flame::File::Type::Mod:
             {
-                if(!result.resolved || !result.url.isValid() || result.url.isEmpty())
+                bool isBlocked = !result.resolved || !result.url.isValid() || result.url.isEmpty();
+                if (isBlocked && !result.fileName.isEmpty())
                 {
-                    logWarning(tr("Skipping %1 - no download URL available (mod may have restricted downloads)").arg(result.fileName));
+                    blockedMods.append({result.projectId, result.fileId, result.fileName, path, false});
+                    break;
+                }
+                if (isBlocked)
+                {
+                    logWarning(tr("Skipping mod %1 (project %2) - no download URL and no filename available")
+                               .arg(result.fileId).arg(result.projectId));
                     break;
                 }
                 qDebug() << "Will download" << result.url << "to" << path;
@@ -463,17 +470,56 @@ void InstanceImportTask::onFlameFileResolutionSucceeded()
                 break;
         }
     }
+
+    // Handle restricted mods via dialog
+    if (!blockedMods.isEmpty())
+    {
+        BlockedModsDialog dlg(nullptr,
+            tr("Restricted Mods"),
+            tr("The following mods have restricted downloads and are not available through the API.\n"
+               "Click the Download button next to each mod to open its download page in your browser.\n"
+               "Once all files appear in your Downloads folder, click Continue."),
+            blockedMods);
+
+        if (dlg.exec() == QDialog::Accepted)
+        {
+            QString downloadDir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+            for (const auto &mod : blockedMods)
+            {
+                if (mod.found)
+                {
+                    QString srcPath = FS::PathCombine(downloadDir, mod.fileName);
+                    QFileInfo targetInfo(mod.targetPath);
+                    QDir().mkpath(targetInfo.absolutePath());
+
+                    if (QFile::copy(srcPath, mod.targetPath))
+                    {
+                        qDebug() << "Copied restricted mod:" << mod.fileName;
+                    }
+                    else
+                    {
+                        logWarning(tr("Failed to copy %1 from downloads folder").arg(mod.fileName));
+                    }
+                }
+            }
+        }
+        else
+        {
+            logWarning(tr("User cancelled restricted mod downloads - %1 mod(s) will be missing").arg(blockedMods.size()));
+        }
+    }
+
     m_modIdResolver.reset();
     connect(m_filesNetJob.get(), &NetJob::succeeded, this, [&]()
     {
-        m_filesNetJob.reset();
         emitSucceeded();
+        m_filesNetJob.reset();
     }
     );
     connect(m_filesNetJob.get(), &NetJob::failed, [&](QString reason)
     {
-        m_filesNetJob.reset();
         emitFailed(reason);
+        m_filesNetJob.reset();
     });
     connect(m_filesNetJob.get(), &NetJob::progress, [&](qint64 current, qint64 total)
     {
@@ -610,13 +656,13 @@ void InstanceImportTask::processModrinth()
 
     connect(m_filesNetJob.get(), &NetJob::succeeded, this, [&]()
     {
-        m_filesNetJob.reset();
         emitSucceeded();
+        m_filesNetJob.reset();
     });
     connect(m_filesNetJob.get(), &NetJob::failed, [&](QString reason)
     {
-        m_filesNetJob.reset();
         emitFailed(reason);
+        m_filesNetJob.reset();
     });
     connect(m_filesNetJob.get(), &NetJob::progress, [&](qint64 current, qint64 total)
     {

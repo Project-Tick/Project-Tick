@@ -40,11 +40,12 @@
 
 #include <QString>
 #include <QFileInfo>
+#include <QDir>
 #include <QSet>
+#include <QDateTime>
 #include "minecraft/mod/Mod.h"
 #include <functional>
 
-#include <JlCompress.h>
 #include <nonstd/optional>
 
 namespace MMCZip
@@ -52,43 +53,46 @@ namespace MMCZip
     using FilterFunction = std::function<bool(const QString &)>;
 
     /**
-     * Merge two zip files, using a filter function
+     * Merge two zip files, using a filter function.
+     * Reads entries from 'from' and writes them into the zip at 'intoPath'.
+     * 'contained' tracks already-added filenames to avoid duplicates.
      */
-    bool mergeZipFiles(QuaZip *into, QFileInfo from, QSet<QString> &contained,
-                                            const FilterFunction filter = nullptr);
+    bool mergeZipFiles(const QString &intoPath, QFileInfo from, QSet<QString> &contained,
+                       const FilterFunction filter = nullptr);
 
     /**
-     * take a source jar, add mods to it, resulting in target jar
+     * Take a source jar, add mods to it, resulting in target jar.
      */
     bool createModdedJar(QString sourceJarPath, QString targetJarPath, const QList<Mod>& mods);
 
     /**
-     * Find a single file in archive by file name (not path)
-     *
+     * Find a single file in archive by file name (not path).
      * \return the path prefix where the file is
      */
-    QString findFolderOfFileInZip(QuaZip * zip, const QString & what, const QString &root = QString(""));
+    QString findFolderOfFileInZip(const QString &zipPath, const QString & what, const QString &root = QString(""));
 
     /**
-     * Find a multiple files of the same name in archive by file name
-     * If a file is found in a path, no deeper paths are searched
-     *
+     * Find multiple files of the same name in archive by file name.
+     * If a file is found in a path, no deeper paths are searched.
      * \return true if anything was found
      */
-    bool findFilesInZip(QuaZip * zip, const QString & what, QStringList & result, const QString &root = QString());
+    bool findFilesInZip(const QString &zipPath, const QString &what,
+                        QStringList &result, const QString &root = QString());
 
     /**
-     * Extract a subdirectory from an archive
-     */
-
-    /**
-     * Compress a directory, using a filter function to exclude entries
+     * Compress a directory into a zip, using a filter function to exclude entries.
      */
     bool compressDir(QString zipFile, QString dir, FilterFunction excludeFilter);
 
-    nonstd::optional<QStringList> extractSubDir(QuaZip *zip, const QString & subdir, const QString &target);
+    /**
+     * Extract a subdirectory from an archive.
+     */
+    nonstd::optional<QStringList> extractSubDir(const QString &zipPath, const QString & subdir, const QString &target);
 
-    bool extractRelFile(QuaZip *zip, const QString & file, const QString &target);
+    /**
+     * Extract a single file relative to the zip root.
+     */
+    bool extractRelFile(const QString &zipPath, const QString & file, const QString &target);
 
     /**
      * Extract a whole archive.
@@ -100,7 +104,7 @@ namespace MMCZip
     nonstd::optional<QStringList> extractDir(QString fileCompressed, QString dir);
 
     /**
-     * Extract a subdirectory from an archive
+     * Extract a subdirectory from an archive.
      *
      * \param fileCompressed The name of the archive.
      * \param subdir The directory within the archive to extract
@@ -110,7 +114,7 @@ namespace MMCZip
     nonstd::optional<QStringList> extractDir(QString fileCompressed, QString subdir, QString dir);
 
     /**
-     * Extract a single file from an archive into a directory
+     * Extract a single file from an archive into a directory.
      *
      * \param fileCompressed The name of the archive.
      * \param file The file within the archive to extract
@@ -119,4 +123,31 @@ namespace MMCZip
      */
     bool extractFile(QString fileCompressed, QString file, QString dir);
 
+    /**
+     * Read a file's contents from inside a zip archive.
+     * \return the file data, or empty QByteArray on failure
+     */
+    QByteArray readFileFromZip(const QString &zipPath, const QString &entryName);
+
+    /**
+     * Check if a given entry path exists in a zip archive.
+     */
+    bool entryExists(const QString &zipPath, const QString &entryName);
+
+    /**
+     * List all entry names in a zip archive.
+     */
+    QStringList listEntries(const QString &zipPath);
+
+    /**
+     * List entries under a specific directory in a zip archive.
+     * \param type QDir::Files, QDir::Dirs, or both
+     */
+    QStringList listEntries(const QString &zipPath, const QString &dirPath,
+                             QDir::Filters type = QDir::Files | QDir::Dirs);
+
+    /**
+     * Get the modification time of a specific entry in a zip archive.
+     */
+    QDateTime getEntryModTime(const QString &zipPath, const QString &entryName);
 }

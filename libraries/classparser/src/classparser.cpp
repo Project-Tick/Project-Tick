@@ -39,7 +39,8 @@
 #include "classparser.h"
 
 #include <QFile>
-#include <quazip/quazipfile.h>
+#include <archive.h>
+#include <archive_entry.h>
 #include <QDebug>
 
 namespace classparser
@@ -54,26 +55,44 @@ QString GetMinecraftJarVersion(QString jarName)
     if (!jar.exists())
         return version;
 
-    // open minecraft.jar
-    QuaZip zip(&jar);
-    if (!zip.open(QuaZip::mdUnzip))
+    // open jar with libarchive
+    struct archive *a = archive_read_new();
+    archive_read_support_format_zip(a);
+    if (archive_read_open_filename(a, jarName.toUtf8().constData(), 10240) != ARCHIVE_OK) {
+        archive_read_free(a);
         return version;
+    }
 
-    // open Minecraft.class
-    zip.setCurrentFile("net/minecraft/client/Minecraft.class", QuaZip::csSensitive);
-    QuaZipFile Minecraft(&zip);
-    if (!Minecraft.open(QuaZipFile::ReadOnly))
+    // find and read Minecraft.class
+    QByteArray classData;
+    struct archive_entry *entry;
+    while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
+        QString name = QString::fromUtf8(archive_entry_pathname(entry));
+        if (name == "net/minecraft/client/Minecraft.class") {
+            la_int64_t sz = archive_entry_size(entry);
+            if (sz > 0) {
+                classData.resize(sz);
+                archive_read_data(a, classData.data(), sz);
+            } else {
+                char buf[8192];
+                la_ssize_t r;
+                while ((r = archive_read_data(a, buf, sizeof(buf))) > 0)
+                    classData.append(buf, r);
+            }
+            break;
+        }
+        archive_read_data_skip(a);
+    }
+    archive_read_free(a);
+
+    if (classData.isEmpty())
         return version;
-
-    // read Minecraft.class
-    qint64 size = Minecraft.size();
-    char *classfile = new char[size];
-    Minecraft.read(classfile, size);
 
     // parse Minecraft.class
     try
     {
-        char *temp = classfile;
+        char *temp = classData.data();
+        qint64 size = classData.size();
         java::classfile MinecraftClass(temp, size);
         java::constant_pool constants = MinecraftClass.constants;
         for (java::constant_pool::container_type::const_iterator iter = constants.begin();
@@ -92,12 +111,6 @@ QString GetMinecraftJarVersion(QString jarName)
         }
     }
     catch (const java::classfile_exception &) { }
-
-    // clean up
-    delete[] classfile;
-    Minecraft.close();
-    zip.close();
-    jar.close();
 
     return version;
 }

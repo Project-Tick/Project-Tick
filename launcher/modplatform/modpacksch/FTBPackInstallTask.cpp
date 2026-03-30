@@ -97,8 +97,6 @@ void PackInstallTask::executeTask()
 
 void PackInstallTask::onDownloadSucceeded()
 {
-    jobPtr.reset();
-
     QJsonParseError parse_error;
     QJsonDocument doc = QJsonDocument::fromJson(response, &parse_error);
     if(parse_error.error != QJsonParseError::NoError) {
@@ -117,6 +115,7 @@ void PackInstallTask::onDownloadSucceeded()
     catch (const JSONValidationError &e)
     {
         emitFailed(tr("Could not understand pack manifest:\n") + e.cause());
+        jobPtr.reset();
         return;
     }
     m_version = version;
@@ -126,8 +125,8 @@ void PackInstallTask::onDownloadSucceeded()
 
 void PackInstallTask::onDownloadFailed(QString reason)
 {
-    jobPtr.reset();
     emitFailed(reason);
+    jobPtr.reset();
 }
 
 void PackInstallTask::downloadPack()
@@ -169,14 +168,14 @@ void PackInstallTask::downloadPack()
     connect(jobPtr.get(), &NetJob::succeeded, this, [&]()
     {
         abortable = false;
-        jobPtr.reset();
         install();
+        jobPtr.reset();
     });
     connect(jobPtr.get(), &NetJob::failed, [&](QString reason)
     {
         abortable = false;
-        jobPtr.reset();
         emitFailed(reason);
+        jobPtr.reset();
     });
     connect(jobPtr.get(), &NetJob::progress, [&](qint64 current, qint64 total)
     {

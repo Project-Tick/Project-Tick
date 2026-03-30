@@ -25,9 +25,9 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
-#include <quazip.h>
-#include <quazipfile.h>
 #include <toml.h>
+
+#include "MMCZip.h"
 
 #include "settings/INIFile.h"
 #include "FileSystem.h"
@@ -343,36 +343,21 @@ LocalModParseTask::LocalModParseTask(int token, Mod::ModType type, const QFileIn
 
 void LocalModParseTask::processAsZip()
 {
-    QuaZip zip(m_modFile.filePath());
-    if (!zip.open(QuaZip::mdUnzip))
-        return;
+    QString zipPath = m_modFile.filePath();
 
-    QuaZipFile file(&zip);
-
-    if (zip.setCurrentFile("META-INF/mods.toml"))
+    QByteArray modsToml = MMCZip::readFileFromZip(zipPath, "META-INF/mods.toml");
+    if (!modsToml.isEmpty())
     {
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            zip.close();
-            return;
-        }
-
-        m_result->details = ReadMCModTOML(file.readAll());
-        file.close();
+        m_result->details = ReadMCModTOML(modsToml);
 
         // to replace ${file.jarVersion} with the actual version, as needed
         if (m_result->details && m_result->details->version == "${file.jarVersion}")
         {
-            if (zip.setCurrentFile("META-INF/MANIFEST.MF"))
+            QByteArray manifestData = MMCZip::readFileFromZip(zipPath, "META-INF/MANIFEST.MF");
+            if (!manifestData.isEmpty())
             {
-                if (!file.open(QIODevice::ReadOnly))
-                {
-                    zip.close();
-                    return;
-                }
-
                 // quick and dirty line-by-line parser
-                auto manifestLines = file.readAll().split('\n');
+                auto manifestLines = manifestData.split('\n');
                 QString manifestVersion = "";
                 for (auto &line : manifestLines)
                 {
@@ -391,55 +376,31 @@ void LocalModParseTask::processAsZip()
                 }
 
                 m_result->details->version = manifestVersion;
-
-                file.close();
             }
         }
-
-        zip.close();
         return;
     }
-    else if (zip.setCurrentFile("mcmod.info"))
+
+    QByteArray mcmodInfo = MMCZip::readFileFromZip(zipPath, "mcmod.info");
+    if (!mcmodInfo.isEmpty())
     {
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            zip.close();
-            return;
-        }
-
-        m_result->details = ReadMCModInfo(file.readAll());
-        file.close();
-        zip.close();
+        m_result->details = ReadMCModInfo(mcmodInfo);
         return;
     }
-    else if (zip.setCurrentFile("fabric.mod.json"))
+
+    QByteArray fabricModJson = MMCZip::readFileFromZip(zipPath, "fabric.mod.json");
+    if (!fabricModJson.isEmpty())
     {
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            zip.close();
-            return;
-        }
-
-        m_result->details = ReadFabricModInfo(file.readAll());
-        file.close();
-        zip.close();
+        m_result->details = ReadFabricModInfo(fabricModJson);
         return;
     }
-    else if (zip.setCurrentFile("forgeversion.properties"))
+
+    QByteArray forgeVersionProps = MMCZip::readFileFromZip(zipPath, "forgeversion.properties");
+    if (!forgeVersionProps.isEmpty())
     {
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            zip.close();
-            return;
-        }
-
-        m_result->details = ReadForgeInfo(file.readAll());
-        file.close();
-        zip.close();
+        m_result->details = ReadForgeInfo(forgeVersionProps);
         return;
     }
-
-    zip.close();
 }
 
 void LocalModParseTask::processAsFolder()
@@ -459,24 +420,11 @@ void LocalModParseTask::processAsFolder()
 
 void LocalModParseTask::processAsLitemod()
 {
-    QuaZip zip(m_modFile.filePath());
-    if (!zip.open(QuaZip::mdUnzip))
-        return;
-
-    QuaZipFile file(&zip);
-
-    if (zip.setCurrentFile("litemod.json"))
+    QByteArray litemodJson = MMCZip::readFileFromZip(m_modFile.filePath(), "litemod.json");
+    if (!litemodJson.isEmpty())
     {
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            zip.close();
-            return;
-        }
-
-        m_result->details = ReadLiteModInfo(file.readAll());
-        file.close();
+        m_result->details = ReadLiteModInfo(litemodJson);
     }
-    zip.close();
 }
 
 void LocalModParseTask::run()

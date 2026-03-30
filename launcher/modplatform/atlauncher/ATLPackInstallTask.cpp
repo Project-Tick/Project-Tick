@@ -42,8 +42,6 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QRegularExpression>
 
-#include <quazip.h>
-
 #include "MMCZip.h"
 #include "minecraft/OneSixVersionFormat.h"
 #include "Version.h"
@@ -145,8 +143,8 @@ void PackInstallTask::onDownloadSucceeded()
 void PackInstallTask::onDownloadFailed(QString reason)
 {
     qDebug() << "PackInstallTask::onDownloadFailed: " << QThread::currentThreadId();
-    jobPtr.reset();
     emitFailed(reason);
+    jobPtr.reset();
 }
 
 QString PackInstallTask::getDirForModType(ModType type, QString raw)
@@ -466,14 +464,14 @@ void PackInstallTask::installConfigs()
     connect(jobPtr.get(), &NetJob::succeeded, this, [&]()
     {
         abortable = false;
-        jobPtr.reset();
         extractConfigs();
+        jobPtr.reset();
     });
     connect(jobPtr.get(), &NetJob::failed, [&](QString reason)
     {
         abortable = false;
-        jobPtr.reset();
         emitFailed(reason);
+        jobPtr.reset();
     });
     connect(jobPtr.get(), &NetJob::progress, [&](qint64 current, qint64 total)
     {
@@ -490,13 +488,6 @@ void PackInstallTask::extractConfigs()
     setStatus(tr("Extracting configs..."));
 
     QDir extractDir(m_stagingPath);
-
-    QuaZip packZip(archivePath);
-    if(!packZip.open(QuaZip::mdUnzip))
-    {
-        emitFailed(tr("Failed to open pack configs %1!").arg(archivePath));
-        return;
-    }
 
     QString extractPath = extractDir.absolutePath() + "/minecraft";
     QString archivePathCopy = archivePath;
@@ -631,8 +622,8 @@ void PackInstallTask::downloadMods()
     connect(jobPtr.get(), &NetJob::failed, [&](QString reason)
     {
         abortable = false;
-        jobPtr.reset();
         emitFailed(reason);
+        jobPtr.reset();
     });
     connect(jobPtr.get(), &NetJob::progress, [&](qint64 current, qint64 total)
     {
@@ -647,7 +638,6 @@ void PackInstallTask::onModsDownloaded() {
     abortable = false;
 
     qDebug() << "PackInstallTask::onModsDownloaded: " << QThread::currentThreadId();
-    jobPtr.reset();
 
     if(!modsToExtract.empty() || !modsToDecomp.empty() || !modsToCopy.empty()) {
         auto modsToExtractCopy = modsToExtract;

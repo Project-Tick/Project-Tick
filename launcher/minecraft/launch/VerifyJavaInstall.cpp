@@ -35,6 +35,7 @@
 
 #include "FileSystem.h"
 #include "Json.h"
+#include "java/JavaUtils.h"
 
 #ifndef MeshMC_DISABLE_JAVA_DOWNLOADER
 #include "Application.h"
@@ -74,44 +75,70 @@ QString VerifyJavaInstall::javaInstallDir() const
 
 QString VerifyJavaInstall::findInstalledJava(int requiredMajor) const
 {
-    QString javaBaseDir = javaInstallDir();
-    QDir baseDir(javaBaseDir);
-    if (!baseDir.exists())
-        return {};
-
 #if defined(Q_OS_WIN)
     QString binaryName = "javaw.exe";
 #else
     QString binaryName = "java";
 #endif
 
-    // Scan java/{vendor}/{version}/bin/java
-    QDirIterator vendorIt(javaBaseDir, QDir::Dirs | QDir::NoDotAndDotDot);
-    while (vendorIt.hasNext()) {
-        vendorIt.next();
-        QString vendorPath = vendorIt.filePath();
+    // Pattern matching Java major version in directory names
+    // Matches: "java-8-openjdk", "jdk-17", "java-21-openjdk-amd64", "zulu25.30.31-ca-jdk25.0.0-linux_x64"
+    QRegularExpression re(QString("(?:jdk|java|jre)[-.]?%1(?:[^0-9]|$)").arg(requiredMajor));
 
-        QDirIterator versionIt(vendorPath, QDir::Dirs | QDir::NoDotAndDotDot);
-        while (versionIt.hasNext()) {
-            versionIt.next();
-            QString versionPath = versionIt.filePath();
+    // 1. Scan MeshMC's managed java/{vendor}/{version}/bin/java directory
+    QString javaBaseDir = javaInstallDir();
+    QDir baseDir(javaBaseDir);
+    if (baseDir.exists()) {
+        QDirIterator vendorIt(javaBaseDir, QDir::Dirs | QDir::NoDotAndDotDot);
+        while (vendorIt.hasNext()) {
+            vendorIt.next();
+            QString vendorPath = vendorIt.filePath();
 
-            QDirIterator binIt(versionPath, QStringList() << binaryName,
-                               QDir::Files, QDirIterator::Subdirectories);
-            while (binIt.hasNext()) {
-                binIt.next();
-                QString javaPath = binIt.filePath();
-                if (javaPath.contains("/bin/")) {
-                    // Check if the directory name contains the required major version
-                    // Version dirs are named like "zulu25.30.31-ca-jdk25.0.0-linux_x64"
-                    // or "jdk-25+36" etc. We look for the major version number.
+            QDirIterator versionIt(vendorPath, QDir::Dirs | QDir::NoDotAndDotDot);
+            while (versionIt.hasNext()) {
+                versionIt.next();
+                QString versionPath = versionIt.filePath();
+
+                QDirIterator binIt(versionPath, QStringList() << binaryName,
+                                   QDir::Files, QDirIterator::Subdirectories);
+                while (binIt.hasNext()) {
+                    binIt.next();
+                    QString javaPath = binIt.filePath();
+                    if (!javaPath.contains("/bin/"))
+                        continue;
                     QString dirName = versionIt.fileName().toLower();
-                    // Match patterns like "jdk25", "java25", "-25.", "-25+", "-25-"
-                    QRegularExpression re(QString("(?:jdk|java|jre)[-.]?%1(?:[^0-9]|$)").arg(requiredMajor));
-                    if (re.match(dirName).hasMatch()) {
+                    if (re.match(dirName).hasMatch())
                         return javaPath;
-                    }
                 }
+            }
+        }
+    }
+
+    // 2. Scan system-installed Java paths
+    // Use JavaUtils to discover all Java installations on the system, then
+    // check if any match the required major version by parsing the path.
+    JavaUtils javaUtils;
+    QList<QString> systemJavas = javaUtils.FindJavaPaths();
+    for (const QString &javaPath : systemJavas) {
+        // Resolve to absolute path and verify it exists
+        QString resolved = FS::ResolveExecutable(javaPath);
+        if (resolved.isEmpty())
+            continue;
+
+        // Extract the parent directory components to check for version info
+        // Typical paths:
+        //   /usr/lib/jvm/java-8-openjdk/bin/java
+        //   /usr/lib/jvm/java-8-openjdk/jre/bin/java
+        //   /usr/lib64/jvm/java-17-openjdk/bin/java
+        //   /opt/jdk/jdk-21/bin/java
+        QFileInfo fi(resolved);
+        QString fullPath = fi.absoluteFilePath().toLower();
+
+        // Check if any component in the path matches the required Java version
+        QStringList parts = fullPath.split('/');
+        for (const QString &part : parts) {
+            if (re.match(part).hasMatch()) {
+                return resolved;
             }
         }
     }
@@ -210,9 +237,9 @@ void VerifyJavaInstall::fetchVersionList(int requiredMajor)
     });
 
     connect(m_fetchJob.get(), &NetJob::failed, this, [this, requiredMajor](QString reason) {
-        m_fetchJob.reset();
         emitFailed(tr("Failed to fetch Java version list: %1. Please install Java %2 manually.")
                    .arg(reason).arg(requiredMajor));
+        m_fetchJob.reset();
     });
 
     m_fetchJob->start();
@@ -229,7 +256,7 @@ void VerifyJavaInstall::fetchRuntimes(const QString &versionId, int requiredMajo
     m_fetchJob->addNetAction(dl);
 
     connect(m_fetchJob.get(), &NetJob::succeeded, this, [this, requiredMajor]() {
-        m_fetchJob.reset();
+        auto fetchJob = std::move(m_fetchJob);
 
         QJsonDocument doc;
         try {
@@ -261,8 +288,8 @@ void VerifyJavaInstall::fetchRuntimes(const QString &versionId, int requiredMajo
     });
 
     connect(m_fetchJob.get(), &NetJob::failed, this, [this](QString reason) {
-        m_fetchJob.reset();
         emitFailed(tr("Failed to fetch Java runtime details: %1").arg(reason));
+        m_fetchJob.reset();
     });
 
     m_fetchJob->start();
@@ -277,7 +304,6 @@ void VerifyJavaInstall::startDownload(const JavaDownload::RuntimeEntry &runtime,
 
     connect(m_downloadTask.get(), &Task::succeeded, this, [this]() {
         QString javaPath = m_downloadTask->installedJavaPath();
-        m_downloadTask.reset();
 
         if (javaPath.isEmpty()) {
             emitFailed(tr("Java was downloaded but the binary could not be found."));
@@ -289,8 +315,8 @@ void VerifyJavaInstall::startDownload(const JavaDownload::RuntimeEntry &runtime,
     });
 
     connect(m_downloadTask.get(), &Task::failed, this, [this, requiredMajor](const QString &reason) {
-        m_downloadTask.reset();
         emitFailed(tr("Failed to download Java %1: %2").arg(requiredMajor).arg(reason));
+        m_downloadTask.reset();
     });
 
     connect(m_downloadTask.get(), &Task::status, this, [this](const QString &status) {

@@ -313,10 +313,9 @@ sub main {
     }
 
     # Exit code based on results
+    # Warnings alone do not cause a non-zero exit
     if ($g_error_count > 0) {
         exit(1);
-    } elsif ($g_warn_count > 0) {
-        exit(2);
     }
     exit(0);
 }

@@ -39,6 +39,7 @@
 #include "Task.h"
 
 #include <QDebug>
+#include <QPointer>
 
 Task::Task(QObject *parent) : QObject(parent)
 {
@@ -107,8 +108,10 @@ void Task::emitFailed(QString reason)
     m_state = State::Failed;
     m_failReason = reason;
     qCritical() << "Task" << describe() << "failed: " << reason;
+    QPointer<Task> guard(this);
     emit failed(reason);
-    emit finished();
+    if (guard)
+        emit finished();
 }
 
 void Task::emitAborted()
@@ -122,8 +125,10 @@ void Task::emitAborted()
     m_state = State::AbortedByUser;
     m_failReason = "Aborted.";
     qDebug() << "Task" << describe() << "aborted.";
+    QPointer<Task> guard(this);
     emit failed(m_failReason);
-    emit finished();
+    if (guard)
+        emit finished();
 }
 
 void Task::emitSucceeded()
@@ -136,8 +141,10 @@ void Task::emitSucceeded()
     }
     m_state = State::Succeeded;
     qDebug() << "Task" << describe() << "succeeded";
+    QPointer<Task> guard(this);
     emit succeeded();
-    emit finished();
+    if (guard)
+        emit finished();
 }
 
 QString Task::describe()

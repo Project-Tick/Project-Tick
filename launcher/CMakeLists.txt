@@ -773,6 +773,8 @@ SET(MESHMC_SOURCES
     # GUI - dialogs
     ui/dialogs/AboutDialog.cpp
     ui/dialogs/AboutDialog.h
+    ui/dialogs/BlockedModsDialog.cpp
+    ui/dialogs/BlockedModsDialog.h
     ui/dialogs/ProfileSelectDialog.cpp
     ui/dialogs/ProfileSelectDialog.h
     ui/dialogs/ProfileSetupDialog.cpp
@@ -958,11 +960,10 @@ target_link_libraries(MeshMC_logic
     Qt6::NetworkAuth
     Qt6::Concurrent
     Qt6::Gui
-    QuaZip::QuaZip
+    LibArchive::LibArchive
 )
 target_link_libraries(MeshMC_logic
     MeshMC_iconfix
-    ${QUAZIP_LIBRARIES}
     hoedown
     MeshMC_rainbow
     LocalPeer

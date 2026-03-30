@@ -115,8 +115,12 @@ bool Flame::File::parseFromBytes(const QByteArray& bytes)
     }
     if(rawUrl.isEmpty())
     {
-        qCritical() << "Resolving of" << projectId << fileId << "failed: no download URL provided (mod may have disabled third-party downloads)";
-        return false;
+        // Mod has disabled third-party downloads — will be handled via browser download
+        qWarning() << "Mod" << projectId << fileId
+                   << "(" << fileName << ") has no download URL (restricted)."
+                   << "Will require browser download.";
+        resolved = false;
+        return true;
     }
     url = QUrl(rawUrl, QUrl::TolerantMode);
     if(!url.isValid())

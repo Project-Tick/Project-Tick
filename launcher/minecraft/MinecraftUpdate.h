@@ -45,7 +45,6 @@
 #include "net/NetJob.h"
 #include "tasks/Task.h"
 #include "minecraft/VersionFilterData.h"
-#include <quazip.h>
 
 class MinecraftVersion;
 class MinecraftInstance;

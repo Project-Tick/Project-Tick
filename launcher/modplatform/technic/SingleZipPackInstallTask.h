@@ -41,8 +41,6 @@
 #include "InstanceTask.h"
 #include "net/NetJob.h"
 
-#include "quazip.h"
-
 #include <QFutureWatcher>
 #include <QStringList>
 #include <QUrl>
@@ -79,7 +77,6 @@ private:
     QString m_minecraftVersion;
     QString m_archivePath;
     NetJob::Ptr m_filesNetJob;
-    std::unique_ptr<QuaZip> m_packZip;
     QFuture<nonstd::optional<QStringList>> m_extractFuture;
     QFutureWatcher<nonstd::optional<QStringList>> m_extractFutureWatcher;
 };

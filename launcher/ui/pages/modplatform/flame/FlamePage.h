@@ -100,4 +100,5 @@ private:
     Flame::IndexedPack current;
 
     QString selectedVersion;
+    int selectedVersionIndex = -1;
 };

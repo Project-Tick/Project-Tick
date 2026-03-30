@@ -42,9 +42,7 @@
 #include <Json.h>
 #include <minecraft/MinecraftInstance.h>
 #include <minecraft/PackProfile.h>
-#include <quazip.h>
-#include <quazipdir.h>
-#include <quazipfile.h>
+#include <MMCZip.h>
 #include <settings/INISettingsObject.h>
 
 #include <memory>
@@ -75,40 +73,27 @@ void Technic::TechnicPackProcessor::run(SettingsObjectPtr globalSettings, const 
     QString fmlMinecraftVersion;
     if (QFile::exists(modpackJar))
     {
-        QuaZip zipFile(modpackJar);
-        if (!zipFile.open(QuaZip::mdUnzip))
+        if (MMCZip::entryExists(modpackJar, "version.json"))
         {
-            emit failed(tr("Unable to open \"bin/modpack.jar\" file!"));
-            return;
-        }
-        QuaZipDir zipFileRoot(&zipFile, "/");
-        if (zipFileRoot.exists("/version.json"))
-        {
-            if (zipFileRoot.exists("/fmlversion.properties"))
+            if (MMCZip::entryExists(modpackJar, "fmlversion.properties"))
             {
-                zipFile.setCurrentFile("fmlversion.properties");
-                QuaZipFile file(&zipFile);
-                if (!file.open(QIODevice::ReadOnly))
+                QByteArray fmlVersionData = MMCZip::readFileFromZip(modpackJar, "fmlversion.properties");
+                if (fmlVersionData.isEmpty())
                 {
                     emit failed(tr("Unable to open \"fmlversion.properties\"!"));
                     return;
                 }
-                QByteArray fmlVersionData = file.readAll();
-                file.close();
                 INIFile iniFile;
                 iniFile.loadFile(fmlVersionData);
                 // If not present, this evaluates to a null string
                 fmlMinecraftVersion = iniFile["fmlbuild.mcversion"].toString();
             }
-            zipFile.setCurrentFile("version.json", QuaZip::csSensitive);
-            QuaZipFile file(&zipFile);
-            if (!file.open(QIODevice::ReadOnly))
+            data = MMCZip::readFileFromZip(modpackJar, "version.json");
+            if (data.isEmpty())
             {
                 emit failed(tr("Unable to open \"version.json\"!"));
                 return;
             }
-            data = file.readAll();
-            file.close();
         }
         else
         {
@@ -120,18 +105,15 @@ void Technic::TechnicPackProcessor::run(SettingsObjectPtr globalSettings, const 
             // Forge for 1.4.7 and for 1.5.2 require extra libraries.
             // Figure out the forge version and add it as a component
             // (the code still comes from the jar mod installed above)
-            if (zipFileRoot.exists("/forgeversion.properties"))
+            if (MMCZip::entryExists(modpackJar, "forgeversion.properties"))
             {
-                zipFile.setCurrentFile("forgeversion.properties", QuaZip::csSensitive);
-                QuaZipFile file(&zipFile);
-                if (!file.open(QIODevice::ReadOnly))
+                QByteArray forgeVersionData = MMCZip::readFileFromZip(modpackJar, "forgeversion.properties");
+                if (forgeVersionData.isEmpty())
                 {
                     // Really shouldn't happen, but error handling shall not be forgotten
                     emit failed(tr("Unable to open \"forgeversion.properties\""));
                     return;
                 }
-                QByteArray forgeVersionData = file.readAll();
-                file.close();
                 INIFile iniFile;
                 iniFile.loadFile(forgeVersionData);
                 QString major, minor, revision, build;

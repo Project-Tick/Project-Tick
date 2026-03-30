@@ -49,9 +49,6 @@
 #include <io/stream_reader.h>
 #include <tag_string.h>
 #include <tag_primitive.h>
-#include <quazip.h>
-#include <quazipfile.h>
-#include <quazipdir.h>
 
 #include <QCoreApplication>
 
@@ -260,41 +257,22 @@ void World::readFromFS(const QFileInfo &file)
 
 void World::readFromZip(const QFileInfo &file)
 {
-    QuaZip zip(file.absoluteFilePath());
-    is_valid = zip.open(QuaZip::mdUnzip);
-    if (!is_valid)
-    {
-        return;
-    }
-    auto location = MMCZip::findFolderOfFileInZip(&zip, "level.dat");
+    QString zipPath = file.absoluteFilePath();
+    auto location = MMCZip::findFolderOfFileInZip(zipPath, "level.dat");
     is_valid = !location.isEmpty();
     if (!is_valid)
     {
         return;
     }
     m_containerOffsetPath = location;
-    QuaZipFile zippedFile(&zip);
-    // read the install profile
-    is_valid = zip.setCurrentFile(location + "level.dat");
+    QByteArray levelDatData = MMCZip::readFileFromZip(zipPath, location + "level.dat");
+    is_valid = !levelDatData.isEmpty();
     if (!is_valid)
     {
         return;
     }
-    is_valid = zippedFile.open(QIODevice::ReadOnly);
-    QuaZipFileInfo64 levelDatInfo;
-    zippedFile.getFileInfo(&levelDatInfo);
-    auto modTime = levelDatInfo.getNTFSmTime();
-    if(!modTime.isValid())
-    {
-        modTime = levelDatInfo.dateTime;
-    }
-    levelDatTime = modTime;
-    if (!is_valid)
-    {
-        return;
-    }
-    loadFromLevelDat(zippedFile.readAll());
-    zippedFile.close();
+    levelDatTime = MMCZip::getEntryModTime(zipPath, location + "level.dat");
+    loadFromLevelDat(levelDatData);
 }
 
 bool World::install(const QString &to, const QString &name)
@@ -307,12 +285,8 @@ bool World::install(const QString &to, const QString &name)
     bool ok = false;
     if(m_containerFile.isFile())
     {
-        QuaZip zip(m_containerFile.absoluteFilePath());
-        if (!zip.open(QuaZip::mdUnzip))
-        {
-            return false;
-        }
-        ok = !MMCZip::extractSubDir(&zip, m_containerOffsetPath, finalPath);
+        auto result = MMCZip::extractSubDir(m_containerFile.absoluteFilePath(), m_containerOffsetPath, finalPath);
+        ok = result.has_value();
     }
     else if(m_containerFile.isDir())
     {

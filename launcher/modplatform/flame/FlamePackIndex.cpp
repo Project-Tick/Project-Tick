@@ -133,6 +133,7 @@ void Flame::loadIndexedPackVersions(Flame::IndexedPack & pack, QJsonArray & arr)
         file.mcVersion = versionArray[0].toString();
         file.version = Json::requireString(version, "displayName");
         file.downloadUrl = Json::ensureString(version, "downloadUrl", "");
+        file.fileName = Json::ensureString(version, "fileName", "");
         unsortedVersions.append(file);
     }
 

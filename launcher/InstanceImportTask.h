@@ -48,7 +48,6 @@
 
 #include <nonstd/optional>
 
-class QuaZip;
 namespace Flame
 {
     class FileResolvingTask;
@@ -87,7 +86,6 @@ private: /* data */
     QUrl m_sourceUrl;
     QString m_archivePath;
     bool m_downloadRequired = false;
-    std::unique_ptr<QuaZip> m_packZip;
     QFuture<nonstd::optional<QStringList>> m_extractFuture;
     QFutureWatcher<nonstd::optional<QStringList>> m_extractFutureWatcher;
     enum class ModpackType{

@@ -85,14 +85,11 @@ void Technic::SingleZipPackInstallTask::downloadSucceeded()
     QDir extractDir(FS::PathCombine(m_stagingPath, ".minecraft"));
     qDebug() << "Attempting to create instance from" << m_archivePath;
 
-    // open the zip and find relevant files in it
-    m_packZip.reset(new QuaZip(m_archivePath));
-    if (!m_packZip->open(QuaZip::mdUnzip))
-    {
-        emitFailed(tr("Unable to open supplied modpack zip file."));
-        return;
-    }
-    m_extractFuture = QtConcurrent::run(QThreadPool::globalInstance(), MMCZip::extractSubDir, m_packZip.get(), QString(""), extractDir.absolutePath());
+    QString archivePath = m_archivePath;
+    QString extractPath = extractDir.absolutePath();
+    m_extractFuture = QtConcurrent::run(QThreadPool::globalInstance(), [archivePath, extractPath]() {
+        return MMCZip::extractSubDir(archivePath, QString(""), extractPath);
+    });
     connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::finished, this, &Technic::SingleZipPackInstallTask::extractFinished);
     connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::canceled, this, &Technic::SingleZipPackInstallTask::extractAborted);
     m_extractFutureWatcher.setFuture(m_extractFuture);
@@ -114,7 +111,6 @@ void Technic::SingleZipPackInstallTask::downloadProgressChanged(qint64 current, 
 
 void Technic::SingleZipPackInstallTask::extractFinished()
 {
-    m_packZip.reset();
     if (!m_extractFuture.result())
     {
         emitFailed(tr("Failed to extract modpack"));
