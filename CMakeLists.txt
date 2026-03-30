@@ -113,6 +113,11 @@ find_package(Qt6 REQUIRED COMPONENTS
     Xml
 )
 
+include(QMakeQuery)
+QUERY_QMAKE(QT_INSTALL_PLUGINS QT_PLUGINS_DIR)
+QUERY_QMAKE(QT_INSTALL_LIBS QT_LIBS_DIR)
+QUERY_QMAKE(QT_INSTALL_LIBEXECS QT_LIBEXECS_DIR)
+
 find_package(LibArchive REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -362,10 +367,9 @@ elseif(WIN32)
     set(BINARY_DEST_DIR ".")
     set(LIBRARY_DEST_DIR ".")
     set(PLUGIN_DEST_DIR ".")
+    set(FRAMEWORK_DEST_DIR ".")
     set(RESOURCES_DEST_DIR ".")
     set(JARS_DEST_DIR "jars")
-
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/launcher/qtlogging.ini" DESTINATION "${RESOURCES_DEST_DIR}")
 else()
     message(FATAL_ERROR "Platform not supported")
 endif()

@@ -59,7 +59,7 @@ runs:
         BUILD_DIR: build
         INSTALL_DIR: install
       run: |
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
+        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --component bundle
 
         cd ${{ env.INSTALL_DIR }}
         chmod +x "MeshMC.app/Contents/MacOS/meshmc"

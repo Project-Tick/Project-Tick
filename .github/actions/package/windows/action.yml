@@ -33,7 +33,7 @@ runs:
         BUILD_DIR: build
         INSTALL_DIR: install
       run: |
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
+        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --component bundle
         touch ${{ env.INSTALL_DIR }}/manifest.txt
         for l in $(find ${{ env.INSTALL_DIR }} -type f); do l=$(cygpath -u $l); l=${l#$(pwd)/}; l=${l#${{ env.INSTALL_DIR }}/}; l=${l#./}; echo $l; done >> ${{ env.INSTALL_DIR }}/manifest.txt
 
@@ -44,7 +44,7 @@ runs:
         BUILD_DIR: build
         INSTALL_DIR: install
       run: |
-        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
+        cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --component bundle
 
         cd ${{ github.workspace }}
 

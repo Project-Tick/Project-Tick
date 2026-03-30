@@ -998,94 +998,117 @@ install(TARGETS ${MeshMC_Name}
 #### The bundle mess! ####
 # Bundle utilities are used to complete the portable packages - they add all the libraries that would otherwise be missing on the target system.
 # NOTE: it seems that this absolutely has to be here, and nowhere else.
-if(INSTALL_BUNDLE STREQUAL "full")
-    # Query Qt for the plugins directory
-    include(QMakeQuery)
-    QUERY_QMAKE(QT_INSTALL_PLUGINS QT_PLUGINS_DIR)
+if(WIN32 OR (UNIX AND APPLE))
+    if(WIN32)
+        set(QT_DEPLOY_TOOL_OPTIONS "--no-opengl-sw --no-quick-import --no-system-d3d-compiler --no-system-dxc-compiler --skip-plugin-types generic,networkinformation")
+    endif()
+
+    qt_generate_deploy_script(
+        TARGET ${MeshMC_Name}
+        OUTPUT_SCRIPT QT_DEPLOY_SCRIPT
+        CONTENT "
+        qt_deploy_runtime_dependencies(
+            EXECUTABLE ${BINARY_DEST_DIR}/$<TARGET_FILE_NAME:${MeshMC_Name}>
+            BIN_DIR ${BINARY_DEST_DIR}
+            LIBEXEC_DIR ${LIBRARY_DEST_DIR}
+            LIB_DIR ${LIBRARY_DEST_DIR}
+            PLUGINS_DIR ${PLUGIN_DEST_DIR}
+            NO_OVERWRITE
+            NO_TRANSLATIONS
+            NO_COMPILER_RUNTIME
+            DEPLOY_TOOL_OPTIONS ${QT_DEPLOY_TOOL_OPTIONS}
+        )"
+    )
+
+    # Bundle our linked dependencies
+    install(
+        RUNTIME_DEPENDENCY_SET LAUNCHER_DEPENDENCY_SET
+        COMPONENT bundle
+        DIRECTORIES
+            ${CMAKE_SYSTEM_LIBRARY_PATH}
+            ${QT_LIBS_DIR}
+            ${QT_LIBEXECS_DIR}
+        PRE_EXCLUDE_REGEXES
+            "^(api-ms-win|ext-ms)-.*\\.dll$"
+            # FIXME: Why aren't these caught by the below regex???
+            "^azure.*\\.dll$"
+            "^vcruntime.*\\.dll$"
+        POST_EXCLUDE_REGEXES
+            "system32"
+        LIBRARY DESTINATION ${LIBRARY_DEST_DIR}
+        RUNTIME DESTINATION ${BINARY_DEST_DIR}
+        FRAMEWORK DESTINATION ${FRAMEWORK_DEST_DIR}
+    )
+    # Deploy Qt plugins
+    install(
+        SCRIPT ${QT_DEPLOY_SCRIPT}
+        COMPONENT bundle
+    )
+    # FIXME: remove this crap once we stop using msys2
+    if(MINGW)
+        # i've not found a solution better than injecting the config vars like this...
+        # with install(CODE" for everything everything just breaks
+        install(CODE "
+            set(QT_PLUGINS_DIR \"${QT_PLUGINS_DIR}\")
+            set(QT_LIBS_DIR \"${QT_LIBS_DIR}\")
+            set(QT_LIBEXECS_DIR \"${QT_LIBEXECS_DIR}\")
+            set(CMAKE_SYSTEM_LIBRARY_PATH \"${CMAKE_SYSTEM_LIBRARY_PATH}\")
+            set(CMAKE_INSTALL_PREFIX \"${CMAKE_INSTALL_PREFIX}\")
+            "
+            COMPONENT bundle)
+
+        install(CODE [[
+            file(GLOB QT_IMAGEFORMAT_DLLS "${QT_PLUGINS_DIR}/imageformats/*.dll")
+            set(CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL objdump)
+            file(GET_RUNTIME_DEPENDENCIES
+                RESOLVED_DEPENDENCIES_VAR imageformatdeps
+                LIBRARIES ${QT_IMAGEFORMAT_DLLS}
+                DIRECTORIES
+                    ${CMAKE_SYSTEM_LIBRARY_PATH}
+                    ${QT_PLUGINS_DIR}
+                    ${QT_LIBS_DIR}
+                    ${QT_LIBEXECS_DIR}
+                PRE_EXCLUDE_REGEXES
+                    "^(api-ms-win|ext-ms)-.*\\.dll$"
+                    # FIXME: Why aren't these caught by the below regex???
+                    "^azure.*\\.dll$"
+                    "^vcruntime.*\\.dll$"
+                POST_EXCLUDE_REGEXES
+                    "system32"
+            )
+            foreach(_lib ${imageformatdeps})
+                file(INSTALL
+                    DESTINATION ${CMAKE_INSTALL_PREFIX}
+                    TYPE SHARED_LIBRARY
+                    FOLLOW_SYMLINK_CHAIN
+                    FILES ${_lib}
+                )
+            endforeach()
+        ]]
+        COMPONENT bundle)
+    endif()
 
     # Add qt.conf - this makes Qt stop looking for things outside the bundle
     install(
         CODE "file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCES_DEST_DIR}/qt.conf\" \" \")"
-        COMPONENT Runtime
+        COMPONENT bundle
     )
-    # Bundle plugins
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        # Image formats
-        install(
-            DIRECTORY "${QT_PLUGINS_DIR}/imageformats"
-            DESTINATION ${PLUGIN_DEST_DIR}
-            COMPONENT Runtime
-            REGEX "tga|tiff|mng|webp" EXCLUDE
-        )
-        # Icon engines
-        install(
-            DIRECTORY "${QT_PLUGINS_DIR}/iconengines"
-            DESTINATION ${PLUGIN_DEST_DIR}
-            COMPONENT Runtime
-            REGEX "fontawesome" EXCLUDE
-        )
-        # Platform plugins
-        install(
-            DIRECTORY "${QT_PLUGINS_DIR}/platforms"
-            DESTINATION ${PLUGIN_DEST_DIR}
-            COMPONENT Runtime
-            REGEX "minimal|linuxfb|offscreen" EXCLUDE
-        )
-        # Style plugins
-        if(EXISTS "${QT_PLUGINS_DIR}/styles")
-            install(
-                DIRECTORY "${QT_PLUGINS_DIR}/styles"
-                DESTINATION ${PLUGIN_DEST_DIR}
-                COMPONENT Runtime
-            )
-        endif()
-    else()
-        # Image formats
-        install(
-            DIRECTORY "${QT_PLUGINS_DIR}/imageformats"
-            DESTINATION ${PLUGIN_DEST_DIR}
-            COMPONENT Runtime
-            REGEX "tga|tiff|mng|webp" EXCLUDE
-            REGEX "d\\." EXCLUDE
-            REGEX "_debug\\." EXCLUDE
-            REGEX "\\.dSYM" EXCLUDE
-        )
-        # Icon engines
-        install(
-            DIRECTORY "${QT_PLUGINS_DIR}/iconengines"
-            DESTINATION ${PLUGIN_DEST_DIR}
-            COMPONENT Runtime
-            REGEX "fontawesome" EXCLUDE
-            REGEX "d\\." EXCLUDE
-            REGEX "_debug\\." EXCLUDE
-            REGEX "\\.dSYM" EXCLUDE
-        )
-        # Platform plugins
-        install(
-            DIRECTORY "${QT_PLUGINS_DIR}/platforms"
-            DESTINATION ${PLUGIN_DEST_DIR}
-            COMPONENT Runtime
-            REGEX "minimal|linuxfb|offscreen" EXCLUDE
-            REGEX "d\\." EXCLUDE
-            REGEX "_debug\\." EXCLUDE
-            REGEX "\\.dSYM" EXCLUDE
-        )
-        # Style plugins
-        if(EXISTS "${QT_PLUGINS_DIR}/styles")
-            install(
-                DIRECTORY "${QT_PLUGINS_DIR}/styles"
-                DESTINATION ${PLUGIN_DEST_DIR}
-                COMPONENT Runtime
-                REGEX "d\\." EXCLUDE
-                REGEX "_debug\\." EXCLUDE
-                REGEX "\\.dSYM" EXCLUDE
-            )
-        endif()
-    endif()
-    configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/install_prereqs.cmake.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/install_prereqs.cmake"
-        @ONLY
+    # Add qtlogging.ini as a config file
+    install(
+        FILES "qtlogging.ini"
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${RESOURCES_DEST_DIR}
+        COMPONENT bundle
     )
-    install(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/install_prereqs.cmake" COMPONENT Runtime)
+endif()
+
+find_program(CLANG_FORMAT clang-format OPTIONAL)
+if(CLANG_FORMAT)
+    message(STATUS "Creating clang-format target")
+    add_custom_target(
+        clang-format
+        COMMAND ${CLANG_FORMAT} -i --style=file:${CMAKE_SOURCE_DIR}/.clang-format ${LOGIC_SOURCES} ${MESHMC_SOURCES}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
+else()
+    message(WARNING "Unable to find `clang-format`. Not creating custom target")
 endif()

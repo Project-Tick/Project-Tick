@@ -68,9 +68,6 @@
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Windows"
-            },
-            "cacheVariables": {
-                "INSTALL_BUNDLE": "full"
             }
         },
         {
@@ -86,8 +83,7 @@
             },
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "$penv{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-                "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT": "Embedded",
-                "INSTALL_BUNDLE": "full"
+                "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT": "Embedded"
             }
         }
     ],
