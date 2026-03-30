@@ -999,6 +999,10 @@ install(TARGETS ${MeshMC_Name}
 # Bundle utilities are used to complete the portable packages - they add all the libraries that would otherwise be missing on the target system.
 # NOTE: it seems that this absolutely has to be here, and nowhere else.
 if(INSTALL_BUNDLE STREQUAL "full")
+    # Query Qt for the plugins directory
+    include(QMakeQuery)
+    QUERY_QMAKE(QT_INSTALL_PLUGINS QT_PLUGINS_DIR)
+
     # Add qt.conf - this makes Qt stop looking for things outside the bundle
     install(
         CODE "file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCES_DEST_DIR}/qt.conf\" \" \")"
