@@ -142,7 +142,7 @@ set(MeshMC_ConfigFile "meshmc.cfg")
 set(MeshMC_Git "https://github.com/Project-Tick/MeshMC")
 
 set(MeshMC_SVGFileName "${MeshMC_AppID}.svg")
-set(MeshMC_Branding_ICNS "branding/MeshMC.icns")
+set(MeshMC_Branding_ICNS "branding/${MeshMC_AppID}.icns")
 set(MeshMC_Branding_WindowsRC "branding/${MeshMC_AppBinaryName}.rc")
 set(MeshMC_Branding_LogoQRC "branding/${MeshMC_AppBinaryName}.qrc")
 
@@ -269,7 +269,7 @@ if(UNIX AND APPLE)
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${MeshMC_RELEASE_VERSION_NAME}")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${MeshMC_RELEASE_VERSION_NAME}")
     set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MeshMC_RELEASE_VERSION_NAME}")
-    set(MACOSX_BUNDLE_ICON_FILE ${MeshMC_Name}.icns)
+    set(MACOSX_BUNDLE_ICON_FILE ${MeshMC_AppID}.icns)
     set(MACOSX_BUNDLE_COPYRIGHT "${MeshMC_Copyright_Mac}")
     set(MACOSX_SPARKLE_UPDATE_PUBLIC_KEY "C0eBoyDSoZbzgCMxQH9wH6kmjU2mPRmvhZZd9mHgqZQ=" CACHE STRING "Public key for Sparkle update feed")
     set(MACOSX_SPARKLE_UPDATE_FEED_URL "https://projecttick.org/product/meshmc/appcast.xml" CACHE STRING "URL for Sparkle update feed")
@@ -279,7 +279,7 @@ if(UNIX AND APPLE)
     set(MACOSX_SPARKLE_DIR "${CMAKE_BINARY_DIR}/frameworks/Sparkle")
 
     # Add the icon
-    install(FILES ${MeshMC_Branding_ICNS} DESTINATION ${RESOURCES_DEST_DIR} RENAME ${MeshMC_Name}.icns)
+    install(FILES ${MeshMC_Branding_ICNS} DESTINATION ${RESOURCES_DEST_DIR} RENAME ${MeshMC_AppID}.icns)
 
     find_program(ACTOOL_EXE actool DOC "Path to the apple asset catalog compiler")
     if(ACTOOL_EXE)
