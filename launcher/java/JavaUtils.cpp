@@ -39,6 +39,7 @@
 #include <QStringList>
 #include <QString>
 #include <QDir>
+#include <QDirIterator>
 #include <QStringList>
 
 #include <settings/Setting.h>
@@ -348,7 +349,29 @@ QList<QString> JavaUtils::FindJavaPaths()
     java_candidates.append(ADOPTIUMJDK32s);
     java_candidates.append(ZULU32s);
     java_candidates.append(LIBERICA32s);
-    
+
+    // Scan MeshMC's managed java directory ({workdir}/java/{vendor}/{version}/bin/javaw.exe)
+    QString managedJavaDir = FS::PathCombine(QDir::currentPath(), "java");
+    QDir managedDir(managedJavaDir);
+    if (managedDir.exists()) {
+        QDirIterator vendorIt(managedJavaDir, QDir::Dirs | QDir::NoDotAndDotDot);
+        while (vendorIt.hasNext()) {
+            vendorIt.next();
+            QDirIterator versionIt(vendorIt.filePath(), QDir::Dirs | QDir::NoDotAndDotDot);
+            while (versionIt.hasNext()) {
+                versionIt.next();
+                QDirIterator binIt(versionIt.filePath(), QStringList() << "javaw.exe",
+                                   QDir::Files, QDirIterator::Subdirectories);
+                while (binIt.hasNext()) {
+                    binIt.next();
+                    if (binIt.filePath().contains("/bin/")) {
+                        java_candidates.append(MakeJavaPtr(binIt.filePath()));
+                    }
+                }
+            }
+        }
+    }
+
     java_candidates.append(MakeJavaPtr(this->GetDefaultJava()->path));
 
     QList<QString> candidates;

@@ -268,6 +268,9 @@ if(UNIX AND APPLE)
     set(BUNDLE_DEST_DIR ".")
     set(RESOURCES_DEST_DIR ".")
 
+    # Set RPATH for macOS
+    SET(MeshMC_BINARY_RPATH "@executable_path")
+
     # Mac bundle settings
     set(MACOSX_BUNDLE_BUNDLE_NAME "${MeshMC_DisplayName}")
     set(MACOSX_BUNDLE_INFO_STRING "${MeshMC_DisplayName}: A custom launcher for Minecraft that allows you to easily manage multiple installations of Minecraft at once.")
