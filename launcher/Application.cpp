@@ -431,11 +431,14 @@ bool Application::resolveDataPath(
         dataPath = foo.absolutePath();
         adjustedBy += "Fallback to special Mac location " + dataPath;
 #elif defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
-        QString portablePath = FS::PathCombine(applicationDirPath(), "portable.txt");
+        QDir portableDir(applicationDirPath());
+        portableDir.cdUp();
+        QString portableRoot = portableDir.absolutePath();
+        QString portablePath = FS::PathCombine(portableRoot, "portable.txt");
         if (QFileInfo::exists(portablePath))
         {
-            dataPath = applicationDirPath();
-            adjustedBy += "Portable mode (portable.txt found), using binary path " + dataPath;
+            dataPath = portableRoot;
+            adjustedBy += "Portable mode (portable.txt found), using portable root " + dataPath;
         }
         else
         {

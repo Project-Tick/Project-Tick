@@ -20,3 +20,7 @@ set(SRC
 )
 add_jar(NewLaunch ${SRC})
 install_jar(NewLaunch "${JARS_DEST_DIR}")
+
+# Also install jars as part of the bundle component for packaging
+get_property(_newlaunch_jar TARGET NewLaunch PROPERTY INSTALL_FILES)
+install(FILES ${_newlaunch_jar} DESTINATION "${JARS_DEST_DIR}" COMPONENT bundle)

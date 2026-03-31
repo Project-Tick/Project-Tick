@@ -12,3 +12,7 @@ set(SRC
 
 add_jar(JavaCheck ${SRC})
 install_jar(JavaCheck "${JARS_DEST_DIR}")
+
+# Also install jars as part of the bundle component for packaging
+get_property(_javacheck_jar TARGET JavaCheck PROPERTY INSTALL_FILES)
+install(FILES ${_javacheck_jar} DESTINATION "${JARS_DEST_DIR}" COMPONENT bundle)

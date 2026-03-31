@@ -1059,6 +1059,26 @@ if(WIN32 OR (UNIX AND APPLE))
     )
 
     if(WIN32)
+        if(MSVC)
+            # vcpkg's x64-windows triplet places debug DLLs in debug/bin/ instead of bin/.
+            # windeployqt resolves DLLs relative to <qt_prefix>/bin/ and fails for Debug builds.
+            # Only needed for MSVC builds; MinGW uses MSYS2 packages, not vcpkg.
+            get_filename_component(_qt_prefix "${QT_LIBS_DIR}" DIRECTORY)
+            install(CODE "
+                set(_debug_bin \"${_qt_prefix}/debug/bin\")
+                set(_release_bin \"${_qt_prefix}/bin\")
+                if(IS_DIRECTORY \"\${_debug_bin}\")
+                    file(GLOB _debug_dlls \"\${_debug_bin}/*.dll\")
+                    foreach(_dll \${_debug_dlls})
+                        get_filename_component(_name \"\${_dll}\" NAME)
+                        if(NOT EXISTS \"\${_release_bin}/\${_name}\")
+                            file(COPY_FILE \"\${_dll}\" \"\${_release_bin}/\${_name}\")
+                        endif()
+                    endforeach()
+                endif()
+            "
+            COMPONENT bundle)
+        endif()
         # Deploy Qt plugins and DLLs using windeployqt directly
         install(CODE "
             execute_process(
