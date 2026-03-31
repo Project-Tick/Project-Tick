@@ -264,12 +264,10 @@ if(UNIX AND APPLE)
     set(FRAMEWORK_DEST_DIR "${MeshMC_Name}.app/Contents/Frameworks")
     set(RESOURCES_DEST_DIR "${MeshMC_Name}.app/Contents/Resources")
     set(JARS_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS/jars")
-    set(PLUGIN_DEST_DIR "plugins")
     set(BUNDLE_DEST_DIR ".")
-    set(RESOURCES_DEST_DIR ".")
 
     # Set RPATH for macOS
-    SET(MeshMC_BINARY_RPATH "@executable_path")
+    SET(MeshMC_BINARY_RPATH "$ORIGIN/")
 
     # Mac bundle settings
     set(MACOSX_BUNDLE_BUNDLE_NAME "${MeshMC_DisplayName}")
