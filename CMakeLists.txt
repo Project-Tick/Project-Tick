@@ -266,9 +266,6 @@ if(UNIX AND APPLE)
     set(JARS_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS/jars")
     set(BUNDLE_DEST_DIR ".")
 
-    # Set RPATH for macOS
-    SET(MeshMC_BINARY_RPATH "$ORIGIN/")
-
     # Mac bundle settings
     set(MACOSX_BUNDLE_BUNDLE_NAME "${MeshMC_DisplayName}")
     set(MACOSX_BUNDLE_INFO_STRING "${MeshMC_DisplayName}: A custom launcher for Minecraft that allows you to easily manage multiple installations of Minecraft at once.")

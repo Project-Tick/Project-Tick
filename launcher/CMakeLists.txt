@@ -970,6 +970,11 @@ target_link_libraries(MeshMC_logic
     ganalytics
 )
 
+if(APPLE)
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "@loader_path/../Frameworks/")
+endif()
+
 add_executable(${MeshMC_Name} MACOSX_BUNDLE WIN32 main.cpp ${MESHMC_RCS})
 target_link_libraries(${MeshMC_Name} MeshMC_logic)
 
