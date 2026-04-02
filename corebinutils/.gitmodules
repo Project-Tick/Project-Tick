@@ -1,0 +1,117 @@
+[submodule "cat"]
+	path = cat
+	url = https://gitlab.com/project-tick/distro/bin/cat
+[submodule "chflags"]
+	path = chflags
+	url = https://gitlab.com/project-tick/distro/bin/chflags
+[submodule "chmod"]
+	path = chmod
+	url = https://gitlab.com/project-tick/distro/bin/chmod
+[submodule "cp"]
+	path = cp
+	url = https://gitlab.com/project-tick/distro/bin/cp
+[submodule "cpuset"]
+	path = cpuset
+	url = https://gitlab.com/project-tick/distro/bin/cpuset
+[submodule "csh"]
+	path = csh
+	url = https://gitlab.com/project-tick/distro/bin/csh
+[submodule "date"]
+	path = date
+	url = https://gitlab.com/project-tick/distro/bin/date
+[submodule "dd"]
+	path = dd
+	url = https://gitlab.com/project-tick/distro/bin/dd
+[submodule "df"]
+	path = df
+	url = https://gitlab.com/project-tick/distro/bin/df
+[submodule "domainname"]
+	path = domainname
+	url = https://gitlab.com/project-tick/distro/bin/domainname
+[submodule "echo"]
+	path = echo
+	url = https://gitlab.com/project-tick/distro/bin/echo
+[submodule "ed"]
+	path = ed
+	url = https://gitlab.com/project-tick/distro/bin/ed
+[submodule "expr"]
+	path = expr
+	url = https://gitlab.com/project-tick/distro/bin/expr
+[submodule "freebsd-version"]
+	path = freebsd-version
+	url = https://gitlab.com/project-tick/distro/bin/linux-version
+[submodule "getfacl"]
+	path = getfacl
+	url = https://gitlab.com/project-tick/distro/bin/getfacl
+[submodule "hostname"]
+	path = hostname
+	url = https://gitlab.com/project-tick/distro/bin/hostname
+[submodule "kill"]
+	path = kill
+	url = https://gitlab.com/project-tick/distro/bin/kill
+[submodule "ln"]
+	path = ln
+	url = https://gitlab.com/project-tick/distro/bin/ln
+[submodule "ls"]
+	path = ls
+	url = https://gitlab.com/project-tick/distro/bin/ls
+[submodule "mkdir"]
+	path = mkdir
+	url = https://gitlab.com/project-tick/distro/bin/mkdir
+[submodule "mv"]
+	path = mv
+	url = https://gitlab.com/project-tick/distro/bin/mv
+[submodule "nproc"]
+	path = nproc
+	url = https://gitlab.com/project-tick/distro/bin/nproc
+[submodule "pax"]
+	path = pax
+	url = https://gitlab.com/project-tick/distro/bin/pax
+[submodule "pkill"]
+	path = pkill
+	url = https://gitlab.com/project-tick/distro/bin/pkill
+[submodule "ps"]
+	path = ps
+	url = https://gitlab.com/project-tick/distro/bin/ps
+[submodule "pwait"]
+	path = pwait
+	url = https://gitlab.com/project-tick/distro/bin/pwait
+[submodule "pwd"]
+	path = pwd
+	url = https://gitlab.com/project-tick/distro/bin/pwd
+[submodule "realpath"]
+	path = realpath
+	url = https://gitlab.com/project-tick/distro/bin/realpath
+[submodule "rm"]
+	path = rm
+	url = https://gitlab.com/project-tick/distro/bin/rm
+[submodule "rmail"]
+	path = rmail
+	url = https://gitlab.com/project-tick/distro/bin/rmail
+[submodule "rmdir"]
+	path = rmdir
+	url = https://gitlab.com/project-tick/distro/bin/rmdir
+[submodule "setfacl"]
+	path = setfacl
+	url = https://gitlab.com/project-tick/distro/bin/setfacl
+[submodule "sh"]
+	path = sh
+	url = https://gitlab.com/project-tick/distro/bin/sh
+[submodule "sleep"]
+	path = sleep
+	url = https://gitlab.com/project-tick/distro/bin/sleep
+[submodule "stty"]
+	path = stty
+	url = https://gitlab.com/project-tick/distro/bin/stty
+[submodule "sync"]
+	path = sync
+	url = https://gitlab.com/project-tick/distro/bin/sync
+[submodule "test"]
+	path = test
+	url = https://gitlab.com/project-tick/distro/bin/test
+[submodule "timeout"]
+	path = timeout
+	url = https://gitlab.com/project-tick/distro/bin/timeout
+[submodule "uuidgen"]
+	path = uuidgen
+	url = https://gitlab.com/project-tick/distro/bin/uuidgen
