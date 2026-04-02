@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.28)
 project(MeshMC)
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(ECM NO_MODULE REQUIRED)
 set(CMAKE_MODULE_PATH "${ECM_MODULE_PATH};${CMAKE_MODULE_PATH}")
@@ -77,6 +78,20 @@ include(ECMQtDeclareLoggingCategory)
 
 option(ENABLE_LTO "Enable Link Time Optimization" off)
 option(MeshMC_DISABLE_JAVA_DOWNLOADER "Disable the built-in Java downloader feature" OFF)
+option(MeshMC_ENABLE_CLANG_TIDY "Run clang-tidy during C/C++ compilation" OFF)
+
+find_program(MeshMC_CLANG_TIDY_EXECUTABLE NAMES clang-tidy clang-tidy-19 OPTIONAL)
+if(MeshMC_ENABLE_CLANG_TIDY)
+    if(MeshMC_CLANG_TIDY_EXECUTABLE)
+        set(CMAKE_C_CLANG_TIDY
+            "${MeshMC_CLANG_TIDY_EXECUTABLE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy")
+        set(CMAKE_CXX_CLANG_TIDY
+            "${MeshMC_CLANG_TIDY_EXECUTABLE};--config-file=${CMAKE_SOURCE_DIR}/.clang-tidy")
+        message(STATUS "clang-tidy enabled: ${MeshMC_CLANG_TIDY_EXECUTABLE}")
+    else()
+        message(WARNING "MeshMC_ENABLE_CLANG_TIDY is ON but clang-tidy was not found")
+    endif()
+endif()
 
 if(ENABLE_LTO)
     include(CheckIPOSupported)
@@ -265,9 +280,9 @@ endif()
 
 if(UNIX AND APPLE)
     set(BINARY_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS")
-    set(LIBRARY_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS")
-    set(PLUGIN_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS")
     set(FRAMEWORK_DEST_DIR "${MeshMC_Name}.app/Contents/Frameworks")
+    set(LIBRARY_DEST_DIR "${FRAMEWORK_DEST_DIR}")
+    set(PLUGIN_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS")
     set(RESOURCES_DEST_DIR "${MeshMC_Name}.app/Contents/Resources")
     set(JARS_DEST_DIR "${MeshMC_Name}.app/Contents/MacOS/jars")
     set(BUNDLE_DEST_DIR ".")

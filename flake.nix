@@ -9,7 +9,7 @@
   };
 
   inputs = {
-    nixpkgs.url = "https://channels.nixos.org/nixos-25.11/nixexprs.tar.xz";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
 
     libnbtplusplus = {
       url = "github:Project-Tick/libnbtplusplus";
@@ -137,6 +137,28 @@
               echo ${lib.escapeShellArg welcomeMessage}
             '';
           };
+        }
+      );
+
+      checks = forAllSystems (
+        system:
+
+        let
+          pkgs = nixpkgsFor.${system};
+          llvm = pkgs.llvmPackages_22;
+        in
+
+        {
+          clang-format = pkgs.runCommand "meshmc-clang-format-check"
+            {
+              nativeBuildInputs = [ llvm.clang-tools pkgs.bash ];
+              src = self;
+            }
+            ''
+              cd "$src"
+              bash ./scripts/check-clang-format.sh
+              touch "$out"
+            '';
         }
       );
 

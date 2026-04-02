@@ -15,7 +15,9 @@ path = [
   "flake.nix",
   "shell.nix",
   "vcpkg-configuration.json",
-  "vcpkg.json"
+  "vcpkg.json",
+  ".clang-format",
+  ".clang-tidy"
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "NONE"

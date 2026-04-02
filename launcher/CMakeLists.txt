@@ -1011,7 +1011,7 @@ if(WIN32 OR (UNIX AND APPLE))
             qt_deploy_runtime_dependencies(
                 EXECUTABLE ${BINARY_DEST_DIR}/$<TARGET_FILE_NAME:${MeshMC_Name}>
                 BIN_DIR ${BINARY_DEST_DIR}
-                LIBEXEC_DIR ${LIBRARY_DEST_DIR}
+                LIBEXEC_DIR ${BINARY_DEST_DIR}
                 LIB_DIR ${LIBRARY_DEST_DIR}
                 PLUGINS_DIR ${PLUGIN_DEST_DIR}
                 NO_OVERWRITE
