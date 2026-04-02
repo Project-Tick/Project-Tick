@@ -1,0 +1,2412 @@
+project(application)
+
+################################ FILES ################################
+
+######## Sources and headers ########
+
+set(CORE_SOURCES
+    # LOGIC - Base classes and infrastructure 
+    BaseInstaller.h
+    BaseInstaller.cpp
+    BaseVersionList.h
+    BaseVersionList.cpp
+    InstanceList.h
+    InstanceList.cpp
+    InstanceTask.h
+    InstanceTask.cpp
+    LoggedProcess.h
+    LoggedProcess.cpp
+    MessageLevel.cpp
+    MessageLevel.h
+    BaseVersion.h
+    BaseInstance.h
+    BaseInstance.cpp
+    InstanceDirUpdate.h
+    InstanceDirUpdate.cpp
+    NullInstance.h
+    MMCZip.h
+    MMCZip.cpp
+    Untar.h
+    Untar.cpp
+    StringUtils.h
+    StringUtils.cpp
+    QVariantUtils.h
+    RuntimeContext.h
+    PSaveFile.h
+
+    # Basic instance manipulation tasks (derived from InstanceTask)
+    InstanceCreationTask.h
+    InstanceCreationTask.cpp
+    InstanceCopyPrefs.h
+    InstanceCopyPrefs.cpp
+    InstanceCopyTask.h
+    InstanceCopyTask.cpp
+    InstanceImportTask.h
+    InstanceImportTask.cpp
+
+    # Resource downloading task
+    ResourceDownloadTask.h
+    ResourceDownloadTask.cpp
+
+    # Use tracking separate from memory management
+    Usable.h
+
+    # Prefix tree where node names are strings between separators
+    SeparatorPrefixTree.h
+
+    # String filters
+    Filter.h
+
+    # JSON parsing helpers
+    Json.h
+    Json.cpp
+
+    FileSystem.h
+    FileSystem.cpp
+
+    Exception.h
+
+    # RW lock protected map
+    RWStorage.h
+
+    # A variable that has an implicit default value and keeps track of changes
+    DefaultVariable.h
+
+    # a smart pointer wrapper intended for safer use with Qt signal/slot mechanisms
+    QObjectPtr.h
+
+    # Compression support
+    GZip.h
+    GZip.cpp
+
+    # Command line parameter parsing
+    Commandline.h
+    Commandline.cpp
+
+    # Version number string support
+    Version.h
+    Version.cpp
+
+    # A Recursive file system watcher
+    RecursiveFileSystemWatcher.h
+    RecursiveFileSystemWatcher.cpp
+
+    # Time
+    MMCTime.h
+    MMCTime.cpp
+
+    MTPixmapCache.h
+)
+if (UNIX AND NOT CYGWIN AND NOT APPLE)
+    set(CORE_SOURCES
+    ${CORE_SOURCES}
+
+    # MangoHud
+    MangoHud.h
+    MangoHud.cpp
+    )
+endif()
+
+set(NET_SOURCES
+    # network stuffs
+    net/ByteArraySink.h
+    net/ChecksumValidator.h
+    net/Download.cpp
+    net/Download.h
+    net/FileSink.cpp
+    net/FileSink.h
+    net/HttpMetaCache.cpp
+    net/HttpMetaCache.h
+    net/MetaCacheSink.cpp
+    net/MetaCacheSink.h
+    net/Logging.h
+    net/Logging.cpp
+    net/NetJob.cpp
+    net/NetJob.h
+    net/NetUtils.h
+    net/PasteUpload.cpp
+    net/PasteUpload.h
+    net/Sink.h
+    net/Validator.h
+    net/Upload.cpp
+    net/Upload.h
+    net/HeaderProxy.h
+    net/RawHeaderProxy.h
+    net/ApiHeaderProxy.h
+    net/ApiDownload.h
+    net/ApiDownload.cpp
+    net/ApiUpload.cpp
+    net/ApiUpload.h
+    net/NetRequest.cpp
+    net/NetRequest.h
+)
+
+# Game launch logic
+set(LAUNCH_SOURCES
+    launch/steps/RuntimeProbeStep.cpp
+    launch/steps/RuntimeProbeStep.hpp
+    launch/steps/ServerJoinResolveStep.cpp
+    launch/steps/ServerJoinResolveStep.hpp
+    launch/steps/LaunchCommandStep.cpp
+    launch/steps/LaunchCommandStep.hpp
+    launch/steps/LogMessageStep.cpp
+    launch/steps/LogMessageStep.hpp
+    launch/steps/QuitAfterGameStep.cpp
+    launch/steps/QuitAfterGameStep.hpp
+    launch/steps/HostLookupReportStep.cpp
+    launch/steps/HostLookupReportStep.hpp
+    launch/LaunchStage.cpp
+    launch/LaunchStage.hpp
+    launch/LaunchPipeline.cpp
+    launch/LaunchPipeline.hpp
+    launch/LaunchLineRouter.cpp
+    launch/LaunchLineRouter.hpp
+    launch/LaunchLogModel.cpp
+    launch/LaunchLogModel.hpp
+    launch/TaskBridgeStage.cpp
+    launch/TaskBridgeStage.hpp
+    launch/LaunchVariableExpander.cpp
+    launch/LaunchVariableExpander.hpp
+    logs/LogEventParser.cpp
+    logs/LogEventParser.hpp
+)
+
+# Old update system
+set(UPDATE_SOURCES
+    updater/ExternalUpdater.h
+)
+
+set(MAC_UPDATE_SOURCES
+    updater/MacSparkleUpdater.h
+    updater/MacSparkleUpdater.mm
+)
+
+set(PROJT_UPDATE_SOURCES
+    updater/ProjTExternalUpdater.h
+    updater/ProjTExternalUpdater.cpp
+)
+
+# Backend for the news bar... there's usually no news.
+set(NEWS_SOURCES
+    # News System
+    news/NewsChecker.h
+    news/NewsChecker.cpp
+    news/NewsEntry.h
+    news/NewsEntry.cpp
+)
+
+# Icon interface
+set(ICONS_SOURCES
+    # Icons System and related code
+    icons/IconUtils.hpp
+    icons/IconUtils.cpp
+)
+
+# Support for Minecraft instances and launch
+set(MINECRAFT_SOURCES
+
+    # Logging
+    minecraft/Logging.h
+    minecraft/Logging.cpp
+
+    # Backup system
+    minecraft/BackupManager.h
+    minecraft/BackupManager.cpp
+
+    # Minecraft support
+    minecraft/auth/AccountData.cpp
+    minecraft/auth/AccountData.hpp
+    minecraft/auth/AccountList.cpp
+    minecraft/auth/AccountList.hpp
+    minecraft/auth/AuthSession.cpp
+    minecraft/auth/AuthSession.hpp
+    minecraft/auth/MinecraftAccount.cpp
+    minecraft/auth/MinecraftAccount.hpp
+    minecraft/auth/Parsers.cpp
+    minecraft/auth/Parsers.hpp
+
+    minecraft/auth/AuthFlow.cpp
+    minecraft/auth/AuthFlow.hpp
+
+    # New auth steps (projt::minecraft::auth namespace)
+    minecraft/auth/steps/Step.hpp
+    minecraft/auth/steps/Credentials.hpp
+    minecraft/auth/steps/Steps.hpp
+    minecraft/auth/steps/MicrosoftOAuthStep.hpp
+    minecraft/auth/steps/MicrosoftOAuthStep.cpp
+    minecraft/auth/steps/DeviceCodeAuthStep.hpp
+    minecraft/auth/steps/DeviceCodeAuthStep.cpp
+    minecraft/auth/steps/XboxLiveUserStep.hpp
+    minecraft/auth/steps/XboxLiveUserStep.cpp
+    minecraft/auth/steps/XboxSecurityTokenStep.hpp
+    minecraft/auth/steps/XboxSecurityTokenStep.cpp
+    minecraft/auth/steps/XboxProfileFetchStep.hpp
+    minecraft/auth/steps/XboxProfileFetchStep.cpp
+    minecraft/auth/steps/MinecraftServicesLoginStep.hpp
+    minecraft/auth/steps/MinecraftServicesLoginStep.cpp
+    minecraft/auth/steps/MinecraftProfileFetchStep.hpp
+    minecraft/auth/steps/MinecraftProfileFetchStep.cpp
+    minecraft/auth/steps/GameEntitlementsStep.hpp
+    minecraft/auth/steps/GameEntitlementsStep.cpp
+    minecraft/auth/steps/SkinDownloadStep.hpp
+    minecraft/auth/steps/SkinDownloadStep.cpp
+
+    minecraft/update/AssetUpdateTask.h
+    minecraft/update/AssetUpdateTask.cpp
+    minecraft/update/FMLLibrariesTask.cpp
+    minecraft/update/FMLLibrariesTask.h
+    minecraft/update/FoldersTask.cpp
+    minecraft/update/FoldersTask.h
+    minecraft/update/LibrariesTask.cpp
+    minecraft/update/LibrariesTask.h
+
+    minecraft/launch/ClaimAccount.cpp
+    minecraft/launch/ClaimAccount.hpp
+    minecraft/launch/CreateGameFolders.cpp
+    minecraft/launch/CreateGameFolders.hpp
+    minecraft/launch/ModMinecraftJar.cpp
+    minecraft/launch/ModMinecraftJar.hpp
+    minecraft/launch/ExtractNatives.cpp
+    minecraft/launch/ExtractNatives.hpp
+    minecraft/launch/LauncherPartLaunch.cpp
+    minecraft/launch/LauncherPartLaunch.hpp
+    minecraft/launch/MinecraftTarget.cpp
+    minecraft/launch/MinecraftTarget.hpp
+    minecraft/launch/PrintInstanceInfo.cpp
+    minecraft/launch/PrintInstanceInfo.hpp
+    minecraft/launch/ReconstructAssets.cpp
+    minecraft/launch/ReconstructAssets.hpp
+    minecraft/launch/ScanModFolders.cpp
+    minecraft/launch/ScanModFolders.hpp
+    minecraft/launch/VerifyJavaInstall.cpp
+    minecraft/launch/VerifyJavaInstall.hpp
+    minecraft/launch/AutoInstallJava.cpp
+    minecraft/launch/AutoInstallJava.hpp
+
+    minecraft/GradleSpecifier.h
+    minecraft/MinecraftInstance.cpp
+    minecraft/MinecraftInstance.h
+    minecraft/MinecraftInstanceLaunchMenu.cpp
+    minecraft/MinecraftInstanceLaunchMenu.h
+    minecraft/LaunchProfile.cpp
+    minecraft/LaunchProfile.h
+    minecraft/Component.cpp
+    minecraft/Component.h
+    minecraft/PackProfile.cpp
+    minecraft/PackProfile.h
+    minecraft/ComponentUpdateTask.cpp
+    minecraft/ComponentUpdateTask.h
+    minecraft/MinecraftLoadAndCheck.h
+    minecraft/MinecraftLoadAndCheck.cpp
+    minecraft/MojangVersionFormat.cpp
+    minecraft/MojangVersionFormat.h
+    minecraft/Rule.cpp
+    minecraft/Rule.h
+    minecraft/OneSixVersionFormat.cpp
+    minecraft/OneSixVersionFormat.h
+    minecraft/ParseUtils.cpp
+    minecraft/ParseUtils.h
+    minecraft/ProfileUtils.cpp
+    minecraft/ProfileUtils.h
+    minecraft/ShortcutUtils.cpp
+    minecraft/ShortcutUtils.h
+    minecraft/Library.cpp
+    minecraft/Library.h
+    minecraft/MojangDownloadInfo.h
+    minecraft/VanillaInstanceCreationTask.cpp
+    minecraft/VanillaInstanceCreationTask.h
+    minecraft/VersionFile.cpp
+    minecraft/VersionFile.h
+    minecraft/VersionFilterData.h
+    minecraft/VersionFilterData.cpp
+    minecraft/World.h
+    minecraft/World.cpp
+    minecraft/WorldList.h
+    minecraft/WorldList.cpp
+
+    minecraft/mod/MetadataHandler.hpp
+    minecraft/mod/Mod.hpp
+    minecraft/mod/Mod.cpp
+    minecraft/mod/ModDetails.hpp
+    minecraft/mod/ModFolderModel.hpp
+    minecraft/mod/ModFolderModel.cpp
+    minecraft/mod/Resource.hpp
+    minecraft/mod/Resource.cpp
+    minecraft/mod/ResourceFolderModel.hpp
+    minecraft/mod/ResourceFolderModel.cpp
+    minecraft/mod/DataPack.hpp
+    minecraft/mod/DataPack.cpp
+    minecraft/mod/DataPackFolderModel.hpp
+    minecraft/mod/DataPackFolderModel.cpp
+    minecraft/mod/ResourcePack.hpp
+    minecraft/mod/ResourcePack.cpp
+    minecraft/mod/ResourcePackFolderModel.hpp
+    minecraft/mod/ResourcePackFolderModel.cpp
+    minecraft/mod/TexturePack.hpp
+    minecraft/mod/TexturePack.cpp
+    minecraft/mod/ShaderPack.hpp
+    minecraft/mod/ShaderPack.cpp
+    minecraft/mod/WorldSave.hpp
+    minecraft/mod/WorldSave.cpp
+    minecraft/mod/TexturePackFolderModel.hpp
+    minecraft/mod/TexturePackFolderModel.cpp
+    minecraft/mod/ShaderPackFolderModel.hpp
+    minecraft/mod/tasks/ResourceFolderLoadTask.hpp
+    minecraft/mod/tasks/ResourceFolderLoadTask.cpp
+    minecraft/mod/tasks/LocalModParseTask.hpp
+    minecraft/mod/tasks/LocalModParseTask.cpp
+    minecraft/mod/tasks/LocalResourceUpdateTask.hpp
+    minecraft/mod/tasks/LocalResourceUpdateTask.cpp
+    minecraft/mod/tasks/LocalDataPackParseTask.hpp
+    minecraft/mod/tasks/LocalDataPackParseTask.cpp
+    minecraft/mod/tasks/LocalTexturePackParseTask.hpp
+    minecraft/mod/tasks/LocalTexturePackParseTask.cpp
+    minecraft/mod/tasks/LocalShaderPackParseTask.hpp
+    minecraft/mod/tasks/LocalShaderPackParseTask.cpp
+    minecraft/mod/tasks/LocalWorldSaveParseTask.hpp
+    minecraft/mod/tasks/LocalWorldSaveParseTask.cpp
+    minecraft/mod/tasks/LocalResourceParse.hpp
+    minecraft/mod/tasks/LocalResourceParse.cpp
+    minecraft/mod/tasks/GetModDependenciesTask.hpp
+    minecraft/mod/tasks/GetModDependenciesTask.cpp
+
+    # Assets
+    minecraft/AssetsUtils.h
+    minecraft/AssetsUtils.cpp
+
+    # Minecraft skins
+    minecraft/skins/CapeChange.cpp
+    minecraft/skins/CapeChange.h
+    minecraft/skins/CapeListModel.cpp
+    minecraft/skins/CapeListModel.h
+    minecraft/skins/SkinUpload.cpp
+    minecraft/skins/SkinUpload.h
+    minecraft/skins/SkinDelete.cpp
+    minecraft/skins/SkinDelete.h
+    minecraft/skins/SkinModel.cpp
+    minecraft/skins/SkinModel.h
+    minecraft/skins/SkinList.cpp
+    minecraft/skins/SkinList.h
+
+    minecraft/Agent.h)
+
+# the screenshots feature
+set(SCREENSHOTS_SOURCES
+    screenshots/Screenshot.h
+    screenshots/ImgurUpload.h
+    screenshots/ImgurUpload.cpp
+    screenshots/ImgurAlbumCreation.h
+    screenshots/ImgurAlbumCreation.cpp
+)
+
+set(TASKS_SOURCES
+    # Tasks
+    tasks/Task.h
+    tasks/Task.cpp
+    tasks/ConcurrentTask.h
+    tasks/ConcurrentTask.cpp
+    tasks/SequentialTask.h
+    tasks/SequentialTask.cpp
+    tasks/MultipleOptionsTask.h
+    tasks/MultipleOptionsTask.cpp
+)
+
+set(SETTINGS_SOURCES
+    # Settings
+    settings/INIFile.cpp
+    settings/INIFile.h
+    settings/INISettingsObject.cpp
+    settings/INISettingsObject.h
+    settings/OverrideSetting.cpp
+    settings/OverrideSetting.h
+    settings/PassthroughSetting.cpp
+    settings/PassthroughSetting.h
+    settings/Setting.cpp
+    settings/Setting.h
+    settings/SettingsObject.cpp
+    settings/SettingsObject.h
+)
+
+set(JAVA_SOURCES
+    java/core/RuntimeVersion.hpp
+    java/core/RuntimeVersion.cpp
+    java/core/RuntimeInstall.hpp
+    java/core/RuntimeInstall.cpp
+    java/core/RuntimePackage.hpp
+    java/core/RuntimePackage.cpp
+    java/services/RuntimeEnvironment.hpp
+    java/services/RuntimeEnvironment.cpp
+    java/services/RuntimeScanner.hpp
+    java/services/RuntimeScanner.cpp
+    java/services/RuntimeProbeTask.hpp
+    java/services/RuntimeProbeTask.cpp
+    java/services/RuntimeCatalog.hpp
+    java/services/RuntimeCatalog.cpp
+    java/download/RuntimeArchiveTask.cpp
+    java/download/RuntimeArchiveTask.hpp
+    java/download/RuntimeManifestTask.cpp
+    java/download/RuntimeManifestTask.hpp
+    java/download/RuntimeLinkTask.cpp
+    java/download/RuntimeLinkTask.hpp
+
+    ui/java/InstallJavaDialog.h
+    ui/java/InstallJavaDialog.cpp
+    ui/java/VersionList.h
+    ui/java/VersionList.cpp
+)
+
+set(TRANSLATIONS_SOURCES
+    translations/TranslationsModel.h
+    translations/TranslationsModel.cpp
+    translations/POTranslator.h
+    translations/POTranslator.cpp
+)
+
+set(TOOLS_SOURCES
+    # Tools
+    tools/BaseExternalTool.cpp
+    tools/BaseExternalTool.h
+    tools/BaseProfiler.cpp
+    tools/BaseProfiler.h
+    tools/JProfiler.cpp
+    tools/JProfiler.h
+    tools/JVisualVM.cpp
+    tools/JVisualVM.h
+    tools/MCEditTool.cpp
+    tools/MCEditTool.h
+    tools/GenericProfiler.cpp
+    tools/GenericProfiler.h
+)
+
+set(META_SOURCES
+    # Metadata sources (projt::meta namespace)
+    meta/BaseEntity.cpp
+    meta/BaseEntity.hpp
+    meta/JsonFormat.cpp
+    meta/JsonFormat.hpp
+    meta/Version.cpp
+    meta/Version.hpp
+    meta/VersionList.cpp
+    meta/VersionList.hpp
+    meta/Index.cpp
+    meta/Index.hpp
+)
+
+set(API_SOURCES
+    modplatform/ModIndex.h
+    modplatform/ModIndex.cpp
+    modplatform/ResourceType.h
+    modplatform/ResourceType.cpp
+
+    modplatform/ResourceAPI.h
+    modplatform/ResourceAPI.cpp
+
+    modplatform/EnsureMetadataTask.h
+    modplatform/EnsureMetadataTask.cpp
+
+    modplatform/CheckUpdateTask.h
+
+    modplatform/flame/FlameAPI.h
+    modplatform/flame/FlameAPI.cpp
+    modplatform/modrinth/ModrinthAPI.h
+    modplatform/modrinth/ModrinthAPI.cpp
+    modplatform/helpers/HashUtils.h
+    modplatform/helpers/HashUtils.cpp
+    modplatform/helpers/OverrideUtils.h
+    modplatform/helpers/OverrideUtils.cpp
+
+    modplatform/helpers/ExportToModList.h
+    modplatform/helpers/ExportToModList.cpp
+)
+
+set(FTB_SOURCES
+    modplatform/legacy_ftb/PackFetchTask.h
+    modplatform/legacy_ftb/PackFetchTask.cpp
+    modplatform/legacy_ftb/PackInstallTask.h
+    modplatform/legacy_ftb/PackInstallTask.cpp
+    modplatform/legacy_ftb/PrivatePackManager.h
+    modplatform/legacy_ftb/PrivatePackManager.cpp
+
+    modplatform/legacy_ftb/PackHelpers.h
+
+    modplatform/import_ftb/PackInstallTask.h
+    modplatform/import_ftb/PackInstallTask.cpp
+    modplatform/import_ftb/PackHelpers.h
+    modplatform/import_ftb/PackHelpers.cpp
+)
+
+set(FLAME_SOURCES
+    # Flame
+    modplatform/flame/FlameModIndex.cpp
+    modplatform/flame/FlameModIndex.h
+    modplatform/flame/PackManifest.h
+    modplatform/flame/PackManifest.cpp
+    modplatform/flame/FileResolvingTask.h
+    modplatform/flame/FileResolvingTask.cpp
+    modplatform/flame/FlameCheckUpdate.cpp
+    modplatform/flame/FlameCheckUpdate.h
+    modplatform/flame/FlameInstanceCreationTask.h
+    modplatform/flame/FlameInstanceCreationTask.cpp
+    modplatform/flame/FlamePackExportTask.h
+    modplatform/flame/FlamePackExportTask.cpp
+)
+
+set(MODRINTH_SOURCES
+    modplatform/modrinth/ModrinthPackIndex.cpp
+    modplatform/modrinth/ModrinthPackIndex.h
+    modplatform/modrinth/ModrinthCollectionImportTask.cpp
+    modplatform/modrinth/ModrinthCollectionImportTask.h
+    modplatform/modrinth/ModrinthCheckUpdate.cpp
+    modplatform/modrinth/ModrinthCheckUpdate.h
+    modplatform/modrinth/ModrinthInstanceCreationTask.cpp
+    modplatform/modrinth/ModrinthInstanceCreationTask.h
+    modplatform/modrinth/ModrinthPackExportTask.cpp
+    modplatform/modrinth/ModrinthPackExportTask.h
+)
+
+set(PACKWIZ_SOURCES
+    modplatform/packwiz/Packwiz.h
+    modplatform/packwiz/Packwiz.cpp
+)
+
+
+set(TECHNIC_SOURCES
+    modplatform/technic/SingleZipPackInstallTask.h
+    modplatform/technic/SingleZipPackInstallTask.cpp
+    modplatform/technic/SolderPackInstallTask.h
+    modplatform/technic/SolderPackInstallTask.cpp
+    modplatform/technic/SolderPackManifest.h
+    modplatform/technic/SolderPackManifest.cpp
+    modplatform/technic/TechnicPackProcessor.h
+    modplatform/technic/TechnicPackProcessor.cpp
+)
+
+set(ATLAUNCHER_SOURCES
+    modplatform/atlauncher/ATLPackIndex.cpp
+    modplatform/atlauncher/ATLPackIndex.h
+    modplatform/atlauncher/ATLPackInstallTask.cpp
+    modplatform/atlauncher/ATLPackInstallTask.h
+    modplatform/atlauncher/ATLPackManifest.cpp
+    modplatform/atlauncher/ATLPackManifest.h
+    modplatform/atlauncher/ATLShareCode.cpp
+    modplatform/atlauncher/ATLShareCode.h
+)
+
+set(LINKEXE_SOURCES
+    console/WindowsConsole.hpp
+    console/WindowsConsole.cpp
+
+    filelink/FileLink.hpp
+    filelink/FileLink.cpp
+    FileSystem.h
+    FileSystem.cpp
+    Exception.h
+    StringUtils.h
+    StringUtils.cpp
+    DesktopServices.h
+    DesktopServices.cpp
+)
+
+set(PROJTUPDATER_SOURCES
+    updater/projtupdater/ProjTUpdater.h
+    updater/projtupdater/ProjTUpdater.cpp
+    updater/projtupdater/UpdaterDialogs.h
+    updater/projtupdater/UpdaterDialogs.cpp
+    updater/projtupdater/ReleaseInfo.h
+    updater/projtupdater/ReleaseInfo.cpp
+
+    Json.h
+    Json.cpp
+    FileSystem.h
+    FileSystem.cpp
+    StringUtils.h
+    StringUtils.cpp
+    DesktopServices.h
+    DesktopServices.cpp
+    Version.h
+    Version.cpp
+    Markdown.h
+    Markdown.cpp
+
+    # Zip
+    MMCZip.h
+    MMCZip.cpp
+
+    # Time
+    MMCTime.h
+    MMCTime.cpp
+
+    net/ByteArraySink.h
+    net/ChecksumValidator.h
+    net/Download.cpp
+    net/Download.h
+    net/FileSink.cpp
+    net/FileSink.h
+    net/HttpMetaCache.cpp
+    net/HttpMetaCache.h
+    net/Logging.h
+    net/Logging.cpp
+    net/NetRequest.cpp
+    net/NetRequest.h
+    net/NetJob.cpp
+    net/NetJob.h
+    net/NetUtils.h
+    net/Sink.h
+    net/Validator.h
+    net/HeaderProxy.h
+    net/RawHeaderProxy.h
+
+    ui/dialogs/ProgressDialog.cpp
+    ui/dialogs/ProgressDialog.h
+    ui/widgets/SubTaskProgressBar.h
+    ui/widgets/SubTaskProgressBar.cpp
+
+)
+
+if(WIN32)
+    set(PROJTUPDATER_SOURCES
+        console/WindowsConsole.hpp
+        console/WindowsConsole.cpp
+        ${PROJTUPDATER_SOURCES}
+    )
+endif()
+
+######## Logging categories ########
+
+ecm_qt_export_logging_category(
+    IDENTIFIER authCredentials
+    CATEGORY_NAME "launcher.auth.credentials"
+    DEFAULT_SEVERITY Warning
+    DESCRIPTION "Secrets and credentials for debugging purposes"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER instanceProfileC
+    CATEGORY_NAME "launcher.instance.profile"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "Profile actions"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER instanceProfileResolveC
+    CATEGORY_NAME "launcher.instance.profile.resolve"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "Profile component resolusion actions"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER taskLogC
+    CATEGORY_NAME "launcher.task"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "Task actions"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER taskNetLogC
+    CATEGORY_NAME "launcher.task.net"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "Task network action"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER taskDownloadLogC
+    CATEGORY_NAME "launcher.task.net.download"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "Task network download actions"
+    EXPORT "${Launcher_Name}"
+)
+ecm_qt_export_logging_category(
+    IDENTIFIER taskUploadLogC
+    CATEGORY_NAME "launcher.task.net.upload"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "Task network upload actions"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER taskMetaCacheLogC
+    CATEGORY_NAME "launcher.task.net.metacache"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "task network meta-cache actions"
+    EXPORT "${Launcher_Name}"
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER taskHttpMetaCacheLogC
+    CATEGORY_NAME "launcher.task.net.metacache.http"
+    DEFAULT_SEVERITY Debug
+    DESCRIPTION "task network http meta-cache actions"
+    EXPORT "${Launcher_Name}"
+)
+
+
+
+if(KDE_INSTALL_LOGGINGCATEGORIESDIR)  # only install if there is a standard path for this
+    ecm_qt_install_logging_categories(
+        EXPORT "${Launcher_Name}"
+        DESTINATION "${KDE_INSTALL_LOGGINGCATEGORIESDIR}"
+    )
+endif()
+
+################################ COMPILE ################################
+
+set(LOGIC_SOURCES
+    ${CORE_SOURCES}
+    ${NET_SOURCES}
+    ${LAUNCH_SOURCES}
+    ${UPDATE_SOURCES}
+    ${NEWS_SOURCES}
+    ${MINECRAFT_SOURCES}
+    ${SCREENSHOTS_SOURCES}
+    ${TASKS_SOURCES}
+    ${SETTINGS_SOURCES}
+    ${JAVA_SOURCES}
+    ${TRANSLATIONS_SOURCES}
+    ${TOOLS_SOURCES}
+    ${META_SOURCES}
+    ${ICONS_SOURCES}
+    ${API_SOURCES}
+    ${FTB_SOURCES}
+    ${FLAME_SOURCES}
+    ${MODRINTH_SOURCES}
+    ${PACKWIZ_SOURCES}
+    ${TECHNIC_SOURCES}
+    ${ATLAUNCHER_SOURCES}
+)
+
+if(APPLE AND Launcher_ENABLE_UPDATER)
+    set (LOGIC_SOURCES ${LOGIC_SOURCES} ${MAC_UPDATE_SOURCES})
+else()
+    set (LOGIC_SOURCES ${LOGIC_SOURCES} ${PROJT_UPDATE_SOURCES})
+endif()
+
+SET(LAUNCHER_SOURCES
+    # Application base
+    Application.h
+    Application.cpp
+    DataMigrationTask.h
+    DataMigrationTask.cpp
+    ApplicationMessage.h
+    ApplicationMessage.cpp
+    SysInfo.h
+    SysInfo.cpp
+    HardwareInfo.cpp
+    HardwareInfo.h
+
+    # console utils
+    console/Console.hpp
+
+    # GUI - general utilities
+    DesktopServices.h
+    DesktopServices.cpp
+    VersionProxyModel.h
+    VersionProxyModel.cpp
+    Markdown.h
+    Markdown.cpp
+
+    # Super secret!
+    KonamiCode.h
+    KonamiCode.cpp
+
+    # Bundled resources
+    resources/backgrounds/backgrounds.qrc
+    resources/multimc/multimc.qrc
+    resources/pe_dark/pe_dark.qrc
+    resources/pe_light/pe_light.qrc
+    resources/pe_colored/pe_colored.qrc
+    resources/pe_blue/pe_blue.qrc
+    resources/breeze_dark/breeze_dark.qrc
+    resources/breeze_light/breeze_light.qrc
+    resources/OSX/OSX.qrc
+    resources/iOS/iOS.qrc
+    resources/flat/flat.qrc
+    resources/flat_white/flat_white.qrc
+    resources/documents/documents.qrc
+    resources/shaders/shaders.qrc
+    "${CMAKE_CURRENT_BINARY_DIR}/../${Launcher_Branding_LogoQRC}"
+
+    # Icons
+    icons/IconEntry.hpp
+    icons/IconEntry.cpp
+    icons/IconList.hpp
+    icons/IconList.cpp
+
+    # log utils
+    logs/LogRedactor.cpp
+    logs/LogRedactor.hpp
+
+    # GUI - windows
+    ui/GuiUtil.h
+    ui/GuiUtil.cpp
+    ui/MainWindow.h
+    ui/MainWindow.cpp
+    ui/InstanceWindow.h
+    ui/InstanceWindow.cpp
+    ui/ViewLogWindow.h
+    ui/ViewLogWindow.cpp
+    ui/LaunchMenu.cpp
+    ui/LaunchMenu.h
+
+    # GUI - widgets / utilities
+    ui/widgets/FileIgnoreProxy.cpp
+    ui/widgets/FileIgnoreProxy.h
+    CefRuntime.cpp
+    CefRuntime.h
+    ui/widgets/HubViewBase.h
+    ui/widgets/FastFileIconProvider.cpp
+    ui/widgets/FastFileIconProvider.h
+    ui/widgets/FallbackHubView.cpp
+    ui/widgets/FallbackHubView.h
+    ui/widgets/CefHubView.cpp
+    ui/widgets/CefHubView.h
+    ui/widgets/HubSearchProvider.cpp
+    ui/widgets/HubSearchProvider.h
+    ui/widgets/LauncherHubWidget.cpp
+    ui/widgets/LauncherHubWidget.h
+    ui/widgets/QtWebEngineHubView.cpp
+    ui/widgets/QtWebEngineHubView.h
+    ui/widgets/WebView2Widget.cpp
+    ui/widgets/WebView2Widget.h
+
+    # GUI - setup wizard
+    ui/setupwizard/SetupWizard.h
+    ui/setupwizard/SetupWizard.cpp
+    ui/setupwizard/BaseWizardPage.h
+    ui/setupwizard/JavaWizardPage.cpp
+    ui/setupwizard/JavaWizardPage.h
+    ui/setupwizard/LanguageWizardPage.cpp
+    ui/setupwizard/LanguageWizardPage.h
+    ui/setupwizard/SearchWizardPage.cpp
+    ui/setupwizard/SearchWizardPage.h
+    ui/setupwizard/PasteWizardPage.cpp
+    ui/setupwizard/PasteWizardPage.h
+    ui/setupwizard/ThemeWizardPage.h
+    ui/setupwizard/AutoJavaWizardPage.cpp
+    ui/setupwizard/AutoJavaWizardPage.h
+    ui/setupwizard/LoginWizardPage.cpp
+    ui/setupwizard/LoginWizardPage.h
+
+    # GUI - themes
+    ui/themes/FusionTheme.cpp
+    ui/themes/FusionTheme.h
+    ui/themes/BrightTheme.cpp
+    ui/themes/BrightTheme.h
+    ui/themes/CustomTheme.cpp
+    ui/themes/CustomTheme.h
+    ui/themes/DarkTheme.cpp
+    ui/themes/DarkTheme.h
+    ui/themes/Theme.cpp
+    ui/themes/Theme.h
+    ui/themes/HintOverrideProxyStyle.cpp
+    ui/themes/HintOverrideProxyStyle.h
+    ui/themes/SystemTheme.cpp
+    ui/themes/SystemTheme.h
+    ui/themes/IconTheme.cpp
+    ui/themes/IconTheme.h
+    ui/themes/ThemeManager.cpp
+    ui/themes/ThemeManager.h
+    ui/themes/CatPack.cpp
+    ui/themes/CatPack.h
+    ui/themes/CatPainter.cpp
+    ui/themes/CatPainter.h
+
+    # Processes
+    LaunchMode.h
+    LaunchController.h
+    LaunchController.cpp
+
+    # page provider for instances
+    InstancePageProvider.h
+
+    # Common java checking UI
+    JavaCommon.h
+    JavaCommon.cpp
+
+    # GUI - paged dialog base
+    ui/pages/BasePage.h
+    ui/pages/BasePageContainer.h
+    ui/pages/BasePageProvider.h
+
+    # GUI - instance pages
+    ui/pages/instance/ExternalResourcesPage.cpp
+    ui/pages/instance/ExternalResourcesPage.h
+    ui/pages/instance/VersionPage.cpp
+    ui/pages/instance/VersionPage.h
+    ui/pages/instance/ManagedPackPage.cpp
+    ui/pages/instance/ManagedPackPage.h
+    ui/pages/instance/DataPackPage.h
+    ui/pages/instance/DataPackPage.cpp
+    ui/pages/instance/TexturePackPage.h
+    ui/pages/instance/TexturePackPage.cpp
+    ui/pages/instance/ResourcePackPage.h
+    ui/pages/instance/ResourcePackPage.cpp
+    ui/pages/instance/ShaderPackPage.h
+    ui/pages/instance/ShaderPackPage.cpp
+    ui/pages/instance/ModFolderPage.cpp
+    ui/pages/instance/ModFolderPage.h
+    ui/pages/instance/NotesPage.cpp
+    ui/pages/instance/NotesPage.h
+    ui/pages/instance/LogPage.cpp
+    ui/pages/instance/LogPage.h
+    ui/pages/instance/InstanceSettingsPage.h
+    ui/pages/instance/BackupPage.cpp
+    ui/pages/instance/BackupPage.h
+    ui/pages/instance/ScreenshotsPage.cpp
+    ui/pages/instance/ScreenshotsPage.h
+    ui/pages/instance/OtherLogsPage.cpp
+    ui/pages/instance/OtherLogsPage.h
+    ui/pages/instance/ServersPage.cpp
+    ui/pages/instance/ServersPage.h
+    ui/pages/instance/WorldListPage.cpp
+    ui/pages/instance/WorldListPage.h
+    ui/pages/instance/McClient.cpp
+    ui/pages/instance/McClient.h
+    ui/pages/instance/McResolver.cpp
+    ui/pages/instance/McResolver.h
+    ui/pages/instance/ServerPingTask.cpp
+    ui/pages/instance/ServerPingTask.h
+
+    # GUI - global settings pages
+    ui/pages/global/AccountListPage.cpp
+    ui/pages/global/AccountListPage.h
+    ui/pages/global/ExternalToolsPage.cpp
+    ui/pages/global/ExternalToolsPage.h
+    ui/pages/global/JavaPage.cpp
+    ui/pages/global/JavaPage.h
+    ui/pages/global/LanguagePage.cpp
+    ui/pages/global/LanguagePage.h
+    ui/pages/global/MinecraftPage.h
+    ui/pages/global/LauncherPage.cpp
+    ui/pages/global/LauncherPage.h
+    ui/pages/global/AppearancePage.h
+    ui/pages/global/ProxyPage.cpp
+    ui/pages/global/ProxyPage.h
+    ui/pages/global/APIPage.cpp
+    ui/pages/global/APIPage.h
+
+    # GUI - platform pages
+    ui/pages/modplatform/CustomPage.cpp
+    ui/pages/modplatform/CustomPage.h
+
+    ui/pages/modplatform/ResourcePage.cpp
+    ui/pages/modplatform/ResourcePage.h
+    ui/pages/modplatform/ResourceModel.cpp
+    ui/pages/modplatform/ResourceModel.h
+
+    ui/pages/modplatform/ModPage.cpp
+    ui/pages/modplatform/ModPage.h
+    ui/pages/modplatform/ModModel.cpp
+    ui/pages/modplatform/ModModel.h
+
+    ui/pages/modplatform/ResourcePackPage.cpp
+    ui/pages/modplatform/ResourcePackModel.cpp
+
+    # Needed for MOC to find them without a corresponding .cpp
+    ui/pages/modplatform/TexturePackPage.h
+    ui/pages/modplatform/TexturePackModel.cpp
+
+    ui/pages/modplatform/ShaderPackPage.cpp
+    ui/pages/modplatform/ShaderPackModel.cpp
+
+    ui/pages/modplatform/DataPackPage.cpp
+    ui/pages/modplatform/DataPackModel.cpp
+
+    ui/pages/modplatform/ModpackProviderBasePage.h
+
+    ui/pages/modplatform/atlauncher/AtlFilterModel.cpp
+    ui/pages/modplatform/atlauncher/AtlFilterModel.h
+    ui/pages/modplatform/atlauncher/AtlListModel.cpp
+    ui/pages/modplatform/atlauncher/AtlListModel.h
+    ui/pages/modplatform/atlauncher/AtlOptionalModDialog.cpp
+    ui/pages/modplatform/atlauncher/AtlOptionalModDialog.h
+    ui/pages/modplatform/atlauncher/AtlPage.cpp
+    ui/pages/modplatform/atlauncher/AtlPage.h
+    ui/pages/modplatform/atlauncher/AtlUserInteractionSupportImpl.cpp
+    ui/pages/modplatform/atlauncher/AtlUserInteractionSupportImpl.h
+
+    ui/pages/modplatform/legacy_ftb/Page.cpp
+    ui/pages/modplatform/legacy_ftb/Page.h
+    ui/pages/modplatform/legacy_ftb/ListModel.h
+    ui/pages/modplatform/legacy_ftb/ListModel.cpp
+
+    ui/pages/modplatform/import_ftb/ImportFTBPage.cpp
+    ui/pages/modplatform/import_ftb/ImportFTBPage.h
+    ui/pages/modplatform/import_ftb/ListModel.h
+    ui/pages/modplatform/import_ftb/ListModel.cpp
+
+    ui/pages/modplatform/flame/FlameModel.cpp
+    ui/pages/modplatform/flame/FlameModel.h
+    ui/pages/modplatform/flame/FlamePage.cpp
+    ui/pages/modplatform/flame/FlamePage.h
+    ui/pages/modplatform/flame/FlameResourceModels.cpp
+    ui/pages/modplatform/flame/FlameResourceModels.h
+    ui/pages/modplatform/flame/FlameResourcePages.cpp
+    ui/pages/modplatform/flame/FlameResourcePages.h
+
+    ui/pages/modplatform/modrinth/ModrinthPage.cpp
+    ui/pages/modplatform/modrinth/ModrinthPage.h
+    ui/pages/modplatform/modrinth/ModrinthModel.cpp
+    ui/pages/modplatform/modrinth/ModrinthModel.h
+
+    ui/pages/modplatform/technic/TechnicModel.cpp
+    ui/pages/modplatform/technic/TechnicModel.h
+    ui/pages/modplatform/technic/TechnicPage.cpp
+    ui/pages/modplatform/technic/TechnicPage.h
+
+    ui/pages/modplatform/ImportPage.cpp
+    ui/pages/modplatform/ImportPage.h
+
+    ui/pages/modplatform/OptionalModDialog.cpp
+    ui/pages/modplatform/OptionalModDialog.h
+
+    ui/pages/modplatform/modrinth/ModrinthResourcePages.cpp
+    ui/pages/modplatform/modrinth/ModrinthResourcePages.h
+
+    # GUI - dialogs
+    ui/dialogs/AboutDialog.cpp
+    ui/dialogs/AboutDialog.h
+    ui/dialogs/BackupDialog.cpp
+    ui/dialogs/BackupDialog.h
+    ui/dialogs/ProfileSelectDialog.cpp
+    ui/dialogs/ProfileSelectDialog.h
+    ui/dialogs/ProfileSetupDialog.cpp
+    ui/dialogs/ProfileSetupDialog.h
+    ui/dialogs/CopyInstanceDialog.cpp
+    ui/dialogs/CopyInstanceDialog.h
+    ui/dialogs/CreateShortcutDialog.cpp
+    ui/dialogs/CreateShortcutDialog.h
+    ui/dialogs/CustomMessageBox.cpp
+    ui/dialogs/CustomMessageBox.h
+    ui/dialogs/ExportInstanceDialog.cpp
+    ui/dialogs/ExportInstanceDialog.h
+    ui/dialogs/ExportPackDialog.cpp
+    ui/dialogs/ExportPackDialog.h
+    ui/dialogs/ExportToModListDialog.cpp
+    ui/dialogs/ExportToModListDialog.h
+    ui/dialogs/IconPickerDialog.cpp
+    ui/dialogs/IconPickerDialog.h
+    ui/dialogs/ImportResourceDialog.cpp
+    ui/dialogs/ImportResourceDialog.h
+    ui/dialogs/MSALoginDialog.cpp
+    ui/dialogs/MSALoginDialog.h
+    ui/dialogs/OfflineLoginDialog.cpp
+    ui/dialogs/OfflineLoginDialog.h
+    ui/dialogs/NewComponentDialog.cpp
+    ui/dialogs/NewComponentDialog.h
+    ui/dialogs/NewInstanceDialog.cpp
+    ui/dialogs/NewInstanceDialog.h
+    ui/dialogs/NewsDialog.cpp
+    ui/dialogs/NewsDialog.h
+    ui/dialogs/LauncherHubDialog.cpp
+    ui/dialogs/LauncherHubDialog.h
+    ui/pagedialog/PageDialog.cpp
+    ui/pagedialog/PageDialog.h
+    ui/dialogs/ProgressDialog.cpp
+    ui/dialogs/ProgressDialog.h
+    ui/dialogs/ReviewMessageBox.cpp
+    ui/dialogs/ReviewMessageBox.h
+    ui/dialogs/VersionSelectDialog.cpp
+    ui/dialogs/VersionSelectDialog.h
+    ui/dialogs/ResourceDownloadDialog.cpp
+    ui/dialogs/ResourceDownloadDialog.h
+    ui/dialogs/ScrollMessageBox.cpp
+    ui/dialogs/ScrollMessageBox.h
+    ui/dialogs/BlockedModsDialog.cpp
+    ui/dialogs/BlockedModsDialog.h
+    ui/dialogs/ChooseProviderDialog.h
+    ui/dialogs/ChooseProviderDialog.cpp
+    ui/dialogs/ResourceUpdateDialog.cpp
+    ui/dialogs/ResourceUpdateDialog.h
+    ui/dialogs/InstallLoaderDialog.cpp
+    ui/dialogs/InstallLoaderDialog.h
+
+    # GUI - tasks
+    ui/tasks/LogUploadTask.cpp
+    ui/tasks/LogUploadTask.h
+
+    ui/dialogs/skins/SkinManageDialog.cpp
+    ui/dialogs/skins/SkinManageDialog.h
+
+    ui/dialogs/skins/draw/SkinOpenGLWindow.h
+    ui/dialogs/skins/draw/SkinOpenGLWindow.cpp
+    ui/dialogs/skins/draw/Scene.h
+    ui/dialogs/skins/draw/Scene.cpp
+    ui/dialogs/skins/draw/BoxGeometry.h
+    ui/dialogs/skins/draw/BoxGeometry.cpp
+
+    # GUI - widgets
+    ui/widgets/CheckComboBox.cpp
+    ui/widgets/CheckComboBox.h
+    ui/widgets/Common.cpp
+    ui/widgets/Common.h
+    ui/widgets/CustomCommands.cpp
+    ui/widgets/CustomCommands.h
+    ui/widgets/EnvironmentVariables.cpp
+    ui/widgets/EnvironmentVariables.h
+    ui/widgets/IconLabel.cpp
+    ui/widgets/IconLabel.h
+    ui/widgets/JavaWizardWidget.cpp
+    ui/widgets/JavaWizardWidget.h
+    ui/widgets/LabeledToolButton.cpp
+    ui/widgets/LabeledToolButton.h
+    ui/widgets/LanguageSelectionWidget.cpp
+    ui/widgets/LanguageSelectionWidget.h
+    ui/widgets/LogView.cpp
+    ui/widgets/LogView.h
+    ui/widgets/InfoFrame.cpp
+    ui/widgets/InfoFrame.h
+    ui/widgets/ModFilterWidget.cpp
+    ui/widgets/ModFilterWidget.h
+    ui/widgets/ModListView.cpp
+    ui/widgets/ModListView.h
+    ui/widgets/PageContainer.cpp
+    ui/widgets/PageContainer.h
+    ui/widgets/PageContainer_p.h
+    ui/widgets/ProjectDescriptionPage.h
+    ui/widgets/ProjectDescriptionPage.cpp
+    ui/widgets/VariableSizedImageObject.h
+    ui/widgets/VariableSizedImageObject.cpp
+    ui/widgets/ProjectItem.h
+    ui/widgets/ProjectItem.cpp
+    ui/widgets/SubTaskProgressBar.h
+    ui/widgets/SubTaskProgressBar.cpp
+    ui/widgets/VersionListView.cpp
+    ui/widgets/VersionListView.h
+    ui/widgets/VersionSelectWidget.cpp
+    ui/widgets/VersionSelectWidget.h
+    ui/widgets/ProgressWidget.h
+    ui/widgets/ProgressWidget.cpp
+    ui/widgets/WideBar.h
+    ui/widgets/WideBar.cpp
+    ui/widgets/AppearanceWidget.h
+    ui/widgets/AppearanceWidget.cpp
+    ui/widgets/MinecraftSettingsWidget.h
+    ui/widgets/MinecraftSettingsWidget.cpp
+    ui/widgets/JavaSettingsWidget.h
+    ui/widgets/JavaSettingsWidget.cpp
+
+    # GUI - instance group view
+    ui/instanceview/InstanceProxyModel.cpp
+    ui/instanceview/InstanceProxyModel.h
+    ui/instanceview/AccessibleInstanceView.cpp
+    ui/instanceview/AccessibleInstanceView.h
+    ui/instanceview/AccessibleInstanceView_p.h
+    ui/instanceview/InstanceView.cpp
+    ui/instanceview/InstanceView.h
+    ui/instanceview/InstanceDelegate.cpp
+    ui/instanceview/InstanceDelegate.h
+    ui/instanceview/VisualGroup.cpp
+    ui/instanceview/VisualGroup.h
+)
+
+if (APPLE)
+    set(LAUNCHER_SOURCES
+        ${LAUNCHER_SOURCES}
+        ui/themes/ThemeManager.mm
+    )
+endif()
+
+if (NOT Apple)
+    set(LAUNCHER_SOURCES
+    ${LAUNCHER_SOURCES}
+
+    ui/dialogs/UpdateAvailableDialog.h
+    ui/dialogs/UpdateAvailableDialog.cpp
+)
+endif()
+
+if(WIN32)
+    set(LAUNCHER_SOURCES
+        console/WindowsConsole.hpp
+        console/WindowsConsole.cpp
+        ${LAUNCHER_SOURCES}
+    )
+endif()
+
+qt_wrap_ui(LAUNCHER_UI
+    ui/MainWindow.ui
+    ui/setupwizard/PasteWizardPage.ui
+    ui/setupwizard/AutoJavaWizardPage.ui
+    ui/setupwizard/LoginWizardPage.ui
+    ui/pages/global/AccountListPage.ui
+    ui/pages/global/JavaPage.ui
+    ui/pages/global/LauncherPage.ui
+    ui/pages/global/APIPage.ui
+    ui/pages/global/ProxyPage.ui
+    ui/pages/global/ExternalToolsPage.ui
+    ui/pages/instance/ExternalResourcesPage.ui
+    ui/pages/instance/NotesPage.ui
+    ui/pages/instance/LogPage.ui
+    ui/pages/instance/ServersPage.ui
+    ui/pages/instance/OtherLogsPage.ui
+    ui/pages/instance/VersionPage.ui
+    ui/pages/instance/ManagedPackPage.ui
+    ui/pages/instance/WorldListPage.ui
+    ui/pages/instance/ScreenshotsPage.ui
+    ui/pages/modplatform/atlauncher/AtlOptionalModDialog.ui
+    ui/pages/modplatform/atlauncher/AtlPage.ui
+    ui/pages/modplatform/CustomPage.ui
+    ui/pages/modplatform/ResourcePage.ui
+    ui/pages/modplatform/flame/FlamePage.ui
+    ui/pages/modplatform/legacy_ftb/Page.ui
+    ui/pages/modplatform/import_ftb/ImportFTBPage.ui
+    ui/pages/modplatform/ImportPage.ui
+    ui/pages/modplatform/OptionalModDialog.ui
+    ui/pages/modplatform/modrinth/ModrinthPage.ui
+    ui/pages/modplatform/technic/TechnicPage.ui
+    ui/widgets/CustomCommands.ui
+    ui/widgets/EnvironmentVariables.ui
+    ui/widgets/InfoFrame.ui
+    ui/widgets/ModFilterWidget.ui
+    ui/widgets/SubTaskProgressBar.ui
+    ui/widgets/AppearanceWidget.ui
+    ui/widgets/MinecraftSettingsWidget.ui
+    ui/widgets/JavaSettingsWidget.ui
+    ui/dialogs/BackupDialog.ui
+    ui/dialogs/CopyInstanceDialog.ui
+    ui/dialogs/CreateShortcutDialog.ui
+    ui/dialogs/ProfileSetupDialog.ui
+    ui/dialogs/ProgressDialog.ui
+    ui/dialogs/NewInstanceDialog.ui
+    ui/dialogs/NewComponentDialog.ui
+    ui/dialogs/NewsDialog.ui
+    ui/dialogs/ProfileSelectDialog.ui
+    ui/dialogs/ExportInstanceDialog.ui
+    ui/dialogs/ExportPackDialog.ui
+    ui/dialogs/ExportToModListDialog.ui
+    ui/dialogs/IconPickerDialog.ui
+    ui/dialogs/ImportResourceDialog.ui
+    ui/dialogs/MSALoginDialog.ui
+    ui/dialogs/OfflineLoginDialog.ui
+    ui/dialogs/AboutDialog.ui
+    ui/dialogs/ReviewMessageBox.ui
+    ui/dialogs/ScrollMessageBox.ui
+    ui/dialogs/BlockedModsDialog.ui
+    ui/dialogs/ChooseProviderDialog.ui
+    ui/dialogs/skins/SkinManageDialog.ui
+)
+
+qt_wrap_ui(PROJT_UPDATE_UI
+    ui/dialogs/UpdateAvailableDialog.ui
+)
+
+if (NOT Apple)
+    set (LAUNCHER_UI ${LAUNCHER_UI} ${PROJT_UPDATE_UI})
+endif()
+
+qt_add_resources(LAUNCHER_RESOURCES
+    resources/backgrounds/backgrounds.qrc
+    resources/multimc/multimc.qrc
+    resources/pe_dark/pe_dark.qrc
+    resources/pe_light/pe_light.qrc
+    resources/pe_colored/pe_colored.qrc
+    resources/pe_blue/pe_blue.qrc
+    resources/breeze_dark/breeze_dark.qrc
+    resources/breeze_light/breeze_light.qrc
+    resources/OSX/OSX.qrc
+    resources/iOS/iOS.qrc
+    resources/flat/flat.qrc
+    resources/documents/documents.qrc
+    resources/shaders/shaders.qrc
+    "${CMAKE_CURRENT_BINARY_DIR}/../${Launcher_Branding_LogoQRC}"
+)
+
+qt_wrap_ui(PROJTUPDATER_UI
+    updater/projtupdater/SelectReleaseDialog.ui
+    ui/widgets/SubTaskProgressBar.ui
+    ui/dialogs/ProgressDialog.ui
+)
+
+######## Windows resource files ########
+if(WIN32)
+    set(LAUNCHER_RCS ${CMAKE_CURRENT_BINARY_DIR}/../${Launcher_Branding_WindowsRC})
+endif()
+
+include(CompilerWarnings)
+
+# Add executable
+add_library(Launcher_logic STATIC ${LOGIC_SOURCES} ${LAUNCHER_SOURCES} ${LAUNCHER_UI} ${LAUNCHER_RESOURCES})
+set_project_warnings(Launcher_logic
+    "${Launcher_MSVC_WARNINGS}"
+    "${Launcher_CLANG_WARNINGS}"
+    "${Launcher_GCC_WARNINGS}")
+target_include_directories(Launcher_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_definitions(Launcher_logic PUBLIC LAUNCHER_APPLICATION)
+target_link_libraries(Launcher_logic
+    systeminfo
+    Launcher_murmur2
+    nbt++
+    PTlibzippy::PTlibzippy
+    qdcss
+    BuildConfig
+    Qt${QT_VERSION_MAJOR}::Widgets
+    qrcodegenerator
+)
+target_link_libraries(Launcher_logic tomlplusplus::tomlplusplus)
+
+if (UNIX AND NOT CYGWIN AND NOT APPLE)
+    target_link_libraries(Launcher_logic
+        gamemode
+    )
+endif()
+target_link_libraries(Launcher_logic
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Xml
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::Concurrent
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::NetworkAuth
+    Qt${QT_VERSION_MAJOR}::OpenGL
+    ${Launcher_QT_DBUS}
+    ${Launcher_QT_LIBS}
+)
+target_link_libraries(Launcher_logic
+    QuaZip::QuaZip
+    cmark::cmark
+    LocalPeer
+    Launcher_rainbow
+)
+if (Launcher_QT_DBUS AND TARGET Qt6::DBus)
+    add_compile_definitions(WITH_QTDBUS)
+endif()
+
+set(LAUNCHER_USE_WEBENGINE ON)
+set(LAUNCHER_USE_WEBVIEW2 OFF)
+set(LAUNCHER_USE_CEF OFF)
+set(LAUNCHER_DISABLE_HUB OFF)
+set(_Launcher_CEF_BUILD_FROM_SOURCE_DEFAULT OFF)
+if(DEFINED ENV{Launcher_CEF_BUILD_FROM_SOURCE} AND NOT "$ENV{Launcher_CEF_BUILD_FROM_SOURCE}" STREQUAL "")
+    set(_Launcher_CEF_BUILD_FROM_SOURCE_DEFAULT "$ENV{Launcher_CEF_BUILD_FROM_SOURCE}")
+elseif(DEFINED ENV{CEF_BUILD_FROM_SOURCE} AND NOT "$ENV{CEF_BUILD_FROM_SOURCE}" STREQUAL "")
+    set(_Launcher_CEF_BUILD_FROM_SOURCE_DEFAULT "$ENV{CEF_BUILD_FROM_SOURCE}")
+endif()
+set(_Launcher_CEF_VERSION_DEFAULT "144.0.11+ge135be2+chromium-144.0.7559.97")
+if(DEFINED ENV{Launcher_CEF_VERSION} AND NOT "$ENV{Launcher_CEF_VERSION}" STREQUAL "")
+    set(_Launcher_CEF_VERSION_DEFAULT "$ENV{Launcher_CEF_VERSION}")
+elseif(DEFINED ENV{CEF_VERSION} AND NOT "$ENV{CEF_VERSION}" STREQUAL "")
+    set(_Launcher_CEF_VERSION_DEFAULT "$ENV{CEF_VERSION}")
+endif()
+set(_Launcher_CEF_SOURCE_BRANCH_DEFAULT "")
+if(_Launcher_CEF_VERSION_DEFAULT MATCHES "chromium-[0-9]+\\.0\\.([0-9]+)\\.[0-9]+")
+    set(_Launcher_CEF_SOURCE_BRANCH_DEFAULT "${CMAKE_MATCH_1}")
+endif()
+if(DEFINED ENV{Launcher_CEF_SOURCE_BRANCH} AND NOT "$ENV{Launcher_CEF_SOURCE_BRANCH}" STREQUAL "")
+    set(_Launcher_CEF_SOURCE_BRANCH_DEFAULT "$ENV{Launcher_CEF_SOURCE_BRANCH}")
+elseif(DEFINED ENV{CEF_SOURCE_BRANCH} AND NOT "$ENV{CEF_SOURCE_BRANCH}" STREQUAL "")
+    set(_Launcher_CEF_SOURCE_BRANCH_DEFAULT "$ENV{CEF_SOURCE_BRANCH}")
+endif()
+set(_Launcher_CEF_DISTRIBUTION_DEFAULT "minimal")
+if(DEFINED ENV{Launcher_CEF_DISTRIBUTION} AND NOT "$ENV{Launcher_CEF_DISTRIBUTION}" STREQUAL "")
+    set(_Launcher_CEF_DISTRIBUTION_DEFAULT "$ENV{Launcher_CEF_DISTRIBUTION}")
+elseif(DEFINED ENV{CEF_DISTRIBUTION} AND NOT "$ENV{CEF_DISTRIBUTION}" STREQUAL "")
+    set(_Launcher_CEF_DISTRIBUTION_DEFAULT "$ENV{CEF_DISTRIBUTION}")
+endif()
+set(_Launcher_CEF_DOWNLOAD_URL_DEFAULT "")
+if(DEFINED ENV{Launcher_CEF_DOWNLOAD_URL} AND NOT "$ENV{Launcher_CEF_DOWNLOAD_URL}" STREQUAL "")
+    set(_Launcher_CEF_DOWNLOAD_URL_DEFAULT "$ENV{Launcher_CEF_DOWNLOAD_URL}")
+elseif(DEFINED ENV{CEF_DOWNLOAD_URL} AND NOT "$ENV{CEF_DOWNLOAD_URL}" STREQUAL "")
+    set(_Launcher_CEF_DOWNLOAD_URL_DEFAULT "$ENV{CEF_DOWNLOAD_URL}")
+endif()
+set(_Launcher_CEF_DOWNLOAD_SHA256_DEFAULT "")
+if(DEFINED ENV{Launcher_CEF_DOWNLOAD_SHA256} AND NOT "$ENV{Launcher_CEF_DOWNLOAD_SHA256}" STREQUAL "")
+    set(_Launcher_CEF_DOWNLOAD_SHA256_DEFAULT "$ENV{Launcher_CEF_DOWNLOAD_SHA256}")
+elseif(DEFINED ENV{CEF_DOWNLOAD_SHA256} AND NOT "$ENV{CEF_DOWNLOAD_SHA256}" STREQUAL "")
+    set(_Launcher_CEF_DOWNLOAD_SHA256_DEFAULT "$ENV{CEF_DOWNLOAD_SHA256}")
+endif()
+set(_Launcher_CEF_TARGET_ARCH_DEFAULT "")
+set(_Launcher_CEF_BINARY_PLATFORM_DEFAULT "")
+if(DEFINED ENV{Launcher_CEF_TARGET_ARCH} AND NOT "$ENV{Launcher_CEF_TARGET_ARCH}" STREQUAL "")
+    set(_Launcher_CEF_TARGET_ARCH_DEFAULT "$ENV{Launcher_CEF_TARGET_ARCH}")
+elseif(DEFINED ENV{CEF_TARGET_ARCH} AND NOT "$ENV{CEF_TARGET_ARCH}" STREQUAL "")
+    set(_Launcher_CEF_TARGET_ARCH_DEFAULT "$ENV{CEF_TARGET_ARCH}")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|amd64|AMD64)$")
+    set(_Launcher_CEF_TARGET_ARCH_DEFAULT "x64")
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+    set(_Launcher_CEF_TARGET_ARCH_DEFAULT "arm64")
+endif()
+if(DEFINED ENV{Launcher_CEF_BINARY_PLATFORM} AND NOT "$ENV{Launcher_CEF_BINARY_PLATFORM}" STREQUAL "")
+    set(_Launcher_CEF_BINARY_PLATFORM_DEFAULT "$ENV{Launcher_CEF_BINARY_PLATFORM}")
+elseif(DEFINED ENV{CEF_BINARY_PLATFORM} AND NOT "$ENV{CEF_BINARY_PLATFORM}" STREQUAL "")
+    set(_Launcher_CEF_BINARY_PLATFORM_DEFAULT "$ENV{CEF_BINARY_PLATFORM}")
+elseif(_Launcher_CEF_TARGET_ARCH_DEFAULT STREQUAL "x64")
+    set(_Launcher_CEF_BINARY_PLATFORM_DEFAULT "linux64")
+elseif(_Launcher_CEF_TARGET_ARCH_DEFAULT STREQUAL "arm64")
+    set(_Launcher_CEF_BINARY_PLATFORM_DEFAULT "linuxarm64")
+endif()
+set(Launcher_CEF_ROOT "" CACHE PATH "Path to the CEF binary distribution root used for the Linux Hub backend")
+option(Launcher_CEF_AUTO_DOWNLOAD "Automatically download Linux CEF when Launcher_CEF_ROOT is not set" ON)
+option(Launcher_CEF_BUILD_FROM_SOURCE "Build Linux CEF from source before configuring the launcher" ${_Launcher_CEF_BUILD_FROM_SOURCE_DEFAULT})
+set(Launcher_CEF_VERSION "${_Launcher_CEF_VERSION_DEFAULT}" CACHE STRING "Linux CEF version string used to build the default download URL")
+set(Launcher_CEF_SOURCE_BRANCH "${_Launcher_CEF_SOURCE_BRANCH_DEFAULT}" CACHE STRING "CEF source branch used when building Linux CEF from source")
+set(Launcher_CEF_DISTRIBUTION "${_Launcher_CEF_DISTRIBUTION_DEFAULT}" CACHE STRING "Linux CEF distribution flavor used when constructing the default download URL")
+set(Launcher_CEF_TARGET_ARCH "${_Launcher_CEF_TARGET_ARCH_DEFAULT}" CACHE STRING "CEF target architecture used for Linux source builds")
+set(Launcher_CEF_BINARY_PLATFORM "${_Launcher_CEF_BINARY_PLATFORM_DEFAULT}" CACHE STRING "CEF Linux binary platform suffix used when constructing default download URLs")
+set(Launcher_CEF_DOWNLOAD_URL "${_Launcher_CEF_DOWNLOAD_URL_DEFAULT}" CACHE STRING "URL to a Linux CEF binary distribution archive")
+set(Launcher_CEF_DOWNLOAD_SHA256 "${_Launcher_CEF_DOWNLOAD_SHA256_DEFAULT}" CACHE STRING "Optional SHA256 for Launcher_CEF_DOWNLOAD_URL")
+set(Launcher_CEF_DOWNLOAD_DIR "${CMAKE_BINARY_DIR}/downloads/cef" CACHE PATH "Directory used to download and extract the Linux CEF archive")
+set(Launcher_CEF_SOURCE_DOWNLOAD_DIR "${CMAKE_BINARY_DIR}/cef-source" CACHE PATH "Directory used for Linux CEF source checkouts and builds")
+set(Launcher_CEF_SOURCE_SCRIPT "${CMAKE_SOURCE_DIR}/scripts/build-cef-from-source.sh" CACHE FILEPATH "Script used to build Linux CEF from source")
+option(Launcher_CEF_SOURCE_INSTALL_BUILD_DEPS "Run Chromium's Linux build-deps script during CEF source builds" OFF)
+if(Launcher_CEF_DOWNLOAD_URL STREQUAL "" AND NOT Launcher_CEF_VERSION STREQUAL "" AND NOT Launcher_CEF_BINARY_PLATFORM STREQUAL "")
+    set(Launcher_CEF_DOWNLOAD_URL
+        "https://cef-builds.spotifycdn.com/cef_binary_${Launcher_CEF_VERSION}_${Launcher_CEF_BINARY_PLATFORM}_${Launcher_CEF_DISTRIBUTION}.tar.bz2"
+        CACHE STRING "URL to a Linux CEF binary distribution archive" FORCE)
+elseif(Launcher_CEF_DOWNLOAD_URL STREQUAL "" AND NOT Launcher_CEF_VERSION STREQUAL "")
+    message(STATUS "No default Linux CEF binary platform mapping for architecture ${CMAKE_SYSTEM_PROCESSOR}; set Launcher_CEF_DOWNLOAD_URL or Launcher_CEF_ROOT explicitly.")
+endif()
+unset(_Launcher_CEF_BUILD_FROM_SOURCE_DEFAULT)
+unset(_Launcher_CEF_VERSION_DEFAULT)
+unset(_Launcher_CEF_SOURCE_BRANCH_DEFAULT)
+unset(_Launcher_CEF_DISTRIBUTION_DEFAULT)
+unset(_Launcher_CEF_TARGET_ARCH_DEFAULT)
+unset(_Launcher_CEF_BINARY_PLATFORM_DEFAULT)
+unset(_Launcher_CEF_DOWNLOAD_URL_DEFAULT)
+unset(_Launcher_CEF_DOWNLOAD_SHA256_DEFAULT)
+if(MINGW)
+    set(LAUNCHER_USE_WEBENGINE OFF)
+    set(LAUNCHER_DISABLE_HUB ON)
+endif()
+if(UNIX AND NOT APPLE)
+    set(LAUNCHER_USE_WEBENGINE OFF)
+    option(LAUNCHER_USE_CEF "Use CEF backend" ON)
+endif()
+if(MSVC AND WIN32)
+    set(LAUNCHER_USE_WEBENGINE OFF)
+    set(LAUNCHER_USE_WEBVIEW2 ON)
+endif()
+
+if(LAUNCHER_USE_WEBENGINE)
+    target_compile_definitions(Launcher_logic PUBLIC PROJT_USE_WEBENGINE)
+    target_link_libraries(Launcher_logic
+        Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+        Qt${QT_VERSION_MAJOR}::WebChannel
+    )
+endif()
+
+if(LAUNCHER_USE_WEBENGINE AND UNIX AND NOT APPLE AND TARGET MINIZIP::minizip)
+    target_link_libraries(Launcher_logic MINIZIP::minizip)
+endif()
+
+if(TARGET png_shared)
+    target_link_libraries(Launcher_logic png_shared)
+elseif(TARGET png_static)
+    target_link_libraries(Launcher_logic png_static)
+endif()
+
+if(LAUNCHER_USE_WEBVIEW2 AND WIN32)
+    target_compile_definitions(Launcher_logic PUBLIC PROJT_USE_WEBVIEW2)
+
+    set(_WEBVIEW2_SDK_GLOB "${CMAKE_SOURCE_DIR}/dependencies/Microsoft.Web.WebView2.*")
+    file(GLOB _WEBVIEW2_SDK_DIR LIST_DIRECTORIES true "${_WEBVIEW2_SDK_GLOB}")
+    list(SORT _WEBVIEW2_SDK_DIR ORDER DESCENDING)
+    if(_WEBVIEW2_SDK_DIR)
+        list(GET _WEBVIEW2_SDK_DIR 0 WEBVIEW2_SDK_DIR)
+    endif()
+
+    find_path(WEBVIEW2_INCLUDE_DIR
+        NAMES WebView2.h
+        PATHS
+            "${WEBVIEW2_SDK_DIR}/build/native/include"
+        NO_DEFAULT_PATH
+    )
+    set(_WEBVIEW2_ARCH_DIR "")
+    if(CMAKE_VS_PLATFORM_NAME STREQUAL "ARM64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64|aarch64")
+        set(_WEBVIEW2_ARCH_DIR "arm64")
+    elseif(CMAKE_VS_PLATFORM_NAME MATCHES "64" OR CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(_WEBVIEW2_ARCH_DIR "x64")
+    else()
+        set(_WEBVIEW2_ARCH_DIR "x86")
+    endif()
+
+    if(_WEBVIEW2_ARCH_DIR STREQUAL "arm64")
+        find_library(WEBVIEW2_LOADER_LIB
+            NAMES WebView2LoaderStatic WebView2Loader
+            PATHS
+                "${WEBVIEW2_SDK_DIR}/build/native/arm64"
+            NO_DEFAULT_PATH
+        )
+    else()
+        find_library(WEBVIEW2_LOADER_LIB
+            NAMES WebView2LoaderStatic WebView2Loader
+            PATHS
+                "${WEBVIEW2_SDK_DIR}/build/native/${_WEBVIEW2_ARCH_DIR}"
+                "${WEBVIEW2_SDK_DIR}/build/native/x64"
+                "${WEBVIEW2_SDK_DIR}/build/native/x86"
+            NO_DEFAULT_PATH
+        )
+    endif()
+
+    if(NOT WEBVIEW2_INCLUDE_DIR OR NOT WEBVIEW2_LOADER_LIB)
+        message(FATAL_ERROR "WebView2 SDK not found. Ensure Microsoft.Web.WebView2 is restored into dependencies.")
+    endif()
+
+    target_include_directories(Launcher_logic PRIVATE "${WEBVIEW2_INCLUDE_DIR}")
+    target_link_libraries(Launcher_logic "${WEBVIEW2_LOADER_LIB}")
+endif()
+
+if(LAUNCHER_USE_CEF)
+    target_compile_definitions(Launcher_logic PUBLIC PROJT_USE_CEF)
+    if(UNIX AND NOT APPLE)
+        macro(projt_resolve_linux_cef out_var)
+            set(${out_var} "")
+
+            if(Launcher_CEF_ROOT
+               AND (NOT EXISTS "${Launcher_CEF_ROOT}/cmake/FindCEF.cmake"
+                    OR NOT EXISTS "${Launcher_CEF_ROOT}/Release/libcef.so"))
+                message(STATUS "Ignoring invalid Launcher_CEF_ROOT: ${Launcher_CEF_ROOT}")
+                set(Launcher_CEF_ROOT "" CACHE PATH "Path to the CEF binary distribution root used for the Linux Hub backend" FORCE)
+            endif()
+
+            if(NOT Launcher_CEF_ROOT AND DEFINED ENV{CEF_ROOT})
+                file(TO_CMAKE_PATH "$ENV{CEF_ROOT}" Launcher_CEF_ROOT)
+            endif()
+            if(NOT Launcher_CEF_ROOT)
+                set(_projt_cef_root_candidates
+                    "${CMAKE_SOURCE_DIR}/dependencies/cef"
+                    "${CMAKE_SOURCE_DIR}/third_party/cef"
+                    "${CMAKE_SOURCE_DIR}/vendor/cef"
+                )
+                set(_projt_cef_glob_candidates "")
+                if(NOT Launcher_CEF_BINARY_PLATFORM STREQUAL "")
+                    file(GLOB _projt_cef_glob_candidates LIST_DIRECTORIES true
+                        "${CMAKE_SOURCE_DIR}/dependencies/cef_binary_*_${Launcher_CEF_BINARY_PLATFORM}*"
+                        "${CMAKE_SOURCE_DIR}/third_party/cef_binary_*_${Launcher_CEF_BINARY_PLATFORM}*"
+                        "${CMAKE_SOURCE_DIR}/vendor/cef_binary_*_${Launcher_CEF_BINARY_PLATFORM}*"
+                        "/tmp/cef-sdk/extracted/cef_binary_*_${Launcher_CEF_BINARY_PLATFORM}*"
+                    )
+                endif()
+                list(APPEND _projt_cef_root_candidates ${_projt_cef_glob_candidates})
+                foreach(_projt_cef_candidate ${_projt_cef_root_candidates})
+                    if(EXISTS "${_projt_cef_candidate}/cmake/FindCEF.cmake" AND EXISTS "${_projt_cef_candidate}/Release/libcef.so")
+                        set(Launcher_CEF_ROOT "${_projt_cef_candidate}")
+                        break()
+                    endif()
+                endforeach()
+                unset(_projt_cef_glob_candidates)
+                unset(_projt_cef_root_candidates)
+            endif()
+
+            if(NOT Launcher_CEF_ROOT AND Launcher_CEF_BUILD_FROM_SOURCE)
+                if(NOT EXISTS "${Launcher_CEF_SOURCE_SCRIPT}")
+                    message(FATAL_ERROR "Launcher_CEF_SOURCE_SCRIPT does not exist: ${Launcher_CEF_SOURCE_SCRIPT}")
+                endif()
+                if(Launcher_CEF_SOURCE_BRANCH STREQUAL "")
+                    message(FATAL_ERROR "Launcher_CEF_SOURCE_BRANCH is empty. Set it explicitly or provide a Launcher_CEF_VERSION that includes a Chromium branch component.")
+                endif()
+
+                set(_projt_cef_source_root_file "${CMAKE_BINARY_DIR}/cef-source-root.txt")
+                file(REMOVE "${_projt_cef_source_root_file}")
+                message(STATUS "Building Linux CEF from source using branch ${Launcher_CEF_SOURCE_BRANCH}")
+                execute_process(
+                    COMMAND "${CMAKE_COMMAND}" -E env
+                        "LAUNCHER_CEF_VERSION=${Launcher_CEF_VERSION}"
+                        "LAUNCHER_CEF_DISTRIBUTION=${Launcher_CEF_DISTRIBUTION}"
+                        "LAUNCHER_CEF_SOURCE_BRANCH=${Launcher_CEF_SOURCE_BRANCH}"
+                        "LAUNCHER_CEF_TARGET_ARCH=${Launcher_CEF_TARGET_ARCH}"
+                        "LAUNCHER_CEF_BINARY_PLATFORM=${Launcher_CEF_BINARY_PLATFORM}"
+                        "LAUNCHER_CEF_SOURCE_DOWNLOAD_DIR=${Launcher_CEF_SOURCE_DOWNLOAD_DIR}"
+                        "LAUNCHER_CEF_SOURCE_OUT_FILE=${_projt_cef_source_root_file}"
+                        "LAUNCHER_CEF_INSTALL_BUILD_DEPS=${Launcher_CEF_SOURCE_INSTALL_BUILD_DEPS}"
+                        /usr/bin/env bash "${Launcher_CEF_SOURCE_SCRIPT}"
+                    RESULT_VARIABLE _projt_cef_source_result
+                    COMMAND_ECHO STDOUT
+                )
+                if(NOT _projt_cef_source_result EQUAL 0)
+                    message(FATAL_ERROR "Linux CEF source build failed with exit code ${_projt_cef_source_result}.")
+                endif()
+                if(EXISTS "${_projt_cef_source_root_file}")
+                    file(READ "${_projt_cef_source_root_file}" Launcher_CEF_ROOT)
+                    string(STRIP "${Launcher_CEF_ROOT}" Launcher_CEF_ROOT)
+                    set(Launcher_CEF_ROOT "${Launcher_CEF_ROOT}" CACHE PATH "Path to the CEF binary distribution root used for the Linux Hub backend" FORCE)
+                endif()
+                unset(_projt_cef_source_result)
+                unset(_projt_cef_source_root_file)
+            endif()
+
+            if(NOT Launcher_CEF_ROOT AND Launcher_CEF_AUTO_DOWNLOAD)
+                if(Launcher_CEF_DOWNLOAD_URL STREQUAL "")
+                    message(STATUS "Linux CEF auto-download is enabled but Launcher_CEF_DOWNLOAD_URL is empty.")
+                else()
+                    file(MAKE_DIRECTORY "${Launcher_CEF_DOWNLOAD_DIR}")
+                    get_filename_component(_projt_cef_archive_name "${Launcher_CEF_DOWNLOAD_URL}" NAME)
+                    if(_projt_cef_archive_name STREQUAL "")
+                        set(_projt_cef_archive_name "cef-linux-archive")
+                    endif()
+                    string(MD5 _projt_cef_download_key "${Launcher_CEF_DOWNLOAD_URL}|${Launcher_CEF_DOWNLOAD_SHA256}")
+                    set(_projt_cef_archive_path "${Launcher_CEF_DOWNLOAD_DIR}/${_projt_cef_archive_name}")
+                    set(_projt_cef_extract_dir "${Launcher_CEF_DOWNLOAD_DIR}/extracted-${_projt_cef_download_key}")
+                    set(_projt_cef_extract_stamp "${_projt_cef_extract_dir}/.projt-cef-ready")
+
+                    if(EXISTS "${_projt_cef_archive_path}" AND NOT Launcher_CEF_DOWNLOAD_SHA256 STREQUAL "")
+                        file(SHA256 "${_projt_cef_archive_path}" _projt_cef_archive_hash)
+                        if(NOT _projt_cef_archive_hash STREQUAL Launcher_CEF_DOWNLOAD_SHA256)
+                            file(REMOVE "${_projt_cef_archive_path}")
+                        endif()
+                        unset(_projt_cef_archive_hash)
+                    endif()
+
+                    if(NOT EXISTS "${_projt_cef_archive_path}")
+                        message(STATUS "Downloading Linux CEF binary distribution from ${Launcher_CEF_DOWNLOAD_URL}")
+                        if(Launcher_CEF_DOWNLOAD_SHA256 STREQUAL "")
+                            file(DOWNLOAD
+                                "${Launcher_CEF_DOWNLOAD_URL}"
+                                "${_projt_cef_archive_path}"
+                                SHOW_PROGRESS
+                                STATUS _projt_cef_download_status
+                                TLS_VERIFY ON
+                            )
+                        else()
+                            file(DOWNLOAD
+                                "${Launcher_CEF_DOWNLOAD_URL}"
+                                "${_projt_cef_archive_path}"
+                                SHOW_PROGRESS
+                                STATUS _projt_cef_download_status
+                                EXPECTED_HASH "SHA256=${Launcher_CEF_DOWNLOAD_SHA256}"
+                                TLS_VERIFY ON
+                            )
+                        endif()
+                        list(GET _projt_cef_download_status 0 _projt_cef_download_code)
+                        list(GET _projt_cef_download_status 1 _projt_cef_download_message)
+                        if(NOT _projt_cef_download_code EQUAL 0)
+                            message(FATAL_ERROR "Failed to download Linux CEF from ${Launcher_CEF_DOWNLOAD_URL}: ${_projt_cef_download_message}")
+                        endif()
+                        unset(_projt_cef_download_code)
+                        unset(_projt_cef_download_message)
+                        unset(_projt_cef_download_status)
+                    endif()
+
+                    if(NOT EXISTS "${_projt_cef_extract_stamp}")
+                        file(MAKE_DIRECTORY "${_projt_cef_extract_dir}")
+                        message(STATUS "Extracting Linux CEF archive to ${_projt_cef_extract_dir}")
+                        file(ARCHIVE_EXTRACT
+                            INPUT "${_projt_cef_archive_path}"
+                            DESTINATION "${_projt_cef_extract_dir}"
+                        )
+                        file(WRITE "${_projt_cef_extract_stamp}" "${Launcher_CEF_DOWNLOAD_URL}\n")
+                    endif()
+
+                    set(_projt_cef_download_candidates "${_projt_cef_extract_dir}")
+                    if(NOT Launcher_CEF_BINARY_PLATFORM STREQUAL "")
+                        file(GLOB _projt_cef_download_glob LIST_DIRECTORIES true
+                            "${_projt_cef_extract_dir}/cef_binary_*_${Launcher_CEF_BINARY_PLATFORM}*"
+                            "${_projt_cef_extract_dir}/*"
+                        )
+                    else()
+                        file(GLOB _projt_cef_download_glob LIST_DIRECTORIES true
+                            "${_projt_cef_extract_dir}/*"
+                        )
+                    endif()
+                    list(APPEND _projt_cef_download_candidates ${_projt_cef_download_glob})
+                    foreach(_projt_cef_candidate ${_projt_cef_download_candidates})
+                        if(EXISTS "${_projt_cef_candidate}/cmake/FindCEF.cmake" AND EXISTS "${_projt_cef_candidate}/Release/libcef.so")
+                            set(Launcher_CEF_ROOT "${_projt_cef_candidate}")
+                            set(Launcher_CEF_ROOT "${Launcher_CEF_ROOT}" CACHE PATH "Path to the CEF binary distribution root used for the Linux Hub backend" FORCE)
+                            break()
+                        endif()
+                    endforeach()
+                    unset(_projt_cef_download_glob)
+                    unset(_projt_cef_download_candidates)
+                    unset(_projt_cef_extract_stamp)
+                    unset(_projt_cef_extract_dir)
+                    unset(_projt_cef_archive_path)
+                    unset(_projt_cef_archive_name)
+                    unset(_projt_cef_download_key)
+                endif()
+            endif()
+
+            if(Launcher_CEF_ROOT)
+                set(${out_var} "${Launcher_CEF_ROOT}")
+            endif()
+        endmacro()
+
+        projt_resolve_linux_cef(_projt_linux_cef_root)
+        if(NOT Launcher_CEF_ROOT)
+            message(FATAL_ERROR "Launcher_CEF_ROOT or CEF_ROOT must point to a Linux CEF binary distribution, or enable auto-download by setting Launcher_CEF_DOWNLOAD_URL.")
+        endif()
+        message(STATUS "Using Linux CEF binary distribution at: ${Launcher_CEF_ROOT}")
+        unset(_projt_linux_cef_root)
+        unset(projt_resolve_linux_cef)
+
+        list(APPEND CMAKE_MODULE_PATH "${Launcher_CEF_ROOT}/cmake")
+        set(CEF_ROOT "${Launcher_CEF_ROOT}")
+        set(CEF_TARGET_ARCH "${Launcher_CEF_TARGET_ARCH}")
+        set(PROJECT_ARCH "${Launcher_CEF_TARGET_ARCH}")
+        find_package(CEF REQUIRED)
+
+        if(NOT EXISTS "${CEF_LIB_DEBUG}")
+            set(CEF_LIB_DEBUG "${CEF_LIB_RELEASE}")
+        endif()
+        if(NOT EXISTS "${CEF_BINARY_DIR_DEBUG}/libcef.so")
+            set(CEF_BINARY_DIR_DEBUG "${CEF_BINARY_DIR_RELEASE}")
+        endif()
+        set(_projt_prev_build_shared_libs ${BUILD_SHARED_LIBS})
+        set(BUILD_SHARED_LIBS OFF)
+        if(NOT TARGET libcef_dll_wrapper)
+            add_subdirectory("${CEF_LIBCEF_DLL_WRAPPER_PATH}" "${CMAKE_CURRENT_BINARY_DIR}/libcef_dll_wrapper")
+        endif()
+        set(BUILD_SHARED_LIBS ${_projt_prev_build_shared_libs})
+        unset(_projt_prev_build_shared_libs)
+        if(Launcher_CEF_TARGET_ARCH STREQUAL "arm64")
+            # Some upstream Linux arm64 CEF packages still inject x86_64-only flags.
+            foreach(_projt_cef_wrapper_prop COMPILE_OPTIONS INTERFACE_COMPILE_OPTIONS)
+                get_target_property(_projt_cef_wrapper_value libcef_dll_wrapper ${_projt_cef_wrapper_prop})
+                if(_projt_cef_wrapper_value)
+                    list(FILTER _projt_cef_wrapper_value EXCLUDE REGEX "^-m64$")
+                    list(FILTER _projt_cef_wrapper_value EXCLUDE REGEX "^-march=x86-64$")
+                    set_property(TARGET libcef_dll_wrapper PROPERTY ${_projt_cef_wrapper_prop} "${_projt_cef_wrapper_value}")
+                endif()
+                unset(_projt_cef_wrapper_value)
+            endforeach()
+            get_target_property(_projt_cef_wrapper_compile_flags libcef_dll_wrapper COMPILE_FLAGS)
+            if(_projt_cef_wrapper_compile_flags)
+                string(REGEX REPLACE "(^| )-m64( |$)" " " _projt_cef_wrapper_compile_flags "${_projt_cef_wrapper_compile_flags}")
+                string(REGEX REPLACE "(^| )-march=x86-64( |$)" " " _projt_cef_wrapper_compile_flags "${_projt_cef_wrapper_compile_flags}")
+                string(STRIP "${_projt_cef_wrapper_compile_flags}" _projt_cef_wrapper_compile_flags)
+                set_property(TARGET libcef_dll_wrapper PROPERTY COMPILE_FLAGS "${_projt_cef_wrapper_compile_flags}")
+            endif()
+            unset(_projt_cef_wrapper_compile_flags)
+            unset(_projt_cef_wrapper_prop)
+        endif()
+        target_compile_options(libcef_dll_wrapper PRIVATE -Wno-c++20-extensions -Wno-error=c++20-extensions)
+        if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+            # Upstream CEF still triggers pedantic diagnostics under C++17 in GCC/Clang.
+            target_compile_options(libcef_dll_wrapper PRIVATE -Wno-pedantic -Wno-error=cpp)
+            # Nix/GCC hardening may inject _FORTIFY_SOURCE even for -O0 debug builds.
+            target_compile_options(libcef_dll_wrapper PRIVATE
+                $<$<CONFIG:Debug>:-U_FORTIFY_SOURCE>
+                $<$<CONFIG:Debug>:-D_FORTIFY_SOURCE=0>)
+        endif()
+        if(NOT TARGET projt_cef_runtime)
+            add_library(projt_cef_runtime SHARED IMPORTED GLOBAL)
+            set_target_properties(projt_cef_runtime PROPERTIES
+                IMPORTED_LOCATION_DEBUG "${CEF_LIB_DEBUG}"
+                IMPORTED_LOCATION_RELEASE "${CEF_LIB_RELEASE}"
+                IMPORTED_LOCATION "${CEF_LIB_RELEASE}")
+            if(UNIX AND NOT APPLE)
+                # Nix linkers don't automatically resolve libcef.so transitive DT_NEEDED entries.
+                find_program(PROJT_CEF_READELF_EXECUTABLE NAMES readelf llvm-readelf)
+                if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+                    set(_projt_cef_expected_elf_class "ELF64")
+                else()
+                    set(_projt_cef_expected_elf_class "ELF32")
+                endif()
+                function(_projt_cef_library_matches_arch out_var candidate)
+                    set(_projt_cef_library_is_compatible TRUE)
+                    if(PROJT_CEF_READELF_EXECUTABLE
+                       AND candidate
+                       AND EXISTS "${candidate}"
+                       AND candidate MATCHES "\\.so(\\..*)?$")
+                        execute_process(
+                            COMMAND "${PROJT_CEF_READELF_EXECUTABLE}" -h "${candidate}"
+                            RESULT_VARIABLE _projt_cef_library_readelf_result
+                            OUTPUT_VARIABLE _projt_cef_library_readelf_output
+                            ERROR_QUIET
+                        )
+                        if(NOT _projt_cef_library_readelf_result EQUAL 0
+                           OR NOT _projt_cef_library_readelf_output MATCHES "Class:[ \t]+${_projt_cef_expected_elf_class}")
+                            set(_projt_cef_library_is_compatible FALSE)
+                        endif()
+                    endif()
+                    set(${out_var} "${_projt_cef_library_is_compatible}" PARENT_SCOPE)
+                endfunction()
+                set(_projt_cef_runtime_link_libs "")
+                set(_projt_cef_runtime_library_specs
+                    "glib-2.0;libglib-2.0.so.0"
+                    "gobject-2.0;libgobject-2.0.so.0"
+                    "nspr4;libnspr4.so"
+                    "nss3;libnss3.so"
+                    "nssutil3;libnssutil3.so"
+                    "smime3;libsmime3.so"
+                    "dbus-1;libdbus-1.so.3"
+                    "gio-2.0;libgio-2.0.so.0"
+                    "atk-1.0;libatk-1.0.so.0;libatk-1.0.so"
+                    "atk-bridge-2.0;libatk-bridge-2.0.so.0;libatk-bridge-2.0.so"
+                    "cups;libcups.so.2"
+                    "X11;libX11.so.6"
+                    "Xcomposite;libXcomposite.so.1"
+                    "Xdamage;libXdamage.so.1"
+                    "Xext;libXext.so.6"
+                    "Xfixes;libXfixes.so.3"
+                    "Xrandr;libXrandr.so.2"
+                    "gbm;libgbm.so.1"
+                    "expat;libexpat.so.1"
+                    "xcb;libxcb.so.1"
+                    "xkbcommon;libxkbcommon.so.0"
+                    "cairo;libcairo.so.2;libcairo.so"
+                    "pango-1.0;libpango-1.0.so.0;libpango-1.0.so"
+                    "udev;libudev.so.1"
+                    "asound;libasound.so.2"
+                    "atspi;libatspi.so.0;libatspi.so"
+                )
+                foreach(_projt_cef_runtime_library_spec IN LISTS _projt_cef_runtime_library_specs)
+                    set(_projt_cef_runtime_search_names ${_projt_cef_runtime_library_spec})
+                    find_library(_projt_cef_runtime_lib_path
+                        NAMES ${_projt_cef_runtime_search_names}
+                        NO_CACHE)
+                    if(_projt_cef_runtime_lib_path)
+                        _projt_cef_library_matches_arch(
+                            _projt_cef_runtime_lib_matches_arch
+                            "${_projt_cef_runtime_lib_path}")
+                        if(NOT _projt_cef_runtime_lib_matches_arch)
+                            unset(_projt_cef_runtime_lib_path)
+                        endif()
+                        unset(_projt_cef_runtime_lib_matches_arch)
+                    endif()
+                    if(NOT _projt_cef_runtime_lib_path)
+                        foreach(_projt_cef_runtime_search_name IN LISTS _projt_cef_runtime_search_names)
+                            if(_projt_cef_runtime_search_name MATCHES "^lib.+\\.so(\\..*)?$")
+                                file(GLOB _projt_cef_runtime_nix_matches
+                                    LIST_DIRECTORIES FALSE
+                                    "/nix/store/*/lib/${_projt_cef_runtime_search_name}")
+                                if(_projt_cef_runtime_nix_matches)
+                                    list(FILTER _projt_cef_runtime_nix_matches EXCLUDE REGEX "/-system-path/")
+                                    if(NOT _projt_cef_runtime_nix_matches)
+                                        file(GLOB _projt_cef_runtime_nix_matches
+                                            LIST_DIRECTORIES FALSE
+                                            "/nix/store/*/lib/${_projt_cef_runtime_search_name}")
+                                    endif()
+                                    list(SORT _projt_cef_runtime_nix_matches)
+                                    if(PROJT_CEF_READELF_EXECUTABLE)
+                                        foreach(_projt_cef_runtime_nix_match IN LISTS _projt_cef_runtime_nix_matches)
+                                            _projt_cef_library_matches_arch(
+                                                _projt_cef_runtime_lib_matches_arch
+                                                "${_projt_cef_runtime_nix_match}")
+                                            if(_projt_cef_runtime_lib_matches_arch)
+                                                set(_projt_cef_runtime_lib_path "${_projt_cef_runtime_nix_match}")
+                                                break()
+                                            endif()
+                                        endforeach()
+                                    endif()
+                                    if(NOT _projt_cef_runtime_lib_path AND NOT PROJT_CEF_READELF_EXECUTABLE)
+                                        list(GET _projt_cef_runtime_nix_matches 0 _projt_cef_runtime_lib_path)
+                                    endif()
+                                    if(_projt_cef_runtime_lib_path)
+                                        break()
+                                    endif()
+                                endif()
+                            endif()
+                        endforeach()
+                    endif()
+                    if(_projt_cef_runtime_lib_path)
+                        list(APPEND _projt_cef_runtime_link_libs "${_projt_cef_runtime_lib_path}")
+                    endif()
+                    unset(_projt_cef_runtime_lib_path)
+                    unset(_projt_cef_runtime_nix_matches)
+                    unset(_projt_cef_runtime_nix_match)
+                    unset(_projt_cef_runtime_lib_matches_arch)
+                    unset(_projt_cef_runtime_search_name)
+                    unset(_projt_cef_runtime_search_names)
+                endforeach()
+                if(_projt_cef_runtime_link_libs)
+                    set_property(TARGET projt_cef_runtime APPEND PROPERTY
+                        INTERFACE_LINK_LIBRARIES "${_projt_cef_runtime_link_libs}")
+                endif()
+                if(NOT TARGET projt_cef_runtime_deps)
+                    add_library(projt_cef_runtime_deps INTERFACE)
+                endif()
+                if(_projt_cef_runtime_link_libs)
+                    target_link_libraries(projt_cef_runtime_deps INTERFACE ${_projt_cef_runtime_link_libs})
+                    set(_projt_cef_runtime_rpath_link_options "")
+                    foreach(_projt_cef_runtime_link_lib IN LISTS _projt_cef_runtime_link_libs)
+                        get_filename_component(_projt_cef_runtime_link_dir "${_projt_cef_runtime_link_lib}" DIRECTORY)
+                        list(APPEND _projt_cef_runtime_link_dirs "${_projt_cef_runtime_link_dir}")
+                    endforeach()
+                    list(REMOVE_DUPLICATES _projt_cef_runtime_link_dirs)
+                    foreach(_projt_cef_runtime_link_dir IN LISTS _projt_cef_runtime_link_dirs)
+                        list(APPEND _projt_cef_runtime_rpath_link_options "LINKER:-rpath-link,${_projt_cef_runtime_link_dir}")
+                    endforeach()
+                    if(_projt_cef_runtime_rpath_link_options)
+                        target_link_options(projt_cef_runtime_deps INTERFACE ${_projt_cef_runtime_rpath_link_options})
+                    endif()
+                    unset(_projt_cef_runtime_rpath_link_options)
+                    unset(_projt_cef_runtime_link_dir)
+                    unset(_projt_cef_runtime_link_dirs)
+                    unset(_projt_cef_runtime_link_lib)
+                endif()
+                set(PROJT_CEF_RUNTIME_LINK_LIBS ${_projt_cef_runtime_link_libs})
+                unset(_projt_cef_runtime_link_libs)
+                unset(_projt_cef_runtime_library_specs)
+                unset(_projt_cef_expected_elf_class)
+            endif()
+        endif()
+
+        target_include_directories(Launcher_logic PRIVATE ${CEF_INCLUDE_PATH})
+        target_link_libraries(Launcher_logic
+            libcef_dll_wrapper
+            projt_cef_runtime
+            projt_cef_runtime_deps
+            ${PROJT_CEF_RUNTIME_LINK_LIBS}
+            ${CEF_STANDARD_LIBS}
+        )
+        if(PROJT_CEF_RUNTIME_LINK_LIBS)
+            list(REMOVE_DUPLICATES PROJT_CEF_RUNTIME_LINK_LIBS)
+            # Static libraries don't always re-export raw absolute .so paths in a
+            # way that reaches final executables on Nix, so publish them explicitly.
+            set_property(TARGET Launcher_logic APPEND PROPERTY
+                INTERFACE_LINK_LIBRARIES "${PROJT_CEF_RUNTIME_LINK_LIBS}")
+
+            set(_projt_cef_runtime_link_dirs "")
+            foreach(_projt_cef_runtime_link_lib IN LISTS PROJT_CEF_RUNTIME_LINK_LIBS)
+                get_filename_component(_projt_cef_runtime_link_dir "${_projt_cef_runtime_link_lib}" DIRECTORY)
+                list(APPEND _projt_cef_runtime_link_dirs "${_projt_cef_runtime_link_dir}")
+            endforeach()
+            list(REMOVE_DUPLICATES _projt_cef_runtime_link_dirs)
+            if(_projt_cef_runtime_link_dirs)
+                set_property(TARGET Launcher_logic APPEND PROPERTY
+                    BUILD_RPATH "${_projt_cef_runtime_link_dirs}")
+            endif()
+            unset(_projt_cef_runtime_link_dir)
+            unset(_projt_cef_runtime_link_lib)
+            unset(_projt_cef_runtime_link_dirs)
+        endif()
+    endif()
+endif()
+
+if(LAUNCHER_DISABLE_HUB)
+    target_compile_definitions(Launcher_logic PUBLIC PROJT_DISABLE_LAUNCHER_HUB)
+endif()
+
+if(APPLE)
+    set(CMAKE_MACOSX_RPATH 1)
+    set(CMAKE_INSTALL_RPATH "@loader_path/../Frameworks/")
+
+    if(Launcher_ENABLE_UPDATER)
+        file(DOWNLOAD ${MACOSX_SPARKLE_DOWNLOAD_URL} ${CMAKE_BINARY_DIR}/Sparkle.tar.xz EXPECTED_HASH SHA256=${MACOSX_SPARKLE_SHA256})
+        file(ARCHIVE_EXTRACT INPUT ${CMAKE_BINARY_DIR}/Sparkle.tar.xz DESTINATION ${CMAKE_BINARY_DIR}/frameworks/Sparkle)
+
+        find_library(SPARKLE_FRAMEWORK Sparkle "${CMAKE_BINARY_DIR}/frameworks/Sparkle")
+        add_compile_definitions(SPARKLE_ENABLED)
+    endif()
+
+    target_link_libraries(Launcher_logic
+        "-framework AppKit"
+        "-framework Carbon"
+        "-framework Foundation"
+        "-framework ApplicationServices"
+    )
+    if(Launcher_ENABLE_UPDATER)
+        target_link_libraries(Launcher_logic ${SPARKLE_FRAMEWORK})
+    endif()
+endif()
+
+target_link_libraries(Launcher_logic)
+
+add_executable(${Launcher_Name} MACOSX_BUNDLE WIN32 main.cpp ${LAUNCHER_RCS})
+target_link_libraries(${Launcher_Name} Launcher_logic)
+
+if(LAUNCHER_USE_CEF AND UNIX AND NOT APPLE)
+    if(CEF_EXE_LINKER_FLAGS)
+        target_link_options(${Launcher_Name} PRIVATE ${CEF_EXE_LINKER_FLAGS})
+    endif()
+    if(CEF_EXE_LINKER_FLAGS_DEBUG)
+        target_link_options(${Launcher_Name} PRIVATE $<$<CONFIG:Debug>:${CEF_EXE_LINKER_FLAGS_DEBUG}>)
+    endif()
+    if(CEF_EXE_LINKER_FLAGS_RELEASE)
+        target_link_options(${Launcher_Name} PRIVATE $<$<CONFIG:Release>:${CEF_EXE_LINKER_FLAGS_RELEASE}>)
+    endif()
+
+    set_target_properties(${Launcher_Name} PROPERTIES
+        BUILD_RPATH "$ORIGIN"
+        INSTALL_RPATH "$ORIGIN")
+
+    foreach(_cef_binary ${CEF_BINARY_FILES})
+        add_custom_command(
+            TARGET ${Launcher_Name}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CEF_BINARY_DIR_RELEASE}/${_cef_binary}"
+                "$<TARGET_FILE_DIR:${Launcher_Name}>/${_cef_binary}"
+            VERBATIM
+        )
+
+        # linuxdeploy scans the installed AppDir, so CEF runtime files must be
+        # installed next to the launcher binary as well as copied into the build tree.
+        get_filename_component(_cef_binary_name "${_cef_binary}" NAME)
+        if(_cef_binary_name STREQUAL "chrome-sandbox")
+            install(PROGRAMS "${CEF_BINARY_DIR_RELEASE}/${_cef_binary}"
+                DESTINATION ${BINARY_DEST_DIR}
+                COMPONENT Runtime)
+        else()
+            install(FILES "${CEF_BINARY_DIR_RELEASE}/${_cef_binary}"
+                DESTINATION ${BINARY_DEST_DIR}
+                COMPONENT Runtime)
+        endif()
+        unset(_cef_binary_name)
+    endforeach()
+    foreach(_cef_resource ${CEF_RESOURCE_FILES})
+        if(IS_DIRECTORY "${CEF_RESOURCE_DIR}/${_cef_resource}")
+            add_custom_command(
+                TARGET ${Launcher_Name}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_directory
+                    "${CEF_RESOURCE_DIR}/${_cef_resource}"
+                    "$<TARGET_FILE_DIR:${Launcher_Name}>/${_cef_resource}"
+                VERBATIM
+            )
+
+            install(DIRECTORY "${CEF_RESOURCE_DIR}/${_cef_resource}"
+                DESTINATION ${BINARY_DEST_DIR}
+                USE_SOURCE_PERMISSIONS
+                COMPONENT Runtime)
+        else()
+            add_custom_command(
+                TARGET ${Launcher_Name}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${CEF_RESOURCE_DIR}/${_cef_resource}"
+                    "$<TARGET_FILE_DIR:${Launcher_Name}>/${_cef_resource}"
+                VERBATIM
+            )
+
+            install(FILES "${CEF_RESOURCE_DIR}/${_cef_resource}"
+                DESTINATION ${BINARY_DEST_DIR}
+                COMPONENT Runtime)
+        endif()
+    endforeach()
+endif()
+
+if(DEFINED Launcher_AppBinaryName)
+    set_target_properties(${Launcher_Name} PROPERTIES OUTPUT_NAME "${Launcher_AppBinaryName}")
+endif()
+if(DEFINED Launcher_BINARY_RPATH)
+    SET_TARGET_PROPERTIES(${Launcher_Name} PROPERTIES INSTALL_RPATH "${Launcher_BINARY_RPATH}")
+endif()
+
+if(DEFINED Launcher_APP_BINARY_DEFS)
+    target_compile_definitions(${Launcher_Name} PRIVATE ${Launcher_APP_BINARY_DEFS})
+    target_compile_definitions(Launcher_logic PRIVATE ${Launcher_APP_BINARY_DEFS})
+endif()
+
+# Install QuaZip shared library DLL on Windows
+if(WIN32 AND BUILD_SHARED_LIBS)
+    if(TARGET QuaZip::QuaZip)
+        install(FILES $<TARGET_FILE:QuaZip::QuaZip> DESTINATION "." COMPONENT Runtime OPTIONAL)
+    elseif(TARGET QuaZip)
+        install(FILES $<TARGET_FILE:QuaZip> DESTINATION "." COMPONENT Runtime OPTIONAL)
+    endif()
+endif()
+
+# Install QuaZip shared library on macOS into the app bundle Frameworks
+if(APPLE)
+    if(TARGET QuaZip::QuaZip)
+        install(FILES $<TARGET_FILE:QuaZip::QuaZip> DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime OPTIONAL)
+    elseif(TARGET QuaZip)
+        install(FILES $<TARGET_FILE:QuaZip> DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime OPTIONAL)
+    endif()
+    install(CODE "
+        file(GLOB QUAZIP_DYLIBS \"${CMAKE_INSTALL_PREFIX}/${FRAMEWORK_DEST_DIR}/libquazip*.dylib\")
+        foreach(DYLIB \${QUAZIP_DYLIBS})
+            get_filename_component(DYLIB_NAME \"\${DYLIB}\" NAME)
+            execute_process(COMMAND /usr/bin/install_name_tool -id \"@rpath/\${DYLIB_NAME}\" \"\${DYLIB}\")
+        endforeach()
+    ")
+
+    if(TARGET qrencode)
+        install(FILES $<TARGET_FILE:qrencode> DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime OPTIONAL)
+    endif()
+    install(CODE "
+        file(GLOB QRENCODE_DYLIBS \"${CMAKE_INSTALL_PREFIX}/${FRAMEWORK_DEST_DIR}/libqrencode*.dylib\")
+        foreach(DYLIB \${QRENCODE_DYLIBS})
+            get_filename_component(DYLIB_NAME \"\${DYLIB}\" NAME)
+            execute_process(COMMAND /usr/bin/install_name_tool -id \"@rpath/\${DYLIB_NAME}\" \"\${DYLIB}\")
+        endforeach()
+    ")
+
+    # Ensure any bundled shared libs installed into ${CMAKE_INSTALL_PREFIX}/lib are available in the app bundle.
+    install(CODE "
+        file(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/${FRAMEWORK_DEST_DIR}\")
+        file(GLOB BUNDLED_DYLIBS \"${CMAKE_INSTALL_PREFIX}/lib/*.dylib\")
+        foreach(DYLIB \${BUNDLED_DYLIBS})
+            get_filename_component(DYLIB_NAME \"\${DYLIB}\" NAME)
+            file(COPY \"\${DYLIB}\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${FRAMEWORK_DEST_DIR}\")
+            execute_process(COMMAND /usr/bin/install_name_tool -id \"@rpath/\${DYLIB_NAME}\" \"${CMAKE_INSTALL_PREFIX}/${FRAMEWORK_DEST_DIR}/\${DYLIB_NAME}\")
+        endforeach()
+    ")
+endif()
+
+# Install bundled zlib DLLs from bin/ to root on Windows
+if(WIN32)
+    install(CODE "
+        file(GLOB ZLIB_DLLS \"${CMAKE_INSTALL_PREFIX}/bin/ptlibzippy*.dll\")
+        foreach(DLL \${ZLIB_DLLS})
+            get_filename_component(DLL_NAME \"\${DLL}\" NAME)
+            message(STATUS \"Copying zlib DLL to root: \${DLL_NAME}\")
+            file(COPY \"\${DLL}\" DESTINATION \"${CMAKE_INSTALL_PREFIX}\")
+        endforeach()
+    ")
+endif()
+
+# Install cmark shared library DLL on Windows
+if(WIN32)
+    if(TARGET cmark::cmark)
+        get_target_property(CMARK_TYPE cmark::cmark TYPE)
+        if(CMARK_TYPE STREQUAL "SHARED_LIBRARY")
+            install(FILES $<TARGET_FILE:cmark::cmark> DESTINATION "." COMPONENT Runtime OPTIONAL)
+        endif()
+    elseif(TARGET cmark)
+        get_target_property(CMARK_TYPE cmark TYPE)
+        if(CMARK_TYPE STREQUAL "SHARED_LIBRARY")
+            install(FILES $<TARGET_FILE:cmark> DESTINATION "." COMPONENT Runtime OPTIONAL)
+        endif()
+    endif()
+endif()
+
+install(TARGETS ${Launcher_Name}
+    RUNTIME_DEPENDENCY_SET LAUNCHER_DEPENDENCY_SET
+    BUNDLE DESTINATION "." COMPONENT Runtime
+    LIBRARY DESTINATION ${LIBRARY_DEST_DIR} COMPONENT Runtime
+    RUNTIME DESTINATION ${BINARY_DEST_DIR} COMPONENT Runtime
+    FRAMEWORK DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime
+)
+if(WIN32 AND FORCE_BUNDLED_ZLIB)
+    if(TARGET ptlibzippy)
+        install(FILES $<TARGET_FILE:ptlibzippy> DESTINATION ${BINARY_DEST_DIR} COMPONENT Runtime)
+    endif()
+endif()
+
+# Deploy PDBs
+if(WIN32 AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+    install(FILES $<TARGET_PDB_FILE:${Launcher_Name}> DESTINATION ${BINARY_DEST_DIR})
+endif()
+
+if(Launcher_BUILD_UPDATER)
+    # Updater
+    add_library(projt_updater_logic STATIC ${PROJTUPDATER_SOURCES} ${TASKS_SOURCES} ${PROJTUPDATER_UI})
+    target_include_directories(projt_updater_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(projt_updater_logic
+        QuaZip::QuaZip
+        PTlibzippy::PTlibzippy
+        systeminfo
+        BuildConfig
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Network
+        ${Launcher_QT_DBUS}
+        ${Launcher_QT_LIBS}
+        cmark::cmark
+    )
+
+    add_executable("${Launcher_Name}_updater" WIN32 updater/projtupdater/updater_main.cpp)
+    target_sources("${Launcher_Name}_updater" PRIVATE updater/projtupdater/updater.exe.manifest)
+    target_link_libraries("${Launcher_Name}_updater" projt_updater_logic)
+
+    if(DEFINED Launcher_AppBinaryName)
+        set_target_properties("${Launcher_Name}_updater" PROPERTIES OUTPUT_NAME "${Launcher_AppBinaryName}_updater")
+    endif()
+    if(DEFINED Launcher_BINARY_RPATH)
+        SET_TARGET_PROPERTIES("${Launcher_Name}_updater" PROPERTIES INSTALL_RPATH "${Launcher_BINARY_RPATH}")
+    endif()
+
+    install(TARGETS "${Launcher_Name}_updater"
+        BUNDLE DESTINATION "." COMPONENT Runtime
+        LIBRARY DESTINATION ${LIBRARY_DEST_DIR} COMPONENT Runtime
+        RUNTIME DESTINATION ${BINARY_DEST_DIR} COMPONENT Runtime
+        FRAMEWORK DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime
+    )
+
+    # Deploy PDBs
+    if(WIN32 AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+        install(FILES $<TARGET_PDB_FILE:${Launcher_Name}_updater> DESTINATION ${BINARY_DEST_DIR})
+    endif()
+endif()
+
+if(WIN32 OR (DEFINED Launcher_BUILD_FILELINKER AND Launcher_BUILD_FILELINKER))
+    # File link
+    add_library(filelink_logic STATIC ${LINKEXE_SOURCES})
+    set_project_warnings(filelink_logic
+    "${Launcher_MSVC_WARNINGS}"
+    "${Launcher_CLANG_WARNINGS}"
+    "${Launcher_GCC_WARNINGS}")
+
+    target_include_directories(filelink_logic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(filelink_logic
+        systeminfo
+        BuildConfig
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qt${QT_VERSION_MAJOR}::Core
+        Qt${QT_VERSION_MAJOR}::Network
+        # Qt${QT_VERSION_MAJOR}::Concurrent
+        ${Launcher_QT_LIBS}
+    )
+
+    add_executable("${Launcher_Name}_filelink" WIN32 filelink/filelink_main.cpp)
+
+    target_sources("${Launcher_Name}_filelink" PRIVATE filelink/filelink.exe.manifest)
+    # Keep the elevated UAC manifest only for MSVC release artifacts.
+    if(MSVC)
+        target_link_options("${Launcher_Name}_filelink" PRIVATE "$<$<CONFIG:Release>:/MANIFESTUAC:level='requireAdministrator'>")
+    endif()
+
+    target_link_libraries("${Launcher_Name}_filelink" filelink_logic)
+
+    if(DEFINED Launcher_AppBinaryName)
+        set_target_properties("${Launcher_Name}_filelink" PROPERTIES OUTPUT_NAME "${Launcher_AppBinaryName}_filelink")
+    endif()
+    if(DEFINED Launcher_BINARY_RPATH)
+        SET_TARGET_PROPERTIES("${Launcher_Name}_filelink" PROPERTIES INSTALL_RPATH "${Launcher_BINARY_RPATH}")
+    endif()
+
+    install(TARGETS "${Launcher_Name}_filelink"
+        BUNDLE DESTINATION "." COMPONENT Runtime
+        LIBRARY DESTINATION ${LIBRARY_DEST_DIR} COMPONENT Runtime
+        RUNTIME DESTINATION ${BINARY_DEST_DIR} COMPONENT Runtime
+        FRAMEWORK DESTINATION ${FRAMEWORK_DEST_DIR} COMPONENT Runtime
+    )
+
+    # Deploy PDBs
+    if(WIN32 AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+        install(FILES $<TARGET_PDB_FILE:${Launcher_Name}_filelink> DESTINATION ${BINARY_DEST_DIR})
+    endif()
+endif()
+
+if (UNIX AND APPLE AND Launcher_ENABLE_UPDATER)
+    # Add Sparkle updater
+    # It has to be copied here instead of just allowing fixup_bundle to install it, otherwise essential parts of
+    # the framework aren't installed
+    install(DIRECTORY ${MACOSX_SPARKLE_DIR}/Sparkle.framework DESTINATION ${FRAMEWORK_DEST_DIR} USE_SOURCE_PERMISSIONS)
+endif()
+
+#### The bundle mess! ####
+# Bundle utilities are used to complete packages for different platforms - they add all the libraries that would otherwise be missing on the target system.
+# NOTE: it seems that this absolutely has to be here, and nowhere else.
+if(WIN32 OR (UNIX AND APPLE))
+    if(WIN32)
+        set(QT_DEPLOY_TOOL_OPTIONS "--no-opengl-sw --no-quick-import --no-system-d3d-compiler --no-system-dxc-compiler --skip-plugin-types generic,networkinformation")
+        set(QT_RUNTIME_DIRS "")
+        set(_qt_target "Qt${QT_VERSION_MAJOR}::Core")
+        if(TARGET ${_qt_target})
+            get_target_property(_qt_debug "${_qt_target}" IMPORTED_LOCATION_DEBUG)
+            get_target_property(_qt_release "${_qt_target}" IMPORTED_LOCATION_RELEASE)
+            if(_qt_debug)
+                get_filename_component(_qt_debug_dir "${_qt_debug}" DIRECTORY)
+                list(APPEND QT_RUNTIME_DIRS "${_qt_debug_dir}")
+            endif()
+            if(_qt_release)
+                get_filename_component(_qt_release_dir "${_qt_release}" DIRECTORY)
+                list(APPEND QT_RUNTIME_DIRS "${_qt_release_dir}")
+            endif()
+        endif()
+        if(DEFINED Qt6_DIR)
+            get_filename_component(_qt6_prefix "${Qt6_DIR}/../../.." ABSOLUTE)
+            list(APPEND QT_RUNTIME_DIRS "${_qt6_prefix}/bin")
+        endif()
+        if(DEFINED Qt5_DIR)
+            get_filename_component(_qt5_prefix "${Qt5_DIR}/../../.." ABSOLUTE)
+            list(APPEND QT_RUNTIME_DIRS "${_qt5_prefix}/bin")
+        endif()
+        if(DEFINED ENV{QT_ROOT_DIR})
+            file(TO_CMAKE_PATH "$ENV{QT_ROOT_DIR}" _qt_root_dir)
+            if(_qt_root_dir)
+                list(APPEND QT_RUNTIME_DIRS "${_qt_root_dir}/bin")
+            endif()
+        endif()
+        if(DEFINED ENV{QT_PLUGIN_PATH})
+            file(TO_CMAKE_PATH "$ENV{QT_PLUGIN_PATH}" _qt_plugin_path)
+            if(_qt_plugin_path)
+                get_filename_component(_qt_plugin_bin "${_qt_plugin_path}/.." ABSOLUTE)
+                list(APPEND QT_RUNTIME_DIRS "${_qt_plugin_bin}/bin")
+            endif()
+        endif()
+        list(REMOVE_DUPLICATES QT_RUNTIME_DIRS)
+    elseif(APPLE)
+        set(QT_RUNTIME_DIRS "")
+        if(DEFINED Qt6_DIR)
+            get_filename_component(_qt6_prefix "${Qt6_DIR}/../../.." ABSOLUTE)
+            set(QT_LIBS_DIR "${_qt6_prefix}/lib")
+            set(QT_LIBEXECS_DIR "${_qt6_prefix}/libexec")
+            list(APPEND QT_RUNTIME_DIRS "${QT_LIBS_DIR}" "${QT_LIBEXECS_DIR}")
+        elseif(DEFINED Qt5_DIR)
+            get_filename_component(_qt5_prefix "${Qt5_DIR}/../../.." ABSOLUTE)
+            set(QT_LIBS_DIR "${_qt5_prefix}/lib")
+            set(QT_LIBEXECS_DIR "${_qt5_prefix}/libexec")
+            list(APPEND QT_RUNTIME_DIRS "${QT_LIBS_DIR}" "${QT_LIBEXECS_DIR}")
+        endif()
+        list(REMOVE_DUPLICATES QT_RUNTIME_DIRS)
+    endif()
+
+        qt_generate_deploy_script(
+            TARGET ${Launcher_Name}
+            OUTPUT_SCRIPT QT_DEPLOY_SCRIPT
+            CONTENT [=[
+            qt_deploy_runtime_dependencies(
+                EXECUTABLE ${BINARY_DEST_DIR}/$<TARGET_FILE_NAME:${Launcher_Name}>
+                BIN_DIR ${BINARY_DEST_DIR}
+                LIBEXEC_DIR ${LIBRARY_DEST_DIR}
+                LIB_DIR ${LIBRARY_DEST_DIR}
+                PLUGINS_DIR ${PLUGIN_DEST_DIR}
+                NO_OVERWRITE
+                NO_TRANSLATIONS
+                NO_COMPILER_RUNTIME
+                DEPLOY_TOOL_OPTIONS ${QT_DEPLOY_TOOL_OPTIONS}
+                POST_EXCLUDE_REGEXES "^/opt/homebrew/.*" "^/usr/lib/.*"
+            )
+            ]=]
+        )
+
+    # Bundle our linked dependencies
+    install(
+        RUNTIME_DEPENDENCY_SET LAUNCHER_DEPENDENCY_SET
+        COMPONENT bundle
+        DIRECTORIES
+            ${CMAKE_SYSTEM_LIBRARY_PATH}
+            ${QT_RUNTIME_DIRS}
+            ${QT_LIBS_DIR}
+            ${QT_LIBEXECS_DIR}
+            ${CMAKE_BINARY_DIR}
+            ${CMAKE_BINARY_DIR}/$<CONFIG>
+            ${OPENSSL_ROOT_DIR}
+            ${OPENSSL_ROOT_DIR}/bin
+            ${PTLIBZIPPY_ROOT}
+            ${PTLIBZIPPY_ROOT}/bin
+            ${PTLIBZIPPY_ROOT_DIR}
+            ${PTLIBZIPPY_ROOT_DIR}/build/native
+            ${PTLIBZIPPY_ROOT_DIR}/build/native/bin
+        PRE_EXCLUDE_REGEXES
+            "^(api-ms-win|ext-ms)-.*\\.dll$"
+            "^azure.*\\.dll$"
+            "^vcruntime.*\\.dll$"
+            ".*Qt.*\\.dll$" # Exclude Qt from this set, handled by qt_deploy_runtime_dependencies
+        POST_EXCLUDE_REGEXES
+            "system32"
+            "^/opt/homebrew/.*" # Exclude Homebrew paths on macOS
+            "^/usr/lib/.*"      # Exclude system paths
+        LIBRARY DESTINATION ${LIBRARY_DEST_DIR}
+        RUNTIME DESTINATION ${BINARY_DEST_DIR}
+        FRAMEWORK DESTINATION ${FRAMEWORK_DEST_DIR}
+    )
+    # Deploy Qt plugins
+        install(
+            SCRIPT ${QT_DEPLOY_SCRIPT}
+            COMPONENT bundle
+        )
+
+    # Add qt.conf - this makes Qt stop looking for things outside the bundle
+    install(
+        CODE "file(WRITE \"\${CMAKE_INSTALL_PREFIX}/${RESOURCES_DEST_DIR}/qt.conf\" \" \")"
+        COMPONENT bundle
+    )
+    # Add qtlogging.ini as a config file
+    install(
+        FILES "qtlogging.ini"
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/${RESOURCES_DEST_DIR}
+        COMPONENT bundle
+    )
+    
+    # Copy zlib DLLs from bin/ to root on Windows
+    if(WIN32)
+        install(CODE "
+            file(GLOB ZLIB_DLLS \"${CMAKE_INSTALL_PREFIX}/bin/ptlibzippy*.dll\")
+            foreach(DLL \${ZLIB_DLLS})
+                get_filename_component(DLL_NAME \"\${DLL}\" NAME)
+                message(STATUS \"Copying zlib DLL: \${DLL_NAME} to root\")
+                file(COPY \"\${DLL}\" DESTINATION \"${CMAKE_INSTALL_PREFIX}\")
+            endforeach()
+        ")
+    endif()
+endif()

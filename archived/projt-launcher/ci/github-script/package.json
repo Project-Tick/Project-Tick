@@ -1,0 +1,19 @@
+{
+  "name": "projt-launcher-github-scripts",
+  "version": "1.0.0",
+  "description": "GitHub Actions scripts for ProjT Launcher CI",
+  "private": true,
+  "scripts": {
+    "test": "node test/commits.test.js"
+  },
+  "dependencies": {
+    "@actions/artifact": "6.1.0",
+    "@actions/core": "3.0.0",
+    "@actions/github": "9.0.0",
+    "bottleneck": "2.19.5",
+    "commander": "14.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

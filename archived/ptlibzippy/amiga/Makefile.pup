@@ -1,0 +1,69 @@
+# Amiga powerUP (TM) Makefile
+# makefile for libpng and SAS C V6.58/7.00 PPC compiler
+# Copyright (C) 1998 by Andreas R. Kleinert
+
+LIBNAME	= libptlibzippy.a
+
+CC	= scppc
+CFLAGS	= NOSTKCHK NOSINT OPTIMIZE OPTGO OPTPEEP OPTINLOCAL OPTINL \
+	  OPTLOOP OPTRDEP=8 OPTDEP=8 OPTCOMP=8 NOVER
+AR	= ppc-amigaos-ar cr
+RANLIB	= ppc-amigaos-ranlib
+LD	= ppc-amigaos-ld -r
+LDFLAGS	= -o
+LDLIBS	= LIB:scppc.a LIB:end.o
+RM	= delete quiet
+
+OBJS = adler32.o compress.o crc32.o gzclose.o gzlib.o gzread.o gzwrite.o \
+       uncompr.o deflate.o trees.o ptzippyutil.o inflate.o infback.o inftrees.o inffast.o
+
+TEST_OBJS = example.o minigzip.o
+
+all: example minigzip
+
+check: test
+test: all
+	example
+	echo hello world | minigzip | minigzip -d
+
+$(LIBNAME): $(OBJS)
+	$(AR) $@ $(OBJS)
+	-$(RANLIB) $@
+
+example: example.o $(LIBNAME)
+	$(LD) $(LDFLAGS) $@ LIB:c_ppc.o $@.o $(LIBNAME) $(LDLIBS)
+
+minigzip: minigzip.o $(LIBNAME)
+	$(LD) $(LDFLAGS) $@ LIB:c_ppc.o $@.o $(LIBNAME) $(LDLIBS)
+
+mostlyclean: clean
+clean:
+	$(RM) *.o example minigzip $(LIBNAME) foo.gz
+
+zip:
+	zip -ul9 PTlibzippy README ChangeLog Makefile Make????.??? Makefile.?? \
+	  descrip.mms *.[ch]
+
+tgz:
+	cd ..; tar cfz ptlibzippy/ptlibzippy.tgz ptlibzippy/README ptlibzippy/ChangeLog ptlibzippy/Makefile \
+	  ptlibzippy/Make????.??? ptlibzippy/Makefile.?? ptlibzippy/descrip.mms ptlibzippy/*.[ch]
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+adler32.o: ptlibzippy.h ptzippyconf.h
+compress.o: ptlibzippy.h ptzippyconf.h
+crc32.o: crc32.h ptlibzippy.h ptzippyconf.h
+deflate.o: deflate.h ptzippyutil.h ptlibzippy.h ptzippyconf.h
+example.o: ptlibzippy.h ptzippyconf.h
+gzclose.o: ptlibzippy.h ptzippyconf.h ptzippyguts.h
+gzlib.o: ptlibzippy.h ptzippyconf.h ptzippyguts.h
+gzread.o: ptlibzippy.h ptzippyconf.h ptzippyguts.h
+gzwrite.o: ptlibzippy.h ptzippyconf.h ptzippyguts.h
+inffast.o: ptzippyutil.h ptlibzippy.h ptzippyconf.h inftrees.h inflate.h inffast.h
+inflate.o: ptzippyutil.h ptlibzippy.h ptzippyconf.h inftrees.h inflate.h inffast.h
+infback.o: ptzippyutil.h ptlibzippy.h ptzippyconf.h inftrees.h inflate.h inffast.h
+inftrees.o: ptzippyutil.h ptlibzippy.h ptzippyconf.h inftrees.h
+minigzip.o: ptlibzippy.h ptzippyconf.h
+trees.o: deflate.h ptzippyutil.h ptlibzippy.h ptzippyconf.h trees.h
+uncompr.o: ptlibzippy.h ptzippyconf.h
+ptzippyutil.o: ptzippyutil.h ptlibzippy.h ptzippyconf.h
