@@ -1,5 +1,6 @@
 import hashlib
 import os
+import sys
 from operator import attrgetter
 
 from meta.common import launcher_path, file_hash
@@ -27,9 +28,19 @@ for package in sorted(os.listdir(LAUNCHER_DIR)):
     if package in ignore:
         continue
 
-    sharedData = MetaPackage.parse_file(
-        os.path.join(LAUNCHER_DIR, package, "package.json")
-    )
+    package_path = os.path.join(LAUNCHER_DIR, package)
+    if not os.path.isdir(package_path):
+        continue
+
+    package_json_path = os.path.join(package_path, "package.json")
+    if not os.path.isfile(package_json_path):
+        print(
+            f"Skipping '{package}': no package.json found in {package_path}",
+            file=sys.stderr,
+        )
+        continue
+
+    sharedData = MetaPackage.parse_file(package_json_path)
     recommendedVersions = set()
     if sharedData.recommended:
         recommendedVersions = set(sharedData.recommended)
@@ -38,11 +49,13 @@ for package in sorted(os.listdir(LAUNCHER_DIR)):
     versionList = MetaVersionIndex(uid=package, name=sharedData.name)
 
     # walk through all the versions of the package
-    for filename in os.listdir(LAUNCHER_DIR + "/%s" % package):
+    for filename in os.listdir(package_path):
         if filename in ignore:
             continue
         # parse and hash the version file
-        filepath = LAUNCHER_DIR + "/%s/%s" % (package, filename)
+        filepath = os.path.join(package_path, filename)
+        if not os.path.isfile(filepath):
+            continue
         filehash = file_hash(filepath, hashlib.sha256)
         versionFile = MetaVersion.parse_file(filepath)
         is_recommended = versionFile.version in recommendedVersions
@@ -59,7 +72,7 @@ for package in sorted(os.listdir(LAUNCHER_DIR)):
     )
 
     # write the version index for the package
-    outFilePath = LAUNCHER_DIR + "/%s/index.json" % package
+    outFilePath = os.path.join(package_path, "index.json")
     versionList.write(outFilePath)
 
     # insert entry into the package index

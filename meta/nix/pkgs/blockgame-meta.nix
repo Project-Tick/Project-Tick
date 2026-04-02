@@ -64,7 +64,7 @@ buildPythonApplication {
     description = "Metadata generator for blockgame launcher.";
     platforms = platforms.linux;
     license = licenses.mspl;
-    maintainers = with maintainers; [Scrumplex];
+    maintainers = with maintainers; [yongdohyun];
     mainProgram = "update";
   };
 }

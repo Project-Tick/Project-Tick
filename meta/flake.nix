@@ -1,5 +1,5 @@
 {
-  description = "Prism Launcher Metadata generation scripts";
+  description = "ProjT Launcher Metadata generation scripts";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";

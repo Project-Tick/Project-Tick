@@ -191,8 +191,16 @@ class MojangJavaComponent(StrEnum):
     GammaSnapshot = "java-runtime-gamma-snapshot"
     Exe = "minecraft-java-exe"
     Delta = "java-runtime-delta"
-    Epsilon = "java-runtime-epsilon"
 
+
+    @classmethod # newmethod
+    def _missing_(cls, value: str):
+        member = str.__new__(cls, value)
+        member._name_ = value.upper().replace("-", "_")
+        member._value_ = value
+        cls._value2member_map_[value] = member
+        cls._member_map_[member._name_] = member
+        return member
 
 class JavaVersion(MetaBase):
     component: MojangJavaComponent = MojangJavaComponent.JreLegacy
@@ -340,5 +348,5 @@ class MojangVersion(MetaBase):
             compatible_java_name=javaName,
             additional_traits=addn_traits,
             main_jar=main_jar,
-            logging=(self.logging or {}).get("client"),
+            logging=(self.logging or {}).get("client")
         )

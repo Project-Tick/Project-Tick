@@ -8,7 +8,7 @@ fi
 
 export META_CACHE_DIR=${CACHE_DIRECTORY:-./caches}
 export META_UPSTREAM_DIR=${META_UPSTREAM_DIR:-${STATE_DIRECTORY:-.}/upstream}
-export META_LAUNCHER_DIR=${META_LAUNCHER_DIR:-${STATE_DIRECTORY:-.}/launcher}
+export META_LAUNCHER_DIR=${META_LAUNCHER_DIR:-${STATE_DIRECTORY:-.}/metalauncher}
 
 function fail_in() {
     upstream_git reset --hard HEAD
@@ -31,9 +31,11 @@ function launcher_git() {
 # make sure we *could* push to our repo
 
 currentDate=$(date -I)
+currentHour=$(date +"%H")
+currentMinute=$(date +"%M")
+currentSecond=$(date +"%S")
 
 upstream_git reset --hard HEAD || exit 1
-upstream_git pull
 
 python -m meta.run.update_mojang || fail_in
 python -m meta.run.update_forge || fail_in
@@ -52,13 +54,12 @@ if [ "${DEPLOY_TO_GIT}" = true ]; then
     upstream_git add liteloader/*.json || fail_in
     upstream_git add java_runtime/adoptium/available_releases.json java_runtime/adoptium/versions/*.json java_runtime/azul/packages.json java_runtime/azul/versions/*.json java_runtime/ibm/available_releases.json java_runtime/ibm/versions/*.json || fail_in
     if ! upstream_git diff --cached --exit-code; then
-        upstream_git commit -a -m "Update ${currentDate}" || fail_in
+        upstream_git commit -a -m "Update Date ${currentDate} Time ${currentHour}:${currentMinute}:${currentSecond}" || fail_in
         upstream_git push || exit 1
     fi
 fi
 
 launcher_git reset --hard HEAD || exit 1
-launcher_git pull
 
 python -m meta.run.generate_mojang || fail_out
 python -m meta.run.generate_forge || fail_out
@@ -74,19 +75,21 @@ if [ "${DEPLOY_TO_GIT}" = true ]; then
     launcher_git add net.minecraftforge/* || fail_out
     launcher_git add net.neoforged/* || fail_out
     launcher_git add net.fabricmc.fabric-loader/* net.fabricmc.intermediary/* || fail_out
-    launcher_git add org.quiltmc.quilt-loader/* || fail_out # TODO: add Quilt hashed, once it is actually used
+    launcher_git add org.quiltmc.quilt-loader/* || fail_out
+    launcher_git add org.quiltmc.hashed/* 2>/dev/null || true
     launcher_git add com.mumfrey.liteloader/* || fail_out
     launcher_git add net.minecraft.java/* net.adoptium.java/* com.azul.java/* com.ibm.java/* || fail_out
 
     if ! launcher_git diff --cached --exit-code; then
-        launcher_git commit -a -m "Update ${currentDate}" || fail_out
+        launcher_git commit -a -m "Update Date ${currentDate} Time ${currentHour}:${currentMinute}:${currentSecond}" || fail_out
         launcher_git push || exit 1
     fi
 fi
 
 if [ "${DEPLOY_TO_FOLDER}" = true ]; then
     echo "Deploying to ${DEPLOY_FOLDER}"
-    rsync -rvog --chown="${DEPLOY_FOLDER_USER}:${DEPLOY_FOLDER_GROUP}" --exclude=.git "${META_LAUNCHER_DIR}/" "${DEPLOY_FOLDER}"
+    mkdir -p "${DEPLOY_FOLDER}"
+    rsync -av --exclude=.git "${META_LAUNCHER_DIR}/" "${DEPLOY_FOLDER}"
 fi
 
 exit 0

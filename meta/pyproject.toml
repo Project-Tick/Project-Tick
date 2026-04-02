@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "meta"
-version = "0.0.1"
-description = "Prism Launcher meta generator"
-authors = ["Sefa Eyeoglu <contact@scrumplex.net>"]
+version = "0.0.5-1"
+description = "ProjT Launcher meta generator"
+authors = ["Yong Do Hyun <froster12@naver.com>"]
 license = "MS-PL"
-readme = "README.md"
-repository = "https://github.com/PrismLauncher/meta"
-documentation = "https://github.com/PrismLauncher/meta"
-keywords = ["metadata", "prism", "launcher"]
+readme = "README"
+repository = "https://github.com/Project-Tick/meta"
+documentation = "https://github.com/Project-Tick/meta"
+keywords = ["metadata", "projt", "launcher"]
 
 [tool.poetry.scripts]
 generateFabric = "meta.run.generate_fabric:main"
@@ -27,10 +27,10 @@ updateJava = "meta.run.update_java:main"
 index = "meta.run.index:main"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.10,<4.0"
 cachecontrol = "^0.14.0"
 requests = "^2.31.0"
-filelock = "^3.13.1"
+filelock = "^3.20.3"
 packaging = "^25.0"
 pydantic = "^1.10.13"
 

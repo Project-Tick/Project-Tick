@@ -10,7 +10,7 @@ import requests
 from cachecontrol import CacheControl  # type: ignore
 from cachecontrol.caches import FileCache  # type: ignore
 
-LAUNCHER_MAVEN = "https://files.prismlauncher.org/maven/%s"
+LAUNCHER_MAVEN = "https://files.projecttick.org/maven/%s"
 
 
 def serialize_datetime(dt: datetime.datetime):
@@ -85,7 +85,7 @@ def default_session():
     cache = FileCache(os.path.join(cache_path(), "http_cache"))
     sess = CacheControl(requests.Session(), cache)
 
-    sess.headers.update({"User-Agent": "PrismLauncherMeta/1.0"})
+    sess.headers.update({"User-Agent": "ProjectTickMeta/1.0"})
 
     return sess
 
@@ -117,8 +117,7 @@ def get_file_sha1_from_file(file_name: str, sha1_file: str) -> Optional[str]:
     if os.path.isfile(sha1_file):
         with open(sha1_file, "r") as file:
             return file.read()
-    if not os.path.isfile(file_name):
-        return None
+
     new_sha1 = file_hash(file_name, hashlib.sha1)
     with open(sha1_file, "w") as file:
         file.write(new_sha1)

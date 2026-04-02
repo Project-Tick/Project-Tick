@@ -141,16 +141,19 @@ def process_neoforge_version(key, entry):
 
     new_sha1 = None
     sha1_file = jar_path + ".sha1"
-    fileSha1 = get_file_sha1_from_file(jar_path, sha1_file)
-    try:
-        rfile = sess.get(version.url() + ".sha1")
-        rfile.raise_for_status()
-        new_sha1 = rfile.text.strip()
-        if fileSha1 != new_sha1:
-            remove_files([jar_path, profile_path, installer_info_path, sha1_file])
-    except Exception as e:
-        eprint("Failed to check sha1 %s" % version.url())
-        eprint("Error is %s" % e)
+    if not os.path.isfile(jar_path):
+        remove_files([profile_path, installer_info_path])
+    else:
+        fileSha1 = get_file_sha1_from_file(jar_path, sha1_file)
+        try:
+            rfile = sess.get(version.url() + ".sha1")
+            rfile.raise_for_status()
+            new_sha1 = rfile.text.strip()
+            if fileSha1 != new_sha1:
+                remove_files([jar_path, profile_path, installer_info_path, sha1_file])
+        except Exception as e:
+            eprint("Failed to check sha1 %s" % version.url())
+            eprint("Error is %s" % e)
 
     installer_refresh_required = not os.path.isfile(profile_path) or not os.path.isfile(
         installer_info_path
@@ -256,19 +259,40 @@ def main():
     version_expression = re.compile(
         r"^(?P<mc>[0-9a-zA-Z_\.]+)-(?P<ver>[0-9\.]+\.(?P<build>[0-9]+))(-(?P<branch>[a-zA-Z0-9\.]+))?$"
     )
+    neoforge_version_re = re.compile(
+        r"^(?P<mcminor>\d+)\.(?:(?P<mcpatch>\d+)|(?P<snapshot>[0-9a-z]+))\.(?P<number>\d+)(?:\.(?P<build>\d+))?(?:-(?P<tag>[0-9A-Za-z][0-9A-Za-z.+-]*))?$"
+    )
 
     print("")
     print("Processing versions:")
     for long_version in main_json:
         assert type(long_version) == str
 
-        legacyMatch = version_expression.match(long_version)
-        if legacyMatch:
-            version = legacyMatch.group("ver")
+        match = version_expression.match(long_version)
+        if match:
+            mc_version = match.group("mc")
+            build = int(match.group("build"))
+            version = match.group("ver")
+            branch = match.group("branch")
             artifact = "forge"
-        else:
-            version = long_version
+
+        match_nf = neoforge_version_re.match(long_version)
+        if match_nf:
+            mc_version = match_nf.group("snapshot")
+            if not mc_version:
+                mc_version = f"1.{match_nf.group('mcminor')}"
+                if match_nf.group("mcpatch") != "0":
+                    mc_version += f".{match_nf.group('mcpatch')}"
+            build_str = match_nf.group("build") or match_nf.group("number")
+            build = int(build_str)
+            version = build_str
+            branch = match_nf.group("tag")
+            match = match_nf
             artifact = "neoforge"
+
+        if not match and not match_nf:
+            print(f"Skipping {long_version} as it does not match regex")
+            continue
 
         try:
             files = get_single_forge_files_manifest(long_version, artifact)

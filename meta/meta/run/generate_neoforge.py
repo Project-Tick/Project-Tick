@@ -2,9 +2,11 @@ from copy import deepcopy
 import os
 import re
 from operator import attrgetter
-from typing import Collection
+from typing import Collection, Optional
+import hashlib
 
-from meta.common import ensure_component_dir, launcher_path, upstream_path, eprint
+
+from meta.common import ensure_component_dir, launcher_path, upstream_path, eprint, default_session
 from meta.common.neoforge import (
     NEOFORGE_COMPONENT,
     INSTALLER_MANIFEST_DIR,
@@ -36,6 +38,36 @@ UPSTREAM_DIR = upstream_path()
 
 ensure_component_dir(NEOFORGE_COMPONENT)
 
+sess = default_session()
+
+def update_library_info(lib: Library):
+    if not lib.downloads:
+        lib.downloads = MojangLibraryDownloads()
+    if not lib.downloads.artifact:
+        url = lib.url
+        if not url and lib.name:
+            url = f"https://maven.neoforged.net/releases/{lib.name.path()}"
+        if url:
+            lib.downloads.artifact = MojangArtifact(url=url, sha1=None, size=None)
+
+    art = lib.downloads.artifact
+    if art and art.url:
+        try:
+            # Check/Fetch SHA1
+            if not art.sha1:
+                r = sess.get(art.url + ".sha1")
+                if r.status_code == 200:
+                    art.sha1 = r.text.strip()
+            
+            # Check/Fetch Size
+            if not art.size:
+                r = sess.head(art.url)
+                if r.status_code == 200 and 'Content-Length' in r.headers:
+                    art.size = int(r.headers['Content-Length'])
+        except Exception as e:
+            eprint(f"Failed to update info for {lib.name}: {e}")
+
+
 
 def version_from_build_system_installer(
     installer: MojangVersion,
@@ -45,7 +77,8 @@ def version_from_build_system_installer(
     v = MetaVersion(name="NeoForge", version=version.rawVersion, uid=NEOFORGE_COMPONENT)
     v.main_class = "io.github.zekerzhayard.forgewrapper.installer.Main"
 
-    # FIXME: Add the size and hash here
+    v.main_class = "io.github.zekerzhayard.forgewrapper.installer.Main"
+
     v.maven_files = []
 
     # load the locally cached installer file info and use it to add the installer entry in the json
@@ -69,6 +102,7 @@ def version_from_build_system_installer(
         if forge_lib.name.is_log4j():
             continue
 
+        update_library_info(forge_lib)
         v.maven_files.append(forge_lib)
 
     v.libraries = []
