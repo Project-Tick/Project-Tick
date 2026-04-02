@@ -25,3 +25,5 @@ out/
 .linux-obj/
 /GNUmakefile
 /config.mk
+build
+out
