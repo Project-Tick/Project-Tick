@@ -1,0 +1,4 @@
+# images4docker
+*.log
+*.tmp
+.env

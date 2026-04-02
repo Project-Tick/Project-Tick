@@ -1,0 +1,56 @@
+# Build artifacts
+build/
+out/
+install/
+cmake-build-*/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.directory
+*.kdev4
+*.pro.user
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+.project
+.settings
+.ycm_extra_conf.*
+compile_commands.json
+tags
+.clang-format-files
+.cache/
+.ccls-cache/
+.clangd/
+
+# OS files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# Object files
+*.o
+*.obj
+*.a
+*.lib
+*.lo
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Debug
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Dependency directories
+node_modules/

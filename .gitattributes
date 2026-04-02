@@ -1,0 +1,47 @@
+# Project-Tick Monorepo
+# ======================
+
+# Global defaults
+* text=auto eol=lf
+
+# Archives
+*.7z  binary
+*.gz  binary
+*.tar binary
+*.xz  binary
+*.zip binary
+
+# Images
+*.bmp  binary
+*.gif  binary
+*.ico  binary
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.svg  text
+*.webp binary
+
+# Fonts
+*.otf   binary
+*.ttf   binary
+*.woff  binary
+*.woff2 binary
+
+# Documents
+*.pdf binary
+
+# Executables
+*.exe binary
+*.dll binary
+*.so  binary
+*.dylib binary
+
+# Java
+*.class binary
+*.jar   binary
+
+# Crypto
+*.pem -crlf
+
+# Linguist overrides
+archived/* linguist-vendored

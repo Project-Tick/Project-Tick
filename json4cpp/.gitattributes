@@ -1,0 +1,8 @@
+# json4cpp
+* text=auto eol=lf
+*.cpp text diff=cpp
+*.h text diff=cpp
+*.hpp text diff=cpp
+*.json text
+*.png binary
+*.gif binary

@@ -1,0 +1,9 @@
+# cgit
+* text=auto eol=lf
+*.c text diff=c
+*.h text diff=c
+*.css text
+*.js text
+*.txt text
+*.html text
+*.png binary

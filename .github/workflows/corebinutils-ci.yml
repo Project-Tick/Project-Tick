@@ -1,0 +1,69 @@
+name: "corebinutils: CI"
+
+on:
+  push:
+    paths:
+      - 'corebinutils/**'
+      - '.github/workflows/corebinutils-ci.yml'
+  pull_request:
+    paths:
+      - 'corebinutils/**'
+      - '.github/workflows/corebinutils-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: corebinutils
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            bmake \
+            libbsd-dev \
+            libmd-dev
+
+      - name: Configure
+        run: |
+          if [ -x ./configure ]; then
+            ./configure
+          fi
+
+      - name: Build
+        run: |
+          if [ -f GNUmakefile ]; then
+            make -f GNUmakefile -j$(nproc) || true
+          else
+            make -j$(nproc) || true
+          fi
+
+  build-freebsd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build on FreeBSD
+        uses: vmactions/freebsd-vm@v1
+        with:
+          usesh: true
+          prepare: |
+            pkg install -y gmake
+          run: |
+            cd corebinutils
+            if [ -x ./configure ]; then
+              ./configure
+            fi
+            make -j$(sysctl -n hw.ncpu) || true

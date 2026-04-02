@@ -1,0 +1,7 @@
+# corebinutils
+* text=auto eol=lf
+*.c text diff=c
+*.h text diff=c
+*.1 text
+*.8 text
+Makefile text

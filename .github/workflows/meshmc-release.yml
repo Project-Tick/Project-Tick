@@ -1,0 +1,124 @@
+name: "MeshMC: Release"
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions: {}
+
+jobs:
+  build_release:
+    name: Build Release
+    uses: ./.github/workflows/meshmc-build.yml
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    with:
+      build-type: Release
+      environment: Release
+    secrets: inherit
+
+  create_release:
+    needs: build_release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: "true"
+          path: "MeshMC-source"
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+      - name: Grab and store version
+        run: |
+          tag_name=$(echo ${{ github.ref }} | grep -oE "[^/]+$")
+          echo "VERSION=$tag_name" >> $GITHUB_ENV
+      - name: Package artifacts properly
+        run: |
+          mv ${{ github.workspace }}/MeshMC-source MeshMC-${{ env.VERSION }}
+          mv MeshMC-Linux-Qt6-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-Qt6-Portable-${{ env.VERSION }}.tar.gz
+          mv MeshMC-Linux-aarch64-Qt6-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-aarch64-Qt6-Portable-${{ env.VERSION }}.tar.gz
+          mv MeshMC-*.AppImage/MeshMC-*-x86_64.AppImage MeshMC-Linux-x86_64.AppImage
+          mv MeshMC-*.AppImage.zsync/MeshMC-*-x86_64.AppImage.zsync MeshMC-Linux-x86_64.AppImage.zsync
+          mv MeshMC-*.AppImage/MeshMC-*-aarch64.AppImage MeshMC-Linux-aarch64.AppImage
+          mv MeshMC-*.AppImage.zsync/MeshMC-*-aarch64.AppImage.zsync MeshMC-Linux-aarch64.AppImage.zsync
+          mv MeshMC-macOS*/MeshMC.zip MeshMC-macOS-${{ env.VERSION }}.zip
+          mv MeshMC-macOS*/MeshMC.dmg MeshMC-macOS-${{ env.VERSION }}.dmg
+
+          tar --exclude='.git' -czf MeshMC-${{ env.VERSION }}.tar.gz MeshMC-${{ env.VERSION }}
+
+          for d in MeshMC-Windows-MSVC*; do
+            cd "${d}" || continue
+            LEGACY="$(echo -n ${d} | grep -o Legacy || true)"
+            ARM64="$(echo -n ${d} | grep -o arm64 || true)"
+            INST="$(echo -n ${d} | grep -o Setup || true)"
+            PORT="$(echo -n ${d} | grep -o Portable || true)"
+            NAME="MeshMC-Windows-MSVC"
+            test -z "${LEGACY}" || NAME="${NAME}-Legacy"
+            test -z "${ARM64}" || NAME="${NAME}-arm64"
+            test -z "${PORT}" || NAME="${NAME}-Portable"
+            test -z "${INST}" || mv MeshMC-*.exe ../${NAME}-Setup-${{ env.VERSION }}.exe
+            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" *
+            cd ..
+          done
+
+          for d in MeshMC-Windows-MinGW-w64*; do
+            cd "${d}" || continue
+            INST="$(echo -n ${d} | grep -o Setup || true)"
+            PORT="$(echo -n ${d} | grep -o Portable || true)"
+            NAME="MeshMC-Windows-MinGW-w64"
+            test -z "${PORT}" || NAME="${NAME}-Portable"
+            test -z "${INST}" || mv MeshMC-*.exe ../${NAME}-Setup-${{ env.VERSION }}.exe
+            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" *
+            cd ..
+          done
+
+          for d in MeshMC-Windows-MinGW-arm64*; do
+            cd "${d}" || continue
+            INST="$(echo -n ${d} | grep -o Setup || true)"
+            PORT="$(echo -n ${d} | grep -o Portable || true)"
+            NAME="MeshMC-Windows-MinGW-arm64"
+            test -z "${PORT}" || NAME="${NAME}-Portable"
+            test -z "${INST}" || mv MeshMC-*.exe ../${NAME}-Setup-${{ env.VERSION }}.exe
+            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" *
+            cd ..
+          done
+
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref }}
+          name: MeshMC ${{ env.VERSION }}
+          draft: true
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: |
+            MeshMC-Linux-x86_64.AppImage
+            MeshMC-Linux-x86_64.AppImage.zsync
+            MeshMC-Linux-aarch64.AppImage
+            MeshMC-Linux-aarch64.AppImage.zsync
+            MeshMC-Linux-Qt6-Portable-${{ env.VERSION }}.tar.gz
+            MeshMC-Linux-aarch64-Qt6-Portable-${{ env.VERSION }}.tar.gz
+            MeshMC-Windows-MinGW-w64-${{ env.VERSION }}.zip
+            MeshMC-Windows-MinGW-w64-Portable-${{ env.VERSION }}.zip
+            MeshMC-Windows-MinGW-w64-Setup-${{ env.VERSION }}.exe
+            MeshMC-Windows-MinGW-arm64-${{ env.VERSION }}.zip
+            MeshMC-Windows-MinGW-arm64-Portable-${{ env.VERSION }}.zip
+            MeshMC-Windows-MinGW-arm64-Setup-${{ env.VERSION }}.exe
+            MeshMC-Windows-MSVC-arm64-${{ env.VERSION }}.zip
+            MeshMC-Windows-MSVC-arm64-Portable-${{ env.VERSION }}.zip
+            MeshMC-Windows-MSVC-arm64-Setup-${{ env.VERSION }}.exe
+            MeshMC-Windows-MSVC-${{ env.VERSION }}.zip
+            MeshMC-Windows-MSVC-Portable-${{ env.VERSION }}.zip
+            MeshMC-Windows-MSVC-Setup-${{ env.VERSION }}.exe
+            MeshMC-macOS-${{ env.VERSION }}.zip
+            MeshMC-macOS-${{ env.VERSION }}.dmg
+            MeshMC-${{ env.VERSION }}.tar.gz

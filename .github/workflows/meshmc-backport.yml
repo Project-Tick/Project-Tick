@@ -1,0 +1,28 @@
+name: "MeshMC: Backport"
+
+on:
+  pull_request_target:
+    types: [closed, labeled]
+
+permissions: {}
+
+jobs:
+  backport:
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+
+    name: Backport Pull Request
+    if: github.repository_owner == 'Project-Tick' && github.event.pull_request.merged == true && (github.event_name != 'labeled' || startsWith('backport', github.event.label.name))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Create backport PRs
+        uses: korthout/backport-action@v4.3.0
+        with:
+          pull_description: |-
+            Bot-based backport to `${target_branch}`, triggered by a label in #${pull_number}.

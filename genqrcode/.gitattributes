@@ -1,0 +1,9 @@
+# genqrcode
+* text=auto eol=lf
+*.c text diff=c
+*.h text diff=c
+*.png binary
+*.am text
+*.ac text
+*.in text
+*.m4 text

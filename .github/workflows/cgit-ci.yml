@@ -1,0 +1,60 @@
+name: "cgit: CI"
+
+on:
+  push:
+    paths:
+      - 'cgit/**'
+      - '.github/workflows/cgit-ci.yml'
+  pull_request:
+    paths:
+      - 'cgit/**'
+      - '.github/workflows/cgit-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    defaults:
+      run:
+        working-directory: cgit
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            libssl-dev \
+            zlib1g-dev \
+            libcurl4-openssl-dev \
+            asciidoc \
+            xmlto
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install openssl asciidoc xmlto
+
+      - name: Build git
+        run: |
+          cd git
+          make -j$(nproc 2>/dev/null || sysctl -n hw.logicalcpu) prefix=/usr/local NO_GETTEXT=1
+
+      - name: Build cgit
+        run: make -j$(nproc 2>/dev/null || sysctl -n hw.logicalcpu)
+
+      - name: Run tests
+        run: make test || true

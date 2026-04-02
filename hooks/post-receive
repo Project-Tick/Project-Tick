@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# post-receive hook — Mirror push to multiple forges
+# ==============================================================================
+#
+# Place this file in your bare repository:
+#   /path/to/project-tick.git/hooks/post-receive
+#
+# Make it executable:
+#   chmod +x hooks/post-receive
+#
+# Configuration:
+#   Set mirror remotes in the bare repo:
+#
+#   git remote add github  git@github.com:Project-Tick/Project-Tick.git
+#   git remote add gitlab  git@gitlab.com:Project-Tick/Project-Tick.git
+#   git remote add codeberg git@codeberg.org:Project-Tick/Project-Tick.git
+#   git remote add sourceforge ssh://USERNAME@git.code.sf.net/p/project-tick/code
+#
+#   Or use HTTPS with token auth:
+#
+#   git remote add github  https://x-access-token:TOKEN@github.com/Project-Tick/Project-Tick.git
+#   git remote add gitlab  https://oauth2:TOKEN@gitlab.com/Project-Tick/Project-Tick.git
+#   git remote add codeberg https://TOKEN@codeberg.org/Project-Tick/Project-Tick.git
+#
+#   Environment variables (optional):
+#     MIRROR_REMOTES — space-separated list of remote names to push to.
+#                      Defaults to all configured mirror remotes.
+#     MIRROR_LOG     — path to log file. Defaults to /var/log/git-mirror.log
+#     MIRROR_NOTIFY  — email address for failure notifications (requires mail cmd)
+#
+# ==============================================================================
+
+set -euo pipefail
+
+# ---------------------
+# Configuration
+# ---------------------
+
+# Where to find mirror remotes. Override with MIRROR_REMOTES env var.
+# Falls back to auto-detecting all remotes that aren't "origin".
+MIRROR_REMOTES="${MIRROR_REMOTES:-}"
+MIRROR_LOG="${MIRROR_LOG:-/var/log/git-mirror.log}"
+
+# Auto-detect remotes if not explicitly set
+if [[ -z "$MIRROR_REMOTES" ]]; then
+    MIRROR_REMOTES=$(git remote | grep -v '^origin$' || true)
+fi
+
+if [[ -z "$MIRROR_REMOTES" ]]; then
+    echo "[mirror] No mirror remotes configured. Skipping." >&2
+    exit 0
+fi
+
+# ---------------------
+# Logging
+# ---------------------
+log() {
+    local timestamp
+    timestamp="$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+    echo "[$timestamp] $*" | tee -a "$MIRROR_LOG" 2>/dev/null || echo "[$timestamp] $*"
+}
+
+# ---------------------
+# Main
+# ---------------------
+
+log "=== Mirror push triggered ==="
+
+# Read the stdin from post-receive (old-sha new-sha refname)
+REFS=()
+while read -r oldrev newrev refname; do
+    REFS+=("$refname")
+    log "  ref: $refname ($oldrev -> $newrev)"
+done
+
+FAILED_REMOTES=()
+SUCCEEDED_REMOTES=()
+
+for remote in $MIRROR_REMOTES; do
+    log "Pushing to remote: $remote"
+
+    # Use --mirror for full mirror, or --all --tags for selective
+    # --mirror pushes ALL refs (branches, tags, notes, etc.)
+    # --force ensures deleted branches/tags are also synced
+    if git push --mirror --force "$remote" 2>&1 | tee -a "$MIRROR_LOG" 2>/dev/null; then
+        SUCCEEDED_REMOTES+=("$remote")
+        log "  ✓ Successfully pushed to $remote"
+    else
+        FAILED_REMOTES+=("$remote")
+        log "  ✗ FAILED to push to $remote"
+    fi
+done
+
+log "--- Summary ---"
+log "  Succeeded: ${SUCCEEDED_REMOTES[*]:-none}"
+log "  Failed:    ${FAILED_REMOTES[*]:-none}"
+
+# Send notification on failure if configured
+if [[ ${#FAILED_REMOTES[@]} -gt 0 && -n "${MIRROR_NOTIFY:-}" ]]; then
+    if command -v mail &>/dev/null; then
+        {
+            echo "Mirror push failed for the following remotes:"
+            printf '  - %s\n' "${FAILED_REMOTES[@]}"
+            echo ""
+            echo "Repository: $(pwd)"
+            echo "Refs updated:"
+            printf '  %s\n' "${REFS[@]}"
+            echo ""
+            echo "Check log: $MIRROR_LOG"
+        } | mail -s "[git-mirror] Push failure in $(basename "$(pwd)")" "$MIRROR_NOTIFY"
+    fi
+fi
+
+# Exit with error if any remote failed
+if [[ ${#FAILED_REMOTES[@]} -gt 0 ]]; then
+    log "=== Finished with errors ==="
+    exit 1
+fi
+
+log "=== Finished successfully ==="
+exit 0

@@ -1,0 +1,8 @@
+# ForgeWrapper
+* text=auto eol=lf
+*.java text diff=java
+*.gradle text
+*.properties text
+*.bat text eol=crlf
+*.jar binary
+gradlew text eol=lf

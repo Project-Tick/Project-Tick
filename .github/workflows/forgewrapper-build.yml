@@ -1,0 +1,62 @@
+name: "ForgeWrapper: Build"
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'forgewrapper/**'
+      - '.github/workflows/forgewrapper-build.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'forgewrapper/**'
+      - '.github/workflows/forgewrapper-build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: forgewrapper
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "8"
+          architecture: x64
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build -iS
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ForgeWrapper
+          path: forgewrapper/build/libs
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: forgewrapper
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "8"
+          architecture: x64
+      - name: Build with Gradle
+        env:
+          IS_PUBLICATION: true
+        run: |
+          chmod +x ./gradlew
+          ./gradlew publish -iS
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ForgeWrapper-Release
+          path: forgewrapper/build/libs
