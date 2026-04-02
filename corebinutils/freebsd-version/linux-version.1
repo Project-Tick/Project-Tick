@@ -1,0 +1,124 @@
+.\"-
+.\" Copyright (c) 2026
+.\"  Project Tick. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.Dd February 28, 2026
+.Dt LINUX-VERSION 1
+.Os
+.Sh NAME
+.Nm linux-version
+.Nd print the installed system and kernel version on Linux
+.Sh SYNOPSIS
+.Nm
+.Op Fl kru
+.Op Fl j Ar jail
+.Sh DESCRIPTION
+The
+.Nm
+utility is a Linux-native port of
+.Xr freebsd-version 1
+for this repository.
+It reports the installed kernel version,
+the running kernel version,
+and the installed userland version.
+.Pp
+The following options are available:
+.Bl -tag -width Fl
+.It Fl k
+Print the installed kernel version for the target root.
+On Linux, this is resolved from the default kernel symlink
+.Pa /vmlinuz
+or
+.Pa /boot/vmlinuz
+when available,
+otherwise from a unique kernel release under
+.Pa /lib/modules
+or
+.Pa /usr/lib/modules .
+If several installed kernels exist and no default boot target can be
+determined, the command fails with an explicit error.
+.It Fl r
+Print the running kernel version from
+.Pa /proc/sys/kernel/osrelease .
+.It Fl u
+Print the installed userland version from
+.Pa /etc/os-release
+or
+.Pa /usr/lib/os-release
+under the target root.
+The utility prefers
+.Ev VERSION_ID ,
+then falls back to
+.Ev BUILD_ID ,
+.Ev VERSION ,
+and
+.Ev PRETTY_NAME .
+.It Fl j Ar jail
+Accepted for interface compatibility but not supported on Linux.
+The command exits with an explicit error because Linux containers and
+namespaces do not provide a jail-equivalent query with compatible semantics.
+.El
+.Pp
+If several supported options are specified,
+.Nm
+prints the installed kernel version first,
+then the running kernel version,
+and finally the installed userland version,
+each on a separate line.
+If no option is specified,
+it prints the installed userland version only.
+.Sh ENVIRONMENT
+.Bl -tag -width ROOT
+.It Ev ROOT
+Path to the root of the filesystem tree in which to inspect
+.Pa os-release ,
+.Pa /boot/vmlinuz ,
+and kernel module directories for
+.Fl k
+and
+.Fl u .
+This does not affect
+.Fl r ,
+which always reports the current running kernel.
+.El
+.Sh IMPLEMENTATION NOTES
+This port intentionally does not preserve FreeBSD-specific implementation
+details such as parsing
+.Pa loader.conf ,
+querying
+.Va kern.osrelease
+via
+.Xr sysctl 8 ,
+or executing inside jails with
+.Xr jexec 8 .
+.Pp
+The Linux kernel does not provide a syscall or procfs interface that reports
+the installed-on-disk kernel version separately from the running kernel.
+Therefore
+.Nm
+uses the default kernel symlink when present and otherwise requires a unique
+kernel release under the module tree.
+.Sh SEE ALSO
+.Xr uname 1 ,
+.Xr os-release 5
