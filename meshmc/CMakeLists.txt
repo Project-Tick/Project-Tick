@@ -403,7 +403,7 @@ option(NBT_USE_ZLIB "Build NBT library with zlib support" OFF)
 option(NBT_BUILD_TESTS "Build NBT library tests" OFF) #FIXME: fix unit tests.
 set(NBT_NAME MeshMC_nbt++)
 set(NBT_DEST_DIR ${LIBRARY_DEST_DIR})
-add_subdirectory(libraries/libnbtplusplus)
+add_subdirectory(${CMAKE_SOURCE_DIR}/../libnbtplusplus libnbtplusplus)
 
 add_subdirectory(libraries/ganalytics) # google analytics library
 add_subdirectory(libraries/systeminfo) # system information library

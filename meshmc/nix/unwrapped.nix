@@ -42,7 +42,7 @@ stdenv.mkDerivation {
   version = "7.0-unstable-${date}";
 
   src = lib.fileset.toSource {
-    root = ../.;
+    root = ../../.;
     fileset = lib.fileset.unions [
       ../bootstrap.sh
       ../branding
@@ -61,10 +61,10 @@ stdenv.mkDerivation {
       ../.envrc
       ../flake.nix
       ../.gitattributes
-      ../.gitmodules
       ../launcher
       ../lefthook.yml
       ../libraries
+      ../../libnbtplusplus
       ../LICENSES
       ../.markdownlintignore
       ../.markdownlint.yaml

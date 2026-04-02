@@ -1,4 +1,0 @@
-[submodule "depends/libnbtplusplus"]
-    path = libraries/libnbtplusplus
-    url = https://github.com/Project-Tick/libnbtplusplus.git
-    pushurl = git@github.com:Project-Tick/libnbtplusplus.git
