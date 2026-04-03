@@ -49,7 +49,7 @@ static void decode_utf8(VTermEncoding *enc UNUSED, void *data_,
       if(data->bytes_remaining) {
         data->bytes_remaining = 0;
         cp[(*cpi)++] = UNICODE_INVALID;
-	// VIM: avoid going over the end
+	// MNV: avoid going over the end
 	if (*cpi >= cplen)
 	  break;
       }

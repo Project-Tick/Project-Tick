@@ -7,9 +7,9 @@
 /*
  * 06.11.23, added by Restorer:
  * For more details, see:
- * https://github.com/vim/vim/pull/3261
- * https://github.com/vim/vim/pull/3476
- * https://github.com/vim/vim/pull/12153
+ * https://github.com/Project-Tick/Project-Tick/pull/3261
+ * https://github.com/Project-Tick/Project-Tick/pull/3476
+ * https://github.com/Project-Tick/Project-Tick/pull/12153
  * (read all comments)
  *
  * I checked the workability on the list of backslash characters

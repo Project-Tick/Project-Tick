@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# swedish.nsi: Svenska strängar för gvim NSIS-installationsprogram.
+# swedish.nsi: Svenska strängar för gmnv NSIS-installationsprogram.
 #
 # Lokalisering-ID    : 1053
 # Lokalt namn  : sv
@@ -27,14 +27,14 @@ LicenseLangString page_lic_file ${LANG_SWEDISH} "..\lang\LICENSE.sv.nsis.txt"
 # README.txt-fil, som öppnas efter installationen                     {{{1
 ##############################################################################
 
-LangString vim_readme_file ${LANG_SWEDISH} "README.sv.txt"
+LangString mnv_readme_file ${LANG_SWEDISH} "README.sv.txt"
 
 ##############################################################################
 # MUI-konfigurationssträngar                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_SWEDISH} \
-#    "Målmapp (måste sluta med $\"vim$\")"
+#    "Målmapp (måste sluta med $\"mnv$\")"
 
 LangString str_show_readme          ${LANG_SWEDISH} \
     "Visa README efter avslutad installation"
@@ -57,70 +57,70 @@ LangString str_type_full            ${LANG_SWEDISH} \
 LangString str_section_old_ver      ${LANG_SWEDISH} \
     "Avinstallera befintliga versioner"
 LangString str_desc_old_ver         ${LANG_SWEDISH} \
-    "Avinstallera befintliga Vim-versioner från ditt system."
+    "Avinstallera befintliga MNV-versioner från ditt system."
 
 LangString str_section_exe          ${LANG_SWEDISH} \
-    "Vim GUI och runtime-filer"
+    "MNV GUI och runtime-filer"
 LangString str_desc_exe             ${LANG_SWEDISH} \
-    "Vim GUI-körbara filer och runtime-filer.  Denna komponent krävs."
+    "MNV GUI-körbara filer och runtime-filer.  Denna komponent krävs."
 
 LangString str_section_console      ${LANG_SWEDISH} \
-    "Vim-konsolprogram"
+    "MNV-konsolprogram"
 LangString str_desc_console         ${LANG_SWEDISH} \
-    "Konsolversion av Vim (vim.exe)."
+    "Konsolversion av MNV (mnv.exe)."
 
 LangString str_section_batch        ${LANG_SWEDISH} \
     "Skapa .bat-filer"
 LangString str_desc_batch           ${LANG_SWEDISH} \
-    "Skapa .bat-filer för Vim-varianter i Windows-katalogen för \
+    "Skapa .bat-filer för MNV-varianter i Windows-katalogen för \
      kommandoradsanvändning."
 
 LangString str_group_icons          ${LANG_SWEDISH} \
-    "Skapa ikoner för Vim"
+    "Skapa ikoner för MNV"
 LangString str_desc_icons           ${LANG_SWEDISH} \
-    "Skapa ikoner för Vim på olika platser för att underlätta åtkomsten."
+    "Skapa ikoner för MNV på olika platser för att underlätta åtkomsten."
 
 LangString str_section_desktop      ${LANG_SWEDISH} \
     "På skrivbordet"
 LangString str_desc_desktop         ${LANG_SWEDISH} \
-    "Skapa ikoner för gVim-körbara filer på skrivbordet."
+    "Skapa ikoner för gMNV-körbara filer på skrivbordet."
 
 LangString str_section_start_menu   ${LANG_SWEDISH} \
     "I startmenyns programmapp"
 LangString str_desc_start_menu      ${LANG_SWEDISH} \
-    "Lägg till Vim i programmappen i startmenyn."
+    "Lägg till MNV i programmappen i startmenyn."
 
 #LangString str_section_quick_launch ${LANG_SWEDISH} \
 #    "I snabbstartfältet"
 #LangString str_desc_quick_launch    ${LANG_SWEDISH} \
-#    "Lägg till Vim-genväg i snabbstartfältet."
+#    "Lägg till MNV-genväg i snabbstartfältet."
 
 LangString str_section_edit_with    ${LANG_SWEDISH} \
-    "Lägg till Vim-kontextmeny"
+    "Lägg till MNV-kontextmeny"
 LangString str_desc_edit_with       ${LANG_SWEDISH} \
-    "Lägg till Vim i listan över snabbmenyn $\"Öppna med...$\"."
+    "Lägg till MNV i listan över snabbmenyn $\"Öppna med...$\"."
 
 #LangString str_section_edit_with32  ${LANG_SWEDISH} \
 #    "32-bitarsversion"
 #LangString str_desc_edit_with32     ${LANG_SWEDISH} \
-#    "Lägg till Vim i listan över snabbmenyn $\"Öppna med...$\" \
+#    "Lägg till MNV i listan över snabbmenyn $\"Öppna med...$\" \
 #     för 32-bitarsprogram."
 
 #LangString str_section_edit_with64  ${LANG_SWEDISH} \
 #    "64-bitarsversion"
 #LangString str_desc_edit_with64     ${LANG_SWEDISH} \
-#    "Lägg till Vim i listan över kontextmenyn $\"Öppna med...$\" \
+#    "Lägg till MNV i listan över kontextmenyn $\"Öppna med...$\" \
 #     för 64-bitarsprogram."
 
-LangString str_section_vim_rc       ${LANG_SWEDISH} \
+LangString str_section_mnv_rc       ${LANG_SWEDISH} \
     "Skapa standardkonfiguration"
-LangString str_desc_vim_rc          ${LANG_SWEDISH} \
-    "Skapa en standardkonfigurationsfil (_vimrc) om det inte redan finns en."
+LangString str_desc_mnv_rc          ${LANG_SWEDISH} \
+    "Skapa en standardkonfigurationsfil (_mnvrc) om det inte redan finns en."
 
 LangString str_group_plugin         ${LANG_SWEDISH} \
     "Skapa plugin-kataloger"
 LangString str_desc_plugin          ${LANG_SWEDISH} \
-    "Skapa plugin-kataloger.  Plugin-kataloger gör det möjligt att utöka Vim \
+    "Skapa plugin-kataloger.  Plugin-kataloger gör det möjligt att utöka MNV \
      genom att släppa en fil i en katalog."
 
 LangString str_section_plugin_home  ${LANG_SWEDISH} \
@@ -128,10 +128,10 @@ LangString str_section_plugin_home  ${LANG_SWEDISH} \
 LangString str_desc_plugin_home     ${LANG_SWEDISH} \
     "Skapa plugin-kataloger i HOME-katalogen."
 
-LangString str_section_plugin_vim   ${LANG_SWEDISH} \
+LangString str_section_plugin_mnv   ${LANG_SWEDISH} \
     "Delad"
-LangString str_desc_plugin_vim      ${LANG_SWEDISH} \
-    "Skapa plugin-kataloger i Vim-installationskatalogen, den används för \
+LangString str_desc_plugin_mnv      ${LANG_SWEDISH} \
+    "Skapa plugin-kataloger i MNV-installationskatalogen, den används för \
      alla på systemet."
 
 LangString str_section_nls          ${LANG_SWEDISH} \
@@ -140,14 +140,14 @@ LangString str_desc_nls             ${LANG_SWEDISH} \
     "Installera filer för stöd för modersmål."
 
 LangString str_unsection_register   ${LANG_SWEDISH} \
-    "Avregistrera Vim"
+    "Avregistrera MNV"
 LangString str_desc_unregister      ${LANG_SWEDISH} \
-    "Avregistrera Vim från systemet."
+    "Avregistrera MNV från systemet."
 
 LangString str_unsection_exe        ${LANG_SWEDISH} \
-    "Ta bort Vim-körbara filer/körningsfiler"
+    "Ta bort MNV-körbara filer/körningsfiler"
 LangString str_desc_rm_exe          ${LANG_SWEDISH} \
-    "Ta bort alla Vim-körbara filer och runtime-filer."
+    "Ta bort alla MNV-körbara filer och runtime-filer."
 
 LangString str_ungroup_plugin       ${LANG_SWEDISH} \
     "Ta bort plugin-kataloger"
@@ -159,15 +159,15 @@ LangString str_unsection_plugin_home ${LANG_SWEDISH} \
 LangString str_desc_rm_plugin_home  ${LANG_SWEDISH} \
     "Ta bort plugin-katalogerna från HOME-katalogen."
 
-LangString str_unsection_plugin_vim ${LANG_SWEDISH} \
+LangString str_unsection_plugin_mnv ${LANG_SWEDISH} \
     "Delad"
-LangString str_desc_rm_plugin_vim   ${LANG_SWEDISH} \
-    "Ta bort plugin-katalogerna från Vim-installationskatalogen."
+LangString str_desc_rm_plugin_mnv   ${LANG_SWEDISH} \
+    "Ta bort plugin-katalogerna från MNV-installationskatalogen."
 
 LangString str_unsection_rootdir    ${LANG_SWEDISH} \
-    "Ta bort Vim-rotkatalogen"
+    "Ta bort MNV-rotkatalogen"
 LangString str_desc_rm_rootdir      ${LANG_SWEDISH} \
-    "Ta bort Vim-rotkatalogen. Den innehåller dina Vim-konfigurationsfiler!"
+    "Ta bort MNV-rotkatalogen. Den innehåller dina MNV-konfigurationsfiler!"
 
 
 ##############################################################################
@@ -175,30 +175,30 @@ LangString str_desc_rm_rootdir      ${LANG_SWEDISH} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_SWEDISH} \
-#    "Hittade $vim_old_ver_count Vim-versioner på ditt system.$\r$\n\
-#     Denna installationsprogram kan endast hantera ${VIM_MAX_OLD_VER} versioner \
+#    "Hittade $mnv_old_ver_count MNV-versioner på ditt system.$\r$\n\
+#     Denna installationsprogram kan endast hantera ${MNV_MAX_OLD_VER} versioner \
 #    .$\r$\n\
 #     Ta bort några versioner och börja om."
 
 #LangString str_msg_invalid_root  ${LANG_SWEDISH} \
-#    "Ogiltig installationsväg: $vim_install_root!$\r$\n\
-#     Den ska sluta med $\"vim$\"."
+#    "Ogiltig installationsväg: $mnv_install_root!$\r$\n\
+#     Den ska sluta med $\"mnv$\"."
 
 #LangString str_msg_bin_mismatch  ${LANG_SWEDISH} \
 #    "Binär sökväg stämmer inte!$\r$\n$\r$\n\
-#     Förväntar mig att binärvägen är $\"$vim_bin_path$\",$\r$\n\
+#     Förväntar mig att binärvägen är $\"$mnv_bin_path$\",$\r$\n\
 #     men systemet anger att binärvägen är $\"$INSTDIR$\"."
 
-#LangString str_msg_vim_running   ${LANG_SWEDISH} \
-#    "Vim körs fortfarande på ditt system.$\r$\n\
-#     Stäng alla instanser av Vim innan du fortsätter."
+#LangString str_msg_mnv_running   ${LANG_SWEDISH} \
+#    "MNV körs fortfarande på ditt system.$\r$\n\
+#     Stäng alla instanser av MNV innan du fortsätter."
 
 #LangString str_msg_register_ole  ${LANG_SWEDISH} \
-#    "Försöker registrera Vim med OLE. \
+#    "Försöker registrera MNV med OLE. \
 #     Det finns inget meddelande som anger om detta fungerar eller inte."
 
 #LangString str_msg_unreg_ole     ${LANG_SWEDISH} \
-#    "Försöker avregistrera Vim från OLE. \
+#    "Försöker avregistrera MNV från OLE. \
 #     Det finns inget meddelande som anger om detta fungerar eller inte."
 
 #LangString str_msg_rm_start      ${LANG_SWEDISH} \
@@ -233,7 +233,7 @@ LangString str_msg_rm_exe_fail   ${LANG_SWEDISH} \
      Du måste göra det manuellt."
 
 #LangString str_msg_rm_root_fail  ${LANG_SWEDISH} \
-#    "VARNING: Kan inte ta bort $\"$vim_install_root$\", den är inte tom!"
+#    "VARNING: Kan inte ta bort $\"$mnv_install_root$\", den är inte tom!"
 
 LangString str_msg_uninstalling  ${LANG_SWEDISH} \
     "Avinstallerar den gamla versionen..."
@@ -249,23 +249,23 @@ LangString str_msg_unregistering ${LANG_SWEDISH} \
 # Dialogruta                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_SWEDISH} \
-    "Välj _vimrc-inställningar"
-LangString str_vimrc_page_subtitle ${LANG_SWEDISH} \
+LangString str_mnvrc_page_title    ${LANG_SWEDISH} \
+    "Välj _mnvrc-inställningar"
+LangString str_mnvrc_page_subtitle ${LANG_SWEDISH} \
     "Välj inställningar för förbättringar, tangentbord och mus."
 
 LangString str_msg_compat_title    ${LANG_SWEDISH} \
-    " Vi / Vim-beteende "
+    " Vi / MNV-beteende "
 LangString str_msg_compat_desc     ${LANG_SWEDISH} \
     "&Kompatibilitet och förbättringar"
 LangString str_msg_compat_vi       ${LANG_SWEDISH} \
     "Vi-kompatibel"
-LangString str_msg_compat_vim      ${LANG_SWEDISH} \
-    "Vim original"
+LangString str_msg_compat_mnv      ${LANG_SWEDISH} \
+    "MNV original"
 LangString str_msg_compat_defaults ${LANG_SWEDISH} \
-    "Vim med vissa förbättringar (ladda defaults.vim)"
+    "MNV med vissa förbättringar (ladda defaults.mnv)"
 LangString str_msg_compat_all      ${LANG_SWEDISH} \
-    "Vim med alla förbättringar (ladda vimrc_example.vim) (Standard)"
+    "MNV med alla förbättringar (ladda mnvrc_example.mnv) (Standard)"
 
 LangString str_msg_keymap_title   ${LANG_SWEDISH} \
     " Mappningar "

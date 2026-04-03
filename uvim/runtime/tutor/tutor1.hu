@@ -1,11 +1,11 @@
 ===============================================================================
-== Ü d v ö z ö l j ü k   a   V I M - o k t a t ó b a n  -    1.5-ös  verzió  ==
+== Ü d v ö z ö l j ü k   a   M N V - o k t a t ó b a n  -    1.5-ös  verzió  ==
 ===============================================================================
 
-     A Vim egy nagyon hatékony szerkesztő, amelynek rengeteg utasítása
+     A MNV egy nagyon hatékony szerkesztő, amelynek rengeteg utasítása
      van, túl sok, hogy egy ilyen oktatóban (tutorban), mint az itteni
      mindet elmagyarázzuk. Ez az oktató arra törekszik, hogy annyit
-     elmagyarázzon, amennyi elég, hogy könnyedén használjuk a Vim-et, az
+     elmagyarázzon, amennyi elég, hogy könnyedén használjuk a MNV-et, az
      általános célú szövegszerkesztőt.
 
      A feladatok megoldásához 25-30 perc szükséges attól függően,
@@ -13,7 +13,7 @@
 
      A leckében szereplő utasítások módosítani fogják a szöveget.
      Készítsen másolatot erről a fájlról, ha gyakorolni akar.
-     (Ha "vimtutor"-ral indította, akkor ez már egy másolat.)
+     (Ha "mnvtutor"-ral indította, akkor ez már egy másolat.)
 
      Fontos megérteni, hogy ez az oktató cselekedve taníttat.
      Ez azt jelenti, hogy Önnek ajánlott végrehajtania az utasításokat,
@@ -47,7 +47,7 @@ Megj: A kurzor gomboknak is működniük kell, de a hjkl használatával
       sokkal gyorsabban tud, mozogni, ha hozzászokik.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		     1.1.2.  lecke: BE ÉS KILÉPÉS A VIMBŐL
+		     1.1.2.  lecke: BE ÉS KILÉPÉS A MNVBŐL
 
 
   !! MEGJ: Mielőtt végrehajtja az alábbi lépéseket, olvassa végig a leckét !!
@@ -62,10 +62,10 @@ Megj: A kurzor gomboknak is működniük kell, de a hjkl használatával
 
   3. Amikor a shell promptot látja, írja be a parancsot, amely ebbe az
      oktatóba hozza:
-     Ez valószínűleg:	vimtutor <ENTER>
-     Normális esetben ezt írná:	vim tutor.hu <ENTER>
+     Ez valószínűleg:	mnvtutor <ENTER>
+     Normális esetben ezt írná:	mnv tutor.hu <ENTER>
 
----> 'vim' jelenti a vimbe belépést, 'tutor.hu' a fájl, amit szerkeszteni kíván.
+---> 'mnv' jelenti a mnvbe belépést, 'tutor.hu' a fájl, amit szerkeszteni kíván.
 
   4. Ha megjegyezte a lépéseket és biztos magában, hajtsa végre a lépéseket
      1-től 3-ig, hogy kilépjen és visszatérjen a szerkesztőbe. Azután
@@ -122,9 +122,9 @@ MEGJ: A tanulás során ne memorizálni próbáljon, hanem használat során tan
   1. A kurzort vagy a nyilakkal vagy a hjkl gombokkal mozgathatja.
 	 h (balra)	j (le)       k (fel)	    l (jobbra)
 
-  2. A Vimbe (a $ prompttól) így léphet be:  vim FILENAME <ENTER>
+  2. A MNVbe (a $ prompttól) így léphet be:  mnv FILENAME <ENTER>
 
-  3. A Vimből így léphet ki:  <ESC>   :q!  <ENTER>  a változtatások eldobásával.
+  3. A MNVből így léphet ki:  <ESC>   :q!  <ENTER>  a változtatások eldobásával.
 	     vagy így:	      <ESC>   :wq  <ENTER>  a változások mentésével.
 
   4. A kurzor alatti karakter törlése normál módban:  x
@@ -282,7 +282,7 @@ MEGJ:  Csupán a mozgás begépelésével (parancs nélkül)
 
   1. Mozgassuk a kurzort az alábbi sorok első sorára.
 
-  2. dd leütésével töröljük a sort és eltárolódik a Vim pufferében.
+  2. dd leütésével töröljük a sort és eltárolódik a MNV pufferében.
 
   3. Mozgassuk a kurzort azelőtt a  sor ELŐTTI sorba, ahová mozgatni
      szeretnénk a törölt sort.
@@ -542,11 +542,11 @@ Megj:  Minden  :  parancs után <ENTER>-t kell ütni.
 
   3. Írja:	:w TESZT   (ahol TESZT a választott fájlnév)!
 
-  4. Ez elmenti a teljes fájlt (a Vim oktatóját) TESZT néven.
+  4. Ez elmenti a teljes fájlt (a MNV oktatóját) TESZT néven.
      Ellenőrzésképp írjuk ismét    :!dir   hogy lássuk a könyvtárat!
      (Felfelé gombbal : után az előző utasítások visszahozhatóak.)
 
-Megj: Ha Ön kilépne a Vimből és és visszatérne a TESZT fájlnévvel, akkor a
+Megj: Ha Ön kilépne a MNVből és és visszatérne a TESZT fájlnévvel, akkor a
       fájl az oktató mentéskori pontos másolata lenne.
 
   5. Távolítsa el a fájlt  (MS-DOS):	:!del TESZT
@@ -573,7 +573,7 @@ Megj: Ha Ön kilépne a Vimből és és visszatérne a TESZT fájlnévvel, akkor
 
   5. Ismét nézze meg, hogy a fájl ott van (:!dir) de NE törölje.
 
-  6. Vimben létezik egy másik lehetőség: nyomja meg a Shift-V gombpárt
+  6. MNVben létezik egy másik lehetőség: nyomja meg a Shift-V gombpárt
      az első menteni kívánt soron, majd menjen le az utolsóra, ezután
      írja :w TESZT2   Ekkor a TESZT2 fájlba kerül a kijelölt rész.
 
@@ -613,7 +613,7 @@ MEGJ:  A fájl, amit beillesztett a kurzora alatt helyezkedik el.
 	  :!dir		   :!ls		   -  könyvtárlista kiírása.
 	  :!del FÁJLNÉV    :!rm FÁJLNÉV    -  FÁJLNÉV nevű fájl törlése.
 
-  2.  :w FÁJLNÉV  kiírja a jelenlegi Vim-fájlt a lemezre FÁJNÉV néven.
+  2.  :w FÁJLNÉV  kiírja a jelenlegi MNV-fájlt a lemezre FÁJNÉV néven.
 
   3.  :#,#w FÁJLNÉV  kiírja a két sorszám (#) közötti sorokat FÁJLNÉV-be
       Másik lehetőség, hogy a kezdősornál Shift-v-t nyom lemegy az utolsó
@@ -663,7 +663,7 @@ ezen a soron áll.
      amelyen a kurzor áll.
      (A nagy "A" az egész sor végére írja a szöveget.)
 
-Megj: A Vimben a sor legvégére is lehet állni, azonban ez elődjében
+Megj: A MNVben a sor legvégére is lehet állni, azonban ez elődjében
       a Vi-ban nem lehetséges, ezért abban az a nélkül elég körülményes
       a sor végéhez szöveget írni.
 
@@ -752,7 +752,7 @@ Megj: A Vimben a sor legvégére is lehet állni, azonban ez elődjében
 
 		    ** Az online súgórendszer használata **
 
-  A Vim részletes súgóval rendelkezik.  Induláshoz a következők egyikét
+  A MNV részletes súgóval rendelkezik.  Induláshoz a következők egyikét
   tegye:
 	- nyomja meg a <HELP> gombot (ha van ilyen)
 	- nyomja meg az <F1> gombot (ha van ilyen)
@@ -772,51 +772,51 @@ Megj: A Vimben a sor legvégére is lehet állni, azonban ez elődjében
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		       1.8. lecke: INDÍTÓSZKRIPT ÍRÁSA
 
-		     ** A Vim lehetőségeinek beállítása **
+		     ** A MNV lehetőségeinek beállítása **
 
-  A Vim rengeteg lehetőséggel rendelkezik a Vi-hoz képest, de a legtöbb
+  A MNV rengeteg lehetőséggel rendelkezik a Vi-hoz képest, de a legtöbb
   alapból elérhetetlen. Ahhoz, hogy alapból több lehetőségünk legyen készítenünk
-  kell egy "vimrc" fájlt.
+  kell egy "mnvrc" fájlt.
 
-  1. Kezdjük el szerkeszteni a "vimrc" fájlt, ennek módja:
-	:edit ~/.vimrc		Unixon, Linuxon
-	:edit ~/_vimrc		MS-Windowson
+  1. Kezdjük el szerkeszteni a "mnvrc" fájlt, ennek módja:
+	:edit ~/.mnvrc		Unixon, Linuxon
+	:edit ~/_mnvrc		MS-Windowson
 
-  2. Most szúrjuk be a példa "vimrc" fájl szövegét:
+  2. Most szúrjuk be a példa "mnvrc" fájl szövegét:
 
-	:read $VIMRUNTIME/vimrc_example.vim
+	:read $MNVRUNTIME/mnvrc_example.mnv
 
   3. Írjuk ki a fájlt:
 
 	:write
 
-  Legközelebb a Vim szintaxiskiemeléssel indul.
-  Hozzáadhatja kedvenc beállításait ehhez a "vimrc" fájlhoz.
+  Legközelebb a MNV szintaxiskiemeléssel indul.
+  Hozzáadhatja kedvenc beállításait ehhez a "mnvrc" fájlhoz.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Itt végződik a Vim oktató, melynek a szándéka egy rövid áttekintés a
-  Vimről, amely elég ahhoz, hogy elég könnyedén kezeljük a szerkesztőt.
-  Távol van a teljességtől, mivel a Vimnek számtalan további utasítása
+  Itt végződik a MNV oktató, melynek a szándéka egy rövid áttekintés a
+  MNVről, amely elég ahhoz, hogy elég könnyedén kezeljük a szerkesztőt.
+  Távol van a teljességtől, mivel a MNVnek számtalan további utasítása
   van. Ezután a felhasználói kézikönyvet érdemes elolvasni az angolul
   tudóknak: ":help user-manual". (egyelőre nem tud magyarul)
 
   További magyar olvasnivalók érhetőek el az alábbi oldalról.
-  http://wiki.hup.hu/index.php/Vim
+  http://wiki.hup.hu/index.php/MNV
 
   Angol olvasmányok:
   For further reading and studying, this book is recommended:
-	Vim - Vi Improved - by Steve Oualline
+	MNV - MNV is not Vim - by Steve Oualline
 	Publisher: New Riders
-  The first book completely dedicated to Vim.  Especially useful for beginners.
+  The first book completely dedicated to MNV.  Especially useful for beginners.
   There are many examples and pictures.
   See https://iccf-holland.org/click5.html
 
-  This book is older and more about Vi than Vim, but also recommended:
+  This book is older and more about Vi than MNV, but also recommended:
 	Learning the Vi Editor - by Linda Lamb
 	Publisher: O'Reilly & Associates Inc.
   It is a good book to get to know almost anything you want to do with Vi.
-  The sixth edition also includes information on Vim.
+  The sixth edition also includes information on MNV.
 
   Ezt az oktatót Michael C. Pierce és Robert K. Ware írta, a Colorado
   School of Mines dolgozói Charles Smith (Colorado State University)
@@ -824,7 +824,7 @@ Megj: A Vimben a sor legvégére is lehet állni, azonban ez elődjében
 
   E-mail: bware@mines.colorado.edu.
 
-  A Vimhez idomította Bram Moolenaar.
+  A MNVhez idomította Bram Moolenaar.
 
   Magyarította: Horváth Árpád <horvath.arpad@arek.uni-opbuda.hu>, 2006-2012
 

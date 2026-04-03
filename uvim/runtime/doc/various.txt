@@ -1,13 +1,13 @@
-*various.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*various.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Various commands					*various*
 
 1. Various commands		|various-cmds|
-2. Using Vim like less or more	|less|
+2. Using MNV like less or more	|less|
 
 ==============================================================================
 1. Various commands					*various-cmds*
@@ -44,7 +44,7 @@ CTRL-L			Clear and redraw the screen.  The redraw may happen
 							*N<Del>*
 <Del>			When entering a number: Remove the last digit.
 			Note: if you like to use <BS> for this, add this
-			mapping to your .vimrc: >
+			mapping to your .mnvrc: >
 				:map CTRL-V <BS>   CTRL-V <Del>
 <			See |:fixdel| if your <Del> key does not do what you
 			want.
@@ -122,7 +122,7 @@ g8			Print the hex values of the bytes used in the
 :[range]P[rint] [count] [flags]
 			Just as ":print".  Was apparently added to Vi for
 			people that keep the shift key pressed too long...
-			This command is not supported in |Vim9| script.
+			This command is not supported in |MNV9| script.
 			Note: A user command can overrule this command.
 			See |ex-flags| for [flags].
 
@@ -144,9 +144,9 @@ g8			Print the hex values of the bytes used in the
 :[range]# [count] [flags]
 			synonym for :number.
 
-							*:#!* *vim-shebang*
-:#!{anything}		Ignored, so that you can start a Vim script with: >
-				#!vim -S
+							*:#!* *mnv-shebang*
+:#!{anything}		Ignored, so that you can start a MNV script with: >
+				#!mnv -S
 				let mylogbook='$HOME/logbook.md'
 				exe $':e {mylogbook}'
 				$
@@ -188,7 +188,7 @@ g8			Print the hex values of the bytes used in the
 							*:z!*
 :[range]z![+-^.=][count]
 			Like ":z", but when [count] is not specified, it
-			defaults to the Vim window height minus one.
+			defaults to the MNV window height minus one.
 
 :[range]z[!]#[+-^.=][count]				*:z#*
 			Like ":z" or ":z!", but number the lines.
@@ -251,10 +251,10 @@ g8			Print the hex values of the bytes used in the
 
 							*:sh* *:shell* *E371*
 :sh[ell]		This command starts a shell.  When the shell exits
-			(after the "exit" command) you return to Vim.  The
+			(after the "exit" command) you return to MNV.  The
 			name for the shell command comes from 'shell' option.
 							*E360*
-			Note: This doesn't work when Vim on the Amiga was
+			Note: This doesn't work when MNV on the Amiga was
 			started in QuickFix mode from a compiler, because the
 			compiler will have set stdin to a non-interactive
 			mode.
@@ -264,7 +264,7 @@ g8			Print the hex values of the bytes used in the
 			and 'shelltype' option.  For the filter command, see
 			|:range!|.
 
-			Vim builds command line using options 'shell', 'shcf',
+			MNV builds command line using options 'shell', 'shcf',
 			'sxq' and 'shq' in the following order:
 			`&sh &shcf &sxq &shq {cmd} &shq &sxq`
 			So setting both 'sxq' and 'shq' is possible but rarely
@@ -272,7 +272,7 @@ g8			Print the hex values of the bytes used in the
 			be due to 'sxe' option.
 
 			Also, all |cmdline-special| characters in {cmd} are
-			replaced by Vim before passing them to shell.
+			replaced by MNV before passing them to shell.
 
 							*E34*
 			Any '!' in {cmd} is replaced with the previous
@@ -282,7 +282,7 @@ g8			Print the hex values of the bytes used in the
 			":!echo ! \! \\!" executes "echo ls ! \!".
 
 			A '|' in {cmd} is passed to the shell, you cannot use
-			it to append a Vim command.  See |:bar|.
+			it to append a MNV command.  See |:bar|.
 
 			If {cmd} contains "%" it is expanded to the current
 			file name, "#" is expanded to the alternate file name.
@@ -315,7 +315,7 @@ g8			Print the hex values of the bytes used in the
 			After the command has been executed, the timestamp and
 			size of the current file is checked |timestamp|.
 
-			Vim redraws the screen after the command is finished,
+			MNV redraws the screen after the command is finished,
 			because it may have printed any text.  This requires a
 			hit-enter prompt, so that you can read any messages.
 			To avoid this use: >
@@ -326,7 +326,7 @@ g8			Print the hex values of the bytes used in the
 			and |t_te| termcap entries are set to.
 
 			Hint: use |:terminal| command if you want to run {cmd}
-			in Vim window.  `:term ++shell ++close {cmd}` could
+			in MNV window.  `:term ++shell ++close {cmd}` could
 			serve as close approximation to what `:!{cmd}` does.
 
 							*:!!*
@@ -338,10 +338,10 @@ g8			Print the hex values of the bytes used in the
 			date is mentioned.  Otherwise a fixed release-date is
 			shown.
 			The following lines contain information about which
-			features were enabled when Vim was compiled.  When
+			features were enabled when MNV was compiled.  When
 			there is a preceding '+', the feature is included,
 			when there is a '-' it is excluded.  To change this,
-			you have to edit feature.h and recompile Vim.
+			you have to edit feature.h and recompile MNV.
 			To check for this in an expression, see |has()|.
 			Here is an overview of the features.
 			The first column shows the smallest version in which
@@ -353,7 +353,7 @@ g8			Print the hex values of the bytes used in the
 			   -    never, feature was removed
 			 (none) system dependent
 			Thus if a feature is marked with "N", it is included
-			in the normal and huge versions of Vim.
+			in the normal and huge versions of MNV.
 
 							*+feature-list*
    *+acl*		|ACL| support included
@@ -395,13 +395,13 @@ m  *+debug*		Compiled for debugging.
 N  *+dialog_gui*	Support for |:confirm| with GUI dialog.
 N  *+dialog_con*	Support for |:confirm| with console dialog.
 N  *+dialog_con_gui*	Support for |:confirm| with GUI and console dialog.
-N  *+diff*		|vimdiff| and 'diff'
+N  *+diff*		|mnvdiff| and 'diff'
 N  *+digraphs*		|digraphs| *E196*
    *+directx*		Win32 GUI only: DirectX and 'renderoptions'
    *+dnd*		Support for DnD into the "~ register |quote_~|.
 H  *+emacs_tags*	|emacs-tags| files
 N  *+eval*		expression evaluation |eval.txt|
-T  *+ex_extra*		always on now, used to be for Vim's extra Ex commands
+T  *+ex_extra*		always on now, used to be for MNV's extra Ex commands
 N  *+extra_search*	'hlsearch' and 'incsearch' options.
 -  *+farsi*		Removed: |farsi| language
 T  *+file_in_path*	|gf|, |CTRL-W_f| and |<cfile>|  Always enabled since
@@ -431,7 +431,7 @@ H  *+langmap*		'langmap'
 N  *+libcall*		|libcall()|
 N  *+linebreak*		'linebreak', 'breakat' and 'showbreak'
 T  *+lispindent*	'lisp'
-T  *+listcmds*		Vim commands for the list of buffers |buffer-hidden|
+T  *+listcmds*		MNV commands for the list of buffers |buffer-hidden|
 			and argument list |:argdelete|
 T  *+localmap*		Support for mappings local to a buffer |:map-local|
 m  *+lua*		|Lua| interface
@@ -520,8 +520,8 @@ T  *+user_commands*	User-defined commands. |user-commands|
 H  *+vartabs*		Variable-width tab stops. 'vartabstop'
 T  *+vertsplit*		Vertically split windows |:vsplit|; Always enabled
 			since 8.0.1118.
-T  *+vim9script*	|Vim9| script
-N  *+viminfo*		'viminfo'
+T  *+mnv9script*	|MNV9| script
+N  *+mnvinfo*		'mnvinfo'
 T  *+virtualedit*	'virtualedit' Always enabled since 8.1.826.
 T  *+visual*		Visual mode |Visual-mode| Always enabled since 7.4.200.
 T  *+visualextra*	extra Visual mode commands |blockwise-operators|
@@ -553,7 +553,7 @@ N  *+X11*		Unix only: can restore window title |X11|
 			be dynamically loaded.
 
 :ve[rsion] {nr}		Is now ignored.  This was previously used to check the
-			version number of a .vimrc file.  It was removed,
+			version number of a .mnvrc file.  It was removed,
 			because you can now use the ":if" command for
 			version-dependent behavior.
 
@@ -608,7 +608,7 @@ N  *+X11*		Unix only: can restore window title |X11|
 			variable (l:var in a function or s:var in a script)
 			and another `:redir` causes the current one to end,
 			the scope might be different and the assignment fails.
-			In Vim9 script: the variable must have been declared
+			In MNV9 script: the variable must have been declared
 			as a string.
 			The variable will remain empty until redirection ends.
 			Only string variables can be used.
@@ -629,7 +629,7 @@ N  *+X11*		Unix only: can restore window title |X11|
 <			If the [!] is given, restrict the output of {command}
 			to lines that do NOT match {pattern}.
 
-			{pattern} is a Vim search pattern.  Instead of
+			{pattern} is a MNV search pattern.  Instead of
 			enclosing it in / any non-ID character (see 'isident')
 			can be used, so long as it does not appear in
 			{pattern}.
@@ -716,9 +716,9 @@ N  *+X11*		Unix only: can restore window title |X11|
 			used to generate messages and check them with
 			|v:statusmsg| and friends.  For example: >
 				:let v:statusmsg = ""
-				:silent verbose runtime foobar.vim
+				:silent verbose runtime foobar.mnv
 				:if v:statusmsg != ""
-				:  " foobar.vim could not be found
+				:  " foobar.mnv could not be found
 				:endif
 <			When concatenating another command, the ":verbose"
 			only applies to the first one: >
@@ -729,7 +729,7 @@ N  *+X11*		Unix only: can restore window title |X11|
 			'verbosefile' option.
 
 							*:verbose-cmd*
-When 'verbose' is non-zero, listing the value of a Vim option or a key map or
+When 'verbose' is non-zero, listing the value of a MNV option or a key map or
 an abbreviation or a user-defined function or a command or a highlight group
 or an autocommand will also display where it was last defined.  If it was
 defined manually then there will be no "Last set" message.  When it was
@@ -747,11 +747,11 @@ K			Run a program to lookup the keyword under the
 			with the command >
 				:!{program} {keyword}
 <			There is an example of a program to use in the tools
-			directory of Vim.  It is called "ref" and does a
+			directory of MNV.  It is called "ref" and does a
 			simple spelling check.
 			Special cases:
 			- If 'keywordprg' begins with ":" it is invoked as
-			  a Vim Ex command with [count].
+			  a MNV Ex command with [count].
 			- If 'keywordprg' is empty, the ":help" command is
 			  used.  It's a good idea to include more characters
 			  in 'iskeyword' then, to be able to find more help.
@@ -791,7 +791,7 @@ K			Run a program to lookup the keyword under the
 							*:xrestore* *:xr*
 :xr[estore] [display]	Reinitializes the connection to the X11 server.
 			Useful after the X server restarts, e.g. when running
-			Vim for long time inside screen/tmux and connecting
+			MNV for long time inside screen/tmux and connecting
 			from different machines.
 			[display] should be in the format of the $DISPLAY
 			environment variable (e.g. "localhost:10.0")
@@ -800,7 +800,7 @@ K			Run a program to lookup the keyword under the
 			was used for the previous execution of this command.
 			If the value was never specified, then it uses the
 			value of $DISPLAY environment variable as it was when
-			Vim was started.  This will also update |v:clipmethod|.
+			MNV was started.  This will also update |v:clipmethod|.
 			{only available when compiled with the
 			|+xterm_clipboard| feature}
 
@@ -813,34 +813,34 @@ K			Run a program to lookup the keyword under the
 			feature}
 
 							*g_CTRL-A*
-g CTRL-A		Only when Vim was compiled with MEM_PROFILING defined
+g CTRL-A		Only when MNV was compiled with MEM_PROFILING defined
 			(which is very rare): print memory usage statistics.
-			Only useful for debugging Vim.
+			Only useful for debugging MNV.
 			For incrementing in Visual mode see |v_g_CTRL-A|.
 
 ==============================================================================
-2. Using Vim like less or more					*less*
+2. Using MNV like less or more					*less*
 
 If you use the less or more program to view a file, you don't get syntax
-highlighting.  Thus you would like to use Vim instead.  You can do this by
-using the shell script "$VIMRUNTIME/macros/less.sh".
+highlighting.  Thus you would like to use MNV instead.  You can do this by
+using the shell script "$MNVRUNTIME/macros/less.sh".
 
-This shell script uses the Vim script "$VIMRUNTIME/macros/less.vim".  It sets
+This shell script uses the MNV script "$MNVRUNTIME/macros/less.mnv".  It sets
 up mappings to simulate the commands that less supports.  Otherwise, you can
-still use the Vim commands.
+still use the MNV commands.
 
-This isn't perfect.  For example, when viewing a short file Vim will still use
+This isn't perfect.  For example, when viewing a short file MNV will still use
 the whole screen.  But it works well enough for most uses, and you get syntax
 highlighting.
 
 The "h" key will give you a short overview of the available commands.
 
 If you want to set options differently when using less, define the
-LessInitFunc in your vimrc, for example: >
+LessInitFunc in your mnvrc, for example: >
 
 	func LessInitFunc()
 	  set nocursorcolumn nocursorline
 	endfunc
 <
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

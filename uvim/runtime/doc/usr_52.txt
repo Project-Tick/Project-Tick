@@ -1,7 +1,7 @@
-*usr_52.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_52.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 		       Write larger plugins
@@ -14,20 +14,20 @@ smaller parts.
 |52.2|	Autoloading
 |52.3|	Autoloading without import/export
 |52.4|	Other mechanisms to use
-|52.5|	Using a Vim9 script from legacy script
-|52.6|	Vim9 examples: comment and highlight-yank plugin
+|52.5|	Using a MNV9 script from legacy script
+|52.6|	MNV9 examples: comment and highlight-yank plugin
 
-     Next chapter: |usr_90.txt|  Installing Vim
+     Next chapter: |usr_90.txt|  Installing MNV
  Previous chapter: |usr_51.txt|  Create a plugin
 Table of contents: |usr_toc.txt|
 
 ==============================================================================
 *52.1*	Export and import
 
-Vim9 script was designed to make it easier to write large Vim scripts.  It
+MNV9 script was designed to make it easier to write large MNV scripts.  It
 looks more like other script languages, especially Typescript.  Also,
 functions are compiled into instructions that can be executed quickly.  This
-makes Vim9 script a lot faster, up to a 100 times.
+makes MNV9 script a lot faster, up to a 100 times.
 
 The basic idea is that a script file has items that are private, only used
 inside the script file, and items that are exported, which can be used by
@@ -36,7 +36,7 @@ scripts that import them.  That makes very clear what is defined where.
 Let's start with an example, a script that exports one function and has one
 private function: >
 
-	vim9script
+	mnv9script
 
 	export def GetMessage(count: string): string
 	   var nr = str2nr(count)
@@ -55,7 +55,7 @@ private function: >
 	  endif
 	enddef
 
-The `vim9script` command is required, `export` only works in a |Vim9| script.
+The `mnv9script` command is required, `export` only works in a |MNV9| script.
 
 The `export def GetMessage(...` line starts with `export`, meaning that this
 function can be called by other scripts.  The line `def GetReply(...` does not
@@ -64,19 +64,19 @@ inside this script file.
 
 Now about the script where this is imported.  In this example we use this
 layout, which works well for a plugin below the "pack" directory:
-	.../plugin/theplugin.vim
-	.../lib/getmessage.vim
+	.../plugin/theplugin.mnv
+	.../lib/getmessage.mnv
 
-Assuming the "..." directory has been added to 'runtimepath', Vim will look
-for plugins in the "plugin" directory and source "theplugin.vim".  Vim does
+Assuming the "..." directory has been added to 'runtimepath', MNV will look
+for plugins in the "plugin" directory and source "theplugin.mnv".  MNV does
 not recognize the "lib" directory, you can put any scripts there.
 
-The above script that exports GetMessage() goes in lib/getmessage.vim.  The
-GetMessage() function is used in plugin/theplugin.vim: >
+The above script that exports GetMessage() goes in lib/getmessage.mnv.  The
+GetMessage() function is used in plugin/theplugin.mnv: >
 
-	vim9script
+	mnv9script
 
-	import "../lib/getmessage.vim"
+	import "../lib/getmessage.mnv"
 	command -nargs=1 ShowMessage echomsg getmessage.GetMessage(<f-args>)
 
 The `import` command uses a relative path, it starts with "../", which means
@@ -94,30 +94,30 @@ name "getmessage".  That way, for every imported function used, you know what
 script it was imported from.  If you import several scripts each of them could
 define a GetMessage() function: >
 
-	vim9script
+	mnv9script
 
-	import "../lib/getmessage.vim"
-	import "../lib/getother.vim"
+	import "../lib/getmessage.mnv"
+	import "../lib/getother.mnv"
 	command -nargs=1 ShowMessage echomsg getmessage.GetMessage(<f-args>)
 	command -nargs=1 ShowOther echomsg getother.GetMessage(<f-args>)
 
 If the imported script name is long or you use it in many places, you can
 shorten it by adding an "as" argument: >
-	import "../lib/getmessage.vim" as msg
+	import "../lib/getmessage.mnv" as msg
 	command -nargs=1 ShowMessage echomsg msg.GetMessage(<f-args>)
 
 
 RELOADING
 
-One thing to keep in mind: the imported "lib/getmessage.vim" script will be
+One thing to keep in mind: the imported "lib/getmessage.mnv" script will be
 sourced only once.  When it is imported a second time sourcing it will be
 skipped, since the items in it have already been created.  It does not matter
 if this import command is in another script, or in the same script that is
 sourced again.
 
 This is efficient when using a plugin, but when still developing a plugin it
-means that changing "lib/getmessage.vim" after it has been imported will have
-no effect.  You need to quit Vim and start it again. (Rationale: the items
+means that changing "lib/getmessage.mnv" after it has been imported will have
+no effect.  You need to quit MNV and start it again. (Rationale: the items
 defined in the script could be used in a compiled function, sourcing the
 script again may break those functions).
 
@@ -144,8 +144,8 @@ functionality is not often used.
 
 Instead of having `import` load the script immediately, it can be postponed
 until needed.  Using the example above, only one change needs to be made in
-the plugin/theplugin.vim script: >
-	import autoload "../lib/getmessage.vim"
+the plugin/theplugin.mnv script: >
+	import autoload "../lib/getmessage.mnv"
 
 Nothing in the rest of the script needs to change.  However, the types will
 not be checked.  Not even the existence of the GetMessage() function is
@@ -158,22 +158,22 @@ AUTOLOAD DIRECTORY
 
 Another form is to use autoload with a script name that is not an absolute or
 relative path: >
-	import autoload "monthlib.vim"
+	import autoload "monthlib.mnv"
 
-This will search for the script "monthlib.vim" in the autoload directories of
-'runtimepath'.  With Unix one of the directories often is "~/.vim/autoload".
+This will search for the script "monthlib.mnv" in the autoload directories of
+'runtimepath'.  With Unix one of the directories often is "~/.mnv/autoload".
 It will also search under 'packpath', under "start".
 
 The main advantage of this is that this script can be easily shared with other
-scripts.  You do need to make sure that the script name is unique, since Vim
+scripts.  You do need to make sure that the script name is unique, since MNV
 will search all the "autoload" directories in 'runtimepath', and if you are
 using several plugins with a plugin manager, it may add a directory to
 'runtimepath', each of which might have an "autoload" directory.
 
 Without autoload: >
-	import "monthlib.vim"
+	import "monthlib.mnv"
 
-Vim will search for the script "monthlib.vim" in the import directories of
+MNV will search for the script "monthlib.mnv" in the import directories of
 'runtimepath'.  Note that in this case adding or removing "autoload" changes
 where the script is found.  With a relative or absolute path the location does
 not change.
@@ -191,15 +191,15 @@ The autoload mechanism is based on a function name that has "#" characters: >
 
 	mylib#myfunction(arg)
 
-Vim will recognize the function name by the embedded "#" character and when
-it is not defined yet search for the script "autoload/mylib.vim" in
+MNV will recognize the function name by the embedded "#" character and when
+it is not defined yet search for the script "autoload/mylib.mnv" in
 'runtimepath'.  That script must define the "mylib#myfunction()" function.
 Obviously the name "mylib" is the part before the "#" and is used as the name
-of the script, adding ".vim".
+of the script, adding ".mnv".
 
-You can put many other functions in the mylib.vim script, you are free to
+You can put many other functions in the mylib.mnv script, you are free to
 organize your functions in library scripts.  But you must use function names
-where the part before the '#' matches the script name.  Otherwise Vim would
+where the part before the '#' matches the script name.  Otherwise MNV would
 not know what script to load.  This is where it differs from the import/export
 mechanism.
 
@@ -209,10 +209,10 @@ want to use subdirectories.  Example: >
 	netlib#ftp#read('somefile')
 
 Here the script name is taken from the function name up to the last "#". The
-"#" in the middle are replaced by a slash, the last one by ".vim".  Thus you
-get "netlib/ftp.vim".  For Unix the library script used for this could be:
+"#" in the middle are replaced by a slash, the last one by ".mnv".  Thus you
+get "netlib/ftp.mnv".  For Unix the library script used for this could be:
 
-	~/.vim/autoload/netlib/ftp.vim
+	~/.mnv/autoload/netlib/ftp.mnv
 
 Where the function is defined like this: >
 
@@ -228,7 +228,7 @@ You can use the same mechanism for variables: >
 
 	var weekdays = dutch#weekdays
 
-This will load the script "autoload/dutch.vim", which should contain something
+This will load the script "autoload/dutch.mnv", which should contain something
 like: >
 
 	var dutch#weekdays = ['zondag', 'maandag', 'dinsdag', 'woensdag',
@@ -258,9 +258,9 @@ This uses a FuncUndefined autocommand.  This works differently from the
 
 The following example shows how it's done: >
 
-	" Vim global plugin for demonstrating quick loading
+	" MNV global plugin for demonstrating quick loading
 	" Last Change:	2005 Feb 25
-	" Maintainer:	Bram Moolenaar <Bram@vim.org>
+	" Maintainer:	Bram Moolenaar <Bram@mnv.org>
 	" License:	This file is placed in the public domain.
 
 	if !exists("s:did_load")
@@ -290,7 +290,7 @@ The second time the script is loaded "s:did_load" exists and the commands
 after the "endif" are executed.  This defines the (possible long)
 BufNetRead() and BufNetWrite() functions.
 
-If you drop this script in your plugin directory Vim will execute it on
+If you drop this script in your plugin directory MNV will execute it on
 startup.  This is the sequence of events that happens:
 
 1. The "BNRead" command is defined and the <F19> key is mapped when the script
@@ -300,7 +300,7 @@ startup.  This is the sequence of events that happens:
 2. The user types the BNRead command or presses the <F19> key.  The
    BufNetRead() or BufNetWrite() function will be called.
 
-3. Vim can't find the function and triggers the |FuncUndefined| autocommand
+3. MNV can't find the function and triggers the |FuncUndefined| autocommand
    event.  Since the pattern "BufNet*" matches the invoked function, the
    command "source fname" will be executed.  "fname" will be equal to the name
    of the script, no matter where it is located, because it comes from
@@ -314,44 +314,44 @@ Notice that the functions that are loaded afterwards match the pattern in the
 functions that match this pattern.
 
 ==============================================================================
-*52.5*	Using a Vim9 script from legacy script		*source-vim9-script*
+*52.5*	Using a MNV9 script from legacy script		*source-mnv9-script*
 
-In some cases you have a legacy Vim script where you want to use items from a
-Vim9 script.  For example in your .vimrc you want to initialize a plugin.  The
+In some cases you have a legacy MNV script where you want to use items from a
+MNV9 script.  For example in your .mnvrc you want to initialize a plugin.  The
 best way to do this is to use `:import`.  For example: >
 
-	import 'myNicePlugin.vim'
+	import 'myNicePlugin.mnv'
 	call myNicePlugin.NiceInit('today')
 
-This finds the exported function "NiceInit" in the Vim9 script file and makes
+This finds the exported function "NiceInit" in the MNV9 script file and makes
 it available as script-local item "myNicePlugin.NiceInit". `:import` always
-uses the script namespace, even when "s:" is not given.  If "myNicePlugin.vim"
+uses the script namespace, even when "s:" is not given.  If "myNicePlugin.mnv"
 was already sourced it is not sourced again.
 
 Besides avoiding putting any items in the global namespace (where name clashes
 can cause unexpected errors), this also means the script is sourced only once,
 no matter how many times items from it are imported.
 
-In some cases, e.g. for testing, you may just want to source the Vim9 script.
-That is OK, but then only global items will be available.  The Vim9 script
+In some cases, e.g. for testing, you may just want to source the MNV9 script.
+That is OK, but then only global items will be available.  The MNV9 script
 will have to make sure to use a unique name for these global items. Example: >
-	source ~/.vim/extra/myNicePlugin.vim
+	source ~/.mnv/extra/myNicePlugin.mnv
 	call g:NicePluginTest()
 
 ==============================================================================
-*52.6*	Vim9 examples: comment and highlight-yank plugin
+*52.6*	MNV9 examples: comment and highlight-yank plugin
 
 COMMENT PACKAGE
 
-Vim comes with a comment plugin, written in Vim9 script.  |comment-install|
-Have a look at the package located at $VIMRUNTIME/pack/dist/opt/comment/
+MNV comes with a comment plugin, written in MNV9 script.  |comment-install|
+Have a look at the package located at $MNVRUNTIME/pack/dist/opt/comment/
 
 HIGHLIGHT YANK PLUGIN
 
-Vim comes with the highlight-yank plugin, written in Vim9 script
-|hlyank-install|, here is a simplified implementation: >vim9
+MNV comes with the highlight-yank plugin, written in MNV9 script
+|hlyank-install|, here is a simplified implementation: >mnv9
 
-	vim9script
+	mnv9script
 
 	def HighlightedYank(hlgroup = 'IncSearch', duration = 300, in_visual = true)
 	  if v:event.operator ==? 'y'
@@ -375,11 +375,11 @@ Vim comes with the highlight-yank plugin, written in Vim9 script
 	autocmd TextYankPost * HighlightedYank()
 <
 For the complete example, have a look into the package located at
-`$VIMRUNTIME/pack/dist/opt/hlyank/`
+`$MNVRUNTIME/pack/dist/opt/hlyank/`
 
 ==============================================================================
 
-Next chapter: |usr_90.txt|  Installing Vim
+Next chapter: |usr_90.txt|  Installing MNV
 
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

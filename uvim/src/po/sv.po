@@ -1,11 +1,11 @@
-# Swedish translation for Vim.
+# Swedish translation for MNV.
 # Copyright (C) 2003-2026 Free Software Foundation, Inc.
 # Johan Svedberg <johan@svedberg.com>, 2003-2007.
 # Daniel Nylander <po@danielnylander.se>, 2025, 2026.
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim 9.1\n"
-"Report-Msgid-Bugs-To: vim-dev@vim.org\n"
+"Project-Id-Version: MNV 9.1\n"
+"Report-Msgid-Bugs-To: mnv-dev@mnv.org\n"
 "POT-Creation-Date: 2026-01-06 14:41+0000\n"
 "PO-Revision-Date: 2026-01-11 14:27+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
@@ -254,7 +254,7 @@ msgstr "Ingen display"
 msgid ": Send failed.\n"
 msgstr ": Överföring misslyckades.\n"
 
-#. Let vim start normally.
+#. Let mnv start normally.
 msgid ": Send failed. Trying to execute locally\n"
 msgstr ": Överföring misslyckades. Försöker att köra lokalt\n"
 
@@ -646,8 +646,8 @@ msgstr[1] "%d ytterligare filer att redigera. Vill du avsluta ändå?"
 msgid "unknown"
 msgstr "okänd"
 
-msgid "Greetings, Vim user!"
-msgstr "Välkommen, Vim-användare!"
+msgid "Greetings, MNV user!"
+msgstr "Välkommen, MNV-användare!"
 
 msgid "Already only one tab page"
 msgstr "Redan bara en flik"
@@ -746,8 +746,8 @@ msgstr "[Fil för stor]"
 msgid "[Permission Denied]"
 msgstr "[Behörighet nekad]"
 
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: Läser från standard in...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: Läser från standard in...\n"
 
 #. make a copy, gui_write() may try to change it
 msgid "Reading from stdin..."
@@ -831,10 +831,10 @@ msgstr "[Ofullständig sistarad]"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as "
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as "
 "well"
 msgstr ""
-"W12: Varning: Filen \"%s\" har ändrats och bufferten ändrades i Vim också"
+"W12: Varning: Filen \"%s\" har ändrats och bufferten ändrades i MNV också"
 
 msgid "See \":help W12\" for more info."
 msgstr "Se \":help W12\" för mer info."
@@ -944,11 +944,11 @@ msgstr "Avbryt"
 msgid "Input _Methods"
 msgstr "Inmatnings_metoder"
 
-msgid "VIM - Search and Replace..."
-msgstr "VIM - Sök och ersätt..."
+msgid "MNV - Search and Replace..."
+msgstr "MNV - Sök och ersätt..."
 
-msgid "VIM - Search..."
-msgstr "VIM - Sök..."
+msgid "MNV - Search..."
+msgstr "MNV - Sök..."
 
 msgid "Find what:"
 msgstr "Hitta vad:"
@@ -986,8 +986,8 @@ msgstr "Ersätt alla"
 msgid "_Close"
 msgstr "S_täng"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: Tog emot \"die\"-begäran från sessionshanteraren\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: Tog emot \"die\"-begäran från sessionshanteraren\n"
 
 msgid "Close tab"
 msgstr "Stäng flik"
@@ -998,8 +998,8 @@ msgstr "Ny flik"
 msgid "Open Tab..."
 msgstr "Öppna flik..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: Huvudfönster oväntat förstört\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: Huvudfönster oväntat förstört\n"
 
 msgid "&Filter"
 msgstr "&Filter"
@@ -1025,8 +1025,8 @@ msgstr "&Ok"
 msgid "Selection"
 msgstr "Markering"
 
-msgid "Vim dialog"
-msgstr "Vim-dialog"
+msgid "MNV dialog"
+msgstr "MNV-dialog"
 
 msgid "Find &Next"
 msgstr "Hitta &nästa"
@@ -1086,8 +1086,8 @@ msgstr "&Förkasta"
 msgid "no specific match"
 msgstr "ingen specifik matchning"
 
-msgid "Vim - Font Selector"
-msgstr "Vim - Typsnittsväljare"
+msgid "MNV - Font Selector"
+msgstr "MNV - Typsnittsväljare"
 
 msgid "Name:"
 msgstr "Namn:"
@@ -1273,14 +1273,14 @@ msgstr "kan inte infoga rad"
 msgid "string cannot contain newlines"
 msgstr "sträng kan inte innehålla nyrader"
 
-msgid "error converting Scheme values to Vim"
-msgstr "fel vid konvertering av Scheme-värden till Vim"
+msgid "error converting Scheme values to MNV"
+msgstr "fel vid konvertering av Scheme-värden till MNV"
 
-msgid "Vim error: ~a"
-msgstr "Vim-fel: ~a"
+msgid "MNV error: ~a"
+msgstr "MNV-fel: ~a"
 
-msgid "Vim error"
-msgstr "Vim-fel"
+msgid "MNV error"
+msgstr "MNV-fel"
 
 msgid "buffer is invalid"
 msgstr "buffert är ogiltig"
@@ -1291,8 +1291,8 @@ msgstr "fönster är ogiltigt"
 msgid "linenr out of range"
 msgstr "radnummer utanför område"
 
-msgid "not allowed in the Vim sandbox"
-msgstr "inte tillåtet i Vim-sandlådan"
+msgid "not allowed in the MNV sandbox"
+msgstr "inte tillåtet i MNV-sandlådan"
 
 msgid "invalid buffer number"
 msgstr "ogiltigt buffertnummer"
@@ -1323,8 +1323,8 @@ msgstr "radnummer utanför område"
 msgid "unknown flag: "
 msgstr "okänd flagga: "
 
-msgid "unknown vimOption"
-msgstr "okänd vimOption"
+msgid "unknown mnvOption"
+msgstr "okänd mnvOption"
 
 msgid "keyboard interrupt"
 msgstr "tangentbordsavbrott"
@@ -1528,8 +1528,8 @@ msgstr "netbeans stöds inte med detta grafiska gränssnitt\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "'-nb' kan inte användas: inte aktiverad vid kompilering\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "Denna Vim blev inte kompilerad med diff-funktionen."
+msgid "This MNV was not compiled with the diff feature."
+msgstr "Denna MNV blev inte kompilerad med diff-funktionen."
 
 msgid "Attempt to open script file again: \""
 msgstr "Försök att öppna skriptfil igen: \""
@@ -1540,28 +1540,28 @@ msgstr "Kan inte öppna för läsning: \""
 msgid "Cannot open for script output: \""
 msgstr "Kan inte öppna för skriptutmatning: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: Fel: Misslyckades att starta gvim från NetBeans\n"
+msgid "MNV: Error: Failure to start gmnv from NetBeans\n"
+msgstr "MNV: Fel: Misslyckades att starta gmnv från NetBeans\n"
 
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: Fel: Denna version av Vim kan inte köras i en Cygwin-terminal\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: Fel: Denna version av MNV kan inte köras i en Cygwin-terminal\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: Varning: Utmatning är inte till en terminal\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: Varning: Utmatning är inte till en terminal\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: Varning: Inmatning är inte från en terminal\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: Varning: Inmatning är inte från en terminal\n"
 
 #. just in case..
-msgid "pre-vimrc command line"
-msgstr "pre-vimrc kommandorad"
+msgid "pre-mnvrc command line"
+msgstr "pre-mnvrc kommandorad"
 
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"Mer info med: \"vim -h\"\n"
+"Mer info med: \"mnv -h\"\n"
 
 msgid "[file ..]       edit specified file(s)"
 msgstr "[fil ..]       redigera angivna fil(er)"
@@ -1584,8 +1584,8 @@ msgstr ""
 "\n"
 "användning:"
 
-msgid " vim [arguments] "
-msgstr " vim [argument] "
+msgid " mnv [arguments] "
+msgstr " mnv [argument] "
 
 msgid ""
 "\n"
@@ -1626,14 +1626,14 @@ msgstr "--\t\t\tBara filnamn efter det här"
 msgid "--literal\t\tDon't expand wildcards"
 msgstr "--literal\t\tExpandera inte jokertecken"
 
-msgid "-register\t\tRegister this gvim for OLE"
-msgstr "-register\t\tRegistrera gvim för OLE"
+msgid "-register\t\tRegister this gmnv for OLE"
+msgstr "-register\t\tRegistrera gmnv för OLE"
 
-msgid "-unregister\t\tUnregister gvim for OLE"
-msgstr "-unregister\t\tAvregistrera gvim för OLE"
+msgid "-unregister\t\tUnregister gmnv for OLE"
+msgstr "-unregister\t\tAvregistrera gmnv för OLE"
 
-msgid "-g\t\t\tRun using GUI (like \"gvim\")"
-msgstr "-g\t\t\tKör som grafiskt gränssnitt (som \"gvim\")"
+msgid "-g\t\t\tRun using GUI (like \"gmnv\")"
+msgstr "-g\t\t\tKör som grafiskt gränssnitt (som \"gmnv\")"
 
 msgid "-f  or  --nofork\tForeground: Don't fork when starting GUI"
 msgstr ""
@@ -1651,17 +1651,17 @@ msgstr "-E\t\t\tFörbättrat Ex-läge"
 msgid "-s\t\t\tSilent (batch) mode (only for \"ex\")"
 msgstr "-s\t\t\tTyst (batch) läge (bara för \"ex\")"
 
-msgid "-d\t\t\tDiff mode (like \"vimdiff\")"
-msgstr "-d\t\t\tDiff-läge (som \"vimdiff\")"
+msgid "-d\t\t\tDiff mode (like \"mnvdiff\")"
+msgstr "-d\t\t\tDiff-läge (som \"mnvdiff\")"
 
-msgid "-y\t\t\tEasy mode (like \"evim\", modeless)"
-msgstr "-y\t\t\tLätt läge (som \"evim\", lägeslös)"
+msgid "-y\t\t\tEasy mode (like \"emnv\", modeless)"
+msgstr "-y\t\t\tLätt läge (som \"emnv\", lägeslös)"
 
 msgid "-R\t\t\tReadonly mode (like \"view\")"
 msgstr "-R\t\t\tSkrivskyddat läge (som \"view\")"
 
-msgid "-Z\t\t\tRestricted mode (like \"rvim\")"
-msgstr "-Z\t\t\tBegränsat läge (som \"rvim\")"
+msgid "-Z\t\t\tRestricted mode (like \"rmnv\")"
+msgstr "-Z\t\t\tBegränsat läge (som \"rmnv\")"
 
 msgid "-m\t\t\tModifications (writing files) not allowed"
 msgstr "-m\t\t\tModifieringar (skriva filer) inte tillåtet"
@@ -1725,11 +1725,11 @@ msgid "--ttyfail\t\tExit if input or output is not a terminal"
 msgstr ""
 "--ttyfail\t\tAvsluta om inmatningen eller utmatningen inte är en terminal"
 
-msgid "-u <vimrc>\t\tUse <vimrc> instead of any .vimrc"
-msgstr "-u <vimrc>\t\tAnvänd <vimrc> istället för någon .vimrc"
+msgid "-u <mnvrc>\t\tUse <mnvrc> instead of any .mnvrc"
+msgstr "-u <mnvrc>\t\tAnvänd <mnvrc> istället för någon .mnvrc"
 
-msgid "-U <gvimrc>\t\tUse <gvimrc> instead of any .gvimrc"
-msgstr "-U <gvimrc>\t\tAnvänd <gvimrc> istället för någon .gvimrc"
+msgid "-U <gmnvrc>\t\tUse <gmnvrc> instead of any .gmnvrc"
+msgstr "-U <gmnvrc>\t\tAnvänd <gmnvrc> istället för någon .gmnvrc"
 
 msgid "--noplugin\t\tDon't load plugin scripts"
 msgstr "--noplugin\t\tLäs inte in insticksskript"
@@ -1749,8 +1749,8 @@ msgstr "+\t\t\tStarta vid slut av fil"
 msgid "+<lnum>\t\tStart at line <lnum>"
 msgstr "+<lnr>\t\tStarta på rad <rnr>"
 
-msgid "--cmd <command>\tExecute <command> before loading any vimrc file"
-msgstr "--cmd <kommando>\tKör <kommando> före inläsning av någon vimrc fil"
+msgid "--cmd <command>\tExecute <command> before loading any mnvrc file"
+msgstr "--cmd <kommando>\tKör <kommando> före inläsning av någon mnvrc fil"
 
 msgid "-c <command>\t\tExecute <command> after loading the first file"
 msgstr "-c <kommando>\tKör <kommando> efter inläsning av den första filen"
@@ -1770,8 +1770,8 @@ msgstr "-W <utskript>\tSkriv alla skrivna kommandon till fil <utskript>"
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\tRedigera krypterade filer"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
-msgstr "-display <display>\tAnslut Vim till just denna X-server"
+msgid "-display <display>\tConnect MNV to this particular X-server"
+msgstr "-display <display>\tAnslut MNV till just denna X-server"
 
 msgid "-X\t\t\tDo not connect to X server"
 msgstr "-X\t\t\tAnslut inte till X server"
@@ -1782,8 +1782,8 @@ msgstr "-Y\t\t\tAnslut inte till Wayland compositor"
 msgid "--clientserver <socket|x11> Backend for clientserver communication"
 msgstr "--clientserver <socket|x11> Backend för clientserver-kommunikation"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
-msgstr "--remote <filer>\tRedigera <filer> i en Vim-server om möjligt"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
+msgstr "--remote <filer>\tRedigera <filer> i en MNV-server om möjligt"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr ""
@@ -1807,20 +1807,20 @@ msgstr ""
 "--remote-tab[-wait][-silent] <filer>  Som --remote men använd fliksida per "
 "fil"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
 msgstr ""
-"--remote-send <nycklar>\tSkicka <nycklar> till en Vim-server och avsluta"
+"--remote-send <nycklar>\tSkicka <nycklar> till en MNV-server och avsluta"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
 msgstr ""
-"--remote-expr <uttryck>\tEvaluera <uttryck> i en Vim-server och skriv ut "
+"--remote-expr <uttryck>\tEvaluera <uttryck> i en MNV-server och skriv ut "
 "resultatet"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
-msgstr "--serverlist\t\tLista tillgängliga Vim-servernamn och avsluta"
+msgid "--serverlist\t\tList available MNV server names and exit"
+msgstr "--serverlist\t\tLista tillgängliga MNV-servernamn och avsluta"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
-msgstr "--servername <namn>\tSkicka till/för att bli Vim-servern <namn>"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
+msgstr "--servername <namn>\tSkicka till/för att bli MNV-servern <namn>"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
 msgstr "--startuptime <fil>\tSkriv starttidsmeddelanden till <fil>"
@@ -1828,13 +1828,13 @@ msgstr "--startuptime <fil>\tSkriv starttidsmeddelanden till <fil>"
 msgid "--log <file>\t\tStart logging to <file> early"
 msgstr "--log <fil>         Börja logga till <fil> tidigt"
 
-msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
-msgstr "-i <viminfo>\t\tAnvänd <viminfo> istället för .viminfo"
+msgid "-i <mnvinfo>\t\tUse <mnvinfo> instead of .mnvinfo"
+msgstr "-i <mnvinfo>\t\tAnvänd <mnvinfo> istället för .mnvinfo"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no mnvinfo"
 msgstr ""
-"--clean\t\t'nocompatible', Vim-standardinställningar, inga instick, ingen "
-"viminfo"
+"--clean\t\t'nocompatible', MNV-standardinställningar, inga instick, ingen "
+"mnvinfo"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h  eller  --help\tSkriv ut Hjälp (det här meddelandet) och avsluta"
@@ -1844,16 +1844,16 @@ msgstr "--version\t\tSkriv ut versionsinformation och avsluta"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Motif version):\n"
+"Arguments recognised by gmnv (Motif version):\n"
 msgstr ""
 "\n"
-"Argument som stöds av gvim (Motif-version):\n"
+"Argument som stöds av gmnv (Motif-version):\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <display>\tKör Vim på <display>"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <display>\tKör MNV på <display>"
 
-msgid "-iconic\t\tStart Vim iconified"
-msgstr "-iconic\t\tStarta Vim som ikon"
+msgid "-iconic\t\tStart MNV iconified"
+msgstr "-iconic\t\tStarta MNV som ikon"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
 msgstr "-background <färg>\tAnvänd <färg> för bakgrunden (även: -bg)"
@@ -1892,28 +1892,28 @@ msgstr "-xrm <tillgång>\tStäll in den angivna tillgången"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (GTK+ version):\n"
+"Arguments recognised by gmnv (GTK+ version):\n"
 msgstr ""
 "\n"
-"Argument igenkända av gvim (GTK+-version):\n"
+"Argument igenkända av gmnv (GTK+-version):\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <display>\tKör Vim på <display> (även: --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <display>\tKör MNV på <display> (även: --display)"
 
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr "--role <roll>\tStäll in en unik roll för att identifiera huvudfönstret"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\tÖppna Vim innanför en annan GTK-widget"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\tÖppna MNV innanför en annan GTK-widget"
 
-msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
-msgstr "--echo-wid\t\tFå gvim att skriva ut fönster-id på stdout"
+msgid "--echo-wid\t\tMake gmnv echo the Window ID on stdout"
+msgstr "--echo-wid\t\tFå gmnv att skriva ut fönster-id på stdout"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
-msgstr "-P <förälder fönster>\tÖppna Vim inuti förälderapplikation"
+msgid "-P <parent title>\tOpen MNV inside parent application"
+msgstr "-P <förälder fönster>\tÖppna MNV inuti förälderapplikation"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\tÖppna Vim inne i en annan win32-widget"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\tÖppna MNV inne i en annan win32-widget"
 
 msgid "Seen modifyOtherKeys: true\n"
 msgstr "Sett modifyOtherKeys: true\n"
@@ -1982,17 +1982,17 @@ msgstr "Kunde inte läsa block 0 från "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"Kanske gjordes inte några förändringar eller så uppdaterade inte Vim "
+"Kanske gjordes inte några förändringar eller så uppdaterade inte MNV "
 "växlingsfilen."
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " kan inte användas med den här versionen av Vim.\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " kan inte användas med den här versionen av MNV.\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "Använd Vim version 3.0.\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "Använd MNV version 3.0.\n"
 
 msgid " cannot be used on this computer.\n"
 msgstr " kan inte användas på den här datorn.\n"
@@ -2104,7 +2104,7 @@ msgstr ""
 "\n"
 "Du kanske vill ta bort .swp-filen nu."
 
-#. Warn there could be an active Vim on the same file, the user may
+#. Warn there could be an active MNV on the same file, the user may
 #. want to kill it.
 msgid ""
 "\n"
@@ -2141,11 +2141,11 @@ msgstr "   daterad: "
 msgid "             dated: "
 msgstr "             daterad: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [från Vim version 3.0]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [från MNV version 3.0]"
 
-msgid "         [does not look like a Vim swap file]"
-msgstr "         [ser inte ut som en Vim-växlingsfil]"
+msgid "         [does not look like a MNV swap file]"
+msgstr "         [ser inte ut som en MNV-växlingsfil]"
 
 msgid "         file name: "
 msgstr "         filnamn: "
@@ -2192,10 +2192,10 @@ msgstr " (KÖR FORTFARANDE)"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [inte användbar med den här versionen av Vim]"
+"         [inte användbar med den här versionen av MNV]"
 
 msgid ""
 "\n"
@@ -2257,8 +2257,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) En redigeringssession för den här filen kraschade.\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    Om så är fallet, använd \":recover\" eller \"vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    Om så är fallet, använd \":recover\" eller \"mnv -r "
 
 msgid ""
 "\"\n"
@@ -2286,8 +2286,8 @@ msgstr "Växlingsfil \""
 msgid "\" already exists!"
 msgstr "\" existerar redan!"
 
-msgid "VIM - ATTENTION"
-msgstr "VIM - LYSTRING"
+msgid "MNV - ATTENTION"
+msgstr "MNV - LYSTRING"
 
 msgid "Swap file already exists!"
 msgstr "Växlingsfil existerar redan!"
@@ -2345,7 +2345,7 @@ msgstr "rad %4ld:"
 
 #. Translator: Please replace the name and email address
 #. with the appropriate text for your translation.
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Meddelandeansvarig: Daniel Nylander <po@danielnylander.se>"
 
 msgid "Interrupt: "
@@ -2425,13 +2425,13 @@ msgstr "Anropar skal att köra: \"%s\""
 msgid "Warning: terminal cannot highlight"
 msgstr "Varning: terminal kan inte framhäva"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
 msgstr ""
 "Skriv  :qa!  och tryck på <Enter> för att avbryta alla ändringar och avsluta "
-"Vim"
+"MNV"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "Skriv  :qa  och tryck på <Enter> för att avsluta Vim"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "Skriv  :qa  och tryck på <Enter> för att avsluta MNV"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -2529,8 +2529,8 @@ msgstr ""
 msgid "cannot open "
 msgstr "kan inte öppna "
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: Kan inte öppna fönster!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: Kan inte öppna fönster!\n"
 
 msgid "Need Amigados version 2.04 or later\n"
 msgstr "Behöver Amigados version 2.04 eller senare\n"
@@ -2546,8 +2546,8 @@ msgid "Cannot create "
 msgstr "Kan inte skapa "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vim avslutar med %d\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNV avslutar med %d\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "kan inte ändra konsoll-läge ?!\n"
@@ -2593,10 +2593,10 @@ msgstr "Öppning av X-display tog %ld ms"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: Fick X-error\n"
+"MNV: Fick X-error\n"
 
 #, c-format
 msgid "restoring X11 display %s"
@@ -2707,8 +2707,8 @@ msgid "At line"
 msgstr "På rad"
 
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: Fångade %s-händelse\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: Fångade %s-händelse\n"
 
 msgid "close"
 msgstr "stäng"
@@ -2720,16 +2720,16 @@ msgid "shutdown"
 msgstr "stäng av"
 
 msgid ""
-"VIMRUN.EXE not found in your $PATH.\n"
+"MNVRUN.EXE not found in your $PATH.\n"
 "External commands will not pause after completion.\n"
-"See  :help win32-vimrun  for more information."
+"See  :help win32-mnvrun  for more information."
 msgstr ""
-"VIMRUN.EXE hittades inte i din $PATH.\n"
+"MNVRUN.EXE hittades inte i din $PATH.\n"
 "Externa kommandon vill inte stå stilla efter färdigställning.\n"
-"Se  :help win32-vimrun  för mer information."
+"Se  :help win32-mnvrun  för mer information."
 
-msgid "Vim Warning"
-msgstr "Vim-varning"
+msgid "MNV Warning"
+msgstr "MNV-varning"
 
 #, c-format
 msgid "shell returned %d"
@@ -2859,8 +2859,8 @@ msgstr "Söker efter \"%s\""
 msgid "not found in '%s': \"%s\""
 msgstr "hittades inte i '%s': \"%s\""
 
-msgid "Source Vim script"
-msgstr "Läs Vim-skript"
+msgid "Source MNV script"
+msgstr "Läs MNV-skript"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -3434,8 +3434,8 @@ msgstr[1] "%ld sekunder sedan"
 msgid "new shell started\n"
 msgstr "nytt skal startat\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: Fel vid läsning av inmatning, avslutar...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: Fel vid läsning av inmatning, avslutar...\n"
 
 #. must display the prompt
 msgid "No undo possible; continue anyway"
@@ -3714,20 +3714,20 @@ msgstr "med grafiskt gränssnitt."
 msgid "  Features included (+) or not (-):\n"
 msgstr "  Funktioner inkluderade (+) eller inte (-):\n"
 
-msgid "   system vimrc file: \""
-msgstr "   system-vimrc-fil: \""
+msgid "   system mnvrc file: \""
+msgstr "   system-mnvrc-fil: \""
 
-msgid "     user vimrc file: \""
-msgstr "     användar-vimrc-fil: \""
+msgid "     user mnvrc file: \""
+msgstr "     användar-mnvrc-fil: \""
 
-msgid " 2nd user vimrc file: \""
-msgstr " Andra användar-vimrc-fil: \""
+msgid " 2nd user mnvrc file: \""
+msgstr " Andra användar-mnvrc-fil: \""
 
-msgid " 3rd user vimrc file: \""
-msgstr " Tredje användar-vimrc-fil: \""
+msgid " 3rd user mnvrc file: \""
+msgstr " Tredje användar-mnvrc-fil: \""
 
-msgid " 4th user vimrc file: \""
-msgstr " 4:e användarens vimrc-fil: \""
+msgid " 4th user mnvrc file: \""
+msgstr " 4:e användarens mnvrc-fil: \""
 
 msgid "      user exrc file: \""
 msgstr "      användar-exrc-fil: \""
@@ -3735,17 +3735,17 @@ msgstr "      användar-exrc-fil: \""
 msgid "  2nd user exrc file: \""
 msgstr "  Andra användar-exrc-fil: \""
 
-msgid "  system gvimrc file: \""
-msgstr "  system-gvimrc-fil: \""
+msgid "  system gmnvrc file: \""
+msgstr "  system-gmnvrc-fil: \""
 
-msgid "    user gvimrc file: \""
-msgstr "    användar-gvimrc-fil: \""
+msgid "    user gmnvrc file: \""
+msgstr "    användar-gmnvrc-fil: \""
 
-msgid "2nd user gvimrc file: \""
-msgstr "Andra användar-gvimrc-fil: \""
+msgid "2nd user gmnvrc file: \""
+msgstr "Andra användar-gmnvrc-fil: \""
 
-msgid "3rd user gvimrc file: \""
-msgstr "Tredje användar-gvimrc-fil: \""
+msgid "3rd user gmnvrc file: \""
+msgstr "Tredje användar-gmnvrc-fil: \""
 
 msgid "       defaults file: \""
 msgstr "       defaults-fil: \""
@@ -3753,11 +3753,11 @@ msgstr "       defaults-fil: \""
 msgid "    system menu file: \""
 msgstr "    systemmenyfil: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "  reserv för $VIM: \""
+msgid "  fall-back for $MNV: \""
+msgstr "  reserv för $MNV: \""
 
-msgid " f-b for $VIMRUNTIME: \""
-msgstr " reserv för $VIMRUNTIME: \""
+msgid " f-b for $MNVRUNTIME: \""
+msgstr " reserv för $MNVRUNTIME: \""
 
 msgid "Compilation: "
 msgstr "Kompilering: "
@@ -3771,8 +3771,8 @@ msgstr "Länkning: "
 msgid "  DEBUG BUILD"
 msgstr "  FELSÖKNINGSBYGGD"
 
-msgid "VIM - Vi IMproved"
-msgstr "VIM - Vi IMproved"
+msgid "MNV - MNV is not Vim"
+msgstr "MNV - MNV is not Vim"
 
 msgid "version "
 msgstr "version "
@@ -3780,8 +3780,8 @@ msgstr "version "
 msgid "by Bram Moolenaar et al."
 msgstr "av Bram Moolenaar m.fl."
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim är öppen källkod och fri att distribuera"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV är öppen källkod och fri att distribuera"
 
 msgid "Help poor children in Uganda!"
 msgstr "Hjälp fattiga barn i Uganda!"
@@ -3801,8 +3801,8 @@ msgstr "skriv  :help version9<Enter>    för versionsinformation"
 msgid "Running in Vi compatible mode"
 msgstr "Kör i Vi-kompatibelt läge"
 
-msgid "type  :set nocp<Enter>        for Vim defaults"
-msgstr "skriv  :set nocp<Enter>        för Vim- standarder"
+msgid "type  :set nocp<Enter>        for MNV defaults"
+msgstr "skriv  :set nocp<Enter>        för MNV- standarder"
 
 msgid "type  :help cp-default<Enter> for info on this"
 msgstr "skriv  :help cp-default<Enter> för information om det här"
@@ -3822,11 +3822,11 @@ msgstr "                              för två lägen      "
 msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "meny  Redigera->Globala inställningar->Växla Vi-kompatibel"
 
-msgid "                              for Vim defaults   "
-msgstr "                              för Vim-defaults   "
+msgid "                              for MNV defaults   "
+msgstr "                              för MNV-defaults   "
 
-msgid "Sponsor Vim development!"
-msgstr "Stöd utvecklingen av Vim!"
+msgid "Sponsor MNV development!"
+msgstr "Stöd utvecklingen av MNV!"
 
 msgid "type  :help sponsor<Enter>    for information "
 msgstr "skriv  :help sponsor<Enter>     för information "
@@ -3887,8 +3887,8 @@ msgstr ""
 "# Bar-rader, kopierade tecken-för-tecken:\n"
 
 #, c-format
-msgid "%sviminfo: %s in line: "
-msgstr "%sviminfo: %s på rad: "
+msgid "%smnvinfo: %s in line: "
+msgstr "%smnvinfo: %s på rad: "
 
 msgid ""
 "\n"
@@ -3950,8 +3950,8 @@ msgstr ""
 
 #. Write the info:
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# Den här viminfo-filen genererades av Vim %s.\n"
+msgid "# This mnvinfo file was generated by MNV %s.\n"
+msgstr "# Den här mnvinfo-filen genererades av MNV %s.\n"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -3964,8 +3964,8 @@ msgid "# Value of 'encoding' when this file was written\n"
 msgstr "# Värde av 'encoding' när den här filen blev skriven\n"
 
 #, c-format
-msgid "Reading viminfo file \"%s\"%s%s%s%s"
-msgstr "Läser viminfo-filen \"%s\"%s%s%s%s"
+msgid "Reading mnvinfo file \"%s\"%s%s%s%s"
+msgstr "Läser mnvinfo-filen \"%s\"%s%s%s%s"
 
 msgid " info"
 msgstr " info"
@@ -3980,8 +3980,8 @@ msgid " FAILED"
 msgstr " MISSLYCKADES"
 
 #, c-format
-msgid "Writing viminfo file \"%s\""
-msgstr "Skriver viminfo-fil \"%s\""
+msgid "Writing mnvinfo file \"%s\""
+msgstr "Skriver mnvinfo-fil \"%s\""
 
 msgid "wayland protocol error -> "
 msgstr "wayland-protokollfel -> "
@@ -4005,32 +4005,32 @@ msgstr ""
 "Tyvärr, det här kommandot är inaktiverat: Perl-biblioteket kunde inte läsas "
 "in."
 
-msgid "Edit with Vim using &tabpages"
-msgstr "Redigera med Vim med &fliksidor"
+msgid "Edit with MNV using &tabpages"
+msgstr "Redigera med MNV med &fliksidor"
 
-msgid "Edit with single &Vim"
-msgstr "Redigera med en &Vim"
+msgid "Edit with single &MNV"
+msgstr "Redigera med en &MNV"
 
-msgid "Diff with Vim"
-msgstr "Diff med Vim"
+msgid "Diff with MNV"
+msgstr "Diff med MNV"
 
-msgid "Edit with &Vim"
-msgstr "Redigera med &Vim"
+msgid "Edit with &MNV"
+msgstr "Redigera med &MNV"
 
-msgid "Edit with existing Vim"
-msgstr "Redigera med befintlig Vim"
+msgid "Edit with existing MNV"
+msgstr "Redigera med befintlig MNV"
 
-msgid "Edit with existing Vim - "
-msgstr "Redigera med befintlig Vim - "
+msgid "Edit with existing MNV - "
+msgstr "Redigera med befintlig MNV - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "Redigerar markerade fil(erna) med Vim"
+msgid "Edits the selected file(s) with MNV"
+msgstr "Redigerar markerade fil(erna) med MNV"
 
-msgid "Error creating process: Check if gvim is in your path!"
-msgstr "Felskapande process: Kontrollera om gvim är i din sökväg!"
+msgid "Error creating process: Check if gmnv is in your path!"
+msgstr "Felskapande process: Kontrollera om gmnv är i din sökväg!"
 
-msgid "gvimext.dll error"
-msgstr "gvimext.dll-fel"
+msgid "gmnvext.dll error"
+msgstr "gmnvext.dll-fel"
 
 msgid "Interrupted"
 msgstr "Avbruten"
@@ -4041,9 +4041,9 @@ msgstr "E10: \\ borde följas av /, ? eller &"
 msgid "E11: Invalid in command-line window; :q<CR> closes the window"
 msgstr "E11: Ogiltigt i kommandoradsfönstret; :q<CR> stänger fönstret"
 
-msgid "E12: Command not allowed from exrc/vimrc in current dir or tag search"
+msgid "E12: Command not allowed from exrc/mnvrc in current dir or tag search"
 msgstr ""
-"E12: Kommando inte tillåtet från exrc/vimrc i aktuell katalog eller "
+"E12: Kommando inte tillåtet från exrc/mnvrc i aktuell katalog eller "
 "taggsökning"
 
 msgid "E13: File exists (add ! to override)"
@@ -4457,16 +4457,16 @@ msgstr "E134: Kan inte flytta ett antal rader till sig själv"
 msgid "E135: *Filter* Autocommands must not change current buffer"
 msgstr "E135: *Filter*-Autokommandon får inte ändra aktuell buffert"
 
-msgid "E136: viminfo: Too many errors, skipping rest of file"
-msgstr "E136: viminfo: För många fel, hoppar över resten av filen"
+msgid "E136: mnvinfo: Too many errors, skipping rest of file"
+msgstr "E136: mnvinfo: För många fel, hoppar över resten av filen"
 
 #, c-format
-msgid "E137: Viminfo file is not writable: %s"
-msgstr "E137: Viminfo-fil är inte skrivbar: %s"
+msgid "E137: MNVinfo file is not writable: %s"
+msgstr "E137: MNVinfo-fil är inte skrivbar: %s"
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: Kan inte skriva viminfo-fil %s!"
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: Kan inte skriva mnvinfo-fil %s!"
 
 msgid "E139: File is loaded in another buffer"
 msgstr "E139: Filen är inläst i en annan buffert"
@@ -4489,8 +4489,8 @@ msgstr "E143: Autokommandon tog oväntat bort ny buffert %s"
 msgid "E144: Non-numeric argument to :z"
 msgstr "E144: ickenumeriskt argument till :z"
 
-msgid "E145: Shell commands and some functionality not allowed in rvim"
-msgstr "E145: Skalkommandon och vissa funktioner är inte tillåtna i rvim"
+msgid "E145: Shell commands and some functionality not allowed in rmnv"
+msgstr "E145: Skalkommandon och vissa funktioner är inte tillåtna i rmnv"
 
 msgid "E146: Regular expressions can't be delimited by letters"
 msgstr "E146: Reguljära uttryck kan inte vara åtskilda av bokstäver"
@@ -4672,8 +4672,8 @@ msgstr "E193: %s inte inom en funktion"
 msgid "E194: No alternate file name to substitute for '#'"
 msgstr "E194: Inget alternativt filnamn att byta ut '#' med"
 
-msgid "E195: Cannot open viminfo file for reading"
-msgstr "E195: Kan inte öppna viminfo-fil för läsning"
+msgid "E195: Cannot open mnvinfo file for reading"
+msgstr "E195: Kan inte öppna mnvinfo-fil för läsning"
 
 msgid "E196: No digraphs in this version"
 msgstr "E196: Inga digrafer i den här versionen"
@@ -4866,8 +4866,8 @@ msgid "E250: Fonts for the following charsets are missing in fontset %s:"
 msgstr ""
 "E250: Typsnitt för följande teckenkoder saknas i typsnittsuppsättningen %s:"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
-msgstr "E251: VIM instansregisteregenskap är dåligt format.  Borttaget!"
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
+msgstr "E251: MNV instansregisteregenskap är dåligt format.  Borttaget!"
 
 #, c-format
 msgid "E252: Fontset name: %s - Font '%s' is not fixed-width"
@@ -5040,8 +5040,8 @@ msgid "E306: Cannot open %s"
 msgstr "E306: Kan inte öppna %s"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s ser inte ut som en Vim-växlingsfil"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s ser inte ut som en MNV-växlingsfil"
 
 msgid "E308: Warning: Original file may have been changed"
 msgstr "E308: Varning: Originalfilen kan ha blivit skadad"
@@ -6092,8 +6092,8 @@ msgstr "E606: :finally utan :try"
 msgid "E607: Multiple :finally"
 msgstr "E607: flera :finally"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: Kan inte :throw undantag med 'Vim'-prefix"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: Kan inte :throw undantag med 'MNV'-prefix"
 
 #, c-format
 msgid "E609: Cscope error: %s"
@@ -6318,8 +6318,8 @@ msgid "E678: Invalid character after %s%%[dxouU]"
 msgstr "E678: Ogiltigt tecken efter %s%%[dxouU]"
 
 # TODO: Capitalise first word of message?
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: rekursiv slinga läser in syncolor.vim"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: rekursiv slinga läser in syncolor.mnv"
 
 #, c-format
 msgid "E680: <buffer=%d>: invalid buffer number"
@@ -6645,8 +6645,8 @@ msgstr "E770: Ostödd sektion i stavningsfil"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: Gammal stavningsfil, behöver bli uppdaterad"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: Stavningsfil är för nyare version av Vim"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: Stavningsfil är för nyare version av MNV"
 
 #, c-format
 msgid "E773: Symlink loop for \"%s\""
@@ -6673,8 +6673,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: Gammal .sug-fil, behöver bli uppdaterad: %s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: .sug-fil är för nyare version av Vim: %s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: .sug-fil är för nyare version av MNV: %s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -6864,9 +6864,9 @@ msgstr "E832: Icke-krypterad fil har krypterad ångringsfil: %s"
 
 #, c-format
 msgid ""
-"E833: %s is encrypted and this version of Vim does not support encryption"
+"E833: %s is encrypted and this version of MNV does not support encryption"
 msgstr ""
-"E833: %s är krypterad och den här versionen av Vim saknar stöd för kryptering"
+"E833: %s är krypterad och den här versionen av MNV saknar stöd för kryptering"
 
 msgid "E834: Conflicts with value of 'listchars'"
 msgstr "E834: Konflikter med värdet för 'listchars'"
@@ -6874,11 +6874,11 @@ msgstr "E834: Konflikter med värdet för 'listchars'"
 msgid "E835: Conflicts with value of 'fillchars'"
 msgstr "E835: Konflikter med värdet för 'fillchars'"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
-msgstr "E836: Denna Vim kan inte köra :python efter att ha använt :py3"
+msgid "E836: This MNV cannot execute :python after using :py3"
+msgstr "E836: Denna MNV kan inte köra :python efter att ha använt :py3"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
-msgstr "E837: Denna Vim kan inte köra :py3 efter att ha använt :python"
+msgid "E837: This MNV cannot execute :py3 after using :python"
+msgstr "E837: Denna MNV kan inte köra :py3 efter att ha använt :python"
 
 msgid "E838: NetBeans is not supported with this GUI"
 msgstr "E838: NetBeans stöds inte med detta grafiska gränssnitt"
@@ -6949,10 +6949,10 @@ msgstr "E857: Ordboksnyckeln \"%s\" krävs"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: Eval returnerade inte ett giltigt python-objekt"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
+msgid "E859: Failed to convert returned python object to a MNV value"
 msgstr ""
 "E859: Det gick inte att konvertera det returnerade python-objektet till ett "
-"Vim-värde"
+"MNV-värde"
 
 msgid "E860: Need 'id' and 'type' or 'types' with 'both'"
 msgstr "E860: Behöver \"id\" och \"type\" eller \"types\" med \"both\""
@@ -7031,8 +7031,8 @@ msgstr "E878: (NFA regexp) Kunde inte allokera minne för grentraversering!"
 msgid "E879: (NFA regexp) Too many \\z("
 msgstr "E879: (NFA regexp) För många \\z("
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
-msgstr "E880: Kan inte hantera SystemExit för python-undantag i vim"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
+msgstr "E880: Kan inte hantera SystemExit för python-undantag i mnv"
 
 msgid "E881: Line count changed unexpectedly"
 msgstr "E881: Radantalet ändrades oväntat"
@@ -7056,8 +7056,8 @@ msgid "E885: Not possible to change sign %s"
 msgstr "E885: Inte möjligt att ändra tecken %s"
 
 #, c-format
-msgid "E886: Can't rename viminfo file to %s!"
-msgstr "E886: Det går inte att byta namn på viminfo-fil till %s!"
+msgid "E886: Can't rename mnvinfo file to %s!"
+msgstr "E886: Det går inte att byta namn på mnvinfo-fil till %s!"
 
 msgid ""
 "E887: Sorry, this command is disabled, the Python's site module could not be "
@@ -7209,8 +7209,8 @@ msgid "E928: String required"
 msgstr "E928: String krävs"
 
 #, c-format
-msgid "E929: Too many viminfo temp files, like %s!"
-msgstr "E929: För många viminfo-tempfiler, som %s!"
+msgid "E929: Too many mnvinfo temp files, like %s!"
+msgstr "E929: För många mnvinfo-tempfiler, som %s!"
 
 msgid "E930: Cannot use :redir inside execute()"
 msgstr "E930: Kan inte använda :redir inuti execute()"
@@ -7380,8 +7380,8 @@ msgstr "E979: Blob-index utanför intervallet: %ld"
 msgid "E980: Lowlevel input not supported"
 msgstr "E980: Lågnivåinmatning stöds inte"
 
-msgid "E981: Command not allowed in rvim"
-msgstr "E981: Kommandot är inte tillåtet i rvim"
+msgid "E981: Command not allowed in rmnv"
+msgstr "E981: Kommandot är inte tillåtet i rmnv"
 
 msgid "E982: ConPTY is not available"
 msgstr "E982: ConPTY är inte tillgängligt"
@@ -7402,8 +7402,8 @@ msgstr "E986: Kan inte ändra taggstacken inom tagfunc"
 msgid "E987: Invalid return value from tagfunc"
 msgstr "E987: Ogiltigt returvärde från tagfunc"
 
-msgid "E988: GUI cannot be used. Cannot execute gvim.exe."
-msgstr "E988: Grafiskt gränssnitt kan inte användas. Kan inte köra gvim.exe."
+msgid "E988: GUI cannot be used. Cannot execute gmnv.exe."
+msgstr "E988: Grafiskt gränssnitt kan inte användas. Kan inte köra gmnv.exe."
 
 msgid "E989: Non-default argument follows default argument"
 msgstr "E989: Icke-standardargument följer standardargument"
@@ -7601,21 +7601,21 @@ msgstr "E1036: %c kräver tal- eller flyttalsargument"
 msgid "E1037: Cannot use \"%s\" with %s"
 msgstr "E1037: Kan inte använda \"%s\" med %s"
 
-msgid "E1038: \"vim9script\" can only be used in a script"
-msgstr "E1038: \"vim9script\" kan endast användas i ett skript"
+msgid "E1038: \"mnv9script\" can only be used in a script"
+msgstr "E1038: \"mnv9script\" kan endast användas i ett skript"
 
-msgid "E1039: \"vim9script\" must be the first command in a script"
-msgstr "E1039: \"vim9script\" måste vara det första kommandot i ett skript"
+msgid "E1039: \"mnv9script\" must be the first command in a script"
+msgstr "E1039: \"mnv9script\" måste vara det första kommandot i ett skript"
 
-msgid "E1040: Cannot use :scriptversion after :vim9script"
-msgstr "E1040: Kan inte använda :scriptversion efter :vim9script"
+msgid "E1040: Cannot use :scriptversion after :mnv9script"
+msgstr "E1040: Kan inte använda :scriptversion efter :mnv9script"
 
 #, c-format
 msgid "E1041: Redefining script item: \"%s\""
 msgstr "E1041: Omdefiniering av skriptpost: \"%s\""
 
-msgid "E1042: Export can only be used in vim9script"
-msgstr "E1042: Export kan endast användas i vim9script"
+msgid "E1042: Export can only be used in mnv9script"
+msgstr "E1042: Export kan endast användas i mnv9script"
 
 msgid "E1043: Invalid command after :export"
 msgstr "E1043: Ogiltigt kommando efter :export"
@@ -7751,8 +7751,8 @@ msgid "E1083: Missing backtick"
 msgstr "E1083: Saknar bakåtstreck"
 
 #, c-format
-msgid "E1084: Cannot delete Vim9 script function %s"
-msgstr "E1084: Kan inte ta bort Vim9-skriptfunktionen %s"
+msgid "E1084: Cannot delete MNV9 script function %s"
+msgstr "E1084: Kan inte ta bort MNV9-skriptfunktionen %s"
 
 #, c-format
 msgid "E1085: Not a callable type: %s"
@@ -7804,8 +7804,8 @@ msgid "E1099: Unknown error while executing %s"
 msgstr "E1099: Okänt fel vid körning av %s"
 
 #, c-format
-msgid "E1100: Command not supported in Vim9 script (missing :var?): %s"
-msgstr "E1100: Kommandot stöds inte i Vim9-skript (saknar :var?): %s"
+msgid "E1100: Command not supported in MNV9 script (missing :var?): %s"
+msgstr "E1100: Kommandot stöds inte i MNV9-skript (saknar :var?): %s"
 
 #, c-format
 msgid "E1101: Cannot declare a script variable in a function: %s"
@@ -7888,14 +7888,14 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: Saknar kommatecken före argument: %s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: \"%s\" kan inte användas i äldre Vim-skript"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: \"%s\" kan inte användas i äldre MNV-skript"
 
 msgid "E1125: Final requires a value"
 msgstr "E1125: Final kräver ett värde"
 
-msgid "E1126: Cannot use :let in Vim9 script"
-msgstr "E1126: Kan inte använda :let i Vim9-skript"
+msgid "E1126: Cannot use :let in MNV9 script"
+msgstr "E1126: Kan inte använda :let i MNV9-skript"
 
 msgid "E1127: Missing name after dot"
 msgstr "E1127: Saknar namn efter punkt"
@@ -7996,8 +7996,8 @@ msgstr "E1156: Kan inte ändra argumentlistan rekursivt"
 msgid "E1157: Missing return type"
 msgstr "E1157: Saknar returtyp"
 
-msgid "E1158: Cannot use flatten() in Vim9 script, use flattennew()"
-msgstr "E1158: Kan inte använda flatten() i Vim9-skript, använd flattennew()"
+msgid "E1158: Cannot use flatten() in MNV9 script, use flattennew()"
+msgstr "E1158: Kan inte använda flatten() i MNV9-skript, använd flattennew()"
 
 msgid "E1159: Cannot split a window when closing the buffer"
 msgstr "E1159: Det går inte att dela ett fönster när bufferten stängs"
@@ -8021,8 +8021,8 @@ msgstr "E1163: Variabel %d: typkonflikt, förväntade %s men fick %s"
 msgid "E1163: Variable %d: type mismatch, expected %s but got %s in %s"
 msgstr "E1163: Variabel %d: typkonflikt, förväntade %s men fick %s i %s"
 
-msgid "E1164: vim9cmd must be followed by a command"
-msgstr "E1164: vim9cmd måste följas av ett kommando"
+msgid "E1164: mnv9cmd must be followed by a command"
+msgstr "E1164: mnv9cmd måste följas av ett kommando"
 
 #, c-format
 msgid "E1165: Cannot use a range with an assignment: %s"
@@ -8090,8 +8090,8 @@ msgid "E1181: Cannot use an underscore here"
 msgstr "E1181: Kan inte använda ett understreck här"
 
 #, c-format
-msgid "E1182: Cannot define a dict function in Vim9 script: %s"
-msgstr "E1182: Kan inte definiera en dict-funktion i Vim9-skript: %s"
+msgid "E1182: Cannot define a dict function in MNV9 script: %s"
+msgstr "E1182: Kan inte definiera en dict-funktion i MNV9-skript: %s"
 
 #, c-format
 msgid "E1183: Cannot use a range with an assignment operator: %s"
@@ -8107,8 +8107,8 @@ msgstr "E1185: Saknar :redir END"
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: Uttrycket resulterar inte i ett värde: %s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: Misslyckades med att läsa in defaults.vim"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: Misslyckades med att läsa in defaults.mnv"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: Kan inte öppna en terminal från kommandoradsfönstret"
@@ -8130,9 +8130,9 @@ msgstr "E1191: Anrop till funktion som misslyckades att kompileras: %s"
 msgid "E1192: Empty function name"
 msgstr "E1192: Tomt funktionsnamn"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
 msgstr ""
-"E1193: krypteringsmetoden xchacha20 är inte inbyggd i denna version av Vim"
+"E1193: krypteringsmetoden xchacha20 är inte inbyggd i denna version av MNV"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: Kan inte kryptera rubriken, otillräckligt utrymme"
@@ -8324,8 +8324,8 @@ msgstr "E1243: ASCII-kod utanför intervallet 32–127"
 msgid "E1244: Bad color string: %s"
 msgstr "E1244: Felaktig färgsträng: %s"
 
-msgid "E1245: Cannot expand <sfile> in a Vim9 function"
-msgstr "E1245: Kan inte expandera <sfile> i en Vim9-funktion"
+msgid "E1245: Cannot expand <sfile> in a MNV9 function"
+msgstr "E1245: Kan inte expandera <sfile> i en MNV9-funktion"
 
 #, c-format
 msgid "E1246: Cannot find variable to (un)lock: %s"
@@ -8368,8 +8368,8 @@ msgid "E1256: String or function required for argument %d"
 msgstr "E1256: Sträng eller funktion krävs för argument %d"
 
 #, c-format
-msgid "E1257: Imported script must use \"as\" or end in .vim: %s"
-msgstr "E1257: Importerat skript måste använda \"as\" eller sluta på .vim: %s"
+msgid "E1257: Imported script must use \"as\" or end in .mnv: %s"
+msgstr "E1257: Importerat skript måste använda \"as\" eller sluta på .mnv: %s"
 
 #, c-format
 msgid "E1258: No '.' after imported name: %s"
@@ -8383,16 +8383,16 @@ msgstr "E1259: Saknar namn efter importerat namn: %s"
 msgid "E1260: Cannot unlet an imported item: %s"
 msgstr "E1260: Kan inte avregistrera ett importerat objekt: %s"
 
-msgid "E1261: Cannot import .vim without using \"as\""
-msgstr "E1261: Kan inte importera .vim utan att använda \"as\""
+msgid "E1261: Cannot import .mnv without using \"as\""
+msgstr "E1261: Kan inte importera .mnv utan att använda \"as\""
 
 #, c-format
 msgid "E1262: Cannot import the same script twice: %s"
 msgstr "E1262: Kan inte importera samma skript två gånger: %s"
 
-msgid "E1263: Cannot use name with # in Vim9 script, use export instead"
+msgid "E1263: Cannot use name with # in MNV9 script, use export instead"
 msgstr ""
-"E1263: Namn med # kan inte användas i Vim9-skript, använd istället export"
+"E1263: Namn med # kan inte användas i MNV9-skript, använd istället export"
 
 #, c-format
 msgid "E1264: Autoload import cannot use absolute or relative path: %s"
@@ -8414,15 +8414,15 @@ msgid "E1267: Function name must start with a capital: %s"
 msgstr "E1267: Funktionsnamn måste börja med en versal: %s"
 
 #, c-format
-msgid "E1268: Cannot use s: in Vim9 script: %s"
-msgstr "E1268: Kan inte använda s: i Vim9-skript: %s"
+msgid "E1268: Cannot use s: in MNV9 script: %s"
+msgstr "E1268: Kan inte använda s: i MNV9-skript: %s"
 
 #, c-format
-msgid "E1269: Cannot create a Vim9 script variable in a function: %s"
-msgstr "E1269: Kan inte skapa en Vim9-skriptvariabel i en funktion: %s"
+msgid "E1269: Cannot create a MNV9 script variable in a function: %s"
+msgstr "E1269: Kan inte skapa en MNV9-skriptvariabel i en funktion: %s"
 
-msgid "E1270: Cannot use :s\\/sub/ in Vim9 script"
-msgstr "E1270: Kan inte använda :s\\/sub/ i Vim9-skript"
+msgid "E1270: Cannot use :s\\/sub/ in MNV9 script"
+msgstr "E1270: Kan inte använda :s\\/sub/ i MNV9-skript"
 
 #, c-format
 msgid "E1271: Compiling closure without context: %s"
@@ -8588,8 +8588,8 @@ msgstr "E1314: Klassnamn måste börja med en versal: %s"
 msgid "E1315: White space required after name: %s"
 msgstr "E1315: Blanksteg krävs efter namnet: %s"
 
-msgid "E1316: Class can only be defined in Vim9 script"
-msgstr "E1316: Klass kan endast definieras i Vim9-skript"
+msgid "E1316: Class can only be defined in MNV9 script"
+msgstr "E1316: Klass kan endast definieras i MNV9-skript"
 
 #, c-format
 msgid "E1317: Invalid object variable declaration: %s"
@@ -8671,8 +8671,8 @@ msgstr "E1340: Argumentet har redan deklarerats i klassen: %s"
 msgid "E1341: Variable already declared in the class: %s"
 msgstr "E1341: Variabel redan deklarerad i klassen: %s"
 
-msgid "E1342: Interface can only be defined in Vim9 script"
-msgstr "E1342: Gränssnittet kan endast definieras i Vim9-skript"
+msgid "E1342: Interface can only be defined in MNV9 script"
+msgstr "E1342: Gränssnittet kan endast definieras i MNV9-skript"
 
 #, c-format
 msgid "E1343: Interface name must start with an uppercase letter: %s"
@@ -8864,8 +8864,8 @@ msgstr "E1391: Kan inte låsa (upp) variabeln \"%s\" i klassen \"%s\""
 msgid "E1392: Cannot (un)lock class variable \"%s\" in class \"%s\""
 msgstr "E1392: Kan inte låsa (upp) klassvariabeln \"%s\" i klassen \"%s\""
 
-msgid "E1393: Type can only be defined in Vim9 script"
-msgstr "E1393: Typ kan endast definieras i Vim9-skript"
+msgid "E1393: Type can only be defined in MNV9 script"
+msgstr "E1393: Typ kan endast definieras i MNV9-skript"
 
 #, c-format
 msgid "E1394: Type name must start with an uppercase letter: %s"
@@ -8922,8 +8922,8 @@ msgstr "E1412: Inbyggd objektmetod \"%s\" stöds inte"
 msgid "E1413: Builtin class method not supported"
 msgstr "E1413: Inbyggd klassmetod stöds inte"
 
-msgid "E1414: Enum can only be defined in Vim9 script"
-msgstr "E1414: Enum kan endast definieras i Vim9-skript"
+msgid "E1414: Enum can only be defined in MNV9 script"
+msgstr "E1414: Enum kan endast definieras i MNV9-skript"
 
 #, c-format
 msgid "E1415: Enum name must start with an uppercase letter: %s"
@@ -9195,8 +9195,8 @@ msgstr "E1545: Snabbkorrigeringslista inte tillgänglig"
 msgid "E1546: Cannot switch to a closing buffer"
 msgstr "E1546: Kan inte växla till en stängande buffert"
 
-msgid "E1547: This version of Vim does support :redrawtabpanel"
-msgstr "E1547: Denna version av Vim har stöd för :redrawtabpanel"
+msgid "E1547: This version of MNV does support :redrawtabpanel"
+msgstr "E1547: Denna version av MNV har stöd för :redrawtabpanel"
 
 msgid "E1548: Wayland connection is unavailable"
 msgstr "E1548: Wayland-anslutningen är inte tillgänglig"
@@ -9416,8 +9416,8 @@ msgstr ""
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "internt fel: imp.find_module returnerade tupel med NULL"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "kan inte ta bort vim.Dictionary-attribut"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "kan inte ta bort mnv.Dictionary-attribut"
 
 msgid "cannot modify fixed dictionary"
 msgstr "kan inte ändra fast ordbok"
@@ -9441,8 +9441,8 @@ msgstr "listindex utanför intervallet"
 
 #. No more suitable format specifications in python-2.3
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "internt fel: kunde inte hämta Vim-listobjekt %d"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "internt fel: kunde inte hämta MNV-listobjekt %d"
 
 msgid "slice step cannot be zero"
 msgstr "slice-steg kan inte vara noll"
@@ -9452,8 +9452,8 @@ msgid "attempt to assign sequence of size greater than %d to extended slice"
 msgstr "försök att tilldela sekvens med storlek större än %d till utökad slice"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "internt fel: inget Vim-listobjekt %d"
+msgid "internal error: no MNV list item %d"
+msgstr "internt fel: inget MNV-listobjekt %d"
 
 msgid "internal error: not enough list items"
 msgstr "internt fel: otillräckligt antal listobjekt"
@@ -9469,8 +9469,8 @@ msgstr ""
 msgid "failed to add item to list"
 msgstr "misslyckades med att lägga till objekt i listan"
 
-msgid "cannot delete vim.List attributes"
-msgstr "kan inte ta bort vim.List-attribut"
+msgid "cannot delete mnv.List attributes"
+msgstr "kan inte ta bort mnv.List-attribut"
 
 msgid "cannot modify fixed list"
 msgstr "kan inte ändra fast lista"
@@ -9481,8 +9481,8 @@ msgstr "tuple-konstruktor accepterar inte nyckelordsargument"
 msgid "tuple index out of range"
 msgstr "tupelindex utanför intervallet"
 
-msgid "cannot delete vim.Tuple attributes"
-msgstr "kan inte ta bort vim.Tuple-attribut"
+msgid "cannot delete mnv.Tuple attributes"
+msgstr "kan inte ta bort mnv.Tuple-attribut"
 
 msgid "cannot modify fixed tuple"
 msgstr "kan inte ändra fast tupel"
@@ -9544,16 +9544,16 @@ msgid "mark name must be a single character"
 msgstr "märkesnamnet måste bestå av ett enda tecken"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "förväntade vim.Buffer-objekt, men fick %s"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "förväntade mnv.Buffer-objekt, men fick %s"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "misslyckades med att växla till buffert %d"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "förväntade vim.Window-objekt, men fick %s"
+msgid "expected mnv.Window object, but got %s"
+msgstr "förväntade mnv.Window-objekt, men fick %s"
 
 msgid "failed to find window in the current tab page"
 msgstr "kunde inte hitta fönstret på den aktuella fliken"
@@ -9562,8 +9562,8 @@ msgid "did not switch to the specified window"
 msgstr "växlade inte till det angivna fönstret"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "förväntade vim.TabPage-objekt, men fick %s"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "förväntade mnv.TabPage-objekt, men fick %s"
 
 msgid "did not switch to the specified tab page"
 msgstr "växlade inte till den angivna fliksidan"
@@ -9572,16 +9572,16 @@ msgid "failed to run the code"
 msgstr "misslyckades med att köra koden"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "kan inte konvertera %s till en Vim-ordlista"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "kan inte konvertera %s till en MNV-ordlista"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "kan inte konvertera %s till en Vim-lista"
+msgid "unable to convert %s to a MNV list"
+msgstr "kan inte konvertera %s till en MNV-lista"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "kan inte konvertera %s till en Vim-struktur"
+msgid "unable to convert %s to a MNV structure"
+msgstr "kan inte konvertera %s till en MNV-struktur"
 
 msgid "internal error: NULL reference passed"
 msgstr "internt fel: NULL-referens skickad"
@@ -9592,26 +9592,26 @@ msgstr "internt fel: ogiltig värdetyp"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.MNV_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "Det gick inte att ställa in sökvägs-hook: sys.path_hooks är inte en lista\n"
 "Nu bör du göra följande:\n"
-"- lägg till vim.path_hook till sys.path_hooks\n"
-"- lägg till vim.VIM_SPECIAL_PATH till sys.path\n"
+"- lägg till mnv.path_hook till sys.path_hooks\n"
+"- lägg till mnv.MNV_SPECIAL_PATH till sys.path\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.MNV_SPECIAL_PATH to sys.path"
 msgstr ""
 "Misslyckades med att ställa in sökväg: sys.path är inte en lista\n"
-"Du bör nu lägga till vim.VIM_SPECIAL_PATH till sys.path"
+"Du bör nu lägga till mnv.MNV_SPECIAL_PATH till sys.path"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Vim-makrofiler (*.vim)\t*.vim\n"
+"MNV-makrofiler (*.mnv)\t*.mnv\n"
 "Alla filer (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -9622,19 +9622,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Alla filer (*.*)\t*.*\n"
 "C-källkod (*.c, *.h)\t*.c;*.h\n"
 "C++-källkod (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB-kod (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim-filer (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV-filer (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Vim-makrofiler (*.vim)\t*.vim\n"
+"MNV-makrofiler (*.mnv)\t*.mnv\n"
 "Alla filer (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -9644,22 +9644,22 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Alla filer (*)\t*\n"
 "C-källkod (*.c, *.h)\t*.c;*.h\n"
 "C++-källkod (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim-filer (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV-filer (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
-#. Translators: This is the Application Name used in the GVim desktop file
-msgid "GVim"
-msgstr "GVim"
+#. Translators: This is the Application Name used in the GMNV desktop file
+msgid "GMNV"
+msgstr "GMNV"
 
-#. Translators: This is the Generic Application Name used in the Vim desktop file
+#. Translators: This is the Generic Application Name used in the MNV desktop file
 msgid "Text Editor"
 msgstr "Textredigerare"
 
-#. Translators: This is the comment used in the Vim desktop file
+#. Translators: This is the comment used in the MNV desktop file
 msgid "Edit text files"
 msgstr "Redigera textfiler"
 
@@ -9667,9 +9667,9 @@ msgstr "Redigera textfiler"
 msgid "Text;editor;"
 msgstr "Text;redigerare;"
 
-#. Translators: This is the Application Name used in the Vim desktop file
-msgid "Vim"
-msgstr "Vim"
+#. Translators: This is the Application Name used in the MNV desktop file
+msgid "MNV"
+msgstr "MNV"
 
 msgid "(local to window)"
 msgstr "(lokal till fönster)"
@@ -10105,8 +10105,8 @@ msgstr "detta fönsters markör rör sig tillsammans med andra bundna fönster"
 msgid "size of a terminal window"
 msgstr "storlek på ett terminalfönster"
 
-msgid "key that precedes Vim commands in a terminal window"
-msgstr "tangent som föregår Vim-kommandon i ett terminalfönster"
+msgid "key that precedes MNV commands in a terminal window"
+msgstr "tangent som föregår MNV-kommandon i ett terminalfönster"
 
 msgid "max number of lines to keep for scrollback in a terminal window"
 msgstr ""
@@ -10185,8 +10185,8 @@ msgstr "procentandel av \"columns\" som används för fönstertiteln"
 msgid "when not empty, string to be used for the window title"
 msgstr "när den inte är tom, sträng att använda för fönstrets titel"
 
-msgid "string to restore the title to when exiting Vim"
-msgstr "sträng för att återställa titeln när Vim avslutas"
+msgid "string to restore the title to when exiting MNV"
+msgstr "sträng för att återställa titeln när MNV avslutas"
 
 msgid "set the text of the icon for this window"
 msgstr "ställ in texten för ikonen för detta fönster"
@@ -10194,8 +10194,8 @@ msgstr "ställ in texten för ikonen för detta fönster"
 msgid "when not empty, text for the icon of this window"
 msgstr "när den inte är tom, text för ikonen för detta fönster"
 
-msgid "restore the screen contents when exiting Vim"
-msgstr "återställ skärminnehållet vid avslutning av Vim"
+msgid "restore the screen contents when exiting MNV"
+msgstr "återställ skärminnehållet vid avslutning av MNV"
 
 msgid "timeout used for terminal OSC responses"
 msgstr "tidsgräns att använda för OSC-svar i terminal"
@@ -10804,8 +10804,8 @@ msgstr "som \"autowrite\", men fungerar med fler kommandon"
 msgid "always write without asking for confirmation"
 msgstr "skriv alltid utan att be om bekräftelse"
 
-msgid "automatically read a file when it was modified outside of Vim"
-msgstr "läs automatiskt en fil när den har ändrats utanför Vim"
+msgid "automatically read a file when it was modified outside of MNV"
+msgstr "läs automatiskt en fil när den har ändrats utanför MNV"
 
 msgid "keep oldest version of a file; specifies file name extension"
 msgstr "behåll äldsta versionen av en fil; anger filnamnsändelse"
@@ -11052,10 +11052,10 @@ msgid "multi-byte characters"
 msgstr "multibyte-tecken"
 
 msgid ""
-"character encoding used in Vim: \"latin1\", \"utf-8\",\n"
+"character encoding used in MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", etc."
 msgstr ""
-"teckenkodning som används i Vim: \"latin1\", \"utf-8\",\n"
+"teckenkodning som används i MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\" osv."
 
 msgid "character encoding for the current file"
@@ -11104,8 +11104,8 @@ msgstr "lista över autocommand-händelser som ska ignoreras i ett fönster"
 msgid "load plugin scripts when starting up"
 msgstr "läs in insticksskript vid uppstart"
 
-msgid "enable reading .vimrc/.exrc/.gvimrc in the current directory"
-msgstr "aktivera läsning av .vimrc/.exrc/.gvimrc i aktuell katalog"
+msgid "enable reading .mnvrc/.exrc/.gmnvrc in the current directory"
+msgstr "aktivera läsning av .mnvrc/.exrc/.gmnvrc i aktuell katalog"
 
 msgid "safer working with script files in the current directory"
 msgstr "säkrare arbete med skriptfiler i den aktuella katalogen"
@@ -11131,11 +11131,11 @@ msgstr "lista över ord som anger vad som ska sparas för :mkview"
 msgid "directory where to store files with :mkview"
 msgstr "katalog där filer ska lagras med :mkview"
 
-msgid "list that specifies what to write in the viminfo file"
-msgstr "lista som anger vad som ska skrivas i viminfo-filen"
+msgid "list that specifies what to write in the mnvinfo file"
+msgstr "lista som anger vad som ska skrivas i mnvinfo-filen"
 
-msgid "file name used for the viminfo file"
-msgstr "filnamn som används för viminfo-filen"
+msgid "file name used for the mnvinfo file"
+msgstr "filnamn som används för mnvinfo-filen"
 
 msgid "what happens with a buffer when it's no longer in a window"
 msgstr "vad händer med en buffert när den inte längre finns i ett fönster"
@@ -11204,8 +11204,8 @@ msgstr "flaggor för användning av flikpanel"
 msgid "You discovered the command-line window! You can close it with \":q\"."
 msgstr "Du har upptäckt kommandoradsfönstret! Du kan stänga det med \":q\"."
 
-#~ msgid "Become a registered Vim user!"
-#~ msgstr "Bli en registrerad Vim-användare!"
+#~ msgid "Become a registered MNV user!"
+#~ msgstr "Bli en registrerad MNV-användare!"
 
 #~ msgid "type  :help register<Enter>   for information "
 #~ msgstr "skriv  :help register<Enter>    för information "

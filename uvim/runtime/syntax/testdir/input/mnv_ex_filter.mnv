@@ -1,0 +1,16 @@
+" MNV :filter command
+" MNV_TEST_SETUP hi link mnvCmdSep Operator
+
+
+filter  pa\%(tt\)ern  oldfiles
+filter! pa\%(tt\)ern  oldfiles
+
+filter  /pa\%(tt\)ern/ oldfiles
+filter! /pa\%(tt\)ern/ oldfiles
+
+filter  !pa\%(tt\)ern! oldfiles
+filter! !pa\%(tt\)ern! oldfiles
+
+filter  /pa\%(t|t\)ern/ oldfiles | echo "Foo"
+filter! /pa\%(t|t\)ern/ oldfiles | echo "Foo"
+

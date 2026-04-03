@@ -1,21 +1,21 @@
-*os_haiku.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*os_haiku.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 							*Haiku*
-This file contains the particularities for the Haiku version of Vim.  For
-matters not discussed in this file, Vim behaves very much like the Unix
+This file contains the particularities for the Haiku version of MNV.  For
+matters not discussed in this file, MNV behaves very much like the Unix
 |os_unix.txt| version.
 
 Haiku is an open-source operating system inspired by BeOS, that specifically
 targets personal computing.
 
  1. General			|haiku-general|
- 2. Compiling Vim		|haiku-compiling|
+ 2. Compiling MNV		|haiku-compiling|
  3. The Haiku GUI		|haiku-gui|
- 4. The $VIM directory		|haiku-vimdir|
+ 4. The $MNV directory		|haiku-mnvdir|
  5. The $USER_SETTINGS_DIR
     directory			|haiku-user-settings-dir|
  6. Drag & Drop			|haiku-dragndrop|
@@ -38,19 +38,19 @@ darkish background and light letters.  Some middle-grey background (for
 instance (r,g,b)=(168,168,168)) with black letters also works nicely.
 
 
-2. Compiling Vim					*haiku-compiling*
+2. Compiling MNV					*haiku-compiling*
 
-Vim can be compiled using the standard configure/make approach.  Running
+MNV can be compiled using the standard configure/make approach.  Running
 ./configure without any arguments or passing --enable-gui=haiku, will compile
-vim with the Haiku GUI support.  Run ./configure --help , to find out other
+mnv with the Haiku GUI support.  Run ./configure --help , to find out other
 features you can enable/disable.
 
 Haiku uses "ncurses6" as its terminal library, therefore you need to have
 "ncurses6_devel" package installed from HaikuDepot in order to configure
 the Haiku build.  Just append "--with-tlib=ncurses" to ./configure command.
 
-Now you should use "make" to compile Vim, then "make install" to install it.
-For seamless integration into Haiku, the GUI-less vim binary should be
+Now you should use "make" to compile MNV, then "make install" to install it.
+For seamless integration into Haiku, the GUI-less mnv binary should be
 additionally installed over the GUI version.  Typical build commands are:
 
   ./configure --prefix=`finddir B_SYSTEM_NONPACKAGED_DIRECTORY` \
@@ -71,10 +71,10 @@ additionally installed over the GUI version.  Typical build commands are:
 
 3. The Haiku GUI					*haiku-gui*
 
-Normally Vim starts with the GUI if you start it as gvim or vim -g.  The vim
+Normally MNV starts with the GUI if you start it as gmnv or mnv -g.  The mnv
 version with GUI tries to determine if it was started from the Tracker instead
 of the Terminal, and if so, uses the GUI anyway.  However, the current
-detection scheme is fooled if you use the command "vim - </dev/null".
+detection scheme is fooled if you use the command "mnv - </dev/null".
 
 Toggling between normal managed window and fullscreen mode can be done by
 pressing <Alt-Enter>.
@@ -84,29 +84,29 @@ Stuff that does not work yet:
 - Mouse up events are not generated when outside the window.  You can notice
   this when selecting text and moving the cursor outside the window, then
   letting go of the mouse button.  Another way is when you drag the scrollbar
-  and do the same thing.  Because Vim still thinks you are still playing with
+  and do the same thing.  Because MNV still thinks you are still playing with
   the scrollbar it won't change it itself.  There is a workaround which kicks
   in when the window is activated or deactivated (so it works best with focus-
   follows-mouse turned on).
 - The cursor does not flash.
 - Switching windows using <C-Tab-Up> and <C-Tab-Down> in Twitcher does not
-  work.  This is due to each gvim window being managed by a separate instance
-  completely unaware of other vim processes.
+  work.  This is due to each gmnv window being managed by a separate instance
+  completely unaware of other mnv processes.
 
-4. The $VIM directory					*haiku-vimdir*
+4. The $MNV directory					*haiku-mnvdir*
 
-$VIM is the symbolic name for the place where Vim's support files are stored.
-The default value for $VIM is set at compile time and can be determined with:
+$MNV is the symbolic name for the place where MNV's support files are stored.
+The default value for $MNV is set at compile time and can be determined with:
 
   :version
 
-The normal value is /boot/system/data/vim for Haikuports version,
-/boot/system/non-packaged/data/vim for manual builds.  If you don't like it
-you can set the VIM environment variable to override this, or set 'helpfile'
-in your .vimrc: >
+The normal value is /boot/system/data/mnv for Haikuports version,
+/boot/system/non-packaged/data/mnv for manual builds.  If you don't like it
+you can set the MNV environment variable to override this, or set 'helpfile'
+in your .mnvrc: >
 
   :if version >= 500
-  :    set helpfile=~/vim/runtime/doc/help.txt
+  :    set helpfile=~/mnv/runtime/doc/help.txt
   :    syntax on
   :endif
 
@@ -121,27 +121,27 @@ The normal value is /boot/home/config/settings.
 
 6. Drag & Drop						*haiku-dragndrop*
 
-You can drop files and directories on either the Vim icon (starts a new Vim
-session, unless you use the File Types application to set Vim to be "Single
-Launch") or on the Vim window (starts editing the files).  Dropping a folder
-sets Vim's current working directory |:cd| |:pwd|.  If you drop files or
-folders with either SHIFT key pressed, Vim changes directory to the folder
-that contains the first item dropped.  When starting Vim, there is no need to
-press shift: Vim behaves as if you do.
+You can drop files and directories on either the MNV icon (starts a new MNV
+session, unless you use the File Types application to set MNV to be "Single
+Launch") or on the MNV window (starts editing the files).  Dropping a folder
+sets MNV's current working directory |:cd| |:pwd|.  If you drop files or
+folders with either SHIFT key pressed, MNV changes directory to the folder
+that contains the first item dropped.  When starting MNV, there is no need to
+press shift: MNV behaves as if you do.
 
 Files dropped set the current argument list. |argument-list|
 
 
 7. Single Launch vs. Multiple Launch			*haiku-launch*
 
-As distributed Vim's Application Flags (as seen in the FileTypes preference)
+As distributed MNV's Application Flags (as seen in the FileTypes preference)
 are set to Multiple Launch.  If you prefer, you can set them to Single Launch
-instead.  Attempts to start a second copy of Vim will cause the first Vim to
+instead.  Attempts to start a second copy of MNV will cause the first MNV to
 open the files instead.  This works from the Tracker but also from the command
 line.  In the latter case, non-file (option) arguments are not supported.
 Another drawback of the Single Launch is silent ignore of "Open With ..."
-requests by vim instance that running as non-GUI application even GUI support
-was compiled in.  Vim instance running with GUI has no such problems.
+requests by mnv instance that running as non-GUI application even GUI support
+was compiled in.  MNV instance running with GUI has no such problems.
 
 NB: Only the GUI version has a BApplication (and hence Application Flags).
 This section does not apply to the GUI-less version, should you compile one.
@@ -157,7 +157,7 @@ where the first part is the font family, the second part the style, and the
 third part the size.  You can use underscores instead of spaces in family and
 style.
 
-Best results are obtained with monospaced fonts.  Vim attempts to use all
+Best results are obtained with monospaced fonts.  MNV attempts to use all
 fonts in B_FIXED_SPACING mode but apparently this does not work for
 proportional fonts (despite what the BeBook says).
 
@@ -186,9 +186,9 @@ because the ALT (aka COMMAND) keys are not passed to applications.
 
 10. Mouse key mappings					*haiku-mouse*
 
-Vim calls the various mouse buttons LeftMouse, MiddleMouse and RightMouse.  If
+MNV calls the various mouse buttons LeftMouse, MiddleMouse and RightMouse.  If
 you use the default Mouse preference settings these names indeed correspond to
-reality.  Vim uses this mapping:
+reality.  MNV uses this mapping:
 
     Button 1 -> LeftMouse,
     Button 2 -> RightMouse,
@@ -196,12 +196,12 @@ reality.  Vim uses this mapping:
 
 If your mouse has fewer than 3 buttons you can provide your own mapping from
 mouse clicks with modifier(s) to other mouse buttons.  See the file
-$VIM/macros/swapmous.vim for an example.		|gui-mouse-mapping|
+$MNV/macros/swapmous.mnv for an example.		|gui-mouse-mapping|
 
 
 11. Color names						*haiku-colors*
 
-Vim has a number of color names built-in.  Additional names can be defined in
+MNV has a number of color names built-in.  Additional names can be defined in
 |v:colornames|.  See |:colorscheme| for details.
 
 
@@ -222,7 +222,7 @@ Haiku port is based on work done for BeOS version by many people
  - Those who contributed, not listed above but not forgotten;
  - Haiku support by Siarzhuk Zharski <imker@gmx.li> Apr-Mai 2009.
 
-All the changes and patches released under vim-license.
+All the changes and patches released under mnv-license.
 
 Thank you, all!
 
@@ -230,11 +230,11 @@ Thank you, all!
 14. Bugs & to-do					*haiku-bugs*
 
 The port is under development now and far away from the perfect state.  For
-bug reports, patches and wishes, please use the Vim mailing list or Vim Github
+bug reports, patches and wishes, please use the MNV mailing list or MNV Github
 repository.
 
-Mailing list: https://www.vim.org/maillist.php
-Vim Github repository: https://github.com/vim/vim
+Mailing list: https://www.mnv.org/maillist.php
+MNV Github repository: https://github.com/Project-Tick/Project-Tick
 
 
- vim:tw=78:ts=8:ft=help:norl:
+ mnv:tw=78:ts=8:ft=help:norl:

@@ -1,10 +1,10 @@
-# Aap recipe for Amharic Vim spell files.
+# Aap recipe for Amharic MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = am_ET.aff am_ET.dic
@@ -12,7 +12,7 @@ FILES    = am_ET.aff am_ET.dic
 all: $SPELLDIR/am.utf-8.spl ../README_am.txt
 
 $SPELLDIR/am.utf-8.spl : $FILES
-        :sys env LANG=am_ET.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/am am_ET" -c q
+        :sys env LANG=am_ET.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/am am_ET" -c q
 
 ../README_am.txt: README_am.txt
         :copy $source $target
@@ -45,7 +45,7 @@ am_ET.aff am_ET.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -60,4 +60,4 @@ check:
         :print Sorry, not implemented yet.
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

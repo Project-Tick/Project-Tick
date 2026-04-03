@@ -14,10 +14,10 @@ void ui_new_shellsize(void);
 int ui_get_winpos(int *x, int *y, varnumber_T timeout);
 void ui_breakcheck(void);
 void ui_breakcheck_force(int force);
-int vim_is_input_buf_full(void);
-int vim_is_input_buf_empty(void);
-int vim_free_in_input_buf(void);
-int vim_used_in_input_buf(void);
+int mnv_is_input_buf_full(void);
+int mnv_is_input_buf_empty(void);
+int mnv_free_in_input_buf(void);
+int mnv_used_in_input_buf(void);
 char_u *get_input_buf(void);
 void set_input_buf(char_u *p, int overwrite);
 void add_to_input_buf(char_u *s, int len);
@@ -34,4 +34,4 @@ long scroll_line_len(linenr_T lnum);
 linenr_T ui_find_longest_lnum(void);
 void ui_focus_change(int in_focus);
 void im_save_status(long *psave);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

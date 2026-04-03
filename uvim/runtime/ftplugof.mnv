@@ -1,0 +1,16 @@
+mnv9script
+
+# MNV support file to switch off loading plugins for file types
+#
+# Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+# Last Change:	2023 Aug 10
+# Former Maintainer:	Bram Moolenaar <Bram@mnv.org>
+
+if exists("g:did_load_ftplugin")
+  unlet g:did_load_ftplugin
+endif
+
+# Remove all autocommands in the filetypeplugin group, if any exist.
+if exists("#filetypeplugin")
+  silent! au! filetypeplugin *
+endif

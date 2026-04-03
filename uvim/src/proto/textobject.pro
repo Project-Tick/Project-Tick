@@ -12,4 +12,4 @@ int current_block(oparg_T *oap, long count, int include, int what, int other);
 int current_tagblock(oparg_T *oap, long count_arg, int include);
 int current_par(oparg_T *oap, long count, int include, int type);
 int current_quote(oparg_T *oap, long count, int include, int quotechar);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

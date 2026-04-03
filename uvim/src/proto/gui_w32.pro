@@ -35,7 +35,7 @@ void gui_mch_clear_block(int row1, int col1, int row2, int col2);
 void gui_mch_clear_all(void);
 void gui_mch_enable_menu(int flag);
 void gui_mch_set_menu_pos(int x, int y, int w, int h);
-void gui_mch_menu_hidden(vimmenu_T *menu, int hidden);
+void gui_mch_menu_hidden(mnvmenu_T *menu, int hidden);
 void gui_mch_draw_menubar(void);
 guicolor_T gui_mch_get_rgb(guicolor_T pixel);
 void gui_mch_show_toolbar(int showit);
@@ -81,13 +81,13 @@ int im_get_status(void);
 void gui_mch_draw_string(int row, int col, char_u *text, int len, int flags);
 void gui_mch_flush(void);
 void gui_mch_get_screen_dimensions(int *screen_w, int *screen_h);
-void gui_mch_add_menu(vimmenu_T *menu, int pos);
-void gui_mch_show_popupmenu(vimmenu_T *menu);
+void gui_mch_add_menu(mnvmenu_T *menu, int pos);
+void gui_mch_show_popupmenu(mnvmenu_T *menu);
 void gui_make_popup(char_u *path_name, int mouse_pos);
 void gui_make_tearoff(char_u *path_name);
-void gui_mch_add_menu_item(vimmenu_T *menu, int idx);
-void gui_mch_destroy_menu(vimmenu_T *menu);
-void gui_mch_menu_grey(vimmenu_T *menu, int grey);
+void gui_mch_add_menu_item(mnvmenu_T *menu, int idx);
+void gui_mch_destroy_menu(mnvmenu_T *menu);
+void gui_mch_menu_grey(mnvmenu_T *menu, int grey);
 int gui_mch_dialog(int type, char_u *title, char_u *message, char_u *buttons, int dfltbutton, char_u *textfield, int ex_cmd);
 void gui_mch_set_foreground(void);
 void gui_mch_drawsign(int row, int col, int typenr);
@@ -100,4 +100,4 @@ BalloonEval *gui_mch_create_beval_area(void *target, char_u *mesg, void (*mesgCB
 void gui_mch_destroy_beval_area(BalloonEval *beval);
 void netbeans_draw_multisign_indicator(int row);
 int test_gui_w32_sendevent(char_u *event, dict_T *args);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

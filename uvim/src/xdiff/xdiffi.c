@@ -1009,7 +1009,7 @@ static void xdl_mark_ignorable_lines(xdchange_t *xscr, xdfenv_t *xe, long flags)
 	}
 }
 
-#if 0 // unused by Vim
+#if 0 // unused by MNV
 static int record_matches_regex(xrecord_t *rec, xpparam_t const *xpp) {
 	regmatch_t regmatch;
 	size_t i;

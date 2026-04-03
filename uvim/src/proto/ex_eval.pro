@@ -40,4 +40,4 @@ int cleanup_conditionals(cstack_T *cstack, int searched_cond, int inclusive);
 void rewind_conditionals(cstack_T *cstack, int idx, int cond_type, int *cond_level);
 void ex_endfunction(exarg_T *eap);
 int has_loop_cmd(char_u *p);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

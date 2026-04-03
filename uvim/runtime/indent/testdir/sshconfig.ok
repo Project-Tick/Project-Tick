@@ -1,4 +1,4 @@
-# vim: set filetype=sshconfig shiftwidth=4 expandtab :
+# mnv: set filetype=sshconfig shiftwidth=4 expandtab :
 
 # START_INDENT
 Host myhost

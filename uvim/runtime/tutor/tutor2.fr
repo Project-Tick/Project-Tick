@@ -1,10 +1,10 @@
 ===============================================================================
-=    B i e n v e n u e  dans  l e  T u t o r i e l  de  VIM   –   Version 1.7 =
+=    B i e n v e n u e  dans  l e  T u t o r i e l  de  MNV   –   Version 1.7 =
 ===============================================================================
 =			    C H A P I T R E   DEUX			      =
 ===============================================================================
 
-     Hic sunt dracones : si cʼest la première fois que vous utilisez Vim
+     Hic sunt dracones : si cʼest la première fois que vous utilisez MNV
      et que vous souhaitez accéder au tutoriel dʼintroduction, tapez
      les trois touches  :q!  puis la touche <ENTRÉE> et recommencez.
 
@@ -204,7 +204,7 @@ RÉFÉRENCES :	Marques		:h marks
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Voilà, vous êtes arrivé à la fin du chapitre deux du tutoriel de Vim. Il est
+  Voilà, vous êtes arrivé à la fin du chapitre deux du tutoriel de MNV. Il est
   encore en chantier.
 
   Ce chapitre a été écrit par Paul D. Parker,

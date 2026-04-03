@@ -2,7 +2,7 @@
 #include	<stdlib.h>
 #include	<string.h>
 #include	<unixio.h>
-#include	"vim.h"
+#include	"mnv.h"
 int main(int argc, char *argv[])
 {
     FILE	*fpi, *fpo;
@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
 	    strcat(target, argp);
 	}
     }
-    vim_snprintf(cmd, sizeof(cmd), "%s/output=tmp:errors.vim_tmp %s",
+    mnv_snprintf(cmd, sizeof(cmd), "%s/output=tmp:errors.mnv_tmp %s",
 								 mms, target);
     system(cmd);
-    fpi = fopen("tmp:errors.vim_tmp", "r");
+    fpi = fopen("tmp:errors.mnv_tmp", "r");
     fpo = fopen(error_file, "w");
     while (fgets(buf, BUFSIZ, fpi))
     {
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     }
     fclose(fpi);
     fclose(fpo);
-    while (!delete("tmp:errors.vim_tmp"))
+    while (!delete("tmp:errors.mnv_tmp"))
 	/*nop*/;
     exit(err ? 44 : 1);
     return(0);

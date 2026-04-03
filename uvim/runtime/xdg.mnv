@@ -1,0 +1,44 @@
+" XDG Base Directory support
+" This script sets up paths for XDG compliance.
+" Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+" Last Change:	2026 Feb 19
+
+let s:config = empty($XDG_CONFIG_HOME) ? expand("~/.config") : expand("$XDG_CONFIG_HOME")
+let s:data   = empty($XDG_DATA_HOME)   ? expand("~/.local/share") : expand("$XDG_DATA_HOME")
+let s:state  = empty($XDG_STATE_HOME)  ? expand("~/.local/state") : expand("$XDG_STATE_HOME")
+
+if isdirectory(s:config .. '/mnv')
+  func s:mkmnvdir(dir)
+    if !isdirectory(a:dir)
+      call mkdir(a:dir, 'p', 0700)
+    endif
+    return a:dir
+  endfunc
+
+  " Use Data for packages, prevent duplicates
+  if index(split(&packpath, ','), s:data .. '/mnv') == -1
+    exe $"set packpath^={s:data}/mnv"
+    exe $"set packpath+={s:data}/mnv/after"
+  endif
+
+  " These options are not set by default because they change the behavior of
+  " where files are saved. Uncomment them if you want to fully move all
+  " transient/persistent files to XDG directories.
+  " Note: Undo/Views/Spell are placed in DATA_HOME as they are persistent,
+  " while Swap/Backups use STATE_HOME as transient session state.
+
+  " Persistent Data:
+  " let &undodir = s:mkmnvdir(s:data .. '/mnv/undo')
+  " let &viewdir = s:mkmnvdir(s:data .. '/mnv/view')
+  " let g:netrw_home = s:mkmnvdir(s:data .. '/mnv')
+  " call s:mkmnvdir(s:data .. '/mnv/spell')
+
+  " Transient State:
+  let &mnvinfofile = s:mkmnvdir(s:state .. '/mnv') .. '/mnvinfo'
+  " let &directory = s:mkmnvdir(s:state .. '/mnv/swap')   .. '//'
+  " let &backupdir = s:mkmnvdir(s:state .. '/mnv/backup') .. '//'
+
+  delfunction s:mkmnvdir
+endif
+
+unlet s:config s:data s:state

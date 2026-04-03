@@ -29,4 +29,4 @@ void set_last_cursor(win_T *win);
 void free_all_marks(void);
 xfmark_T *get_namedfm(void);
 void f_getmarklist(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

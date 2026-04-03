@@ -1,16 +1,16 @@
-*pi_tutor.txt*    For Vim version 9.2.  Last change: 2026 Feb 14
+*pi_tutor.txt*    For MNV version 9.2.  Last change: 2026 Feb 14
 
-INTERACTIVE TUTORIALS FOR VIM			 *vim-tutor-mode*
+INTERACTIVE TUTORIALS FOR MNV			 *mnv-tutor-mode*
 
-vim-tutor-mode provides a system to follow and create interactive tutorials
-for vim and third party plugins.  It replaces the venerable `vimtutor` system.
+mnv-tutor-mode provides a system to follow and create interactive tutorials
+for mnv and third party plugins.  It replaces the venerable `mnvtutor` system.
 
 Original Author: Felipe Morales <https://github.com/fmoralesc>
 
 =============================================================================
-1. Usage                                                      *vim-tutor-usage*
+1. Usage                                                      *mnv-tutor-usage*
 
-vim-tutor-mode tutorials are hypertext documents, they have rich text and
+mnv-tutor-mode tutorials are hypertext documents, they have rich text and
 contain links.  To stand out from the rest of the text, links are underlined.
 You can follow them by placing the cursor over them and pressing <Enter>, or
 by double-clicking them.
@@ -21,12 +21,12 @@ by double-clicking them.
 :Tutor [tutorial]	Opens a tutorial.  Command-line completion for
 			[tutorial] is provided, the candidates are a list of
 			".tutor" files found in the "tutor/<lang>/"  folder in
-			the 'runtimepath'.  Tutorials prefixed with "vim-"
+			the 'runtimepath'.  Tutorials prefixed with "mnv-"
 			will always be shown first.
 
 			If no [tutorial] is provided, the command starts the
-			"vim-01-beginner" tutorial, which is equivalent to
-			Vim's `vimtutor`, chapter 1.
+			"mnv-01-beginner" tutorial, which is equivalent to
+			MNV's `mnvtutor`, chapter 1.
 
 			Uses the translated tutorial for the current message
 			language if possible (|v:lang|), e.g. to open the
@@ -36,9 +36,9 @@ by double-clicking them.
 			:Tutor
 <
 =============================================================================
-2. Creating tutorials                                        *vim-tutor-create*
+2. Creating tutorials                                        *mnv-tutor-create*
 
-Writing vim-tutor-mode tutorials is easy.  For an overview of the format used,
+Writing mnv-tutor-mode tutorials is easy.  For an overview of the format used,
 please consult the "tutor.tutor" file: >
 
     :Tutor tutor
@@ -50,4 +50,4 @@ It is recommended to use a less formal style when writing tutorials than in
 regular documentation (unless the content requires it).
 
 =============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

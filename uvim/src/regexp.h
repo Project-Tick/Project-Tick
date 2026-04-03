@@ -3,8 +3,8 @@
  * NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
  *
  * This is NOT the original regular expression code as written by Henry
- * Spencer.  This code has been modified specifically for use with Vim, and
- * should not be used apart from compiling Vim.  If you want a good regular
+ * Spencer.  This code has been modified specifically for use with MNV, and
+ * should not be used apart from compiling MNV.  If you want a good regular
  * expression library, get the original code.
  *
  * NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
@@ -33,7 +33,7 @@
 #define NFA_MAX_STATES 100000
 #define NFA_TOO_EXPENSIVE (-1)
 
-// Which regexp engine to use? Needed for vim_regcomp().
+// Which regexp engine to use? Needed for mnv_regcomp().
 // Must match with 'regexpengine'.
 #define	    AUTOMATIC_ENGINE	0
 #define	    BACKTRACKING_ENGINE	1
@@ -42,7 +42,7 @@
 typedef struct regengine regengine_T;
 
 /*
- * Structure returned by vim_regcomp() to pass on to vim_regexec().
+ * Structure returned by mnv_regcomp() to pass on to mnv_regexec().
  * This is the general structure. For the actual matcher, two specific
  * structures are used. See code below.
  */
@@ -51,7 +51,7 @@ typedef struct regprog
     regengine_T		*engine;
     unsigned		regflags;
     unsigned		re_engine;   // automatic, backtracking or nfa engine
-    unsigned		re_flags;    // second argument for vim_regcomp()
+    unsigned		re_flags;    // second argument for mnv_regcomp()
     int			re_in_use;   // prog is being executed
 } regprog_T;
 
@@ -186,7 +186,7 @@ struct regengine
 #endif
 };
 
-// Flags used by vim_regsub() and vim_regsub_both()
+// Flags used by mnv_regsub() and mnv_regsub_both()
 #define REGSUB_COPY	    1
 #define REGSUB_MAGIC	    2
 #define REGSUB_BACKSLASH    4

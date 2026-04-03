@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -16,7 +16,7 @@
 #include <assert.h>
 
 // Must include main.c because it contains much more than just main()
-#define NO_VIM_MAIN
+#define NO_MNV_MAIN
 #include "main.c"
 
 // This file has to be included because the tested functions are static
@@ -110,7 +110,7 @@ test_mf_hash(void)
 	    mf_hash_rem_item(&ht, item);
 	    assert(mf_hash_find(&ht, key) == NULL);
 
-	    vim_free(item);
+	    mnv_free(item);
 	}
     }
 

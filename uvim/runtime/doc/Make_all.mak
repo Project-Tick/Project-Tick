@@ -76,7 +76,7 @@ DOCS = \
 	pi_spec.txt \
 	pi_tar.txt \
 	pi_tutor.txt \
-	pi_vimball.txt \
+	pi_mnvball.txt \
 	pi_zip.txt \
 	popup.txt \
 	print.txt \
@@ -149,8 +149,8 @@ DOCS = \
 	version8.txt \
 	version9.txt \
 	vi_diff.txt \
-	vim9.txt \
-	vim9class.txt \
+	mnv9.txt \
+	mnv9class.txt \
 	visual.txt \
 	vietnamese.txt \
 	wayland.txt \
@@ -232,7 +232,7 @@ HTMLS = \
 	pi_spec.html \
 	pi_tar.html \
 	pi_tutor.html \
-	pi_vimball.html \
+	pi_mnvball.html \
 	pi_zip.html \
 	popup.html \
 	print.html \
@@ -306,46 +306,46 @@ HTMLS = \
 	version9.html \
 	vi_diff.html \
 	vietnamese.html \
-	vimindex.html \
-	vim9.html \
-	vim9class.html \
+	mnvindex.html \
+	mnv9.html \
+	mnv9class.html \
 	visual.html \
 	wayland.html \
 	windows.html \
 	workshop.html
 
 CONVERTED = \
-	vim-da.UTF-8.1 \
-	vimdiff-da.UTF-8.1 \
-	vimtutor-da.UTF-8.1 \
-	vim-de.UTF-8.1 \
-	vim-fr.UTF-8.1 \
-	evim-fr.UTF-8.1 \
-	vimdiff-fr.UTF-8.1 \
-	vimtutor-fr.UTF-8.1 \
+	mnv-da.UTF-8.1 \
+	mnvdiff-da.UTF-8.1 \
+	mnvtutor-da.UTF-8.1 \
+	mnv-de.UTF-8.1 \
+	mnv-fr.UTF-8.1 \
+	emnv-fr.UTF-8.1 \
+	mnvdiff-fr.UTF-8.1 \
+	mnvtutor-fr.UTF-8.1 \
 	xxd-fr.UTF-8.1 \
-	vim-it.UTF-8.1 \
-	evim-it.UTF-8.1 \
-	vimdiff-it.UTF-8.1 \
-	vimtutor-it.UTF-8.1 \
+	mnv-it.UTF-8.1 \
+	emnv-it.UTF-8.1 \
+	mnvdiff-it.UTF-8.1 \
+	mnvtutor-it.UTF-8.1 \
 	xxd-it.UTF-8.1 \
-	vim-pl.UTF-8.1 \
-	evim-pl.UTF-8.1 \
-	vimdiff-pl.UTF-8.1 \
-	vimtutor-pl.UTF-8.1 \
+	mnv-pl.UTF-8.1 \
+	emnv-pl.UTF-8.1 \
+	mnvdiff-pl.UTF-8.1 \
+	mnvtutor-pl.UTF-8.1 \
 	xxd-pl.UTF-8.1 \
-	vim-ru.UTF-8.1 \
-	evim-ru.UTF-8.1 \
-	vimdiff-ru.UTF-8.1 \
-	vimtutor-ru.UTF-8.1 \
+	mnv-ru.UTF-8.1 \
+	emnv-ru.UTF-8.1 \
+	mnvdiff-ru.UTF-8.1 \
+	mnvtutor-ru.UTF-8.1 \
 	xxd-ru.UTF-8.1 \
-	vim-sv.UTF-8.1 \
-	evim-sv.UTF-8.1 \
-	vimdiff-sv.UTF-8.1 \
-	vimtutor-sv.UTF-8.1 \
+	mnv-sv.UTF-8.1 \
+	emnv-sv.UTF-8.1 \
+	mnvdiff-sv.UTF-8.1 \
+	mnvtutor-sv.UTF-8.1 \
 	xxd-sv.UTF-8.1 \
-	vim-tr.UTF-8.1 \
-	evim-tr.UTF-8.1 \
-	vimdiff-tr.UTF-8.1 \
-	vimtutor-tr.UTF-8.1
+	mnv-tr.UTF-8.1 \
+	emnv-tr.UTF-8.1 \
+	mnvdiff-tr.UTF-8.1 \
+	mnvtutor-tr.UTF-8.1
 

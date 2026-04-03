@@ -33,4 +33,4 @@ void nv_g_home_m_cmd(cmdarg_T *cap);
 int unadjust_for_sel(void);
 int unadjust_for_sel_inner(pos_T *pp);
 void set_cursor_for_append_to_line(void);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

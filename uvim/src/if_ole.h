@@ -23,22 +23,22 @@ extern "C"{
 
 // Forward Declarations
 
-#ifndef __IVim_FWD_DEFINED__
-#define __IVim_FWD_DEFINED__
-typedef interface IVim IVim;
-#endif	// __IVim_FWD_DEFINED__
+#ifndef __IMNV_FWD_DEFINED__
+#define __IMNV_FWD_DEFINED__
+typedef interface IMNV IMNV;
+#endif	// __IMNV_FWD_DEFINED__
 
 
-#ifndef __Vim_FWD_DEFINED__
-#define __Vim_FWD_DEFINED__
+#ifndef __MNV_FWD_DEFINED__
+#define __MNV_FWD_DEFINED__
 
 #ifdef __cplusplus
-typedef class Vim Vim;
+typedef class MNV MNV;
 #else
-typedef struct Vim Vim;
+typedef struct MNV MNV;
 #endif // __cplusplus
 
-#endif	// __Vim_FWD_DEFINED__
+#endif	// __MNV_FWD_DEFINED__
 
 
 // header files for imported files
@@ -50,11 +50,11 @@ typedef struct Vim Vim;
     void __RPC_USER MIDL_user_free( void __RPC_FAR * );
 #endif
 
-#ifndef __IVim_INTERFACE_DEFINED__
-#define __IVim_INTERFACE_DEFINED__
+#ifndef __IMNV_INTERFACE_DEFINED__
+#define __IMNV_INTERFACE_DEFINED__
 
 //***************************************
-// Generated header for interface: IVim
+// Generated header for interface: IMNV
 // at Wed Jun 06 18:20:37 2001
 // using MIDL 3.01.75
 //**************************************
@@ -62,12 +62,12 @@ typedef struct Vim Vim;
 
 
 
-EXTERN_C const IID IID_IVim;
+EXTERN_C const IID IID_IMNV;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
 
     interface DECLSPEC_UUID("0F0BFAE2-4C90-11d1-82D7-0004AC368519")
-    IVim : public IDispatch
+    IMNV : public IDispatch
     {
     public:
 	virtual HRESULT STDMETHODCALLTYPE SendKeys(
@@ -86,33 +86,33 @@ EXTERN_C const IID IID_IVim;
 
 #else	// C style interface
 
-    typedef struct IVimVtbl
+    typedef struct IMNVVtbl
     {
 	BEGIN_INTERFACE
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *QueryInterface )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [in] */ REFIID riid,
 	    /* [iid_is][out] */ void __RPC_FAR *__RPC_FAR *ppvObject);
 
 	ULONG ( STDMETHODCALLTYPE __RPC_FAR *AddRef )(
-	    IVim __RPC_FAR * This);
+	    IMNV __RPC_FAR * This);
 
 	ULONG ( STDMETHODCALLTYPE __RPC_FAR *Release )(
-	    IVim __RPC_FAR * This);
+	    IMNV __RPC_FAR * This);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *GetTypeInfoCount )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [out] */ UINT __RPC_FAR *pctinfo);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *GetTypeInfo )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [in] */ UINT iTInfo,
 	    /* [in] */ LCID lcid,
 	    /* [out] */ ITypeInfo __RPC_FAR *__RPC_FAR *ppTInfo);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *GetIDsOfNames )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [in] */ REFIID riid,
 	    /* [size_is][in] */ LPOLESTR __RPC_FAR *rgszNames,
 	    /* [in] */ UINT cNames,
@@ -120,7 +120,7 @@ EXTERN_C const IID IID_IVim;
 	    /* [size_is][out] */ DISPID __RPC_FAR *rgDispId);
 
 	/* [local] */ HRESULT ( STDMETHODCALLTYPE __RPC_FAR *Invoke )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [in] */ DISPID dispIdMember,
 	    /* [in] */ REFIID riid,
 	    /* [in] */ LCID lcid,
@@ -131,65 +131,65 @@ EXTERN_C const IID IID_IVim;
 	    /* [out] */ UINT __RPC_FAR *puArgErr);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *SendKeys )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [in] */ BSTR keys);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *Eval )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [in] */ BSTR expr,
 	    /* [retval][out] */ BSTR __RPC_FAR *result);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *SetForeground )(
-	    IVim __RPC_FAR * This);
+	    IMNV __RPC_FAR * This);
 
 	HRESULT ( STDMETHODCALLTYPE __RPC_FAR *GetHwnd )(
-	    IVim __RPC_FAR * This,
+	    IMNV __RPC_FAR * This,
 	    /* [retval][out] */ UINT_PTR __RPC_FAR *result);
 
 	END_INTERFACE
-    } IVimVtbl;
+    } IMNVVtbl;
 
-    interface IVim
+    interface IMNV
     {
-	CONST_VTBL struct IVimVtbl __RPC_FAR *lpVtbl;
+	CONST_VTBL struct IMNVVtbl __RPC_FAR *lpVtbl;
     };
 
 #ifdef COBJMACROS
 
 
-#define IVim_QueryInterface(This,riid,ppvObject)	\
+#define IMNV_QueryInterface(This,riid,ppvObject)	\
     (This)->lpVtbl -> QueryInterface(This,riid,ppvObject)
 
-#define IVim_AddRef(This)	\
+#define IMNV_AddRef(This)	\
     (This)->lpVtbl -> AddRef(This)
 
-#define IVim_Release(This)	\
+#define IMNV_Release(This)	\
     (This)->lpVtbl -> Release(This)
 
 
-#define IVim_GetTypeInfoCount(This,pctinfo)	\
+#define IMNV_GetTypeInfoCount(This,pctinfo)	\
     (This)->lpVtbl -> GetTypeInfoCount(This,pctinfo)
 
-#define IVim_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
+#define IMNV_GetTypeInfo(This,iTInfo,lcid,ppTInfo)	\
     (This)->lpVtbl -> GetTypeInfo(This,iTInfo,lcid,ppTInfo)
 
-#define IVim_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
+#define IMNV_GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)	\
     (This)->lpVtbl -> GetIDsOfNames(This,riid,rgszNames,cNames,lcid,rgDispId)
 
-#define IVim_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
+#define IMNV_Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)	\
     (This)->lpVtbl -> Invoke(This,dispIdMember,riid,lcid,wFlags,pDispParams,pVarResult,pExcepInfo,puArgErr)
 
 
-#define IVim_SendKeys(This,keys)	\
+#define IMNV_SendKeys(This,keys)	\
     (This)->lpVtbl -> SendKeys(This,keys)
 
-#define IVim_Eval(This,expr,result)	\
+#define IMNV_Eval(This,expr,result)	\
     (This)->lpVtbl -> Eval(This,expr,result)
 
-#define IVim_SetForeground(This)	\
+#define IMNV_SetForeground(This)	\
     (This)->lpVtbl -> SetForeground(This)
 
-#define IVim_GetHwnd(This,result)	\
+#define IMNV_GetHwnd(This,result)	\
     (This)->lpVtbl -> GetHwnd(This,result)
 
 #endif // COBJMACROS
@@ -199,48 +199,48 @@ EXTERN_C const IID IID_IVim;
 
 
 
-HRESULT STDMETHODCALLTYPE IVim_SendKeys_Proxy(
-    IVim __RPC_FAR * This,
+HRESULT STDMETHODCALLTYPE IMNV_SendKeys_Proxy(
+    IMNV __RPC_FAR * This,
     /* [in] */ BSTR keys);
 
 
-void __RPC_STUB IVim_SendKeys_Stub(
+void __RPC_STUB IMNV_SendKeys_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
     DWORD *_pdwStubPhase);
 
 
-HRESULT STDMETHODCALLTYPE IVim_Eval_Proxy(
-    IVim __RPC_FAR * This,
+HRESULT STDMETHODCALLTYPE IMNV_Eval_Proxy(
+    IMNV __RPC_FAR * This,
     /* [in] */ BSTR expr,
     /* [retval][out] */ BSTR __RPC_FAR *result);
 
 
-void __RPC_STUB IVim_Eval_Stub(
+void __RPC_STUB IMNV_Eval_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
     DWORD *_pdwStubPhase);
 
 
-HRESULT STDMETHODCALLTYPE IVim_SetForeground_Proxy(
-    IVim __RPC_FAR * This);
+HRESULT STDMETHODCALLTYPE IMNV_SetForeground_Proxy(
+    IMNV __RPC_FAR * This);
 
 
-void __RPC_STUB IVim_SetForeground_Stub(
+void __RPC_STUB IMNV_SetForeground_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
     DWORD *_pdwStubPhase);
 
 
-HRESULT STDMETHODCALLTYPE IVim_GetHwnd_Proxy(
-    IVim __RPC_FAR * This,
+HRESULT STDMETHODCALLTYPE IMNV_GetHwnd_Proxy(
+    IMNV __RPC_FAR * This,
     /* [retval][out] */ UINT_PTR __RPC_FAR *result);
 
 
-void __RPC_STUB IVim_GetHwnd_Stub(
+void __RPC_STUB IMNV_GetHwnd_Stub(
     IRpcStubBuffer *This,
     IRpcChannelBuffer *_pRpcChannelBuffer,
     PRPC_MESSAGE _pRpcMessage,
@@ -248,15 +248,15 @@ void __RPC_STUB IVim_GetHwnd_Stub(
 
 
 
-#endif	// __IVim_INTERFACE_DEFINED__
+#endif	// __IMNV_INTERFACE_DEFINED__
 
 
 
-#ifndef __Vim_LIBRARY_DEFINED__
-#define __Vim_LIBRARY_DEFINED__
+#ifndef __MNV_LIBRARY_DEFINED__
+#define __MNV_LIBRARY_DEFINED__
 
 //***************************************
-// Generated header for library: Vim
+// Generated header for library: MNV
 // at Wed Jun 06 18:20:37 2001
 // using MIDL 3.01.75
 //**************************************
@@ -264,15 +264,15 @@ void __RPC_STUB IVim_GetHwnd_Stub(
 
 
 
-EXTERN_C const IID LIBID_Vim;
+EXTERN_C const IID LIBID_MNV;
 
 #ifdef __cplusplus
-EXTERN_C const CLSID CLSID_Vim;
+EXTERN_C const CLSID CLSID_MNV;
 
 class DECLSPEC_UUID("0F0BFAE1-4C90-11d1-82D7-0004AC368519")
-Vim;
+MNV;
 #endif
-#endif // __Vim_LIBRARY_DEFINED__
+#endif // __MNV_LIBRARY_DEFINED__
 
 // Additional Prototypes for ALL interfaces
 

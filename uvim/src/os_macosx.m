@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -32,7 +32,7 @@
 #include <dispatch/dispatch.h>
 #endif
 
-#include "vim.h"
+#include "mnv.h"
 #import <AppKit/AppKit.h>
 
 
@@ -41,9 +41,9 @@
  */
 #if defined(FEAT_CLIPBOARD)
 
-/* Used to identify clipboard data copied from Vim. */
+/* Used to identify clipboard data copied from MNV. */
 
-NSString *VimPboardType = @"VimPboardType";
+NSString *MNVPboardType = @"MNVPboardType";
 
     void
 clip_mch_lose_selection(Clipboard_T *cbd UNUSED)
@@ -70,10 +70,10 @@ clip_mch_request_selection(Clipboard_T *cbd)
 
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060
-    NSArray *supportedTypes = [NSArray arrayWithObjects:VimPboardType,
+    NSArray *supportedTypes = [NSArray arrayWithObjects:MNVPboardType,
 	    NSPasteboardTypeString, nil];
 #else
-    NSArray *supportedTypes = [NSArray arrayWithObjects:VimPboardType,
+    NSArray *supportedTypes = [NSArray arrayWithObjects:MNVPboardType,
 	    NSStringPboardType, nil];
 #endif
     NSString *bestType = [pb availableTypeFromArray:supportedTypes];
@@ -82,14 +82,14 @@ clip_mch_request_selection(Clipboard_T *cbd)
     int motion_type = MAUTO;
     NSString *string = nil;
 
-    if ([bestType isEqual:VimPboardType])
+    if ([bestType isEqual:MNVPboardType])
     {
 	/* This type should consist of an array with two objects:
 	 *   1. motion type (NSNumber)
 	 *   2. text (NSString)
 	 * If this is not the case we fall back on using NSPasteboardTypeString.
 	 */
-	id plist = [pb propertyListForType:VimPboardType];
+	id plist = [pb propertyListForType:MNVPboardType];
 	if ([plist isKindOfClass:[NSArray class]] && [plist count] == 2)
 	{
 	    id obj = [plist objectAtIndex:1];
@@ -143,7 +143,7 @@ clip_mch_request_selection(Clipboard_T *cbd)
 	clip_yank_selection(motion_type, str, len, cbd);
 
     if (input_conv.vc_type != CONV_NONE)
-	vim_free(str);
+	mnv_free(str);
 
 releasepool:
     [pool release];
@@ -176,7 +176,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	char_u *conv_str = string_convert(&output_conv, str, &len);
 	if (conv_str)
 	{
-	    vim_free(str);
+	    mnv_free(str);
 	    str = conv_str;
 	}
     }
@@ -189,17 +189,17 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	/* See clip_mch_request_selection() for info on pasteboard types. */
 	NSPasteboard *pb = [NSPasteboard generalPasteboard];
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060
-	NSArray *supportedTypes = [NSArray arrayWithObjects:VimPboardType,
+	NSArray *supportedTypes = [NSArray arrayWithObjects:MNVPboardType,
 		NSPasteboardTypeString, nil];
 #else
-	NSArray *supportedTypes = [NSArray arrayWithObjects:VimPboardType,
+	NSArray *supportedTypes = [NSArray arrayWithObjects:MNVPboardType,
 		NSStringPboardType, nil];
 #endif
 	[pb declareTypes:supportedTypes owner:nil];
 
 	NSNumber *motion = [NSNumber numberWithInt:motion_type];
 	NSArray *plist = [NSArray arrayWithObjects:motion, string, nil];
-	[pb setPropertyList:plist forType:VimPboardType];
+	[pb setPropertyList:plist forType:MNVPboardType];
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060
 	[pb setString:string forType:NSPasteboardTypeString];
@@ -210,7 +210,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	[string release];
     }
 
-    vim_free(str);
+    mnv_free(str);
 releasepool:
     [pool release];
 }
@@ -302,7 +302,7 @@ timer_create(clockid_t clockid, struct sigevent *sevp, timer_t *timerid)
     *timerid = timer;
 
     timer->tim_queue = dispatch_queue_create(
-	    "org.vim.timerqueue", NULL);
+	    "org.mnv.timerqueue", NULL);
     if (timer->tim_queue == NULL)
     {
 	errno = ENOMEM;

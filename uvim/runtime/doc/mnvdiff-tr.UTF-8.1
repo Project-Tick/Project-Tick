@@ -1,0 +1,45 @@
+.TH MNVDIFF 1 "30 Mart 2001"
+.SH AD
+mnvdiff \- bir dosyanın dört adede kadar sürümlerini MNV ile düzenle
+ve ayrımlarını göster
+.SH ÖZET
+.br
+.B mnvdiff
+[seçenekler] dosya1 dosya2 [dosya3 [dosya4]]
+.PP
+.B gmnvdiff
+.SH TANIM
+.B MNVdiff,
+.B MNV
+içinde iki (üç veya dört) dosyayı açar.
+Her dosya ayrı pencerelerde açılır.
+Dosyalar arasındaki ayrımlar vurgulanır.
+Böylece değişiklikler kolayca denetlenebilir ve aynı dosyanın başka bir
+sürümüne kolaylıkla aktarılabilir.
+.PP
+MNV hakkında ek bilgi için: mnv(1)
+.PP
+.B gmnvdiff
+olarak başlatılırsa varsa grafik arabirim açılır.
+.PP
+Her pencerede 'diff' seçeneği açılır, böylece değişiklikler vurgulanır.
+.br
+\'wrap' ve 'scrollbind' seçenekleri metnin düzgün görünmesi için açılır.
+.br
+\'foldmethod' seçeneği "diff"e, ayarlanır, böylece satır aralıkları
+kıvrılır. 'foldcolumn' seçeneği kıvırmaları kolay ayrımlama ve açıp kapama
+için iki olarak ayarlanır.
+.SH SEÇENEKLER
+Satırlar hizalama için "\-O" seçeneği kullanılmışçasına dikey bölüntüler
+içinde görüntülenir.
+Yatay bölüntüler kullanmak için "\-o" kullanın.
+Diğer tüm değişkenler için: mnv(1).
+.SH AYRICA BAKINIZ
+mnv(1)
+.SH YAZAR
+.B MNV'in
+büyük çoğunluğu Bram Moolenaar tarafından başkalarının kayda değer
+yardımlarıyla yazılmıştır.
+Ek bilgi için
+.B MNV
+içinde ":help credits" yazın.

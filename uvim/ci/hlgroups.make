@@ -1,4 +1,4 @@
-# vim: ft=make
+# mnv: ft=make
 SHELL = /bin/bash
 
 # Default target to actually run the comparison:

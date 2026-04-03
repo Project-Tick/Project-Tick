@@ -24,4 +24,4 @@ void switch_buffer(bufref_T *save_curbuf, buf_T *buf);
 void restore_buffer(bufref_T *save_curbuf);
 void switch_to_win_for_buf(buf_T *buf, switchwin_T *switchwin, bufref_T *save_curbuf);
 void restore_win_for_buf(switchwin_T *switchwin, bufref_T *save_curbuf);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

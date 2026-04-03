@@ -1,10 +1,10 @@
-# Aap recipe for Czech Vim spell files.
+# Aap recipe for Czech MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = cs_CZ.aff cs_CZ.dic
@@ -13,13 +13,13 @@ all: $SPELLDIR/cs.iso-8859-2.spl $SPELLDIR/cs.utf-8.spl \
         $SPELLDIR/cs.cp1250.spl ../README_cs.txt
 
 $SPELLDIR/cs.iso-8859-2.spl : $FILES
-        :sys env LANG=cs_CZ.ISO8859-2 $VIM -u NONE -e -c "mkspell! $SPELLDIR/cs cs_CZ" -c q
+        :sys env LANG=cs_CZ.ISO8859-2 $MNV -u NONE -e -c "mkspell! $SPELLDIR/cs cs_CZ" -c q
 
 $SPELLDIR/cs.utf-8.spl : $FILES
-        :sys env LANG=cs_CZ.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/cs cs_CZ" -c q
+        :sys env LANG=cs_CZ.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/cs cs_CZ" -c q
 
 $SPELLDIR/cs.cp1250.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/cs cs_CZ" -c q
+        :sys $MNV -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/cs cs_CZ" -c q
 
 ../README_cs.txt: README_cs_CZ.txt
         :copy $source $target
@@ -47,7 +47,7 @@ cs_CZ.aff cs_CZ.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -78,4 +78,4 @@ check:
             :delete cs_CZ.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

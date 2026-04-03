@@ -1,10 +1,10 @@
-# Aap recipe for Ukrainian Vim spell files.
+# Aap recipe for Ukrainian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = uk_UA.aff uk_UA.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/uk.koi8-u.spl $SPELLDIR/uk.utf-8.spl \
         ../README_uk.txt
 
 $SPELLDIR/uk.koi8-u.spl : $FILES
-        :sys env LANG=uk_UA.KOI8-U $VIM -u NONE -e -c "mkspell! $SPELLDIR/uk uk_UA" -c q
+        :sys env LANG=uk_UA.KOI8-U $MNV -u NONE -e -c "mkspell! $SPELLDIR/uk uk_UA" -c q
 
 $SPELLDIR/uk.utf-8.spl : $FILES
-        :sys env LANG=uk_UA.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/uk uk_UA" -c q
+        :sys env LANG=uk_UA.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/uk uk_UA" -c q
 
 ../README_uk.txt: README_uk_UA.txt
         :copy $source $target
@@ -43,7 +43,7 @@ uk_UA.aff uk_UA.dic: {buildcheck=}
             :sys patch <uk_UA.diff
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff

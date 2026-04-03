@@ -1,10 +1,10 @@
-# Aap recipe for Setswana Vim spell files.
+# Aap recipe for Setswana MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = tn_ZA.aff tn_ZA.dic
@@ -14,13 +14,13 @@ all: $SPELLDIR/tn.iso-8859-2.spl $SPELLDIR/tn.utf-8.spl \
         $SPELLDIR/tn.cp1250.spl ../README_tn.txt
 
 $SPELLDIR/tn.iso-8859-2.spl : $FILES
-        :sys env LANG=ro_RO.ISO8859-2 $VIM -u NONE -e -c "mkspell! $SPELLDIR/tn tn_ZA" -c q
+        :sys env LANG=ro_RO.ISO8859-2 $MNV -u NONE -e -c "mkspell! $SPELLDIR/tn tn_ZA" -c q
 
 $SPELLDIR/tn.utf-8.spl : $FILES
-        :sys env LANG=ro_RO.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/tn tn_ZA" -c q
+        :sys env LANG=ro_RO.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/tn tn_ZA" -c q
 
 $SPELLDIR/tn.cp1250.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/tn tn_ZA" -c q
+        :sys $MNV -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/tn tn_ZA" -c q
 
 ../README_tn.txt: README_tn_ZA.txt
         :copy $source $target
@@ -48,7 +48,7 @@ tn_ZA.aff tn_ZA.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -79,4 +79,4 @@ check:
             :delete tn_ZA.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

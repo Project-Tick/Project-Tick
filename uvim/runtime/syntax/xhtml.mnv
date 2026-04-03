@@ -1,0 +1,11 @@
+" MNV syntax file
+" Language:	XHTML
+" Maintainer:	noone
+" Last Change:	2003 Feb 04
+
+" Load the HTML syntax for now.
+runtime! syntax/html.mnv
+
+let b:current_syntax = "xhtml"
+
+" mnv: ts=8

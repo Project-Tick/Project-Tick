@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read a list of people who contributed.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read a list of people who contributed.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * Implementation of popup windows.  See ":help popup".
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_PROP_POPUP)
 
@@ -218,7 +218,7 @@ set_mousemoved_columns(win_T *wp, int flags)
     pos.col = col + (colnr_T)STRLEN(text) - 1;
     getvcol(textwp, &pos, NULL, NULL, &mcol);
     wp->w_popup_mouse_maxcol = mcol;
-    vim_free(text);
+    mnv_free(text);
 }
 
 /*
@@ -444,7 +444,7 @@ popup_add_timeout(win_T *wp, int time, int close)
     char_u	    *ptr = cbbuf;
     typval_T	    tv;
 
-    vim_snprintf((char *)cbbuf, sizeof(cbbuf),
+    mnv_snprintf((char *)cbbuf, sizeof(cbbuf),
 		close ? "(_) => popup_close(%d)" : "(_) => popup_hide(%d)",
 		wp->w_id);
     if (get_lambda_tv_and_compile(&ptr, &tv, FALSE, &EVALARG_EVALUATE) != OK)
@@ -454,7 +454,7 @@ popup_add_timeout(win_T *wp, int time, int close)
     callback_T cb = get_callback(&tv);
     if (cb.cb_name != NULL && !cb.cb_free_name)
     {
-	cb.cb_name = vim_strsave(cb.cb_name);
+	cb.cb_name = mnv_strsave(cb.cb_name);
 	cb.cb_free_name = TRUE;
     }
     wp->w_popup_timer->tr_callback = cb;
@@ -634,7 +634,7 @@ check_highlight(dict_T *dict, char *name, char_u **pval)
     {
 	str = tv_get_string(&di->di_tv);
 	if (*str != NUL)
-	    *pval = vim_strsave(str);
+	    *pval = mnv_strsave(str);
     }
 }
 
@@ -675,7 +675,7 @@ popup_get_sign_name(win_T *wp)
 {
     static char    buf[30];
 
-    vim_snprintf(buf, sizeof(buf), "popup-%d", wp->w_id);
+    mnv_snprintf(buf, sizeof(buf), "popup-%d", wp->w_id);
     return (char_u *)buf;
 }
 
@@ -738,8 +738,8 @@ apply_general_options(win_T *wp, dict_T *dict)
     str = dict_get_string(dict, "title", FALSE);
     if (str != NULL)
     {
-	vim_free(wp->w_popup_title);
-	wp->w_popup_title = vim_strsave(str);
+	mnv_free(wp->w_popup_title);
+	wp->w_popup_title = mnv_strsave(str);
     }
 
     nr = dict_get_bool(dict, "wrap", -1);
@@ -884,7 +884,7 @@ apply_general_options(win_T *wp, dict_T *dict)
 	    {
 		for (i = 0; i < 4; ++i)
 		{
-		    vim_free(wp->w_border_highlight[i]);
+		    mnv_free(wp->w_border_highlight[i]);
 		    wp->w_border_highlight[i] = NULL;
 		}
 	    }
@@ -896,16 +896,16 @@ apply_general_options(win_T *wp, dict_T *dict)
 		    str = tv_get_string(&li->li_tv);
 		    if (*str != NUL)
 		    {
-			vim_free(wp->w_border_highlight[i]);
-			wp->w_border_highlight[i] = vim_strsave(str);
+			mnv_free(wp->w_border_highlight[i]);
+			wp->w_border_highlight[i] = mnv_strsave(str);
 		    }
 		}
 		if (list->lv_len == 1 && wp->w_border_highlight[0] != NULL)
 		    for (i = 1; i < 4; ++i)
 		    {
-			vim_free(wp->w_border_highlight[i]);
+			mnv_free(wp->w_border_highlight[i]);
 			wp->w_border_highlight[i] =
-					vim_strsave(wp->w_border_highlight[0]);
+					mnv_strsave(wp->w_border_highlight[0]);
 		    }
 	    }
 	}
@@ -989,7 +989,7 @@ apply_general_options(win_T *wp, dict_T *dict)
 	{
 	    wp->w_popup_mask = di->di_tv.vval.v_list;
 	    ++wp->w_popup_mask->lv_refcount;
-	    VIM_CLEAR(wp->w_popup_mask_cells);
+	    MNV_CLEAR(wp->w_popup_mask_cells);
 	}
 	else
 	{
@@ -1580,7 +1580,7 @@ popup_adjust_position(win_T *wp)
 
     if (wp->w_popup_title != NULL && *wp->w_popup_title != NUL)
     {
-	int title_len = vim_strsize(wp->w_popup_title) + 2 - extra_width;
+	int title_len = mnv_strsize(wp->w_popup_title) + 2 - extra_width;
 
 	if (minwidth < title_len)
 	    minwidth = title_len;
@@ -1887,11 +1887,11 @@ parse_popup_option(win_T *wp, int is_preview)
 	char_u	*s = p;
 	int	x;
 
-	e = vim_strchr(p, ':');
+	e = mnv_strchr(p, ':');
 	if (e == NULL || e[1] == NUL)
 	    return FAIL;
 
-	p = vim_strchr(e, ',');
+	p = mnv_strchr(e, ',');
 	if (p == NULL)
 	    p = e + STRLEN(e);
 	dig = e + 1;
@@ -1950,8 +1950,8 @@ parse_popup_option(win_T *wp, int is_preview)
 	    {
 		for (int i = 0; i < 4; ++i)
 		{
-		    VIM_CLEAR(wp->w_border_highlight[i]);
-		    wp->w_border_highlight[i] = vim_strnsave(arg, p - arg);
+		    MNV_CLEAR(wp->w_border_highlight[i]);
+		    wp->w_border_highlight[i] = mnv_strnsave(arg, p - arg);
 		}
 	    }
 	}
@@ -1979,7 +1979,7 @@ parse_popup_option(win_T *wp, int is_preview)
 		continue;
 	    }
 
-	    token = vim_strnsave(arg, token_len);
+	    token = mnv_strnsave(arg, token_len);
 	    if (token == NULL)
 		return FAIL;
 
@@ -2029,7 +2029,7 @@ parse_popup_option(win_T *wp, int is_preview)
 		    }
 		    if (failed || *q != NUL) // must end exactly after the 8th char
 		    {
-			vim_free(token);
+			mnv_free(token);
 			return FAIL;
 		    }
 		    SET_BORDER_CHARS(out[0], out[1], out[2], out[3], out[4],
@@ -2038,7 +2038,7 @@ parse_popup_option(win_T *wp, int is_preview)
 	    }
 	    else
 	    {
-		vim_free(token);
+		mnv_free(token);
 		return FAIL;
 	    }
 
@@ -2049,7 +2049,7 @@ parse_popup_option(win_T *wp, int is_preview)
 	    }
 	    border_enabled = TRUE;
 
-	    vim_free(token);
+	    mnv_free(token);
 	}
 	else if (STRNCMP(s, "close:", 6) == 0)
 	{
@@ -2285,7 +2285,7 @@ popup_create(typval_T *argvars, typval_T *rettv, create_type_T type)
 
     if (argvars != NULL)
     {
-	if (in_vim9script()
+	if (in_mnv9script()
 		&& (check_for_string_or_number_or_list_arg(argvars, 0) == FAIL
 		    || check_for_dict_arg(argvars, 1) == FAIL))
 	    return NULL;
@@ -2529,7 +2529,7 @@ popup_create(typval_T *argvars, typval_T *rettv, create_type_T type)
     }
 
     for (i = 0; i < 4; ++i)
-	VIM_CLEAR(wp->w_border_highlight[i]);
+	MNV_CLEAR(wp->w_border_highlight[i]);
     for (i = 0; i < 8; ++i)
 	wp->w_border_char[i] = 0;
 
@@ -2603,7 +2603,7 @@ f_popup_clear(typval_T *argvars, typval_T *rettv UNUSED)
 {
     int force = FALSE;
 
-    if (in_vim9script() && check_for_opt_bool_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_bool_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -2838,7 +2838,7 @@ f_popup_filter_menu(typval_T *argvars, typval_T *rettv)
     int		c;
     linenr_T	old_lnum;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -2910,7 +2910,7 @@ f_popup_filter_yesno(typval_T *argvars, typval_T *rettv)
     typval_T	res;
     int		c;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -3001,7 +3001,7 @@ f_popup_close(typval_T *argvars, typval_T *rettv UNUSED)
     int		id;
     win_T	*wp;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = (int)tv_get_number(argvars);
@@ -3046,7 +3046,7 @@ f_popup_hide(typval_T *argvars, typval_T *rettv UNUSED)
     int		id;
     win_T	*wp;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = (int)tv_get_number(argvars);
@@ -3081,7 +3081,7 @@ f_popup_show(typval_T *argvars, typval_T *rettv UNUSED)
     rettv->v_type = VAR_NUMBER;
     rettv->vval.v_number = -1;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = (int)tv_get_number(argvars);
@@ -3108,7 +3108,7 @@ f_popup_settext(typval_T *argvars, typval_T *rettv UNUSED)
     int		id;
     win_T	*wp;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_string_or_list_arg(argvars, 1) == FAIL))
 	return;
@@ -3330,7 +3330,7 @@ f_popup_move(typval_T *argvars, typval_T *rettv UNUSED)
     int		old_height;
     int		old_width;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -3425,7 +3425,7 @@ f_popup_setoptions(typval_T *argvars, typval_T *rettv UNUSED)
     int		need_reposition = FALSE;
     int		i;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -3531,7 +3531,7 @@ f_popup_getpos(typval_T *argvars, typval_T *rettv)
     if (rettv_dict_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = (int)tv_get_number(argvars);
@@ -3594,7 +3594,7 @@ f_popup_locate(typval_T *argvars, typval_T *rettv)
     int		col;
     win_T	*wp;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL))
 	return;
@@ -3727,7 +3727,7 @@ f_popup_getoptions(typval_T *argvars, typval_T *rettv)
     if (rettv_dict_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = (int)tv_get_number(argvars);
@@ -3944,7 +3944,7 @@ invoke_popup_filter(win_T *wp, int c)
     //	    if a:c == "\<F2>"
     buf[special_to_buf(c, mod_mask, FALSE, buf)] = NUL;
     argv[1].v_type = VAR_STRING;
-    argv[1].vval.v_string = vim_strsave(buf);
+    argv[1].vval.v_string = mnv_strsave(buf);
 
     argv[2].v_type = VAR_UNKNOWN;
 
@@ -3981,7 +3981,7 @@ invoke_popup_filter(win_T *wp, int c)
 	}
     }
 
-    vim_free(argv[1].vval.v_string);
+    mnv_free(argv[1].vval.v_string);
     clear_tv(&rettv);
     return res;
 }
@@ -4094,7 +4094,7 @@ popup_update_mask(win_T *wp, int width, int height)
 
     if (wp->w_popup_mask == NULL || width == 0 || height == 0)
     {
-	VIM_CLEAR(wp->w_popup_mask_cells);
+	MNV_CLEAR(wp->w_popup_mask_cells);
 	return;
     }
     if (wp->w_popup_mask_cells != NULL
@@ -4102,7 +4102,7 @@ popup_update_mask(win_T *wp, int width, int height)
 	    && wp->w_popup_mask_width == width)
 	return;  // cache is still valid
 
-    vim_free(wp->w_popup_mask_cells);
+    mnv_free(wp->w_popup_mask_cells);
     wp->w_popup_mask_cells = alloc_clear((size_t)width * height);
     if (wp->w_popup_mask_cells == NULL)
 	return;
@@ -4445,7 +4445,7 @@ may_update_popup_mask(int type)
 
 	if (!has_opacity)
 	{
-	    VIM_CLEAR(opacity_zindex);
+	    MNV_CLEAR(opacity_zindex);
 	    opacity_zindex_rows = 0;
 	    opacity_zindex_cols = 0;
 	}
@@ -4454,7 +4454,7 @@ may_update_popup_mask(int type)
 	    if (opacity_zindex_rows != screen_Rows
 		    || opacity_zindex_cols != screen_Columns)
 	    {
-		vim_free(opacity_zindex);
+		mnv_free(opacity_zindex);
 		opacity_zindex = LALLOC_MULT(short,
 					screen_Rows * screen_Columns);
 		opacity_zindex_rows = screen_Rows;
@@ -4462,7 +4462,7 @@ may_update_popup_mask(int type)
 	    }
 	    if (opacity_zindex != NULL)
 	    {
-		vim_memset(opacity_zindex, 0,
+		mnv_memset(opacity_zindex, 0,
 		    (size_t)screen_Rows * screen_Columns * sizeof(short));
 
 		FOR_ALL_POPUPWINS(wp)
@@ -4492,7 +4492,7 @@ may_update_popup_mask(int type)
 	mask = popup_mask;
     else
 	mask = popup_mask_next;
-    vim_memset(mask, 0, (size_t)screen_Rows * screen_Columns * sizeof(short));
+    mnv_memset(mask, 0, (size_t)screen_Rows * screen_Columns * sizeof(short));
 
     // Find the window with the lowest zindex that hasn't been handled yet,
     // so that the window with a higher zindex overwrites the value in
@@ -4586,7 +4586,7 @@ may_update_popup_mask(int type)
 			    {
 				if (wp != prev_wp)
 				{
-				    vim_memset(plines_cache, 0,
+				    mnv_memset(plines_cache, 0,
 							   sizeof(int) * Rows);
 				    prev_wp = wp;
 				}
@@ -4613,7 +4613,7 @@ may_update_popup_mask(int type)
 	    }
 	}
 
-	vim_free(plines_cache);
+	mnv_free(plines_cache);
     }
 
     update_popup_uses_mouse_move();
@@ -4938,17 +4938,17 @@ update_popups(void (*win_update)(win_T *wp))
 #ifdef FEAT_PROP_POPUP
     if (base_screenlines != NULL)
     {
-	vim_free(base_screenlines);
+	mnv_free(base_screenlines);
 	base_screenlines = NULL;
     }
     if (base_screenattrs != NULL)
     {
-	vim_free(base_screenattrs);
+	mnv_free(base_screenattrs);
 	base_screenattrs = NULL;
     }
     if (base_screenlinesuc != NULL)
     {
-	vim_free(base_screenlinesuc);
+	mnv_free(base_screenlinesuc);
 	base_screenlinesuc = NULL;
     }
     base_screen_rows = 0;
@@ -4978,17 +4978,17 @@ update_popups(void (*win_update)(win_T *wp))
 	{
 	    if (base_screenlines != NULL)
 	    {
-		vim_free(base_screenlines);
+		mnv_free(base_screenlines);
 		base_screenlines = NULL;
 	    }
 	    if (base_screenattrs != NULL)
 	    {
-		vim_free(base_screenattrs);
+		mnv_free(base_screenattrs);
 		base_screenattrs = NULL;
 	    }
 	    if (base_screenlinesuc != NULL)
 	    {
-		vim_free(base_screenlinesuc);
+		mnv_free(base_screenlinesuc);
 		base_screenlinesuc = NULL;
 	    }
 
@@ -5182,7 +5182,7 @@ update_popups(void (*win_update)(win_T *wp))
 	title_wincol = wp->w_wincol + 1;
 	if (wp->w_popup_title != NULL)
 	{
-	    title_len = vim_strsize(wp->w_popup_title);
+	    title_len = mnv_strsize(wp->w_popup_title);
 
 	    // truncate the title if too long
 	    if (title_len > total_width - 2)
@@ -5197,7 +5197,7 @@ update_popups(void (*win_update)(win_T *wp))
 		    screen_puts(title_text, wp->w_winrow, title_wincol,
 				  wp->w_popup_border[0] > 0
 						? border_attr[0] : popup_attr);
-		    vim_free(title_text);
+		    mnv_free(title_text);
 		}
 
 		title_len = total_width - 2;
@@ -5480,11 +5480,11 @@ update_popups(void (*win_update)(win_T *wp))
 
 	// Free saved background data
 	if (saved_screenlines != NULL)
-	    vim_free(saved_screenlines);
+	    mnv_free(saved_screenlines);
 	if (saved_screenattrs != NULL)
-	    vim_free(saved_screenattrs);
+	    mnv_free(saved_screenattrs);
 	if (saved_screenlinesuc != NULL)
-	    vim_free(saved_screenlinesuc);
+	    mnv_free(saved_screenlinesuc);
 
 	// Clear popup with opacity context.
 	screen_opacity_popup = NULL;
@@ -5502,9 +5502,9 @@ update_popups(void (*win_update)(win_T *wp))
     }
 
 #ifdef FEAT_PROP_POPUP
-    VIM_CLEAR(base_screenlines);
-    VIM_CLEAR(base_screenattrs);
-    VIM_CLEAR(base_screenlinesuc);
+    MNV_CLEAR(base_screenlines);
+    MNV_CLEAR(base_screenattrs);
+    MNV_CLEAR(base_screenlinesuc);
     base_screen_rows = 0;
     base_screen_cols = 0;
 #endif
@@ -5894,11 +5894,11 @@ popup_set_title(win_T *wp)
     mch_dirname(dirname, MAXPATHL);
     shorten_buf_fname(wp->w_buffer, dirname, FALSE);
 
-    vim_free(wp->w_popup_title);
+    mnv_free(wp->w_popup_title);
     len = STRLEN(wp->w_buffer->b_fname) + 3;
     wp->w_popup_title = alloc((int)len);
     if (wp->w_popup_title != NULL)
-	vim_snprintf((char *)wp->w_popup_title, len, " %s ",
+	mnv_snprintf((char *)wp->w_popup_title, len, " %s ",
 		wp->w_buffer->b_fname);
     redraw_win_later(wp, UPD_VALID);
 }

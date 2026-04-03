@@ -1,7 +1,7 @@
-*filetype.txt*	For Vim version 9.2.  Last change: 2026 Mar 24
+*filetype.txt*	For MNV version 9.2.  Last change: 2026 Mar 24
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Filetypes						*filetype* *file-type*
@@ -16,14 +16,14 @@ Also see |autocmd.txt|.
 ==============================================================================
 1. Filetypes					*filetypes* *file-types*
 
-Vim can detect the type of file that is edited.  This is done by checking the
+MNV can detect the type of file that is edited.  This is done by checking the
 file name and sometimes by inspecting the contents of the file for specific
 text.
 
 							*:filetype* *:filet*
-To enable file type detection, use this command in your vimrc: >
+To enable file type detection, use this command in your mnvrc: >
 	:filetype on
-Each time a new or existing file is edited, Vim will try to recognize the type
+Each time a new or existing file is edited, MNV will try to recognize the type
 of the file and set the 'filetype' option.  This will trigger the FileType
 event, which can be used to set the syntax highlighting, set options, etc.
 
@@ -32,23 +32,23 @@ compatible means options are global.  Resetting 'compatible' is recommended,
 if you didn't do that already.
 
 Detail: The ":filetype on" command will load one of these files:
-		Amiga	    $VIMRUNTIME/filetype.vim
-		Mac	    $VIMRUNTIME:filetype.vim
-		MS-Windows  $VIMRUNTIME\filetype.vim
-		Unix	    $VIMRUNTIME/filetype.vim
-		VMS	    $VIMRUNTIME/filetype.vim
-	This file is a Vim script that defines autocommands for the
+		Amiga	    $MNVRUNTIME/filetype.mnv
+		Mac	    $MNVRUNTIME:filetype.mnv
+		MS-Windows  $MNVRUNTIME\filetype.mnv
+		Unix	    $MNVRUNTIME/filetype.mnv
+		VMS	    $MNVRUNTIME/filetype.mnv
+	This file is a MNV script that defines autocommands for the
 	BufNewFile and BufRead events.  If the file type is not found by the
-	name, the file $VIMRUNTIME/scripts.vim is used to detect it from the
+	name, the file $MNVRUNTIME/scripts.mnv is used to detect it from the
 	contents of the file.
-	When the GUI is running or will start soon, the |menu.vim| script is
+	When the GUI is running or will start soon, the |menu.mnv| script is
 	also sourced.  See |'go-M'| about avoiding that.
 
 To add your own file types, see |new-filetype| below.  To search for help on a
 filetype prepend "ft-" and optionally append "-syntax", "-indent" or
 "-plugin".  For example: >
-	:help ft-vim-indent
-	:help ft-vim-syntax
+	:help ft-mnv-indent
+	:help ft-mnv-syntax
 	:help ft-man-plugin
 
 If the file type is not detected automatically, or it finds the wrong type,
@@ -57,13 +57,13 @@ file.  Example, for an IDL file use the command: >
 	:set filetype=idl
 
 or add this |modeline| to the file:
-	/* vim: set filetype=idl : */ ~
+	/* mnv: set filetype=idl : */ ~
 
 						*:filetype-plugin-on*
 You can enable loading the plugin files for specific file types with: >
 	:filetype plugin on
 If filetype detection was not switched on yet, it will be as well.
-This actually loads the file "ftplugin.vim" in 'runtimepath'.
+This actually loads the file "ftplugin.mnv" in 'runtimepath'.
 The result is that when a file is edited its plugin file is loaded (if there
 is one for the detected filetype). |filetype-plugin|
 
@@ -72,13 +72,13 @@ You can disable it again with: >
 	:filetype plugin off
 The filetype detection is not switched off then.  But if you do switch off
 filetype detection, the plugins will not be loaded either.
-This actually loads the file "ftplugof.vim" in 'runtimepath'.
+This actually loads the file "ftplugof.mnv" in 'runtimepath'.
 
 						*:filetype-indent-on*
 You can enable loading the indent file for specific file types with: >
 	:filetype indent on
 If filetype detection was not switched on yet, it will be as well.
-This actually loads the file "indent.vim" in 'runtimepath'.
+This actually loads the file "indent.mnv" in 'runtimepath'.
 The result is that when a file is edited its indent file is loaded (if there
 is one for the detected filetype). |indent-expression|
 
@@ -87,7 +87,7 @@ You can disable it again with: >
 	:filetype indent off
 The filetype detection is not switched off then.  But if you do switch off
 filetype detection, the indent files will not be loaded either.
-This actually loads the file "indoff.vim" in 'runtimepath'.
+This actually loads the file "indoff.mnv" in 'runtimepath'.
 This disables auto-indenting for files you will open.  It will keep working in
 already opened files.  Reset 'autoindent', 'cindent', 'smartindent' and/or
 'indentexpr' to disable indenting in an opened file.
@@ -133,7 +133,7 @@ shell script: "#!/bin/csh".
 argument was used.
 
 							*filetype-overrule*
-When the same extension is used for multiple filetypes, Vim tries to guess
+When the same extension is used for multiple filetypes, MNV tries to guess
 what kind of file it is.  This doesn't always work.  A number of global
 variables can be used to overrule the filetype used for certain extensions:
 
@@ -197,8 +197,8 @@ This means that the contents of compressed files are not inspected.
 
 							*new-filetype*
 If a file type that you want to use is not detected yet, there are four ways
-to add it.  In any way, it's better not to modify the $VIMRUNTIME/filetype.vim
-file.  It will be overwritten when installing a new version of Vim.
+to add it.  In any way, it's better not to modify the $MNVRUNTIME/filetype.mnv
+file.  It will be overwritten when installing a new version of MNV.
 
 A. If you want to overrule all default file type checks.
    This works by writing one file for each filetype.  The disadvantage is that
@@ -208,8 +208,8 @@ A. If you want to overrule all default file type checks.
    1. Create your user runtime directory.  You would normally use the first
       item of the 'runtimepath' option.  Then create the directory "ftdetect"
       inside it.  Example for Unix: >
-	:!mkdir ~/.vim
-	:!mkdir ~/.vim/ftdetect
+	:!mkdir ~/.mnv
+	:!mkdir ~/.mnv/ftdetect
 <
    2. Create a file that contains an autocommand to detect the file type.
       Example: >
@@ -217,11 +217,11 @@ A. If you want to overrule all default file type checks.
 <     Note that there is no "augroup" command, this has already been done
       when sourcing your file.  You could also use the pattern "*" and then
       check the contents of the file to recognize it.
-      Write this file as "mine.vim" in the "ftdetect" directory in your user
+      Write this file as "mine.mnv" in the "ftdetect" directory in your user
       runtime directory.  For example, for Unix: >
-	:w ~/.vim/ftdetect/mine.vim
+	:w ~/.mnv/ftdetect/mine.mnv
 
-<  3. To use the new filetype detection you must restart Vim.
+<  3. To use the new filetype detection you must restart MNV.
 
    The files in the "ftdetect" directory are used after all the default
    checks, thus they can overrule a previously detected file type.  But you
@@ -242,7 +242,7 @@ B. If you want to detect your file after the default file type checks.
 C. If your file type can be detected by the file name.
    1. Create your user runtime directory.  You would normally use the first
       item of the 'runtimepath' option.  Example for Unix: >
-	:!mkdir ~/.vim
+	:!mkdir ~/.mnv
 <
    2. Create a file that contains autocommands to detect the file type.
       Example: >
@@ -254,13 +254,13 @@ C. If your file type can be detected by the file name.
 	  au! BufRead,BufNewFile *.mine		setfiletype mine
 	  au! BufRead,BufNewFile *.xyz		setfiletype drawing
 	augroup END
-<     Write this file as "filetype.vim" in your user runtime directory.  For
+<     Write this file as "filetype.mnv" in your user runtime directory.  For
       example, for Unix: >
-	:w ~/.vim/filetype.vim
+	:w ~/.mnv/filetype.mnv
 
-<  3. To use the new filetype detection you must restart Vim.
+<  3. To use the new filetype detection you must restart MNV.
 
-   Your filetype.vim will be sourced before the default FileType autocommands
+   Your filetype.mnv will be sourced before the default FileType autocommands
    have been installed.  Your autocommands will match first, and the
    ":setfiletype" command will make sure that no other autocommands will set
    'filetype' after this.
@@ -270,9 +270,9 @@ D. If your filetype can only be detected by inspecting the contents of the
 
    1. Create your user runtime directory.  You would normally use the first
       item of the 'runtimepath' option.  Example for Unix: >
-	:!mkdir ~/.vim
+	:!mkdir ~/.mnv
 <
-   2. Create a Vim script file for doing this.  Example: >
+   2. Create a MNV script file for doing this.  Example: >
 	if did_filetype()	" filetype already set..
 	  finish		" ..don't do these checks
 	endif
@@ -281,28 +281,28 @@ D. If your filetype can only be detected by inspecting the contents of the
 	elseif getline(1) =~? '\<drawing\>'
 	  setfiletype drawing
 	endif
-<     See $VIMRUNTIME/scripts.vim for more examples.
-      Write this file as "scripts.vim" in your user runtime directory.  For
+<     See $MNVRUNTIME/scripts.mnv for more examples.
+      Write this file as "scripts.mnv" in your user runtime directory.  For
       example, for Unix: >
-	:w ~/.vim/scripts.vim
+	:w ~/.mnv/scripts.mnv
 <
-   3. The detection will work right away, no need to restart Vim.
+   3. The detection will work right away, no need to restart MNV.
 
-   Your scripts.vim is loaded before the default checks for file types, which
+   Your scripts.mnv is loaded before the default checks for file types, which
    means that your rules override the default rules in
-   $VIMRUNTIME/scripts.vim.
+   $MNVRUNTIME/scripts.mnv.
 
 						*remove-filetype*
-If a file type is detected that is wrong for you, install a filetype.vim or
-scripts.vim to catch it (see above).  You can set 'filetype' to a non-existing
+If a file type is detected that is wrong for you, install a filetype.mnv or
+scripts.mnv to catch it (see above).  You can set 'filetype' to a non-existing
 name to avoid that it will be set later anyway: >
 	:set filetype=ignored
 
 If you are setting up a system with many users, and you don't want each user
-to add/remove the same filetypes, consider writing the filetype.vim and
-scripts.vim files in a runtime directory that is used for everybody.  Check
+to add/remove the same filetypes, consider writing the filetype.mnv and
+scripts.mnv files in a runtime directory that is used for everybody.  Check
 the 'runtimepath' for a directory to use.  If there isn't one, set
-'runtimepath' in the |system-vimrc|.  Be careful to keep the default
+'runtimepath' in the |system-mnvrc|.  Be careful to keep the default
 directories!
 
 
@@ -314,19 +314,19 @@ On operating systems which support storing a file type with the file, you can
 specify that an autocommand should only be executed if the file is of a
 certain type.
 
-The actual type checking depends on which platform you are running Vim
+The actual type checking depends on which platform you are running MNV
 on; see your system's documentation for details.
 
 To use osfiletype checking in an autocommand you should put a list of types to
 match in angle brackets in place of a pattern, like this: >
 
-	:au BufRead *.html,<&faf;HTML>  runtime! syntax/html.vim
+	:au BufRead *.html,<&faf;HTML>  runtime! syntax/html.mnv
 
 This will match:
 
 - Any file whose name ends in ".html"
 - Any file whose type is "&faf" or "HTML", where the meaning of these types
-  depends on which version of Vim you are using.
+  depends on which version of MNV you are using.
   Unknown types are considered NOT to match.
 
 You can also specify a type and a pattern at the same time (in which case they
@@ -346,31 +346,31 @@ all loaded.  For example, if this command: >
 
 produces this output:
 
-	runtimepath=/etc/vim,~/.vim,/usr/local/share/vim/vim82 ~
+	runtimepath=/etc/mnv,~/.mnv,/usr/local/share/mnv/mnv82 ~
 
-then Vim will load all plugins in these directories and below:
+then MNV will load all plugins in these directories and below:
 
-	/etc/vim/plugin/  ~
-	~/.vim/plugin/  ~
-	/usr/local/share/vim/vim82/plugin/  ~
+	/etc/mnv/plugin/  ~
+	~/.mnv/plugin/  ~
+	/usr/local/share/mnv/mnv82/plugin/  ~
 
-Note that the last one is the value of $VIMRUNTIME which has been expanded.
+Note that the last one is the value of $MNVRUNTIME which has been expanded.
 
 Note that when using a plugin manager or |packages| many directories will be
 added to 'runtimepath'.  These plugins each require their own directory, don't
-put them directly in ~/.vim/plugin.
+put them directly in ~/.mnv/plugin.
 
 What if it looks like your plugin is not being loaded?  You can find out what
-happens when Vim starts up by using the |-V| argument: >
+happens when MNV starts up by using the |-V| argument: >
 
-	vim -V2
+	mnv -V2
 
 You will see a lot of messages, in between them is a remark about loading the
 plugins.  It starts with:
 
-	Searching for "plugin/**/*.vim" in ~
+	Searching for "plugin/**/*.mnv" in ~
 
-There you can see where Vim looks for your plugin scripts.
+There you can see where MNV looks for your plugin scripts.
 
 ==============================================================================
 2. Filetype plugin					*filetype-plugins*
@@ -411,7 +411,7 @@ ways to change this:
 1. Add a few settings.
    You must create a new filetype plugin in a directory early in
    'runtimepath'.  For Unix, for example you could use this file: >
-	vim ~/.vim/ftplugin/fortran.vim
+	mnv ~/.mnv/ftplugin/fortran.mnv
 <   You can set those settings and mappings that you would like to add.  Note
    that the global plugin will be loaded after this, it may overrule the
    settings that you do here.  If this is the case, you need to use one of the
@@ -420,7 +420,7 @@ ways to change this:
 2. Make a copy of the plugin and change it.
    You must put the copy in a directory early in 'runtimepath'.  For Unix, for
    example, you could do this: >
-	cp $VIMRUNTIME/ftplugin/fortran.vim ~/.vim/ftplugin/fortran.vim
+	cp $MNVRUNTIME/ftplugin/fortran.mnv ~/.mnv/ftplugin/fortran.mnv
 <   Then you can edit the copied file to your liking.  Since the b:did_ftplugin
    variable will be set, the global plugin will not be loaded.
    A disadvantage of this method is that when the distributed plugin gets
@@ -429,7 +429,7 @@ ways to change this:
 3. Overrule the settings after loading the global plugin.
    You must create a new filetype plugin in a directory from the end of
    'runtimepath'.  For Unix, for example, you could use this file: >
-	vim ~/.vim/after/ftplugin/fortran.vim
+	mnv ~/.mnv/after/ftplugin/fortran.mnv
 <   In this file you can change just those settings that you want to change.
 
 ==============================================================================
@@ -469,7 +469,7 @@ settings of Arduino IDE: >
 
 	setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
 
-To disable this behavior, set the following variable in your vimrc: >
+To disable this behavior, set the following variable in your mnvrc: >
 
 	let g:arduino_recommended_style = 0
 
@@ -501,9 +501,9 @@ Local mappings:
 
 Global mappings:
 			NOTE: The global mappings are accessed by sourcing the
-			ftplugin/changelog.vim file first, e.g. with >
-				runtime ftplugin/changelog.vim
-<			in your |.vimrc|.
+			ftplugin/changelog.mnv file first, e.g. with >
+				runtime ftplugin/changelog.mnv
+<			in your |.mnvrc|.
 <Leader>o		Switches to the ChangeLog buffer opened for the
 			current directory, or opens it in a new buffer if it
 			exists in the current directory.  Then it does the
@@ -607,7 +607,7 @@ FORTRAN							*ft-fortran-plugin*
 
 Options:
 'expandtab'	is switched on to avoid tabs as required by the Fortran
-		standards unless the user has set fortran_have_tabs in .vimrc.
+		standards unless the user has set fortran_have_tabs in .mnvrc.
 'textwidth'	is set to 80 for fixed source format whereas it is set to 132
 		for free source format.  Setting the
 		fortran_extended_line_length variable increases the width to
@@ -641,7 +641,7 @@ By default the following options are set, based on Godot official docs: >
 
 	setlocal noexpandtab softtabstop=0 shiftwidth=0
 
-To disable this behavior, set the following variable in your vimrc: >
+To disable this behavior, set the following variable in your mnvrc: >
 
 	let g:gdscript_recommended_style = 0
 
@@ -678,7 +678,7 @@ By default the following options are set for the recommended gleam style: >
 
 	setlocal expandtab shiftwidth=2 softtabstop=2
 
-To disable this behavior, set the following variable in your vimrc: >
+To disable this behavior, set the following variable in your mnvrc: >
 
 	let g:gleam_recommended_style = 0
 
@@ -688,7 +688,7 @@ By default the following options are set, based on Golang official docs: >
 
 	setlocal noexpandtab softtabstop=0 shiftwidth=0
 
-To disable this behavior, set the following variable in your vimrc: >
+To disable this behavior, set the following variable in your mnvrc: >
 
 	let g:go_recommended_style = 0
 
@@ -744,7 +744,7 @@ By default the following options are set: >
 	setlocal wildignore+=*.ibc
 
 To use tabs instead of spaces for indentation, set the following variable
-in your vimrc: >
+in your mnvrc: >
 
 	let g:idris2#allow_tabchar = 1
 
@@ -787,7 +787,7 @@ nor "g:java_ignore_markdown" is defined, the reformatting of Markdown comments
 can be enabled on demand with: >
 	setlocal formatexpr=g:javaformat#RemoveCommonMarkdownWhitespace()
 <
-Or for Vim versions less than `7.4.265`, with: >
+Or for MNV versions less than `7.4.265`, with: >
 	setlocal formatexpr=javaformat#RemoveCommonMarkdownWhitespace()
 <
 This function accepts a range of lines, removes a common run of vertical
@@ -797,18 +797,18 @@ reformatting can vary from the whole comment to only some portion of it.
 
 To enable the recognition of Markdown comments each time after removing
 "g:java_ignore_markdown" or "g:java_ignore_javadoc", remember to manually
-re-source "javaformat.vim" for Vim versions greater than `8.2.1397`: >
-	runtime autoload/javaformat.vim
+re-source "javaformat.mnv" for MNV versions greater than `8.2.1397`: >
+	runtime autoload/javaformat.mnv
 <
 JSON-FORMAT						*ft-json-plugin*
 
 JSON filetype can be extended to use 'formatexpr' and "json.FormatExpr()"
 function for json formatting (using |gq|).
 
-Add following lines to $HOME/.vim/ftplugin/json.vim: >
+Add following lines to $HOME/.mnv/ftplugin/json.mnv: >
 
-	vim9script
-	import autoload 'dist/json.vim'
+	mnv9script
+	import autoload 'dist/json.mnv'
 	setl formatexpr=json.FormatExpr()
 
 LUA					*ft-lua-plugin* *g:lua_folding*
@@ -830,7 +830,7 @@ MAIL							*ft-mail-plugin*
 
 Options:
 'modeline'	is switched off to avoid the danger of trojan horses, and to
-		avoid that a Subject line with "Vim:" in it will cause an
+		avoid that a Subject line with "MNV:" in it will cause an
 		error message.
 'textwidth'	is set to 72.  This is often recommended for e-mail.
 'formatoptions'  is set to break text lines and to repeat the comment leader
@@ -843,14 +843,14 @@ Local mappings:
 	to the end of the file in Normal mode.  This means "> " is inserted in
 	each line.
 
-MAN				*ft-man-plugin* *:Man* *:ManReload* *man.vim*
+MAN				*ft-man-plugin* *:Man* *:ManReload* *man.mnv*
 
 This plugin displays a manual page in a nice way.  See |find-manpage| in the
 user manual for more information.
 
 To start using the |:Man| command before any manual page has been loaded,
-source this script from your startup |vimrc| file: >
-	runtime ftplugin/man.vim
+source this script from your startup |mnvrc| file: >
+	runtime ftplugin/man.mnv
 
 Options:
 'iskeyword'	The '.' character is added to support the use of CTRL-] on the
@@ -902,26 +902,26 @@ one of these values:
 			instead of man pages.
 
 You may also want to set 'keywordprg' to make the |K| command open a manual
-page in a Vim window: >
+page in a MNV window: >
 	set keywordprg=:Man
 
 
-MANPAGER						*manpager.vim*
+MANPAGER						*manpager.mnv*
 
-The |:Man| command allows you to turn Vim into a manpager (that syntax
+The |:Man| command allows you to turn MNV into a manpager (that syntax
 highlights manpages and follows linked manpages on hitting CTRL-]).
 
 For bash,zsh,ksh or dash, add to the config file (.bashrc,.zshrc, ...)
 
-	export MANPAGER="vim +MANPAGER --not-a-term -"
+	export MANPAGER="mnv +MANPAGER --not-a-term -"
 
 For (t)csh, add to the config file
 
-	setenv MANPAGER "vim +MANPAGER --not-a-term -"
+	setenv MANPAGER "mnv +MANPAGER --not-a-term -"
 
 For fish, add to the config file
 
-	set -x MANPAGER "vim +MANPAGER --not-a-term -"
+	set -x MANPAGER "mnv +MANPAGER --not-a-term -"
 
 
 MARKDOWN						*ft-markdown-plugin*
@@ -965,12 +965,12 @@ By default the following options are set, in accordance with PEP8: >
 
 	setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8
 
-To disable this behavior, set the following variable in your vimrc: >
+To disable this behavior, set the following variable in your mnvrc: >
 
 	let g:python_recommended_style = 0
 
 
-QF QUICKFIX					    *qf.vim* *ft-qf-plugin*
+QF QUICKFIX					    *qf.mnv* *ft-qf-plugin*
 
 The "qf" filetype is used for the quickfix window, see |quickfix-window|.
 
@@ -982,13 +982,13 @@ configure as follows: >
 
 R MARKDOWN						*ft-rmd-plugin*
 
-By default ftplugin/html.vim is not sourced.  If you want it sourced, add to
-your |vimrc|: >
+By default ftplugin/html.mnv is not sourced.  If you want it sourced, add to
+your |mnvrc|: >
 	let rmd_include_html = 1
 
 The 'formatexpr' option is set dynamically with different values for R code
 and for Markdown code.  If you prefer that 'formatexpr' is not set, add to
-your |vimrc|: >
+your |mnvrc|: >
 	let rmd_dynamic_comments = 0
 
 
@@ -996,7 +996,7 @@ R RESTRUCTURED TEXT					*ft-rrst-plugin*
 
 The 'formatexpr' option is set dynamically with different values for R code
 and for ReStructured text.  If you prefer that 'formatexpr' is not set, add to
-your |vimrc|: >
+your |mnvrc|: >
 	let rrst_dynamic_comments = 0
 
 
@@ -1005,7 +1005,7 @@ RESTRUCTUREDTEXT					*ft-rst-plugin*
 The following formatting setting are optionally available: >
 	setlocal expandtab shiftwidth=3 softtabstop=3 tabstop=8
 
-To enable this behavior, set the following variable in your vimrc: >
+To enable this behavior, set the following variable in your mnvrc: >
 	let g:rst_style = 1
 
 
@@ -1013,7 +1013,7 @@ RNOWEB							*ft-rnoweb-plugin*
 
 The 'formatexpr' option is set dynamically with different values for R code
 and for LaTeX code.  If you prefer that 'formatexpr' is not set, add to your
-|vimrc|: >
+|mnvrc|: >
 	let rnw_dynamic_comments = 0
 
 
@@ -1067,9 +1067,9 @@ parents. (default: |TRUE|)
 To disable: >
 	let g:typst_foldnested = 0
 <
-VIM							*ft-vim-plugin*
+MNV							*ft-mnv-plugin*
 
-The Vim filetype plugin defines the following mappings:
+The MNV filetype plugin defines the following mappings:
 
     [[		move to the start of the previous function
     ]]		move to the start of the next function
@@ -1083,7 +1083,7 @@ The Vim filetype plugin defines the following mappings:
 
 
 The mappings can be disabled with: >
-	let g:no_vim_maps = 1
+	let g:no_mnv_maps = 1
 
 YAML							*ft-yaml-plugin*
 By default, the YAML filetype plugin enables the following options: >
@@ -1128,4 +1128,4 @@ The mappings can be disabled with: >
 <
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

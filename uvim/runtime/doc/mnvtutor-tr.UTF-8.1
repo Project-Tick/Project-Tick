@@ -1,0 +1,50 @@
+.TH MNVTUTOR 1 "2 Nisan 2001"
+.SH AD
+mnvtutor \- MNV eğitmeni
+.SH ÖZET
+.br
+.B mnvtutor [\-g] [dil]
+.SH TANIM
+.B MNVtutor,
+.B MNV
+eğitmenini başlatır.
+Önce orijinal eğitmen dosyasının bir kopyasını alır, böylece bir değişikliğe
+uğramadan değiştirilebilir.
+.PP
+.B MNVtutor
+ilk
+.B MNV
+komutlarını öğrenmek isteyen kişiler için yararlıdır.
+.PP
+İsteğe bağlı \-g değişkeni mnvtutor'u mnv yerine eğer yüklü ise gmnv ile
+başlatır. Yüklü değilse açmak için MNV kullanılır.
+.PP
+İsteğe bağlı [dil] değişkeni iki harfli dil kodunu belirtir, örneğin "tr"
+veya "es". Eğer [dil] değişkeni verilmemişse mevcut yerelleştirme
+kullanılır.
+Eğer bu dilde bir eğitmen varsa kullanılır.
+Yoksa İngilizce sürüm kullanılacaktır.
+.PP
+.B MNV
+her zaman Vi uyumlu kipte başlatılır.
+.SH DOSYALAR
+.TP 15
+/usr/local/lib/mnv/tutor/tutor[.dil]
+.B MNVtutor
+metin dosyaları.
+.TP 15
+/usr/local/lib/mnv/tutor/tutor.mnv
+.B MNVtutor
+metin dosyasını kopyalamak için kullanılan betik.
+.SH YAZAR
+.B MNVtutor
+ilk olarak Vi için Michael C. Pierce ve Robert K. Ware, 
+Colorado School of Mines tarafından, Colorado State University'den Charles
+Smith'in verdiği fikirler kullanılarak yazıldı.
+E-posta: bware@mines.colorado.edu.
+.br
+.B MNV
+uyarlaması Bram Moolenaar tarafından yapıldı.
+Çevirmenlerin adları için eğitmen dosyalarına bakın.
+.SH AYRICA BAKINIz
+mnv(1)

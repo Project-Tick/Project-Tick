@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
  * Implements starting jobs and controlling them.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_JOB_CHANNEL)
 
@@ -85,7 +85,7 @@ unref_job_callback(callback_T *cb)
     {
 	func_unref(cb->cb_name);
 	if (cb->cb_free_name)
-	    vim_free(cb->cb_name);
+	    mnv_free(cb->cb_name);
     }
 }
 
@@ -405,9 +405,9 @@ get_job_options(typval_T *tv, jobopt_T *opt, int supported, int supported2)
 		if (p != NULL)
 		{
 		    // Must have %d and no other %.
-		    p = vim_strchr(p, '%');
+		    p = mnv_strchr(p, '%');
 		    if (p != NULL && (p[1] != 'd'
-					    || vim_strchr(p + 2, '%') != NULL))
+					    || mnv_strchr(p + 2, '%') != NULL))
 			p = NULL;
 		}
 		if (p == NULL)
@@ -764,21 +764,21 @@ job_free_contents(job_T *job)
     }
     mch_clear_job(job);
 
-    vim_free(job->jv_tty_in);
-    vim_free(job->jv_tty_out);
-    vim_free(job->jv_stoponexit);
+    mnv_free(job->jv_tty_in);
+    mnv_free(job->jv_tty_out);
+    mnv_free(job->jv_stoponexit);
 #ifdef UNIX
-    vim_free(job->jv_termsig);
+    mnv_free(job->jv_termsig);
 #endif
 #ifdef MSWIN
-    vim_free(job->jv_tty_type);
+    mnv_free(job->jv_tty_type);
 #endif
     free_callback(&job->jv_exit_cb);
     if (job->jv_argv != NULL)
     {
 	for (i = 0; job->jv_argv[i] != NULL; i++)
-	    vim_free(job->jv_argv[i]);
-	vim_free(job->jv_argv);
+	    mnv_free(job->jv_argv[i]);
+	mnv_free(job->jv_argv);
     }
 }
 
@@ -800,7 +800,7 @@ job_unlink(job_T *job)
 job_free_job(job_T *job)
 {
     job_unlink(job);
-    vim_free(job);
+    mnv_free(job);
 }
 
     static void
@@ -836,7 +836,7 @@ free_jobs_to_free_later(void)
 	job = jobs_to_free;
 	jobs_to_free = job->jv_next;
 	job_free_contents(job);
-	vim_free(job);
+	mnv_free(job);
     }
 }
 
@@ -947,7 +947,7 @@ win32_escape_arg(char_u *arg)
 	dlen += 2;
 
     if (dlen == slen)
-	return vim_strsave(arg);
+	return mnv_strsave(arg);
 
     // Allocate memory for the result and fill it.
     escaped_arg = alloc(dlen + 1);
@@ -1015,7 +1015,7 @@ win32_build_cmd(list_T *l, garray_T *gap)
 	if (s == NULL)
 	    return FAIL;
 	ga_concat(gap, s);
-	vim_free(s);
+	mnv_free(s);
 	if (li->li_next != NULL)
 	    ga_append(gap, ' ');
     }
@@ -1117,7 +1117,7 @@ job_unref(job_T *job)
     else if (job->jv_channel != NULL)
     {
 	// Do remove the link to the channel, otherwise it hangs
-	// around until Vim exits. See job_free() for refcount.
+	// around until MNV exits. See job_free() for refcount.
 	ch_log(job->jv_channel, "detaching channel from job");
 	job->jv_channel->ch_job = NULL;
 	channel_unref(job->jv_channel);
@@ -1174,7 +1174,7 @@ job_alloc(void)
 	return NULL;
 
     job->jv_refcount = 1;
-    job->jv_stoponexit = vim_strsave((char_u *)"term");
+    job->jv_stoponexit = mnv_strsave((char_u *)"term");
 
     if (first_job != NULL)
     {
@@ -1190,11 +1190,11 @@ job_set_options(job_T *job, jobopt_T *opt)
 {
     if (opt->jo_set & JO_STOPONEXIT)
     {
-	vim_free(job->jv_stoponexit);
+	mnv_free(job->jv_stoponexit);
 	if (opt->jo_stoponexit == NULL || *opt->jo_stoponexit == NUL)
 	    job->jv_stoponexit = NULL;
 	else
-	    job->jv_stoponexit = vim_strsave(opt->jo_stoponexit);
+	    job->jv_stoponexit = mnv_strsave(opt->jo_stoponexit);
     }
     if (opt->jo_set & JO_EXIT_CB)
     {
@@ -1210,7 +1210,7 @@ job_set_options(job_T *job, jobopt_T *opt)
 }
 
 /*
- * Called when Vim is exiting: kill all jobs that have the "stoponexit" flag.
+ * Called when MNV is exiting: kill all jobs that have the "stoponexit" flag.
  */
     void
 job_stop_on_exit(void)
@@ -1389,7 +1389,7 @@ job_start(
 	if (argv == NULL)
 	    goto theend;
 	for (i = 0; i < argc; i++)
-	    argv[i] = (char *)vim_strsave((char_u *)argv_arg[i]);
+	    argv[i] = (char *)mnv_strsave((char_u *)argv_arg[i]);
 	argv[argc] = NULL;
     }
     else
@@ -1473,13 +1473,13 @@ job_start(
 
 theend:
 #ifndef USE_ARGV
-    vim_free(ga.ga_data);
+    mnv_free(ga.ga_data);
 #endif
     if (argv != NULL && argv != job->jv_argv)
     {
 	for (i = 0; argv[i] != NULL; i++)
-	    vim_free(argv[i]);
-	vim_free(argv);
+	    mnv_free(argv[i]);
+	mnv_free(argv);
     }
     free_job_options(&opt);
     return job;
@@ -1577,7 +1577,7 @@ invoke_prompt_callback(void)
     if (STRLEN(text) >= STRLEN(prompt))
 	text += STRLEN(prompt);
     argv[0].v_type = VAR_STRING;
-    argv[0].vval.v_string = vim_strsave(text);
+    argv[0].vval.v_string = mnv_strsave(text);
     argv[1].v_type = VAR_UNKNOWN;
 
     call_callback(&curbuf->b_prompt_callback, -1, &rettv, 1, argv);
@@ -1686,7 +1686,7 @@ f_prompt_setcallback(typval_T *argvars, typval_T *rettv UNUSED)
     if (check_secure())
 	return;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = tv_get_buf(&argvars[0], FALSE);
@@ -1713,7 +1713,7 @@ f_prompt_setinterrupt(typval_T *argvars, typval_T *rettv UNUSED)
     if (check_secure())
 	return;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = tv_get_buf(&argvars[0], FALSE);
@@ -1741,7 +1741,7 @@ f_prompt_getprompt(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = tv_get_buf_from_arg(&argvars[0]);
@@ -1751,7 +1751,7 @@ f_prompt_getprompt(typval_T *argvars, typval_T *rettv)
     if (!bt_prompt(buf))
 	return;
 
-    rettv->vval.v_string = vim_strsave(buf_prompt_text(buf));
+    rettv->vval.v_string = mnv_strsave(buf_prompt_text(buf));
 }
 
 /*
@@ -1763,7 +1763,7 @@ f_prompt_setprompt(typval_T *argvars, typval_T *rettv UNUSED)
     buf_T	*buf;
     char_u	*text;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -1775,8 +1775,8 @@ f_prompt_setprompt(typval_T *argvars, typval_T *rettv UNUSED)
 	return;
 
     text = tv_get_string(&argvars[1]);
-    vim_free(buf->b_prompt_text);
-    buf->b_prompt_text = vim_strsave(text);
+    mnv_free(buf->b_prompt_text);
+    buf->b_prompt_text = mnv_strsave(text);
 }
 
 /*
@@ -1808,7 +1808,7 @@ f_job_getchannel(typval_T *argvars, typval_T *rettv)
 {
     job_T	*job;
 
-    if (in_vim9script() && check_for_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_job_arg(argvars, 0) == FAIL)
 	return;
 
     job = get_job_arg(&argvars[0]);
@@ -1898,7 +1898,7 @@ job_info_all(list_T *l)
     void
 f_job_info(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_opt_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_job_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -1922,7 +1922,7 @@ f_job_setoptions(typval_T *argvars, typval_T *rettv UNUSED)
     job_T	*job;
     jobopt_T	opt;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_job_arg(argvars, 0) == FAIL
 		|| check_for_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -1946,7 +1946,7 @@ f_job_start(typval_T *argvars, typval_T *rettv)
     if (check_restricted() || check_secure())
 	return;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_or_list_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -1960,14 +1960,14 @@ f_job_start(typval_T *argvars, typval_T *rettv)
     void
 f_job_status(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_job_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type == VAR_JOB && argvars[0].vval.v_job == NULL)
     {
 	// A job that never started returns "fail".
 	rettv->v_type = VAR_STRING;
-	rettv->vval.v_string = vim_strsave((char_u *)"fail");
+	rettv->vval.v_string = mnv_strsave((char_u *)"fail");
     }
     else
     {
@@ -1976,7 +1976,7 @@ f_job_status(typval_T *argvars, typval_T *rettv)
 	if (job != NULL)
 	{
 	    rettv->v_type = VAR_STRING;
-	    rettv->vval.v_string = vim_strsave((char_u *)job_status(job));
+	    rettv->vval.v_string = mnv_strsave((char_u *)job_status(job));
 	}
     }
 }
@@ -1989,7 +1989,7 @@ f_job_stop(typval_T *argvars, typval_T *rettv)
 {
     job_T	*job;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_job_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_or_number_arg(argvars, 1) == FAIL))
 	return;
@@ -2011,23 +2011,23 @@ job_to_string_buf(typval_T *varp, char_u *buf)
 
     if (job == NULL)
     {
-	vim_snprintf((char *)buf, NUMBUFLEN, "no process");
+	mnv_snprintf((char *)buf, NUMBUFLEN, "no process");
 	return buf;
     }
     status = job->jv_status == JOB_FAILED ? "fail"
 		    : job->jv_status >= JOB_ENDED ? "dead"
 		    : "run";
 #ifdef UNIX
-    vim_snprintf((char *)buf, NUMBUFLEN,
+    mnv_snprintf((char *)buf, NUMBUFLEN,
 		"process %ld %s", (long)job->jv_pid, status);
 #elif defined(MSWIN)
-    vim_snprintf((char *)buf, NUMBUFLEN,
+    mnv_snprintf((char *)buf, NUMBUFLEN,
 		"process %ld %s",
 		(long)job->jv_proc_info.dwProcessId,
 		status);
 #else
     // fall-back
-    vim_snprintf((char *)buf, NUMBUFLEN, "process ? %s", status);
+    mnv_snprintf((char *)buf, NUMBUFLEN, "process ? %s", status);
 #endif
     return buf;
 }

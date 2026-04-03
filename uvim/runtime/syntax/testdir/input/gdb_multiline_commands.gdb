@@ -1,5 +1,5 @@
 # GDB multiline commands
-# VIM_TEST_SETUP setl fdc=2 fdl=999 fdm=syntax
+# MNV_TEST_SETUP setl fdc=2 fdl=999 fdm=syntax
 
 define hello
   echo Hello, world!\n

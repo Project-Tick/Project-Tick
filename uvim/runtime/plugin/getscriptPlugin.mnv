@@ -1,0 +1,42 @@
+" ---------------------------------------------------------------------
+" getscriptPlugin.mnv
+"  Maintainer:	This runtime file is looking for a new maintainer.
+"  Original Author:	Charles E. Campbell
+"  Date:	Nov 29, 2013
+"  Installing:	:help glvs-install
+"  Usage:	:help glvs
+"
+" GetLatestMNVScripts: 642 1 :AutoInstall: getscript.mnv
+"
+" (Rom 15:11 WEB) Again, "Praise the Lord, all you Gentiles!  Let
+" all the peoples praise Him."
+" ---------------------------------------------------------------------
+" Initialization:	{{{1
+" if you're sourcing this file, surely you can't be
+" expecting mnv to be in its vi-compatible mode
+if exists("g:loaded_getscriptPlugin")
+ finish
+endif
+if &cp
+ if &verbose
+  echo "GetLatestMNVScripts is not vi-compatible; not loaded (you need to set nocp)"
+ endif
+ finish
+endif
+let g:loaded_getscriptPlugin = "v37"
+let s:keepcpo                = &cpo
+set cpo&mnv
+
+" ---------------------------------------------------------------------
+"  Public Interface: {{{1
+com!        -nargs=0 GetLatestMNVScripts call getscript#GetLatestMNVScripts()
+com!        -nargs=0 GetScripts          call getscript#GetLatestMNVScripts()
+sil! com    -nargs=0 GLVS                call getscript#GetLatestMNVScripts()
+
+" ---------------------------------------------------------------------
+" Restore Options: {{{1
+let &cpo= s:keepcpo
+unlet s:keepcpo
+
+" ---------------------------------------------------------------------
+" mnv: ts=8 sts=2 fdm=marker nowrap

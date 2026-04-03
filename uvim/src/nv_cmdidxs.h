@@ -1,5 +1,5 @@
 /*
- * Automatically generated code by the create_nvcmdidxs.vim script.
+ * Automatically generated code by the create_nvcmdidxs.mnv script.
  *
  * Table giving the index in nv_cmds[] to lookup based on
  * the command character.

@@ -1,21 +1,21 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * The stuff in this file mostly comes from the "screen" program.
  * Included with permission from Juergen Weigert.
  * Copied from "pty.c".  "putenv.c" was used for putenv() in misc2.c.
  *
- * It has been modified to work better with Vim.
- * The parts that are not used in Vim have been deleted.
+ * It has been modified to work better with MNV.
+ * The parts that are not used in MNV have been deleted.
  * See the "screen" sources for the complete stuff.
  *
- * This specific version is distributed under the Vim license (attribution by
+ * This specific version is distributed under the MNV license (attribution by
  * Juergen Weigert), the GPL applies to the original version, see the
  * copyright notice below.
  */
@@ -40,7 +40,7 @@
 // Free Software Foundation, Inc.,
 // 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_GUI) || defined(FEAT_JOB_CHANNEL)
 
@@ -204,7 +204,7 @@ mch_openpty(char **ttyn)
 	return -1;
     }
     mch_signal(SIGCHLD, sigcld);
-    vim_strncpy((char_u *)TtyName, (char_u *)m, sizeof(TtyName) - 1);
+    mnv_strncpy((char_u *)TtyName, (char_u *)m, sizeof(TtyName) - 1);
     initmaster(f);
     *ttyn = TtyName;
     return f;
@@ -244,8 +244,8 @@ mch_openpty(char **ttyn)
 # ifdef _SEQUENT_
     fvhangup(s);
 # endif
-    vim_strncpy((char_u *)PtyName, (char_u *)m, sizeof(PtyName) - 1);
-    vim_strncpy((char_u *)TtyName, (char_u *)s, sizeof(TtyName) - 1);
+    mnv_strncpy((char_u *)PtyName, (char_u *)m, sizeof(PtyName) - 1);
+    mnv_strncpy((char_u *)TtyName, (char_u *)s, sizeof(TtyName) - 1);
     initmaster(f);
     *ttyn = TtyName;
     return f;
@@ -306,7 +306,7 @@ mch_openpty(char **ttyn)
 	return -1;
     }
     mch_signal(SIGCHLD, sigcld);
-    vim_strncpy((char_u *)TtyName, (char_u *)m, sizeof(TtyName) - 1);
+    mnv_strncpy((char_u *)TtyName, (char_u *)m, sizeof(TtyName) - 1);
     initmaster(f);
     *ttyn = TtyName;
     return f;
@@ -330,7 +330,7 @@ mch_openpty(char **ttyn)
     // a dumb looking loop replaced by mycrofts code:
     if ((f = open("/dev/ptc", O_RDWR | O_NOCTTY | O_EXTRA)) < 0)
 	return -1;
-    vim_strncpy((char_u *)TtyName, (char_u *)ttyname(f), sizeof(TtyName) - 1);
+    mnv_strncpy((char_u *)TtyName, (char_u *)ttyname(f), sizeof(TtyName) - 1);
     if (geteuid() != ROOT_UID && mch_access(TtyName, R_OK | W_OK))
     {
 	close(f);
@@ -375,8 +375,8 @@ mch_openpty(char **ttyn)
     static char PtyName[32];
     static char TtyName[32];
 
-    vim_strncpy((char_u *)PtyName, (char_u *)PtyProto, sizeof(PtyName) - 1);
-    vim_strncpy((char_u *)TtyName, (char_u *)TtyProto, sizeof(TtyName) - 1);
+    mnv_strncpy((char_u *)PtyName, (char_u *)PtyProto, sizeof(PtyName) - 1);
+    mnv_strncpy((char_u *)TtyName, (char_u *)TtyProto, sizeof(TtyName) - 1);
     for (p = PtyName; *p != 'X'; p++)
 	;
     for (q = TtyName; *q != 'X'; q++)

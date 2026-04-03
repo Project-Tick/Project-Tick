@@ -1,0 +1,512 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH MNV 1 "27 juni 2025"
+.SH NAMN
+mnv \- MNV is not Vim, en textredigerare f�r programmerare
+.SH SYNOPSIS
+.br
+\fBmnv\fP [flaggor] [fil ..]
+.br
+\fBmnv\fP [flaggor] \-
+.br
+\fBmnv\fP [flaggor] \-t tagg
+.br
+\fBmnv\fP [flaggor] \-q [felfil]
+.PP
+.br
+\fBex\fP
+.br
+\fBview\fP
+.br
+\fBgmnv\fP \fBgview\fP \fBemnv\fP \fBeview\fP
+.br
+\fBrmnv\fP \fBrview\fP \fBrgmnv\fP \fBrgview\fP
+.SH BESKRIVNING
+\fBMNV\fP �r en textredigerare som �r upp�tkompatibel med Vi.  Den kan anv�ndas
+f�r att redigera alla typer av ren text.  Den �r s�rskilt anv�ndbar f�r att
+redigera program.
+.PP
+Det finns m�nga f�rb�ttringar j�mf�rt med Vi: �ngra p� flera niv�er, flera
+f�nster och buffertar, syntaxmarkering, redigering av kommandoraden,
+komplettering av filnamn, onlinehj�lp, visuellt val osv.  Se ":help
+vi_diff.txt" f�r en sammanfattning av skillnaderna mellan \MNMNV\fP och Vi.
+.PP
+N�r du k�rMNVBMNV\fP kan du f� mycket hj�lp fr�n online\-hj�lpsystemet med
+kommandot ":help".  Se avsnittet ONLINEHJ�LP nedan.
+.PP
+Oftast startas \fBMNV\fP f�r att redigera en enskild fil med kommandot
+.PP
+  mnv fil
+.PP
+Mer generellt startas \fBMNV\fP med:
+.PP
+  mnv [flaggor] [fillista]
+.PP
+Om filf�rteckningen saknas startar redigeraren med en tom buffert. Annars
+kan exakt en av f�ljande fyra anv�ndas f�r att v�lja en eller flera filer
+som ska redigeras.
+.TP  12
+fil ..
+En lista med filnamn. Den f�rsta filen �r den aktuella filen och l�ses in i
+buffertminnet. Mark�ren placeras p� den f�rsta raden i buffertminnet. Du kan
+komma �t de andra filerna med kommandot ":next". F�r att redigera en fil som
+b�rjar med ett bindestreck, l�gg till "\-\-" f�re filnamnslistan.
+.TP
+\-
+Filen som ska redigeras l�ses fr�n stdin. Kommandon l�ses fr�n stderr, som
+b�r vara en tty.
+.TP
+\-t {tag}
+Filen som ska redigeras och den initiala mark�rpositionen beror p� en
+"tagg", en sorts goto\-etikett. {tag} s�ks upp i taggfilen, den associerade
+filen blir den aktuella filen och det associerade kommandot exekveras.
+Detta anv�nds fr�mst f�r C\-program, d�r {tag} kan vara ett
+funktionsnamn. Effekten blir att filen som inneh�ller den funktionen blir
+den aktuella filen och mark�ren placeras i b�rjan av funktionen. Se ":help
+tag\-commands".
+.TP
+\-q [felfil]
+Starta i quickFix\-l�ge. Filen [errorfile] l�ses och det f�rsta felet
+visas. Om [errorfile] utel�mnas h�mtas filnamnet fr�n flaggan 'errorfile'
+(standard �r "AztecC.Err" f�r Amiga, "errors.err" p� andra system).
+Ytterligare fel kan hoppas till med kommandot ":cn". Se ":help quickfix".
+.PP
+\fBMNV\fP en fungerar olika beroende p� kommandots namn (den k�rbara filen kan
+fortfarande vara samma fil).
+.TP  10
+mnv
+Det "normala" s�ttet, allt �r standard.
+.TP
+ex
+Starta i Ex\-l�ge. G� till normalt l�ge med kommandot ":vi". Kan �ven g�ras
+med argumentet "\-e".
+.TP
+view
+Starta i skrivskyddat l�ge. Du kommer att skyddas fr�n att skriva
+filerna. Kan ocks� g�ras med argumentet "\-R".
+.TP
+gmnv gview
+GUI\-versionen.  �ppnar ett nytt f�nster.  Kan �ven g�ras med argumentet
+"\-g".
+.TP
+emnv eview
+GUI\-versionen i enkelt l�ge.  �ppnar ett nytt f�nster.  Kan �ven g�ras med
+argumentet "\-y".
+.TP
+rmnv rview rgmnv rgview
+Som ovan, men med begr�nsningar. Det g�r inte att starta shell\-kommandon
+eller pausa \fBMNV.\fP Kan ocks� g�ras med argumentet "\-Z".
+.SH FLAGGOR
+Flaggorna kan anges i valfri ordning, f�re eller efter filnamnen.  Flaggor
+utan argument kan kombineras efter ett enda bindestreck.
+.TP  12
++[num]
+F�r den f�rsta filen placeras mark�ren p� raden "num". Om "num" saknas
+placeras mark�ren p� den sista raden.
+.TP
++/{pat}
+F�r den f�rsta filen placeras mark�ren p� raden d�r {pat} f�rekommer f�rsta
+g�ngen. Se ":help search\-pattern" f�r tillg�ngliga s�km�nster.
+.TP
++{command}
+.TP
+\-c {command}
+{command} kommer att utf�ras efter att den f�rsta filen har l�sts. {command}
+tolkas som ett Ex\-kommando.  Om {command} inneh�ller mellanslag m�ste det
+omges av dubbla citattecken (detta beror p� vilket skal som anv�nds).
+Exempel: mnv "+set si" main.c
+.br
+Obs! Du kan anv�nda upp till 10 "+" eller "\-c"\-kommandon.
+.TP
+\-A
+Om \fBMNV\fP har kompilerats med ARABIC\-st�d f�r redigering av filer med
+skrivriktning fr�n h�ger till v�nster och arabisk tangentbordskartl�ggning,
+startar denna flagga \fBMNV\fP i arabiskt l�ge, dvs. 'arabic' �r inst�llt.  I
+annat fall visas ett felmeddelande och \fBMNV\fP avbryts.
+.TP
+\-b
+Bin�rt l�ge.  N�gra flaggor kommer att st�llas in som g�r det m�jligt att
+redigera en bin�r eller k�rbar fil.
+.TP
+\-C
+Kompatibel.  St�ll in flaggan "compatible".  Detta g�r attMNVBMNV\fP beter sig
+ungef�r som Vi, �ven om det finns en .mnvrc\-fil.
+.TP
+\-d
+Starta i diff\-l�ge.  Det b�r finnas mellan tv� och �tta filnamnsargument.
+\fBMNV\fP �ppnar alla filer och visar skillnaderna mellan dem.  Fungerar som
+mnvdiff(1).
+.TP
+\-d {device}, \-dev {device}
+�ppna {device} f�r anv�ndning som terminal. Endast p� Amiga. Exempel: "\-d
+con:20/30/600/150".
+.TP
+\-D
+Fels�kning. G� till fels�kningsl�ge n�r du k�r det f�rsta kommandot fr�n ett
+skript.
+.TP
+\-e
+Starta \fBMNV\fP i Ex\-l�ge, precis som om den k�rbara filen hette "ex".
+.TP
+\-E
+Starta \fBMNV\fP i f�rb�ttrat Ex\-l�ge, precis som om den k�rbara filen hette
+"exim".
+.TP
+\-f
+F�rgrund.  F�r grafiska gr�nssnittsversionen kommMNV\fBMNV\fP inte att f�rgrena
+sig och kopplas bort fr�n det skal det startades i.  P� Amiga startas inte
+\fBMNV\fP om f�r att �ppna ett nytt f�nster.  Denna flagga b�r anv�ndas n�r
+\fBMNV\fP k�rs av ett program som v�ntar p� att redigeringssessionen ska
+avslutas (t.ex. e\-post).  P� Amiga fungerar inte kommandona ":sh" och ":!".
+.TP
+\-F
+Om \fBMNV\fP har kompilerats med FKMAP\-st�d f�r redigering av filer med
+skrivriktning fr�n h�ger till v�nster och persisk tangentbordskartl�ggning,
+startar denna flagga \fBMNV\fP i persiskt l�ge, dvs. 'fkmap' och 'rightleft' �r
+inst�llda.  I annat fall visas ett felmeddelande och \MNMNV\fP avbryts.
+.br
+Obs: St�d f�r farsi har tagits bort i patch 8.1.0932.
+.TP
+\-g
+Om \fBMNV\fP har kompilerats med GUI\-st�d aktiverar denna flagga grafiskt
+gr�nssnitt.  Om inget st�d f�r grafiskt gr�nssnitt har kompilerats in visas
+ett felmeddelande och \fBMNV\fP avbryts.
+.TP
+\-H
+Om \fBMNV\fP har kompilerats med RIGHTLEFT\-st�d f�r redigering av filer med
+h�ger\-till\-v�nster\-orientering och hebreisk tangentbordskartl�ggning,
+startar denna flagga \fBMNV\fP i hebreiskt l�ge, dvs. 'hkmap' och 'rightleft'
+�r inst�llda.  I annat fall visas ett felmeddelande ochMNVBMNV\fP avbryts.
+.TP
+\-i {mnvinfo}
+Anger filnamnet som ska anv�ndas vid l�sning eller skrivning av
+mnvinfo\-filen, ist�llet f�r standardnamnet "~/.mnvinfo". Detta kan ocks�
+anv�ndas f�r att hoppa �ver anv�ndningen av .mnvinfo\-filen genom att ange
+namnet "NONE".
+.TP
+\-l
+Lisp\-l�ge. Aktiverar flaggorna "lisp" och "showmatch".
+.TP
+\-L
+Samma som \-r.
+.TP
+\-m
+�ndring av filer �r inaktiverad. �terst�ller flaggan "write". Du kan
+fortfarande �ndra buffertminnet, men det g�r inte att skriva en fil.
+.TP
+\-M
+�ndringar �r inte till�tna.  Flaggorna "modifiable" och "write" kommer att
+inaktiveras, s� att �ndringar inte �r till�tna och filer inte kan
+skrivas. Observera att dessa flaggor kan aktiveras f�r att m�jligg�ra
+�ndringar.
+.TP
+\-n
+Ingen v�xlingsfil kommer att anv�ndas. �terst�llning efter en krasch kommer
+att vara om�jlig.  Praktiskt om du vill redigera en fil p� ett mycket
+l�ngsamt medium (t.ex. diskett).  Kan ocks� g�ras med ":set uc=0".  Kan
+�ngras med ":set uc=200".
+.TP
+\-N
+Icke\-kompatibelt l�ge.  �terst�ller flaggan "compatible".  Detta g�r att
+\fBMNV\fP fungerar n�got b�ttre, men �r mindre kompatibelt med Vi, �ven om det
+inte finns n�gon .mnvrc\-fil.
+.TP
+\-nb
+Bli redigeringsserver f�r NetBeans.  Se dokumentationen f�r mer information.
+.TP
+\-o[N]
+�ppna N staplade f�nster. Om N utel�mnas �ppnas ett f�nster f�r varje fil.
+.TP
+\-O[N]
+�ppna N f�nster bredvid varandra. Om N utel�mnas �ppnas ett f�nster f�r
+varje fil.
+.TP
+\-p[N]
+�ppna N flikar. Om N utel�mnas �ppnas en flik f�r varje fil.
+.TP
+\-P {parent\-title}
+Endast Win32 GUI: Ange titeln p� den �verordnade applikationen. N�r det �r
+m�jligt kommeMNMNV att k�ras i ett MDI\-f�nster inuti
+applikationen. {parent\-title} m�ste visas i f�nstertiteln f�r den
+�verordnade applikationen. Se till att den �r tillr�ckligt
+specifik. Observera att implementeringen fortfarande �r primitiv. Den
+fungerar inte med alla applikationer och menyn fungerar inte.
+.TP
+\-r
+Lista v�xlingsfiler, med information om hur de anv�nds f�r �terst�llning.
+.TP
+\-r {file}
+�terst�llningsl�ge. Swap\-filen anv�nds f�r att �terst�lla en kraschad
+redigeringssession. Swap\-filen �r en fil med samma filnamn som textfilen med
+".swp" tillagt. Se ":help recovery".
+.TP
+\-R
+Skrivskyddat l�ge. Flaggan 'readonly' kommer att aktiveras. Du kan
+fortfarande redigera buffertminnet, men du kommer inte att kunna skriva �ver
+en fil av misstag. Om du vill skriva �ver en fil, l�gg till ett utropstecken
+till Ex\-kommandot, som i ":w!".  Flaggan \-R inneb�r ocks� flaggan \-n (se
+ovan). Flaggan "readonly" kan �terst�llas med ":set noro". Se ":help
+\&'readonly'".
+.TP
+\-s
+Tyst l�ge. Endast n�r det startas som "Ex" eller n�r flaggan "\-e" angavs
+f�re flaggan "\-s".
+.TP
+\-s {scriptin}
+Skriptfilen {scriptin} l�ses. Tecknen i filen tolkas som om du hade skrivit
+dem. Samma sak kan g�ras med kommandot ":source! {scriptin}". Om slutet av
+filen n�s innan redigeraren avslutas l�ses ytterligare tecken fr�n
+tangentbordet.
+.TP
+\-S {file}
+{file} h�mtas efter att den f�rsta filen har l�sts. Detta motsvarar \-c
+"source {file}". {file} f�r inte b�rja med '\-'. Om {file} utel�mnas anv�nds
+"Session.mnv" (fungerar endast n�r \-S �r det sista argumentet).
+.TP
+\-T {terminal}
+Anger namnet p� den terminal du anv�nder f�MNVfBMNV\fP.  Kr�vs endast n�r den
+automatiska metoden inte fungerar.  B�r vara en terminal som �r k�nd f�r
+\fBMNV\fP (inbyggd) eller definierad i termcap\- eller terminfo\-filen.
+.TP
+\-u {mnvrc}
+Anv�nd kommandona i filen {mnvrc} f�r initialiseringar. Alla andra
+initialiseringar hoppas �ver. Anv�nd detta f�r att redigera en speciell typ
+av filer. Det kan ocks� anv�ndas f�r att hoppa �ver alla initialiseringar
+genom att ange namnet "NONE". Se ":help initialization" i mnv f�r mer
+information.
+.TP
+\-U {gmnvrc}
+Anv�nd kommandona i filen {gmnvrc} f�r GUI\-initialiseringar. Alla andra
+GUI\-initialiseringar hoppas �ver. Det kan ocks� anv�ndas f�r att hoppa �ver
+alla GUI\-initialiseringar genom att ange namnet "NONE". Se ":help gui\-init"
+i mnv f�r mer information.
+.TP
+\-v
+Starta \fBMNV\fP i Vi\-l�ge, precis som om det k�rbara programmet hette "vi".
+Detta har endast effekt n�r det k�rbara programmet heter "ex".
+.TP
+\-V[N]
+Utf�rlig.  Ger meddelanden om vilka filer som h�mtas och f�r l�sning och
+skrivning av en mnvinfo\-fil.  Det valfria talet N �r v�rdet f�r 'verbose'.
+Standardv�rdet �r 10.
+.TP
+\-V[N]{filename}
+Som \-V och st�ll in 'verbosefile' till {filename}. Resultatet blir att
+meddelanden inte visas utan skrivs till filen {filename}. {filename} f�r
+inte b�rja med en siffra.
+.TP
+\-w{number}
+St�ll in flaggan "window" till {number}.
+.TP
+\-w {scriptout}
+Alla tecken som du skriver in sparas i filen {scriptout} tills du avslutar
+\fBMNV\fP. Detta �r anv�ndbart om du vill skapa en skriptfil som ska anv�ndas
+med "mnv \-s" eller ":source!". Om filen {scriptout} finns, l�ggs tecknen
+till i slutet av den.
+.TP
+\-W {scriptout}
+Som \-w, men en befintlig fil skrivs �ver.
+.TP
+\-x
+Om \fBMNV\fP har kompilerats med krypteringsst�d, anv�nd kryptering n�r du
+skriver filer.  Du kommer att bli ombedd att ange en krypteringsnyckel.
+.TP
+\-X
+Anslut inte till X\-servern.  F�rkortar starttiden i en terminal, men
+f�nstertiteln och urklipp kommer inte att anv�ndas.
+.TP
+\-Y
+Anslut inte till Wayland Compositor
+.TP
+\-y
+Starta \fBMNV\fP i enkelt l�ge, precis som om den k�rbara filen hette "emnv"
+eller "eview".  G�r att \MNMNV\fP beter sig som en klick\-och\-skriv\-editor.
+.TP
+\-Z
+Begr�nsat l�ge. Fungerar som om den k�rbara filen b�rjar med "r".
+.TP
+
+Anger slutet p� flaggorna.  Argument efter detta kommer att behandlas som
+ett filnamn.  Detta kan anv�ndas f�r att redigera ett filnamn som b�rjar med
+ett '\-'.
+.TP
+\-\-clean
+Anv�nd inte n�gra personliga inst�llningar (mnvrc, plugins etc.). Anv�ndbart
+f�r att se om ett problem uppst�r �ven med eMNVen MNV\-installation.
+.TP
+\-\-cmd {command}
+Som att anv�nda "\-c", men kommandot exekveras precis innan n�gon mnvrc\-fil
+bearbetas. Du kan anv�nda upp till 10 av dessa kommandon, oberoende av
+"\-c"\-kommandon.
+.TP
+\-\-echo\-wid
+Endast grafiskt GTK\-gr�nssnitt: Skriv ut f�nster\-id p� stdout.
+.TP
+\-\-gui\-dialog\-file {name}
+N�r du anv�nder GUI, ist�llet f�r att visa en dialogruta, skriv titeln och
+meddelandet i dialogrutan till fil {name}. Filen skapas eller l�ggs
+till. Endast anv�ndbart f�r testning, f�r att undvika att testet fastnar i
+en dialogruta som inte kan ses. Utan GUI ignoreras argumentet.
+.TP
+\-\-help, \-h, \-?
+Ge lite hj�lp om kommandoradsargument och flaggor.  Efter detta avslutas
+\fBMNV\fP.
+.TP
+\-\-literal
+Ta filnamnsargument bokstavligt, expandera inte jokertecken. Detta har ingen
+effekt p� Unix d�r skalet expanderar jokertecken.
+.TP
+\-\-log {filename}
+Om \fBMNV\fP har kompilerats med eval\- och kanal\-funktionen, starta loggningen
+och skriv poster till {filename}. Detta fungerar som att anropa
+\fIch_logfile({filename}, 'ao')\fP mycket tidigt under uppstarten.
+.TP
+\-\-nofork
+F�rgrund.  F�r grafiska gr�nssnittsversionen kommMNV\fBMNV\fP inte att f�rgrena
+sig och kopplas bort fr�n det skal det startades i.
+.TP
+\-\-noplugin
+Hoppa �ver inl�sning av plugins. Implicerat av \-u NONE.
+.TP
+\-\-not\-a\-term
+Meddelar \fBMNV\fP en att anv�ndaren vet att in\- och/eller utg�ngen inte �r
+ansluten till en terminal.  Detta f�rhindrar varningen och den tv� sekunders
+f�rdr�jning som skulle intr�ffa.
+.TP
+\-\-remote
+Anslut till en MNV\-server och l�t den redigera filerna som anges i resten av
+argumenten. Om ingen server hittas visas en varning och filerna redigeras i
+den aktuella MNV.
+.TP
+\-\-remote\-expr {expr}
+Anslut till en MNV\-server, utv�rdera {expr} i den och skriv ut resultatet p�
+stdout.
+.TP
+\-\-remote\-send {keys}
+Anslut till en MNV\-server och skicka {keys} till den.
+.TP
+\-\-remote\-silent
+Som \-\-remote, men utan varningen n�r ingen server hittas.
+.TP
+\-\-remote\-wait
+Som \-\-remote, men MNV avslutas inte f�rr�n filerna har redigerats.
+.TP
+\-\-remote\-wait\-silent
+Som \-\-remote\-wait, men utan varningen n�r ingen server hittas.
+.TP
+\-\-serverlist
+Lista namnen p� allMNMNV\-servrar som kan hittas.
+.TP
+\-\-servername {name}
+Anv�nd {name} som servernamn. Anv�nds f�r den aktMNVla MNV, s�vida det inte
+anv�nds med ett \-\-remote\-argument, d� �r det namnet p� servern som ska
+anslutas till. Om socketserver\-backend anv�nds och namnet b�rjar med "/",
+"./" eller "../", tolkas det som en absolut, relativ eller relativ s�kv�g
+till socketen.
+.TP
+\-\-clientserver {backend}
+Anv�nd {backend} som backend f�r clientserver\-funktionalitet, antingen
+"socket" eller "x11".  Endast tillg�ngligt n�r det kompilerats med b�de
+socketserver\- och X11\-funktioner
+.TP
+\-\-socketid {id}
+Endast grafiskt GTK\-gr�nssnitt: Anv�nd GtkPlug\-mekanismen f�r att MNVa gMNV
+i ett annat f�nster.
+.TP
+\-\-startuptime {file}
+Skriv tidsmeddelanden till filen {fname} under uppstart.
+.TP
+\-\-ttyfail
+Om stdin eller stdout inte �r en terminal (tty) ska programmet avslutas
+omedelbart.
+.TP
+\-\-version
+Skriv ut versioninformation och avsluta.
+.TP
+\-\-windowid {id}
+Endast Win32 GUI: F�MNMNV att f�rs�ka anv�nda f�nstret {id} som �verordnat
+f�nster, s� att det k�rs inuti det f�nstret.
+.SH ONLINEHJ�LP
+Skriv ":help" i \fBMNV\fP en f�r att komma ig�ng.  Skriv ":help �mne" f�r att
+f� hj�lp om ett specifikt �mne.  Till exempel: ":help ZZ" f�r att f� hj�lp
+om kommandot "ZZ".  Anv�nd <, Tab\-> och CTRL\-D f�r att komplettera
+�mnen (":help cmdline\-completion").  Taggar finns f�r att hoppa fr�n en
+plats till en annan (en sorts hypertextl�nkar, se ":help").  Alla
+dokumentationsfiler kan visas p� detta s�tt, till exempel ":help
+syntax.txt".
+.SH FILER
+.TP  15
+/usr/local/share/mnv/mnv??/doc/*.txt
+\fBMNV\fP \-dokumentationsfilerna.  Anv�nd ":help doc\-file\-list" f�r att f� en
+komplett lista.
+.br
+\fImnv??\fP �r ett kort versionsnummer, till exempel mnv91 f�rMNVBMNV 9.1\fP
+.TP
+/usr/local/share/mnv/mnv??/doc/tags
+Taggfilen som anv�nds f�r att hitta information i dokumentationsfilerna.
+.TP
+/usr/local/share/mnv/mnv??/syntax/syntax.mnv
+Systemomfattande syntaxinitialiseringar.
+.TP
+/usr/local/share/mnv/mnv??/syntax/*.mnv
+Syntaxfiler f�r olika spr�k.
+.TP
+/usr/local/share/mnv/mnvrc
+Systemomfattande initialiseringar av \fBMNV\fP.
+.TP
+~/.mnvrc, ~/.mnv/mnvrc, $XDG_CONFIG_HOME/mnv/mnvrc
+Dina personliga \fBMNV\fP \-initialiseringar (den f�rsta som hittas anv�nds).
+.TP
+/usr/local/share/mnv/gmnvrc
+Systemomfattande gmnv\-initialiseringar.
+.TP
+~/.gmnvrc, ~/.mnv/gmnvrc, $XDG_CONFIG_HOME/mnv/gmnvrc
+Dina personliga \fBgMNV\fP \-initialiseringar (den f�rsta som hittas anv�nds).
+.TP
+/usr/local/share/mnv/mnv??/optwin.mnv
+Skript som anv�nds f�r kommandot ":options", ett smidigt s�tt att visa och
+st�lla in flaggor.
+.TP
+/usr/local/share/mnv/mnv??/menu.mnv
+Systemomfattande menyinitialiseringar f�r \fMNMNV.\fP
+.TP
+/usr/local/share/mnv/mnv??/bugreport.mnv
+Skript f�r att generera en felrapport. Se ":help bugs".
+.TP
+/usr/local/share/mnv/mnv??/filetype.mnv
+Skript f�r att identifiera filtyp utifr�n filnamn. Se ":help 'filetype'".
+.TP
+/usr/local/share/mnv/mnv??/scripts.mnv
+Skript f�r att identifiera filtypen utifr�n dess inneh�ll. Se ":help
+\&'filetype'".
+.TP
+/usr/local/share/mnv/mnv??/print/*.ps
+Filer som anv�nds f�r PostScript\-utskrift.
+.PP
+F�r aktuell information, l�s p� MNV:s webbsida:
+.br
+<URL:http://www.mnv.org/>
+.SH "SE �VEN"
+mnvtutor(1)
+.SH UPPHOVSPERSON
+Det mesta av \fBMNV\fP har skapats av Bram Moolenaar, med stor hj�lp fr�n
+andra.  Se ":help credits" i \fBMNV.\fP
+.br
+\fBMNV\fP �r baserad p� Stevie, utvecklad av: Tim Thompson, Tony Andrews och
+G.R. (Fred) Walter.  �ven om n�stan ingen av den ursprungliga koden finns
+kvar.
+.SH BUGGAR
+Troligen. Se ":help todo" f�r en lista �ver k�nda problem.
+.PP
+Observera att ett antal saker som vissa kan betrakta som buggar i sj�lva
+verket beror p� att Vi:s beteende reproduceras alltf�r troget. Och om du
+tycker att andra saker �r buggar "eftersom Vi g�r det annorlunda" b�r du
+titta n�rmare p� filen vi_diff.txt (eller skriva :help vi_diff.txt n�r du �r
+i MNV).  Titta ocks� p� flaggorna 'compatible' och 'cpoptions'.
+.SH SVENSK �VERS�TTNING
+MNV �versattes ursprungligen av Johan Svedberg 2003-2007 och har under 2025
+uppdaterats av Daniel Nylander, speciellt manualsidor samt sj�lvMNMNV.
+Om du hittar fel i �vers�ttningen, kontakta <tp-sv@listor.tp-sv.se>.

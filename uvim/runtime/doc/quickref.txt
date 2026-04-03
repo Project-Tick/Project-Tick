@@ -1,7 +1,7 @@
-*quickref.txt*	For Vim version 9.2.  Last change: 2026 Mar 04
+*quickref.txt*	For MNV version 9.2.  Last change: 2026 Mar 04
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 			    Quick reference guide
@@ -19,7 +19,7 @@
 |Q_sc|	Scrolling			|Q_ce|	Ex: Command-line editing
 |Q_in|	insert: Inserting text		|Q_ra|	Ex: Ranges
 |Q_ai|	insert: Keys			|Q_ex|	Ex: Special characters
-|Q_ss|	insert: Special keys		|Q_st|	Starting Vim
+|Q_ss|	insert: Special keys		|Q_st|	Starting MNV
 |Q_di|	insert: Digraphs		|Q_ed|	Editing a file
 |Q_si|	insert: Special inserts		|Q_fl|	Using the argument list
 |Q_de|	change: Deleting text		|Q_wq|	Writing and quitting
@@ -175,7 +175,7 @@ N is used to indicate an optional count that can be given before the command.
 |m|        m{a-zA-Z}	mark current position with mark {a-zA-Z}
 |`a|       `{a-z}	go to mark {a-z} within current file
 |`A|       `{A-Z}	go to mark {A-Z} in any file
-|`0|       `{0-9}	go to the position where Vim was previously exited
+|`0|       `{0-9}	go to the position where MNV was previously exited
 |``|       ``		go to the position before the last jump
 |`quote|   `"		go to the position when last editing this file
 |`[|       `[		go to the start of the previously operated or put text
@@ -504,7 +504,7 @@ In Insert or Command-line mode:
 |:so|	   :so[urce] {file}
 			read Ex commands from {file}
 |:so|	   :so[urce]! {file}
-			read Vim commands from {file}
+			read MNV commands from {file}
 |:sl|	   :sl[eep] [sec]
 			don't do anything for [sec] seconds
 |gs|	   N  gs	goto Sleep for N seconds
@@ -549,10 +549,10 @@ In Insert or Command-line mode:
 |:mkexrc|    :mk[exrc][!] [file]  write current mappings, abbreviations, and
 				     settings to [file] (default: ".exrc";
 				     use ! to overwrite)
-|:mkvimrc|   :mkv[imrc][!] [file]
-				  same as ":mkexrc", but with default ".vimrc"
+|:mkmnvrc|   :mkv[imrc][!] [file]
+				  same as ":mkexrc", but with default ".mnvrc"
 |:mksession| :mks[ession][!] [file]
-				  like ":mkvimrc", but store current files,
+				  like ":mkmnvrc", but store current files,
 				     windows, etc. too, to be able to continue
 				     this session later
 ------------------------------------------------------------------------------
@@ -612,7 +612,7 @@ Short explanation of each option:		*option-list*
 'autocompletedelay' 'acl'   delay in msec before menu appears after typing
 'autocompletetimeout' 'act' initial decay timeout for autocompletion algorithm
 'autoindent'	  'ai'	    take indent for new line from previous line
-'autoread'	  'ar'	    autom. read file when changed outside of Vim
+'autoread'	  'ar'	    autom. read file when changed outside of MNV
 'autoshelldir'	  'asd'     change directory to the shell's current directory
 'autowrite'	  'aw'	    automatically write file if changed
 'autowriteall'	  'awa'     as 'autowrite', but works with more commands
@@ -708,7 +708,7 @@ Short explanation of each option:		*option-list*
 'eventignore'	  'ei'	    autocommand events that are ignored
 'eventignorewin'  'eiw'     autocommand events that are ignored in a window
 'expandtab'	  'et'	    use spaces when <Tab> is inserted
-'exrc'		  'ex'	    read .vimrc and .exrc in the current directory
+'exrc'		  'ex'	    read .mnvrc and .exrc in the current directory
 'fileencoding'	  'fenc'    file encoding for multibyte text
 'fileencodings'   'fencs'   automatically detected character encodings
 'fileformat'	  'ff'	    file format used for file I/O
@@ -759,8 +759,8 @@ Short explanation of each option:		*option-list*
 'hkmap'		  'hk'	    Hebrew keyboard mapping
 'hkmapp'	  'hkp'     phonetic Hebrew keyboard mapping
 'hlsearch'	  'hls'     highlight matches with last search pattern
-'icon'			    let Vim set the text of the window icon
-'iconstring'		    string to use for the Vim icon text
+'icon'			    let MNV set the text of the window icon
+'iconstring'		    string to use for the MNV icon text
 'ignorecase'	  'ic'	    ignore case in search patterns
 'imactivatefunc'  'imaf'    function to enable/disable the X input method
 'imactivatekey'   'imak'    key that activates the X input method
@@ -895,7 +895,7 @@ Short explanation of each option:		*option-list*
 'scrolloff'	  'so'	    minimum nr. of lines above and below cursor
 'scrollopt'	  'sbo'     how 'scrollbind' should behave
 'sections'	  'sect'    nroff macros that separate sections
-'secure'		    secure mode for reading .vimrc in current dir
+'secure'		    secure mode for reading .mnvrc in current dir
 'selection'	  'sel'     what type of selection to use
 'selectmode'	  'slm'     when to use Select mode instead of Visual mode
 'sessionoptions'  'ssop'    options for |:mksession|
@@ -964,7 +964,7 @@ Short explanation of each option:		*option-list*
 'termencoding'	  'tenc'    character encoding used by the terminal
 'termguicolors'	  'tgc'     use GUI colors for the terminal
 'termsync'	  'tsy'     enable terminal sync mode for redraw
-'termwinkey'	  'twk'	    key that precedes a Vim command in a terminal
+'termwinkey'	  'twk'	    key that precedes a MNV command in a terminal
 'termwinscroll'   'twsl'    max number of scrollback lines in a terminal window
 'termwinsize'	  'tws'	    size of a terminal window
 'termwintype'	  'twt'	    MS-Windows: type of pty to use for terminal window
@@ -977,10 +977,10 @@ Short explanation of each option:		*option-list*
 'tildeop'	  'top'     tilde command "~" behaves like an operator
 'timeout'	  'to'	    time out on mappings and key codes
 'timeoutlen'	  'tm'	    time out time in milliseconds
-'title'			    let Vim set the title of the window
+'title'			    let MNV set the title of the window
 'titlelen'		    percentage of 'columns' used for window title
 'titleold'		    old title, restored when exiting
-'titlestring'		    string to use for the Vim window title
+'titlestring'		    string to use for the MNV window title
 'toolbar'	  'tb'	    GUI: which items to show in the toolbar
 'toolbariconsize' 'tbis'    size of the toolbar icons (for GTK 2 only)
 'ttimeout'		    time out on mappings
@@ -1002,8 +1002,8 @@ Short explanation of each option:		*option-list*
 'verbosefile'	  'vfile'   file to write messages in
 'viewdir'	  'vdir'    directory where to store files with :mkview
 'viewoptions'	  'vop'     specifies what to save for :mkview
-'viminfo'	  'vi'	    use .viminfo file upon startup and exiting
-'viminfofile'	  'vif'	    file name used for the viminfo file
+'mnvinfo'	  'vi'	    use .mnvinfo file upon startup and exiting
+'mnvinfofile'	  'vif'	    file name used for the mnvinfo file
 'virtualedit'	  've'	    when to use virtual editing
 'visualbell'	  'vb'	    use visual bell instead of beeping
 'warn'			    warn for shell command when buffer was changed
@@ -1202,16 +1202,16 @@ Context-sensitive completion on the command-line:
 		|::e|	    :e		extension
 		|::s|	    :s/{pat}/{repl}/	substitute {pat} with {repl}
 ------------------------------------------------------------------------------
-*Q_st*		Starting Vim
+*Q_st*		Starting MNV
 
-|-vim|	   vim [options]		start editing with an empty buffer
-|-file|	   vim [options] {file} ..	start editing one or more files
-|--|	   vim [options] -		read file from stdin
-|-tag|	   vim [options] -t {tag}	edit the file associated with {tag}
-|-qf|	   vim [options] -q [fname]	start editing in QuickFix mode,
+|-mnv|	   mnv [options]		start editing with an empty buffer
+|-file|	   mnv [options] {file} ..	start editing one or more files
+|--|	   mnv [options] -		read file from stdin
+|-tag|	   mnv [options] -t {tag}	edit the file associated with {tag}
+|-qf|	   mnv [options] -q [fname]	start editing in QuickFix mode,
 					   display the first error
 
-	Most useful Vim arguments (for full list see |startup-options|)
+	Most useful MNV arguments (for full list see |startup-options|)
 
 |-gui|	-g		    start GUI (also allows other options)
 
@@ -1219,7 +1219,7 @@ Context-sensitive completion on the command-line:
 |-+c|	+{command}	    execute {command} after loading the file
 |-+/|	+/{pat} {file} ..   put the cursor at the first occurrence of {pat}
 |-v|	-v		    Vi mode, start ex in Normal mode
-|-e|	-e		    Ex mode, start vim in Ex mode
+|-e|	-e		    Ex mode, start mnv in Ex mode
 |-R|	-R		    Read-only mode, implies -n
 |-m|	-m		    modifications not allowed (resets 'write' option)
 |-d|	-d		    diff mode |diff|
@@ -1236,16 +1236,16 @@ Context-sensitive completion on the command-line:
 |-n|	-n		    do not create a swap file
 |-o|	-o [num]	    open [num] windows (default: one for each file)
 |-f|	-f		    GUI: foreground process, don't fork
-			    Amiga: do not restart Vim to open a window (for
+			    Amiga: do not restart MNV to open a window (for
 				e.g., mail)
 |-s|	-s {scriptin}	    first read commands from the file {scriptin}
 |-w|	-w {scriptout}	    write typed chars to file {scriptout} (append)
 |-W|	-W {scriptout}	    write typed chars to file {scriptout} (overwrite)
 |-T|	-T {terminal}	    set terminal name
 |-d|	-d {device}	    Amiga: open {device} to be used as a console
-|-u|	-u {vimrc}	    read inits from {vimrc} instead of other inits
-|-U|	-U {gvimrc}	    idem, for when starting the GUI
-|-i|	-i {viminfo}	    read info from {viminfo} instead of other files
+|-u|	-u {mnvrc}	    read inits from {mnvrc} instead of other inits
+|-U|	-U {gmnvrc}	    idem, for when starting the GUI
+|-i|	-i {mnvinfo}	    read info from {mnvinfo} instead of other files
 |---|	--		    end of options, other arguments are file names
 |--help|    --help	    show list of arguments and exit
 |--version| --version	    show version info and exit
@@ -1305,13 +1305,13 @@ Context-sensitive completion on the command-line:
 |:wall|	  :wa[ll][!]			write all changed buffers
 
 |:q|	  :q[uit]		quit current buffer, unless changes have been
-				   made; Exit Vim when there are no other
+				   made; Exit MNV when there are no other
 				   non-help buffers
 |:q|	  :q[uit]!		quit current buffer always, discard any
-				   changes.  Exit Vim when there are no other
+				   changes.  Exit MNV when there are no other
 				   non-help buffers
-|:qa|	  :qa[ll]		exit Vim, unless changes have been made
-|:qa|	  :qa[ll]!		exit Vim always, discard any changes
+|:qa|	  :qa[ll]		exit MNV, unless changes have been made
+|:qa|	  :qa[ll]!		exit MNV always, discard any changes
 |:cq|	  :cq			quit without writing and return error code
 
 |:wq|	  :wq[!]		write the current file and exit
@@ -1323,22 +1323,22 @@ Context-sensitive completion on the command-line:
 |:xall|	  :xa[ll][!]  or :wqall[!]
 				write all changed buffers and exit
 
-|:stop|	  :st[op][!]		suspend Vim or start new shell; if 'aw' option
+|:stop|	  :st[op][!]		suspend MNV or start new shell; if 'aw' option
 				   is set and [!] not given write the buffer
 |CTRL-Z|     CTRL-Z		same as ":stop"
 ------------------------------------------------------------------------------
 *Q_ac*		Automatic Commands
 
-|viminfo-file|	read registers, marks, history at startup, save when exiting.
+|mnvinfo-file|	read registers, marks, history at startup, save when exiting.
 
-|:rviminfo|	:rv[iminfo] [file]	read info from viminfo file [file]
-|:rviminfo|	:rv[iminfo]! [file]	idem, overwrite existing info
-|:wviminfo|	:wv[iminfo] [file]	add info to viminfo file [file]
-|:wviminfo|	:wv[iminfo]! [file]	write info to viminfo file [file]
+|:rmnvinfo|	:rv[iminfo] [file]	read info from mnvinfo file [file]
+|:rmnvinfo|	:rv[iminfo]! [file]	idem, overwrite existing info
+|:wmnvinfo|	:wv[iminfo] [file]	add info to mnvinfo file [file]
+|:wmnvinfo|	:wv[iminfo]! [file]	write info to mnvinfo file [file]
 
 |modeline|	Automatic option setting when editing a file
 
-|modeline|	vim:{set-arg}: ..	In the first and last lines of the
+|modeline|	mnv:{set-arg}: ..	In the first and last lines of the
 					file (see 'ml' option), {set-arg} is
 					given as an argument to ":set"
 
@@ -1492,4 +1492,4 @@ Context-sensitive completion on the command-line:
 |zN|		zN			fold normal set 'foldenable'
 |zi|		zi			invert 'foldenable'
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

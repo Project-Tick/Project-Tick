@@ -76,7 +76,7 @@ void give_warning2(char_u *message, char_u *a1, int hl);
 void msg_advance(int col);
 void msg_warn_missing_clipboard(void);
 int do_dialog(int type, char_u *title, char_u *message, char_u *buttons, int dfltbutton, char_u *textfield, int ex_cmd);
-int vim_dialog_yesno(int type, char_u *title, char_u *message, int dflt);
-int vim_dialog_yesnocancel(int type, char_u *title, char_u *message, int dflt);
-int vim_dialog_yesnoallcancel(int type, char_u *title, char_u *message, int dflt);
-/* vim: set ft=c : */
+int mnv_dialog_yesno(int type, char_u *title, char_u *message, int dflt);
+int mnv_dialog_yesnocancel(int type, char_u *title, char_u *message, int dflt);
+int mnv_dialog_yesnoallcancel(int type, char_u *title, char_u *message, int dflt);
+/* mnv: set ft=c : */

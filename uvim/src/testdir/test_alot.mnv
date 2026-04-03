@@ -1,0 +1,31 @@
+" A series of tests that can run in one MNV invocation.
+" This makes testing go faster, since MNV doesn't need to restart.
+
+source test_backup.mnv
+source test_behave.mnv
+source test_compiler.mnv
+source test_ex_equal.mnv
+source test_ex_undo.mnv
+source test_ex_z.mnv
+source test_ex_mode.mnv
+source test_expand.mnv
+source test_expand_dllpath.mnv
+source test_expand_func.mnv
+source test_file_perm.mnv
+source test_fnamemodify.mnv
+source test_ga.mnv
+source test_glob2regpat.mnv
+source test_global.mnv
+source test_move.mnv
+source test_put.mnv
+source test_reltime.mnv
+source test_searchpos.mnv
+source test_set.mnv
+source test_shift.mnv
+source test_sha256.mnv
+source test_tabline.mnv
+source test_tagcase.mnv
+source test_tagfunc.mnv
+source test_unlet.mnv
+source test_version.mnv
+source test_wnext.mnv

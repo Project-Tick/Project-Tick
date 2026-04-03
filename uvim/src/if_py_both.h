@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * Python extensions by Paul Moore, David Leonard, Roland Puntaier, Nikolay
@@ -17,18 +17,18 @@
 typedef int Py_ssize_t;  // Python 2.4 and earlier don't have this type.
 #endif
 
-// Use values that are known to work, others may make Vim crash.
+// Use values that are known to work, others may make MNV crash.
 #define ENC_OPT (enc_utf8 ? "utf-8" : enc_dbcs ? "euc-jp" : (char *)p_enc)
-#define DOPY_FUNC "_vim_pydo"
+#define DOPY_FUNC "_mnv_pydo"
 
-static const char *vim_special_path = "_vim_path_";
+static const char *mnv_special_path = "_mnv_path_";
 
 #define PyErr_SET_STRING(exc, str) PyErr_SetString(exc, _(str))
-#define PyErr_SetVim(str) PyErr_SetString(VimError, str)
-#define PyErr_SET_VIM(str) PyErr_SET_STRING(VimError, str)
+#define PyErr_SetMNV(str) PyErr_SetString(MNVError, str)
+#define PyErr_SET_MNV(str) PyErr_SET_STRING(MNVError, str)
 #define PyErr_FORMAT(exc, str, arg) PyErr_Format(exc, _(str), arg)
 #define PyErr_FORMAT2(exc, str, arg1, arg2) PyErr_Format(exc, _(str), arg1,arg2)
-#define PyErr_VIM_FORMAT(str, arg) PyErr_FORMAT(VimError, str, arg)
+#define PyErr_MNV_FORMAT(str, arg) PyErr_FORMAT(MNVError, str, arg)
 
 #ifdef USE_LIMITED_API
 // Limited Python API. Need to call only exposed functions and remap macros.
@@ -105,7 +105,7 @@ struct typeobject_wrapper {
 # define Py_TYPE_GET_TP_METHODS(type) ((PyMethodDef *)PyType_GetSlot(type, Py_tp_methods))
 
 // PyObject_NEW is not part of stable ABI, but PyObject_Malloc/Init are.
-static PyObject* Vim_PyObject_New(PyTypeObject *type, size_t objsize)
+static PyObject* MNV_PyObject_New(PyTypeObject *type, size_t objsize)
 {
     PyObject *obj = (PyObject *)PyObject_Malloc(objsize);
     if (obj == NULL)
@@ -113,7 +113,7 @@ static PyObject* Vim_PyObject_New(PyTypeObject *type, size_t objsize)
     return PyObject_Init(obj, type);
 }
 # undef PyObject_NEW
-# define PyObject_NEW(type, typeobj) ((type *)Vim_PyObject_New(typeobj, sizeof(type)))
+# define PyObject_NEW(type, typeobj) ((type *)MNV_PyObject_New(typeobj, sizeof(type)))
 
 // This is a somewhat convoluted because limited API doesn't expose an easy way
 // to get the tp_name field, and so we have to manually reconstruct it as
@@ -244,7 +244,7 @@ static PyTypeObject* AddHeapType(struct typeobject_wrapper* type_object)
 // are cleared, leading to a crash, whereas in 3.8 the semantics were changed
 // and instances hold strong references to types. Since these types are
 // designed to be static, just keep them around to avoid having to write
-// version-specific handling. Vim does not re-start the Python runtime so there
+// version-specific handling. MNV does not re-start the Python runtime so there
 // will be no long-term leak.
 # define PYTYPE_READY(type) \
     type##Ptr = AddHeapType(&(type)); \
@@ -255,7 +255,7 @@ static PyTypeObject* AddHeapType(struct typeobject_wrapper* type_object)
 
 // Limited API does not provide PyRun_* functions. Need to implement manually
 // using PyCompile and PyEval.
-static PyObject* Vim_PyRun_String(const char *str, int start, PyObject *globals, PyObject *locals)
+static PyObject* MNV_PyRun_String(const char *str, int start, PyObject *globals, PyObject *locals)
 {
     // Just pass "" for filename for now.
     PyObject* compiled = Py_CompileString(str, "", start);
@@ -266,14 +266,14 @@ static PyObject* Vim_PyRun_String(const char *str, int start, PyObject *globals,
     Py_DECREF(compiled);
     return eval_result;
 }
-static int Vim_PyRun_SimpleString(const char *str)
+static int MNV_PyRun_SimpleString(const char *str)
 {
     // This function emulates CPython's implementation.
     PyObject* m = PyImport_AddModule("__main__");
     if (m == NULL)
 	return -1;
     PyObject* d = PyModule_GetDict(m);
-    PyObject* output = Vim_PyRun_String(str, Py_file_input, d, d);
+    PyObject* output = MNV_PyRun_String(str, Py_file_input, d, d);
     if (output == NULL)
     {
 	PyErr_PrintEx(TRUE);
@@ -282,8 +282,8 @@ static int Vim_PyRun_SimpleString(const char *str)
     Py_DECREF(output);
     return 0;
 }
-# define PyRun_String Vim_PyRun_String
-# define PyRun_SimpleString Vim_PyRun_SimpleString
+# define PyRun_String MNV_PyRun_String
+# define PyRun_SimpleString MNV_PyRun_SimpleString
 
 #else // !defined(USE_LIMITED_API)
 
@@ -313,14 +313,14 @@ static int Vim_PyRun_SimpleString(const char *str)
 
 #define RAISE_NO_EMPTY_KEYS PyErr_SET_STRING(PyExc_ValueError, \
 					    N_("empty keys are not allowed"))
-#define RAISE_LOCKED_DICTIONARY PyErr_SET_VIM(N_("dictionary is locked"))
-#define RAISE_LOCKED_LIST PyErr_SET_VIM(N_("list is locked"))
-#define RAISE_UNDO_FAIL PyErr_SET_VIM(N_("cannot save undo information"))
-#define RAISE_DELETE_LINE_FAIL PyErr_SET_VIM(N_("cannot delete line"))
-#define RAISE_INSERT_LINE_FAIL PyErr_SET_VIM(N_("cannot insert line"))
-#define RAISE_REPLACE_LINE_FAIL PyErr_SET_VIM(N_("cannot replace line"))
+#define RAISE_LOCKED_DICTIONARY PyErr_SET_MNV(N_("dictionary is locked"))
+#define RAISE_LOCKED_LIST PyErr_SET_MNV(N_("list is locked"))
+#define RAISE_UNDO_FAIL PyErr_SET_MNV(N_("cannot save undo information"))
+#define RAISE_DELETE_LINE_FAIL PyErr_SET_MNV(N_("cannot delete line"))
+#define RAISE_INSERT_LINE_FAIL PyErr_SET_MNV(N_("cannot insert line"))
+#define RAISE_REPLACE_LINE_FAIL PyErr_SET_MNV(N_("cannot replace line"))
 #define RAISE_KEY_ADD_FAIL(key) \
-    PyErr_VIM_FORMAT(N_("failed to add key '%s' to dictionary"), key)
+    PyErr_MNV_FORMAT(N_("failed to add key '%s' to dictionary"), key)
 #define RAISE_INVALID_INDEX_TYPE(idx) \
     PyErr_FORMAT_TYPE(N_("index must be int or slice, not %s"), idx);
 
@@ -351,8 +351,8 @@ static PyObject *globals;
 static PyObject *py_chdir;
 static PyObject *py_fchdir;
 static PyObject *py_getcwd;
-static PyObject *vim_module;
-static PyObject *vim_special_path_object;
+static PyObject *mnv_module;
+static PyObject *mnv_special_path_object;
 
 #if PY_VERSION_HEX >= 0x030700f0
 static PyObject *py_find_spec;
@@ -363,21 +363,21 @@ static PyObject *py_load_module;
 static PyObject *py_find_module;
 #endif
 
-static PyObject *VimError;
+static PyObject *MNVError;
 
 /*
- * obtain a lock on the Vim data structures
+ * obtain a lock on the MNV data structures
  */
     static void
-Python_Lock_Vim(void)
+Python_Lock_MNV(void)
 {
 }
 
 /*
- * release a lock on the Vim data structures
+ * release a lock on the MNV data structures
  */
     static void
-Python_Release_Vim(void)
+Python_Release_MNV(void)
 {
 }
 
@@ -694,9 +694,9 @@ write_output(OutputObject *self, PyObject *string)
 	return -1;
 
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
+    Python_Lock_MNV();
     writer((writefn)(error ? emsg : msg), (char_u *)str, len, error);
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
     PyMem_Free(str);
 
@@ -835,7 +835,7 @@ DEFINE_PY_TYPE_OBJECT(LoaderType);
 LoaderDestructor(PyObject *self_obj)
 {
     LoaderObject *self = (LoaderObject*)self_obj;
-    vim_free(self->fullname);
+    mnv_free(self->fullname);
     Py_XDECREF(self->result);
     DESTRUCTOR_FINISH(self);
 }
@@ -859,7 +859,7 @@ LoaderLoadModule(LoaderObject *self, PyObject *args UNUSED)
     self->fullname = NULL;
     self->result = module;
 
-    vim_free(fullname);
+    mnv_free(fullname);
     Py_DECREF(result);
 
     if (!module)
@@ -883,20 +883,20 @@ static struct PyMethodDef LoaderMethods[] = {
 #endif
 
 /*
- * Check to see whether a Vim error has been reported, or a keyboard
+ * Check to see whether a MNV error has been reported, or a keyboard
  * interrupt has been detected.
  */
     static void
-VimTryStart(void)
+MNVTryStart(void)
 {
     ++trylevel;
 }
 
     static int
-VimTryEnd(void)
+MNVTryEnd(void)
 {
     --trylevel;
-    // Without this it stops processing all subsequent Vim script commands and
+    // Without this it stops processing all subsequent MNV script commands and
     // generates strange error messages if I e.g. try calling Test() in a cycle
     did_emsg = FALSE;
     // Keyboard interrupt should be preferred over anything else
@@ -921,34 +921,34 @@ VimTryEnd(void)
 	    return -1;
 	}
 
-	PyErr_SetVim(msg);
+	PyErr_SetMNV(msg);
 
 	free_global_msglist();
 
 	if (should_free)
-	    vim_free(msg);
+	    mnv_free(msg);
 
 	return -1;
     }
     else if (!did_throw)
 	return (PyErr_Occurred() ? -1 : 0);
-    // Python exception is preferred over Vim one; unlikely to occur though
+    // Python exception is preferred over MNV one; unlikely to occur though
     else if (PyErr_Occurred())
     {
 	discard_current_exception();
 	return -1;
     }
-    // Finally transform Vim script exception to python one
+    // Finally transform MNV script exception to python one
     else
     {
-	PyErr_SetVim((char *)current_exception->value);
+	PyErr_SetMNV((char *)current_exception->value);
 	discard_current_exception();
 	return -1;
     }
 }
 
     static int
-VimCheckInterrupt(void)
+MNVCheckInterrupt(void)
 {
     if (got_int)
     {
@@ -958,10 +958,10 @@ VimCheckInterrupt(void)
     return 0;
 }
 
-// Vim module - Implementation
+// MNV module - Implementation
 
     static PyObject *
-VimCommand(PyObject *self UNUSED, PyObject *string)
+MNVCommand(PyObject *self UNUSED, PyObject *string)
 {
     char_u	*cmd;
     PyObject	*ret;
@@ -971,16 +971,16 @@ VimCommand(PyObject *self UNUSED, PyObject *string)
 	return NULL;
 
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
+    Python_Lock_MNV();
 
-    VimTryStart();
+    MNVTryStart();
     do_cmdline_cmd(cmd);
     update_screen(UPD_VALID);
 
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
 
-    if (VimTryEnd())
+    if (MNVTryEnd())
 	ret = NULL;
     else
 	ret = Py_None;
@@ -995,10 +995,10 @@ VimCommand(PyObject *self UNUSED, PyObject *string)
  * translate lists/dictionaries into their Python equivalents.
  *
  * The depth parameter is to avoid infinite recursion, set it to 1 when
- * you call VimToPython.
+ * you call MNVToPython.
  */
     static PyObject *
-VimToPython(typval_T *our_tv, int depth, PyObject *lookup_dict)
+MNVToPython(typval_T *our_tv, int depth, PyObject *lookup_dict)
 {
     PyObject	*ret;
     PyObject	*newObj;
@@ -1069,7 +1069,7 @@ VimToPython(typval_T *our_tv, int depth, PyObject *lookup_dict)
 	CHECK_LIST_MATERIALIZE(list);
 	FOR_ALL_LIST_ITEMS(list, curr)
 	{
-	    if (!(newObj = VimToPython(&curr->li_tv, depth + 1, lookup_dict)))
+	    if (!(newObj = MNVToPython(&curr->li_tv, depth + 1, lookup_dict)))
 	    {
 		Py_DECREF(ret);
 		return NULL;
@@ -1101,7 +1101,7 @@ VimToPython(typval_T *our_tv, int depth, PyObject *lookup_dict)
 	{
 	    typval_T	*item_tv = TUPLE_ITEM(tuple, idx);
 
-	    newObj = VimToPython(item_tv, depth + 1, lookup_dict);
+	    newObj = MNVToPython(item_tv, depth + 1, lookup_dict);
 	    if (!newObj)
 	    {
 		Py_DECREF(ret);
@@ -1145,7 +1145,7 @@ VimToPython(typval_T *our_tv, int depth, PyObject *lookup_dict)
 		--todo;
 
 		di = dict_lookup(hi);
-		if (!(newObj = VimToPython(&di->di_tv, depth + 1, lookup_dict)))
+		if (!(newObj = MNVToPython(&di->di_tv, depth + 1, lookup_dict)))
 		{
 		    Py_DECREF(ret);
 		    return NULL;
@@ -1193,7 +1193,7 @@ VimToPython(typval_T *our_tv, int depth, PyObject *lookup_dict)
 }
 
     static PyObject *
-VimEval(PyObject *self UNUSED, PyObject *args)
+MNVEval(PyObject *self UNUSED, PyObject *args)
 {
     char_u	*expr;
     typval_T	*our_tv;
@@ -1209,38 +1209,38 @@ VimEval(PyObject *self UNUSED, PyObject *args)
 	return NULL;
 
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
-    VimTryStart();
+    Python_Lock_MNV();
+    MNVTryStart();
     our_tv = eval_expr(expr, NULL);
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
 
     Py_XDECREF(todecref);
 
-    if (VimTryEnd())
+    if (MNVTryEnd())
 	return NULL;
 
     if (our_tv == NULL)
     {
-	PyErr_SET_VIM(N_("invalid expression"));
+	PyErr_SET_MNV(N_("invalid expression"));
 	return NULL;
     }
 
-    // Convert the Vim type into a Python type.  Create a dictionary that's
+    // Convert the MNV type into a Python type.  Create a dictionary that's
     // used to check for recursive loops.
     if (!(lookup_dict = PyDict_New()))
 	ret = NULL;
     else
     {
-	ret = VimToPython(our_tv, 1, lookup_dict);
+	ret = MNVToPython(our_tv, 1, lookup_dict);
 	Py_DECREF(lookup_dict);
     }
 
 
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
+    Python_Lock_MNV();
     free_tv(our_tv);
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
 
     return ret;
@@ -1249,7 +1249,7 @@ VimEval(PyObject *self UNUSED, PyObject *args)
 static PyObject *ConvertToPyObject(typval_T *);
 
     static PyObject *
-VimEvalPy(PyObject *self UNUSED, PyObject *string)
+MNVEvalPy(PyObject *self UNUSED, PyObject *string)
 {
     typval_T	*our_tv;
     PyObject	*ret;
@@ -1260,35 +1260,35 @@ VimEvalPy(PyObject *self UNUSED, PyObject *string)
 	return NULL;
 
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
-    VimTryStart();
+    Python_Lock_MNV();
+    MNVTryStart();
     our_tv = eval_expr(expr, NULL);
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
 
     Py_XDECREF(todecref);
 
-    if (VimTryEnd())
+    if (MNVTryEnd())
 	return NULL;
 
     if (our_tv == NULL)
     {
-	PyErr_SET_VIM(N_("invalid expression"));
+	PyErr_SET_MNV(N_("invalid expression"));
 	return NULL;
     }
 
     ret = ConvertToPyObject(our_tv);
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
+    Python_Lock_MNV();
     free_tv(our_tv);
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
 
     return ret;
 }
 
     static PyObject *
-VimStrwidth(PyObject *self UNUSED, PyObject *string)
+MNVStrwidth(PyObject *self UNUSED, PyObject *string)
 {
     char_u	*str;
     PyObject	*todecref;
@@ -1305,7 +1305,7 @@ VimStrwidth(PyObject *self UNUSED, PyObject *string)
 }
 
     static PyObject *
-_VimChdir(PyObject *_chdir, PyObject *args, PyObject *kwargs)
+_MNVChdir(PyObject *_chdir, PyObject *args, PyObject *kwargs)
 {
     PyObject	*ret;
     PyObject	*newwd;
@@ -1330,18 +1330,18 @@ _VimChdir(PyObject *_chdir, PyObject *args, PyObject *kwargs)
 	return NULL;
     }
 
-    VimTryStart();
+    MNVTryStart();
 
-    if (vim_chdir(new_dir))
+    if (mnv_chdir(new_dir))
     {
 	Py_DECREF(ret);
 	Py_DECREF(newwd);
 	Py_XDECREF(todecref);
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return NULL;
 
-	PyErr_SET_VIM(N_("failed to change directory"));
+	PyErr_SET_MNV(N_("failed to change directory"));
 	return NULL;
     }
 
@@ -1350,7 +1350,7 @@ _VimChdir(PyObject *_chdir, PyObject *args, PyObject *kwargs)
 
     post_chdir(CDSCOPE_GLOBAL);
 
-    if (VimTryEnd())
+    if (MNVTryEnd())
     {
 	Py_DECREF(ret);
 	return NULL;
@@ -1360,15 +1360,15 @@ _VimChdir(PyObject *_chdir, PyObject *args, PyObject *kwargs)
 }
 
     static PyObject *
-VimChdir(PyObject *self UNUSED, PyObject *args, PyObject *kwargs)
+MNVChdir(PyObject *self UNUSED, PyObject *args, PyObject *kwargs)
 {
-    return _VimChdir(py_chdir, args, kwargs);
+    return _MNVChdir(py_chdir, args, kwargs);
 }
 
     static PyObject *
-VimFchdir(PyObject *self UNUSED, PyObject *args, PyObject *kwargs)
+MNVFchdir(PyObject *self UNUSED, PyObject *args, PyObject *kwargs)
 {
-    return _VimChdir(py_fchdir, args, kwargs);
+    return _MNVChdir(py_fchdir, args, kwargs);
 }
 
 typedef struct {
@@ -1404,7 +1404,7 @@ map_rtp_callback(char_u *path, void *_data)
 }
 
     static PyObject *
-VimForeachRTP(PyObject *self UNUSED, PyObject *callable)
+MNVForeachRTP(PyObject *self UNUSED, PyObject *callable)
 {
     map_rtp_data	data;
 
@@ -1427,7 +1427,7 @@ VimForeachRTP(PyObject *self UNUSED, PyObject *callable)
 }
 
 /*
- * _vim_runtimepath_ special path implementation.
+ * _mnv_runtimepath_ special path implementation.
  */
 
     static void
@@ -1493,7 +1493,7 @@ map_finder_callback(char_u *path, void *_data)
 }
 
     static PyObject *
-Vim_GetPaths(PyObject *self UNUSED, PyObject *args UNUSED)
+MNV_GetPaths(PyObject *self UNUSED, PyObject *args UNUSED)
 {
     PyObject	*ret;
 
@@ -1523,7 +1523,7 @@ FinderFindSpec(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s|O", &fullname, &target))
 	return NULL;
 
-    if (!(paths = Vim_GetPaths(self, NULL)))
+    if (!(paths = MNV_GetPaths(self, NULL)))
 	return NULL;
 
     spec = PyObject_CallFunction(py_find_spec, "sOO", fullname, paths, target);
@@ -1591,7 +1591,7 @@ find_module(char *fullname, char *tail, PyObject *new_path)
     PyObject	*module;
     char	*dot;
 
-    if ((dot = (char *)vim_strchr((char_u *) tail, '.')))
+    if ((dot = (char *)mnv_strchr((char_u *) tail, '.')))
     {
 	/*
 	 * There is a dot in the name: call find_module recursively without the
@@ -1658,7 +1658,7 @@ FinderFindModule(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s", &fullname))
 	return NULL;
 
-    if (!(new_path = Vim_GetPaths(self, NULL)))
+    if (!(new_path = MNV_GetPaths(self, NULL)))
 	return NULL;
 
     result = find_module(fullname, fullname, new_path);
@@ -1674,7 +1674,7 @@ FinderFindModule(PyObject *self, PyObject *args)
 	return Py_None;
     }
 
-    if (!(fullname = (char *)vim_strsave((char_u *)fullname)))
+    if (!(fullname = (char *)mnv_strsave((char_u *)fullname)))
     {
 	Py_DECREF(result);
 	PyErr_NoMemory();
@@ -1683,7 +1683,7 @@ FinderFindModule(PyObject *self, PyObject *args)
 
     if (!(loader = PyObject_NEW(LoaderObject, LoaderTypePtr)))
     {
-	vim_free(fullname);
+	mnv_free(fullname);
 	Py_DECREF(result);
 	return NULL;
     }
@@ -1696,15 +1696,15 @@ FinderFindModule(PyObject *self, PyObject *args)
 #endif
 
     static PyObject *
-VimPathHook(PyObject *self UNUSED, PyObject *args)
+MNVPathHook(PyObject *self UNUSED, PyObject *args)
 {
     char	*path;
 
     if (PyArg_ParseTuple(args, "s", &path)
-	    && STRCMP(path, vim_special_path) == 0)
+	    && STRCMP(path, mnv_special_path) == 0)
     {
-	Py_INCREF(vim_module);
-	return vim_module;
+	Py_INCREF(mnv_module);
+	return mnv_module;
     }
 
     PyErr_Clear();
@@ -1713,24 +1713,24 @@ VimPathHook(PyObject *self UNUSED, PyObject *args)
 }
 
 /*
- * Vim module - Definitions
+ * MNV module - Definitions
  */
 
-static struct PyMethodDef VimMethods[] = {
+static struct PyMethodDef MNVMethods[] = {
     // name,	    function,			calling,			documentation
-    {"command",	    VimCommand,			METH_O,				"Execute a Vim ex-mode command" },
-    {"eval",	    VimEval,			METH_VARARGS,			"Evaluate an expression using Vim evaluator" },
-    {"bindeval",    VimEvalPy,			METH_O,				"Like eval(), but returns objects attached to Vim ones"},
-    {"strwidth",    VimStrwidth,		METH_O,				"Screen string width, counts <Tab> as having width 1"},
-    {"chdir",	    (PyCFunction)(void *)VimChdir,	METH_VARARGS|METH_KEYWORDS,	"Change directory"},
-    {"fchdir",	    (PyCFunction)(void *)VimFchdir,	METH_VARARGS|METH_KEYWORDS,	"Change directory"},
-    {"foreach_rtp", VimForeachRTP,		METH_O,				"Call given callable for each path in &rtp"},
+    {"command",	    MNVCommand,			METH_O,				"Execute a MNV ex-mode command" },
+    {"eval",	    MNVEval,			METH_VARARGS,			"Evaluate an expression using MNV evaluator" },
+    {"bindeval",    MNVEvalPy,			METH_O,				"Like eval(), but returns objects attached to MNV ones"},
+    {"strwidth",    MNVStrwidth,		METH_O,				"Screen string width, counts <Tab> as having width 1"},
+    {"chdir",	    (PyCFunction)(void *)MNVChdir,	METH_VARARGS|METH_KEYWORDS,	"Change directory"},
+    {"fchdir",	    (PyCFunction)(void *)MNVFchdir,	METH_VARARGS|METH_KEYWORDS,	"Change directory"},
+    {"foreach_rtp", MNVForeachRTP,		METH_O,				"Call given callable for each path in &rtp"},
 #if PY_VERSION_HEX >= 0x030700f0
     {"find_spec",   FinderFindSpec,		METH_VARARGS,			"Internal use only, returns spec object for any input it receives"},
 #endif
     {"find_module", FinderFindModule,		METH_VARARGS,			"Internal use only, returns loader object for any input it receives"},
-    {"path_hook",   VimPathHook,		METH_VARARGS,			"Hook function to install in sys.path_hooks"},
-    {"_get_paths",  (PyCFunction)Vim_GetPaths,	METH_NOARGS,			"Get &rtp-based additions to sys.path"},
+    {"path_hook",   MNVPathHook,		METH_VARARGS,			"Hook function to install in sys.path_hooks"},
+    {"_get_paths",  (PyCFunction)MNV_GetPaths,	METH_NOARGS,			"Get &rtp-based additions to sys.path"},
     { NULL,	    NULL,			0,				NULL}
 };
 
@@ -1975,7 +1975,7 @@ DictionarySetattr(PyObject *self_obj, char *name, PyObject *valObject)
     if (valObject == NULL)
     {
 	PyErr_SET_STRING(PyExc_AttributeError,
-		N_("cannot delete vim.Dictionary attributes"));
+		N_("cannot delete mnv.Dictionary attributes"));
 	return -1;
     }
 
@@ -2361,10 +2361,10 @@ DictionaryUpdate(DictionaryObject *self, PyObject *args, PyObject *kwargs)
 	if (ConvertFromPyMapping(kwargs, &tv) == -1)
 	    return NULL;
 
-	VimTryStart();
+	MNVTryStart();
 	dict_extend(self->dict, tv.vval.v_dict, (char_u *) "force", NULL);
 	clear_tv(&tv);
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return NULL;
     }
     else
@@ -2723,7 +2723,7 @@ ListIndex(ListObject *self, Py_ssize_t index)
     if (li == NULL)
     {
 	// No more suitable format specifications in python-2.3
-	PyErr_VIM_FORMAT(N_("internal error: failed to get Vim list item %d"),
+	PyErr_MNV_FORMAT(N_("internal error: failed to get MNV list item %d"),
 		(int) index);
 	return NULL;
     }
@@ -2885,7 +2885,7 @@ ListAssSlice(ListObject *self, Py_ssize_t first,
 	li = list_find(l, (long) first);
 	if (li == NULL)
 	{
-	    PyErr_VIM_FORMAT(N_("internal error: no Vim list item %d"),
+	    PyErr_MNV_FORMAT(N_("internal error: no MNV list item %d"),
 		    (int)first);
 	    if (obj != NULL)
 		PyMem_Free(lis);
@@ -2910,7 +2910,7 @@ ListAssSlice(ListObject *self, Py_ssize_t first,
 	}
 	if (li == NULL && i != -1)
 	{
-	    PyErr_SET_VIM(N_("internal error: not enough list items"));
+	    PyErr_SET_MNV(N_("internal error: not enough list items"));
 	    if (obj != NULL)
 		PyMem_Free(lis);
 	    return -1;
@@ -2942,7 +2942,7 @@ ListAssSlice(ListObject *self, Py_ssize_t first,
 				    : li) == FAIL)
 	{
 	    clear_tv(&v);
-	    PyErr_SET_VIM(N_("internal error: failed to add item to list"));
+	    PyErr_SET_MNV(N_("internal error: failed to add item to list"));
 	    list_restore(numadded, numreplaced, slicelen, l, lis, lastaddedli);
 	    PyMem_Free(lis);
 	    return -1;
@@ -2950,7 +2950,7 @@ ListAssSlice(ListObject *self, Py_ssize_t first,
 	if (numreplaced < slicelen)
 	{
 	    lis[slicelen + numreplaced] = lis[numreplaced]->li_prev;
-	    vimlist_remove(l, lis[numreplaced], lis[numreplaced]);
+	    mnvlist_remove(l, lis[numreplaced], lis[numreplaced]);
 	    numreplaced++;
 	}
 	else
@@ -3028,13 +3028,13 @@ ListAssIndex(ListObject *self, Py_ssize_t index, PyObject *obj)
 	li = list_find(l, (long) index);
 	if (li == NULL)
 	{
-	    PyErr_VIM_FORMAT(N_("internal error: failed to get Vim "
+	    PyErr_MNV_FORMAT(N_("internal error: failed to get MNV "
 			"list item %d"), (int) index);
 	    return -1;
 	}
-	vimlist_remove(l, li, li);
+	mnvlist_remove(l, li, li);
 	clear_tv(&li->li_tv);
-	vim_free(li);
+	mnv_free(li);
 	return 0;
     }
 
@@ -3046,7 +3046,7 @@ ListAssIndex(ListObject *self, Py_ssize_t index, PyObject *obj)
 	if (list_append_tv(l, &tv) == FAIL)
 	{
 	    clear_tv(&tv);
-	    PyErr_SET_VIM(N_("failed to add item to list"));
+	    PyErr_SET_MNV(N_("failed to add item to list"));
 	    return -1;
 	}
     }
@@ -3055,7 +3055,7 @@ ListAssIndex(ListObject *self, Py_ssize_t index, PyObject *obj)
 	li = list_find(l, (long) index);
 	if (li == NULL)
 	{
-	    PyErr_VIM_FORMAT(N_("internal error: failed to get Vim "
+	    PyErr_MNV_FORMAT(N_("internal error: failed to get MNV "
 			"list item %d"), (int) index);
 	    return -1;
 	}
@@ -3199,7 +3199,7 @@ ListSetattr(PyObject *self_obj, char *name, PyObject *valObject)
     if (valObject == NULL)
     {
 	PyErr_SET_STRING(PyExc_AttributeError,
-		N_("cannot delete vim.List attributes"));
+		N_("cannot delete mnv.List attributes"));
 	return -1;
     }
 
@@ -3549,7 +3549,7 @@ TupleSetattr(PyObject *self_obj, char *name, PyObject *valObject)
     if (valObject == NULL)
     {
 	PyErr_SET_STRING(PyExc_AttributeError,
-		N_("cannot delete vim.Tuple attributes"));
+		N_("cannot delete mnv.Tuple attributes"));
 	return -1;
     }
 
@@ -3637,14 +3637,14 @@ FunctionNew(PyTypeObject *subtype, char_u *name, int argc, typval_T *argv,
 		    N_("unnamed function %s does not exist"), name);
 	    return NULL;
 	}
-	self->name = vim_strsave(name);
+	self->name = mnv_strsave(name);
     }
     else
     {
 	char_u *p;
 
 	if ((p = get_expanded_name(name,
-			    vim_strchr(name, AUTOLOAD_CHAR) == NULL)) == NULL)
+			    mnv_strchr(name, AUTOLOAD_CHAR) == NULL)) == NULL)
 	{
 	    PyErr_FORMAT(PyExc_ValueError,
 		    N_("function %s does not exist"), name);
@@ -3658,12 +3658,12 @@ FunctionNew(PyTypeObject *subtype, char_u *name, int argc, typval_T *argv,
 
 	    if ((np = alloc(len + 2)) == NULL)
 	    {
-		vim_free(p);
+		mnv_free(p);
 		return NULL;
 	    }
 	    mch_memmove(np, "<SNR>", 5);
 	    mch_memmove(np + 5, p + 3, len - 3);
-	    vim_free(p);
+	    mnv_free(p);
 	    self->name = np;
 	}
 	else
@@ -3776,7 +3776,7 @@ FunctionDestructor(PyObject *self_obj)
     FunctionObject *self = (FunctionObject*)self_obj;
     int i;
     func_unref(self->name);
-    vim_free(self->name);
+    mnv_free(self->name);
     for (i = 0; i < self->argc; ++i)
 	clear_tv(&self->argv[i]);
     PyMem_Free(self->argv);
@@ -3831,7 +3831,7 @@ FunctionAttr(FunctionObject *self, char *name)
  * Populate partial_T given function object.
  *
  * "exported" should be set to true when it is needed to construct a partial
- * that may be stored in a variable (i.e. may be freed by Vim).
+ * that may be stored in a variable (i.e. may be freed by MNV).
  */
     static void
 set_partial(FunctionObject *self, partial_T *pt, int exported)
@@ -3861,7 +3861,7 @@ set_partial(FunctionObject *self, partial_T *pt, int exported)
     if (exported && self->self)
 	++pt->pt_dict->dv_refcount;
     if (exported)
-	pt->pt_name = vim_strsave(pt->pt_name);
+	pt->pt_name = mnv_strsave(pt->pt_name);
     pt->pt_refcount = 1;
 }
 
@@ -3905,20 +3905,20 @@ FunctionCall(PyObject *self_obj, PyObject *argsObject, PyObject *kwargs)
     }
 
     Py_BEGIN_ALLOW_THREADS
-    Python_Lock_Vim();
+    Python_Lock_MNV();
 
-    VimTryStart();
+    MNVTryStart();
     error = func_call(name, &args, pt_ptr, selfdict, &rettv);
 
-    Python_Release_Vim();
+    Python_Release_MNV();
     Py_END_ALLOW_THREADS
 
-    if (VimTryEnd())
+    if (MNVTryEnd())
 	ret = NULL;
     else if (error != OK)
     {
 	ret = NULL;
-	PyErr_VIM_FORMAT(N_("failed to run function %s"), (char *)name);
+	PyErr_MNV_FORMAT(N_("failed to run function %s"), (char *)name);
     }
     else
 	ret = ConvertToPyObject(&rettv);
@@ -3943,7 +3943,7 @@ FunctionRepr(PyObject *self_obj)
     char_u numbuf[NUMBUFLEN];
 
     ga_init2(&repr_ga, sizeof(char), 70);
-    ga_concat(&repr_ga, (char_u *)"<vim.Function '");
+    ga_concat(&repr_ga, (char_u *)"<mnv.Function '");
     if (self->name)
 	ga_concat(&repr_ga, self->name);
     else
@@ -3959,7 +3959,7 @@ FunctionRepr(PyObject *self_obj)
 		ga_concat(&repr_ga, (char_u *)", ");
 	    ga_concat(&repr_ga, tv2string(&self->argv[i], &tofree, numbuf,
 			get_copyID()));
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	}
 	--emsg_silent;
 	ga_append(&repr_ga, ']');
@@ -3972,7 +3972,7 @@ FunctionRepr(PyObject *self_obj)
 	++emsg_silent;
 	ga_concat(&repr_ga, tv2string(&tv, &tofree, numbuf, get_copyID()));
 	--emsg_silent;
-	vim_free(tofree);
+	mnv_free(tofree);
 	if (self->auto_rebind)
 	    ga_concat(&repr_ga, (char_u *)", auto_rebind=True");
     }
@@ -4106,7 +4106,7 @@ OptionsItem(OptionsObject *self, PyObject *keyObject)
 	if (stringval)
 	{
 	    PyObject	*ret = PyBytes_FromString((char *)stringval);
-	    vim_free(stringval);
+	    mnv_free(stringval);
 	    return ret;
 	}
 	else
@@ -4118,7 +4118,7 @@ OptionsItem(OptionsObject *self, PyObject *keyObject)
     }
     else
     {
-	PyErr_SET_VIM(N_("internal error: unknown option type"));
+	PyErr_SET_MNV(N_("internal error: unknown option type"));
 	return NULL;
     }
 }
@@ -4195,9 +4195,9 @@ set_option_value_err(char_u *key, int numval, char_u *stringval, int opt_flags)
 
     if ((errmsg = set_option_value(key, numval, stringval, opt_flags)))
     {
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
-	PyErr_SetVim(errmsg);
+	PyErr_SetMNV(errmsg);
 	return FAIL;
     }
     return OK;
@@ -4216,7 +4216,7 @@ set_option_value_for(
     bufref_T	save_curbuf;
     int		set_ret = 0;
 
-    VimTryStart();
+    MNVTryStart();
     switch (opt_type)
     {
 	case SREQ_WIN:
@@ -4224,9 +4224,9 @@ set_option_value_for(
 			      win_find_tabpage((win_T *)from), FALSE) == FAIL)
 	    {
 		restore_win(&switchwin, TRUE);
-		if (VimTryEnd())
+		if (MNVTryEnd())
 		    return -1;
-		PyErr_SET_VIM(N_("problem while switching windows"));
+		PyErr_SET_MNV(N_("problem while switching windows"));
 		return -1;
 	    }
 	    set_ret = set_option_value_err(key, numval, stringval, opt_flags);
@@ -4243,7 +4243,7 @@ set_option_value_for(
     }
     if (set_ret == FAIL)
 	return -1;
-    return VimTryEnd();
+    return MNVTryEnd();
 }
 
     static int
@@ -4384,7 +4384,7 @@ CheckTabPage(TabPageObject *self)
 {
     if (self->tab == INVALID_TABPAGE_VALUE)
     {
-	PyErr_SET_VIM(N_("attempt to refer to deleted tab page"));
+	PyErr_SET_MNV(N_("attempt to refer to deleted tab page"));
 	return -1;
     }
 
@@ -4556,7 +4556,7 @@ CheckWindow(WindowObject *self)
 {
     if (self->win == INVALID_WINDOW_VALUE)
     {
-	PyErr_SET_VIM(N_("attempt to refer to deleted window"));
+	PyErr_SET_MNV(N_("attempt to refer to deleted window"));
 	return -1;
     }
 
@@ -4575,7 +4575,7 @@ WindowNew(win_T *win, tabpage_T *tab)
     /*
      * We need to handle deletion of windows underneath us.
      * If we add a "w_python*_ref" field to the win_T structure,
-     * then we can get at it in win_free() in vim. We then
+     * then we can get at it in win_free() in mnv. We then
      * need to create only ONE Python object per window - if
      * we try to create a second, just INCREF the existing one
      * and return it. The (single) Python object referring to
@@ -4752,12 +4752,12 @@ WindowSetattr(PyObject *self_obj, char *name, PyObject *valObject)
 
 	if (lnum <= 0 || lnum > self->win->w_buffer->b_ml.ml_line_count)
 	{
-	    PyErr_SET_VIM(N_("cursor position outside buffer"));
+	    PyErr_SET_MNV(N_("cursor position outside buffer"));
 	    return -1;
 	}
 
 	// Check for keyboard interrupts
-	if (VimCheckInterrupt())
+	if (MNVCheckInterrupt())
 	    return -1;
 
 	self->win->w_cursor.lnum = lnum;
@@ -4785,11 +4785,11 @@ WindowSetattr(PyObject *self_obj, char *name, PyObject *valObject)
 	curwin = self->win;
 	curbuf = curwin->w_buffer;
 
-	VimTryStart();
+	MNVTryStart();
 	win_setheight((int) height);
 	curwin = savewin;
 	curbuf = curwin->w_buffer;
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return -1;
 
 	return 0;
@@ -4809,11 +4809,11 @@ WindowSetattr(PyObject *self_obj, char *name, PyObject *valObject)
 	curwin = self->win;
 	curbuf = curwin->w_buffer;
 
-	VimTryStart();
+	MNVTryStart();
 	win_setwidth((int) width);
 	curwin = savewin;
 	curbuf = curwin->w_buffer;
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return -1;
 
 	return 0;
@@ -4928,7 +4928,7 @@ WinListItem(WinListObject *self, PyInt n)
 }
 
 /*
- * Convert a Python string into a Vim line.
+ * Convert a Python string into a MNV line.
  *
  * The result is in allocated memory. All internal nulls are replaced by
  * newline characters. It is an error for the string to contain newline
@@ -4992,7 +4992,7 @@ StringToLine(PyObject *obj)
 	    --len;
 	else
 	{
-	    PyErr_SET_VIM(N_("string cannot contain newlines"));
+	    PyErr_SET_MNV(N_("string cannot contain newlines"));
 	    Py_XDECREF(bytes);
 	    return NULL;
 	}
@@ -5000,7 +5000,7 @@ StringToLine(PyObject *obj)
 
     /*
      * Create a copy of the string, with internal nulls replaced by
-     * newline characters, as is the Vim convention.
+     * newline characters, as is the MNV convention.
      */
     save = alloc(len+1);
     if (save == NULL)
@@ -5026,7 +5026,7 @@ StringToLine(PyObject *obj)
 
 /*
  * Get a line from the specified buffer. The line number is
- * in Vim format (1-based). The line is returned as a Python
+ * in MNV format (1-based). The line is returned as a Python
  * string object.
  */
     static PyObject *
@@ -5038,7 +5038,7 @@ GetBufferLine(buf_T *buf, PyInt n)
 
 /*
  * Get a list of lines from the specified buffer. The line numbers
- * are in Vim format (1-based). The range is from lo up to, but not
+ * are in MNV format (1-based). The range is from lo up to, but not
  * including, hi. The list is returned as a Python list of string objects.
  */
     static PyObject *
@@ -5109,7 +5109,7 @@ py_fix_cursor(linenr_T lo, linenr_T hi, linenr_T extra)
 
 /*
  * Replace a line in the specified buffer. The line number is
- * in Vim format (1-based). The replacement line is given as
+ * in MNV format (1-based). The replacement line is given as
  * a Python string object. The object is checked for validity
  * and correct format. Errors are returned as a value of FAIL.
  * The return value is OK on success.
@@ -5133,7 +5133,7 @@ SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 	switchwin.sw_curwin = NULL;
 	switch_to_win_for_buf(buf, &switchwin, &save_curbuf);
 
-	VimTryStart();
+	MNVTryStart();
 
 	if (u_savedel((linenr_T)n, 1L) == FAIL)
 	    RAISE_UNDO_FAIL;
@@ -5154,7 +5154,7 @@ SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 
 	restore_win_for_buf(&switchwin, &save_curbuf);
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
 
 	if (len_change)
@@ -5169,7 +5169,7 @@ SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 	if (save == NULL)
 	    return FAIL;
 
-	VimTryStart();
+	MNVTryStart();
 
 	// We do not need to free "save" if ml_replace() consumes it.
 	PyErr_Clear();
@@ -5178,12 +5178,12 @@ SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 	if (u_savesub((linenr_T)n) == FAIL)
 	{
 	    RAISE_UNDO_FAIL;
-	    vim_free(save);
+	    mnv_free(save);
 	}
 	else if (ml_replace((linenr_T)n, (char_u *)save, FALSE) == FAIL)
 	{
 	    RAISE_REPLACE_LINE_FAIL;
-	    vim_free(save);
+	    mnv_free(save);
 	}
 	else
 	    changed_bytes((linenr_T)n, 0);
@@ -5194,7 +5194,7 @@ SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 	if (buf == curbuf)
 	    check_cursor_col();
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
 
 	if (len_change)
@@ -5211,7 +5211,7 @@ SetBufferLine(buf_T *buf, PyInt n, PyObject *line, PyInt *len_change)
 
 /*
  * Replace a range of lines in the specified buffer. The line numbers are in
- * Vim format (1-based). The range is from lo up to, but not including, hi.
+ * MNV format (1-based). The range is from lo up to, but not including, hi.
  * The replacement lines are given as a Python list of string objects. The
  * list is checked for validity and correct format. Errors are returned as a
  * value of FAIL.  The return value is OK on success.
@@ -5240,7 +5240,7 @@ SetBufferLineList(
 	PyInt	n = (int)(hi - lo);
 
 	PyErr_Clear();
-	VimTryStart();
+	MNVTryStart();
 	switchwin.sw_curwin = NULL;
 	switch_to_win_for_buf(buf, &switchwin, &save_curbuf);
 
@@ -5269,7 +5269,7 @@ SetBufferLineList(
 
 	restore_win_for_buf(&switchwin, &save_curbuf);
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
 
 	if (len_change)
@@ -5305,13 +5305,13 @@ SetBufferLineList(
 		!(array[i] = StringToLine(line)))
 	    {
 		while (i)
-		    vim_free(array[--i]);
+		    mnv_free(array[--i]);
 		PyMem_Free(array);
 		return FAIL;
 	    }
 	}
 
-	VimTryStart();
+	MNVTryStart();
 	PyErr_Clear();
 
 	// START of region without "return".  Must call restore_buffer()!
@@ -5353,7 +5353,7 @@ SetBufferLineList(
 
 	// Now we may need to insert the remaining new old_len. If we do, we
 	// must free the strings as we finish with them (we can't pass the
-	// responsibility to Vim in this case).
+	// responsibility to MNV in this case).
 	if (!PyErr_Occurred())
 	{
 	    while (i < new_len)
@@ -5364,7 +5364,7 @@ SetBufferLineList(
 		    RAISE_INSERT_LINE_FAIL;
 		    break;
 		}
-		vim_free(array[i]);
+		mnv_free(array[i]);
 		++i;
 		++extra;
 	    }
@@ -5373,13 +5373,13 @@ SetBufferLineList(
 	// Free any left-over old_len, as a result of an error
 	while (i < new_len)
 	{
-	    vim_free(array[i]);
+	    mnv_free(array[i]);
 	    ++i;
 	}
 
 	// Free the array of old_len. All of its contents have now
 	// been dealt with (either freed, or the responsibility passed
-	// to vim.
+	// to mnv.
 	PyMem_Free(array);
 
 	// Adjust marks. Invalidate any which lie in the
@@ -5402,7 +5402,7 @@ SetBufferLineList(
 	// END of region without "return".
 	restore_win_for_buf(&switchwin, &save_curbuf);
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
 
 	if (len_change)
@@ -5419,7 +5419,7 @@ SetBufferLineList(
 
 /*
  * Insert a number of lines into the specified buffer after the specified line.
- * The line number is in Vim format (1-based). The lines to be inserted are
+ * The line number is in MNV format (1-based). The lines to be inserted are
  * given as a Python list of string objects or as a single string. The lines
  * to be added are checked for validity and correct format. Errors are
  * returned as a value of FAIL.  The return value is OK on success.
@@ -5442,7 +5442,7 @@ InsertBufferLines(buf_T *buf, PyInt n, PyObject *lines, PyInt *len_change)
 	    return FAIL;
 
 	PyErr_Clear();
-	VimTryStart();
+	MNVTryStart();
 	switch_to_win_for_buf(buf, &switchwin, &save_curbuf);
 
 	if (u_save((linenr_T)n, (linenr_T)(n + 1)) == FAIL)
@@ -5454,11 +5454,11 @@ InsertBufferLines(buf_T *buf, PyInt n, PyObject *lines, PyInt *len_change)
 	    // holds the buffer, otherwise line numbers will be invalid.
 	    appended_lines_mark((linenr_T)n, 1L);
 
-	vim_free(str);
+	mnv_free(str);
 	restore_win_for_buf(&switchwin, &save_curbuf);
 	update_screen(UPD_VALID);
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
 
 	if (len_change)
@@ -5487,14 +5487,14 @@ InsertBufferLines(buf_T *buf, PyInt n, PyObject *lines, PyInt *len_change)
 		!(array[i] = StringToLine(line)))
 	    {
 		while (i)
-		    vim_free(array[--i]);
+		    mnv_free(array[--i]);
 		PyMem_Free(array);
 		return FAIL;
 	    }
 	}
 
 	PyErr_Clear();
-	VimTryStart();
+	MNVTryStart();
 	switch_to_win_for_buf(buf, &switchwin, &save_curbuf);
 
 	if (u_save((linenr_T)n, (linenr_T)(n + 1)) == FAIL)
@@ -5510,11 +5510,11 @@ InsertBufferLines(buf_T *buf, PyInt n, PyObject *lines, PyInt *len_change)
 
 		    // Free the rest of the lines
 		    while (i < size)
-			vim_free(array[i++]);
+			mnv_free(array[i++]);
 
 		    break;
 		}
-		vim_free(array[i]);
+		mnv_free(array[i]);
 	    }
 	    if (i > 0 && save_curbuf.br_buf == NULL)
 		// Only adjust marks if we managed to switch to a window that
@@ -5529,7 +5529,7 @@ InsertBufferLines(buf_T *buf, PyInt n, PyObject *lines, PyInt *len_change)
 
 	update_screen(UPD_VALID);
 
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return FAIL;
 
 	if (len_change)
@@ -5560,7 +5560,7 @@ CheckBuffer(BufferObject *self)
 {
     if (self->buf == INVALID_BUFFER_VALUE)
     {
-	PyErr_SET_VIM(N_("attempt to refer to deleted buffer"));
+	PyErr_SET_MNV(N_("attempt to refer to deleted buffer"));
 	return -1;
     }
 
@@ -5864,7 +5864,7 @@ RangeRepr(PyObject *self_obj)
 
 static struct PyMethodDef RangeMethods[] = {
     // name,	function,			calling,	documentation
-    {"append",	(PyCFunction)RangeAppend,	METH_VARARGS,	"Append data to the Vim range" },
+    {"append",	(PyCFunction)RangeAppend,	METH_VARARGS,	"Append data to the MNV range" },
     {"__dir__",	(PyCFunction)RangeDir,		METH_NOARGS,	""},
     { NULL,	NULL,				0,		NULL}
 };
@@ -5879,7 +5879,7 @@ BufferNew(buf_T *buf)
     /*
      * We need to handle deletion of buffers underneath us.
      * If we add a "b_python*_ref" field to the buf_T structure,
-     * then we can get at it in buf_freeall() in vim. We then
+     * then we can get at it in buf_freeall() in mnv. We then
      * need to create only ONE Python object per buffer - if
      * we try to create a second, just INCREF the existing one
      * and return it. The (single) Python object referring to
@@ -6005,7 +6005,7 @@ BufferSetattr(PyObject *self_obj, char *name, PyObject *valObject)
 	if (!(val = StringToChars(valObject, &todecref)))
 	    return -1;
 
-	VimTryStart();
+	MNVTryStart();
 	// Using aucmd_*: autocommands will be executed by rename_buffer
 	aucmd_prepbuf(&aco, self->buf);
 	if (curbuf == self->buf)
@@ -6014,12 +6014,12 @@ BufferSetattr(PyObject *self_obj, char *name, PyObject *valObject)
 	    aucmd_restbuf(&aco);
 	}
 	Py_XDECREF(todecref);
-	if (VimTryEnd())
+	if (MNVTryEnd())
 	    return -1;
 
 	if (ren_ret == FAIL)
 	{
-	    PyErr_SET_VIM(N_("failed to rename buffer"));
+	    PyErr_SET_MNV(N_("failed to rename buffer"));
 	    return -1;
 	}
 	return 0;
@@ -6064,16 +6064,16 @@ BufferMark(BufferObject *self, PyObject *pmarkObject)
 
     Py_XDECREF(todecref);
 
-    VimTryStart();
+    MNVTryStart();
     switch_buffer(&savebuf, self->buf);
     posp = getmark(mark, FALSE);
     restore_buffer(&savebuf);
-    if (VimTryEnd())
+    if (MNVTryEnd())
 	return NULL;
 
     if (posp == NULL)
     {
-	PyErr_SET_VIM(N_("invalid mark name"));
+	PyErr_SET_MNV(N_("invalid mark name"));
 	return NULL;
     }
 
@@ -6121,7 +6121,7 @@ BufferRepr(PyObject *self_obj)
 
 static struct PyMethodDef BufferMethods[] = {
     // name,	    function,			calling,	documentation
-    {"append",	    (PyCFunction)BufferAppend,	METH_VARARGS,	"Append data to Vim buffer" },
+    {"append",	    (PyCFunction)BufferAppend,	METH_VARARGS,	"Append data to MNV buffer" },
     {"mark",	    (PyCFunction)BufferMark,	METH_O,		"Return (row,col) representing position of named mark" },
     {"range",	    (PyCFunction)BufferRange,	METH_VARARGS,	"Return a range object which represents the part of the given buffer between line numbers s and e" },
     {"__dir__",	    (PyCFunction)BufferDir,	METH_NOARGS,	""},
@@ -6308,7 +6308,7 @@ CurrentSetattr(PyObject *self UNUSED, char *name, PyObject *valObject)
 	if (valObject->ob_type != BufferTypePtr)
 	{
 	    PyErr_FORMAT_TYPE(
-		    N_("expected vim.Buffer object, but got %s"),
+		    N_("expected mnv.Buffer object, but got %s"),
 		    valObject);
 	    return -1;
 	}
@@ -6317,16 +6317,16 @@ CurrentSetattr(PyObject *self UNUSED, char *name, PyObject *valObject)
 	    return -1;
 	count = ((BufferObject *)(valObject))->buf->b_fnum;
 
-	VimTryStart();
+	MNVTryStart();
 	if (do_buffer(DOBUF_GOTO, DOBUF_FIRST, FORWARD, count, 0) == FAIL)
 	{
-	    if (VimTryEnd())
+	    if (MNVTryEnd())
 		return -1;
-	    PyErr_VIM_FORMAT(N_("failed to switch to buffer %d"), count);
+	    PyErr_MNV_FORMAT(N_("failed to switch to buffer %d"), count);
 	    return -1;
 	}
 
-	return VimTryEnd();
+	return MNVTryEnd();
     }
     else if (strcmp(name, "window") == 0)
     {
@@ -6335,7 +6335,7 @@ CurrentSetattr(PyObject *self UNUSED, char *name, PyObject *valObject)
 	if (valObject->ob_type != WindowTypePtr)
 	{
 	    PyErr_FORMAT_TYPE(
-		    N_("expected vim.Window object, but got %s"),
+		    N_("expected mnv.Window object, but got %s"),
 		    valObject);
 	    return -1;
 	}
@@ -6351,25 +6351,25 @@ CurrentSetattr(PyObject *self UNUSED, char *name, PyObject *valObject)
 	    return -1;
 	}
 
-	VimTryStart();
+	MNVTryStart();
 	win_goto(((WindowObject *)(valObject))->win);
 	if (((WindowObject *)(valObject))->win != curwin)
 	{
-	    if (VimTryEnd())
+	    if (MNVTryEnd())
 		return -1;
 	    PyErr_SET_STRING(PyExc_RuntimeError,
 		    N_("did not switch to the specified window"));
 	    return -1;
 	}
 
-	return VimTryEnd();
+	return MNVTryEnd();
     }
     else if (strcmp(name, "tabpage") == 0)
     {
 	if (valObject->ob_type != TabPageTypePtr)
 	{
 	    PyErr_FORMAT_TYPE(
-		    N_("expected vim.TabPage object, but got %s"),
+		    N_("expected mnv.TabPage object, but got %s"),
 		    valObject);
 	    return -1;
 	}
@@ -6377,18 +6377,18 @@ CurrentSetattr(PyObject *self UNUSED, char *name, PyObject *valObject)
 	if (CheckTabPage((TabPageObject *)(valObject)))
 	    return -1;
 
-	VimTryStart();
+	MNVTryStart();
 	goto_tabpage_tp(((TabPageObject *)(valObject))->tab, TRUE, TRUE);
 	if (((TabPageObject *)(valObject))->tab != curtab)
 	{
-	    if (VimTryEnd())
+	    if (MNVTryEnd())
 		return -1;
 	    PyErr_SET_STRING(PyExc_RuntimeError,
 		    N_("did not switch to the specified tab page"));
 	    return -1;
 	}
 
-	return VimTryEnd();
+	return MNVTryEnd();
     }
     else
     {
@@ -6433,7 +6433,7 @@ run_cmd(const char *cmd, dict_T* locals UNUSED, void *arg UNUSED
     }
     else if (PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_SystemExit))
     {
-	emsg(_(e_cant_handle_systemexit_of_python_exception_in_vim));
+	emsg(_(e_cant_handle_systemexit_of_python_exception_in_mnv));
 	PyErr_Clear();
     }
     else
@@ -6478,7 +6478,7 @@ run_do(const char *cmd, dict_T* locals UNUSED, void *arg UNUSED
     else if (PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_SystemExit))
     {
 	PyMem_Free(code);
-	emsg(_(e_cant_handle_systemexit_of_python_exception_in_vim));
+	emsg(_(e_cant_handle_systemexit_of_python_exception_in_mnv));
 	PyErr_Clear();
 	return;
     }
@@ -6582,7 +6582,7 @@ run_eval(const char *cmd, dict_T *locals, void *arg
     {
 	if (PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_SystemExit))
 	{
-	    emsg(_(e_cant_handle_systemexit_of_python_exception_in_vim));
+	    emsg(_(e_cant_handle_systemexit_of_python_exception_in_mnv));
 	    PyErr_Clear();
 	}
 	else
@@ -6595,7 +6595,7 @@ run_eval(const char *cmd, dict_T *locals, void *arg
     else
     {
 	if (ConvertFromPyObject(run_ret, rettv) == -1)
-	    emsg(_(e_failed_to_convert_returned_python_object_to_vim_value));
+	    emsg(_(e_failed_to_convert_returned_python_object_to_mnv_value));
 	Py_DECREF(run_ret);
     }
     PyErr_Clear();
@@ -6655,7 +6655,7 @@ set_ref_in_py(const int copyID)
     static int
 set_string_copy(char_u *str, typval_T *tv)
 {
-    tv->vval.v_string = vim_strsave(str);
+    tv->vval.v_string = mnv_strsave(str);
     if (tv->vval.v_string == NULL)
     {
 	PyErr_NoMemory();
@@ -6717,7 +6717,7 @@ pydict_to_tv(PyObject *obj, typval_T *tv, PyObject *lookup_dict)
 
 	if (_ConvertFromPyObject(valObject, &di->di_tv, lookup_dict) == -1)
 	{
-	    vim_free(di);
+	    mnv_free(di);
 	    dict_unref(dict);
 	    return -1;
 	}
@@ -6726,7 +6726,7 @@ pydict_to_tv(PyObject *obj, typval_T *tv, PyObject *lookup_dict)
 	{
 	    RAISE_KEY_ADD_FAIL(di->di_key);
 	    clear_tv(&di->di_tv);
-	    vim_free(di);
+	    mnv_free(di);
 	    dict_unref(dict);
 	    return -1;
 	}
@@ -6816,7 +6816,7 @@ pymap_to_tv(PyObject *obj, typval_T *tv, PyObject *lookup_dict)
 	{
 	    Py_DECREF(iterator);
 	    Py_DECREF(valObject);
-	    vim_free(di);
+	    mnv_free(di);
 	    dict_unref(dict);
 	    return -1;
 	}
@@ -6962,7 +6962,7 @@ ConvertFromPyMapping(PyObject *obj, typval_T *tv)
     else
     {
 	PyErr_FORMAT_TYPE(
-		N_("unable to convert %s to a Vim dictionary"),
+		N_("unable to convert %s to a MNV dictionary"),
 		obj);
 	ret = -1;
     }
@@ -6991,7 +6991,7 @@ ConvertFromPySequence(PyObject *obj, typval_T *tv)
     else
     {
 	PyErr_FORMAT_TYPE(
-		N_("unable to convert %s to a Vim list"),
+		N_("unable to convert %s to a MNV list"),
 		obj);
 	ret = -1;
     }
@@ -7142,7 +7142,7 @@ _ConvertFromPyObject(PyObject *obj, typval_T *tv, PyObject *lookup_dict)
     else
     {
 	PyErr_FORMAT_TYPE(
-		N_("unable to convert %s to a Vim structure"),
+		N_("unable to convert %s to a MNV structure"),
 		obj);
 	return -1;
     }
@@ -7156,7 +7156,7 @@ ConvertToPyObject(typval_T *tv)
     int i;
     if (tv == NULL)
     {
-	PyErr_SET_VIM(N_("internal error: NULL reference passed"));
+	PyErr_SET_MNV(N_("internal error: NULL reference passed"));
 	return NULL;
     }
     switch (tv->v_type)
@@ -7218,7 +7218,7 @@ ConvertToPyObject(typval_T *tv)
 		case VVAL_NONE:
 		case VVAL_NULL:  return ALWAYS_NONE;
 	    }
-	    PyErr_SET_VIM(N_("internal error: invalid value type"));
+	    PyErr_SET_MNV(N_("internal error: invalid value type"));
 	    return NULL;
     }
     return NULL;
@@ -7240,10 +7240,10 @@ static CurrentObject TheCurrent =
 init_structs(void)
 {
     CLEAR_FIELD(OutputType);
-    OutputType.tp_name = "vim.message";
+    OutputType.tp_name = "mnv.message";
     OutputType.tp_basicsize = sizeof(OutputObject);
     OutputType.tp_flags = Py_TPFLAGS_DEFAULT;
-    OutputType.tp_doc = "vim message object";
+    OutputType.tp_doc = "mnv message object";
     OutputType.tp_methods = OutputMethods;
 #if PY_MAJOR_VERSION >= 3
     OutputType.tp_getattro = OutputGetattro;
@@ -7264,7 +7264,7 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(IterType);
-    IterType.tp_name = "vim.iter";
+    IterType.tp_name = "mnv.iter";
     IterType.tp_basicsize = sizeof(IterObject);
     IterType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC;
     IterType.tp_doc = "generic iterator object";
@@ -7275,14 +7275,14 @@ init_structs(void)
     IterType.tp_clear = IterClear;
 
     CLEAR_FIELD(BufferType);
-    BufferType.tp_name = "vim.buffer";
+    BufferType.tp_name = "mnv.buffer";
     BufferType.tp_basicsize = sizeof(BufferObject);
     BufferType.tp_dealloc = BufferDestructor;
     BufferType.tp_repr = BufferRepr;
     BufferType.tp_as_sequence = &BufferAsSeq;
     BufferType.tp_as_mapping = &BufferAsMapping;
     BufferType.tp_flags = Py_TPFLAGS_DEFAULT;
-    BufferType.tp_doc = "vim buffer object";
+    BufferType.tp_doc = "mnv buffer object";
     BufferType.tp_methods = BufferMethods;
 #if PY_MAJOR_VERSION >= 3
     BufferType.tp_getattro = BufferGetattro;
@@ -7296,12 +7296,12 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(WindowType);
-    WindowType.tp_name = "vim.window";
+    WindowType.tp_name = "mnv.window";
     WindowType.tp_basicsize = sizeof(WindowObject);
     WindowType.tp_dealloc = WindowDestructor;
     WindowType.tp_repr = WindowRepr;
     WindowType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC;
-    WindowType.tp_doc = "vim Window object";
+    WindowType.tp_doc = "mnv Window object";
     WindowType.tp_methods = WindowMethods;
     WindowType.tp_traverse = WindowTraverse;
     WindowType.tp_clear = WindowClear;
@@ -7317,12 +7317,12 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(TabPageType);
-    TabPageType.tp_name = "vim.tabpage";
+    TabPageType.tp_name = "mnv.tabpage";
     TabPageType.tp_basicsize = sizeof(TabPageObject);
     TabPageType.tp_dealloc = TabPageDestructor;
     TabPageType.tp_repr = TabPageRepr;
     TabPageType.tp_flags = Py_TPFLAGS_DEFAULT;
-    TabPageType.tp_doc = "vim tab page object";
+    TabPageType.tp_doc = "mnv tab page object";
     TabPageType.tp_methods = TabPageMethods;
 #if PY_MAJOR_VERSION >= 3
     TabPageType.tp_getattro = TabPageGetattro;
@@ -7334,37 +7334,37 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(BufMapType);
-    BufMapType.tp_name = "vim.bufferlist";
+    BufMapType.tp_name = "mnv.bufferlist";
     BufMapType.tp_basicsize = sizeof(BufMapObject);
     BufMapType.tp_as_mapping = &BufMapAsMapping;
     BufMapType.tp_flags = Py_TPFLAGS_DEFAULT;
     BufMapType.tp_iter = BufMapIter;
-    BufMapType.tp_doc = "vim buffer list";
+    BufMapType.tp_doc = "mnv buffer list";
 
     CLEAR_FIELD(WinListType);
-    WinListType.tp_name = "vim.windowlist";
+    WinListType.tp_name = "mnv.windowlist";
     WinListType.tp_basicsize = sizeof(WinListObject);
     WinListType.tp_as_sequence = &WinListAsSeq;
     WinListType.tp_flags = Py_TPFLAGS_DEFAULT;
-    WinListType.tp_doc = "vim window list";
+    WinListType.tp_doc = "mnv window list";
     WinListType.tp_dealloc = (destructor)WinListDestructor;
 
     CLEAR_FIELD(TabListType);
-    TabListType.tp_name = "vim.tabpagelist";
+    TabListType.tp_name = "mnv.tabpagelist";
     TabListType.tp_basicsize = sizeof(TabListObject);
     TabListType.tp_as_sequence = &TabListAsSeq;
     TabListType.tp_flags = Py_TPFLAGS_DEFAULT;
-    TabListType.tp_doc = "vim tab page list";
+    TabListType.tp_doc = "mnv tab page list";
 
     CLEAR_FIELD(RangeType);
-    RangeType.tp_name = "vim.range";
+    RangeType.tp_name = "mnv.range";
     RangeType.tp_basicsize = sizeof(RangeObject);
     RangeType.tp_dealloc = RangeDestructor;
     RangeType.tp_repr = RangeRepr;
     RangeType.tp_as_sequence = &RangeAsSeq;
     RangeType.tp_as_mapping = &RangeAsMapping;
     RangeType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC;
-    RangeType.tp_doc = "vim Range object";
+    RangeType.tp_doc = "mnv Range object";
     RangeType.tp_methods = RangeMethods;
     RangeType.tp_traverse = RangeTraverse;
     RangeType.tp_clear = RangeClear;
@@ -7378,10 +7378,10 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(CurrentType);
-    CurrentType.tp_name = "vim.currentdata";
+    CurrentType.tp_name = "mnv.currentdata";
     CurrentType.tp_basicsize = sizeof(CurrentObject);
     CurrentType.tp_flags = Py_TPFLAGS_DEFAULT;
-    CurrentType.tp_doc = "vim current object";
+    CurrentType.tp_doc = "mnv current object";
     CurrentType.tp_methods = CurrentMethods;
 #if PY_MAJOR_VERSION >= 3
     CurrentType.tp_getattro = CurrentGetattro;
@@ -7392,13 +7392,13 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(DictionaryType);
-    DictionaryType.tp_name = "vim.dictionary";
+    DictionaryType.tp_name = "mnv.dictionary";
     DictionaryType.tp_basicsize = sizeof(DictionaryObject);
     DictionaryType.tp_dealloc = DictionaryDestructor;
     DictionaryType.tp_as_sequence = &DictionaryAsSeq;
     DictionaryType.tp_as_mapping = &DictionaryAsMapping;
     DictionaryType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE;
-    DictionaryType.tp_doc = "dictionary pushing modifications to Vim structure";
+    DictionaryType.tp_doc = "dictionary pushing modifications to MNV structure";
     DictionaryType.tp_methods = DictionaryMethods;
     DictionaryType.tp_iter = DictionaryIter;
     DictionaryType.tp_new = DictionaryConstructor;
@@ -7412,13 +7412,13 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(ListType);
-    ListType.tp_name = "vim.list";
+    ListType.tp_name = "mnv.list";
     ListType.tp_dealloc = ListDestructor;
     ListType.tp_basicsize = sizeof(ListObject);
     ListType.tp_as_sequence = &ListAsSeq;
     ListType.tp_as_mapping = &ListAsMapping;
     ListType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE;
-    ListType.tp_doc = "list pushing modifications to Vim structure";
+    ListType.tp_doc = "list pushing modifications to MNV structure";
     ListType.tp_methods = ListMethods;
     ListType.tp_iter = ListIter;
     ListType.tp_new = ListConstructor;
@@ -7433,13 +7433,13 @@ init_structs(void)
 
     // Tuple type
     CLEAR_FIELD(TupleType);
-    TupleType.tp_name = "vim.tuple";
+    TupleType.tp_name = "mnv.tuple";
     TupleType.tp_dealloc = TupleDestructor;
     TupleType.tp_basicsize = sizeof(TupleObject);
     TupleType.tp_as_sequence = &TupleAsSeq;
     TupleType.tp_as_mapping = &TupleAsMapping;
     TupleType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE;
-    TupleType.tp_doc = "tuple pushing modifications to Vim structure";
+    TupleType.tp_doc = "tuple pushing modifications to MNV structure";
     TupleType.tp_methods = TupleMethods;
     TupleType.tp_iter = TupleIter;
     TupleType.tp_new = TupleConstructor;
@@ -7453,12 +7453,12 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(FunctionType);
-    FunctionType.tp_name = "vim.function";
+    FunctionType.tp_name = "mnv.function";
     FunctionType.tp_basicsize = sizeof(FunctionObject);
     FunctionType.tp_dealloc = FunctionDestructor;
     FunctionType.tp_call = FunctionCall;
     FunctionType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE;
-    FunctionType.tp_doc = "object that calls Vim function";
+    FunctionType.tp_doc = "object that calls MNV function";
     FunctionType.tp_methods = FunctionMethods;
     FunctionType.tp_repr = FunctionRepr;
     FunctionType.tp_new = FunctionConstructor;
@@ -7470,7 +7470,7 @@ init_structs(void)
 #endif
 
     CLEAR_FIELD(OptionsType);
-    OptionsType.tp_name = "vim.options";
+    OptionsType.tp_name = "mnv.options";
     OptionsType.tp_basicsize = sizeof(OptionsObject);
     OptionsType.tp_as_sequence = &OptionsAsSeq;
     OptionsType.tp_flags = Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_GC;
@@ -7483,20 +7483,20 @@ init_structs(void)
 
 #if PY_VERSION_HEX < 0x030700f0
     CLEAR_FIELD(LoaderType);
-    LoaderType.tp_name = "vim.Loader";
+    LoaderType.tp_name = "mnv.Loader";
     LoaderType.tp_basicsize = sizeof(LoaderObject);
     LoaderType.tp_flags = Py_TPFLAGS_DEFAULT;
-    LoaderType.tp_doc = "vim message object";
+    LoaderType.tp_doc = "mnv message object";
     LoaderType.tp_methods = LoaderMethods;
     LoaderType.tp_dealloc = LoaderDestructor;
 #endif
 
 #if PY_MAJOR_VERSION >= 3
-    CLEAR_FIELD(vimmodule);
-    vimmodule.m_name = "vim";
-    vimmodule.m_doc = "Vim Python interface\n";
-    vimmodule.m_size = -1;
-    vimmodule.m_methods = VimMethods;
+    CLEAR_FIELD(mnvmodule);
+    mnvmodule.m_name = "mnv";
+    mnvmodule.m_doc = "MNV Python interface\n";
+    mnvmodule.m_size = -1;
+    mnvmodule.m_methods = MNVMethods;
 #endif
 }
 
@@ -7569,7 +7569,7 @@ init_sys_path(void)
     PyObject	*path_hook;
     PyObject	*path_hooks;
 
-    if (!(path_hook = PyObject_GetAttrString(vim_module, "path_hook")))
+    if (!(path_hook = PyObject_GetAttrString(mnv_module, "path_hook")))
 	return -1;
 
     if (!(path_hooks = PySys_GetObject("path_hooks")))
@@ -7595,12 +7595,12 @@ init_sys_path(void)
     }
     else
     {
-	VimTryStart();
+	MNVTryStart();
 	emsg(_("Failed to set path hook: sys.path_hooks is not a list\n"
 	       "You should now do the following:\n"
-	       "- append vim.path_hook to sys.path_hooks\n"
-	       "- append vim.VIM_SPECIAL_PATH to sys.path\n"));
-	VimTryEnd(); // Discard the error
+	       "- append mnv.path_hook to sys.path_hooks\n"
+	       "- append mnv.MNV_SPECIAL_PATH to sys.path\n"));
+	MNVTryEnd(); // Discard the error
 	Py_DECREF(path_hook);
 	return 0;
     }
@@ -7609,8 +7609,8 @@ init_sys_path(void)
     {
 	PyErr_Clear();
 	path = PyList_New(1);
-	Py_INCREF(vim_special_path_object);
-	PyList_SET_ITEM(path, 0, vim_special_path_object);
+	Py_INCREF(mnv_special_path_object);
+	PyList_SET_ITEM(path, 0, mnv_special_path_object);
 	if (PySys_SetObject("path", path))
 	{
 	    Py_DECREF(path);
@@ -7620,15 +7620,15 @@ init_sys_path(void)
     }
     else if (PyList_Check(path))
     {
-	if (PyList_Append(path, vim_special_path_object))
+	if (PyList_Append(path, mnv_special_path_object))
 	    return -1;
     }
     else
     {
-	VimTryStart();
+	MNVTryStart();
 	emsg(_("Failed to set path: sys.path is not a list\n"
-	       "You should now append vim.VIM_SPECIAL_PATH to sys.path"));
-	VimTryEnd(); // Discard the error
+	       "You should now append mnv.MNV_SPECIAL_PATH to sys.path"));
+	MNVTryEnd(); // Discard the error
     }
 
     return 0;
@@ -7710,12 +7710,12 @@ populate_module(PyObject *m)
 	ADD_OBJECT(m, object_constants[i].name, valObject);
     }
 
-    if (!(VimError = PyErr_NewException("vim.error", NULL, NULL)))
+    if (!(MNVError = PyErr_NewException("mnv.error", NULL, NULL)))
 	return -1;
-    ADD_OBJECT(m, "error", VimError);
+    ADD_OBJECT(m, "error", MNVError);
 
     ADD_CHECKED_OBJECT(m, "vars",  NEW_DICTIONARY(get_globvar_dict()));
-    ADD_CHECKED_OBJECT(m, "vvars", NEW_DICTIONARY(get_vimvar_dict()));
+    ADD_CHECKED_OBJECT(m, "vvars", NEW_DICTIONARY(get_mnvvar_dict()));
     ADD_CHECKED_OBJECT(m, "options",
 	    OptionsNew(SREQ_GLOBAL, NULL, dummy_check, NULL));
 
@@ -7759,10 +7759,10 @@ populate_module(PyObject *m)
     else
 	PyErr_Clear();
 
-    if (!(vim_special_path_object = PyString_FromString(vim_special_path)))
+    if (!(mnv_special_path_object = PyString_FromString(mnv_special_path)))
 	return -1;
 
-    ADD_OBJECT(m, "VIM_SPECIAL_PATH", vim_special_path_object);
+    ADD_OBJECT(m, "MNV_SPECIAL_PATH", mnv_special_path_object);
 
 #if PY_VERSION_HEX >= 0x030700f0
     if (!(imp = PyImport_ImportModule("importlib.machinery")))

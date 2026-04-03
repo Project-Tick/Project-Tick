@@ -1,5 +1,5 @@
 #
-# Makefile for converted the Vim menu files on Windows
+# Makefile for converted the MNV menu files on Windows
 #
 # 2023-11-08, Restorer, <restorer@mail2k.ru>
 #
@@ -26,8 +26,8 @@ ICONV = "$(ICONV_PATH)\iconv.exe"
 
 all : $(CONVERTED)
 
-# Convert menu_zh_cn.utf-8.vim to menu_chinese_gb.936.vim.
-menu_chinese_gb.936.vim : menu_zh_cn.utf-8.vim
+# Convert menu_zh_cn.utf-8.mnv to menu_chinese_gb.936.mnv.
+menu_chinese_gb.936.mnv : menu_zh_cn.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP936 $? >$@
@@ -44,8 +44,8 @@ menu_chinese_gb.936.vim : menu_zh_cn.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(936))
 
-# Convert menu_zh_tw.utf-8.vim to menu_chinese_taiwan.950.vim.
-menu_chinese_taiwan.950.vim : menu_zh_tw.utf-8.vim
+# Convert menu_zh_tw.utf-8.mnv to menu_chinese_taiwan.950.mnv.
+menu_chinese_taiwan.950.mnv : menu_zh_tw.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP950 $? >$@
@@ -62,8 +62,8 @@ menu_chinese_taiwan.950.vim : menu_zh_tw.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(950))
 
-# Convert menu_cs_cz.utf-8.vim to menu_cs_cz.iso_8859-2.vim.
-menu_cs_cz.iso_8859-2.vim : menu_cs_cz.utf-8.vim
+# Convert menu_cs_cz.utf-8.mnv to menu_cs_cz.iso_8859-2.mnv.
+menu_cs_cz.iso_8859-2.mnv : menu_cs_cz.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-2 $? >$@
@@ -81,8 +81,8 @@ menu_cs_cz.iso_8859-2.vim : menu_cs_cz.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28592))
 
-# Convert menu_cs_cz.utf-8.vim to menu_czech_czech_republic.1250.vim.
-menu_czech_czech_republic.1250.vim : menu_cs_cz.utf-8.vim
+# Convert menu_cs_cz.utf-8.mnv to menu_czech_czech_republic.1250.mnv.
+menu_czech_czech_republic.1250.mnv : menu_cs_cz.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1250 $? >$@
@@ -100,8 +100,8 @@ menu_czech_czech_republic.1250.vim : menu_cs_cz.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1250))
 
-# Convert menu_cs_cz.utf-8.vim to menu_czech_czech_republic.ascii.vim.
-menu_czech_czech_republic.ascii.vim : menu_cs_cz.utf-8.vim
+# Convert menu_cs_cz.utf-8.mnv to menu_czech_czech_republic.ascii.mnv.
+menu_czech_czech_republic.ascii.mnv : menu_cs_cz.utf-8.mnv
 	- $(RM) $@
 	$(PS) $(PSFLAGS) [System.IO.File]::ReadAllText(\"$?\", \
 		[System.Text.Encoding]::GetEncoding(65001)) -replace \
@@ -126,8 +126,8 @@ menu_czech_czech_republic.ascii.vim : menu_cs_cz.utf-8.vim
 		-creplace [char]381, 'Z' -creplace [char]382, 'z' \
 		^| 1>nul New-Item -Path . -Name $@ -ItemType file -Force
 
-# Convert menu_hu_hu.utf-8.vim to menu_hu_hu.iso_8859-2.vim.
-menu_hu_hu.iso_8859-2.vim : menu_hu_hu.utf-8.vim
+# Convert menu_hu_hu.utf-8.mnv to menu_hu_hu.iso_8859-2.mnv.
+menu_hu_hu.iso_8859-2.mnv : menu_hu_hu.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-2 $? >$@
@@ -144,8 +144,8 @@ menu_hu_hu.iso_8859-2.vim : menu_hu_hu.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28592))
 
-# Convert menu_ja_jp.utf-8.vim to menu_ja_jp.euc-jp.vim.
-menu_ja_jp.euc-jp.vim : menu_ja_jp.utf-8.vim
+# Convert menu_ja_jp.utf-8.mnv to menu_ja_jp.euc-jp.mnv.
+menu_ja_jp.euc-jp.mnv : menu_ja_jp.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t EUC-JP $? >$@
@@ -163,8 +163,8 @@ menu_ja_jp.euc-jp.vim : menu_ja_jp.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(51932))
 
-# Convert menu_ja_jp.utf-8.vim to menu_japanese_japan.932.vim.
-menu_japanese_japan.932.vim : menu_ja_jp.utf-8.vim
+# Convert menu_ja_jp.utf-8.mnv to menu_japanese_japan.932.mnv.
+menu_japanese_japan.932.mnv : menu_ja_jp.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP932 $? >$@
@@ -182,8 +182,8 @@ menu_japanese_japan.932.vim : menu_ja_jp.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(932))
 
-# Convert menu_ko_kr.utf-8.vim to menu_ko_kr.euckr.vim.
-menu_ko_kr.euckr.vim : menu_ko_kr.utf-8.vim
+# Convert menu_ko_kr.utf-8.mnv to menu_ko_kr.euckr.mnv.
+menu_ko_kr.euckr.mnv : menu_ko_kr.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t EUC-KR $? >$@
@@ -200,8 +200,8 @@ menu_ko_kr.euckr.vim : menu_ko_kr.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(51949))
 
-# Convert menu_pl_pl.utf-8.vim to menu_pl_pl.iso_8859-2.vim.
-menu_pl_pl.iso_8859-2.vim : menu_pl_pl.utf-8.vim
+# Convert menu_pl_pl.utf-8.mnv to menu_pl_pl.iso_8859-2.mnv.
+menu_pl_pl.iso_8859-2.mnv : menu_pl_pl.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-2 $? >$@
@@ -218,8 +218,8 @@ menu_pl_pl.iso_8859-2.vim : menu_pl_pl.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28592))
 
-# Convert menu_pl_pl.utf-8.vim to menu_polish_poland.1250.vim.
-menu_polish_poland.1250.vim : menu_pl_pl.utf-8.vim
+# Convert menu_pl_pl.utf-8.mnv to menu_polish_poland.1250.mnv.
+menu_polish_poland.1250.mnv : menu_pl_pl.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1250 $? >$@
@@ -236,8 +236,8 @@ menu_polish_poland.1250.vim : menu_pl_pl.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1250))
 
-# Convert menu_ru_ru.utf-8.vim to menu_ru_ru.cp1251.vim.
-menu_ru_ru.cp1251.vim : menu_ru_ru.utf-8.vim
+# Convert menu_ru_ru.utf-8.mnv to menu_ru_ru.cp1251.mnv.
+menu_ru_ru.cp1251.mnv : menu_ru_ru.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1251 $? >$@
@@ -254,8 +254,8 @@ menu_ru_ru.cp1251.vim : menu_ru_ru.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1251))
 
-# Convert menu_ru_ru.utf-8.vim to menu_ru_ru.koi8-r.vim.
-menu_ru_ru.koi8-r.vim : menu_ru_ru.utf-8.vim
+# Convert menu_ru_ru.utf-8.mnv to menu_ru_ru.koi8-r.mnv.
+menu_ru_ru.koi8-r.mnv : menu_ru_ru.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t KOI8-R $? >$@
@@ -272,8 +272,8 @@ menu_ru_ru.koi8-r.vim : menu_ru_ru.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(20866))
 
-# Convert menu_slovak_slovak_republic.1250.vim to menu_sk_sk.iso_8859-2.vim.
-menu_sk_sk.iso_8859-2.vim : menu_slovak_slovak_republic.1250.vim
+# Convert menu_slovak_slovak_republic.1250.mnv to menu_sk_sk.iso_8859-2.mnv.
+menu_sk_sk.iso_8859-2.mnv : menu_slovak_slovak_republic.1250.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f CP1250 -t ISO-8859-2 $? >$@
@@ -290,8 +290,8 @@ menu_sk_sk.iso_8859-2.vim : menu_slovak_slovak_republic.1250.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28592))
 
-# Convert menu_sl_si.utf-8.vim to menu_sl_si.cp1250.vim.
-menu_sl_si.cp1250.vim : menu_sl_si.utf-8.vim
+# Convert menu_sl_si.utf-8.mnv to menu_sl_si.cp1250.mnv.
+menu_sl_si.cp1250.mnv : menu_sl_si.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1250 $? >$@
@@ -308,8 +308,8 @@ menu_sl_si.cp1250.vim : menu_sl_si.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1250))
 
-# Convert menu_sl_si.utf-8.vim to menu_sl_si.latin2.vim.
-menu_sl_si.latin2.vim : menu_sl_si.utf-8.vim
+# Convert menu_sl_si.utf-8.mnv to menu_sl_si.latin2.mnv.
+menu_sl_si.latin2.mnv : menu_sl_si.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-2 $? >$@
@@ -326,8 +326,8 @@ menu_sl_si.latin2.vim : menu_sl_si.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28592))
 
-# Convert menu_sr_rs.utf-8.vim to menu_sr_rs.ascii.vim.
-menu_sr_rs.ascii.vim : menu_sr_rs.utf-8.vim
+# Convert menu_sr_rs.utf-8.mnv to menu_sr_rs.ascii.mnv.
+menu_sr_rs.ascii.mnv : menu_sr_rs.utf-8.mnv
 	- $(RM) $@
 	$(PS) $(PSFLAGS) [System.IO.File]::ReadAllText(\"$?\", \
 		[System.Text.Encoding]::GetEncoding(65001)) -replace \
@@ -365,8 +365,8 @@ menu_sr_rs.ascii.vim : menu_sr_rs.utf-8.vim
 		-creplace [char]1039, 'Dz' -creplace [char]1064, 'S' ^| \
 		1>nul New-Item -Path . -Name $@ -ItemType file -Force
 
-# Convert menu_sr_rs.utf-8.vim to menu_sr_rs.iso_8859-2.vim.
-menu_sr_rs.iso_8859-2.vim : menu_sr_rs.utf-8.vim
+# Convert menu_sr_rs.utf-8.mnv to menu_sr_rs.iso_8859-2.mnv.
+menu_sr_rs.iso_8859-2.mnv : menu_sr_rs.utf-8.mnv
 	- $(RM) $@
 	$(PS) $(PSFLAGS) $$out = [System.IO.File]::ReadAllText(\"$?\", \
 		[System.Text.Encoding]::GetEncoding(65001)) \
@@ -406,8 +406,8 @@ menu_sr_rs.iso_8859-2.vim : menu_sr_rs.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28592))
 
-# Convert menu_sr_rs.utf-8.vim to menu_sr_rs.iso_8859-5.vim.
-menu_sr_rs.iso_8859-5.vim : menu_sr_rs.utf-8.vim
+# Convert menu_sr_rs.utf-8.mnv to menu_sr_rs.iso_8859-5.mnv.
+menu_sr_rs.iso_8859-5.mnv : menu_sr_rs.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-5 $? >$@
@@ -424,8 +424,8 @@ menu_sr_rs.iso_8859-5.vim : menu_sr_rs.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28595))
 
-# Convert menu_sv_se.utf-8.vim to menu_sv_se.iso_8859-1.vim.
-menu_sv_se.iso_8859-1.vim : menu_sv_se.utf-8.vim
+# Convert menu_sv_se.utf-8.mnv to menu_sv_se.iso_8859-1.mnv.
+menu_sv_se.iso_8859-1.mnv : menu_sv_se.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-1 $? >$@
@@ -442,8 +442,8 @@ menu_sv_se.iso_8859-1.vim : menu_sv_se.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28591))
 
-# Convert menu_sv_se.utf-8.vim to menu_swedish_sweden.1252.vim.
-menu_swedish_sweden.1252.vim : menu_sv_se.utf-8.vim
+# Convert menu_sv_se.utf-8.mnv to menu_swedish_sweden.1252.mnv.
+menu_swedish_sweden.1252.mnv : menu_sv_se.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1252 $? >$@
@@ -460,8 +460,8 @@ menu_swedish_sweden.1252.vim : menu_sv_se.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1252))
 
-# Convert menu_tr_tr.utf-8.vim to menu_tr_tr.cp1254.vim.
-menu_tr_tr.cp1254.vim : menu_tr_tr.utf-8.vim
+# Convert menu_tr_tr.utf-8.mnv to menu_tr_tr.cp1254.mnv.
+menu_tr_tr.cp1254.mnv : menu_tr_tr.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1254 $? >$@
@@ -478,8 +478,8 @@ menu_tr_tr.cp1254.vim : menu_tr_tr.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1254))
 
-# Convert menu_tr_tr.utf-8.vim to menu_tr_tr.iso_8859-9.vim.
-menu_tr_tr.iso_8859-9.vim : menu_tr_tr.utf-8.vim
+# Convert menu_tr_tr.utf-8.mnv to menu_tr_tr.iso_8859-9.mnv.
+menu_tr_tr.iso_8859-9.mnv : menu_tr_tr.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t ISO-8859-9 $? >$@
@@ -496,8 +496,8 @@ menu_tr_tr.iso_8859-9.vim : menu_tr_tr.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(28599))
 
-# Convert menu_uk_ua.utf-8.vim to menu_uk_ua.cp1251.vim.
-menu_uk_ua.cp1251.vim : menu_uk_ua.utf-8.vim
+# Convert menu_uk_ua.utf-8.mnv to menu_uk_ua.cp1251.mnv.
+menu_uk_ua.cp1251.mnv : menu_uk_ua.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t CP1251 $? >$@
@@ -514,8 +514,8 @@ menu_uk_ua.cp1251.vim : menu_uk_ua.utf-8.vim
 		[System.IO.File]::WriteAllText(\"$@\", $$out, \
 		[System.Text.Encoding]::GetEncoding(1251))
 
-# Convert menu_uk_ua.utf-8.vim to menu_uk_ua.koi8-u.vim.
-menu_uk_ua.koi8-u.vim : menu_uk_ua.utf-8.vim
+# Convert menu_uk_ua.utf-8.mnv to menu_uk_ua.koi8-u.mnv.
+menu_uk_ua.koi8-u.mnv : menu_uk_ua.utf-8.mnv
 	- $(RM) $@
 !IF DEFINED (ICONV)
 	$(ICONV) -f UTF-8 -t KOI8-U $? >$@
@@ -535,4 +535,4 @@ menu_uk_ua.koi8-u.vim : menu_uk_ua.utf-8.vim
 clean :
 	@ for %%G in ($(CONVERTED)) do @(if exist .\%%G $(RM) %%G)
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

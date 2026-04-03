@@ -49,8 +49,8 @@ void clip_mch_lose_selection(Clipboard_T *cbd);
 int clip_mch_own_selection(Clipboard_T *cbd);
 void clip_mch_request_selection(Clipboard_T *cbd);
 void clip_mch_set_selection(Clipboard_T *cbd);
-void gui_mch_menu_grey(vimmenu_T *menu, int grey);
-void gui_mch_menu_hidden(vimmenu_T *menu, int hidden);
+void gui_mch_menu_grey(mnvmenu_T *menu, int grey);
+void gui_mch_menu_hidden(mnvmenu_T *menu, int hidden);
 void gui_mch_draw_menubar(void);
 void gui_x11_menu_cb(Widget w, XtPointer client_data, XtPointer call_data);
 int gui_mch_is_blinking(void);
@@ -59,7 +59,7 @@ void gui_mch_set_blinking(long waittime, long on, long off);
 void gui_mch_stop_blink(int may_call_gui_update_cursor);
 void gui_mch_start_blink(void);
 guicolor_T gui_mch_get_rgb(guicolor_T pixel);
-void gui_x11_callbacks(Widget textArea, Widget vimForm);
+void gui_x11_callbacks(Widget textArea, Widget mnvForm);
 void gui_mch_getmouse(int *x, int *y);
 void gui_mch_setmouse(int x, int y);
 XButtonPressedEvent *gui_x11_get_last_mouse_event(void);
@@ -68,5 +68,5 @@ void *gui_mch_register_sign(char_u *signfile);
 void gui_mch_destroy_sign(void *sign);
 void gui_mch_mousehide(int hide);
 void mch_set_mouse_shape(int shape);
-void gui_mch_menu_set_tip(vimmenu_T *menu);
-/* vim: set ft=c : */
+void gui_mch_menu_set_tip(mnvmenu_T *menu);
+/* mnv: set ft=c : */

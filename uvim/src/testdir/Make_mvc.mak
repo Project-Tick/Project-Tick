@@ -1,5 +1,5 @@
 #
-# Makefile to run all tests for Vim, on Dos-like machines.
+# Makefile to run all tests for MNV, on Dos-like machines.
 #
 # Requires a set of Unix tools: echo, diff, etc.
 #
@@ -8,10 +8,10 @@
 !INCLUDE ..\auto\nmake\tools.mak
 
 # Testing may be done with a debug build 
-!IF EXIST(..\\vimd.exe) && !EXIST(..\\vim.exe)
-VIMPROG = ..\\vimd.exe
+!IF EXIST(..\\mnvd.exe) && !EXIST(..\\mnv.exe)
+MNVPROG = ..\\mnvd.exe
 !ELSE
-VIMPROG = ..\\vim.exe
+MNVPROG = ..\\mnv.exe
 !ENDIF
 
 DIFF = diff.exe
@@ -21,14 +21,14 @@ default: nongui
 !INCLUDE .\Make_all.mak
 
 # Explicit dependencies.
-test_options_all.res: opt_test.vim
+test_options_all.res: opt_test.mnv
 
 TEST_OUTFILES = $(SCRIPTS_TINY_OUT)
 DOSTMP = dostmp
 DOSTMP_OUTFILES = $(TEST_OUTFILES:test=dostmp\test)
 DOSTMP_INFILES = $(DOSTMP_OUTFILES:.out=.in)
 
-.SUFFIXES: .in .out .res .vim
+.SUFFIXES: .in .out .res .mnv
 
 # Add --gui-dialog-file to avoid getting stuck in a dialog.
 COMMON_ARGS = $(NO_INITS) --gui-dialog-file guidialog
@@ -46,7 +46,7 @@ codestyle:
 	-@ if exist test.log $(RM) test.log
 	-@ if exist messages $(RM) messages
 	-@ if exist starttime $(RM) starttime
-	@ $(MAKE) -lf Make_mvc.mak VIMPROG=$(VIMPROG) test_codestyle.res
+	@ $(MAKE) -lf Make_mvc.mak MNVPROG=$(MNVPROG) test_codestyle.res
 	@ type messages
 	@ if exist test.log exit 1
 
@@ -54,7 +54,7 @@ report:
 	@ rem without the +eval feature test_result.log is a copy of test.log
 	@ if exist test.log ( $(CP) test.log test_result.log > nul ) \
 		else ( echo No failures reported > test_result.log )
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S util\summarize.vim messages
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S util\summarize.mnv messages
 	- if exist starttime $(RM) starttime
 	@ echo:
 	@ echo Test results:
@@ -70,7 +70,7 @@ $(NEW_TESTS):
 	- if exist test.log $(RM) test.log
 	- if exist messages $(RM) messages
 	- if exist starttime $(RM) starttime
-	@ $(MAKE) -lf Make_mvc.mak VIMPROG=$(VIMPROG) $@.res
+	@ $(MAKE) -lf Make_mvc.mak MNVPROG=$(MNVPROG) $@.res
 	@ type messages
 	@ if exist test.log exit 1
 
@@ -89,13 +89,13 @@ clean:
 	- if exist XfakeHOME $(RD) XfakeHOME
 	- if exist X* $(RM) X*
 	- for /d %i in (X*) do @$(RD) %i
-	- if exist viminfo $(RM) viminfo
+	- if exist mnvinfo $(RM) mnvinfo
 	- if exist test.log $(RM) test.log
 	- if exist test_result.log $(RM) test_result.log
 	- if exist messages $(RM) messages
 	- if exist starttime $(RM) starttime
 	- if exist benchmark.out $(RM) benchmark.out
-	- if exist opt_test.vim $(RM) opt_test.vim
+	- if exist opt_test.mnv $(RM) opt_test.mnv
 	- if exist gen_opt_test.log $(RM) gen_opt_test.log
 	- if exist guidialog $(RM) guidialog
 	- if exist guidialogfile $(RM) guidialogfile
@@ -114,7 +114,7 @@ tinytests: $(SCRIPTS_TINY_OUT)
 $(DOSTMP_INFILES): $(*B).in
 	if not exist $(DOSTMP)\NUL $(MKD) $(DOSTMP)
 	if exist $@ $(RM) $@
-	$(VIMPROG) -u util\dos.vim $(COMMON_ARGS) "+set ff=dos|f $@|wq" $(*B).in
+	$(MNVPROG) -u util\dos.mnv $(COMMON_ARGS) "+set ff=dos|f $@|wq" $(*B).in
 
 # For each input file dostmp/test99.in run the tests.
 # This moves test99.in to test99.in.bak temporarily.
@@ -124,7 +124,7 @@ $(TEST_OUTFILES): $(DOSTMP)\$(*B).in
 	$(MV) $(*B).in $(*B).in.bak > nul
 	$(CP) $(DOSTMP)\$(*B).in $(*B).in > nul
 	$(CP) $(*B).ok test.ok > nul
-	$(VIMPROG) -u util\dos.vim $(COMMON_ARGS) -s dotest.in $(*B).in
+	$(MNVPROG) -u util\dos.mnv $(COMMON_ARGS) -s dotest.in $(*B).in
 	-@ if exist test.out $(MV) test.out $(DOSTMP)\$(*B).out > nul
 	-@ if exist $(*B).in.bak $(MV) $(*B).in.bak $(*B).in > nul
 	-@ if exist test.ok $(RM) test.ok
@@ -132,8 +132,8 @@ $(TEST_OUTFILES): $(DOSTMP)\$(*B).in
 	-@ if exist Xfind $(RD) Xfind
 	-@ if exist XfakeHOME $(RD) XfakeHOME
 	-@ $(RM) X*
-	-@ if exist viminfo $(RM) viminfo
-	$(VIMPROG) -u util\dos.vim $(COMMON_ARGS) "+set ff=unix|f test.out|wq" \
+	-@ if exist mnvinfo $(RM) mnvinfo
+	$(MNVPROG) -u util\dos.mnv $(COMMON_ARGS) "+set ff=unix|f test.out|wq" \
 		$(DOSTMP)\$(*B).out
 	@ $(DIFF) test.out $*.ok & if errorlevel 1 \
 		( $(MV) test.out $*.failed > nul \
@@ -142,7 +142,7 @@ $(TEST_OUTFILES): $(DOSTMP)\$(*B).in
 		else ( $(MV) test.out $*.out > nul )
 
 
-# New style of tests uses Vim script with assert calls.  These are easier
+# New style of tests uses MNV script with assert calls.  These are easier
 # to write and a lot easier to read and debug.
 # Limitation: Only works with the +eval feature.
 
@@ -151,32 +151,32 @@ newtests: newtestssilent
 
 newtestssilent: $(NEW_TESTS_RES)
 
-.vim.res:
-	@ echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S runtest.vim $*.vim
-	@ $(RM) vimcmd
+.mnv.res:
+	@ echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S runtest.mnv $*.mnv
+	@ $(RM) mnvcmd
 
-test_gui.res: test_gui.vim
-	@ echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S runtest.vim $*.vim
-	@ $(RM) vimcmd
+test_gui.res: test_gui.mnv
+	@ echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S runtest.mnv $*.mnv
+	@ $(RM) mnvcmd
 
-test_gui_init.res: test_gui_init.vim
-	@ echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u util\gui_preinit.vim -U util\gui_init.vim $(NO_PLUGINS) \
-		-S runtest.vim $*.vim
-	@ $(RM) vimcmd
+test_gui_init.res: test_gui_init.mnv
+	@ echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u util\gui_preinit.mnv -U util\gui_init.mnv $(NO_PLUGINS) \
+		-S runtest.mnv $*.mnv
+	@ $(RM) mnvcmd
 
-opt_test.vim: util/gen_opt_test.vim ../optiondefs.h \
+opt_test.mnv: util/gen_opt_test.mnv ../optiondefs.h \
 		../../runtime/doc/options.txt
-	$(VIMPROG) -e -s -u NONE $(COMMON_ARGS) --nofork -S $**
+	$(MNVPROG) -e -s -u NONE $(COMMON_ARGS) --nofork -S $**
 	@ if exist gen_opt_test.log ( type gen_opt_test.log & exit /b 1 )
 
-test_bench_regexp.res: test_bench_regexp.vim
+test_bench_regexp.res: test_bench_regexp.mnv
 	- if exist benchmark.out $(RM) benchmark.out
-	@ echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S runtest.vim $*.vim
-	@ $(RM) vimcmd
+	@ echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S runtest.mnv $*.mnv
+	@ $(RM) mnvcmd
 	@ if exist benchmark.out ( type benchmark.out )
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

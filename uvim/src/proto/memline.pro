@@ -44,4 +44,4 @@ char_u *ml_encrypt_data(memfile_T *mfp, char_u *data, off_T offset, unsigned siz
 void ml_decrypt_data(memfile_T *mfp, char_u *data, off_T offset, unsigned size);
 long ml_find_line_or_offset(buf_T *buf, linenr_T lnum, long *offp);
 void goto_byte(long cnt);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

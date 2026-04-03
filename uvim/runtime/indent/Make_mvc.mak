@@ -11,15 +11,15 @@ LSFLAGS = /A:-D /B /O:N /L /S
 
 .SUFFIXES:
 
-VIMPROG = ..\..\src\vim.exe
-VIMRUNTIME = ..
+MNVPROG = ..\..\src\mnv.exe
+MNVRUNTIME = ..
 
 # Run the tests that didn't run yet or failed previously.
 # If a test succeeds a testdir\*.out file will be written.
 # If a test fails a testdir\*.fail file will be written.
 test :
-	@ set "VIMRUNTIME=$(VIMRUNTIME)"
-	@ $(VIMPROG) --clean --not-a-term -u testdir\runtest.vim && \
+	@ set "MNVRUNTIME=$(MNVRUNTIME)"
+	@ $(MNVPROG) --clean --not-a-term -u testdir\runtest.mnv && \
 		(echo:&echo:    INDENT TESTS: DONE &echo:) || \
 		<<echofail.bat
 set "retval=%ERRORLEVEL%"
@@ -37,4 +37,4 @@ clean testclean :
 	@ if exist testdir\*.fail $(RM) testdir\*.fail
 	@ if exist testdir\*.out $(RM) testdir\*.out
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

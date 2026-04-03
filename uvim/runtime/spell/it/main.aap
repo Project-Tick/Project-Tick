@@ -1,10 +1,10 @@
-# Aap recipe for Italian Vim spell files.
+# Aap recipe for Italian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = it_IT.aff it_IT.dic
@@ -13,11 +13,11 @@ all: $SPELLDIR/it.latin1.spl $SPELLDIR/it.utf-8.spl ../README_it.txt
 
 $SPELLDIR/it.latin1.spl : $FILES
         :sys env LANG=it_IT.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/it it_IT" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/it it_IT" -c q
 
 $SPELLDIR/it.utf-8.spl : $FILES
         :sys env LANG=it_IT.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/it it_IT" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/it it_IT" -c q
 
 ../README_it.txt : README_it_IT.txt README.txt
         :cat $source >! $target
@@ -45,7 +45,7 @@ it_IT.aff it_IT.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -76,4 +76,4 @@ check:
             :delete it_IT.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

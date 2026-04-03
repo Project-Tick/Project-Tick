@@ -1,13 +1,13 @@
-.TH XXD 1 "août 1996" "Page de manuel pour xxd"
+.TH XXD 1 "aoï¿½t 1996" "Page de manuel pour xxd"
 .\"
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .\"    French translation by David Blanchet <david.blanchet@free.fr> 2005-03
 .SH NOM
 .I xxd
-\- convertit en représentation hexadécimale et inversement.
+\- convertit en reprï¿½sentation hexadï¿½cimale et inversement.
 .SH SYNOPSIS
 .B xxd
 \-h[elp]
@@ -19,159 +19,159 @@
 \-r[evert] [options] [fichier_entree [fichier_sortie]]
 .SH DESCRIPTION
 .I xxd
-crée un fichier contenant la représentation hexadécimale d'un fichier
-binaire ou de l'entrée standard.
-Il peut également convertir un fichier de codes hexadécimaux en un fichier
+crï¿½e un fichier contenant la reprï¿½sentation hexadï¿½cimale d'un fichier
+binaire ou de l'entrï¿½e standard.
+Il peut ï¿½galement convertir un fichier de codes hexadï¿½cimaux en un fichier
 binaire.
 Comme
 .BR uuencode (1)
 et
 .BR uudecode (1)
-il permet la transmission de données binaires dans une représentation ASCII
-compatible avec le courrier électronique, mais a l'avantage de décoder la
+il permet la transmission de donnï¿½es binaires dans une reprï¿½sentation ASCII
+compatible avec le courrier ï¿½lectronique, mais a l'avantage de dï¿½coder la
 sortie standard.
-De plus, il peut être utilisé pour appliquer des rustines à des fichiers
+De plus, il peut ï¿½tre utilisï¿½ pour appliquer des rustines ï¿½ des fichiers
 binaires.
 .SH OPTIONS
 Si aucun
 .I fichier_entree
-n'est spécifié, l'entrée standard est utilisée.
+n'est spï¿½cifiï¿½, l'entrï¿½e standard est utilisï¿½e.
 Si
 .I fichier_entree
-correspond au caractère
+correspond au caractï¿½re
 .RB '\-'
-\, l'entrée standard est employée comme source des données en entrée.
+\, l'entrï¿½e standard est employï¿½e comme source des donnï¿½es en entrï¿½e.
 Si aucun
 .I fichier_sortie
-n'est spécifié (ou qu'un caractère
+n'est spï¿½cifiï¿½ (ou qu'un caractï¿½re
 .RB '\-'
-est donné à sa place), le résultat est envoyé sur la sortie standard.
+est donnï¿½ ï¿½ sa place), le rï¿½sultat est envoyï¿½ sur la sortie standard.
 .PP
-NOTE : un analyseur paresseux est utilisé. Il ne vérifie pas au-delà de la
-première lettre de l'option, à moins que cette dernière ne requiert un
-paramètre.
-L'espace entre l'option et son paramètre est optionnel.
-Les paramètres des options peuvent être spécifiés en notation décimale,
-hexadécimale ou octale.
+NOTE : un analyseur paresseux est utilisï¿½. Il ne vï¿½rifie pas au-delï¿½ de la
+premiï¿½re lettre de l'option, ï¿½ moins que cette derniï¿½re ne requiert un
+paramï¿½tre.
+L'espace entre l'option et son paramï¿½tre est optionnel.
+Les paramï¿½tres des options peuvent ï¿½tre spï¿½cifiï¿½s en notation dï¿½cimale,
+hexadï¿½cimale ou octale.
 Ainsi
 .BR \-c8 ,
 .BR "\-c 8" ,
 .B \-c 010
 et
 .B \-cols 8
-sont tous équivalents.
+sont tous ï¿½quivalents.
 .TP
 .IR \-a " | " \-autoskip
-active la fonctionnalité "autoskip" : le caractère '*' remplace les lignes
-d'octets nuls. Désactivée par défaut.
+active la fonctionnalitï¿½ "autoskip" : le caractï¿½re '*' remplace les lignes
+d'octets nuls. Dï¿½sactivï¿½e par dï¿½faut.
 .TP
 .IR \-b " | " \-bits
-Convertit en binaires plutôt qu'en hexadécimal.
-Cette option écrit les octets comme une séquence de "1" et de "0" au lieu
-d'une conversion en hexadécimal traditionnel. Chaque ligne est précédée par un
-numéro de ligne en hexadécimal et suivie de la représentation ASCII (ou
+Convertit en binaires plutï¿½t qu'en hexadï¿½cimal.
+Cette option ï¿½crit les octets comme une sï¿½quence de "1" et de "0" au lieu
+d'une conversion en hexadï¿½cimal traditionnel. Chaque ligne est prï¿½cï¿½dï¿½e par un
+numï¿½ro de ligne en hexadï¿½cimal et suivie de la reprï¿½sentation ASCII (ou
 EBCDIC) correspondante. Les options \-p, \-i ne fonctionnent pas dans ce
 mode.
 .TP
 .IR "\-c cols " | " \-cols cols"
 place
 .RI < cols >
-octets par ligne. 16 par défaut (\-i : 12, \-ps : 30, \-b : 6). Maximum 256.
+octets par ligne. 16 par dï¿½faut (\-i : 12, \-ps : 30, \-b : 6). Maximum 256.
 .TP
 .IR \-E " | " \-EBCDIC
-Passe le codage des caractères de la colonne de droite de ASCII à EBCDIC.
-Cela ne change pas la représentation hexadécimale. Cette option est sans effet
-quand elle est utilisée avec \-r, \-p or \-i.
+Passe le codage des caractï¿½res de la colonne de droite de ASCII ï¿½ EBCDIC.
+Cela ne change pas la reprï¿½sentation hexadï¿½cimale. Cette option est sans effet
+quand elle est utilisï¿½e avec \-r, \-p or \-i.
 .TP
 .IR "\-g octets " | " \-groupsize octets"
-Regroupe les octets (deux chiffres hexadécimaux ou huit chiffres binaires)
+Regroupe les octets (deux chiffres hexadï¿½cimaux ou huit chiffres binaires)
 par groupe de
 .RI < octets >
-\, séparés par des espaces blancs. Spécifiez
+\, sï¿½parï¿½s par des espaces blancs. Spï¿½cifiez
 .I \-g 0
 pour supprimer le regroupement.
 .RI < octets >
-vaut 2 par défaut dans le mode normal et \fI1\fP en
-représentation binaire. Le regroupement ne s'applique pas aux styles
+vaut 2 par dï¿½faut dans le mode normal et \fI1\fP en
+reprï¿½sentation binaire. Le regroupement ne s'applique pas aux styles
 Postscript et Include.
 .TP
 .IR \-h " | " \-help
-Affiche un résumé des commandes disponibles et quitte. Aucune conversion n'est
-effectuée.
+Affiche un rï¿½sumï¿½ des commandes disponibles et quitte. Aucune conversion n'est
+effectuï¿½e.
 .TP
 .IR \-i " | " \-include
-produit une sortie dans le style #include (fichier C à inclure). La définition
-complète d'un tableau statique est écrite et est nommée d'après le fichier
-d'origine, à moins que xxd lise depuis l'entrée standard.
+produit une sortie dans le style #include (fichier C ï¿½ inclure). La dï¿½finition
+complï¿½te d'un tableau statique est ï¿½crite et est nommï¿½e d'aprï¿½s le fichier
+d'origine, ï¿½ moins que xxd lise depuis l'entrï¿½e standard.
 .TP
 .IR "\-l long " | " \-len long"
-Arrête après l'écriture de
+Arrï¿½te aprï¿½s l'ï¿½criture de
 .RI  < long >
 octets.
 .TP
 .IR \-p " | " \-ps " | " \-postscript " | " \-plain
 Produit une conversion continue dans le style Postscript (postscript continuous
 hexdump style).
-Également connu sous le nom de « conversion brute » (plain hexdump style).
+ï¿½galement connu sous le nom de ï¿½ conversion brute ï¿½ (plain hexdump style).
 .TP
 .IR \-r " | " \-revert
-Opération inverse : convertit un fichier hexadécimal en un fichier binaire (ou
-applique une rustine à un fichier binaire).
-Si l'écriture n'a pas lieu sur la sortie standard, xxd écrit dans le fichier
+Opï¿½ration inverse : convertit un fichier hexadï¿½cimal en un fichier binaire (ou
+applique une rustine ï¿½ un fichier binaire).
+Si l'ï¿½criture n'a pas lieu sur la sortie standard, xxd ï¿½crit dans le fichier
 qu'il produit sans le tronquer. Utilisez la combinaison
 .I \-r \-p
-pour lire de l'hexadécimal brut sans information sur le numéro des lignes et
+pour lire de l'hexadï¿½cimal brut sans information sur le numï¿½ro des lignes et
 sans format de colonnes particulier. Des espaces blancs et coupures de lignes
-supplémentaires sont autorisés à n'importe quel endroit.
+supplï¿½mentaires sont autorisï¿½s ï¿½ n'importe quel endroit.
 .TP
-.I \-seek décalage
-Utilisé après l'option
+.I \-seek dï¿½calage
+Utilisï¿½ aprï¿½s l'option
 .IR \-r :
 inverse la conversion en ajoutant
-.RI < décalage >
-aux positions dans le fichier données dans le code hexadécimal.
+.RI < dï¿½calage >
+aux positions dans le fichier donnï¿½es dans le code hexadï¿½cimal.
 .TP
-.I \-s [+][\-]décalage
-Débute au
-.RI < décalage >
+.I \-s [+][\-]dï¿½calage
+Dï¿½bute au
+.RI < dï¿½calage >
 absolu ou relatif dans fichier_entree.
-\fI+ \fRindique que le décalage est relatif à la position courante dans
-l'entrée standard (sans effet si la lecture n'a pas lieu sur l'entrée
-standard). \fI\- \fRindique un décalage en caractères depuis la fin de
-l'entrée (utilisé avec \fI+\fR, désigne la position avant la position
-actuelle de l'entrée standard).
-Sans l'option \-s, xxd démarre à la position courante du fichier.
+\fI+ \fRindique que le dï¿½calage est relatif ï¿½ la position courante dans
+l'entrï¿½e standard (sans effet si la lecture n'a pas lieu sur l'entrï¿½e
+standard). \fI\- \fRindique un dï¿½calage en caractï¿½res depuis la fin de
+l'entrï¿½e (utilisï¿½ avec \fI+\fR, dï¿½signe la position avant la position
+actuelle de l'entrï¿½e standard).
+Sans l'option \-s, xxd dï¿½marre ï¿½ la position courante du fichier.
 .TP
 .I \-u
-Utilise des chiffres hexadécimaux majuscules. La casse par défaut est
+Utilise des chiffres hexadï¿½cimaux majuscules. La casse par dï¿½faut est
 minuscule.
 .TP
 .IR \-v " | " \-version
 Affiche la version de xxd.
 .SH MISE EN GARDE
 .I xxd \-r
-effectue des opérations internes un peu obscures lors de l'évaluation
-des informations sur les numéros de lignes. Si le fichier de sortie est
-adressable, alors les numéros de lignes au début de chaque ligne d'hexadécimal
-peuvent être désordonnées, des lignes peuvent manquer ou se chevaucher. Dans
-ces cas, xxd utilisera lseek(2) pour déterminer la prochaine position. Si le
-fichier n'est pas adressable, seuls les vides sont autorisés, et ils seront
-comblés par des octets nuls.
+effectue des opï¿½rations internes un peu obscures lors de l'ï¿½valuation
+des informations sur les numï¿½ros de lignes. Si le fichier de sortie est
+adressable, alors les numï¿½ros de lignes au dï¿½but de chaque ligne d'hexadï¿½cimal
+peuvent ï¿½tre dï¿½sordonnï¿½es, des lignes peuvent manquer ou se chevaucher. Dans
+ces cas, xxd utilisera lseek(2) pour dï¿½terminer la prochaine position. Si le
+fichier n'est pas adressable, seuls les vides sont autorisï¿½s, et ils seront
+comblï¿½s par des octets nuls.
 .PP
 .I xxd \-r
-ne génère aucune erreur lors de l'analyse. Les problèmes sont passés
+ne gï¿½nï¿½re aucune erreur lors de l'analyse. Les problï¿½mes sont passï¿½s
 silencieusement.
 .PP
-Lors de l'édition de la représentation hexadécimale, veuillez noter que
+Lors de l'ï¿½dition de la reprï¿½sentation hexadï¿½cimale, veuillez noter que
 .I xxd \-r
-ignore tout ce qui se trouve sur la ligne après avoir lu suffisamment de
-données hexadécimales (voir l'option \-c). Cela signifie également que les
-modifications dans la colonne ASCII (ou EBCDIC) sont toujours ignorées. La
-conversion inverse de données hexadécimales brutes (postscript) avec xxd \-r
-\-p ne dépend pas d'un nombre correct de colonnes. Dans ce cas, tout ce qui
-ressemble à une paire de chiffres hexadécimaux est interprété.
+ignore tout ce qui se trouve sur la ligne aprï¿½s avoir lu suffisamment de
+donnï¿½es hexadï¿½cimales (voir l'option \-c). Cela signifie ï¿½galement que les
+modifications dans la colonne ASCII (ou EBCDIC) sont toujours ignorï¿½es. La
+conversion inverse de donnï¿½es hexadï¿½cimales brutes (postscript) avec xxd \-r
+\-p ne dï¿½pend pas d'un nombre correct de colonnes. Dans ce cas, tout ce qui
+ressemble ï¿½ une paire de chiffres hexadï¿½cimaux est interprï¿½tï¿½.
 .PP
-Remarquez la différence entre
+Remarquez la diffï¿½rence entre
 .br
 \fI% xxd \-i fichier\fR
 .br
@@ -180,23 +180,23 @@ et
 \fI% xxd \-i < fichier\fR
 .PP
 .I xxd \-s \+seek
-peut différer de
+peut diffï¿½rer de
 .IR "xxd \-s seek" ,
-car lseek(2) est utilisé pour « revenir en arrière ». Le '+' fait une
-différence quand la source des données est l'entrée standard et si la position
-dans le fichier de l'entrée standard n'est pas au début du fichier lorsque xxd
-est démarré et qu'il reçoit ses données.
-L'exemple suivant peut vous aider à comprendre (ou bien vous perdre davantage
+car lseek(2) est utilisï¿½ pour ï¿½ revenir en arriï¿½re ï¿½. Le '+' fait une
+diffï¿½rence quand la source des donnï¿½es est l'entrï¿½e standard et si la position
+dans le fichier de l'entrï¿½e standard n'est pas au dï¿½but du fichier lorsque xxd
+est dï¿½marrï¿½ et qu'il reï¿½oit ses donnï¿½es.
+L'exemple suivant peut vous aider ï¿½ comprendre (ou bien vous perdre davantage
 encore !)...
 .PP
-Remettre l'entrée standard au départ avant de lire ; nécessaire car 'cat' a
-déjà lu jusqu'à la fin de l'entrée standard.
+Remettre l'entrï¿½e standard au dï¿½part avant de lire ; nï¿½cessaire car 'cat' a
+dï¿½jï¿½ lu jusqu'ï¿½ la fin de l'entrï¿½e standard.
 .br
 \fI% sh \-c 'cat > donnees_binaires; xxd \-s 0 > donnees_hexa' < fichier\fR
 .PP
-Convertir à partir de la position 0x480 (= 1024 + 128) du fichier.
-Le symbole '+' signifie "relativement à la position actuelle', ainsi 128 est
-ajouté aux 1024 octets comptabilisés pour dd.
+Convertir ï¿½ partir de la position 0x480 (= 1024 + 128) du fichier.
+Le symbole '+' signifie "relativement ï¿½ la position actuelle', ainsi 128 est
+ajoutï¿½ aux 1024 octets comptabilisï¿½s pour dd.
 .br
 \fI% sh \-c 'dd of=donnees_binaires bs=1k count=1; xxd \-s +128 >
 donnees_hexa' < fichier\fR
@@ -206,17 +206,17 @@ Convertir de fichier depuis la position 0x100 (= 1024 \- 768) du fichier.
 \fI% sh \-c 'dd of=donnees_binaires bs=1k count=1; xxd \-s +\-768 >
 donnees_hexa' < fichier\fR
 .PP
-Toutefois, cette situation est peu fréquente et l'utilisation de '+' est
-rarement requise. L'auteur préfère surveiller les effets de xxd avec strace(1)
-ou truss(1) quand \-s est employé.
+Toutefois, cette situation est peu frï¿½quente et l'utilisation de '+' est
+rarement requise. L'auteur prï¿½fï¿½re surveiller les effets de xxd avec strace(1)
+ou truss(1) quand \-s est employï¿½.
 .SH EXEMPLES
-Afficher la totalité du
+Afficher la totalitï¿½ du
 .B fichier
-sauf les trois premières lignes (0x30 octets en hexadécimal).
+sauf les trois premiï¿½res lignes (0x30 octets en hexadï¿½cimal).
 .br
 \fI% xxd \-s 0x30 fichier\fR
 .PP
-afficher les trois dernières lignes (0x30 octets en hexadécimal) du
+afficher les trois derniï¿½res lignes (0x30 octets en hexadï¿½cimal) du
 .B fichier
 \.
 .br
@@ -268,7 +268,7 @@ ligne.
 .br
 000006c: 7420 3c74 6f6e 7940 7363 746e  t <tony@sctn
 .PP
-Afficher la date écrite au début du fichier xxd\-fr.1.
+Afficher la date ï¿½crite au dï¿½but du fichier xxd\-fr.1.
 .br
 \fI% xxd \-s 0x38 \-l 13 \-c 13 xxd.1\fR
 .br
@@ -290,13 +290,13 @@ Patcher la date dans le fichier xxd.1
 .br
 0000036: 3235 7468 204d 6179 2031 3939 36  25th May 1996
 .PP
-Créer un fichier de 65537 octets tous nuls (0x00),
-sauf le dernier qui vaut 'A' (0x41 en hexadécimal).
+Crï¿½er un fichier de 65537 octets tous nuls (0x00),
+sauf le dernier qui vaut 'A' (0x41 en hexadï¿½cimal).
 .br
 \fI% echo '010000: 41' | xxd \-r \> fichier\fR
 .PP
 .br
-Convertir le fichier de l'exemple précédent avec la fonctionnalité "autoskip".
+Convertir le fichier de l'exemple prï¿½cï¿½dent avec la fonctionnalitï¿½ "autoskip".
 .br
 \fI% xxd \-a \-c 12 fichier\fR
 .br
@@ -306,31 +306,31 @@ Convertir le fichier de l'exemple précédent avec la fonctionnalité "autoskip".
 .br
 000fffc: 0000 0000 40                   ....A
 .PP
-Créer un fichier d'un octet, contenant seulement le caractère 'A'.
-Le nombre après '\-r \-s' s'ajoute aux numéros de lignes trouvées dans le
-fichier ; les octets initiaux sont supprimés.
+Crï¿½er un fichier d'un octet, contenant seulement le caractï¿½re 'A'.
+Le nombre aprï¿½s '\-r \-s' s'ajoute aux numï¿½ros de lignes trouvï¿½es dans le
+fichier ; les octets initiaux sont supprimï¿½s.
 .br
 \fI% echo '010000: 41' | xxd \-r \-s \-0x10000 \> fichier\fR
 .PP
-Utiliser xxd comme filtre dans un éditeur tel que
-.B vim(1)
+Utiliser xxd comme filtre dans un ï¿½diteur tel que
+.B mnv(1)
 pour convertir une zone comprise entre les marques 'a' et 'z'.
 .br
 \fI:'a,'z!xxd\fR
 .PP
-Utiliser xxd comme filtre dans un éditeur tel que
-.B vim(1)
-pour récupérer une conversion binaire comprise entre les marques 'a' et 'z'.
+Utiliser xxd comme filtre dans un ï¿½diteur tel que
+.B mnv(1)
+pour rï¿½cupï¿½rer une conversion binaire comprise entre les marques 'a' et 'z'.
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
-Utiliser xxd comme filtre dans un éditeur tel que
-.B vim(1)
-pour récupérer une ligne convertie. Placez le curseur sur la ligne et tapez :
+Utiliser xxd comme filtre dans un ï¿½diteur tel que
+.B mnv(1)
+pour rï¿½cupï¿½rer une ligne convertie. Placez le curseur sur la ligne et tapez :
 .br
 \fI!!xxd \-r\fR
 .PP
-Lire des caractères depuis une connexion série :
+Lire des caractï¿½res depuis une connexion sï¿½rie :
 .br
 \fI% xxd \-c1 < /dev/term/b &\fR
 .br
@@ -338,13 +338,13 @@ Lire des caractères depuis une connexion série :
 .br
 \fI% echo \-n foo > /dev/term/b\fR
 .SH VALEURS DE RETOUR
-Les erreurs suivantes sont rapportées :
+Les erreurs suivantes sont rapportï¿½es :
 .TP
 0
 aucune erreur ne s'est produit.
 .TP
 \-1
-opération non supportée (
+opï¿½ration non supportï¿½e (
 .I xxd \-r \-i
 reste impossible).
 .TP
@@ -352,18 +352,18 @@ reste impossible).
 erreur lors de l'analyse des options.
 .TP
 2
-problème avec le fichier d'entrée.
+problï¿½me avec le fichier d'entrï¿½e.
 .TP
 3
-problème avec le fichier de sortie.
+problï¿½me avec le fichier de sortie.
 .TP
 4, 5
-la position spécifiée n'est pas atteignable.
+la position spï¿½cifiï¿½e n'est pas atteignable.
 .SH VOIR AUSSI
 uuencode(1), uudecode(1), patch(1)
 .SH AVERTISSEMENTS
-L'étrangeté de cet outil reflète celle du cerveau de ses créateurs.
-Utilisez cet outil à vos risques et périls. Dupliquez vos fichiers.
+L'ï¿½trangetï¿½ de cet outil reflï¿½te celle du cerveau de ses crï¿½ateurs.
+Utilisez cet outil ï¿½ vos risques et pï¿½rils. Dupliquez vos fichiers.
 Surveillez l'outil. Devenez un gourou.
 .SH VERSION
 Cette page de manuel documente la version 1.7 de xxd.
@@ -380,17 +380,17 @@ lose money and don't ask me."
 .PP
 Distribution libre en citant l'auteur,
 .br
-gagnez de l'argent, pensez à moi,
+gagnez de l'argent, pensez ï¿½ moi,
 .br
 perdez de l'argent, oubliez-moi.
 .PP
-Page de manuel débutée par Tony Nugent
+Page de manuel dï¿½butï¿½e par Tony Nugent
 .br
 <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
 .br
 Modifications mineures par Bram Moolenaar.
-Édité par Juergen Weigert.
+ï¿½ditï¿½ par Juergen Weigert.
 .SH TRADUCTION
-Cette page de manuel a été traduite par David Blanchet
+Cette page de manuel a ï¿½tï¿½ traduite par David Blanchet
 <david.blanchet@free.fr> 2004-12-24.
-Mise à jour 2013-05-10, Dominique Pellé <dominique.pelle@gmail.com>
+Mise ï¿½ jour 2013-05-10, Dominique Pellï¿½ <dominique.pelle@gmail.com>

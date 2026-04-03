@@ -1,4 +1,4 @@
-// VIM_TEST_SETUP let g:java_highlight_functions = 'style'
+// MNV_TEST_SETUP let g:java_highlight_functions = 'style'
 
 
 import java.lang.annotation.ElementType;

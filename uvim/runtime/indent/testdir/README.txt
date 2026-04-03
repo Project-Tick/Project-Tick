@@ -8,8 +8,8 @@ FORMAT OF THE FILETYPE.IN FILE
 First of all, create a FILETYPE.in file.  It should contain:
 
 - A modeline setting the 'filetype' and any other option values.
-  This must work like a comment for FILETYPE.  E.g. for vim:
-	" vim: set ft=vim sw=4 :
+  This must work like a comment for FILETYPE.  E.g. for mnv:
+	" mnv: set ft=mnv sw=4 :
 
 - At least one block of lines to indent, prefixed with START_INDENT and
   followed by END_INDENT.  These lines must also look like a comment for your
@@ -26,11 +26,11 @@ First of all, create a FILETYPE.in file.  It should contain:
   this a large number of lines.  Just add all kinds of language constructs,
   nested statements, etc. with valid syntax.
 
-- Optionally, add lines with INDENT_EXE after START_INDENT, followed by a Vim
+- Optionally, add lines with INDENT_EXE after START_INDENT, followed by a MNV
   command.  This will be executed before indenting the lines.  Example:
 
 	" START_INDENT
-	" INDENT_EXE let g:vim_indent_cont = 6
+	" INDENT_EXE let g:mnv_indent_cont = 6
 	let cmd =
 	      \ 'some '
 	      \ 'string'
@@ -38,7 +38,7 @@ First of all, create a FILETYPE.in file.  It should contain:
 
   When an indent script utilises timed "search*()"es and supports related
   timeout configuration, consider setting a generous timeout value from
-  INDENT_EXE lines (look at "g:vim_indent" in "testdir/vim.in" for details).
+  INDENT_EXE lines (look at "g:mnv_indent" in "testdir/mnv.in" for details).
   Note that the command is not undone, you may need to reverse the effect for
   the next block of lines.
 
@@ -85,7 +85,7 @@ RUNNING THE TEST
 Before running the test, create a FILETYPE.ok file.  You can leave it empty at
 first.
 
-Now run "make test" from the parent directory.  After Vim has done the
+Now run "make test" from the parent directory.  After MNV has done the
 indenting you will see a FILETYPE.fail file.  This contains the actual result
 of indenting, and it's different from the FILETYPE.ok file.
 

@@ -1,12 +1,12 @@
-# Contributing to Vim
+# Contributing to MNV
 
 Patches are welcome in whatever form.
-Discussions about patches happen on the [vim-dev][0] mailing list.
+Discussions about patches happen on the [mnv-dev][0] mailing list.
 If you create a pull request on GitHub it will be
-forwarded to the vim-dev mailing list. You can also send your patch there
+forwarded to the mnv-dev mailing list. You can also send your patch there
 directly (but please note, the initial posting is subject to moderation).
 In that case an attachment with a unified diff format is preferred.
-Information about the mailing list can be found [on the Vim website][0]
+Information about the mailing list can be found [on the MNV website][0]
 
 A pull request has the advantage that it will trigger the Continuous
 Integration tests, you will be warned of problems (you can ignore the coverage
@@ -17,7 +17,7 @@ and bug fixes should be tested for regressions: the test should fail before the
 fix and pass after the fix. Look through recent patches for examples and find
 help with ":help testing". The tests are located under "src/testdir".
 
-Contributions will be distributed with Vim under the Vim license. Providing a
+Contributions will be distributed with MNV under the MNV license. Providing a
 change to be included implies that you agree with this and your contribution
 does not cause us trouble with trademarks or patents. There is no CLA to sign.
 
@@ -41,7 +41,7 @@ the git project. By making Signed-off commits a standard practice, we help
 maintain a legally compliant and well-governed codebase while fostering trust
 within our contributor community.
 
-When merging PRs into Vim, the current maintainer @chrisbra usually adds missing
+When merging PRs into MNV, the current maintainer @chrisbra usually adds missing
 `Signed-off-by` trailers for the author user name and email address as well for
 anybody that explicitly *ACK*s a pull request as a statement that those
 approvers are happy with that particular change.
@@ -49,7 +49,7 @@ approvers are happy with that particular change.
 ## Using AI
 
 When using AI for contributions, please disclose this. Any AI-generated code
-must follow the Vim code style. In particular, [test_codestyle.vim][18]
+must follow the MNV code style. In particular, [test_codestyle.mnv][18]
 must not report any failures. Check the CI output for any test failures.
 
 Ensure that changes are properly tested. Do not submit a single PR that
@@ -57,14 +57,14 @@ addresses multiple unrelated issues.
 
 # Reporting issues
 
-We use GitHub [issues][17], but that is not a requirement. Writing to the Vim
+We use GitHub [issues][17], but that is not a requirement. Writing to the MNV
 mailing list is also fine.
 
 Please use the GitHub issues only for actual issues. If you are not 100% sure
-that your problem is a Vim issue, please first discuss this on the Vim user
+that your problem is a MNV issue, please first discuss this on the MNV user
 mailing list. Try reproducing the problem without any of your plugins or settings:
 
-    vim --clean
+    mnv --clean
 
 If you report an issue, please describe exactly how to reproduce it.
 For example, don't say "insert some text" but say what you did exactly:
@@ -81,7 +81,7 @@ Or open [the todo file][todo list] on GitHub to see the latest version.
 
 The latest version of these files can be obtained from the repository.
 They are usually not updated with numbered patches. However, they may
-or may not work with older Vim releases (since they may depend on new
+or may not work with older MNV releases (since they may depend on new
 features).
 
 If you find a problem with one of these files or have a suggestion for
@@ -89,25 +89,25 @@ improvement, please first try to contact the maintainer directly.
 Look in the header of the file for the name, email address, github handle and/or
 upstream repository. You may also check the [MAINTAINERS][11] file.
 
-The maintainer will take care of issues and send updates to the Vim project for
-distribution with Vim.
+The maintainer will take care of issues and send updates to the MNV project for
+distribution with MNV.
 
-If the maintainer does not respond, contact the [vim-dev][0] mailing list or
+If the maintainer does not respond, contact the [mnv-dev][0] mailing list or
 open an [issue][17] here.
 
-Note: Whether or not to use Vim9 script is up to the maintainer. For runtime
-files maintained here, we aim to preserve compatibility with Neovim if
-possible. Please wrap Vim9 script with a guard like this:
-```vim
-if has('vim9script')
-   " use Vim9 script implementation
+Note: Whether or not to use MNV9 script is up to the maintainer. For runtime
+files maintained here, we aim to preserve compatibility with Neomnv if
+possible. Please wrap MNV9 script with a guard like this:
+```mnv
+if has('mnv9script')
+   " use MNV9 script implementation
    [...]
 endif
 ```
 
 ## Contributing new runtime files
 
-If you want to contribute new runtime files for Vim or Neovim, please create a
+If you want to contribute new runtime files for MNV or Neomnv, please create a
 PR with your changes against this repository here. For new filetypes, do not forget:
 
 - to add a new [filetype test][12] (keep it similar to the other filetype tests).
@@ -116,8 +116,8 @@ PR with your changes against this repository here. For new filetypes, do not for
 - add yourself as Maintainer to the top of file (again, keep the header similar to
   other runtime files)
 - add yourself to the [MAINTAINERS][11] file.
-- add a guard `if has('vim9script')` if you like to maintain Neovim
-  compatibility but want to use Vim9 script (or restrict yourself to legacy Vim
+- add a guard `if has('mnv9script')` if you like to maintain Neomnv
+  compatibility but want to use MNV9 script (or restrict yourself to legacy MNV
   script)
 
 # Translations
@@ -125,15 +125,15 @@ PR with your changes against this repository here. For new filetypes, do not for
 Translating messages and runtime files is very much appreciated! These things
 can be translated:
 
-- Messages in Vim, see [src/po/README.txt][1]
+- Messages in MNV, see [src/po/README.txt][1]
   Also used for the desktop icons.
 - Menus, see [runtime/lang/README.txt][2]
-- Vim tutor, see [runtime/tutor/README.txt][3]
+- MNV tutor, see [runtime/tutor/README.txt][3]
 - Manual pages, see [runtime/doc/\*.1][4] for examples
 - Installer, see [nsis/lang/README.txt][5]
 
 The help files can be translated and made available separately.
-See https://www.vim.org/translations.php for examples.
+See https://www.mnv.org/translations.php for examples.
 
 # How do I contribute to the project?
 
@@ -146,29 +146,29 @@ For the recommended documentation style, please check [helphelp.txt][16].
 
 # I have a question
 
-If you have some question on the style guide, please contact the [vim-dev][0]
-mailing list. For other questions you can join [`#vim`][19], use the 
-[Vi Stack Exchange][8] website, the [vim-use][9] mailing list or make use of the 
+If you have some question on the style guide, please contact the [mnv-dev][0]
+mailing list. For other questions you can join [`#mnv`][19], use the 
+[Vi Stack Exchange][8] website, the [mnv-use][9] mailing list or make use of the 
 [discussion][10] feature here at github.
 
-[todo list]: https://github.com/vim/vim/blob/master/runtime/doc/todo.txt
-[0]: http://www.vim.org/maillist.php#vim-dev
-[1]: https://github.com/vim/vim/blob/master/src/po/README.txt
-[2]: https://github.com/vim/vim/blob/master/runtime/lang/README.txt
-[3]: https://github.com/vim/vim/blob/master/runtime/tutor/README.txt
-[4]: https://github.com/vim/vim/blob/master/runtime/doc/vim.1
-[5]: https://github.com/vim/vim/blob/master/nsis/lang/README.txt
-[6]: https://github.com/vim/vim/discussions/13087
-[7]: https://github.com/vim/vim/blob/master/runtime/doc/develop.txt
+[todo list]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/doc/todo.txt
+[0]: http://www.mnv.org/maillist.php#mnv-dev
+[1]: https://github.com/Project-Tick/Project-Tick/blob/master/src/po/README.txt
+[2]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/lang/README.txt
+[3]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/tutor/README.txt
+[4]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/doc/mnv.1
+[5]: https://github.com/Project-Tick/Project-Tick/blob/master/nsis/lang/README.txt
+[6]: https://github.com/Project-Tick/Project-Tick/discussions/13087
+[7]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/doc/develop.txt
 [8]: https://vi.stackexchange.com
-[9]: http://www.vim.org/maillist.php#vim-use
-[10]: https://github.com/vim/vim/discussions
-[11]: https://github.com/vim/vim/blob/master/.github/MAINTAINERS
-[12]: https://github.com/vim/vim/blob/master/src/testdir/test_filetype.vim
-[13]: https://github.com/vim/vim/blob/master/runtime/doc/filetype.txt
-[14]: https://github.com/vim/vim/blob/master/runtime/doc/syntax.txt
+[9]: http://www.mnv.org/maillist.php#mnv-use
+[10]: https://github.com/Project-Tick/Project-Tick/discussions
+[11]: https://github.com/Project-Tick/Project-Tick/blob/master/.github/MAINTAINERS
+[12]: https://github.com/Project-Tick/Project-Tick/blob/master/src/testdir/test_filetype.mnv
+[13]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/doc/filetype.txt
+[14]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/doc/syntax.txt
 [15]: https://en.wikipedia.org/wiki/Developer_Certificate_of_Origin
-[16]: https://github.com/vim/vim/blob/master/runtime/doc/helphelp.txt
-[17]: https://github.com/vim/vim/issues
-[18]: https://github.com/vim/vim/blob/master/src/testdir/test_codestyle.vim
-[19]: https://web.libera.chat/#vim
+[16]: https://github.com/Project-Tick/Project-Tick/blob/master/runtime/doc/helphelp.txt
+[17]: https://github.com/Project-Tick/Project-Tick/issues
+[18]: https://github.com/Project-Tick/Project-Tick/blob/master/src/testdir/test_codestyle.mnv
+[19]: https://web.libera.chat/#mnv

@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * syntax.c: code for syntax highlighting
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_SYN_HL)
 
@@ -1032,7 +1032,7 @@ syn_stack_free_block(synblock_T *block)
 
     FOR_ALL_SYNSTATES(block, p)
 	clear_syn_state(p);
-    VIM_CLEAR(block->b_sst_array);
+    MNV_CLEAR(block->b_sst_array);
     block->b_sst_first = NULL;
     block->b_sst_len = 0;
 }
@@ -1132,7 +1132,7 @@ syn_stack_alloc(void)
 	    to->sst_next = to + 1;
 	(sstp + len - 1)->sst_next = NULL;
 
-	vim_free(syn_block->b_sst_array);
+	mnv_free(syn_block->b_sst_array);
 	syn_block->b_sst_array = sstp;
 	syn_block->b_sst_len = len;
     }
@@ -1848,9 +1848,9 @@ syn_current_attr(
 	    if (do_keywords)
 	    {
 	      line = syn_getcurline();
-	      if (vim_iswordp_buf(line + current_col, syn_buf)
+	      if (mnv_iswordp_buf(line + current_col, syn_buf)
 		      && (current_col == 0
-			  || !vim_iswordp_buf(line + current_col - 1
+			  || !mnv_iswordp_buf(line + current_col - 1
 			      - (has_mbyte
 				  ? (*mb_head_off)(line, line + current_col - 1)
 				  : 0) , syn_buf)))
@@ -1905,7 +1905,7 @@ syn_current_attr(
 			check_keepend();
 		    }
 		    else
-			vim_free(next_list);
+			mnv_free(next_list);
 		}
 	      }
 	    }
@@ -2154,7 +2154,7 @@ syn_current_attr(
 	    {
 		line = syn_getcurline();
 		if (((current_next_flags & HL_SKIPWHITE)
-			    && VIM_ISWHITE(line[current_col]))
+			    && MNV_ISWHITE(line[current_col]))
 			|| ((current_next_flags & HL_SKIPEMPTY)
 			    && *line == NUL))
 		    break;
@@ -3138,7 +3138,7 @@ syn_getcurline_len(void)
 }
 
 /*
- * Call vim_regexec() to find a match with "rmp" in "syn_buf".
+ * Call mnv_regexec() to find a match with "rmp" in "syn_buf".
  * Returns TRUE when there is a match.
  */
     static int
@@ -3158,13 +3158,13 @@ syn_regexec(
 #endif
 
     if (rmp->regprog == NULL)
-	// This can happen if a previous call to vim_regexec_multi() tried to
+	// This can happen if a previous call to mnv_regexec_multi() tried to
 	// use the NFA engine, which resulted in NFA_TOO_EXPENSIVE, and
 	// compiling the pattern with the other engine fails.
 	return FALSE;
 
     rmp->rmm_maxcol = syn_buf->b_p_smc;
-    r = vim_regexec_multi(rmp, syn_win, syn_buf, lnum, col, &timed_out);
+    r = mnv_regexec_multi(rmp, syn_win, syn_buf, lnum, col, &timed_out);
 
 #ifdef FEAT_PROFILE
     if (syn_time_on)
@@ -3229,7 +3229,7 @@ check_keyword_id(
 	else
 	    ++kwlen;
     }
-    while (vim_iswordp_buf(kwp + kwlen, syn_buf));
+    while (mnv_iswordp_buf(kwp + kwlen, syn_buf));
 
     if (kwlen > MAXKEYWLEN)
 	return 0;
@@ -3238,7 +3238,7 @@ check_keyword_id(
      * Must make a copy of the keyword, so we can add a NUL and make it
      * lowercase.
      */
-    vim_strncpy(keyword, kwp, kwlen);
+    mnv_strncpy(keyword, kwp, kwlen);
 
     /*
      * Try twice:
@@ -3462,7 +3462,7 @@ syn_cmd_iskeyword(exarg_T *eap, int syncing UNUSED)
 	{
 	    mch_memmove(save_chartab, curbuf->b_chartab, (size_t)32);
 	    save_isk = curbuf->b_p_isk;
-	    curbuf->b_p_isk = vim_strsave(arg);
+	    curbuf->b_p_isk = mnv_strsave(arg);
 
 	    buf_init_chartab(curbuf, FALSE);
 	    mch_memmove(curwin->w_s->b_syn_chartab, curbuf->b_chartab,
@@ -3517,9 +3517,9 @@ syntax_clear(synblock_T *block)
     block->b_syn_sync_maxlines = 0;
     block->b_syn_sync_linebreaks = 0;
 
-    vim_regfree(block->b_syn_linecont_prog);
+    mnv_regfree(block->b_syn_linecont_prog);
     block->b_syn_linecont_prog = NULL;
-    VIM_CLEAR(block->b_syn_linecont_pat);
+    MNV_CLEAR(block->b_syn_linecont_pat);
 #ifdef FEAT_FOLDING
     block->b_syn_folditems = 0;
 #endif
@@ -3542,7 +3542,7 @@ reset_synblock(win_T *wp)
     if (wp->w_s != &wp->w_buffer->b_s)
     {
 	syntax_clear(wp->w_s);
-	vim_free(wp->w_s);
+	mnv_free(wp->w_s);
 	wp->w_s = &wp->w_buffer->b_s;
     }
 }
@@ -3565,9 +3565,9 @@ syntax_sync_clear(void)
     curwin->w_s->b_syn_sync_maxlines = 0;
     curwin->w_s->b_syn_sync_linebreaks = 0;
 
-    vim_regfree(curwin->w_s->b_syn_linecont_prog);
+    mnv_regfree(curwin->w_s->b_syn_linecont_prog);
     curwin->w_s->b_syn_linecont_prog = NULL;
-    VIM_CLEAR(curwin->w_s->b_syn_linecont_pat);
+    MNV_CLEAR(curwin->w_s->b_syn_linecont_pat);
     clear_string_option(&curwin->w_s->b_syn_isk);
 
     syn_stack_free_all(curwin->w_s);	// Need to recompute all syntax.
@@ -3601,14 +3601,14 @@ syn_remove_pattern(
     static void
 syn_clear_pattern(synblock_T *block, int i)
 {
-    vim_free(SYN_ITEMS(block)[i].sp_pattern);
-    vim_regfree(SYN_ITEMS(block)[i].sp_prog);
+    mnv_free(SYN_ITEMS(block)[i].sp_pattern);
+    mnv_regfree(SYN_ITEMS(block)[i].sp_prog);
     // Only free sp_cont_list and sp_next_list of first start pattern
     if (i == 0 || SYN_ITEMS(block)[i - 1].sp_type != SPTYPE_START)
     {
-	vim_free(SYN_ITEMS(block)[i].sp_cont_list);
-	vim_free(SYN_ITEMS(block)[i].sp_next_list);
-	vim_free(SYN_ITEMS(block)[i].sp_syn.cont_in_list);
+	mnv_free(SYN_ITEMS(block)[i].sp_cont_list);
+	mnv_free(SYN_ITEMS(block)[i].sp_next_list);
+	mnv_free(SYN_ITEMS(block)[i].sp_syn.cont_in_list);
     }
 }
 
@@ -3618,9 +3618,9 @@ syn_clear_pattern(synblock_T *block, int i)
     static void
 syn_clear_cluster(synblock_T *block, int i)
 {
-    vim_free(SYN_CLSTR(block)[i].scl_name);
-    vim_free(SYN_CLSTR(block)[i].scl_name_u);
-    vim_free(SYN_CLSTR(block)[i].scl_list);
+    mnv_free(SYN_CLSTR(block)[i].scl_name);
+    mnv_free(SYN_CLSTR(block)[i].scl_name_u);
+    mnv_free(SYN_CLSTR(block)[i].scl_list);
 }
 
 /*
@@ -3640,7 +3640,7 @@ syn_cmd_clear(exarg_T *eap, int syncing)
     /*
      * We have to disable this within ":syn include @group filename",
      * because otherwise @group would get deleted.
-     * Only required for Vim 5.x syntax files, 6.0 ones don't contain ":syn
+     * Only required for MNV 5.x syntax files, 6.0 ones don't contain ":syn
      * clear".
      */
     if (curwin->w_s->b_syn_topgrp != 0)
@@ -3686,7 +3686,7 @@ syn_cmd_clear(exarg_T *eap, int syncing)
 		     */
 		    short scl_id = id - SYNID_CLUSTER;
 
-		    VIM_CLEAR(SYN_CLSTR(curwin->w_s)[scl_id].scl_list);
+		    MNV_CLEAR(SYN_CLSTR(curwin->w_s)[scl_id].scl_list);
 		}
 	    }
 	    else
@@ -3764,7 +3764,7 @@ syn_cmd_reset(exarg_T *eap, int syncing UNUSED)
     if (!eap->skip)
     {
 	set_internal_string_var((char_u *)"g:syntax_cmd", (char_u *)"reset");
-	do_cmdline_cmd((char_u *)"runtime! syntax/syncolor.vim");
+	do_cmdline_cmd((char_u *)"runtime! syntax/syncolor.mnv");
 	do_unlet((char_u *)"g:syntax_cmd", TRUE);
     }
 }
@@ -3796,7 +3796,7 @@ syn_cmd_onoff(exarg_T *eap, char *name)
     if (!eap->skip)
     {
 	STRCPY(buf, "so ");
-	vim_snprintf((char *)buf + 3, sizeof(buf) - 3, SYNTAX_FNAME, name);
+	mnv_snprintf((char *)buf + 3, sizeof(buf) - 3, SYNTAX_FNAME, name);
 	do_cmdline_cmd(buf);
     }
 }
@@ -4171,7 +4171,7 @@ put_pattern(
     msg_putchar(c);
 
     // output the pattern, in between a char that is not in the pattern
-    for (i = 0; vim_strchr(spp->sp_pattern, sepchars[i]) != NULL; )
+    for (i = 0; mnv_strchr(spp->sp_pattern, sepchars[i]) != NULL; )
 	if (sepchars[++i] == NUL)
 	{
 	    i = 0;	// no good char found, just use the first one
@@ -4342,9 +4342,9 @@ syn_clear_keyword(int id, hashtab_T *ht)
 		    }
 		    else
 			kp_prev->ke_next = kp_next;
-		    vim_free(kp->next_list);
-		    vim_free(kp->k_syn.cont_in_list);
-		    vim_free(kp);
+		    mnv_free(kp->next_list);
+		    mnv_free(kp->k_syn.cont_in_list);
+		    mnv_free(kp);
 		    kp = kp_next;
 		}
 		else
@@ -4378,9 +4378,9 @@ clear_keywtab(hashtab_T *ht)
 	    for (kp = HI2KE(hi); kp != NULL; kp = kp_next)
 	    {
 		kp_next = kp->ke_next;
-		vim_free(kp->next_list);
-		vim_free(kp->k_syn.cont_in_list);
-		vim_free(kp);
+		mnv_free(kp->next_list);
+		mnv_free(kp->k_syn.cont_in_list);
+		mnv_free(kp);
 	    }
 	}
     }
@@ -4551,7 +4551,7 @@ get_syn_options(
 	    for (i = 0, len = 0; p[i] != NUL; i += 2, ++len)
 		if (arg[len] != p[i] && arg[len] != p[i + 1])
 		    break;
-	    if (p[i] == NUL && (VIM_ISWHITE(arg[len])
+	    if (p[i] == NUL && (MNV_ISWHITE(arg[len])
 				    || (flagtab[fidx].argtype > 0
 					 ? arg[len] == '='
 					 : ends_excmd2(start, arg + len))))
@@ -4607,7 +4607,7 @@ get_syn_options(
 #endif
 	    }
 #ifdef FEAT_CONCEAL
-	    if (!vim_isprintc_strict(*conceal_char))
+	    if (!mnv_isprintc_strict(*conceal_char))
 	    {
 		emsg(_(e_invalid_cchar_value));
 		return NULL;
@@ -4632,7 +4632,7 @@ get_syn_options(
 		arg = skiptowhite(arg);
 		if (gname_start == arg)
 		    return NULL;
-		gname = vim_strnsave(gname_start, arg - gname_start);
+		gname = mnv_strnsave(gname_start, arg - gname_start);
 		if (gname == NULL)
 		    return NULL;
 		if (STRCMP(gname, "NONE") == 0)
@@ -4651,12 +4651,12 @@ get_syn_options(
 		    if (i < 0)
 		    {
 			semsg(_(e_didnt_find_region_item_for_str), gname);
-			vim_free(gname);
+			mnv_free(gname);
 			return NULL;
 		    }
 		}
 
-		vim_free(gname);
+		mnv_free(gname);
 		arg = skipwhite(arg);
 	    }
 #ifdef FEAT_FOLDING
@@ -4741,7 +4741,7 @@ syn_cmd_include(exarg_T *eap, int syncing UNUSED)
     separate_nextcmd(eap, FALSE);
     if (*eap->arg == '<' || *eap->arg == '$' || mch_isFullName(eap->arg))
     {
-	// For an absolute path, "$VIM/..." or "<sfile>.." we ":source" the
+	// For an absolute path, "$MNV/..." or "<sfile>.." we ":source" the
 	// file.  Need to expand the file name first.  In other cases
 	// ":runtime!" is used.
 	source = TRUE;
@@ -4825,7 +4825,7 @@ syn_cmd_keyword(exarg_T *eap, int syncing UNUSED)
 		if (rest == NULL || ends_excmd2(eap->arg, rest))
 		    break;
 		// Copy the keyword, removing backslashes, and add a NUL.
-		while (*rest != NUL && !VIM_ISWHITE(*rest))
+		while (*rest != NUL && !MNV_ISWHITE(*rest))
 		{
 		    if (*rest == '\\' && rest[1] != NUL)
 			++rest;
@@ -4847,7 +4847,7 @@ syn_cmd_keyword(exarg_T *eap, int syncing UNUSED)
 		 */
 		for (kw = keyword_copy; --cnt >= 0; kw += kwlen + 1)
 		{
-		    for (p = vim_strchr(kw, '['); ; )
+		    for (p = mnv_strchr(kw, '['); ; )
 		    {
 			if (p == NULL)
 			    kwlen = STRLEN(kw);
@@ -4894,9 +4894,9 @@ syn_cmd_keyword(exarg_T *eap, int syncing UNUSED)
 		}
 	    }
 error:
-	    vim_free(keyword_copy);
-	    vim_free(syn_opt_arg.cont_in_list);
-	    vim_free(syn_opt_arg.next_list);
+	    mnv_free(keyword_copy);
+	    mnv_free(syn_opt_arg.cont_in_list);
+	    mnv_free(syn_opt_arg.next_list);
 	}
     }
 
@@ -4947,7 +4947,7 @@ syn_cmd_match(
     init_syn_patterns();
     CLEAR_FIELD(item);
     rest = get_syn_pattern(rest, &item);
-    if (vim_regcomp_had_eol() && !(syn_opt_arg.flags & HL_EXCLUDENL))
+    if (mnv_regcomp_had_eol() && !(syn_opt_arg.flags & HL_EXCLUDENL))
 	syn_opt_arg.flags |= HL_HAS_EOL;
 
     // Get options after the pattern
@@ -5005,11 +5005,11 @@ syn_cmd_match(
     /*
      * Something failed, free the allocated memory.
      */
-    vim_regfree(item.sp_prog);
-    vim_free(item.sp_pattern);
-    vim_free(syn_opt_arg.cont_list);
-    vim_free(syn_opt_arg.cont_in_list);
-    vim_free(syn_opt_arg.next_list);
+    mnv_regfree(item.sp_prog);
+    mnv_free(item.sp_pattern);
+    mnv_free(syn_opt_arg.cont_list);
+    mnv_free(syn_opt_arg.cont_in_list);
+    mnv_free(syn_opt_arg.next_list);
 
     if (rest == NULL && called_emsg == orig_called_emsg)
 	semsg(_(e_invalid_argument_str), arg);
@@ -5083,10 +5083,10 @@ syn_cmd_region(
 
 	// must be a pattern or matchgroup then
 	key_end = rest;
-	while (*key_end && !VIM_ISWHITE(*key_end) && *key_end != '=')
+	while (*key_end && !MNV_ISWHITE(*key_end) && *key_end != '=')
 	    ++key_end;
-	vim_free(key);
-	key = vim_strnsave_up(rest, key_end - rest);
+	mnv_free(key);
+	key = mnv_strnsave_up(rest, key_end - rest);
 	if (key == NULL)			// out of memory
 	{
 	    rest = NULL;
@@ -5171,14 +5171,14 @@ syn_cmd_region(
 		reg_do_extmatch = REX_USE;
 	    rest = get_syn_pattern(rest, ppp->pp_synp);
 	    reg_do_extmatch = 0;
-	    if (item == ITEM_END && vim_regcomp_had_eol()
+	    if (item == ITEM_END && mnv_regcomp_had_eol()
 				       && !(syn_opt_arg.flags & HL_EXCLUDENL))
 		ppp->pp_synp->sp_flags |= HL_HAS_EOL;
 	    ppp->pp_matchgroup_id = matchgroup_id;
 	    ++pat_count;
 	}
     }
-    vim_free(key);
+    mnv_free(key);
     if (illegal || not_enough)
 	rest = NULL;
 
@@ -5262,19 +5262,19 @@ syn_cmd_region(
 	{
 	    if (!success && ppp->pp_synp != NULL)
 	    {
-		vim_regfree(ppp->pp_synp->sp_prog);
-		vim_free(ppp->pp_synp->sp_pattern);
+		mnv_regfree(ppp->pp_synp->sp_prog);
+		mnv_free(ppp->pp_synp->sp_pattern);
 	    }
-	    vim_free(ppp->pp_synp);
+	    mnv_free(ppp->pp_synp);
 	    ppp_next = ppp->pp_next;
-	    vim_free(ppp);
+	    mnv_free(ppp);
 	}
 
     if (!success)
     {
-	vim_free(syn_opt_arg.cont_list);
-	vim_free(syn_opt_arg.cont_in_list);
-	vim_free(syn_opt_arg.next_list);
+	mnv_free(syn_opt_arg.cont_list);
+	mnv_free(syn_opt_arg.cont_in_list);
+	mnv_free(syn_opt_arg.next_list);
 	if (not_enough)
 	    semsg(_(e_not_enough_arguments_syntax_region_str), arg);
 	else if (illegal || rest == NULL)
@@ -5317,11 +5317,11 @@ syn_combine_list(short **clstr1, short **clstr2, int list_op)
     if (*clstr1 == NULL || list_op == CLUSTER_REPLACE)
     {
 	if (list_op == CLUSTER_REPLACE)
-	    vim_free(*clstr1);
+	    mnv_free(*clstr1);
 	if (list_op == CLUSTER_REPLACE || list_op == CLUSTER_ADD)
 	    *clstr1 = *clstr2;
 	else
-	    vim_free(*clstr2);
+	    mnv_free(*clstr2);
 	return;
     }
 
@@ -5413,8 +5413,8 @@ syn_combine_list(short **clstr1, short **clstr2, int list_op)
     /*
      * Finally, put the new list in place.
      */
-    vim_free(*clstr1);
-    vim_free(*clstr2);
+    mnv_free(*clstr1);
+    mnv_free(*clstr2);
     *clstr1 = clstr;
 }
 
@@ -5429,14 +5429,14 @@ syn_scl_name2id(char_u *name)
     char_u	*name_u;
 
     // Avoid using stricmp() too much, it's slow on some systems
-    name_u = vim_strsave_up(name);
+    name_u = mnv_strsave_up(name);
     if (name_u == NULL)
 	return 0;
     for (i = curwin->w_s->b_syn_clusters.ga_len; --i >= 0; )
 	if (SYN_CLSTR(curwin->w_s)[i].scl_name_u != NULL
 		&& STRCMP(name_u, SYN_CLSTR(curwin->w_s)[i].scl_name_u) == 0)
 	    break;
-    vim_free(name_u);
+    mnv_free(name_u);
     return (i < 0 ? 0 : i + SYNID_CLUSTER);
 }
 
@@ -5449,12 +5449,12 @@ syn_scl_namen2id(char_u *linep, int len)
     char_u  *name;
     int	    id = 0;
 
-    name = vim_strnsave(linep, len);
+    name = mnv_strnsave(linep, len);
     if (name == NULL)
 	return 0;
 
     id = syn_scl_name2id(name);
-    vim_free(name);
+    mnv_free(name);
     return id;
 }
 
@@ -5470,7 +5470,7 @@ syn_check_cluster(char_u *pp, int len)
     int		id;
     char_u	*name;
 
-    name = vim_strnsave(pp, len);
+    name = mnv_strnsave(pp, len);
     if (name == NULL)
 	return 0;
 
@@ -5478,7 +5478,7 @@ syn_check_cluster(char_u *pp, int len)
     if (id == 0)			// doesn't exist yet
 	id = syn_add_cluster(name);
     else
-	vim_free(name);
+	mnv_free(name);
     return id;
 }
 
@@ -5505,7 +5505,7 @@ syn_add_cluster(char_u *name)
     if (len >= MAX_CLUSTER_ID)
     {
 	emsg(_(e_too_many_syntax_clusters));
-	vim_free(name);
+	mnv_free(name);
 	return 0;
     }
 
@@ -5514,13 +5514,13 @@ syn_add_cluster(char_u *name)
      */
     if (ga_grow(&curwin->w_s->b_syn_clusters, 1) == FAIL)
     {
-	vim_free(name);
+	mnv_free(name);
 	return 0;
     }
 
     CLEAR_POINTER(&(SYN_CLSTR(curwin->w_s)[len]));
     SYN_CLSTR(curwin->w_s)[len].scl_name = name;
-    SYN_CLSTR(curwin->w_s)[len].scl_name_u = vim_strsave_up(name);
+    SYN_CLSTR(curwin->w_s)[len].scl_name_u = mnv_strsave_up(name);
     SYN_CLSTR(curwin->w_s)[len].scl_list = NULL;
     ++curwin->w_s->b_syn_clusters.ga_len;
 
@@ -5564,19 +5564,19 @@ syn_cmd_cluster(exarg_T *eap, int syncing UNUSED)
 	for (;;)
 	{
 	    if (STRNICMP(rest, "add", 3) == 0
-		    && (VIM_ISWHITE(rest[3]) || rest[3] == '='))
+		    && (MNV_ISWHITE(rest[3]) || rest[3] == '='))
 	    {
 		opt_len = 3;
 		list_op = CLUSTER_ADD;
 	    }
 	    else if (STRNICMP(rest, "remove", 6) == 0
-		    && (VIM_ISWHITE(rest[6]) || rest[6] == '='))
+		    && (MNV_ISWHITE(rest[6]) || rest[6] == '='))
 	    {
 		opt_len = 6;
 		list_op = CLUSTER_SUBTRACT;
 	    }
 	    else if (STRNICMP(rest, "contains", 8) == 0
-			&& (VIM_ISWHITE(rest[8]) || rest[8] == '='))
+			&& (MNV_ISWHITE(rest[8]) || rest[8] == '='))
 	    {
 		opt_len = 8;
 		list_op = CLUSTER_REPLACE;
@@ -5594,7 +5594,7 @@ syn_cmd_cluster(exarg_T *eap, int syncing UNUSED)
 		syn_combine_list(&SYN_CLSTR(curwin->w_s)[scl_id].scl_list,
 			     &clstr_list, list_op);
 	    else
-		vim_free(clstr_list);
+		mnv_free(clstr_list);
 	    got_clstr = TRUE;
 	}
 
@@ -5645,13 +5645,13 @@ get_syn_pattern(char_u *arg, synpat_T *ci)
 	return NULL;
     }
     // store the pattern and compiled regexp program
-    if ((ci->sp_pattern = vim_strnsave(arg + 1, end - arg - 1)) == NULL)
+    if ((ci->sp_pattern = mnv_strnsave(arg + 1, end - arg - 1)) == NULL)
 	return NULL;
 
     // Make 'cpoptions' empty, to avoid the 'l' flag
     cpo_save = p_cpo;
     p_cpo = empty_option;
-    ci->sp_prog = vim_regcomp(ci->sp_pattern, RE_MAGIC);
+    ci->sp_prog = mnv_regcomp(ci->sp_pattern, RE_MAGIC);
     p_cpo = cpo_save;
 
     if (ci->sp_prog == NULL)
@@ -5717,7 +5717,7 @@ get_syn_pattern(char_u *arg, synpat_T *ci)
 	}
     } while (idx >= 0);
 
-    if (!ends_excmd2(arg, end) && !VIM_ISWHITE(*end))
+    if (!ends_excmd2(arg, end) && !MNV_ISWHITE(*end))
     {
 	semsg(_(e_garbage_after_pattern_str), arg);
 	return NULL;
@@ -5750,8 +5750,8 @@ syn_cmd_sync(exarg_T *eap, int syncing UNUSED)
     {
 	arg_end = skiptowhite(arg_start);
 	next_arg = skipwhite(arg_end);
-	vim_free(key);
-	key = vim_strnsave_up(arg_start, arg_end - arg_start);
+	mnv_free(key);
+	key = mnv_strnsave_up(arg_start, arg_end - arg_start);
 	if (key == NULL)
 	    break;
 	if (STRCMP(key, "CCOMMENT") == 0)
@@ -5780,7 +5780,7 @@ syn_cmd_sync(exarg_T *eap, int syncing UNUSED)
 		arg_end = key + 11;
 	    else
 		arg_end = key + 9;
-	    if (arg_end[-1] != '=' || !VIM_ISDIGIT(*arg_end))
+	    if (arg_end[-1] != '=' || !MNV_ISDIGIT(*arg_end))
 	    {
 		illegal = TRUE;
 		break;
@@ -5828,7 +5828,7 @@ syn_cmd_sync(exarg_T *eap, int syncing UNUSED)
 	    {
 		// store the pattern and compiled regexp program
 		if ((curwin->w_s->b_syn_linecont_pat =
-			    vim_strnsave(next_arg + 1,
+			    mnv_strnsave(next_arg + 1,
 				      arg_end - next_arg - 1)) == NULL)
 		{
 		    finished = TRUE;
@@ -5840,7 +5840,7 @@ syn_cmd_sync(exarg_T *eap, int syncing UNUSED)
 		cpo_save = p_cpo;
 		p_cpo = empty_option;
 		curwin->w_s->b_syn_linecont_prog =
-		       vim_regcomp(curwin->w_s->b_syn_linecont_pat, RE_MAGIC);
+		       mnv_regcomp(curwin->w_s->b_syn_linecont_pat, RE_MAGIC);
 		p_cpo = cpo_save;
 #ifdef FEAT_PROFILE
 		syn_clear_time(&curwin->w_s->b_syn_linecont_time);
@@ -5848,7 +5848,7 @@ syn_cmd_sync(exarg_T *eap, int syncing UNUSED)
 
 		if (curwin->w_s->b_syn_linecont_prog == NULL)
 		{
-		    VIM_CLEAR(curwin->w_s->b_syn_linecont_pat);
+		    MNV_CLEAR(curwin->w_s->b_syn_linecont_pat);
 		    finished = TRUE;
 		    break;
 		}
@@ -5871,7 +5871,7 @@ syn_cmd_sync(exarg_T *eap, int syncing UNUSED)
 	}
 	arg_start = next_arg;
     }
-    vim_free(key);
+    mnv_free(key);
     if (illegal)
 	semsg(_(e_illegal_arguments_str), arg_start);
     else if (!finished)
@@ -5940,7 +5940,7 @@ get_id_list(
 	count = 0;
 	while (!ends_excmd2(*arg, p))
 	{
-	    for (end = p; *end && !VIM_ISWHITE(*end) && *end != ','; ++end)
+	    for (end = p; *end && !MNV_ISWHITE(*end) && *end != ','; ++end)
 		;
 	    name = alloc(end - p + 3);	    // leave room for "^$"
 	    if (name == NULL)
@@ -5948,7 +5948,7 @@ get_id_list(
 		failed = TRUE;
 		break;
 	    }
-	    vim_strncpy(name + 1, p, end - p);
+	    mnv_strncpy(name + 1, p, end - p);
 	    if (       STRCMP(name + 1, "ALLBUT") == 0
 		    || STRCMP(name + 1, "ALL") == 0
 		    || STRCMP(name + 1, "TOP") == 0
@@ -5958,14 +5958,14 @@ get_id_list(
 		{
 		    semsg(_(e_str_not_allowed_here), name + 1);
 		    failed = TRUE;
-		    vim_free(name);
+		    mnv_free(name);
 		    break;
 		}
 		if (count != 0)
 		{
 		    semsg(_(e_str_must_be_first_in_contains_list), name + 1);
 		    failed = TRUE;
-		    vim_free(name);
+		    mnv_free(name);
 		    break;
 		}
 		if (name[1] == 'A')
@@ -5988,7 +5988,7 @@ get_id_list(
 		/*
 		 * Handle full group name.
 		 */
-		if (vim_strpbrk(name + 1, (char_u *)"\\.*^$~[") == NULL)
+		if (mnv_strpbrk(name + 1, (char_u *)"\\.*^$~[") == NULL)
 		    id = syn_check_group(name + 1, (int)(end - p));
 		else
 		{
@@ -5997,11 +5997,11 @@ get_id_list(
 		     */
 		    *name = '^';
 		    STRCAT(name, "$");
-		    regmatch.regprog = vim_regcomp(name, RE_MAGIC);
+		    regmatch.regprog = mnv_regcomp(name, RE_MAGIC);
 		    if (regmatch.regprog == NULL)
 		    {
 			failed = TRUE;
-			vim_free(name);
+			mnv_free(name);
 			break;
 		    }
 
@@ -6009,7 +6009,7 @@ get_id_list(
 		    id = 0;
 		    for (i = highlight_num_groups(); --i >= 0; )
 		    {
-			if (vim_regexec(&regmatch, highlight_group_name(i),
+			if (mnv_regexec(&regmatch, highlight_group_name(i),
 								  (colnr_T)0))
 			{
 			    if (round == 2)
@@ -6020,7 +6020,7 @@ get_id_list(
 				// Go back to first round
 				if (count >= total_count)
 				{
-				    vim_free(retval);
+				    mnv_free(retval);
 				    round = 1;
 				}
 				else
@@ -6030,10 +6030,10 @@ get_id_list(
 			    id = -1;	    // remember that we found one
 			}
 		    }
-		    vim_regfree(regmatch.regprog);
+		    mnv_regfree(regmatch.regprog);
 		}
 	    }
-	    vim_free(name);
+	    mnv_free(name);
 	    if (id == 0)
 	    {
 		semsg(_(e_unknown_group_name_str), p);
@@ -6047,7 +6047,7 @@ get_id_list(
 		    // Got more items than expected, go back to first round
 		    if (count >= total_count)
 		    {
-			vim_free(retval);
+			mnv_free(retval);
 			round = 1;
 		    }
 		    else
@@ -6075,14 +6075,14 @@ get_id_list(
     *arg = p;
     if (failed || retval == NULL)
     {
-	vim_free(retval);
+	mnv_free(retval);
 	return FAIL;
     }
 
     if (*list == NULL)
 	*list = retval;
     else
-	vim_free(retval);	// list already found, don't overwrite it
+	mnv_free(retval);	// list already found, don't overwrite it
 
     return OK;
 }
@@ -6270,7 +6270,7 @@ ex_syntax(exarg_T *eap)
     // isolate subcommand name
     for (subcmd_end = arg; ASCII_ISALPHA(*subcmd_end); ++subcmd_end)
 	;
-    subcmd_name = vim_strnsave(arg, subcmd_end - arg);
+    subcmd_name = mnv_strnsave(arg, subcmd_end - arg);
     if (subcmd_name == NULL)
 	return;
 
@@ -6289,7 +6289,7 @@ ex_syntax(exarg_T *eap)
     if (i == (int)ARRAY_LENGTH(subcommands))
 	semsg(_(e_invalid_syntax_subcommand_str), subcmd_name);
 
-    vim_free(subcmd_name);
+    mnv_free(subcmd_name);
     if (eap->skip)
 	--emsg_skip;
 }
@@ -6321,7 +6321,7 @@ ex_ownsyntax(exarg_T *eap)
     // save value of b:current_syntax
     old_value = get_var_value((char_u *)"b:current_syntax");
     if (old_value != NULL)
-	old_value = vim_strsave(old_value);
+	old_value = mnv_strsave(old_value);
 
     // Apply the "syntax" autocommand event, this finds and loads the syntax
     // file.
@@ -6338,7 +6338,7 @@ ex_ownsyntax(exarg_T *eap)
     else
     {
 	set_internal_string_var((char_u *)"b:current_syntax", old_value);
-	vim_free(old_value);
+	mnv_free(old_value);
     }
 }
 
@@ -6468,7 +6468,7 @@ get_syntax_name(expand_T *xp, int idx)
 	{
 	    if (idx < curwin->w_s->b_syn_clusters.ga_len)
 	    {
-		vim_snprintf((char *)xp->xp_buf, EXPAND_BUF_LEN, "@%s",
+		mnv_snprintf((char *)xp->xp_buf, EXPAND_BUF_LEN, "@%s",
 					 SYN_CLSTR(curwin->w_s)[idx].scl_name);
 		return xp->xp_buf;
 	    }

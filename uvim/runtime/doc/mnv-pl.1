@@ -1,0 +1,558 @@
+.TH MNV 1 "2006 kwi 11"
+.SH NAME
+mnv \- Vi rozbudowany, edytor tekstu dla programisty
+.SH SYNOPSIS
+.br
+.B mnv
+[opcje] [plik ..]
+.br
+.B mnv
+[opcje] \-
+.br
+.B mnv
+[opcje] \-t znacznik
+.br
+.B mnv
+[opcje] \-q [plik_b��du]
+.PP
+.br
+.B ex
+.br
+.B view
+.br
+.B gmnv
+.B gview
+.B emnv
+.B eview
+.br
+.B rmnv
+.B rview
+.B rgmnv
+.B rgview
+.SH OPIS
+.B MNV
+jest edytorem tekstu kompatybilnym z Vi. Mo�e by�
+u�ywany do edycji wszelkiego rodzaju plik�w tekstowych.
+U�yteczny zw�aszcza przy edycji program�w.
+.PP
+Posiada wiele usprawnie� w por�wnaniu z Vi: wielopoziomowe cofanie zmian,
+wiele okien i bufor�w, pod�wietlanie sk�adni, edycja linii polece�,
+uzupe�nianie nazw plik�w, pomoc on-line, wizualna selekcja, itd.
+Zobacz ":help vi_diff.txt" dla podsumowania r�nic pomi�dzy
+.B MNVem
+i Vi.
+.PP
+W czasie korzystania z
+.B MNVa
+mo�na uzyska� obszern� pomoc z systemu pomocy on-line dzi�ki poleceniu ":help".
+Zobacz rozdzia� POMOC ON-LINE poni�ej.
+.PP
+Najcz�ciej
+.B MNV
+jest uruchamiany do edycji pojedynczego pliku poleceniem
+.PP
+	mnv plik
+.PP
+Bardziej og�lnie
+.B MNV
+jest uruchamiany poprzez:
+.PP
+	mnv [opcje] [lista plik�w]
+.PP
+Je�li brak listy plik�w edytor rozpocznie z pustym buforem. W innym
+wypadku istnieje dok�adnie jedna z czterech mo�liwo�ci by wybra� jeden
+lub wi�cej plik�w do edycji.
+.TP 12
+plik ..
+Lista nazw plik�w.
+Pierwsza nazwa b�dzie nazw� bie��cego pliku, kt�ry zostanie wczytany
+do bufora. Kursor zostanie umieszczony w pierwszym wierszu. Do
+kolejnych plik�w mo�na przej�� dzi�ki poleceniu ":next". By otworzy�
+plik, kt�rego nazwa zaczyna si� od my�lnika nale�y list� plik�w
+poprzedzi� "\-\-".
+.TP
+\-
+Plik do edycji jest wczytany ze standardowego wej�cia. Polecenia s�
+odczytywane ze standardowego wyj�cia b��d�w, kt�rym powinien by�
+terminal (tty).
+.TP
+\-t {znacznik}
+Plik do edycji i pocz�tkowa pozycja kursora zale�y od "znacznika",
+rodzaju etykiety goto.
+{znacznika} szuka si� w pliku tags, zwi�zany z nim plik staje si�
+plikiem bie��cym i wykonuje si� powi�zane polecenie.
+Zazwyczaj u�ywa si� tego sposobu dla program�w w C, w kt�rych wypadku
+{znacznik} mo�e by� nazw� funkcji.
+W efekcie plik zawieraj�cy okre�lon� funkcj� staje si� plikiem
+bie��cym a kursor jest umieszczony na pocz�tku funkcji.
+Zobacz ":help tag-commands".
+.TP
+\-q [plik_b��d�w]
+Zacznij w trybie quickFix.
+Plik [plik_b��d�w] zostaje zinterpretowany i poka�e si� pierwszy b��d.
+Je�li brak opcji [plik_b��d�w] nazwa pliku zostanie pobrana z opcji
+\&'errorfile' (domy�lnie "AztecC.Err" dla Amigi, "errros.err" dla innych
+system�w.
+Do kolejnych b��d�w mo�na przeskoczy� dzi�ki poleceniu ":cn".
+Zobacz ":help quickfix".
+.PP
+W zale�no�ci od wywo�ania
+.B MNV
+zachowuje si� inaczej (program mo�e by� ca�y czas tym samym
+plikiem).
+.TP 10
+mnv
+"Normalny" spos�b, wszystko jest domy�lne.
+.TP
+ex
+Zacznij w trybie Ex.
+Przejd� do trybu Normalnego poleceniem ":vi".
+Mo�na tak�e uruchomi� poprzez argument "\-e".
+.TP
+view
+Zacznij w trybie tylko do odczytu. W ten spos�b b�dziesz chroniony
+przed zapisywaniem pliku. Mo�na tak�e uruchomi� poprzez argument
+"\-R".
+.TP
+gmnv gview
+Wersja GUI.
+Uruchamia nowe okno.
+Mo�na tak�e uruchomi� poprzez argument "\-g".
+.TP
+emnv eview
+Wersja GUI w �atwym trybie.
+Uruchamia nowe okno.
+Mo�na tak�e uruchomi� poprzez argument "\-y".
+.TP
+rmnv rview rgmnv rgview
+Podobnie jak powy�ej, ale z ograniczeniami. Nie b�dzie mo�na uruchomi�
+polece� pow�oki lub zawiesi�
+.B MNVa.
+Mo�na tak�e uruchomi� poprzez argument "\-Z".
+.SH OPCJE
+Opcje mo�na poda� w dowolnej kolejno�ci, przed lub po nazwach plik�w.
+Opcje bez argument�w mo�na ��czy� po pojedynczym my�lniku.
+.TP 12
++[num]
+W pierwszym pliku kursor zostanie umieszczony w wierszu "num".
+Je�li brak "num" kursor zostanie umieszczony w ostatnim wierszu.
+.TP
++/{wz�r}
+W pierwszym pliku kursor zostanie umieszczony na pierwszym wyst�pieniu
+{wz�r}.
+Zobacz ":help search-pattern" by dowiedzie� si� jakie s� mo�liwe
+wzorce wyszukiwania.
+.TP
++{polecenie}
+.TP
+\-c {polecenie}
+{polecenie} zostanie wykonane po tym jak wczyta si� pierwszy plik.
+{polecenie} jest interpretowane jako polecenie Ex.
+Je�li {poleceni} zawiera bia�e znaki musi by� umieszczone w podw�jnych
+cudzys�owach (zale�y to od u�ywanej pow�oki).
+Przyk�ad: mnv "+set si" main.c
+.br
+Uwaga: Mo�na u�y� do 10 polece� "+" lub "\-c".
+.TP
+\-S {plik}
+{plik} zostanie zinterpretowany po wczytaniu pierwszego pliku.
+Jest r�wnowa�ne \-c "source {plik}".
+{plik} nie mo�e zaczyna� si� '\-'.
+Je�li nie podano {plik} zostanie u�yty "Session.mnv" (dzia�a tylko
+wtedy je�li \-S jest ostatnim argumentem).
+.TP
+\-\-cmd {polecenie}
+Podobne do "\-c", ale polecenie jest wykonywane tu� przed
+interpretacj� jakiegokolwiek pliku mnvrc.
+Mo�na u�y� do 10 takich polece�, niezale�nie od polece� od "\-c"
+.TP
+\-A
+Je�li
+.B MNV
+zosta� skompilowany ze wsparciem dla j�zyk�w arabskich (edycja od
+prawej do lewej i arabska mapa klawiatury) ta opcja uruchamia
+.B MNVa
+w trybie arabskim, np. ustawia si� opcja 'arabic'. W innym wypadku
+pojawi si� komunikat b��du i
+.B MNV
+zako�czy dzia�anie.
+.TP
+\-b
+Tryb binarny.
+Ustawi si� kilka opcji, kt�re umo�liwi� edycj� plik�w binarnych lub
+wykonywalnych.
+.TP
+\-C
+Kompatybilny. Ustawia opcj� 'compatible'.
+W ten spos�b 
+.B MNV
+b�dzie zachowywa� si� jak Vi, nawet je�li istnieje plik .mnvrc.
+.TP
+\-d
+Uruchom w trybie diff.
+Powinno si� u�y� dw�ch, trzech lub czterech nazwy plik�w jako argument�w.
+.B MNV
+otworzy wszystkie te pliki i poka�e r�nice mi�dzy nimi.
+Dzia�a jak mnvdiff(1).
+.TP
+\-d {urz�dzenie}
+Otw�rz {urz�dzenie} by u�ywa� jako terminal.
+Tylko na Amidze.
+Przyk�ad:
+"\-d con:20/30/600/150".
+.TP
+\-D
+Debugowanie. Przejd� do trybu debugowanie wykonuj�c pierwsze polecenie
+ze skryptu.
+.TP
+\-e
+Uruchom
+.B MNVa
+w trybie Ex, dzia�a tak samo jakby wywo�ano program jako "ex".
+.TP
+\-E
+Uruchom
+.B MNVa
+w ulepszonym trybie Ex, dzia�a tak samo jakby wywo�ano program jako
+"exim".
+.TP
+\-f
+Pierszy plan. Dla wersji GUI.
+.B MNV
+nie nie oddzieli si� od pow�oki w jakiej zosta� uruchomiony. Na Amidze
+.B MNV
+nie jest uruchomiony ponownie by otworzy� nowe okno.
+Opcja powinna by� u�yta kiedy
+.B MNV
+jest wywo�ywany przez program, kt�ry ma zaczeka� na koniec sesji (np.
+mail).
+Na Amidze polecenia ":sh" i ":!" nie b�d� dzia�a�.
+.TP
+\-\-nofork
+Pierwszy plan. Dla wersji GUI.
+.B MNV
+nie oddzieli si� od pow�oki w jakiej zosta� uruchomiony.
+.TP
+\-F
+Je�lMNMNV zosta� skompilowany ze wsparciem FKMAP dla edycji tekst�w od
+prawej do lewej i mapowania klawiatury Farsi, ta opcja uruchomi
+.B MNVa
+w trybie Farsi, np. zostawi� ustawione opcje 'fkmap' i 'rightleft'.
+W innym wypadku pojawi si� komunikat b��du i
+.B MNV
+zako�czy dzia�anie.
+.TP
+\-g
+Je�li
+.B MNV
+zosta� skompilowany ze wsparciem dla GUI ta opcja uruchomi GUI.
+W innym wypadku pojawi si� komunikat b��du i
+.B MNV
+zako�czy dzia�anie.
+.TP
+\-h
+Wy�wietli kr�tk� pomoc o argumentach linii polece� i opcjach. Potem
+.B MNV
+zako�czy dzia�anie.
+.TP
+\-H
+Je�li
+.B MNV
+zosta� skompilowany ze wsparciem RIGHTLEFT dla edycji od prawej do
+lewej oraz ma mapowanie klawiatury dla hebrajskiego, ta opcja uruchomi
+.B MNVa
+w trybie hebrajskim, np. ustawi opcje 'hkmap' i 'rightleft'.
+W innym wypadku pojawi si� komunikat b��du i
+.B MNV
+zako�czy dzia�anie.
+.TP
+\-i {mnvinfo}
+Kiedy
+.B MNV
+u�ywa pliku mnvinfo ta opcja wska�e jakiego pliku u�y� zamiast
+domy�lnego "~/.mnvinfo".
+Mo�na te� omin�� u�ycie pliku .mnvinfo przez podanie nazwy "NONE".
+.TP
+\-L
+To samo co \-r.
+.TP
+\-l
+Tryb Lisp.
+Ustawia opcje 'lisp' i 'showmatch'.
+.TP
+\-m
+Zmiana pliku jest niemo�liwa.
+Przestawia opcj� 'write'.
+Mo�na zmienia� zawarto�� bufora, ale zapisanie pliku nie jest
+mo�liwe.
+.TP
+\-M
+Opcje 'modifiable' i 'write' zostan� wy��czone, tak wi�c zmiany
+w pliku oraz ich zapisanie nie s� mo�liwe. Warto�� tych opcji mo�na
+zmieni�.
+.TP
+\-N
+Tryb niekompatybilny. Przestawia opcj� 'compatible'. Dzi�ki temu
+.B MNV
+b�dzie zachowywa� si� odrobin� lepiej, ale mniej zgodnie z Vi nawet
+je�li nie istnieje plik .mnvrc.
+.TP
+\-n
+Nie powstanie plik wymiany. Odzyskanie pliku po wypadku nie b�dzie
+mo�liwe.
+Wygodne je�li instnieje potrzeba edycji na bardzo wolnym medium (np.
+dyskietce). Ten cel mo�na osi�gn�� tak�e przez ":set uc=0". Mo�na
+odwr�ci� przez ":set uc=200".
+.TP
+\-nb
+Uruchom jako serwer edytora dla NetBeans. Zobacz dokumentacj� by
+dowiedzie� si� wi�cej.
+.TP
+\-o[N]
+Otw�rz N okien w stosie.
+Kiedy brak N, otw�rz jedno okno dla ka�dego pliku.
+.TP
+\-O[N]
+Otw�rz N okien obok siebie.
+Kiedy brak N, otw�rz jedno okno dla ka�dego pliku.
+.TP
+\-p[N]
+Otw�rz N kart.
+Kiedy brak N, otw�rz jedn� kart� dla ka�dego pliku.
+.TP
+\-R
+Tryb tylko do odczytu.
+Zostanie ustawiona opcja 'readonly'.
+Ca�y czas mo�na zmienia� bufor, ale b�dzie istnia�a blokada by chroni�
+przed przypadkowym zapisaniem pliku.
+Je�li chcesz zapisa� plik dodaj wykrzyknik do polecenia Ex, np. ":w!".
+Opcja \-R implikuje opcj� \-n (zobacz poni�ej).
+Opcja 'readonly' mo�e zosta� przestawiona poprzez ":set noro".
+Zobacz ":help 'readonly'".
+.TP
+\-r
+Wypisz list� plik�w wymiany razem z informacjami o nich.
+.TP
+\-r {plik}
+Tryb odzyskiwania danych.
+Plik wymiany zostanie wykorzystany do odzyskania gwa�townie przerwanej sesji.
+Plik wymiany to plik z tak� sam� nazw� co plik oryginalny z dodanym ".swp".
+Zobacz ":help recovery".
+.TP
+\-s
+Tryb cichy. Rozpocz�ty tylko kiedy uruchomiony jako "Ex" lub opcja
+"\-e" zosta�a podana przed opcj� "\-s".
+.TP
+\-s {skrypt}
+Zostanie wczytany plik {skrypt}.
+Znaki w pliku zostan� zinterpretowane jakby by�y wpisywane.
+To samo mo�na osi�gn�� poprzez polecenie ":source! {skrypt}".
+Je�li osi�gni�to koniec pliku zanim edytor zako�czy� dzia�anie, dalsze
+znaki odczytywane s� z klawiatury.
+.TP
+\-T {terminal}
+Przekazuje
+.B MNVowi
+nazw� terminalu jakiego u�ywasz.
+Wymagane tylko wtedy je�li nie dzia�a automatycznie.
+Powinien by� to terminal znany
+.B MNVowi
+(builtin) lub zdefiniowany w plikach termcap lub terminfo.
+.TP
+\-u {mnvrc}
+U�yj polece� z pliku {mnvrc} w czasie uruchamiania.
+Wszystkie inne mo�liwe pliki uruchamiania zostan� pomini�te.
+U�ywaj do edytowania plik�w specjalnych.
+Mo�na pomin�� tak�e wszystkie mo�liwe pliki uruchamiania poprzez
+podanie nazwy "NONE".
+Zobacz ":help initialization" by pozna� wi�cej szczeg��w.
+.TP
+\-U {gmnvrc}
+U�yj polece� z pliku {gmnvrc} w czasie uruchamiania GUI.
+Wszystkie inne mo�liwe pliki uruchamiania GUI zostan� pomini�te.
+Mo�na pomin�� tak�e wszystkie mo�liwe pliki uruchamiania GUI poprzez
+podanie nazwy "NONE".
+Zobacz ":help gui-init" by pozna� wi�cej szczeg��w.
+.TP
+\-V[N]
+Tryb gadatliwy. Wypisz wiadomo�ci o tym jaki pliki s� wczytywane
+i o informacjach pobieranych i dodawanych do pliku mnvinfo. Opcjonalny
+argument N jest warto�ci� 'verbose'. Domy�lnie 10.
+.TP
+\-v
+Uruchom
+.B MNVa
+w trybie Vi, tak jakby program by� nazwany "vi". Ma znaczenie
+tylko wtedy je�li program nazwany jest "ex".
+.TP
+\-w {plik}
+Wszystkie wci�ni�cia klawiszy, a� do zako�czenia dzia�ania programu,
+s� zapisywane w {plik} .
+U�yteczne je�li chce si� stworzy� skrypt do u�ycia z "mnv \-s" lub
+":source!".
+Je�li {plik} istnieje, znaki s� dopisywane.
+.TP
+\-W {plik}
+Podobnie do \-w, ale istniej�cy plik jest nadpisywany.
+.TP
+\-x
+U�yj szyfrowania podczas zapisywania plik�w. Zostaniesz poproszony
+o podanie klucza.
+.TP
+\-X
+Nie ��cz z serwerem X. Skraca czas uruchamiania w terminalu, ale tytu�
+okna i schowek nie b�d� wykorzystywane.
+.TP
+\-y
+Uruchom
+.B MNVa
+w �atwym trybie, tak jakby program zosta� wywo�any "emnv" lub "eview".
+.B MNV
+b�dzie zachowywa� si� bardziej jak edytor kliknij-i-wpisz.
+.TP
+\-Z
+Tryb ograniczony. Zachowuje si� jakby nazwa programu zaczyna�a si� od
+"r".
+.TP
+\-\-
+Oznacza koniec opcji.
+Argumenty po tej opcji b�d� traktowane jak nazwy plik�w. U�ywa si� do
+otwierania plik�w, kt�rych nazwy zaczynaj� si� od '\-'.
+.TP
+\-\-echo\-wid
+Wy��cznie GTK GUI: wypisz ID okna na standardowe wyj�cie.
+.TP
+\-\-help
+Wy�wietl informacj� o pomocy i zako�czy, to samo co"\-h".
+.TP
+\-\-literal
+Potraktuj nazwy plik�w dos�ownie i nie rozwi�zuj kwantyfikator�w. Nie
+ma znaczenia na Uniksach gdzie pow�oka rozwi�zuje kwantyfikatory.
+.TP
+\-\-noplugin
+Pomi� �adowanie wtyczek. Implikowane przy \-u NONE.
+.TP
+\-\-remote
+Po��cz si� z serMNVem MNVa i edytuj w nim reszt� plik�w podanych jako
+argumenty. Je�li nie znaleziono serwera zostanie zg�oszony b��d a pliki zostan�
+otwarte w bie��MNV MNVie.
+.TP
+\-\-remote\-expr {wyra�enie}
+Po��cz z serweMNV MNVa, rozwi�� w nim {wyra�enie} i wypisz rozwi�zanie
+na standardowe wyj�cie.
+.TP
+\-\-remote\-send {klawisze}
+Po��cz z serweMNV MNVa i wy�lij do niego {klawisze}.
+.TP
+\-\-remote\-silent
+Tak samo jak \-remote, ale bez ostrze�enia kiedy nie znaleziono
+serwera.
+.TP
+\-\-remote\-wait
+Tak samo jak \-remote, ale MNV nie zako�czy dop�ki pliki pozostan�
+otwarte.
+.TP
+\-\-remote\-wait\-silent
+Tak samo jak \-\-remote\-wait, ale bez ostrze�enie kiedy nie
+znaleziono serwera.
+.TP
+\-\-serverlist
+Wypisz nazwy wszystkich serwer�MNMNVa jakie mo�na znale��.
+.TP
+\-\-servername {nazwa}
+U�yj {nazwa} jako nazwy serwera. Wykorzystane dla bie��MNVo MNVa o ile
+nie po��czone z argumentem \-\-remote, wtedy jest to nazwa serwera do
+po��czenia.
+.TP
+\-\-socketid {id}
+Wy��cznie GTK GUI: U�yj mechanizmu GtkPlug by uruchomi� gmnva w innym
+oknie.
+.TP
+\-\-version
+Wypisz informacj� o wersji i zako�cz.
+.SH POMOC ON-LINE
+By rozpocz�� wpisz ":help" w
+.B MNVie
+Wpisz ":help temat" by uzyska� pomoc na okre�lony temat.
+Przyk�ad: ":help ZZ" by uzyska� pomoc na temat polecenia "ZZ".
+U�yj <Tab> i CTRL\-D aby uzupe�ni� tematy (":help
+cmdline\-completion"). W plikach pomocy istniej� znaczniki by u�atwi�
+skakanie z jednego miejsca do innego (rodzaj link�w hipertekstowych,
+zobacz ":help").
+Mo�na w ten spos�b zobaczy� ca�� dokumentacj�, np. ":help syntax.txt".
+.SH PLIKI
+.TP 15
+/usr/local/lib/mnv/doc/*.txt
+Dokumentacja
+.B MNVa
+U�yj ":help doc\-file\-list" aby uzyska� pe�n� list�.
+.TP
+/usr/local/lib/mnv/doc/tags
+Plik znacznik�w s�u�y do znajdowania informacji w plikach dokumentacji.
+.TP
+/usr/local/lib/mnv/syntax/syntax.mnv
+Globalne uruchamianie pod�wietlania sk�adni.
+.TP
+/usr/local/lib/mnv/syntax/*.mnv
+Pliki sk�adni dla r�nych j�zyk�w.
+.TP
+/usr/local/lib/mnv/mnvrc
+Globalny plik uruchamiania
+.B MNVa
+.TP
+~/.mnvrc
+Osobiste parametry uruchamiania
+.B MNVa
+.TP
+/usr/local/lib/mnv/gmnvrc
+Globalne uruchamianie gmnva.
+.TP
+~/.gmnvrc
+Osobiste parametry uruchamiania gmnva.
+.TP
+/usr/local/lib/mnv/optwin.mnv
+Skrypt u�ywany w poleceniu ":options", dobry spos�b do przegl�dania
+i ustawiania opcji.
+.TP
+/usr/local/lib/mnv/menu.mnv
+Globalne uruchamianie menu gmnva.
+.TP
+/usr/local/lib/mnv/bugreport.mnv
+Skrypt s�u��cy do tworzenia raport�w o b��dach. Zobacz ":help bugs".
+.TP
+/usr/local/lib/mnv/filetype.mnv
+Skrypt do wykrywania typu pliku wed�ug jego nazwy. Zobacz ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/scripts.mnv
+Skrypt do wykrywania typu pliku wed�ug jego zawarto�ci. Zobacz ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/print/*.ps
+Pliku u�ywane do drukowania PostScriptu.
+.PP
+Naj�wie�sze wiadomo�ci na stronie
+.B MNVa:
+.br
+<URL:http://www.mnv.org/>
+.SH ZOBACZ TAK�E
+mnvtutor(1)
+.SH AUTOR
+.B MNV
+zosta� napisany przez Brama Moolenaara z du�� pomoc� innych os�b.
+Zobacz ":help credits" w
+.B MNVie.
+.br
+.B MNV
+bazuje na Steviem, nad kt�rym pracowali: Tim Thompson, Tony Andrews
+i G.R. (Fred) Walter.
+Ma�o ju� zosta�o z oryginalnego kodu.
+.SH B��DY
+Prawdopodobne.
+Zobacz ":help todo" by pozna� list� znanych problem�w.
+.PP
+Pami�taj �e pewna ilo�� problem�w, kt�re mog� by� uznawane przez
+niekt�rych ludzi za b��dy s� w rzeczywisto�ci spowodowane wierno�ci�
+w odtwarzaniu zachowania Vi.
+Je�li s�dzisz, �e inne rzeczy s� b��dami "poniewa� Vi robi to
+inaczej", powiniene� przyjrze� si� bli�ej plikowi vi_diff.txt (lub
+wpisa� ":help vi_diff.txt" MNMNVie).
+Sprawd� tak�e opis opcji 'compatible' i 'cpoptions'.

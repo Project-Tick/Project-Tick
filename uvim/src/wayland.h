@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -107,8 +107,8 @@ struct vwl_data_source_listener_S {
 
 struct vwl_data_offer_listener_S {
     // Return TRUE to add mime type to internal array in data offer. Note that
-    // this is not called for the special Vim mime type
-    // (wayland_vim_special_mime), but offer->from_vim is set to true.
+    // this is not called for the special MNV mime type
+    // (wayland_mnv_special_mime), but offer->from_mnv is set to true.
     // Additionally when the special mime type is received, any offer events
     // after are ignored.
     bool (*offer)(void *data, vwl_data_offer_T *offer, const char *mime_type);

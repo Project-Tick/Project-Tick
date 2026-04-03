@@ -1,10 +1,10 @@
-*gui.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*gui.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Vim's Graphical User Interface				*gui* *GUI*
+MNV's Graphical User Interface				*gui* *GUI*
 
 1. Starting the GUI		|gui-start|
 2. Scrollbars			|gui-scrollbars|
@@ -23,91 +23,91 @@ Other GUI documentation:
 ==============================================================================
 1. Starting the GUI				*gui-start* *E229* *E233*
 
-First you must make sure you actually have a version of Vim with the GUI code
+First you must make sure you actually have a version of MNV with the GUI code
 included.  You can check this with the ":version" command, it says "with xxx
 GUI", where "xxx" is X11-Motif, Photon, GTK2, GTK3, etc., or
 "MS-Windows 32 bit GUI version".
 
 How to start the GUI depends on the system used.  Mostly you can run the
-GUI version of Vim with:
-    gvim [options] [files...]
+GUI version of MNV with:
+    gmnv [options] [files...]
 
-The X11 version of Vim can run both in GUI and in non-GUI mode.  See
+The X11 version of MNV can run both in GUI and in non-GUI mode.  See
 |gui-x11-start|.
 
-			*gui-init* *gvimrc* *.gvimrc* *_gvimrc* *$MYGVIMRC*
-The gvimrc file is where GUI-specific startup commands should be placed.  It
-is always sourced after the |vimrc| file.  If you have one then the $MYGVIMRC
+			*gui-init* *gmnvrc* *.gmnvrc* *_gmnvrc* *$MYGMNVRC*
+The gmnvrc file is where GUI-specific startup commands should be placed.  It
+is always sourced after the |mnvrc| file.  If you have one then the $MYGMNVRC
 environment variable has its name.
 
 When the GUI starts up initializations are carried out, in this order:
 - The 'term' option is set to "builtin_gui" and terminal options are reset to
   their default value for the GUI |terminal-options|.
 - If the system menu file exists, it is sourced.  The name of this file is
-  normally "$VIMRUNTIME/menu.vim".  You can check this with ":version".  Also
-  see |$VIMRUNTIME|.  To skip loading the system menu include 'M' in
+  normally "$MNVRUNTIME/menu.mnv".  You can check this with ":version".  Also
+  see |$MNVRUNTIME|.  To skip loading the system menu include 'M' in
   'guioptions'.				*buffers-menu* *no_buffers_menu*
   The system menu file includes a "Buffers" menu.  If you don't want this, set
-  the "no_buffers_menu" variable in your .vimrc (not .gvimrc!): >
+  the "no_buffers_menu" variable in your .mnvrc (not .gmnvrc!): >
 	:let no_buffers_menu = 1
 < NOTE: Switching on syntax highlighting also loads the menu file, thus
   disabling the Buffers menu must be done before ":syntax on".
   The path names are truncated to 35 characters.  You can truncate them at a
   different length, for example 50, like this: >
 	:let bmenu_max_pathlen = 50
-- If the "-U {gvimrc}" command-line option has been used when starting Vim,
-  the {gvimrc} file will be read for initializations.  The following
-  initializations are skipped.  When {gvimrc} is "NONE" no file will be read
+- If the "-U {gmnvrc}" command-line option has been used when starting MNV,
+  the {gmnvrc} file will be read for initializations.  The following
+  initializations are skipped.  When {gmnvrc} is "NONE" no file will be read
   for initializations.
-- For Unix and MS-Windows, if the system gvimrc exists, it is sourced.  The
-  name of this file is normally "$VIM/gvimrc".  You can check this with
-  ":version".  Also see |$VIM|.
+- For Unix and MS-Windows, if the system gmnvrc exists, it is sourced.  The
+  name of this file is normally "$MNV/gmnvrc".  You can check this with
+  ":version".  Also see |$MNV|.
 - The following are tried, and only the first one that exists is used:
-  - If the GVIMINIT environment variable exists and is not empty, it is
+  - If the GMNVINIT environment variable exists and is not empty, it is
     executed as an Ex command.
-  - If the user gvimrc file exists, it is sourced.  The name of this file is
-    normally "$HOME/.gvimrc".  You can check this with ":version".
-  - For Win32, $HOME is set by Vim if needed, see |$HOME-windows|.
-  - When a "_gvimrc" file is not found, ".gvimrc" is tried too.  And vice
+  - If the user gmnvrc file exists, it is sourced.  The name of this file is
+    normally "$HOME/.gmnvrc".  You can check this with ":version".
+  - For Win32, $HOME is set by MNV if needed, see |$HOME-windows|.
+  - When a "_gmnvrc" file is not found, ".gmnvrc" is tried too.  And vice
     versa.
-  - On Unix, if "~/.config/vim/gvimrc" or "$XDG_CONFIG_HOME/vim/gvimrc"
+  - On Unix, if "~/.config/mnv/gmnvrc" or "$XDG_CONFIG_HOME/mnv/gmnvrc"
     exists, it is sourced.  You can check this with ":version".
-  The name of the first file found is stored in $MYGVIMRC, unless it was
+  The name of the first file found is stored in $MYGMNVRC, unless it was
   already set.
-- If the 'exrc' option is set (which is NOT the default) the file ./.gvimrc
+- If the 'exrc' option is set (which is NOT the default) the file ./.gmnvrc
   is sourced, if it exists and isn't the same file as the system or user
-  gvimrc file.  If this file is not owned by you, some security restrictions
-  apply.  When ".gvimrc" is not found, "_gvimrc" is tried too.  For Macintosh
-  and DOS/Win32 "_gvimrc" is tried first.
+  gmnvrc file.  If this file is not owned by you, some security restrictions
+  apply.  When ".gmnvrc" is not found, "_gmnvrc" is tried too.  For Macintosh
+  and DOS/Win32 "_gmnvrc" is tried first.
 
-NOTE: All but the first one are not carried out if Vim was started with
+NOTE: All but the first one are not carried out if MNV was started with
 "-u NONE" or "-u DEFAULTS" and no "-U" argument was given, or when started
 with "-U NONE".
 
-All this happens AFTER the normal Vim initializations, like reading your
-.vimrc file.  See |initialization|.
+All this happens AFTER the normal MNV initializations, like reading your
+.mnvrc file.  See |initialization|.
 But the GUI window is only opened after all the initializations have been
 carried out.  If you want some commands to be executed just after opening the
 GUI window, use the |GUIEnter| autocommand event.  Example: >
 	:autocmd GUIEnter * winpos 100 50
 
-You can use the gvimrc files to set up your own customized menus (see |:menu|)
+You can use the gmnvrc files to set up your own customized menus (see |:menu|)
 and initialize other things that you may want to set up differently from the
 terminal version.
 
 Recommended place for your personal GUI initializations:
-	Unix		    $HOME/.gvimrc or $HOME/.vim/gvimrc
-	Win32		    $HOME/_gvimrc, $HOME/vimfiles/gvimrc
-			    or $VIM/_gvimrc
-	Amiga		    s:.gvimrc, home:.gvimrc, home:vimfiles:gvimrc
-			    or $VIM/.gvimrc
-	Haiku		    $HOME/config/settings/vim/gvimrc
+	Unix		    $HOME/.gmnvrc or $HOME/.mnv/gmnvrc
+	Win32		    $HOME/_gmnvrc, $HOME/mnvfiles/gmnvrc
+			    or $MNV/_gmnvrc
+	Amiga		    s:.gmnvrc, home:.gmnvrc, home:mnvfiles:gmnvrc
+			    or $MNV/.gmnvrc
+	Haiku		    $HOME/config/settings/mnv/gmnvrc
 
 The personal initialization files are searched in the order specified above
 and only the first one that is found is read.
 
 There are a number of options which only have meaning in the GUI version of
-Vim.  These are 'guicursor', 'guifont', 'guipty' and 'guioptions'.  They are
+MNV.  These are 'guicursor', 'guifont', 'guipty' and 'guioptions'.  They are
 documented in |options.txt| with all the other options.
 
 If using the Motif version of the GUI (but not for the GTK+ or
@@ -126,19 +126,19 @@ not used.  Use the 'guifont' option to set the font.
 Also check out the 'guicursor' option, to set the colors for the cursor in
 various modes.
 
-Vim tries to make the window fit on the screen when it starts up.  This avoids
+MNV tries to make the window fit on the screen when it starts up.  This avoids
 that you can't see part of it.  On the X Window System this requires a bit of
 guesswork.  You can change the height that is used for the window title and a
 task bar with the 'guiheadroom' option.
 
 						*:winp* *:winpos* *E188*
 :winp[os]
-		Display current position of the top left corner of the GUI vim
+		Display current position of the top left corner of the GUI mnv
 		window in pixels.  Does not work in all versions.
 		Also see |getwinpos()|, |getwinposx()| and |getwinposy()|.
 
 :winp[os] {X} {Y}							*E466*
-		Put the GUI vim window at the given {X} and {Y} coordinates.
+		Put the GUI mnv window at the given {X} and {Y} coordinates.
 		The coordinates should specify the position in pixels of the
 		top left corner of the window.  Does not work in all versions.
 		Does work in an (new) xterm |xterm-color|.
@@ -155,7 +155,7 @@ task bar with the 'guiheadroom' option.
 		option.
 
 If you are running the X Window System, you can get information about the
-window Vim is running in with these commands: >
+window MNV is running in with these commands: >
 	:!xwininfo -id $WINDOWID
 	:!xprop -id $WINDOWID
 	:execute '!xwininfo -id ' .. v:windowid
@@ -164,11 +164,11 @@ window Vim is running in with these commands: >
 							*gui-IME* *iBus*
 Input methods for international characters in X that rely on the XIM
 framework, most notably iBus, have been known to produce undesirable results
-in gvim.  These may include an inability to enter spaces, or long delays
+in gmnv.  These may include an inability to enter spaces, or long delays
 between typing a character and it being recognized by the application.
 
 One workaround that has been successful, for unknown reasons, is to prevent
-gvim from forking into the background by starting it with the |-f| argument.
+gmnv from forking into the background by starting it with the |-f| argument.
 
 ==============================================================================
 2. Scrollbars						*gui-scrollbars*
@@ -186,7 +186,7 @@ The interface looks like this (with ":set guioptions=mlrb"):
 		       | |			    | | `
 		       |v|__________________________|v| `
  Normal status line -> |-+ File.c	       5,2  +-| `
- between Vim windows   |^|""""""""""""""""""""""""""|^| `
+ between MNV windows   |^|""""""""""""""""""""""""""|^| `
 		       | |			    | | `
 		       | | Another file buffer.     | | `
 		       | |			    | | `
@@ -206,7 +206,7 @@ only useful when 'nowrap' is set.
 
 VERTICAL SCROLLBARS					*gui-vert-scroll*
 
-Each Vim window has a scrollbar next to it which may be scrolled up and down
+Each MNV window has a scrollbar next to it which may be scrolled up and down
 to move through the text in that buffer.  The size of the scrollbar-thumb
 indicates the fraction of the buffer which can be seen in the window.
 When the scrollbar is dragged all the way down, the last line of the file
@@ -225,7 +225,7 @@ the rightmost windows.  The same happens on the other side.
 
 HORIZONTAL SCROLLBARS					*gui-horiz-scroll*
 
-The horizontal scrollbar (at the bottom of the Vim GUI) may be used to
+The horizontal scrollbar (at the bottom of the MNV GUI) may be used to
 scroll text sideways when the 'wrap' option is turned off.  The
 scrollbar-thumb size is such that the text of the longest visible line may be
 scrolled as far as possible left and right.  The cursor is moved when
@@ -240,7 +240,7 @@ text of the current cursor line.
 
 							*motif-intellimouse*
 If you have an Intellimouse and an X server that supports using the wheel,
-then you can use the wheel to scroll the text up and down in gvim.  This works
+then you can use the wheel to scroll the text up and down in gmnv.  This works
 with XFree86 4.0 and later, and with some older versions when you add patches.
 See |scroll-mouse-wheel|.
 
@@ -257,7 +257,7 @@ The mouse only works if the appropriate flag in the 'mouse' option is set.
 When the GUI is switched on, and 'mouse' wasn't set yet, the 'mouse' option is
 automatically set to "a", enabling it for all modes except for the
 |hit-enter| prompt.  If you don't want this, a good place to change the
-'mouse' option is the "gvimrc" file.
+'mouse' option is the "gmnvrc" file.
 
 Other options that are relevant:
 'mousefocus'	window focus follows mouse pointer |gui-mouse-focus|
@@ -280,11 +280,11 @@ A quick way to set these is with the ":behave" command.
 			'keymodel'	"startsel,stopsel"	""
 			'selection'	"exclusive"		"inclusive"
 
-In the $VIMRUNTIME directory, there is a script called |mswin.vim|, which will
+In the $MNVRUNTIME directory, there is a script called |mswin.mnv|, which will
 also map a few keys to the MS-Windows cut/copy/paste commands.  This is NOT
 compatible, since it uses the CTRL-V, CTRL-X and CTRL-C keys.  If you don't
 mind, use this command: >
-	:so $VIMRUNTIME/mswin.vim
+	:so $MNVRUNTIME/mswin.mnv
 
 For scrolling with a wheel on a mouse, see |scroll-mouse-wheel|.
 
@@ -349,9 +349,9 @@ A different kind of selection is used when:
 - whenever the current mode is not in the 'mouse' option
 - when holding the CTRL and SHIFT keys in the GUI
 
-Since Vim continues like the selection isn't there, and there is no mode
+Since MNV continues like the selection isn't there, and there is no mode
 associated with the selection, this is called modeless selection.  Any text in
-the Vim window can be selected.  Select the text by pressing the left mouse
+the MNV window can be selected.  Select the text by pressing the left mouse
 button at the start, drag to the end and release.  To extend the selection,
 use the right mouse button when 'mousemodel' is "extend", or the left mouse
 button with the shift key pressed when 'mousemodel' is "popup".
@@ -368,7 +368,7 @@ use CTRL-R +.
 
 3.4 Using Mouse on Status Lines				*gui-mouse-status*
 
-Clicking the left or right mouse button on the status line below a Vim
+Clicking the left or right mouse button on the status line below a MNV
 window makes that window the current window.  This actually happens on button
 release (to be able to distinguish a click from a drag action).
 
@@ -417,19 +417,19 @@ Mouse mapping with modifiers does not work for modeless selection.
 
 3.7 Drag and drop						*drag-n-drop*
 
-You can drag and drop one or more files into the Vim window, where they will
+You can drag and drop one or more files into the MNV window, where they will
 be opened as if a |:drop| command was used.  You can check if this is
 supported with the *drop_file* feature: `has('drop_file')`.
 
-If you hold down Shift while doing this, Vim changes to the first dropped
-file's directory.  If you hold Ctrl Vim will always split a new window for the
+If you hold down Shift while doing this, MNV changes to the first dropped
+file's directory.  If you hold Ctrl MNV will always split a new window for the
 file.  Otherwise it's only done if the current buffer has been changed.
 
-You can also drop a directory on Vim.  This starts the explorer plugin for
+You can also drop a directory on MNV.  This starts the explorer plugin for
 that directory (assuming it was enabled, otherwise you'll get an error
 message).  Keep Shift pressed to change to the directory instead.
 
-If Vim happens to be editing a command line, the names of the dropped files
+If MNV happens to be editing a command line, the names of the dropped files
 and directories will be inserted at the cursor.  This allows you to use these
 names with any Ex command.  Special characters (space, tab, double quote and
 '|'; backslash on non-MS-Windows systems) will be escaped.
@@ -439,9 +439,9 @@ names with any Ex command.  Special characters (space, tab, double quote and
 
 							*quotestar*
 You may make selections with the mouse (see |gui-mouse-select|), or by using
-Vim's Visual mode (see |v|).  If 'a' is present in 'guioptions', then
+MNV's Visual mode (see |v|).  If 'a' is present in 'guioptions', then
 whenever a selection is started (Visual or Select mode), or when the selection
-is changed, Vim becomes the owner of the windowing system's primary selection
+is changed, MNV becomes the owner of the windowing system's primary selection
 (on MS-Windows the |gui-clipboard| is used; under X11, the |x11-selection| is
 used - you should read whichever of these is appropriate now).
 
@@ -465,7 +465,7 @@ selection (contents of the clipboard): >
 When using this register under X11, also see |x11-selection|.  This also
 explains the related "+ register.
 
-Note that when pasting text from one Vim into another separate Vim, the type
+Note that when pasting text from one MNV into another separate MNV, the type
 of selection (character, line, or block) will also be copied.  For other
 applications the type is always character.  However, if the text gets
 transferred via the |x11-cut-buffer|, the selection type is ALWAYS lost.
@@ -486,20 +486,20 @@ For an introduction see |usr_42.txt| in the user manual.
 
 Basically, menus can be used just like mappings.  You can define your own
 menus, as many as you like.
-Long-time Vim users won't use menus much.  But the power is in adding your own
+Long-time MNV users won't use menus much.  But the power is in adding your own
 menus and menu items.  They are most useful for things that you can't remember
 what the key sequence was.
 
 For creating menus in a different language, see |:menutrans|.
 If you don't want to use menus at all, see |'go-M'|.
 
-							*menu.vim*
-The default menus are read from the file "$VIMRUNTIME/menu.vim".  See
-|$VIMRUNTIME| for where the path comes from.  You can set up your own menus.
+							*menu.mnv*
+The default menus are read from the file "$MNVRUNTIME/menu.mnv".  See
+|$MNVRUNTIME| for where the path comes from.  You can set up your own menus.
 Starting off with the default set is a good idea.  You can add more items, or,
 if you don't like the defaults at all, start with removing all menus
 |:unmenu-all|.  You can also avoid the default menus being loaded by adding
-this line to your .vimrc file (NOT your .gvimrc file!): >
+this line to your .mnvrc file (NOT your .gmnvrc file!): >
 	:let g:did_install_default_menus = 1
 If you also want to avoid the Syntax menu: >
 	:let g:did_install_syntax_menu = 1
@@ -519,18 +519,18 @@ loaded lazily (by the |CursorHold| event), or you can also load them manually.
 If you want to have all these items already present at startup, add: >
 	:let g:do_no_lazyload_menus = 1
 
-Note that the menu.vim is sourced when `:syntax on` or `:filetype on` is
-executed or after your .vimrc file is sourced.  This means that the 'encoding'
+Note that the menu.mnv is sourced when `:syntax on` or `:filetype on` is
+executed or after your .mnvrc file is sourced.  This means that the 'encoding'
 option and the language of messages (`:language messages`) must be set before
 that (if you want to change them).
 
 							*console-menus*
 Although this documentation is in the GUI section, you can actually use menus
-in console mode too.  You will have to load |menu.vim| explicitly then, it is
+in console mode too.  You will have to load |menu.mnv| explicitly then, it is
 not done by default.  You can use the |:emenu| command and command-line
 completion with 'wildmenu' to access the menu entries almost like a real menu
-system.  To do this, put these commands in your .vimrc file: >
-	:source $VIMRUNTIME/menu.vim
+system.  To do this, put these commands in your .mnvrc file: >
+	:source $MNVRUNTIME/menu.mnv
 	:set wildmenu
 	:set cpo-=<
 	:set wcm=<C-Z>
@@ -542,11 +542,11 @@ This does require the |+menu| feature enabled at compile time.
 							*tear-off-menus*
 GTK+ 2 and Motif support Tear-off menus.  These are sort of sticky menus or
 pop-up menus that are present all the time.  If the resizing does not work
-correctly, this may be caused by using something like "Vim*geometry" in the
-defaults.  Use "Vim.geometry" instead.
+correctly, this may be caused by using something like "MNV*geometry" in the
+defaults.  Use "MNV.geometry" instead.
 
 As to GTK+ 3, tear-off menus have been deprecated since GTK+ 3.4.
-Accordingly, they are disabled if gvim is linked against GTK+ 3.4 or later.
+Accordingly, they are disabled if gmnv is linked against GTK+ 3.4 or later.
 
 The Win32 GUI version emulates Motif's tear-off menus.  Actually, a Motif user
 will spot the differences easily, but hopefully they're just as useful.  You
@@ -752,7 +752,7 @@ simple.
 							*gui-toolbar*
 The toolbar is currently available in the Win32, Motif, GTK+ (X11),
 and Photon GUI.  It should turn up in other GUIs in due course.  The
-default toolbar is setup in menu.vim.
+default toolbar is setup in menu.mnv.
 The display of the toolbar is controlled by the 'guioptions' letter 'T'.  You
 can thus have menu & toolbar together, or either on its own, or neither.
 The appearance is controlled by the 'toolbar' option.  You can choose between
@@ -760,7 +760,7 @@ an image, text or both.
 
 							*toolbar-icon*
 The toolbar is defined as a special menu called ToolBar, which only has one
-level.  Vim interprets the items in this menu as follows:
+level.  MNV interprets the items in this menu as follows:
 1)  If an "icon=" argument was specified, the file with this name is used.
     The file can either be specified with the full path or with the base name.
     In the last case it is searched for in the "bitmaps" directory in
@@ -774,7 +774,7 @@ level.  Vim interprets the items in this menu as follows:
     A menu priority must come _after_ the icon argument: >
 	:amenu icon=foo 1.42 ToolBar.Foo :echo "42!"<CR>
 2)  An item called 'BuiltIn##', where ## is a number, is taken as number ## of
-    the built-in bitmaps available in Vim.  Currently there are 31 numbered
+    the built-in bitmaps available in MNV.  Currently there are 31 numbered
     from 0 to 30 which cover most common editing operations |builtin-tools|. >
 	:amenu ToolBar.BuiltIn22 :call SearchNext("back")<CR>
 3)  An item with another name is first searched for in the directory
@@ -791,12 +791,12 @@ level.  Vim interprets the items in this menu as follows:
     The light grey pixels will be changed to the Window frame color and the
     dark grey pixels to the window shadow color.  More colors might also work,
     depending on your system.
-4)  If the bitmap is still not found, Vim checks for a match against its list
+4)  If the bitmap is still not found, MNV checks for a match against its list
     of built-in names.  Each built-in button image has a name.
     So the command >
 	:amenu ToolBar.Open :e
 <   will show the built-in "open a file" button image if no open.bmp exists.
-    All the built-in names can be seen used in menu.vim.
+    All the built-in names can be seen used in menu.mnv.
 5)  If all else fails, a blank, but functioning, button is displayed.
 
 							*builtin-tools*
@@ -810,13 +810,13 @@ nr  Name		Normal action  ~
 06  Copy		copy selected text to clipboard
 07  Paste		paste text from clipboard
 08  Print		print current buffer
-09  Help		open a buffer on Vim's builtin help
+09  Help		open a buffer on MNV's builtin help
 10  Find		start a search command
 11  SaveAll		write all modified buffers to file
 12  SaveSesn		write session file for current situation
 13  NewSesn		write new session file
 14  LoadSesn		load session file
-15  RunScript		browse for file to run as a Vim script
+15  RunScript		browse for file to run as a MNV script
 16  Replace		prompt for substitute command
 17  WinClose		close current window
 18  WinMax		make current window use many lines
@@ -849,10 +849,10 @@ make the items look like icons.
 If the items do not fit then the last ones cannot be used.  The toolbar does
 not wrap.
 
-Note that Vim may be in any mode when executing these commands.  The menu
+Note that MNV may be in any mode when executing these commands.  The menu
 should be defined for Normal mode and will be executed without changing the
 current mode.  Thus if the current window is in Visual mode and the menu
-command does not intentionally change the mode, Vim will remain in Visual
+command does not intentionally change the mode, MNV will remain in Visual
 mode.  Best is to use `:nnoremenu` to avoid side effects.
 
 Example for debugger tools: >
@@ -920,7 +920,7 @@ callback define a menu and the user lists menus in a way it shows
 				    'c': |:cmenu|  Cmdline mode
 
 
-If the console-mode vim has been compiled with WANT_MENU defined, you can
+If the console-mode mnv has been compiled with WANT_MENU defined, you can
 use :emenu to access useful menu items you may have got used to from GUI
 mode.  See 'wildmenu' for an option that works well with this.  See
 |console-menus| for an example.
@@ -983,7 +983,7 @@ item for the keyword under the cursor.  The register "z" is used. >
   :imenu Words.Remove\ Var	<Esc>wb"zye:unmenu! Words.<C-R>z<CR>a
 
 (the rhs is in <> notation, you can copy/paste this text to try out the
-mappings, or put these lines in your gvimrc; "<C-R>" is CTRL-R, "<CR>" is
+mappings, or put these lines in your gmnvrc; "<C-R>" is CTRL-R, "<CR>" is
 the <CR> key.  |<>|)
 
 							*tooltips* *menu-tips*
@@ -1005,7 +1005,7 @@ Note: To create menus for terminal mode, use |:tlmenu| instead.
 
 When a tip is defined for a menu item, it appears in the command-line area
 when the mouse is over that item, much like a standard Windows menu hint in
-the status bar.  (Except when Vim is in Command-line mode, when of course
+the status bar.  (Except when MNV is in Command-line mode, when of course
 nothing is displayed.)
 When a tip is defined for a ToolBar item, it appears as a tooltip when the
 mouse pauses over that button, in the usual fashion.  Use the |hl-Tooltip|
@@ -1026,7 +1026,7 @@ The ":tmenu" command works just like other menu commands, it uses the same
 arguments.  ":tunmenu" deletes an existing menu tip, in the same way as the
 other unmenu commands.
 
-If a menu item becomes invalid (i.e. its actions in all modes are deleted) Vim
+If a menu item becomes invalid (i.e. its actions in all modes are deleted) MNV
 deletes the menu tip (and the item) for you.  This means that :aunmenu deletes
 a menu item - you don't need to do a :tunmenu as well.
 
@@ -1075,7 +1075,7 @@ This section describes font related options.
 
 GUIFONT							*gui-font*
 
-'guifont' is the option that tells Vim what font to use.  In its simplest form
+'guifont' is the option that tells MNV what font to use.  In its simplest form
 the value is just one font name.  It can also be a list of font names
 separated with commas.  The first valid font is used.  When no valid font can
 be found you will get an error message.
@@ -1095,14 +1095,14 @@ Spaces after a comma are ignored.  To include a comma in a font name precede
 it with a backslash.  Setting an option requires an extra backslash before a
 space and a backslash.  See also |option-backslash|.  For example: >
     :set guifont=Screen15,\ 7x13,font\\,with\\,commas
-will make Vim try to use the font "Screen15" first, and if it fails it will
+will make MNV try to use the font "Screen15" first, and if it fails it will
 try to use "7x13" and then "font,with,commas" instead.
 
-If none of the fonts can be loaded, Vim will keep the current setting.  If an
-empty font list is given, Vim will try using other resource settings (for X,
-it will use the Vim.font resource), and finally it will try some builtin
+If none of the fonts can be loaded, MNV will keep the current setting.  If an
+empty font list is given, MNV will try using other resource settings (for X,
+it will use the MNV.font resource), and finally it will try some builtin
 default which should always be there ("7x13" in the case of X).  The font
-names given should be "normal" fonts.  Vim will try to find the related bold
+names given should be "normal" fonts.  MNV will try to find the related bold
 and italic fonts.
 
 For Win32, GTK, Motif, Mac OS and Photon: >
@@ -1182,14 +1182,14 @@ All GUI versions but GTK+:
 'guifontwide' is only used when 'encoding' is set to "utf-8" and 'guifontset'
 is empty or invalid.
 When 'guifont' is set and a valid font is found in it and 'guifontwide' is
-empty Vim will attempt to find a matching double-width font and set
+empty MNV will attempt to find a matching double-width font and set
 'guifontwide' to it.
 
 GTK+ GUI only:				*guifontwide_gtk*
 
 If set and valid, 'guifontwide' is always used for double width characters,
 even if 'encoding' is not set to "utf-8".
-Vim does not attempt to find an appropriate value for 'guifontwide'
+MNV does not attempt to find an appropriate value for 'guifontwide'
 automatically.  If 'guifontwide' is empty Pango/Xft will choose the font for
 characters not available in 'guifont'.  Thus you do not need to set
 'guifontwide' at all unless you want to override the choice made by Pango/Xft.
@@ -1217,7 +1217,7 @@ This section describes other features which are related to the GUI.
 - In the GUI, several normal keys may have modifiers in mappings etc, these
   are <Space>, <Tab>, <NL>, <CR>, <Esc>.
 
-- To check in a Vim script if the GUI is being used, you can use something
+- To check in a MNV script if the GUI is being used, you can use something
   like this: >
 
 	if has("gui_running")
@@ -1226,7 +1226,7 @@ This section describes other features which are related to the GUI.
 	   echo "Boring old console"
 	endif
 <							*setting-guifont*
-- When you use the same vimrc file on various systems, you can use something
+- When you use the same mnvrc file on various systems, you can use something
   like this to set options specifically for each type of GUI: >
 
 	if has("gui_running")
@@ -1246,7 +1246,7 @@ It should be distributed with Windows.
 ==============================================================================
 8. Shell Commands					*gui-shell*
 
-For the X11 GUI the external commands are executed inside the gvim window.
+For the X11 GUI the external commands are executed inside the gmnv window.
 See |gui-pty|.
 
 WARNING: Executing an external command from the X11 GUI will not always work.
@@ -1258,4 +1258,4 @@ careful!
 For the Win32 GUI the external commands are executed in a separate window.
 See |gui-shell-win32|.
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

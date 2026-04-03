@@ -1,18 +1,18 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
- * vim600:fdm=marker fdl=1 fdc=3:
+ * mnv600:fdm=marker fdl=1 fdc=3:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * fold.c: code for folding
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_FOLDING)
 
@@ -1469,7 +1469,7 @@ deleteFoldEntry(garray_T *gap, int idx, int recursive)
 				  sizeof(fold_T) * (gap->ga_len - (idx + 1)));
 	    // move the contained folds one level up
 	    mch_memmove(fp, nfp, (size_t)(sizeof(fold_T) * moved));
-	    vim_free(nfp);
+	    mnv_free(nfp);
 	    gap->ga_len += moved - 1;
 	}
     }
@@ -1815,7 +1815,7 @@ foldAddMarker(linenr_T lnum, char_u *marker, int markerlen)
     STRCPY(newline, line);
     // Append the marker to the end of the line
     if (p == NULL || line_is_comment)
-	vim_strncpy(newline + line_len, marker, markerlen);
+	mnv_strncpy(newline + line_len, marker, markerlen);
     else
     {
 	STRCPY(newline + line_len, cms);
@@ -1873,7 +1873,7 @@ foldDelMarker(linenr_T lnum, char_u *marker, int markerlen)
 	{
 	    // Found the marker, include a digit if it's there.
 	    len = markerlen;
-	    if (VIM_ISDIGIT(p[len]))
+	    if (MNV_ISDIGIT(p[len]))
 		++len;
 	    if (*cms != NUL)
 	    {
@@ -1940,18 +1940,18 @@ get_foldtext(
 	char_u	*p;
 
 	// Set "v:foldstart" and "v:foldend".
-	set_vim_var_nr(VV_FOLDSTART, lnum);
-	set_vim_var_nr(VV_FOLDEND, lnume);
+	set_mnv_var_nr(VV_FOLDSTART, lnum);
+	set_mnv_var_nr(VV_FOLDEND, lnume);
 
 	// Set "v:folddashes" to a string of "level" dashes.
 	// Set "v:foldlevel" to "level".
 	level = foldinfo->fi_level;
 	if (level > (int)sizeof(dashes) - 1)
 	    level = (int)sizeof(dashes) - 1;
-	vim_memset(dashes, '-', (size_t)level);
+	mnv_memset(dashes, '-', (size_t)level);
 	dashes[level] = NUL;
-	set_vim_var_string(VV_FOLDDASHES, dashes, level);
-	set_vim_var_nr(VV_FOLDLEVEL, (long)level);
+	set_mnv_var_string(VV_FOLDDASHES, dashes, level);
+	set_mnv_var_nr(VV_FOLDLEVEL, (long)level);
 
 	// skip evaluating 'foldtext' on errors
 	if (!got_fdt_error)
@@ -1978,7 +1978,7 @@ get_foldtext(
 	}
 	last_lnum = lnum;
 	last_wp   = wp;
-	set_vim_var_string(VV_FOLDDASHES, NULL, -1);
+	set_mnv_var_string(VV_FOLDDASHES, NULL, -1);
 
 	if (!did_emsg && save_did_emsg)
 	    did_emsg = save_did_emsg;
@@ -1993,7 +1993,7 @@ get_foldtext(
 
 		if (has_mbyte && (len = (*mb_ptr2len)(p)) > 1)
 		{
-		    if (!vim_isprintc((*mb_ptr2char)(p)))
+		    if (!mnv_isprintc((*mb_ptr2char)(p)))
 			break;
 		    p += len - 1;
 		}
@@ -2006,7 +2006,7 @@ get_foldtext(
 	    if (*p != NUL)
 	    {
 		p = transstr(text);
-		vim_free(text);
+		mnv_free(text);
 		text = p;
 	    }
 	}
@@ -2016,7 +2016,7 @@ get_foldtext(
     {
 	long count = (long)(lnume - lnum + 1);
 
-	vim_snprintf((char *)buf, FOLD_TEXT_LEN,
+	mnv_snprintf((char *)buf, FOLD_TEXT_LEN,
 		     NGETTEXT("+--%3ld line folded ",
 					       "+--%3ld lines folded ", count),
 		     count);
@@ -2046,7 +2046,7 @@ foldtext_cleanup(char_u *str)
     // Ignore leading and trailing white space in 'commentstring'.
     cms_start = skipwhite(curbuf->b_p_cms);
     cms_slen = (int)STRLEN(cms_start);
-    while (cms_slen > 0 && VIM_ISWHITE(cms_start[cms_slen - 1]))
+    while (cms_slen > 0 && MNV_ISWHITE(cms_start[cms_slen - 1]))
 	--cms_slen;
 
     // locate "%s" in 'commentstring', use the part before and after it.
@@ -2057,7 +2057,7 @@ foldtext_cleanup(char_u *str)
 	cms_slen = (int)(cms_end - cms_start);
 
 	// exclude white space before "%s"
-	while (cms_slen > 0 && VIM_ISWHITE(cms_start[cms_slen - 1]))
+	while (cms_slen > 0 && MNV_ISWHITE(cms_start[cms_slen - 1]))
 	    --cms_slen;
 
 	// skip "%s" and white space after it
@@ -2076,12 +2076,12 @@ foldtext_cleanup(char_u *str)
 	    len = foldendmarkerlen;
 	if (len > 0)
 	{
-	    if (VIM_ISDIGIT(s[len]))
+	    if (MNV_ISDIGIT(s[len]))
 		++len;
 
 	    // May remove 'commentstring' start.  Useful when it's a double
 	    // quote and we already removed a double quote.
-	    for (p = s; p > str && VIM_ISWHITE(p[-1]); --p)
+	    for (p = s; p > str && MNV_ISWHITE(p[-1]); --p)
 		;
 	    if (p >= str + cms_slen
 			   && STRNCMP(p - cms_slen, cms_start, cms_slen) == 0)
@@ -2106,7 +2106,7 @@ foldtext_cleanup(char_u *str)
 	}
 	if (len != 0)
 	{
-	    while (VIM_ISWHITE(s[len]))
+	    while (MNV_ISWHITE(s[len]))
 		++len;
 	    STRMOVE(s, s + len);
 	}
@@ -3261,7 +3261,7 @@ foldlevelIndent(fline_T *flp)
 
     // empty line or lines starting with a character in 'foldignore': level
     // depends on surrounding lines
-    if (*s == NUL || vim_strchr(flp->wp->w_p_fdi, *s) != NULL)
+    if (*s == NUL || mnv_strchr(flp->wp->w_p_fdi, *s) != NULL)
     {
 	// first and last line can't be undefined, use level 0
 	if (lnum == 1 || lnum == buf->b_ml.ml_line_count)
@@ -3317,7 +3317,7 @@ foldlevelExpr(fline_T *flp)
     win = curwin;
     curwin = flp->wp;
     curbuf = flp->wp->w_buffer;
-    set_vim_var_nr(VV_LNUM, lnum);
+    set_mnv_var_nr(VV_LNUM, lnum);
 
     flp->start = 0;
     flp->had_end = flp->end;
@@ -3408,7 +3408,7 @@ foldlevelExpr(fline_T *flp)
     static void
 parseMarker(win_T *wp)
 {
-    foldendmarker = vim_strchr(wp->w_p_fmr, ',');
+    foldendmarker = mnv_strchr(wp->w_p_fmr, ',');
     foldstartmarkerlen = (int)(foldendmarker++ - wp->w_p_fmr);
     foldendmarkerlen = (int)STRLEN(foldendmarker);
 }
@@ -3451,7 +3451,7 @@ foldlevelMarker(fline_T *flp)
 	{
 	    // found startmarker: set flp->lvl
 	    s += foldstartmarkerlen;
-	    if (VIM_ISDIGIT(*s))
+	    if (MNV_ISDIGIT(*s))
 	    {
 		n = atoi((char *)s);
 		if (n > 0)
@@ -3476,7 +3476,7 @@ foldlevelMarker(fline_T *flp)
 	{
 	    // found endmarker: set flp->lvl_next
 	    s += foldendmarkerlen;
-	    if (VIM_ISDIGIT(*s))
+	    if (MNV_ISDIGIT(*s))
 	    {
 		n = atoi((char *)s);
 		if (n > 0)
@@ -3680,7 +3680,7 @@ foldclosed_both(
     linenr_T	lnum;
     linenr_T	first, last;
 
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
     lnum = tv_get_lnum(argvars);
@@ -3726,7 +3726,7 @@ f_foldlevel(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 # ifdef FEAT_FOLDING
     linenr_T	lnum;
 
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
     lnum = tv_get_lnum(argvars);
@@ -3756,9 +3756,9 @@ f_foldtext(typval_T *argvars UNUSED, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 # ifdef FEAT_FOLDING
-    foldstart = (linenr_T)get_vim_var_nr(VV_FOLDSTART);
-    foldend = (linenr_T)get_vim_var_nr(VV_FOLDEND);
-    dashes = get_vim_var_str(VV_FOLDDASHES);
+    foldstart = (linenr_T)get_mnv_var_nr(VV_FOLDSTART);
+    foldend = (linenr_T)get_mnv_var_nr(VV_FOLDEND);
+    dashes = get_mnv_var_str(VV_FOLDDASHES);
     if (foldstart > 0 && foldend <= curbuf->b_ml.ml_line_count
 	    && dashes != NULL)
     {
@@ -3774,7 +3774,7 @@ f_foldtext(typval_T *argvars UNUSED, typval_T *rettv)
 	{
 	    s = skipwhite(s + 2);
 	    if (*skipwhite(s) == NUL
-			    && lnum + 1 < (linenr_T)get_vim_var_nr(VV_FOLDEND))
+			    && lnum + 1 < (linenr_T)get_mnv_var_nr(VV_FOLDEND))
 	    {
 		s = skipwhite(ml_get(lnum + 1));
 		if (*s == '*')
@@ -3818,7 +3818,7 @@ f_foldtextresult(typval_T *argvars UNUSED, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
 # ifdef FEAT_FOLDING
@@ -3836,7 +3836,7 @@ f_foldtextresult(typval_T *argvars UNUSED, typval_T *rettv)
 	text = get_foldtext(curwin, lnum, lnum + fold_count - 1,
 							       &foldinfo, buf);
 	if (text == buf)
-	    text = vim_strsave(text);
+	    text = mnv_strsave(text);
 	rettv->vval.v_string = text;
     }
 

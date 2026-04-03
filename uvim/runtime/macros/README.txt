@@ -1,4 +1,4 @@
-The macros in the maze, hanoi and urm directories can be used to test Vim for
+The macros in the maze, hanoi and urm directories can be used to test MNV for
 vi compatibility.  They have been written for vi to show its unlimited
 possibilities.	The life macros can be used for performance comparisons.
 
@@ -10,19 +10,19 @@ urm	Macros that simulate a simple computer: "Universal Register Machine"
 
 
 The other files contain some handy utilities.  They also serve as examples for
-how to use Vi and Vim functionality.
+how to use Vi and MNV functionality.
 
-less.sh + less.vim	make Vim work like less (or more)
+less.sh + less.mnv	make MNV work like less (or more)
 
 
 
 The following have been moved to an optional package.  Add the command to your
-vimrc file to use the package:
+mnvrc file to use the package:
 
 packadd! dvorak		" Dvorak keyboard support; adds mappings
 
 packadd! editexisting	" when editing a file that is already edited with
-			" another Vim instance, go to that Vim instance
+			" another MNV instance, go to that MNV instance
 
 packadd! justify	" justifying text.
 

@@ -1,0 +1,13 @@
+" This script makes a tags file for help text.
+"
+" Usage: mnv -eX -u doctags.mnv
+
+try
+  helptags ++t .
+  echo 'help tags updated'
+catch
+  echo v:exception
+  echo 'help tags failed update'
+endtry
+echo ''
+qa!

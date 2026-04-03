@@ -43,7 +43,7 @@ matchit-spaces	matchit.txt	/*matchit-spaces*
 matchit-troubleshoot	matchit.txt	/*matchit-troubleshoot*
 matchit-v_%	matchit.txt	/*matchit-v_%*
 matchit.txt	matchit.txt	/*matchit.txt*
-matchit.vim	matchit.txt	/*matchit.vim*
+matchit.mnv	matchit.txt	/*matchit.mnv*
 o_[%	matchit.txt	/*o_[%*
 o_]%	matchit.txt	/*o_]%*
 o_g%	matchit.txt	/*o_g%*

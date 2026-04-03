@@ -49,4 +49,4 @@ clean:
 
 .PHONY: all clean
 
-# vim:ts=8:sw=8:tw=78
+# mnv:ts=8:sw=8:tw=78

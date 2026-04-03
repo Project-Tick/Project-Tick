@@ -1,0 +1,55 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH EMNV 1 "12 augusti 2024"
+.SH NAMN
+emnv  enkel MNV, redigera en fil med MNV och konfigurera för lägeslös
+redigering
+.SH SYNOPSIS
+.br
+\fBemnv\fP [flaggor] [fil ..]
+.br
+\fBeview\fP
+.SH BESKRIVNING
+\fBeMNV\fP startar \fBMNV\fP och ställer in flaggor så att det fungerar som en
+lägeslös redigerare.  Det är fortfarande MNV, men används som en
+pek\-och\-klicka\-redigerare.  Det känns ungefär som att använda Notepad i
+MS\-Windows.  \fBeMNV\fP körs alltid i grafiskt gränssnitt, för att möjliggöra
+användning av menyer och verktygsfält.
+.PP
+Endast för personer som verkligen inte kan arbeta med MNV på normalt
+sätt. Redigeringen blir mycket mindre effektiv.
+.PP
+\fBeview\fP är detsamma, men startar i skrivskyddat läge.  Det fungerar precis
+som emnv \-R.
+.PP
+Se mnv(1) för mer information om MNV, flaggor etc.
+.PP
+Flaggan "insertmode" är inställt så att man kan skriva text direkt.
+.br
+Mappningar är inställda så att kopiera och klistra in fungerar med
+MS\-Windows\-tangenterna. CTRL\-X klipper ut text, CTRL\-C kopierar text och
+CTRL\-V klistrar in text. Använd CTRL\-Q för att få den ursprungliga
+funktionen för CTRL\-V.
+.SH FLAGGOR
+Se mnv(1).
+.SH FILER
+.TP  15
+/usr/local/share/mnv/mnv??/emnv.mnv
+Skriptet som läses in för att initialisera eMNV.
+.br
+\fImnv??\fP är ett kort versionsnummer, till exempel mnv91 för \fBMNV 9.1\fP
+.SH AKA
+Även känt som "MNV för gumbies".  När du använder emnv förväntas du ta en
+näsduk, göra en knut i varje hörn och bära den på huvudet.
+.SH "SE ÄVEN"
+mnv(1)
+.SH UPPHOVSPERSON
+Det mesta av \fBMNV\fP en har skapats av Bram Moolenaar, med stor hjälp från
+andra.  Se menyn Hjälp/Tack till.
+.SH SVENSK ÖVERSÄTTNING
+MNV översattes ursprungligen av Johan Svedberg 2003-2007 och har under 2025
+uppdaterats av Daniel Nylander, speciellt manualsidor samt själva MNV.
+Om du hittar fel i översättningen, kontakta <tp-sv@listor.tp-sv.se>.

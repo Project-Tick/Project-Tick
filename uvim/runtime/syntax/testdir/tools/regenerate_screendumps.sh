@@ -9,13 +9,13 @@
 #	argument.
 # 5) Summarise any differences.
 #
-# Provided that "git difftool" is set up (see src/testdir/commondumps.vim),
+# Provided that "git difftool" is set up (see src/testdir/commondumps.mnv),
 # run "git difftool HEAD -- '**/*.dump'" to collate tracked and generated
 # screendumps.
 
 case "$1" in
 -h | --help)
-	printf >&2 "Usage: [time VIM_SYNTAX_TEST_LOG=/tmp/log] $0 [1 | 2 | ...]\n"
+	printf >&2 "Usage: [time MNV_SYNTAX_TEST_LOG=/tmp/log] $0 [1 | 2 | ...]\n"
 	exit 0
 	;;
 esac
@@ -48,9 +48,9 @@ spuriosities=''
 # Because the clean target of Make will be executed before each syntax test,
 # this environment variable needs to be pointed to an existing file that is
 # created in a directory not affectable by the target.
-if test -w "$VIM_SYNTAX_TEST_LOG"
+if test -w "$MNV_SYNTAX_TEST_LOG"
 then
-	log=-e VIM_SYNTAX_TEST_LOG="$VIM_SYNTAX_TEST_LOG"
+	log=-e MNV_SYNTAX_TEST_LOG="$MNV_SYNTAX_TEST_LOG"
 else
 	log=
 fi
@@ -123,4 +123,4 @@ then
 	exit 87
 fi
 
-# vim:sw=8:ts=8:noet:nosta:
+# mnv:sw=8:ts=8:noet:nosta:

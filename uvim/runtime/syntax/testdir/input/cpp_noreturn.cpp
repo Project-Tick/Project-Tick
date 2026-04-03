@@ -1,6 +1,6 @@
 // C++ attributes - noreturn (since C++11)
 
-// Source: https://en.cppreference.com/w/c/language/noreturn.html [modified by Vim Project]
+// Source: https://en.cppreference.com/w/c/language/noreturn.html [modified by MNV Project]
 
 #include <stdio.h>
 #include <stdlib.h>

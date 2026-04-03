@@ -1,24 +1,24 @@
 /* strings.c */
-char_u *vim_strsave(char_u *string);
-char_u *vim_strnsave(char_u *string, size_t len);
-char_u *vim_strsave_escaped(char_u *string, char_u *esc_chars);
-char_u *vim_strsave_escaped_ext(char_u *string, char_u *esc_chars, int cc, int bsl);
+char_u *mnv_strsave(char_u *string);
+char_u *mnv_strnsave(char_u *string, size_t len);
+char_u *mnv_strsave_escaped(char_u *string, char_u *esc_chars);
+char_u *mnv_strsave_escaped_ext(char_u *string, char_u *esc_chars, int cc, int bsl);
 int csh_like_shell(void);
-char_u *vim_strsave_shellescape(char_u *string, int do_special, int do_newline);
-char_u *vim_strsave_up(char_u *string);
-char_u *vim_strnsave_up(char_u *string, size_t len);
-void vim_strup(char_u *p);
+char_u *mnv_strsave_shellescape(char_u *string, int do_special, int do_newline);
+char_u *mnv_strsave_up(char_u *string);
+char_u *mnv_strnsave_up(char_u *string, size_t len);
+void mnv_strup(char_u *p);
 char_u *strlow_save(char_u *orig);
 void del_trailing_spaces(char_u *ptr);
-void vim_strncpy(char_u *to, char_u *from, size_t len);
-void vim_strcat(char_u *to, char_u *from, size_t tosize);
-size_t vim_strlen_maxlen(char *s, size_t maxlen);
-int vim_stricmp(char *s1, char *s2);
-int vim_strnicmp(char *s1, char *s2, size_t len);
-int vim_strnicmp_asc(char *s1, char *s2, size_t len);
-char_u *vim_strchr(char_u *string, int c);
-char_u *vim_strbyte(char_u *string, int c);
-char_u *vim_strrchr(char_u *string, int c);
+void mnv_strncpy(char_u *to, char_u *from, size_t len);
+void mnv_strcat(char_u *to, char_u *from, size_t tosize);
+size_t mnv_strlen_maxlen(char *s, size_t maxlen);
+int mnv_stricmp(char *s1, char *s2);
+int mnv_strnicmp(char *s1, char *s2, size_t len);
+int mnv_strnicmp_asc(char *s1, char *s2, size_t len);
+char_u *mnv_strchr(char_u *string, int c);
+char_u *mnv_strbyte(char_u *string, int c);
+char_u *mnv_strrchr(char_u *string, int c);
 void sort_strings(char_u **files, int count);
 int has_non_ascii(char_u *s);
 char_u *concat_str(char_u *str1, char_u *str2);
@@ -54,4 +54,4 @@ void f_tr(typval_T *argvars, typval_T *rettv);
 void f_trim(typval_T *argvars, typval_T *rettv);
 void f_uridecode(typval_T *argvars, typval_T *rettv);
 void f_uriencode(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

@@ -1,14 +1,14 @@
-*tips.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*tips.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Tips and ideas for using Vim				*tips*
+Tips and ideas for using MNV				*tips*
 
 These are just a few that we thought would be helpful for many users.
 You can find many more tips on the wiki.  The URL can be found on
-http://www.vim.org
+http://www.mnv.org
 
 Don't forget to browse the user manual, it also contains lots of useful tips
 |usr_toc.txt|.
@@ -35,7 +35,7 @@ Opening help in the current window		|package-helpcurwin|
 ==============================================================================
 Editing C programs					*C-editing*
 
-There are quite a few features in Vim to help you edit C program files.  Here
+There are quite a few features in MNV to help you edit C program files.  Here
 is an overview with tags to jump to:
 
 |usr_29.txt|		Moving through programs chapter in the user manual.
@@ -100,7 +100,7 @@ What you need:
 - An identifier database file called "ID" in the current directory.  You can
   create it with the shell command "mkid file1 file2 ..".
 
-Put this in your .vimrc: >
+Put this in your .mnvrc: >
 	map _u :call ID_search()<Bar>execute "/\\<" .. g:word .. "\\>"<CR>
 	map _n :n<Bar>execute "/\\<" .. g:word .. "\\>"<CR>
 
@@ -111,7 +111,7 @@ Put this in your .vimrc: >
 	  execute "next " .. x
 	endfun
 
-To use it, place the cursor on a word, type "_u" and vim will load the file
+To use it, place the cursor on a word, type "_u" and mnv will load the file
 that contains the word.  Search for the next occurrence of the word in the
 same file with "n".  Go to the next file with "_n".
 
@@ -125,14 +125,14 @@ Switching screens in an xterm		*xterm-screens* *xterm-save-screen*
 
 (From comp.editors, by Juergen Weigert, in reply to a question)
 
-:> Another question is that after exiting vim, the screen is left as it
+:> Another question is that after exiting mnv, the screen is left as it
 :> was, i.e. the contents of the file I was viewing (editing) was left on
 :> the screen. The output from my previous like "ls" were lost,
 :> ie. no longer in the scrolling buffer. I know that there is a way to
-:> restore the screen after exiting vim or other vi like editors,
+:> restore the screen after exiting mnv or other vi like editors,
 :> I just don't know how. Helps are appreciated. Thanks.
 :
-:I imagine someone else can answer this.  I assume though that vim and vi do
+:I imagine someone else can answer this.  I assume though that mnv and vi do
 :the same thing as each other for a given xterm setup.
 
 They not necessarily do the same thing, as this may be a termcap vs.
@@ -145,11 +145,11 @@ the programs in question one uses terminfo and the other uses termcap
 In your particular problem, you are looking for the control sequences
 ^[[?47h and ^[[?47l.  These switch between xterms alternate and main screen
 buffer.  As a quick workaround a command sequence like >
-	echo -n "^[[?47h"; vim ... ; echo -n "^[[?47l"
+	echo -n "^[[?47h"; mnv ... ; echo -n "^[[?47l"
 may do what you want.  (My notation ^[ means the ESC character, further down
 you'll see that the databases use \E instead).
 
-On startup, vim echoes the value of the termcap variable ti (terminfo:
+On startup, mnv echoes the value of the termcap variable ti (terminfo:
 smcup) to the terminal.  When exiting, it echoes te (terminfo: rmcup).  Thus
 these two variables are the correct place where the above mentioned control
 sequences should go.
@@ -162,11 +162,11 @@ entries similar to: >
 PS: If you find any difference, someone (your sysadmin?) should better check
     the complete termcap and terminfo database for consistency.
 
-NOTE 1: If you recompile Vim with FEAT_XTERM_SAVE defined in feature.h, the
+NOTE 1: If you recompile MNV with FEAT_XTERM_SAVE defined in feature.h, the
 builtin xterm will include the mentioned "te" and "ti" entries.
 
 NOTE 2: If you want to disable the screen switching, and you don't want to
-change your termcap, you can add these lines to your .vimrc: >
+change your termcap, you can add these lines to your .mnvrc: >
 	:set t_ti= t_te=
 
 ==============================================================================
@@ -223,7 +223,7 @@ Add the 'e' flag if you don't want an error when there are no matches.
 
 An alternative is using |v_g_CTRL-G| in Visual mode.
 
-If you want to find matches in multiple files use |:vimgrep|.
+If you want to find matches in multiple files use |:mnvgrep|.
 
 							*count-bytes*
 If you want to count bytes, you can use this:
@@ -267,7 +267,7 @@ digraph.c
 
 and I want to rename *.c *.bla.  I'd do it like this: >
 
-	$ vim
+	$ mnv
 	:r !ls *.c
 	:%s/\(.*\).c/mv & \1.bla
 	:w !sh
@@ -278,17 +278,17 @@ Change a name in multiple files				*change-name*
 
 Example for using a script file to change a name in several files:
 
-	Create a file "subs.vim" containing substitute commands and a :update
+	Create a file "subs.mnv" containing substitute commands and a :update
 	command: >
 		:%s/Jones/Smith/g
 		:%s/Allen/Peter/g
 		:update
 <
-	Execute Vim on all files you want to change, and source the script for
+	Execute MNV on all files you want to change, and source the script for
 	each argument: >
 
-		vim *.let
-		argdo source subs.vim
+		mnv *.let
+		argdo source subs.mnv
 
 See |:argdo|.
 
@@ -302,7 +302,7 @@ increase the speed.
 If your .cshrc (or other file, depending on the shell used) is very long, you
 should separate it into a section for interactive use and a section for
 non-interactive use (often called secondary shells).  When you execute a
-command from Vim like ":!ls", you do not need the interactive things (for
+command from MNV like ":!ls", you do not need the interactive things (for
 example, setting the prompt).  Put the stuff that is not needed after these
 lines: >
 
@@ -366,7 +366,7 @@ be able to give comments to the parts of the mapping. >
 	:execute m			      |" define the mapping
 
 (<> notation |<>|.  Note that this is all typed literally.  ^W is "^" "W", not
-CTRL-W.  You can copy/paste this into Vim if '<' is not included in
+CTRL-W.  You can copy/paste this into MNV if '<' is not included in
 'cpoptions'.)
 
 Note that the last comment starts with |", because the ":execute" command
@@ -389,7 +389,7 @@ single line >
 Compressing the help files				*gzip-helpfile*
 
 For those of you who are really short on disk space, you can compress the help
-files and still be able to view them with Vim.  This makes accessing the help
+files and still be able to view them with MNV.  This makes accessing the help
 files a bit slower and requires the "gzip" program.
 
 (1) Compress all the help files: "gzip doc/*.txt".
@@ -397,14 +397,14 @@ files a bit slower and requires the "gzip" program.
 (2) Edit "doc/tags" and change the ".txt" to ".txt.gz": >
 	:%s=\(\t.*\.txt\)\t=\1.gz\t=
 
-(3) Add this line to your vimrc: >
+(3) Add this line to your mnvrc: >
 	set helpfile={dirname}/help.txt.gz
 
 Where {dirname} is the directory where the help files are.  The |gzip| plugin
 will take care of decompressing the files.
-You must make sure that $VIMRUNTIME is set to where the other Vim files are,
+You must make sure that $MNVRUNTIME is set to where the other MNV files are,
 when they are not in the same location as the compressed "doc" directory.  See
-|$VIMRUNTIME|.
+|$MNVRUNTIME|.
 
 ==============================================================================
 Executing shell commands in a window			*shell-window*
@@ -426,10 +426,10 @@ See section |23.4| of the user manual.
 
 If one has a particular extension that one uses for binary files (such as exe,
 bin, etc), you may find it helpful to automate the process with the following
-bit of autocmds for your <.vimrc>.  Change that "*.bin" to whatever
+bit of autocmds for your <.mnvrc>.  Change that "*.bin" to whatever
 comma-separated list of extension(s) you find yourself wanting to edit: >
 
-	" vim -b : edit binary using xxd-format!
+	" mnv -b : edit binary using xxd-format!
 	augroup Binary
 	  autocmd!
 	  autocmd BufReadPre  *.bin set binary
@@ -492,7 +492,7 @@ This example shows the use of a few advanced tricks:
 - using |:match| to highlight something
 - using a |pattern| to match a specific position in the file.
 
-This should be put in a Vim script file, since it uses script-local variables.
+This should be put in a MNV script file, since it uses script-local variables.
 It skips matches in strings or comments, unless the cursor started in string
 or comment.  This requires syntax highlighting.
 
@@ -548,8 +548,8 @@ Opening help in the current window			*package-helpcurwin*
 
 By default, help is displayed in a split window.  In some scenarios, you may
 prefer to open the help in the current window.  The optional helpcurwin
-package makes this possible.  Load the package manually, or in your |vimrc|,
-with: >vim
+package makes this possible.  Load the package manually, or in your |mnvrc|,
+with: >mnv
 
     packadd helpcurwin
 <
@@ -562,4 +562,4 @@ After it has loaded:
 - The help file, |helpcurwin.txt|, will be available and describes the plugin
   in more details.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

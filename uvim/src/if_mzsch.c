@@ -7,11 +7,11 @@
  * This consists of six parts:
  * 1. MzScheme interpreter main program
  * 2. Routines that handle the external interface between MzScheme and
- *    Vim.
+ *    MNV.
  * 3. MzScheme input/output handlers: writes output via [e]msg().
- * 4. Implementation of the Vim Features for MzScheme
- * 5. Vim Window-related Manipulation Functions.
- * 6. Vim Buffer-related Manipulation Functions
+ * 4. Implementation of the MNV Features for MzScheme
+ * 5. MNV Window-related Manipulation Functions.
+ * 6. MNV Buffer-related Manipulation Functions
  *
  * NOTES
  * 1. Memory, allocated with scheme_malloc*, need not to be freed explicitly,
@@ -21,7 +21,7 @@
  * 3. I don't use K&R-style functions. Anyways, MzScheme headers are ANSI.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #include "if_mzsch.h"
 
@@ -47,18 +47,18 @@
 #if defined(MZ_PRECISE_GC) && MZSCHEME_VERSION_MAJOR >= 400 \
     || MZSCHEME_VERSION_MAJOR >= 500 \
 	&& (defined(MZ_USE_FUTURES) || defined(MZ_USE_PLACES))
-# define TRAMPOLINED_MZVIM_STARTUP
+# define TRAMPOLINED_MZMNV_STARTUP
 #endif
 
 // Base data structures
-#define SCHEME_VIMBUFFERP(obj)  SAME_TYPE(SCHEME_TYPE(obj), mz_buffer_type)
-#define SCHEME_VIMWINDOWP(obj)  SAME_TYPE(SCHEME_TYPE(obj), mz_window_type)
+#define SCHEME_MNVBUFFERP(obj)  SAME_TYPE(SCHEME_TYPE(obj), mz_buffer_type)
+#define SCHEME_MNVWINDOWP(obj)  SAME_TYPE(SCHEME_TYPE(obj), mz_window_type)
 
 typedef struct
 {
     Scheme_Object   so;
     buf_T	    *buf;
-} vim_mz_buffer;
+} mnv_mz_buffer;
 
 #define INVALID_BUFFER_VALUE ((buf_T *)(-1))
 
@@ -66,12 +66,12 @@ typedef struct
 {
     Scheme_Object   so;
     win_T	    *win;
-} vim_mz_window;
+} mnv_mz_window;
 
 #define INVALID_WINDOW_VALUE ((win_T *)(-1))
 
 /*
- * Prims that form MzScheme Vim interface
+ * Prims that form MzScheme MNV interface
  */
 typedef struct
 {
@@ -79,7 +79,7 @@ typedef struct
     char	*name;
     int		mina;	// arity information
     int		maxa;
-} Vim_Prim;
+} MNV_Prim;
 
 typedef struct
 {
@@ -89,12 +89,12 @@ typedef struct
 
 /*
  *========================================================================
- *  Vim-Control Commands
+ *  MNV-Control Commands
  *========================================================================
  */
 /*
  *========================================================================
- *  Utility functions for the vim/mzscheme interface
+ *  Utility functions for the mnv/mzscheme interface
  *========================================================================
  */
 #ifdef HAVE_SANDBOX
@@ -105,18 +105,18 @@ static void sandbox_check(void);
 //  Buffer-related commands
 static Scheme_Object *buffer_new(buf_T *buf);
 static Scheme_Object *get_buffer_by_num(void *, int, Scheme_Object **);
-static vim_mz_buffer *get_vim_curr_buffer(void);
+static mnv_mz_buffer *get_mnv_curr_buffer(void);
 
 //  Window-related commands
 static Scheme_Object *window_new(win_T *win);
-static vim_mz_window *get_vim_curr_window(void);
+static mnv_mz_window *get_mnv_curr_window(void);
 
 /*
  *========================================================================
  *  Internal Function Prototypes
  *========================================================================
  */
-static int vim_error_check(void);
+static int mnv_error_check(void);
 static int do_mzscheme_command(exarg_T *, void *, Scheme_Closed_Prim *what);
 static int startup_mzscheme(void);
 static char *string_to_line(Scheme_Object *obj);
@@ -133,10 +133,10 @@ static Scheme_Object *_apply_thunk_catch_exceptions(
 static Scheme_Object *extract_exn_message(Scheme_Object *v);
 static Scheme_Object *do_eval(void *, int noargc, Scheme_Object **noargv);
 static Scheme_Object *do_load(void *, int noargc, Scheme_Object **noargv);
-static void register_vim_exn(void);
-static vim_mz_buffer *get_buffer_arg(const char *fname, int argnum,
+static void register_mnv_exn(void);
+static mnv_mz_buffer *get_buffer_arg(const char *fname, int argnum,
 	int argc, Scheme_Object **argv);
-static vim_mz_window *get_window_arg(const char *fname, int argnum,
+static mnv_mz_window *get_window_arg(const char *fname, int argnum,
 	int argc, Scheme_Object **argv);
 static int line_in_range(linenr_T, buf_T *);
 static void check_line_range(linenr_T, buf_T *);
@@ -149,19 +149,19 @@ static void init_exn_catching_apply(void);
 static int mzscheme_env_main(Scheme_Env *env, int argc, char **argv);
 static int mzscheme_init(void);
 #ifdef FEAT_EVAL
-static Scheme_Object *vim_to_mzscheme(typval_T *vim_value);
-static Scheme_Object *vim_to_mzscheme_impl(typval_T *vim_value, int depth,
+static Scheme_Object *mnv_to_mzscheme(typval_T *mnv_value);
+static Scheme_Object *mnv_to_mzscheme_impl(typval_T *mnv_value, int depth,
 	Scheme_Hash_Table *visited);
-static int mzscheme_to_vim(Scheme_Object *obj, typval_T *tv);
-static int mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
+static int mzscheme_to_mnv(Scheme_Object *obj, typval_T *tv);
+static int mzscheme_to_mnv_impl(Scheme_Object *obj, typval_T *tv, int depth,
 	Scheme_Hash_Table *visited);
-static Scheme_Object *vim_funcref(void *data, int argc, Scheme_Object **argv);
+static Scheme_Object *mnv_funcref(void *data, int argc, Scheme_Object **argv);
 #endif
 
 #ifdef MZ_PRECISE_GC
 static int buffer_size_proc(void *obj UNUSED)
 {
-    return gcBYTES_TO_WORDS(sizeof(vim_mz_buffer));
+    return gcBYTES_TO_WORDS(sizeof(mnv_mz_buffer));
 }
 static int buffer_mark_proc(void *obj)
 {
@@ -171,14 +171,14 @@ static int buffer_fixup_proc(void *obj)
 {
     // apparently not needed as the object will be uncollectable while
     // the buffer is alive
-    // vim_mz_buffer* buf = (vim_mz_buffer*) obj;
+    // mnv_mz_buffer* buf = (mnv_mz_buffer*) obj;
     // buf->buf->b_mzscheme_ref = GC_fixup_self(obj);
 
     return buffer_size_proc(obj);
 }
 static int window_size_proc(void *obj UNUSED)
 {
-    return gcBYTES_TO_WORDS(sizeof(vim_mz_window));
+    return gcBYTES_TO_WORDS(sizeof(mnv_mz_window));
 }
 static int window_mark_proc(void *obj)
 {
@@ -188,7 +188,7 @@ static int window_fixup_proc(void *obj)
 {
     // apparently not needed as the object will be uncollectable while
     // the window is alive
-    // vim_mz_window* win = (vim_mz_window*) obj;
+    // mnv_mz_window* win = (mnv_mz_window*) obj;
     // win->win->w_mzscheme_ref = GC_fixup_self(obj);
     //
     return window_size_proc(obj);
@@ -196,11 +196,11 @@ static int window_fixup_proc(void *obj)
 // with precise GC, w_mzscheme_ref and b_mzscheme_ref are immobile boxes
 // containing pointers to a window/buffer
 // with conservative GC these are simply pointers
-# define WINDOW_REF(win) *(vim_mz_window **)((win)->w_mzscheme_ref)
-# define BUFFER_REF(buf) *(vim_mz_buffer **)((buf)->b_mzscheme_ref)
+# define WINDOW_REF(win) *(mnv_mz_window **)((win)->w_mzscheme_ref)
+# define BUFFER_REF(buf) *(mnv_mz_buffer **)((buf)->b_mzscheme_ref)
 #else
-# define WINDOW_REF(win) (vim_mz_window *)((win)->w_mzscheme_ref)
-# define BUFFER_REF(buf) (vim_mz_buffer *)((buf)->b_mzscheme_ref)
+# define WINDOW_REF(win) (mnv_mz_window *)((win)->w_mzscheme_ref)
+# define BUFFER_REF(buf) (mnv_mz_buffer *)((buf)->b_mzscheme_ref)
 #endif
 
 #if defined(DYNAMIC_MZSCHEME)
@@ -345,7 +345,7 @@ static void **(*dll_scheme_malloc_immobile_box)(void *p);
 static void (*dll_scheme_free_immobile_box)(void **b);
 # endif
 # if MZSCHEME_VERSION_MAJOR >= 500
-#  ifdef TRAMPOLINED_MZVIM_STARTUP
+#  ifdef TRAMPOLINED_MZMNV_STARTUP
 static int (*dll_scheme_main_setup)(int no_auto_statics, Scheme_Env_Main _main, int argc, char **argv);
 #   if defined(IMPLEMENT_THREAD_LOCAL_VIA_WIN_TLS) || MZSCHEME_VERSION_MAJOR >= 603
 static void (*dll_scheme_register_tls_space)(void *tls_space, int _tls_index);
@@ -469,7 +469,7 @@ static void (*dll_scheme_set_config_path)(Scheme_Object *p);
 #   define GC_register_traversers dll_GC_register_traversers
 #  endif
 #  if MZSCHEME_VERSION_MAJOR >= 400
-#   ifdef TRAMPOLINED_MZVIM_STARTUP
+#   ifdef TRAMPOLINED_MZMNV_STARTUP
 #    define scheme_main_setup dll_scheme_main_setup
 #    if defined(IMPLEMENT_THREAD_LOCAL_VIA_WIN_TLS) || MZSCHEME_VERSION_MAJOR >= 603
 #     define scheme_register_tls_space dll_scheme_register_tls_space
@@ -615,7 +615,7 @@ static Thunk_Info mzsch_imports[] = {
     {"GC_register_traversers", (void **)&dll_GC_register_traversers},
 # endif
 # if MZSCHEME_VERSION_MAJOR >= 400
-#  ifdef TRAMPOLINED_MZVIM_STARTUP
+#  ifdef TRAMPOLINED_MZMNV_STARTUP
     {"scheme_main_setup", (void **)&dll_scheme_main_setup},
 #   if defined(IMPLEMENT_THREAD_LOCAL_VIA_WIN_TLS) || MZSCHEME_VERSION_MAJOR >= 603
     {"scheme_register_tls_space", (void **)&dll_scheme_register_tls_space},
@@ -651,8 +651,8 @@ mzscheme_runtime_link_init(char *sch_dll, char *gc_dll, int verbose)
 
     if (hMzGC && hMzSch)
 	return OK;
-    hMzSch = vimLoadLib(sch_dll);
-    hMzGC = vimLoadLib(gc_dll);
+    hMzSch = mnvLoadLib(sch_dll);
+    hMzGC = mnvLoadLib(gc_dll);
 
     if (!hMzGC)
     {
@@ -776,11 +776,11 @@ static Scheme_Env    *environment = NULL;
 // output/error handlers
 static Scheme_Object *curout = NULL;
 static Scheme_Object *curerr = NULL;
-// exn:vim exception
+// exn:mnv exception
 static Scheme_Object *exn_catching_apply = NULL;
 static Scheme_Object *exn_p = NULL;
 static Scheme_Object *exn_message = NULL;
-static Scheme_Object *vim_exn = NULL; // Vim Error exception
+static Scheme_Object *mnv_exn = NULL; // MNV Error exception
 
 #if !defined(MZ_PRECISE_GC) || MZSCHEME_VERSION_MAJOR < 400
 static void *stack_base = NULL;
@@ -803,9 +803,9 @@ static void timer_proc(XtPointer, XtIntervalId *);
 static XtIntervalId timer_id = (XtIntervalId)0;
 #endif
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL) // Win32 console and Unix
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL) // Win32 console and Unix
     void
-mzvim_check_threads(void)
+mzmnv_check_threads(void)
 {
     // Last time MzScheme threads were scheduled
     static time_t mz_last_time = 0;
@@ -917,7 +917,7 @@ mzscheme_end(void)
 #endif
 }
 
-#if HAVE_TLS_SPACE && !defined(VIMDLL)
+#if HAVE_TLS_SPACE && !defined(MNVDLL)
 # if defined(_MSC_VER)
 static __declspec(thread) void *tls_space;
 extern intptr_t _tls_index;
@@ -933,7 +933,7 @@ static intptr_t _tls_index = 0;
 /*
  * mzscheme_main() is called early in main().
  * We may call scheme_main_setup() which calls mzscheme_env_main() which then
- * trampolines into vim_main2(), which never returns.
+ * trampolines into mnv_main2(), which never returns.
  */
     int
 mzscheme_main(void)
@@ -949,22 +949,22 @@ mzscheme_main(void)
     if (!mzscheme_enabled(FALSE))
     {
 	disabled = TRUE;
-	return vim_main2();
+	return mnv_main2();
     }
 #endif
 #ifdef HAVE_TLS_SPACE
-# ifdef VIMDLL
+# ifdef MNVDLL
     void **ptls_space;
     intptr_t tls_index;
     void (*pget_tls_info)(void ***ptls_space, intptr_t *ptls_index);
 
-    // Get the address of get_tls_info() from (g)vim.exe.
+    // Get the address of get_tls_info() from (g)mnv.exe.
     pget_tls_info = (void *)GetProcAddress(
 				GetModuleHandle(NULL), "get_tls_info");
     if (pget_tls_info == NULL)
     {
 	disabled = TRUE;
-	return vim_main2();
+	return mnv_main2();
     }
     pget_tls_info(&ptls_space, &tls_index);
     scheme_register_tls_space(ptls_space, tls_index);
@@ -972,7 +972,7 @@ mzscheme_main(void)
     scheme_register_tls_space(&tls_space, _tls_index);
 # endif
 #endif
-#ifdef TRAMPOLINED_MZVIM_STARTUP
+#ifdef TRAMPOLINED_MZMNV_STARTUP
     return scheme_main_setup(TRUE, mzscheme_env_main, argc, &argv);
 #else
     return mzscheme_env_main(NULL, argc, &argv);
@@ -982,7 +982,7 @@ mzscheme_main(void)
     static int
 mzscheme_env_main(Scheme_Env *env, int argc UNUSED, char **argv UNUSED)
 {
-#ifdef TRAMPOLINED_MZVIM_STARTUP
+#ifdef TRAMPOLINED_MZMNV_STARTUP
     // Scheme has created the environment for us
     environment = env;
 #else
@@ -998,8 +998,8 @@ mzscheme_env_main(Scheme_Env *env, int argc UNUSED, char **argv UNUSED)
 # endif
 #endif
 
-    vim_main2();
-    // not reached, vim_main2() will loop until exit()
+    mnv_main2();
+    // not reached, mnv_main2() will loop until exit()
 
     return 0;
 }
@@ -1021,11 +1021,11 @@ load_base_module_on_error(void *data UNUSED)
     static int
 startup_mzscheme(void)
 {
-#ifndef TRAMPOLINED_MZVIM_STARTUP
+#ifndef TRAMPOLINED_MZMNV_STARTUP
     scheme_set_stack_base(stack_base, 1);
 #endif
 
-#ifndef TRAMPOLINED_MZVIM_STARTUP
+#ifndef TRAMPOLINED_MZMNV_STARTUP
     // in newer versions of precise GC the initial env has been created
     environment = scheme_basic_env();
 #endif
@@ -1036,7 +1036,7 @@ startup_mzscheme(void)
     MZ_REGISTER_STATIC(exn_catching_apply);
     MZ_REGISTER_STATIC(exn_p);
     MZ_REGISTER_STATIC(exn_message);
-    MZ_REGISTER_STATIC(vim_exn);
+    MZ_REGISTER_STATIC(mnv_exn);
 
     MZ_GC_CHECK();
 
@@ -1056,13 +1056,13 @@ startup_mzscheme(void)
 	MZ_GC_VAR_IN_REG(0, coll_path);
 	MZ_GC_REG();
 	// workaround for dynamic loading on windows
-	s = vim_getenv((char_u *)"PLTCOLLECTS", &mustfree);
+	s = mnv_getenv((char_u *)"PLTCOLLECTS", &mustfree);
 	if (s != NULL)
 	{
 	    coll_path = scheme_make_path((char *)s);
 	    MZ_GC_CHECK();
 	    if (mustfree)
-		vim_free(s);
+		mnv_free(s);
 	}
 # ifdef MZSCHEME_COLLECTS
 	if (coll_path == NULL)
@@ -1113,13 +1113,13 @@ startup_mzscheme(void)
 	MZ_GC_VAR_IN_REG(0, config_path);
 	MZ_GC_REG();
 	// workaround for dynamic loading on windows
-	s = vim_getenv((char_u *)"PLTCONFIGDIR", &mustfree);
+	s = mnv_getenv((char_u *)"PLTCONFIGDIR", &mustfree);
 	if (s != NULL)
 	{
 	    config_path = scheme_make_path((char *)s);
 	    MZ_GC_CHECK();
 	    if (mustfree)
-		vim_free(s);
+		mnv_free(s);
 	}
 # ifdef MZSCHEME_CONFIGDIR
 	if (config_path == NULL)
@@ -1159,7 +1159,7 @@ startup_mzscheme(void)
 	}
     }
 
-    register_vim_exn();
+    register_mnv_exn();
     // use new environment to initialise exception handling
     init_exn_catching_apply();
 
@@ -1220,9 +1220,9 @@ startup_mzscheme(void)
     }
 #endif
     // Create buffer and window types for use in Scheme code
-    mz_buffer_type = scheme_make_type("<vim-buffer>");
+    mz_buffer_type = scheme_make_type("<mnv-buffer>");
     MZ_GC_CHECK();
-    mz_window_type = scheme_make_type("<vim-window>");
+    mz_window_type = scheme_make_type("<mnv-window>");
     MZ_GC_CHECK();
 #ifdef MZ_PRECISE_GC
     GC_register_traversers(mz_buffer_type,
@@ -1314,7 +1314,7 @@ eval_with_exn_handling(
     MZ_GC_VAR_IN_REG(2, prim);
     MZ_GC_REG();
 
-    prim = scheme_make_closed_prim_w_arity(what, data, "mzvim", 0, 0);
+    prim = scheme_make_closed_prim_w_arity(what, data, "mzmnv", 0, 0);
     MZ_GC_CHECK();
     value = _apply_thunk_catch_exceptions(prim, &exn);
     MZ_GC_CHECK();
@@ -1325,7 +1325,7 @@ eval_with_exn_handling(
 	// Got an exn?
 	if (value)
 	{
-	    scheme_display(value, curerr);   //  Send to stderr-vim
+	    scheme_display(value, curerr);   //  Send to stderr-mnv
 	    MZ_GC_CHECK();
 	    do_flush();
 	}
@@ -1339,7 +1339,7 @@ eval_with_exn_handling(
     // Print any result, as long as it's not a void
     else if (!SCHEME_VOIDP(value))
     {
-	scheme_display(value, curout);  // Send to stdout-vim
+	scheme_display(value, curout);  // Send to stdout-mnv
 	MZ_GC_CHECK();
     }
 
@@ -1364,7 +1364,7 @@ do_mzscheme_command(exarg_T *eap, void *data, Scheme_Closed_Prim *what)
 }
 
 /*
- * Routine called by VIM when deleting a buffer
+ * Routine called by MNV when deleting a buffer
  */
     void
 mzscheme_buffer_free(buf_T *buf)
@@ -1372,7 +1372,7 @@ mzscheme_buffer_free(buf_T *buf)
     if (buf->b_mzscheme_ref == NULL)
 	return;
 
-    vim_mz_buffer *bp = NULL;
+    mnv_mz_buffer *bp = NULL;
     MZ_GC_DECL_REG(1);
     MZ_GC_VAR_IN_REG(0, bp);
     MZ_GC_REG();
@@ -1390,7 +1390,7 @@ mzscheme_buffer_free(buf_T *buf)
 }
 
 /*
- * Routine called by VIM when deleting a Window
+ * Routine called by MNV when deleting a Window
  */
     void
 mzscheme_window_free(win_T *win)
@@ -1398,7 +1398,7 @@ mzscheme_window_free(win_T *win)
     if (win->w_mzscheme_ref == NULL)
 	return;
 
-    vim_mz_window *wp = NULL;
+    mnv_mz_window *wp = NULL;
     MZ_GC_DECL_REG(1);
     MZ_GC_VAR_IN_REG(0, wp);
     MZ_GC_REG();
@@ -1431,7 +1431,7 @@ ex_mzscheme(exarg_T *eap)
     else
     {
 	do_mzscheme_command(eap, script, do_eval);
-	vim_free(script);
+	mnv_free(script);
     }
 }
 
@@ -1452,7 +1452,7 @@ do_load(void *data, int noargc UNUSED, Scheme_Object **noargv UNUSED)
     file = (char *)scheme_malloc_fail_ok(scheme_malloc_atomic, MAXPATHL + 1);
     MZ_GC_CHECK();
 
-    // make Vim expansion
+    // make MNV expansion
     expand_env((char_u *)pinfo->name, (char_u *)file, MAXPATHL);
     pinfo->port = scheme_open_input_file(file, "mzfile");
     MZ_GC_CHECK();
@@ -1629,7 +1629,7 @@ do_flush(void)
 
 /*
  *========================================================================
- *  4. Implementation of the Vim Features for MzScheme
+ *  4. Implementation of the MNV Features for MzScheme
  *========================================================================
  */
 
@@ -1637,9 +1637,9 @@ do_flush(void)
  * (command {command-string})
  */
     static Scheme_Object *
-vim_command(void *data, int argc, Scheme_Object **argv)
+mnv_command(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     Scheme_Object *cmd = NULL;
     MZ_GC_DECL_REG(1);
     MZ_GC_VAR_IN_REG(0, cmd);
@@ -1659,12 +1659,12 @@ vim_command(void *data, int argc, Scheme_Object **argv)
  * (eval {expr-string})
  */
     static Scheme_Object *
-vim_eval(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
+mnv_eval(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
 {
 #ifdef FEAT_EVAL
-    Vim_Prim		*prim = (Vim_Prim *)data;
+    MNV_Prim		*prim = (MNV_Prim *)data;
     Scheme_Object	*result = NULL;
-    typval_T		*vim_result;
+    typval_T		*mnv_result;
     Scheme_Object *expr = NULL;
     MZ_GC_DECL_REG(2);
     MZ_GC_VAR_IN_REG(0, result);
@@ -1672,19 +1672,19 @@ vim_eval(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
     MZ_GC_REG();
     expr = GUARANTEED_STRING_ARG(prim->name, 0);
 
-    vim_result = eval_expr(BYTE_STRING_VALUE(expr), NULL);
+    mnv_result = eval_expr(BYTE_STRING_VALUE(expr), NULL);
 
-    if (vim_result == NULL)
-	raise_vim_exn(_("invalid expression"));
+    if (mnv_result == NULL)
+	raise_mnv_exn(_("invalid expression"));
 
-    result = vim_to_mzscheme(vim_result);
+    result = mnv_to_mzscheme(mnv_result);
     MZ_GC_CHECK();
-    free_tv(vim_result);
+    free_tv(mnv_result);
 
     MZ_GC_UNREG();
     return result;
 #else
-    raise_vim_exn(_("expressions disabled at compile time"));
+    raise_mnv_exn(_("expressions disabled at compile time"));
     // unreachable
     return scheme_false;
 #endif
@@ -1717,7 +1717,7 @@ get_range_end(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
     static Scheme_Object *
 mzscheme_beep(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
 {
-    vim_beep(BO_LANG);
+    mnv_beep(BO_LANG);
     return scheme_void;
 }
 
@@ -1729,7 +1729,7 @@ static Scheme_Object *M_global = NULL;
     static Scheme_Object *
 get_option(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
     long	    value;
     char	    *strval;
     getoption_T	    rc;
@@ -1757,12 +1757,12 @@ get_option(void *data, int argc, Scheme_Object **argv)
 
 	if (argv[1] == M_global)
 	    scope = OPT_GLOBAL;
-	else if (SCHEME_VIMBUFFERP(argv[1]))
+	else if (SCHEME_MNVBUFFERP(argv[1]))
 	{
 	    curbuf = get_valid_buffer(argv[1]);
 	    scope = OPT_LOCAL;
 	}
-	else if (SCHEME_VIMWINDOWP(argv[1]))
+	else if (SCHEME_MNVWINDOWP(argv[1]))
 	{
 	    win_T *win = get_valid_window(argv[1]);
 
@@ -1771,7 +1771,7 @@ get_option(void *data, int argc, Scheme_Object **argv)
 	    scope = OPT_LOCAL;
 	}
 	else
-	    scheme_wrong_type(prim->name, "vim-buffer/window", 1, argc, argv);
+	    scheme_wrong_type(prim->name, "mnv-buffer/window", 1, argc, argv);
     }
 
     rc = get_option_value(BYTE_STRING_VALUE(name), &value, (char_u **)&strval,
@@ -1788,18 +1788,18 @@ get_option(void *data, int argc, Scheme_Object **argv)
     case gov_string:
 	rval = scheme_make_byte_string(strval);
 	MZ_GC_CHECK();
-	vim_free(strval);
+	mnv_free(strval);
 	MZ_GC_UNREG();
 	return rval;
     case gov_hidden_bool:
     case gov_hidden_number:
     case gov_hidden_string:
 	MZ_GC_UNREG();
-	raise_vim_exn(_("hidden option"));
+	raise_mnv_exn(_("hidden option"));
 	//NOTREACHED
     case gov_unknown:
 	MZ_GC_UNREG();
-	raise_vim_exn(_("unknown option"));
+	raise_mnv_exn(_("unknown option"));
 	//NOTREACHED
     }
     // unreachable
@@ -1816,7 +1816,7 @@ set_option(void *data, int argc, Scheme_Object **argv)
     int		scope = 0;
     buf_T	*save_curb = curbuf;
     win_T	*save_curw = curwin;
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     Scheme_Object *cmd = NULL;
 
     MZ_GC_DECL_REG(1);
@@ -1835,12 +1835,12 @@ set_option(void *data, int argc, Scheme_Object **argv)
 
 	if (argv[1] == M_global)
 	    scope = OPT_GLOBAL;
-	else if (SCHEME_VIMBUFFERP(argv[1]))
+	else if (SCHEME_MNVBUFFERP(argv[1]))
 	{
 	    curbuf = get_valid_buffer(argv[1]);
 	    scope = OPT_LOCAL;
 	}
-	else if (SCHEME_VIMWINDOWP(argv[1]))
+	else if (SCHEME_MNVWINDOWP(argv[1]))
 	{
 	    win_T *win = get_valid_window(argv[1]);
 	    curwin = win;
@@ -1848,14 +1848,14 @@ set_option(void *data, int argc, Scheme_Object **argv)
 	    scope = OPT_LOCAL;
 	}
 	else
-	    scheme_wrong_type(prim->name, "vim-buffer/window", 1, argc, argv);
+	    scheme_wrong_type(prim->name, "mnv-buffer/window", 1, argc, argv);
     }
 
     // do_set can modify cmd, make copy
-    command = vim_strsave(BYTE_STRING_VALUE(cmd));
+    command = mnv_strsave(BYTE_STRING_VALUE(cmd));
     MZ_GC_UNREG();
     do_set(command, scope);
-    vim_free(command);
+    mnv_free(command);
     update_screen(UPD_NOT_VALID);
     curbuf = save_curb;
     curwin = save_curw;
@@ -1865,7 +1865,7 @@ set_option(void *data, int argc, Scheme_Object **argv)
 
 /*
  *===========================================================================
- *  5. Vim Window-related Manipulation Functions
+ *  5. MNV Window-related Manipulation Functions
  *===========================================================================
  */
 
@@ -1875,7 +1875,7 @@ set_option(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_curr_win(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
 {
-    return (Scheme_Object *)get_vim_curr_window();
+    return (Scheme_Object *)get_mnv_curr_window();
 }
 
 /*
@@ -1901,8 +1901,8 @@ get_window_count(
     static Scheme_Object *
 get_window_list(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf;
     Scheme_Object   *list;
     win_T	    *w = firstwin;
 
@@ -1922,14 +1922,14 @@ get_window_list(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 window_new(win_T *win)
 {
-    vim_mz_window *self = NULL;
+    mnv_mz_window *self = NULL;
 
     MZ_GC_DECL_REG(1);
     MZ_GC_VAR_IN_REG(0, self);
 
     // We need to handle deletion of windows underneath us.
     // If we add a "w_mzscheme_ref" field to the win_T structure,
-    // then we can get at it in win_free() in vim.
+    // then we can get at it in win_free() in mnv.
     //
     // On a win_free() we set the Scheme object's win_T *field
     // to an invalid value. We trap all uses of a window
@@ -1938,7 +1938,7 @@ window_new(win_T *win)
 	return (Scheme_Object *)WINDOW_REF(win);
 
     MZ_GC_REG();
-    self = scheme_malloc_fail_ok(scheme_malloc_tagged, sizeof(vim_mz_window));
+    self = scheme_malloc_fail_ok(scheme_malloc_tagged, sizeof(mnv_mz_window));
     CLEAR_POINTER(self);
 #ifdef MZ_PRECISE_GC
     win->w_mzscheme_ref = scheme_malloc_immobile_box(NULL);
@@ -1962,7 +1962,7 @@ window_new(win_T *win)
 get_window_num(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
 {
     int		nr = 1;
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     win_T	*win = get_window_arg(prim->name, 0, argc, argv)->win;
     win_T	*wp;
 
@@ -1978,7 +1978,7 @@ get_window_num(void *data UNUSED, int argc UNUSED, Scheme_Object **argv UNUSED)
     static Scheme_Object *
 get_window_by_num(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     win_T	*win = firstwin;
     int		fnum;
 
@@ -1999,8 +1999,8 @@ get_window_by_num(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_window_buffer(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win = get_window_arg(prim->name, 0, argc, argv);
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win = get_window_arg(prim->name, 0, argc, argv);
 
     return buffer_new(win->win->w_buffer);
 }
@@ -2011,8 +2011,8 @@ get_window_buffer(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_window_height(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win = get_window_arg(prim->name, 0, argc, argv);
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win = get_window_arg(prim->name, 0, argc, argv);
 
     return scheme_make_integer(win->win->w_height);
 }
@@ -2023,8 +2023,8 @@ get_window_height(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 set_window_height(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win;
     win_T	    *savewin;
     int		    height;
 
@@ -2050,8 +2050,8 @@ set_window_height(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_window_width(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win = get_window_arg(prim->name, 0, argc, argv);
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win = get_window_arg(prim->name, 0, argc, argv);
 
     return scheme_make_integer(win->win->w_width);
 }
@@ -2062,8 +2062,8 @@ get_window_width(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 set_window_width(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win;
     win_T	    *savewin;
     int		    width = 0;
 
@@ -2089,8 +2089,8 @@ set_window_width(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_cursor(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win;
     pos_T	    pos;
 
     win = get_window_arg(prim->name, 0, argc, argv);
@@ -2105,8 +2105,8 @@ get_cursor(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 set_cursor(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_window   *win;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_window   *win;
     long	    lnum = 0;
     long	    col = 0;
 
@@ -2136,7 +2136,7 @@ set_cursor(void *data, int argc, Scheme_Object **argv)
 }
 /*
  *===========================================================================
- *  6. Vim Buffer-related Manipulation Functions
+ *  6. MNV Buffer-related Manipulation Functions
  *===========================================================================
  */
 
@@ -2146,7 +2146,7 @@ set_cursor(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 mzscheme_open_buffer(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
     int		    num = 0;
     Scheme_Object   *onum = NULL;
     Scheme_Object   *buf = NULL;
@@ -2166,7 +2166,7 @@ mzscheme_open_buffer(void *data, int argc, Scheme_Object **argv)
     num = buflist_add(BYTE_STRING_VALUE(fname), BLN_LISTED | BLN_CURBUF);
 
     if (num == 0)
-	raise_vim_exn(_("couldn't open buffer"));
+	raise_mnv_exn(_("couldn't open buffer"));
 
     onum = scheme_make_integer(num);
     buf = get_buffer_by_num(data, 1, &onum);
@@ -2180,7 +2180,7 @@ mzscheme_open_buffer(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_buffer_by_num(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     buf_T	*buf;
     int		fnum;
 
@@ -2199,7 +2199,7 @@ get_buffer_by_num(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_buffer_by_name(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     buf_T	*buf;
     Scheme_Object *buffer = NULL;
     Scheme_Object *fname = NULL;
@@ -2237,7 +2237,7 @@ get_buffer_by_name(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_next_buffer(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     buf_T	*buf = get_buffer_arg(prim->name, 0, argc, argv)->buf;
 
     if (buf->b_next == NULL)
@@ -2252,7 +2252,7 @@ get_next_buffer(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_prev_buffer(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	*prim = (Vim_Prim *)data;
+    MNV_Prim	*prim = (MNV_Prim *)data;
     buf_T	*buf = get_buffer_arg(prim->name, 0, argc, argv)->buf;
 
     if (buf->b_prev == NULL)
@@ -2267,8 +2267,8 @@ get_prev_buffer(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 get_buffer_num(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf = get_buffer_arg(prim->name, 0, argc, argv);
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf = get_buffer_arg(prim->name, 0, argc, argv);
 
     return scheme_make_integer(buf->buf->b_fnum);
 }
@@ -2295,8 +2295,8 @@ get_buffer_count(
     static Scheme_Object *
 get_buffer_name(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf = get_buffer_arg(prim->name, 0, argc, argv);
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf = get_buffer_arg(prim->name, 0, argc, argv);
 
     return scheme_make_byte_string((char *)buf->buf->b_ffname);
 }
@@ -2310,25 +2310,25 @@ get_curr_buffer(
     int			argc UNUSED,
     Scheme_Object	**argv UNUSED)
 {
-    return (Scheme_Object *)get_vim_curr_buffer();
+    return (Scheme_Object *)get_mnv_curr_buffer();
 }
 
     static Scheme_Object *
 buffer_new(buf_T *buf)
 {
-    vim_mz_buffer *self = NULL;
+    mnv_mz_buffer *self = NULL;
 
     MZ_GC_DECL_REG(1);
     MZ_GC_VAR_IN_REG(0, self);
 
     // We need to handle deletion of buffers underneath us.
     // If we add a "b_mzscheme_ref" field to the buf_T structure,
-    // then we can get at it in buf_freeall() in vim.
+    // then we can get at it in buf_freeall() in mnv.
     if (buf->b_mzscheme_ref)
 	return (Scheme_Object *)BUFFER_REF(buf);
 
     MZ_GC_REG();
-    self = scheme_malloc_fail_ok(scheme_malloc_tagged, sizeof(vim_mz_buffer));
+    self = scheme_malloc_fail_ok(scheme_malloc_tagged, sizeof(mnv_mz_buffer));
     CLEAR_POINTER(self);
 #ifdef MZ_PRECISE_GC
     buf->b_mzscheme_ref = scheme_malloc_immobile_box(NULL);
@@ -2353,8 +2353,8 @@ buffer_new(buf_T *buf)
     static Scheme_Object *
 get_buffer_size(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf = get_buffer_arg(prim->name, 0, argc, argv);
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf = get_buffer_arg(prim->name, 0, argc, argv);
 
     return scheme_make_integer(buf->buf->b_ml.ml_line_count);
 }
@@ -2363,14 +2363,14 @@ get_buffer_size(void *data, int argc, Scheme_Object **argv)
  * (get-buff-line {linenr} [buffer])
  *
  * Get a line from the specified buffer. The line number is
- * in Vim format (1-based). The line is returned as a MzScheme
+ * in MNV format (1-based). The line is returned as a MzScheme
  * string object.
  */
     static Scheme_Object *
 get_buffer_line(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf;
     int		    linenr;
     char_u	    *line;
 
@@ -2387,14 +2387,14 @@ get_buffer_line(void *data, int argc, Scheme_Object **argv)
  * (get-buff-line-list {start} {end} [buffer])
  *
  * Get a list of lines from the specified buffer. The line numbers
- * are in Vim format (1-based). The range is from lo up to, but not
+ * are in MNV format (1-based). The range is from lo up to, but not
  * including, hi. The list is returned as a list of string objects.
  */
     static Scheme_Object *
 get_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf;
     int		    i, hi, lo, n;
     Scheme_Object   *list = NULL;
 
@@ -2438,7 +2438,7 @@ get_buffer_line_list(void *data, int argc, Scheme_Object **argv)
  * (set-buff-line {linenr} {string/#f} [buffer])
  *
  * Replace a line in the specified buffer. The line number is
- * in Vim format (1-based). The replacement line is given as
+ * in MNV format (1-based). The replacement line is given as
  * an MzScheme string object. The object is checked for validity
  * and correct format. An exception is thrown if the values are not
  * the correct format.
@@ -2454,8 +2454,8 @@ set_buffer_line(void *data, int argc, Scheme_Object **argv)
     //	  1. #f - this is a deletion.
     //	  2. A string	   - this is a replacement.
     //	  3. Anything else - this is an error.
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf;
     Scheme_Object   *line = NULL;
     char	    *save;
     int		    n;
@@ -2484,12 +2484,12 @@ set_buffer_line(void *data, int argc, Scheme_Object **argv)
 	if (u_savedel((linenr_T)n, 1L) == FAIL)
 	{
 	    curbuf = savebuf;
-	    raise_vim_exn(_("cannot save undo information"));
+	    raise_mnv_exn(_("cannot save undo information"));
 	}
 	else if (ml_delete((linenr_T)n) == FAIL)
 	{
 	    curbuf = savebuf;
-	    raise_vim_exn(_("cannot delete line"));
+	    raise_mnv_exn(_("cannot delete line"));
 	}
 	if (buf->buf == curwin->w_buffer)
 	    mz_fix_cursor(n, n + 1, -1);
@@ -2513,18 +2513,18 @@ set_buffer_line(void *data, int argc, Scheme_Object **argv)
 	if (u_savesub((linenr_T)n) == FAIL)
 	{
 	    curbuf = savebuf;
-	    vim_free(save);
-	    raise_vim_exn(_("cannot save undo information"));
+	    mnv_free(save);
+	    raise_mnv_exn(_("cannot save undo information"));
 	}
 	else if (ml_replace((linenr_T)n, (char_u *)save, TRUE) == FAIL)
 	{
 	    curbuf = savebuf;
-	    vim_free(save);
-	    raise_vim_exn(_("cannot replace line"));
+	    mnv_free(save);
+	    raise_mnv_exn(_("cannot replace line"));
 	}
 	else
 	{
-	    vim_free(save);
+	    mnv_free(save);
 	    changed_bytes((linenr_T)n, 0);
 	}
 
@@ -2545,15 +2545,15 @@ free_array(char **array)
 {
     char **curr = array;
     while (*curr != NULL)
-	vim_free(*curr++);
-    vim_free(array);
+	mnv_free(*curr++);
+    mnv_free(array);
 }
 
 /*
  * (set-buff-line-list {start} {end} {string-list/#f/null} [buffer])
  *
  * Replace a range of lines in the specified buffer. The line numbers are in
- * Vim format (1-based). The range is from lo up to, but not including, hi.
+ * MNV format (1-based). The range is from lo up to, but not including, hi.
  * The replacement lines are given as a Scheme list of string objects. The
  * list is checked for validity and correct format.
  *
@@ -2569,8 +2569,8 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
     //	  1. #f - this is a deletion.
     //	  2. A list	   - this is a replacement.
     //	  3. Anything else - this is an error.
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf = NULL;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf = NULL;
     Scheme_Object   *line_list = NULL;
     int		    i, old_len, new_len, hi, lo;
     long	    extra;
@@ -2610,7 +2610,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 	if (u_savedel((linenr_T)lo, (long)old_len) == FAIL)
 	{
 	    curbuf = savebuf;
-	    raise_vim_exn(_("cannot save undo information"));
+	    raise_mnv_exn(_("cannot save undo information"));
 	}
 	else
 	{
@@ -2618,7 +2618,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 		if (ml_delete((linenr_T)lo) == FAIL)
 		{
 		    curbuf = savebuf;
-		    raise_vim_exn(_("cannot delete line"));
+		    raise_mnv_exn(_("cannot delete line"));
 		}
 	    if (buf->buf == curwin->w_buffer)
 		mz_fix_cursor(lo, hi, -old_len);
@@ -2673,7 +2673,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 	    {
 		curbuf = savebuf;
 		free_array(array);
-		raise_vim_exn(_("cannot save undo information"));
+		raise_mnv_exn(_("cannot save undo information"));
 	    }
 
 	    /*
@@ -2687,7 +2687,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 		{
 		    curbuf = savebuf;
 		    free_array(array);
-		    raise_vim_exn(_("cannot delete line"));
+		    raise_mnv_exn(_("cannot delete line"));
 		}
 		extra--;
 	    }
@@ -2702,7 +2702,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 		{
 		    curbuf = savebuf;
 		    free_array(array);
-		    raise_vim_exn(_("cannot replace line"));
+		    raise_mnv_exn(_("cannot replace line"));
 		}
 
 	    /*
@@ -2717,7 +2717,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 		{
 		    curbuf = savebuf;
 		    free_array(array);
-		    raise_vim_exn(_("cannot insert line"));
+		    raise_mnv_exn(_("cannot insert line"));
 		}
 		++i;
 		++extra;
@@ -2748,7 +2748,7 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
  * (insert-buff-line-list {linenr} {string/string-list} [buffer])
  *
  * Insert a number of lines into the specified buffer after the specified line.
- * The line number is in Vim format (1-based). The lines to be inserted are
+ * The line number is in MNV format (1-based). The lines to be inserted are
  * given as an MzScheme list of string objects or as a single string. The lines
  * to be added are checked for validity and correct format. Errors are
  * returned as a value of FAIL.  The return value is OK on success.
@@ -2758,8 +2758,8 @@ set_buffer_line_list(void *data, int argc, Scheme_Object **argv)
     static Scheme_Object *
 insert_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 {
-    Vim_Prim	    *prim = (Vim_Prim *)data;
-    vim_mz_buffer   *buf = NULL;
+    MNV_Prim	    *prim = (MNV_Prim *)data;
+    mnv_mz_buffer   *buf = NULL;
     Scheme_Object   *list = NULL;
     char	    *str = NULL;
     int		    i, n, size;
@@ -2794,18 +2794,18 @@ insert_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 	if (u_save((linenr_T)n, (linenr_T)(n+1)) == FAIL)
 	{
 	    curbuf = savebuf;
-	    vim_free(str);
-	    raise_vim_exn(_("cannot save undo information"));
+	    mnv_free(str);
+	    raise_mnv_exn(_("cannot save undo information"));
 	}
 	else if (ml_append((linenr_T)n, (char_u *)str, 0, FALSE) == FAIL)
 	{
 	    curbuf = savebuf;
-	    vim_free(str);
-	    raise_vim_exn(_("cannot insert line"));
+	    mnv_free(str);
+	    raise_mnv_exn(_("cannot insert line"));
 	}
 	else
 	{
-	    vim_free(str);
+	    mnv_free(str);
 	    appended_lines_mark((linenr_T)n, 1L);
 	}
 
@@ -2851,7 +2851,7 @@ insert_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 	{
 	    curbuf = savebuf;
 	    free_array(array);
-	    raise_vim_exn(_("cannot save undo information"));
+	    raise_mnv_exn(_("cannot save undo information"));
 	}
 	else
 	{
@@ -2861,7 +2861,7 @@ insert_buffer_line_list(void *data, int argc, Scheme_Object **argv)
 		{
 		    curbuf = savebuf;
 		    free_array(array);
-		    raise_vim_exn(_("cannot insert line"));
+		    raise_mnv_exn(_("cannot insert line"));
 		}
 
 	    if (i > 0)
@@ -2885,9 +2885,9 @@ insert_buffer_line_list(void *data, int argc, Scheme_Object **argv)
  * (buff? obj)
  */
     static Scheme_Object *
-vim_bufferp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
+mnv_bufferp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
 {
-    if (SCHEME_VIMBUFFERP(argv[0]))
+    if (SCHEME_MNVBUFFERP(argv[0]))
 	return scheme_true;
     else
 	return scheme_false;
@@ -2897,9 +2897,9 @@ vim_bufferp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
  * (win? obj)
  */
     static Scheme_Object *
-vim_windowp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
+mnv_windowp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
 {
-    if (SCHEME_VIMWINDOWP(argv[0]))
+    if (SCHEME_MNVWINDOWP(argv[0]))
 	return scheme_true;
     else
 	return scheme_false;
@@ -2909,10 +2909,10 @@ vim_windowp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
  * (buff-valid? obj)
  */
     static Scheme_Object *
-vim_buffer_validp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
+mnv_buffer_validp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
 {
-    if (SCHEME_VIMBUFFERP(argv[0])
-	    && ((vim_mz_buffer *)argv[0])->buf != INVALID_BUFFER_VALUE)
+    if (SCHEME_MNVBUFFERP(argv[0])
+	    && ((mnv_mz_buffer *)argv[0])->buf != INVALID_BUFFER_VALUE)
 	return scheme_true;
     else
 	return scheme_false;
@@ -2922,10 +2922,10 @@ vim_buffer_validp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
  * (win-valid? obj)
  */
     static Scheme_Object *
-vim_window_validp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
+mnv_window_validp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
 {
-    if (SCHEME_VIMWINDOWP(argv[0])
-	    && ((vim_mz_window *)argv[0])->win != INVALID_WINDOW_VALUE)
+    if (SCHEME_MNVWINDOWP(argv[0])
+	    && ((mnv_mz_window *)argv[0])->win != INVALID_WINDOW_VALUE)
 	return scheme_true;
     else
 	return scheme_false;
@@ -2938,18 +2938,18 @@ vim_window_validp(void *data UNUSED, int argc UNUSED, Scheme_Object **argv)
  */
 
 /*
- * Convert an MzScheme string into a Vim line.
+ * Convert an MzScheme string into a MNV line.
  *
  * All internal nulls are replaced by newline characters.
  * It is an error for the string to contain newline characters.
  *
- * Returns pointer to Vim allocated memory
+ * Returns pointer to MNV allocated memory
  */
     static char *
 string_to_line(Scheme_Object *obj)
 {
     char	*scheme_str = NULL;
-    char	*vim_str = NULL;
+    char	*mnv_str = NULL;
     OUTPUT_LEN_TYPE	len;
     int		i;
 
@@ -2961,30 +2961,30 @@ string_to_line(Scheme_Object *obj)
     if (memchr(scheme_str, '\n', len))
 	scheme_signal_error(_("string cannot contain newlines"));
 
-    vim_str = alloc(len + 1);
+    mnv_str = alloc(len + 1);
 
     // Create a copy of the string, with internal nulls replaced by
-    // newline characters, as is the vim convention.
+    // newline characters, as is the mnv convention.
     for (i = 0; i < len; ++i)
     {
 	if (scheme_str[i] == '\0')
-	    vim_str[i] = '\n';
+	    mnv_str[i] = '\n';
 	else
-	    vim_str[i] = scheme_str[i];
+	    mnv_str[i] = scheme_str[i];
     }
 
-    vim_str[i] = '\0';
+    mnv_str[i] = '\0';
 
     MZ_GC_CHECK();
-    return vim_str;
+    return mnv_str;
 }
 
 #ifdef FEAT_EVAL
 /*
- * Convert Vim value into MzScheme, adopted from if_python.c
+ * Convert MNV value into MzScheme, adopted from if_python.c
  */
     static Scheme_Object *
-vim_to_mzscheme(typval_T *vim_value)
+mnv_to_mzscheme(typval_T *mnv_value)
 {
     Scheme_Object	*result = NULL;
     // hash table to store visited values to avoid infinite loops
@@ -2998,15 +2998,15 @@ vim_to_mzscheme(typval_T *vim_value)
     visited = scheme_make_hash_table(SCHEME_hash_ptr);
     MZ_GC_CHECK();
 
-    result = vim_to_mzscheme_impl(vim_value, 1, visited);
+    result = mnv_to_mzscheme_impl(mnv_value, 1, visited);
 
     MZ_GC_UNREG();
     return result;
 }
 
     static Scheme_Object *
-vim_to_mzscheme_impl(
-    typval_T		*vim_value,
+mnv_to_mzscheme_impl(
+    typval_T		*mnv_value,
     int			depth,
     Scheme_Hash_Table	*visited)
 {
@@ -3027,28 +3027,28 @@ vim_to_mzscheme_impl(
 
     // Check if we run into a recursive loop.  The item must be in visited
     // then and we can use it again.
-    result = scheme_hash_get(visited, (Scheme_Object *)vim_value);
+    result = scheme_hash_get(visited, (Scheme_Object *)mnv_value);
     MZ_GC_CHECK();
     if (result != NULL) // found, do nothing
 	new_value = FALSE;
-    else if (vim_value->v_type == VAR_STRING)
+    else if (mnv_value->v_type == VAR_STRING)
     {
-	result = scheme_make_byte_string((char *)vim_value->vval.v_string);
+	result = scheme_make_byte_string((char *)mnv_value->vval.v_string);
 	MZ_GC_CHECK();
     }
-    else if (vim_value->v_type == VAR_NUMBER)
+    else if (mnv_value->v_type == VAR_NUMBER)
     {
-	result = scheme_make_integer((long)vim_value->vval.v_number);
+	result = scheme_make_integer((long)mnv_value->vval.v_number);
 	MZ_GC_CHECK();
     }
-    else if (vim_value->v_type == VAR_FLOAT)
+    else if (mnv_value->v_type == VAR_FLOAT)
     {
-	result = scheme_make_double((double)vim_value->vval.v_float);
+	result = scheme_make_double((double)mnv_value->vval.v_float);
 	MZ_GC_CHECK();
     }
-    else if (vim_value->v_type == VAR_LIST)
+    else if (mnv_value->v_type == VAR_LIST)
     {
-	list_T		*list = vim_value->vval.v_list;
+	list_T		*list = mnv_value->vval.v_list;
 	listitem_T	*curr;
 
 	if (list == NULL || list->lv_first == NULL)
@@ -3062,21 +3062,21 @@ vim_to_mzscheme_impl(
 	    MZ_GC_REG();
 
 	    curr = list->lv_u.mat.lv_last;
-	    obj = vim_to_mzscheme_impl(&curr->li_tv, depth + 1, visited);
+	    obj = mnv_to_mzscheme_impl(&curr->li_tv, depth + 1, visited);
 	    result = scheme_make_pair(obj, scheme_null);
 	    MZ_GC_CHECK();
 
 	    while (curr != list->lv_first)
 	    {
 		curr = curr->li_prev;
-		obj = vim_to_mzscheme_impl(&curr->li_tv, depth + 1, visited);
+		obj = mnv_to_mzscheme_impl(&curr->li_tv, depth + 1, visited);
 		result = scheme_make_pair(obj, result);
 		MZ_GC_CHECK();
 	    }
 	}
 	MZ_GC_UNREG();
     }
-    else if (vim_value->v_type == VAR_DICT)
+    else if (mnv_value->v_type == VAR_DICT)
     {
 	Scheme_Object	  *key = NULL;
 	Scheme_Object	  *obj = NULL;
@@ -3088,9 +3088,9 @@ vim_to_mzscheme_impl(
 
 	result = (Scheme_Object *)scheme_make_hash_table(SCHEME_hash_ptr);
 	MZ_GC_CHECK();
-	if (vim_value->vval.v_dict != NULL)
+	if (mnv_value->vval.v_dict != NULL)
 	{
-	    hashtab_T	*ht = &vim_value->vval.v_dict->dv_hashtab;
+	    hashtab_T	*ht = &mnv_value->vval.v_dict->dv_hashtab;
 	    long_u	todo = ht->ht_used;
 	    hashitem_T	*hi;
 	    dictitem_T	*di;
@@ -3102,7 +3102,7 @@ vim_to_mzscheme_impl(
 		    --todo;
 
 		    di = dict_lookup(hi);
-		    obj = vim_to_mzscheme_impl(&di->di_tv, depth + 1, visited);
+		    obj = mnv_to_mzscheme_impl(&di->di_tv, depth + 1, visited);
 		    key = scheme_make_byte_string((char *)hi->hi_key);
 		    MZ_GC_CHECK();
 		    scheme_hash_set((Scheme_Hash_Table *)result, key, obj);
@@ -3112,7 +3112,7 @@ vim_to_mzscheme_impl(
 	}
 	MZ_GC_UNREG();
     }
-    else if (vim_value->v_type == VAR_FUNC)
+    else if (mnv_value->v_type == VAR_FUNC)
     {
 	Scheme_Object *funcname = NULL;
 
@@ -3121,17 +3121,17 @@ vim_to_mzscheme_impl(
 	MZ_GC_REG();
 
 	// FIXME: func_ref() and func_unref() are needed.
-	funcname = scheme_make_byte_string((char *)vim_value->vval.v_string);
+	funcname = scheme_make_byte_string((char *)mnv_value->vval.v_string);
 	MZ_GC_CHECK();
-	result = scheme_make_closed_prim_w_arity(vim_funcref, funcname,
+	result = scheme_make_closed_prim_w_arity(mnv_funcref, funcname,
 		(const char *)BYTE_STRING_VALUE(funcname), 0, -1);
 	MZ_GC_CHECK();
 
 	MZ_GC_UNREG();
     }
-    else if (vim_value->v_type == VAR_PARTIAL)
+    else if (mnv_value->v_type == VAR_PARTIAL)
     {
-	if (vim_value->vval.v_partial == NULL)
+	if (mnv_value->vval.v_partial == NULL)
 	    result = scheme_null;
 	else
 	{
@@ -3144,19 +3144,19 @@ vim_to_mzscheme_impl(
 	    // FIXME: func_ref() and func_unref() are needed.
 	    // TODO: Support pt_dict and pt_argv.
 	    funcname = scheme_make_byte_string(
-			      (char *)partial_name(vim_value->vval.v_partial));
+			      (char *)partial_name(mnv_value->vval.v_partial));
 	    MZ_GC_CHECK();
-	    result = scheme_make_closed_prim_w_arity(vim_funcref, funcname,
+	    result = scheme_make_closed_prim_w_arity(mnv_funcref, funcname,
 		    (const char *)BYTE_STRING_VALUE(funcname), 0, -1);
 	    MZ_GC_CHECK();
 
 	    MZ_GC_UNREG();
 	}
     }
-    else if (vim_value->v_type == VAR_BOOL || vim_value->v_type == VAR_SPECIAL)
+    else if (mnv_value->v_type == VAR_BOOL || mnv_value->v_type == VAR_SPECIAL)
     {
-	if (vim_value->vval.v_number <= VVAL_TRUE)
-	    result = scheme_make_integer((long)vim_value->vval.v_number);
+	if (mnv_value->vval.v_number <= VVAL_TRUE)
+	    result = scheme_make_integer((long)mnv_value->vval.v_number);
 	else
 	    result = scheme_null;
 	MZ_GC_CHECK();
@@ -3168,7 +3168,7 @@ vim_to_mzscheme_impl(
     }
     if (new_value)
     {
-	scheme_hash_set(visited, (Scheme_Object *)vim_value, result);
+	scheme_hash_set(visited, (Scheme_Object *)mnv_value, result);
 	MZ_GC_CHECK();
     }
     MZ_GC_UNREG();
@@ -3176,7 +3176,7 @@ vim_to_mzscheme_impl(
 }
 
     static int
-mzscheme_to_vim(Scheme_Object *obj, typval_T *tv)
+mzscheme_to_mnv(Scheme_Object *obj, typval_T *tv)
 {
     int i, status;
     Scheme_Hash_Table	*visited = NULL;
@@ -3189,7 +3189,7 @@ mzscheme_to_vim(Scheme_Object *obj, typval_T *tv)
     visited = scheme_make_hash_table(SCHEME_hash_ptr);
     MZ_GC_CHECK();
 
-    status = mzscheme_to_vim_impl(obj, tv, 1, visited);
+    status = mzscheme_to_mnv_impl(obj, tv, 1, visited);
     for (i = 0; i < visited->size; ++i)
     {
 	// free up remembered objects
@@ -3201,7 +3201,7 @@ mzscheme_to_vim(Scheme_Object *obj, typval_T *tv)
     return status;
 }
     static int
-mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
+mzscheme_to_mnv_impl(Scheme_Object *obj, typval_T *tv, int depth,
 	Scheme_Hash_Table *visited)
 {
     int		status = OK;
@@ -3246,7 +3246,7 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
     else if (SCHEME_BYTE_STRINGP(obj))
     {
 	tv->v_type = VAR_STRING;
-	tv->vval.v_string = vim_strsave(BYTE_STRING_VALUE(obj));
+	tv->vval.v_string = mnv_strsave(BYTE_STRING_VALUE(obj));
     }
 # if MZSCHEME_VERSION_MAJOR >= 299
     else if (SCHEME_CHAR_STRINGP(obj))
@@ -3258,7 +3258,7 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 
 	tmp = scheme_char_string_to_byte_string(obj);
 	tv->v_type = VAR_STRING;
-	tv->vval.v_string = vim_strsave(BYTE_STRING_VALUE(tmp));
+	tv->vval.v_string = mnv_strsave(BYTE_STRING_VALUE(tmp));
 	MZ_GC_UNREG();
     }
 # endif
@@ -3301,7 +3301,7 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 		    for (i = 0; i < SCHEME_VEC_SIZE(obj); ++i)
 		    {
 			cval = SCHEME_VEC_ELS(obj)[i];
-			status = mzscheme_to_vim_impl(cval, v, depth + 1, visited);
+			status = mzscheme_to_mnv_impl(cval, v, depth + 1, visited);
 			if (status == FAIL)
 			    break;
 			status = list_append_tv(list, v);
@@ -3317,7 +3317,7 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 			    curr = SCHEME_CDR(curr))
 		    {
 			cval = SCHEME_CAR(curr);
-			status = mzscheme_to_vim_impl(cval, v, depth + 1, visited);
+			status = mzscheme_to_mnv_impl(cval, v, depth + 1, visited);
 			if (status == FAIL)
 			    break;
 			status = list_append_tv(list, v);
@@ -3329,7 +3329,7 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 		    // need to handle the last element
 		    if (status == OK && !SCHEME_NULLP(curr))
 		    {
-			status = mzscheme_to_vim_impl(cval, v, depth + 1, visited);
+			status = mzscheme_to_mnv_impl(cval, v, depth + 1, visited);
 			if (status == OK)
 			{
 			    status = list_append_tv(list, v);
@@ -3338,7 +3338,7 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 		    }
 		}
 		// nothing to do for scheme_null
-		vim_free(v);
+		mnv_free(v);
 	    }
 	    MZ_GC_UNREG();
 	}
@@ -3376,8 +3376,8 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 		    // generate item for `display'ed Scheme key
 		    dictitem_T  *item = dictitem_alloc((char_u *)string_to_line(
 				((Scheme_Hash_Table *) obj)->keys[i]));
-		    // convert Scheme val to Vim and add it to the dict
-		    if (mzscheme_to_vim_impl(((Scheme_Hash_Table *) obj)->vals[i],
+		    // convert Scheme val to MNV and add it to the dict
+		    if (mzscheme_to_mnv_impl(((Scheme_Hash_Table *) obj)->vals[i],
 				    &item->di_tv, depth + 1, visited) == FAIL
 			    || dict_add(dict, item) == FAIL)
 		    {
@@ -3402,10 +3402,10 @@ mzscheme_to_vim_impl(Scheme_Object *obj, typval_T *tv, int depth,
 }
 
 /*
- * Scheme prim procedure wrapping Vim funcref
+ * Scheme prim procedure wrapping MNV funcref
  */
     static Scheme_Object *
-vim_funcref(void *name, int argc, Scheme_Object **argv)
+mnv_funcref(void *name, int argc, Scheme_Object **argv)
 {
     int i;
     typval_T args;
@@ -3432,13 +3432,13 @@ vim_funcref(void *name, int argc, Scheme_Object **argv)
 		status = FAIL;
 	    else
 	    {
-		status = mzscheme_to_vim(argv[i], v);
+		status = mzscheme_to_mnv(argv[i], v);
 		if (status == OK)
 		{
 		    status = list_append_tv(list, v);
 		    clear_tv(v);
 		}
-		vim_free(v);
+		mnv_free(v);
 	    }
 	}
 	if (status == OK)
@@ -3446,9 +3446,9 @@ vim_funcref(void *name, int argc, Scheme_Object **argv)
 	    typval_T ret;
 	    ret.v_type = VAR_UNKNOWN;
 
-	    mzscheme_call_vim(BYTE_STRING_VALUE((Scheme_Object *)name), &args, &ret);
+	    mzscheme_call_mnv(BYTE_STRING_VALUE((Scheme_Object *)name), &args, &ret);
 	    MZ_GC_CHECK();
-	    result = vim_to_mzscheme(&ret);
+	    result = mnv_to_mzscheme(&ret);
 	    clear_tv(&ret);
 	    MZ_GC_CHECK();
 	}
@@ -3456,7 +3456,7 @@ vim_funcref(void *name, int argc, Scheme_Object **argv)
     clear_tv(&args);
     MZ_GC_UNREG();
     if (status != OK)
-	raise_vim_exn(_("error converting Scheme values to Vim"));
+	raise_mnv_exn(_("error converting Scheme values to MNV"));
     else
 	raise_if_error();
     return result;
@@ -3479,27 +3479,27 @@ do_mzeval(char_u *str, typval_T *rettv)
 
     MZ_GC_CHECK();
     if (eval_with_exn_handling(str, do_eval, &ret) == OK)
-	mzscheme_to_vim(ret, rettv);
+	mzscheme_to_mnv(ret, rettv);
 
     MZ_GC_UNREG();
 }
 #endif
 
 /*
- * Check to see whether a Vim error has been reported, or a keyboard
- * interrupt (from vim --> got_int) has been detected.
+ * Check to see whether a MNV error has been reported, or a keyboard
+ * interrupt (from mnv --> got_int) has been detected.
  */
     static int
-vim_error_check(void)
+mnv_error_check(void)
 {
     return (got_int || did_emsg);
 }
 
 /*
- * register Scheme exn:vim
+ * register Scheme exn:mnv
  */
     static void
-register_vim_exn(void)
+register_mnv_exn(void)
 {
     int	nc = 0;
     int i;
@@ -3511,13 +3511,13 @@ register_vim_exn(void)
     MZ_GC_VAR_IN_REG(1, exn_name);
     MZ_GC_REG();
 
-    exn_name = scheme_intern_symbol("exn:vim");
+    exn_name = scheme_intern_symbol("exn:mnv");
     MZ_GC_CHECK();
     struct_exn = scheme_builtin_value("struct:exn");
     MZ_GC_CHECK();
 
-    if (vim_exn == NULL)
-	vim_exn = scheme_make_struct_type(exn_name,
+    if (mnv_exn == NULL)
+	mnv_exn = scheme_make_struct_type(exn_name,
 		struct_exn, NULL, 0, 0, NULL, NULL
 #if MZSCHEME_VERSION_MAJOR >= 299
 		, NULL
@@ -3538,7 +3538,7 @@ register_vim_exn(void)
 	mch_memmove(exn_names, tmp, nc * sizeof(Scheme_Object *));
 	MZ_GC_CHECK();
 
-	tmp = scheme_make_struct_values(vim_exn, exn_names, nc, 0);
+	tmp = scheme_make_struct_values(mnv_exn, exn_names, nc, 0);
 	mch_memmove(exn_values, tmp, nc * sizeof(Scheme_Object *));
 	MZ_GC_CHECK();
 
@@ -3554,12 +3554,12 @@ register_vim_exn(void)
 }
 
 /*
- * raise exn:vim, may be with additional info string
+ * raise exn:mnv, may be with additional info string
  */
     void
-raise_vim_exn(const char *add_info)
+raise_mnv_exn(const char *add_info)
 {
-    char	    *fmt = _("Vim error: ~a");
+    char	    *fmt = _("MNV error: ~a");
     Scheme_Object   *argv[2] = {NULL, NULL};
     Scheme_Object   *exn = NULL;
     Scheme_Object   *byte_string = NULL;
@@ -3592,7 +3592,7 @@ raise_vim_exn(const char *add_info)
     }
     else
     {
-	byte_string = scheme_make_byte_string(_("Vim error"));
+	byte_string = scheme_make_byte_string(_("MNV error"));
 	MZ_GC_CHECK();
 	argv[0] = scheme_byte_string_to_char_string(byte_string);
 	MZ_GC_CHECK();
@@ -3607,7 +3607,7 @@ raise_vim_exn(const char *add_info)
     MZ_GC_CHECK();
 #endif
 
-    exn = scheme_make_struct_instance(vim_exn, 2, argv);
+    exn = scheme_make_struct_instance(mnv_exn, 2, argv);
     MZ_GC_CHECK();
     scheme_raise(exn);
     MZ_GC_UNREG();
@@ -3616,8 +3616,8 @@ raise_vim_exn(const char *add_info)
     void
 raise_if_error(void)
 {
-    if (vim_error_check())
-	raise_vim_exn(NULL);
+    if (mnv_error_check())
+	raise_mnv_exn(NULL);
 }
 
 /*
@@ -3625,16 +3625,16 @@ raise_if_error(void)
  * either current
  * or passed as argv[argnum] with checks
  */
-    static vim_mz_buffer *
+    static mnv_mz_buffer *
 get_buffer_arg(const char *fname, int argnum, int argc, Scheme_Object **argv)
 {
-    vim_mz_buffer *b;
+    mnv_mz_buffer *b;
 
     if (argc < argnum + 1)
-	return get_vim_curr_buffer();
-    if (!SCHEME_VIMBUFFERP(argv[argnum]))
-	scheme_wrong_type(fname, "vim-buffer", argnum, argc, argv);
-    b = (vim_mz_buffer *)argv[argnum];
+	return get_mnv_curr_buffer();
+    if (!SCHEME_MNVBUFFERP(argv[argnum]))
+	scheme_wrong_type(fname, "mnv-buffer", argnum, argc, argv);
+    b = (mnv_mz_buffer *)argv[argnum];
     (void)get_valid_buffer(argv[argnum]);
     return b;
 }
@@ -3644,26 +3644,26 @@ get_buffer_arg(const char *fname, int argnum, int argc, Scheme_Object **argv)
  * either current
  * or passed as argv[argnum] with checks
  */
-    static vim_mz_window *
+    static mnv_mz_window *
 get_window_arg(const char *fname, int argnum, int argc, Scheme_Object **argv)
 {
-    vim_mz_window *w;
+    mnv_mz_window *w;
 
     if (argc < argnum + 1)
-	return get_vim_curr_window();
-    w = (vim_mz_window *)argv[argnum];
-    if (!SCHEME_VIMWINDOWP(argv[argnum]))
-	scheme_wrong_type(fname, "vim-window", argnum, argc, argv);
+	return get_mnv_curr_window();
+    w = (mnv_mz_window *)argv[argnum];
+    if (!SCHEME_MNVWINDOWP(argv[argnum]))
+	scheme_wrong_type(fname, "mnv-window", argnum, argc, argv);
     (void)get_valid_window(argv[argnum]);
     return w;
 }
 
 /*
- * get valid Vim buffer from Scheme_Object*
+ * get valid MNV buffer from Scheme_Object*
  */
 buf_T *get_valid_buffer(void *obj)
 {
-    buf_T *buf = ((vim_mz_buffer *)obj)->buf;
+    buf_T *buf = ((mnv_mz_buffer *)obj)->buf;
 
     if (buf == INVALID_BUFFER_VALUE)
 	scheme_signal_error(_("buffer is invalid"));
@@ -3671,11 +3671,11 @@ buf_T *get_valid_buffer(void *obj)
 }
 
 /*
- * get valid Vim window from Scheme_Object*
+ * get valid MNV window from Scheme_Object*
  */
 win_T *get_valid_window(void *obj)
 {
-    win_T *win = ((vim_mz_window *)obj)->win;
+    win_T *win = ((mnv_mz_window *)obj)->win;
     if (win == INVALID_WINDOW_VALUE)
 	scheme_signal_error(_("window is invalid"));
     return win;
@@ -3702,7 +3702,7 @@ check_line_range(linenr_T lnum, buf_T *buf)
 
 /*
  * Check if deleting lines made the cursor position invalid
- * (or you'll get msg from Vim about invalid linenr).
+ * (or you'll get msg from MNV about invalid linenr).
  * Changed the lines from "lo" to "hi" and added "extra" lines (negative if
  * deleted). Got from if_python.c
  */
@@ -3730,7 +3730,7 @@ mz_fix_cursor(int lo, int hi, int extra)
     invalidate_botline();
 }
 
-static Vim_Prim prims[]=
+static MNV_Prim prims[]=
 {
     /*
      * Buffer-related commands
@@ -3766,10 +3766,10 @@ static Vim_Prim prims[]=
     {set_cursor, "set-cursor", 1, 2},
     {get_window_list, "get-win-list", 0, 1},
     /*
-     * Vim-related commands
+     * MNV-related commands
      */
-    {vim_command, "command", 1, 1},
-    {vim_eval, "eval", 1, 1},
+    {mnv_command, "command", 1, 1},
+    {mnv_eval, "eval", 1, 1},
     {get_range_start, "range-start", 0, 0},
     {get_range_end, "range-end", 0, 0},
     {mzscheme_beep, "beep", 0, 0},
@@ -3778,20 +3778,20 @@ static Vim_Prim prims[]=
     /*
      * small utilities
      */
-    {vim_bufferp, "buff?", 1, 1},
-    {vim_windowp, "win?", 1, 1},
-    {vim_buffer_validp, "buff-valid?", 1, 1},
-    {vim_window_validp, "win-valid?", 1, 1}
+    {mnv_bufferp, "buff?", 1, 1},
+    {mnv_windowp, "win?", 1, 1},
+    {mnv_buffer_validp, "buff-valid?", 1, 1},
+    {mnv_window_validp, "win-valid?", 1, 1}
 };
 
 /*
  * return MzScheme wrapper for curbuf
  */
-    static vim_mz_buffer *
-get_vim_curr_buffer(void)
+    static mnv_mz_buffer *
+get_mnv_curr_buffer(void)
 {
     if (curbuf->b_mzscheme_ref == NULL)
-	return (vim_mz_buffer *)buffer_new(curbuf);
+	return (mnv_mz_buffer *)buffer_new(curbuf);
     else
 	return BUFFER_REF(curbuf);
 }
@@ -3799,11 +3799,11 @@ get_vim_curr_buffer(void)
 /*
  * return MzScheme wrapper for curwin
  */
-    static vim_mz_window *
-get_vim_curr_window(void)
+    static mnv_mz_window *
+get_mnv_curr_window(void)
 {
     if (curwin->w_mzscheme_ref == NULL)
-	return (vim_mz_window *)window_new(curwin);
+	return (mnv_mz_window *)window_new(curwin);
     else
 	return WINDOW_REF(curwin);
 }
@@ -3813,23 +3813,23 @@ make_modules(void)
 {
     int		    i;
     Scheme_Env	    *mod = NULL;
-    Scheme_Object   *vimext_symbol = NULL;
+    Scheme_Object   *mnvext_symbol = NULL;
     Scheme_Object   *closed_prim = NULL;
 
     MZ_GC_DECL_REG(3);
     MZ_GC_VAR_IN_REG(0, mod);
-    MZ_GC_VAR_IN_REG(1, vimext_symbol);
+    MZ_GC_VAR_IN_REG(1, mnvext_symbol);
     MZ_GC_VAR_IN_REG(2, closed_prim);
     MZ_GC_REG();
 
-    vimext_symbol = scheme_intern_symbol("vimext");
+    mnvext_symbol = scheme_intern_symbol("mnvext");
     MZ_GC_CHECK();
-    mod = scheme_primitive_module(vimext_symbol, environment);
+    mod = scheme_primitive_module(mnvext_symbol, environment);
     MZ_GC_CHECK();
     // all prims made closed so they can access their own names
     for (i = 0; i < (int)ARRAY_LENGTH(prims); i++)
     {
-	Vim_Prim *prim = prims + i;
+	MNV_Prim *prim = prims + i;
 	closed_prim = scheme_make_closed_prim_w_arity(prim->prim, prim, prim->name,
 			    prim->mina, prim->maxa);
 	scheme_add_global(prim->name, closed_prim, mod);
@@ -3850,11 +3850,11 @@ static Scheme_Object *M_delete = NULL;
 sandbox_check(void)
 {
     if (sandbox)
-	raise_vim_exn(_("not allowed in the Vim sandbox"));
+	raise_mnv_exn(_("not allowed in the MNV sandbox"));
 }
 
 /*
- * security guards to force Vim's sandbox restrictions on MzScheme level
+ * security guards to force MNV's sandbox restrictions on MzScheme level
  */
     static Scheme_Object *
 sandbox_file_guard(int argc UNUSED, Scheme_Object **argv)
@@ -3894,7 +3894,7 @@ sandbox_file_guard(int argc UNUSED, Scheme_Object **argv)
 	Scheme_Object *item = SCHEME_CAR(requested_access);
 	if (scheme_eq(item, M_write) || scheme_eq(item, M_read)
 		|| scheme_eq(item, M_execute) || scheme_eq(item, M_delete))
-	    raise_vim_exn(_("not allowed in the Vim sandbox"));
+	    raise_mnv_exn(_("not allowed in the MNV sandbox"));
 	requested_access = SCHEME_CDR(requested_access);
     }
 

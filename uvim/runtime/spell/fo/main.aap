@@ -1,10 +1,10 @@
-# Aap recipe for Faroese Vim spell files.
+# Aap recipe for Faroese MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = fo_FO.aff fo_FO.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/fo.latin1.spl $SPELLDIR/fo.utf-8.spl ../README_fo.txt
 
 $SPELLDIR/fo.latin1.spl : $FILES
         :sys env LANG=fo_FO.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/fo fo_FO" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/fo fo_FO" -c q
 
 $SPELLDIR/fo.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8" -c "mkspell! $SPELLDIR/fo fo_FO" -c q
+        :sys $MNV -u NONE -e -c "set enc=utf-8" -c "mkspell! $SPELLDIR/fo fo_FO" -c q
 
 ../README_fo.txt : README_fo_FO.txt Copyright
         :cat $source >! $target
@@ -44,7 +44,7 @@ fo_FO.aff fo_FO.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -75,4 +75,4 @@ check:
             :delete fo_FO.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

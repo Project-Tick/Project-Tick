@@ -1,7 +1,7 @@
-*usr_10.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_10.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			     Making big changes
@@ -191,7 +191,7 @@ following: >
 
 	:%s/Professor/Teacher/c
 
-Vim finds the first occurrence of "Professor" and displays the text it is
+MNV finds the first occurrence of "Professor" and displays the text it is
 about to change.  You get the following prompt: >
 
 	replace with Teacher (y/n/a/q/l/^E/^Y)?
@@ -318,7 +318,7 @@ was visually selected.
 	Note:
 	When using Visual mode to select part of a line, or using CTRL-V to
 	select a block of text, the colon commands will still apply to whole
-	lines.  This might change in a future version of Vim.
+	lines.  This might change in a future version of MNV.
 
 The '< and '> are actually marks, placed at the start and end of the Visual
 selection.  The marks remain at their position until another Visual selection
@@ -346,7 +346,7 @@ See also |:range|, for an overview of all possible ways to specify a range.
 ==============================================================================
 *10.4*	The global command
 
-The ":global" command is one of the more powerful features of Vim.  It allows
+The ":global" command is one of the more powerful features of MNV.  It allows
 you to find a match for a pattern and execute a command there.  The general
 form is: >
 
@@ -455,7 +455,7 @@ this result:
 	short XXX ~
 	Any other long line XXX ~
 
-This really requires using the "$" command.  Vim remembers that it was used.
+This really requires using the "$" command.  MNV remembers that it was used.
 Making the same selection by moving the cursor to the end of the longest line
 with other movement commands will not have the same result.
 
@@ -596,7 +596,7 @@ lines are written: >
 	:.,$write tempo
 
 This writes the lines from the cursor until the end of the file into the file
-"tempo".  If this file already exists you will get an error message.  Vim
+"tempo".  If this file already exists you will get an error message.  MNV
 protects you from accidentally overwriting an existing file.  If you know what
 you are doing and want to overwrite the file, append !: >
 
@@ -619,7 +619,7 @@ Now move the cursor to the second line you want to collect, and type this: >
 
 	:.write >>collection
 
-The ">>" tells Vim the "collection" file is not to be written as a new file,
+The ">>" tells MNV the "collection" file is not to be written as a new file,
 but the line must be appended at the end.   You can repeat this as many times
 as you like.
 
@@ -632,16 +632,16 @@ inserting text, set the 'textwidth' option: >
 
 	:set textwidth=72
 
-You might remember that in the example vimrc file this command was used for
-every text file.  Thus if you are using that vimrc file, you were already
+You might remember that in the example mnvrc file this command was used for
+every text file.  Thus if you are using that mnvrc file, you were already
 using it.  To check the current value of 'textwidth': >
 
 	:set textwidth
 
 Now lines will be broken to take only up to 72 characters.  But when you
 insert text halfway through a line, or when you delete a few words, the lines
-will get too long or too short.  Vim doesn't automatically reformat the text.
-   To tell Vim to format the current paragraph: >
+will get too long or too short.  MNV doesn't automatically reformat the text.
+   To tell MNV to format the current paragraph: >
 
 	gqap
 
@@ -697,7 +697,7 @@ lowercase.  This can be shortened to "guu".  "gUgU" is shortened to "gUU" and
 ==============================================================================
 *10.9*	Using an external program
 
-Vim has a very powerful set of commands, it can do anything.  But there may
+MNV has a very powerful set of commands, it can do anything.  But there may
 still be something that an external command can do better or faster.
    The command "!{motion}{program}" takes a block of text and filters it
 through an external program.  In other words, it runs the system command
@@ -710,15 +710,15 @@ output.txt.  (This works on both UNIX and Microsoft Windows.) >
 
 	sort <input.txt >output.txt
 
-Now do the same thing in Vim.  You want to sort lines 1 through 5 of a file.
+Now do the same thing in MNV.  You want to sort lines 1 through 5 of a file.
 You start by putting the cursor on line 1.  Next you execute the following
 command: >
 
 	!5G
 
-The "!" tells Vim that you are performing a filter operation.  The Vim editor
+The "!" tells MNV that you are performing a filter operation.  The MNV editor
 expects a motion command to follow, indicating which part of the file to
-filter.  The "5G" command tells Vim to go to line 5, so it now knows that it
+filter.  The "5G" command tells MNV to go to line 5, so it now knows that it
 is to filter lines 1 (the current line) through 5.
    In anticipation of the filtering, the cursor drops to the bottom of the
 screen and a ! prompt displays.  You can now type in the name of the filter
@@ -743,17 +743,17 @@ a file.
 
 Note: There is a difference between "!cmd" (e.g. using it without any file
 range) and "{range}!cmd".  While the former will simply execute the external
-command and Vim will show the output, the latter will filter {range}lines
+command and MNV will show the output, the latter will filter {range}lines
 through the filter and replace that range by the result of the filter command.
 See |:!| and |:range!| for details.
 
 WHEN IT DOESN'T WORK
 
-Starting a shell, sending it text and capturing the output requires that Vim
+Starting a shell, sending it text and capturing the output requires that MNV
 knows how the shell works exactly.  When you have problems with filtering,
 check the values of these options:
 
-	'shell'		specifies the program that Vim uses to execute
+	'shell'		specifies the program that MNV uses to execute
 			external programs.
 	'shellcmdflag'	argument to pass a command to the shell
 	'shellquote'	quote to be used around the command
@@ -764,7 +764,7 @@ check the values of these options:
 	'shellredir'	string used to write the command output into a file
 
 On Unix this is hardly ever a problem, because there are two kinds of shells:
-"sh" like and "csh" like.  Vim checks the 'shell' option and sets related
+"sh" like and "csh" like.  MNV checks the 'shell' option and sets related
 options automatically, depending on whether it sees "csh" somewhere in
 'shell'.
    On MS-Windows, however, there are many different shells and you might have
@@ -783,8 +783,8 @@ on MS-Windows: >
 
 The output of the "ls" or "dir" command is captured and inserted in the text,
 below the cursor.  This is similar to reading a file, except that the "!" is
-used to tell Vim that a command follows.
-   The command may have arguments.  And a range can be used to tell where Vim
+used to tell MNV that a command follows.
+   The command may have arguments.  And a range can be used to tell where MNV
 should put the lines: >
 
 	:0read !date -u
@@ -822,9 +822,9 @@ space is important here!
 REDRAWING THE SCREEN
 
 If the external command produced an error message, the display may have been
-messed up.  Vim is very efficient and only redraws those parts of the screen
+messed up.  MNV is very efficient and only redraws those parts of the screen
 that it knows need redrawing.  But it can't know about what another program
-has written.  To tell Vim to redraw the screen: >
+has written.  To tell MNV to redraw the screen: >
 
 	CTRL-L
 
@@ -832,4 +832,4 @@ has written.  To tell Vim to redraw the screen: >
 
 Next chapter: |usr_11.txt|  Recovering from a crash
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

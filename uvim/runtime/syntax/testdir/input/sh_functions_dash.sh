@@ -1,6 +1,6 @@
 #!/bin/dash
-# VIM_TEST_SETUP setlocal fen fdc=2 fdl=8 fdm=syntax
-# VIM_TEST_SETUP let g:sh_fold_enabled = 1 + 2 + 4
+# MNV_TEST_SETUP setlocal fen fdc=2 fdl=8 fdm=syntax
+# MNV_TEST_SETUP let g:sh_fold_enabled = 1 + 2 + 4
 
 
 thence()

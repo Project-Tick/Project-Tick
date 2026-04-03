@@ -1,13 +1,13 @@
-*os_qnx.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*os_qnx.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Julian Kinraid
+		  MNV REFERENCE MANUAL	  by Julian Kinraid
 
 
 							*QNX* *qnx*
 
 1. General			|qnx-general|
-2. Compiling Vim		|qnx-compiling|
+2. Compiling MNV		|qnx-compiling|
 3. Terminal support		|qnx-terminal|
 4. Photon GUI			|photon-gui|
 5. Photon fonts			|photon-fonts|
@@ -17,35 +17,35 @@
 
 1. General						*qnx-general*
 
-Vim on QNX behaves much like other unix versions. |os_unix.txt|
+MNV on QNX behaves much like other unix versions. |os_unix.txt|
 
 
-2. Compiling Vim					*qnx-compiling*
+2. Compiling MNV					*qnx-compiling*
 
-Vim can be compiled using the standard configure/make approach.  If you want
+MNV can be compiled using the standard configure/make approach.  If you want
 to compile for X11, pass the --with-x option to configure.  Otherwise, running
 ./configure without any arguments or passing --enable-gui=photon, will compile
-vim with the Photon gui support.  Run ./configure --help , to find out other
+mnv with the Photon gui support.  Run ./configure --help , to find out other
 features you can enable/disable.
 
 
 3. Terminal support					*qnx-terminal*
 
-Vim has support for the mouse and clipboard in a pterm, if those options
+MNV has support for the mouse and clipboard in a pterm, if those options
 are compiled in, which they are normally.
 
 The options that affect mouse support are 'mouse' and 'ttymouse'.  When using
 the mouse, only simple left and right mouse clicking/dragging is supported.
 If you hold down shift, ctrl, or alt while using the mouse, pterm will handle
-the mouse itself.  It will make a selection, separate from what vim's doing.
+the mouse itself.  It will make a selection, separate from what mnv's doing.
 
 When the mouse is in use, you can press Alt-RightMouse to open the pterm menu.
-To turn the mouse off in vim, set the mouse option to nothing, set mouse=
+To turn the mouse off in mnv, set the mouse option to nothing, set mouse=
 
 
 4. Photon GUI						*photon-gui*
 
-To start the gui for vim, you need to run either gvim or vim -g, otherwise
+To start the gui for mnv, you need to run either gmnv or mnv -g, otherwise
 the terminal version will run.  For more info - |gui-x11-start|
 
 Supported features:
@@ -112,14 +112,14 @@ Select a font with the requester >
 6. Bugs & things To Do
 
 Known problems:
-	- Vim hangs sometimes when running an external program.  Workaround:
-	  put this line in your |vimrc| file: >
+	- MNV hangs sometimes when running an external program.  Workaround:
+	  put this line in your |mnvrc| file: >
 		set noguipty
 
 Bugs:
 	- Still a slight problem with menu highlighting.
 	- When using phditto/phinows/etc., if you are using a font that
-	  doesn't support the bold attribute, when vim attempts to draw
+	  doesn't support the bold attribute, when mnv attempts to draw
 	  bold text it will be all messed up.
 	- The cursor can sometimes be hard to see.
 	- A number of minor problems that can fixed. :)
@@ -134,4 +134,4 @@ Todo:
 	- Replace usage of fork() with spawn() when launching external
 	  programs.
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

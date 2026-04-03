@@ -1,0 +1,14 @@
+mnv9script
+
+# Open MNV help on {subject} in the current window (rather than a new split)
+#
+# Maintainer:   The MNV Project <https://github.com/Project-Tick/Project-Tick>
+# Last change:  2026 Jan 29
+
+import autoload '../autoload/helpcurwin.mnv'
+
+command -bar -nargs=? -complete=help HelpCurwin helpcurwin.Open(<q-args>)
+
+nnoremap <Plug>HelpCurwin; <ScriptCmd>helpcurwin.Open(expand('<cWORD>'))<CR>
+
+# mnv: ts=8 sts=2 sw=2 et

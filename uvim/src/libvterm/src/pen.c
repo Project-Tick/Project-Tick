@@ -44,7 +44,7 @@ static int ramp24[] = {
 
 static void lookup_default_colour_ansi(long idx, VTermColor *col)
 {
-  // VIM: store both RGB color and index
+  // MNV: store both RGB color and index
   vterm_color_rgb(
       col,
       ansi_colors[idx].red, ansi_colors[idx].green, ansi_colors[idx].blue);

@@ -1,7 +1,7 @@
-*cmdline.txt*	For Vim version 9.2.  Last change: 2026 Mar 17
+*cmdline.txt*	For MNV version 9.2.  Last change: 2026 Mar 17
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 				*Cmdline-mode* *Command-line-mode*
@@ -132,9 +132,9 @@ CTRL-W		Delete the |word| before the cursor.  This depends on the
 		'iskeyword' option.
 							*c_CTRL-U*
 CTRL-U		Remove all characters between the cursor position and
-		the beginning of the line.  Previous versions of vim
+		the beginning of the line.  Previous versions of mnv
 		deleted all characters on the line.  If that is the
-		preferred behavior, add the following to your .vimrc: >
+		preferred behavior, add the following to your .mnvrc: >
 			:cnoremap <C-U> <C-E><C-U>
 <
 						*c_<Insert>* *c_Insert*
@@ -297,7 +297,7 @@ CTRL-_		a - switch between Hebrew and English keyboard mode, which is
 		private to the command-line and not related to hkmap.
 		This is useful when Hebrew text entry is required in the
 		command-line, searches, abbreviations, etc.  Applies only if
-		Vim is compiled with the |+rightleft| feature and the
+		MNV is compiled with the |+rightleft| feature and the
 		'allowrevins' option is set.
 		See |rileft.txt|.
 
@@ -306,7 +306,7 @@ CTRL-_		a - switch between Hebrew and English keyboard mode, which is
 		Farsi keyboard mode the characters are inserted in reverse
 		insert manner.  This is useful when Farsi text entry is
 		required in the command-line, searches, abbreviations, etc.
-		Applies only if Vim is compiled with the |+farsi| feature.
+		Applies only if MNV is compiled with the |+farsi| feature.
 		See |farsi.txt|.
 
 							*c_CTRL-^*
@@ -547,7 +547,7 @@ This will not match a file ending in ".cpp".  Without the "$" it does match.
 If you would like using <S-Tab> for CTRL-P in an xterm, put this command in
 your .cshrc: >
 	xmodmap -e "keysym Tab = Tab Find"
-And this in your .vimrc: >
+And this in your .mnvrc: >
 	:cmap <Esc>[1~ <C-P>
 <						*complete-set-option*
 When setting an option using |:set=|, the old value of an option can be
@@ -612,7 +612,7 @@ that see the '"' as part of their argument:
     :syntax
     :tabdo
     :tearoff
-    :vimgrep (and the like)
+    :mnvgrep (and the like)
     :while
     :windo
 
@@ -621,7 +621,7 @@ that see the '"' as part of their argument:
 line.  If you want to use '|' in an argument, precede it with '\'.
 
 These commands see the '|' as their argument, and can therefore not be
-followed by another Vim command:
+followed by another MNV command:
     :argdo
     :autocmd
     :bufdo
@@ -665,7 +665,7 @@ followed by another Vim command:
     :[range]!
     a user defined command without the "-bar" argument |:command|
 
-    and the following |Vim9-script| keywords:
+    and the following |MNV9-script| keywords:
     :abstract
     :class
     :enum
@@ -747,14 +747,14 @@ Some Ex commands accept a line range in front of them.  This is noted as
 
 The basics are explained in section |10.3| of the user manual.
 
-In |Vim9| script, a range needs to be prefixed with a colon to avoid ambiguity
+In |MNV9| script, a range needs to be prefixed with a colon to avoid ambiguity
 with continuation lines.  For example, "+" can be used for a range but is also
 a continuation of an expression: >
 	var result = start
 	+ print
-<If the "+" is a range, as it is here, in Vim9 script it must be prefixed
+<If the "+" is a range, as it is here, in MNV9 script it must be prefixed
 with a colon (otherwise you will get error |E1050|): >
-	vim9script
+	mnv9script
 	:+ print
 <
 								*:,* *:;*
@@ -928,7 +928,7 @@ closed fold.  See |fold-behavior|.
 
 Reverse Range						*E493*
 
-A range should have the lower line number first.  If this is not the case, Vim
+A range should have the lower line number first.  If this is not the case, MNV
 will ask you if it should swap the line numbers.
 	Backwards range given, OK to swap ~
 This is not done within the global command ":g".
@@ -982,7 +982,7 @@ to insert special things while typing you can use the CTRL-R command.  For
 example, "%" stands for the current file name, while CTRL-R % inserts the
 current file name right away.  See |c_CTRL-R|.
 
-Note: If you want to avoid the effects of special characters in a Vim script
+Note: If you want to avoid the effects of special characters in a MNV script
 you may want to use |fnameescape()|.  Also see |`=|.
 
 
@@ -1000,8 +1000,8 @@ function |expand()|.
 	#<n	(where n is a number > 0) is replaced with old	  *:_#<* *c_#<*
 		file name n.  See |:oldfiles| or |v:oldfiles| to get the
 		number.							*E809*
-		{only when compiled with the |+eval| and |+viminfo| features}
-In |Vim9-script| # is used to start a comment, use %% for the alternate file
+		{only when compiled with the |+eval| and |+mnvinfo| features}
+In |MNV9-script| # is used to start a comment, use %% for the alternate file
 name:
 	%	Is replaced with the current file name.
 	%%	Is replaced with the alternate file name.	*:_%%* *c_%%*
@@ -1074,7 +1074,7 @@ Note: these are typed literally, they are not special keys!
 		   When executing a legacy function, is replaced with the call
 		   stack, as with <stack> (this is for backwards
 		   compatibility, using <stack> or <script> is preferred).
-		   In Vim9 script using <sfile> in a function gives error
+		   In MNV9 script using <sfile> in a function gives error
 		   *E1245* .
 		   Note that filename-modifiers are useless when <sfile> is
 		   not used inside a script.
@@ -1143,7 +1143,7 @@ These modifiers can be given, in this order:
 		precede any :r or :e.
 	:r	Root of the file name (the last extension removed).  When
 		there is only an extension (file name that starts with '.',
-		e.g., ".vimrc"), it is not removed.  Can be repeated to remove
+		e.g., ".mnvrc"), it is not removed.  Can be repeated to remove
 		several extensions (last one first).
 	:e	Extension of the file name.  Only makes sense when used alone.
 		When there is no extension the result is empty.
@@ -1167,25 +1167,25 @@ These modifiers can be given, in this order:
 		    :call system('chmod +w -- ' .. expand('%:S'))
 
 Examples, when the file name is "src/version.c", current dir
-"/home/mool/vim": >
-  :p			/home/mool/vim/src/version.c
+"/home/mool/mnv": >
+  :p			/home/mool/mnv/src/version.c
   :p:.				       src/version.c
-  :p:~				 ~/vim/src/version.c
+  :p:~				 ~/mnv/src/version.c
   :h				       src
-  :p:h			/home/mool/vim/src
-  :p:h:h		/home/mool/vim
+  :p:h			/home/mool/mnv/src
+  :p:h:h		/home/mool/mnv
   :t					   version.c
   :p:t					   version.c
   :r				       src/version
-  :p:r			/home/mool/vim/src/version
+  :p:r			/home/mool/mnv/src/version
   :t:r					   version
   :e						   c
   :s?version?main?		       src/main.c
-  :s?version?main?:p	/home/mool/vim/src/main.c
-  :p:gs?/?\\?		\home\mool\vim\src\version.c
+  :s?version?main?:p	/home/mool/mnv/src/main.c
+  :p:gs?/?\\?		\home\mool\mnv\src\version.c
 
 Examples, when the file name is "src/version.c.gz": >
-  :p			/home/mool/vim/src/version.c.gz
+  :p			/home/mool/mnv/src/version.c.gz
   :e						     gz
   :e:e						   c.gz
   :e:e:e					   c.gz
@@ -1278,7 +1278,7 @@ line contains the command as typed so far.  The left column will show a
 character that indicates the type of command-line being edited, see
 |cmdwin-char|.
 
-Vim will be in Normal mode when the editor is opened, except when 'insertmode'
+MNV will be in Normal mode when the editor is opened, except when 'insertmode'
 is set.
 								*E1292*
 Once a command-line window is open it is not possible to open another one.
@@ -1317,8 +1317,8 @@ CTRL-C		Continue in Command-line mode.  The command-line under the
 :quit		Discard the command line and go back to Normal mode.
 		":close", CTRL-W c, ":exit", ":xit" and CTRL-\ CTRL-N also
 		work.
-:qall		Quit Vim, unless there are changes in some buffer.
-:qall!		Quit Vim, discarding changes to any buffer.
+:qall		Quit MNV, unless there are changes in some buffer.
+:qall!		Quit MNV, discarding changes to any buffer.
 
 Once the command-line window is closed the old window sizes are restored.  The
 executed command applies to the window and buffer where the command-line was
@@ -1340,7 +1340,7 @@ The command-line window cannot be used:
 - for entering an encryption key or when using inputsecret()
 
 Some options are set when the command-line window is opened:
-'filetype'	"vim", when editing an Ex command-line; this starts Vim syntax
+'filetype'	"mnv", when editing an Ex command-line; this starts MNV syntax
 		highlighting if it was enabled
 'rightleft'	off
 'modifiable'	on
@@ -1360,7 +1360,7 @@ character.  That way it works at the end of the line.
 If you don't want these mappings, disable them with: >
 	au CmdwinEnter [:>] iunmap <Tab>
 	au CmdwinEnter [:>] nunmap <Tab>
-You could put these lines in your vimrc file.
+You could put these lines in your mnvrc file.
 
 While in the command-line window you cannot use the mouse to put the cursor in
 another window, or drag statuslines of other windows.  You can drag the
@@ -1382,7 +1382,7 @@ Example: >
 This sets 'complete' to use completion in the current window for |i_CTRL-N|.
 Another example: >
 	:au CmdwinEnter [\/\?]  startinsert
-This will make Vim start in Insert mode in the command-line window.
+This will make MNV start in Insert mode in the command-line window.
 Note: The "/" and "?" needs to be escaped, as this is a |file-pattern|.
 See also |cmdline-autocompletion|.
 
@@ -1477,4 +1477,4 @@ history: >
 
 For autocompletion in insert mode, see |ins-autocompletion|.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

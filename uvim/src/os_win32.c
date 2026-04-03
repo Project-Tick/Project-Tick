@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * os_win32.c
@@ -17,10 +17,10 @@
  * NetHack 3.1.3, GNU Emacs 19.30, and Vile 5.5.
  *
  * George V. Reilly <george@reilly.org> wrote most of this.
- * Roger Knobbe <rogerk@wonderware.com> did the initial port of Vim 3.0.
+ * Roger Knobbe <rogerk@wonderware.com> did the initial port of MNV 3.0.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef FEAT_MZSCHEME
 # include "if_mzsch.h"
@@ -49,7 +49,7 @@
 FILE* fdDump = NULL;
 #endif
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 // Win32 Console handles for input and output
 static HANDLE g_hConIn  = INVALID_HANDLE_VALUE;
 static HANDLE g_hConOut = INVALID_HANDLE_VALUE;
@@ -100,10 +100,10 @@ static int read_input_record_buffer(INPUT_RECORD* irEvents, int nMaxLength);
 static int write_input_record_buffer(INPUT_RECORD* irEvents, int nLength);
 #endif
 #ifdef FEAT_GUI_MSWIN
-static int s_dont_use_vimrun = TRUE;
-static int need_vimrun_warning = FALSE;
-static string_T vimrun_path = {(char_u *)"vimrun ", 7};
-static int vimrun_path_allocated = FALSE;
+static int s_dont_use_mnvrun = TRUE;
+static int need_mnvrun_warning = FALSE;
+static string_T mnvrun_path = {(char_u *)"mnvrun ", 7};
+static int mnvrun_path_allocated = FALSE;
 #endif
 
 static int win32_getattrs(char_u *name);
@@ -116,7 +116,7 @@ static int conpty_stable = 0;
 static int conpty_fix_type = 0;
 static void vtp_flag_init(void);
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 static int vtp_working = 0;
 static void vtp_init(void);
 static void vtp_exit(void);
@@ -147,26 +147,26 @@ static int default_console_color_fg = 0xc0c0c0; // white
 static void set_console_color_rgb(void);
 static void reset_console_color_rgb(void);
 static void restore_console_color_rgb(void);
-#endif  // !FEAT_GUI_MSWIN || VIMDLL
+#endif  // !FEAT_GUI_MSWIN || MNVDLL
 
 // This flag is newly created from Windows 10
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
 # define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 static int suppress_winsize = 1;	// don't fiddle with console
 #endif
 
 static WCHAR *exe_pathw = NULL;
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 static BOOL use_alternate_screen_buffer = FALSE;
 #endif
 
 extern DWORD win_version; // this is in os_mswin.c
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
     static BOOL
 is_ambiwidth_event(
     INPUT_RECORD *ir)
@@ -335,7 +335,7 @@ wait_for_single_object(
     return WaitForSingleObject(hHandle, dwMilliseconds);
 }
 # endif
-#endif   // !FEAT_GUI_MSWIN || VIMDLL
+#endif   // !FEAT_GUI_MSWIN || MNVDLL
 
     void
 mch_get_exe_name(void)
@@ -350,13 +350,13 @@ mch_get_exe_name(void)
 	WCHAR	buf[MAX_PATH];
 	WCHAR	*p;
 
-	// store the name of the executable, may be used for $VIM
+	// store the name of the executable, may be used for $MNV
 	p = buf + GetModuleFileNameW(NULL, buf, MAX_PATH);
 	if (p > buf)
 	{
 	    if (enc_codepage == -1)
 		enc_codepage = GetACP();
-	    vim_free(exe_name);
+	    mnv_free(exe_name);
 	    exe_name = utf16_to_enc(buf, NULL);
 	    enc_prev = enc_codepage;
 
@@ -372,7 +372,7 @@ mch_get_exe_name(void)
 		}
 	    } while (p > buf);
 
-	    vim_free(exe_pathw);
+	    mnv_free(exe_pathw);
 	    exe_pathw = _wcsdup(buf);
 	    updated = TRUE;
 	}
@@ -440,7 +440,7 @@ unescape_shellxquote(char_u *p, char_u *escaped)
 
     while (*p != NUL)
     {
-	if (*p == '^' && vim_strchr(escaped, p[1]) != NULL)
+	if (*p == '^' && mnv_strchr(escaped, p[1]) != NULL)
 	    mch_memmove(p, p + 1, l--);
 	n = (*mb_ptr2len)(p);
 	p += n;
@@ -452,7 +452,7 @@ unescape_shellxquote(char_u *p, char_u *escaped)
  * Load library "name".
  */
     HINSTANCE
-vimLoadLib(const char *name)
+mnvLoadLib(const char *name)
 {
     HINSTANCE	dll = NULL;
 
@@ -461,7 +461,7 @@ vimLoadLib(const char *name)
 	return NULL;
 
     // NOTE: Do not use mch_dirname() and mch_chdir() here, they may call
-    // vimLoadLib() recursively, which causes a stack overflow.
+    // mnvLoadLib() recursively, which causes a stack overflow.
     if (exe_pathw == NULL)
     {
 	mch_get_exe_name();
@@ -483,7 +483,7 @@ vimLoadLib(const char *name)
     return dll;
 }
 
-#if defined(VIMDLL)
+#if defined(MNVDLL)
 /*
  * Check if the current executable file is for the GUI subsystem.
  */
@@ -719,14 +719,14 @@ dyn_libintl_init(void)
     if (hLibintlDLL != NULL)
 	return 1;
     // Load gettext library (libintl.dll and other names).
-    hLibintlDLL = vimLoadLib(GETTEXT_DLL);
+    hLibintlDLL = mnvLoadLib(GETTEXT_DLL);
 # ifdef GETTEXT_DLL_ALT1
     if (!hLibintlDLL)
-	hLibintlDLL = vimLoadLib(GETTEXT_DLL_ALT1);
+	hLibintlDLL = mnvLoadLib(GETTEXT_DLL_ALT1);
 # endif
 # ifdef GETTEXT_DLL_ALT2
     if (!hLibintlDLL)
-	hLibintlDLL = vimLoadLib(GETTEXT_DLL_ALT2);
+	hLibintlDLL = mnvLoadLib(GETTEXT_DLL_ALT2);
 # endif
     if (!hLibintlDLL)
     {
@@ -896,7 +896,7 @@ PlatformId(void)
 #ifdef FEAT_EVAL
     DWORD major = (win_version >> 24) & 0xFF;
     DWORD minor = (win_version >> 16) & 0xFF;
-    vim_snprintf(windowsVersion, sizeof(windowsVersion), "%d.%d", major, minor);
+    mnv_snprintf(windowsVersion, sizeof(windowsVersion), "%d.%d", major, minor);
 #endif
 
 #ifdef HAVE_ACL
@@ -906,7 +906,7 @@ PlatformId(void)
 #endif
 }
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
 # define SHIFT  (SHIFT_PRESSED)
 # define CTRL   (RIGHT_CTRL_PRESSED | LEFT_CTRL_PRESSED)
@@ -916,7 +916,7 @@ PlatformId(void)
 
 // When uChar.AsciiChar is 0, then we need to look at wVirtualKeyCode.
 // We map function keys to their ANSI terminal equivalents, as produced
-// by ANSI.SYS, for compatibility with the MS-DOS version of Vim.  Any
+// by ANSI.SYS, for compatibility with the MS-DOS version of MNV.  Any
 // ANSI key with a value >= '\300' is nonstandard, but provided anyway
 // so that the user can have access to all SHIFT-, CTRL-, and ALT-
 // combinations of function/arrow/etc keys.
@@ -1259,7 +1259,7 @@ encode_key_event(dict_T *args, INPUT_RECORD *ir)
 	ker.wVirtualScanCode = 0;
 	ker.dwControlKeyState = 0;
 	int mods = (int)dict_get_number(args, "modifiers");
-	// Encode the win32 console key modifiers from Vim keyboard modifiers.
+	// Encode the win32 console key modifiers from MNV keyboard modifiers.
 	if (mods)
 	{
 	    // If "modifiers" is explicitly set in the args, then we reset any
@@ -1314,7 +1314,7 @@ encode_key_event(dict_T *args, INPUT_RECORD *ir)
 	ker.wVirtualKeyCode = vkCode;
 	ker.uChar.UnicodeChar = 0;
 	ir->Event.KeyEvent = ker;
-	vim_free(action);
+	mnv_free(action);
     }
     else
     {
@@ -1325,20 +1325,20 @@ encode_key_event(dict_T *args, INPUT_RECORD *ir)
 	else
 	{
 	    semsg(_(e_invalid_value_for_argument_str_str), "event", action);
-	    vim_free(action);
+	    mnv_free(action);
 	}
 	return FALSE;
     }
     return TRUE;
 }
 # endif  // FEAT_EVAL
-#endif // !FEAT_GUI_MSWIN || VIMDLL
+#endif // !FEAT_GUI_MSWIN || MNVDLL
 
 
 /*
  * For the GUI the mouse handling is in gui_w32.c.
  */
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 static int g_fMouseAvail = FALSE;   // mouse present
 static int g_fMouseActive = FALSE;  // mouse enabled
 static int g_nMouseClick = -1;	    // mouse status
@@ -1355,7 +1355,7 @@ mch_setmouse(int on)
 {
     DWORD cmodein;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return;
 # endif
@@ -1459,13 +1459,13 @@ decode_mouse_wheel(MOUSE_EVENT_RECORD *pmer)
     char_u modifiers = 0;
     char_u direction = 0;
 
-    // Decode the direction into an event that Vim can process
+    // Decode the direction into an event that MNV can process
     if (horizontal)
 	direction = zDelta >= 0 ? KE_MOUSELEFT : KE_MOUSERIGHT;
     else
 	direction = zDelta >= 0 ? KE_MOUSEDOWN : KE_MOUSEUP;
 
-    // Decode the win32 console key modifiers into Vim mouse modifiers.
+    // Decode the win32 console key modifiers into MNV mouse modifiers.
     if (pmer->dwControlKeyState & SHIFT_PRESSED)
 	modifiers |= MOD_MASK_SHIFT; // MOUSE_SHIFT;
     if (pmer->dwControlKeyState & (RIGHT_CTRL_PRESSED | LEFT_CTRL_PRESSED))
@@ -1850,7 +1850,7 @@ encode_mouse_event(dict_T *args, INPUT_RECORD *ir)
     mer.dwControlKeyState = 0;
     if (mods != 0)
     {
-	// Encode the win32 console key modifiers from Vim MOUSE modifiers.
+	// Encode the win32 console key modifiers from MNV MOUSE modifiers.
 	if (mods & MOUSE_SHIFT)
 	    mer.dwControlKeyState |= SHIFT_PRESSED;
 	if (mods & MOUSE_CTRL)
@@ -1903,24 +1903,24 @@ read_input_record_buffer(INPUT_RECORD* irEvents, int nMaxLength)
 	input_record_buffer_node_T *pop_head = input_record_buffer.head;
 	irEvents[nCount++] = pop_head->ir;
 	input_record_buffer.head = pop_head->next;
-	vim_free(pop_head);
+	mnv_free(pop_head);
 	if (input_record_buffer.length == 0)
 	    input_record_buffer.tail = NULL;
     }
     return nCount;
 }
-#else  // FEAT_GUI_MSWIN && !VIMDLL
+#else  // FEAT_GUI_MSWIN && !MNVDLL
     void
 mch_setmouse(int on UNUSED)
 {
 }
-#endif // FEAT_GUI_MSWIN && !VIMDLL
+#endif // FEAT_GUI_MSWIN && !MNVDLL
 
 #ifdef FEAT_EVAL
 /*
- * The 'test_mswin_event' function is for testing Vim's low-level handling of
+ * The 'test_mswin_event' function is for testing MNV's low-level handling of
  * user input events.  ie, this manages the encoding of INPUT_RECORD events
- * so that we have a way to test how Vim decodes INPUT_RECORD events in Windows
+ * so that we have a way to test how MNV decodes INPUT_RECORD events in Windows
  * consoles.
  *
  * The 'test_mswin_event' function is based on 'test_gui_event'.  In fact, when
@@ -1939,12 +1939,12 @@ test_mswin_event(char_u *event, dict_T *args)
 {
     int lpEventsWritten = 0;
 
-# if defined(VIMDLL) || defined(FEAT_GUI_MSWIN)
+# if defined(MNVDLL) || defined(FEAT_GUI_MSWIN)
     if (gui.in_use)
 	return test_gui_w32_sendevent(event, args);
 # endif
 
-# if defined(VIMDLL) || !defined(FEAT_GUI_MSWIN)
+# if defined(MNVDLL) || !defined(FEAT_GUI_MSWIN)
 
 // Currently implemented event record types are; KEY_EVENT and MOUSE_EVENT
 // Potentially could also implement: FOCUS_EVENT and WINDOW_BUFFER_SIZE_EVENT
@@ -2040,7 +2040,7 @@ mch_update_cursor(void)
     int		idx;
     int		thickness;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return;
 # endif
@@ -2058,7 +2058,7 @@ mch_update_cursor(void)
 }
 #endif
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 /*
  * Handle FOCUS_EVENT.
  */
@@ -2106,7 +2106,7 @@ WaitForChar(long msec, int ignore_input)
 	    parse_queued_messages();
 # endif
 # ifdef FEAT_MZSCHEME
-	    mzvim_check_threads();
+	    mzmnv_check_threads();
 # endif
 # ifdef FEAT_CLIENTSERVER
 	    serverProcessPendingMessages();
@@ -2263,7 +2263,7 @@ WaitForChar(long msec, int ignore_input)
     int
 mch_char_avail(void)
 {
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return TRUE;
 # endif
@@ -2277,7 +2277,7 @@ mch_char_avail(void)
     int
 mch_check_messages(void)
 {
-#  ifdef VIMDLL
+#  ifdef MNVDLL
     if (gui.in_use)
 	return TRUE;
 #  endif
@@ -2361,11 +2361,11 @@ mch_inchar(
     long	time UNUSED,
     int		tb_change_cnt UNUSED)
 {
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
     int		len;
     int		c;
-# ifdef VIMDLL
+# ifdef MNVDLL
 // Extra space for maximum three CSIs. E.g. U+1B6DB -> 0xF0 0x9B 0x9B 0x9B.
 #  define TYPEAHEADSPACE    6
 # else
@@ -2375,7 +2375,7 @@ mch_inchar(
     static char_u   typeahead[TYPEAHEADLEN];	// previously typed bytes.
     static int	    typeaheadlen = 0;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return 0;
 # endif
@@ -2536,7 +2536,7 @@ mch_inchar(
 			for (i = 0, j = 0; i < n; i++)
 			{
 			    typeahead[typeaheadlen + j++] = p[i];
-# ifdef VIMDLL
+# ifdef MNVDLL
 			    if (p[i] == CSI)
 			    {
 				typeahead[typeaheadlen + j++] = KS_EXTRA;
@@ -2545,13 +2545,13 @@ mch_inchar(
 # endif
 			}
 			n = j;
-			vim_free(p);
+			mnv_free(p);
 		    }
 		}
 		else
 		{
 		    typeahead[typeaheadlen] = c;
-# ifdef VIMDLL
+# ifdef MNVDLL
 		    if (c == CSI)
 		    {
 			typeahead[typeaheadlen + 1] = KS_EXTRA;
@@ -2649,9 +2649,9 @@ theend:
 # endif
     return len;
 
-#else // FEAT_GUI_MSWIN && !VIMDLL
+#else // FEAT_GUI_MSWIN && !MNVDLL
     return 0;
-#endif // FEAT_GUI_MSWIN && !VIMDLL
+#endif // FEAT_GUI_MSWIN && !MNVDLL
 }
 
 /*
@@ -2681,7 +2681,7 @@ executable_file(char *name, char_u **path)
 	if (path != NULL)
 	    *path = res;
 	else
-	    vim_free(res);
+	    mnv_free(res);
     }
     else if (path != NULL)
 	*path = FullName_save((char_u *)name, FALSE);
@@ -2756,7 +2756,7 @@ executable_exists(
 		    ++p;
 		    continue;
 		}
-		e = vim_strchr(p, ';');
+		e = mnv_strchr(p, ';');
 		if (e == NULL)
 		    e = pathext.string + pathext.length;
 		plen = (size_t)(e - p);
@@ -2843,7 +2843,7 @@ executable_exists(
 	    ++p;
 	    continue;
 	}
-	e = vim_strchr(p, ';');
+	e = mnv_strchr(p, ';');
 	if (e == NULL)
 	    e = pathbuf.string + pathbuf.length;
 
@@ -2860,7 +2860,7 @@ executable_exists(
 	}
 	else
 	{
-	    buflen = vim_snprintf_safelen(
+	    buflen = mnv_snprintf_safelen(
 		(char *)buf,
 		sizeof(buf),
 		"%.*s%s%s", (int)(e - p), p,
@@ -2883,7 +2883,7 @@ executable_exists(
 		++p;
 		continue;
 	    }
-	    e2 = vim_strchr(p, ';');
+	    e2 = mnv_strchr(p, ';');
 	    if (e2 == NULL)
 		e2 = pathext.string + pathext.length;
 
@@ -2895,7 +2895,7 @@ executable_exists(
 		    retval = FALSE;
 		    goto theend;
 		}
-		vim_strncpy(buf + buflen, p, e2 - p);
+		mnv_strncpy(buf + buflen, p, e2 - p);
 	    }
 	    if (executable_file((char *)buf, path))
 	    {
@@ -2971,66 +2971,66 @@ mch_init_g(void)
     Rows = 25;
     Columns = 80;
 
-    // Look for 'vimrun'.
+    // Look for 'mnvrun'.
     {
-	char_u	vimrun_location[_MAX_PATH + 4];
+	char_u	mnvrun_location[_MAX_PATH + 4];
 	size_t	exe_pathlen = (size_t)(gettail(exe_name) - exe_name);
 
-	// Note: 10 is length of 'vimrun.exe'.
-	if (exe_pathlen + 10 >= sizeof(vimrun_location))
+	// Note: 10 is length of 'mnvrun.exe'.
+	if (exe_pathlen + 10 >= sizeof(mnvrun_location))
 	{
-	    if (executable_exists("vimrun.exe", STRLEN_LITERAL("vimrun.exe"),
+	    if (executable_exists("mnvrun.exe", STRLEN_LITERAL("mnvrun.exe"),
 		    NULL, TRUE, FALSE))
-		s_dont_use_vimrun = FALSE;
+		s_dont_use_mnvrun = FALSE;
 	}
 	else
 	{
-	    // First try in same directory as gvim.exe.
+	    // First try in same directory as gmnv.exe.
 	    if (exe_pathlen > 0)
-		vim_strncpy(vimrun_location, exe_name, exe_pathlen);
-	    STRCPY(vimrun_location + exe_pathlen, "vimrun.exe");
+		mnv_strncpy(mnvrun_location, exe_name, exe_pathlen);
+	    STRCPY(mnvrun_location + exe_pathlen, "mnvrun.exe");
 
-	    if (mch_getperm(vimrun_location) >= 0)
+	    if (mch_getperm(mnvrun_location) >= 0)
 	    {
 		char_u  *p;
 		size_t  plen;
 
-		if (exe_pathlen > 0 && *skiptowhite(vimrun_location) != NUL)
+		if (exe_pathlen > 0 && *skiptowhite(mnvrun_location) != NUL)
 		{
 		    // Enclose path with white space in double quotes.
-		    plen = vim_snprintf_safelen(
-			(char *)vimrun_location,
-			sizeof(vimrun_location),
-			"\"%.*svimrun\" ",
+		    plen = mnv_snprintf_safelen(
+			(char *)mnvrun_location,
+			sizeof(mnvrun_location),
+			"\"%.*smnvrun\" ",
 			(int)exe_pathlen, exe_name);
 		}
 		else
 		{
 		    // Remove the suffix ('.exe').
-		    vimrun_location[exe_pathlen + 6] = ' ';
-		    vimrun_location[exe_pathlen + 7] = NUL;
+		    mnvrun_location[exe_pathlen + 6] = ' ';
+		    mnvrun_location[exe_pathlen + 7] = NUL;
 		    plen = exe_pathlen + 7;
 		}
 
-		p = vim_strnsave(vimrun_location, plen);
+		p = mnv_strnsave(mnvrun_location, plen);
 		if (p != NULL)
 		{
-		    vimrun_path.string = p;
-		    vimrun_path.length = plen;
-		    vimrun_path_allocated = TRUE;
-		    s_dont_use_vimrun = FALSE;
+		    mnvrun_path.string = p;
+		    mnvrun_path.length = plen;
+		    mnvrun_path_allocated = TRUE;
+		    s_dont_use_mnvrun = FALSE;
 		}
 	    }
-	    else if (executable_exists("vimrun.exe", STRLEN_LITERAL("vimrun.exe"),
+	    else if (executable_exists("mnvrun.exe", STRLEN_LITERAL("mnvrun.exe"),
 		    NULL, TRUE, FALSE))
-		s_dont_use_vimrun = FALSE;
+		s_dont_use_mnvrun = FALSE;
 	}
 
-	// Don't give the warning for a missing vimrun.exe right now, but only
-	// when vimrun was supposed to be used.  Don't bother people that do
-	// not need vimrun.exe.
-	if (s_dont_use_vimrun)
-	    need_vimrun_warning = TRUE;
+	// Don't give the warning for a missing mnvrun.exe right now, but only
+	// when mnvrun was supposed to be used.  Don't bother people that do
+	// not need mnvrun.exe.
+	if (s_dont_use_mnvrun)
+	    need_mnvrun_warning = TRUE;
     }
 
     /*
@@ -3052,7 +3052,7 @@ mch_init_g(void)
 
 #endif // FEAT_GUI_MSWIN
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
 # define SRWIDTH(sr) ((sr).Right - (sr).Left + 1)
 # define SRHEIGHT(sr) ((sr).Bottom - (sr).Top + 1)
@@ -3196,7 +3196,7 @@ SaveConsoleBuffer(
 	cb->BufferSize.X = cb->Info.dwSize.X;
 	cb->BufferSize.Y = cb->Info.dwSize.Y;
 	NumCells = cb->BufferSize.X * cb->BufferSize.Y;
-	vim_free(cb->Buffer);
+	mnv_free(cb->Buffer);
 	cb->Buffer = ALLOC_MULT(CHAR_INFO, NumCells);
 	if (cb->Buffer == NULL)
 	    return FALSE;
@@ -3220,11 +3220,11 @@ SaveConsoleBuffer(
     if (cb->Regions == NULL || numregions != cb->NumRegions)
     {
 	cb->NumRegions = numregions;
-	vim_free(cb->Regions);
+	mnv_free(cb->Regions);
 	cb->Regions = ALLOC_MULT(SMALL_RECT, cb->NumRegions);
 	if (cb->Regions == NULL)
 	{
-	    VIM_CLEAR(cb->Buffer);
+	    MNV_CLEAR(cb->Buffer);
 	    return FALSE;
 	}
     }
@@ -3249,8 +3249,8 @@ SaveConsoleBuffer(
 		BufferCoord,			// offset in our buffer
 		&ReadRegion))			// region to save
 	{
-	    VIM_CLEAR(cb->Buffer);
-	    VIM_CLEAR(cb->Regions);
+	    MNV_CLEAR(cb->Buffer);
+	    MNV_CLEAR(cb->Regions);
 	    return FALSE;
 	}
 	cb->Regions[i] = ReadRegion;
@@ -3345,7 +3345,7 @@ char g_szOrigTitle[256] = { 0 };
 HWND g_hWnd = NULL;	// also used in os_mswin.c
 static HICON g_hOrigIconSmall = NULL;
 static HICON g_hOrigIcon = NULL;
-static HICON g_hVimIcon = NULL;
+static HICON g_hMNVIcon = NULL;
 static BOOL g_fCanChangeIcon = FALSE;
 
 /*
@@ -3407,7 +3407,7 @@ SetConsoleIcon(
  *  restoration.  Also, attempts to obtain a handle to the console window,
  *  and use it to save the small and big icons currently in use by the
  *  console window.  This is not always possible on some versions of Windows;
- *  nor is it possible when running Vim remotely using Telnet (since the
+ *  nor is it possible when running MNV remotely using Telnet (since the
  *  console window the user sees is owned by a remote process).
  */
     static void
@@ -3433,14 +3433,14 @@ SaveConsoleTitleAndIcon(void)
     if (g_hOrigIconSmall == NULL || g_hOrigIcon == NULL)
 	return;
 
-    // Extract the first icon contained in the Vim executable.
+    // Extract the first icon contained in the MNV executable.
     if (
 # ifdef FEAT_LIBCALL
-	    mch_icon_load((HANDLE *)&g_hVimIcon) == FAIL ||
+	    mch_icon_load((HANDLE *)&g_hMNVIcon) == FAIL ||
 # endif
-	    g_hVimIcon == NULL)
-	g_hVimIcon = ExtractIcon(NULL, (LPCSTR)exe_name, 0);
-    if (g_hVimIcon != NULL)
+	    g_hMNVIcon == NULL)
+	g_hMNVIcon = ExtractIcon(NULL, (LPCSTR)exe_name, 0);
+    if (g_hMNVIcon != NULL)
 	g_fCanChangeIcon = TRUE;
 }
 
@@ -3507,12 +3507,12 @@ mch_init_c(void)
 
     SaveConsoleTitleAndIcon();
     /*
-     * Set both the small and big icons of the console window to Vim's icon.
-     * Note that Vim presently only has one size of icon (32x32), but it
+     * Set both the small and big icons of the console window to MNV's icon.
+     * Note that MNV presently only has one size of icon (32x32), but it
      * automatically gets scaled down to 16x16 when setting the small icon.
      */
     if (g_fCanChangeIcon)
-	SetConsoleIcon(g_hWnd, g_hVimIcon, g_hVimIcon);
+	SetConsoleIcon(g_hWnd, g_hMNVIcon, g_hMNVIcon);
 
     ui_get_shellsize();
 
@@ -3574,7 +3574,7 @@ mch_exit_c(int r)
 	/*
 	 * Restore both the small and big icons of the console window to
 	 * what they were at startup.  Don't do this when the window is
-	 * closed, Vim would hang here.
+	 * closed, MNV would hang here.
 	 */
 	if (g_fCanChangeIcon && !g_fForceExit)
 	    SetConsoleIcon(g_hWnd, g_hOrigIconSmall, g_hOrigIcon);
@@ -3602,12 +3602,12 @@ mch_exit_c(int r)
 
     exit(r);
 }
-#endif // !FEAT_GUI_MSWIN || VIMDLL
+#endif // !FEAT_GUI_MSWIN || MNVDLL
 
     void
 mch_init(void)
 {
-#ifdef VIMDLL
+#ifdef MNVDLL
     if (gui.starting)
 	mch_init_g();
     else
@@ -3626,17 +3626,17 @@ mch_exit(int r)
     netbeans_send_disconnect();
 #endif
 
-#ifdef VIMDLL
-    if (vimrun_path_allocated)
-	vim_free(vimrun_path.string);
+#ifdef MNVDLL
+    if (mnvrun_path_allocated)
+	mnv_free(mnvrun_path.string);
 
     if (gui.in_use || gui.starting)
 	mch_exit_g(r);
     else
 	mch_exit_c(r);
 #elif defined(FEAT_GUI_MSWIN)
-    if (vimrun_path_allocated)
-	vim_free(vimrun_path.string);
+    if (mnvrun_path_allocated)
+	mnv_free(mnvrun_path.string);
     mch_exit_g(r);
 #else
     mch_exit_c(r);
@@ -3653,10 +3653,10 @@ mch_check_win(
 {
     mch_get_exe_name();
 
-#if defined(FEAT_GUI_MSWIN) && !defined(VIMDLL)
+#if defined(FEAT_GUI_MSWIN) && !defined(MNVDLL)
     return OK;	    // GUI always has a tty
 #else
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return OK;
 # endif
@@ -3694,18 +3694,18 @@ fname_case(
 	if (q != NULL)
 	{
 	    if (len > 0)
-		vim_strncpy(name, q, len - 1);
+		mnv_strncpy(name, q, len - 1);
 	    else
 	    {
 		size_t  namelen = STRLEN(name);
 
 		if (namelen >= STRLEN(q))
-		    vim_strncpy(name, q, namelen);
+		    mnv_strncpy(name, q, namelen);
 	    }
-	    vim_free(q);
+	    mnv_free(q);
 	}
     }
-    vim_free(p);
+    mnv_free(p);
 }
 
 
@@ -3726,8 +3726,8 @@ mch_get_user_name(
 
 	if (p != NULL)
 	{
-	    vim_strncpy(s, p, len - 1);
-	    vim_free(p);
+	    mnv_strncpy(s, p, len - 1);
+	    mnv_free(p);
 	    return OK;
 	}
     }
@@ -3754,8 +3754,8 @@ mch_get_host_name(
     if (p == NULL)
 	return;
 
-    vim_strncpy(s, p, len - 1);
-    vim_free(p);
+    mnv_strncpy(s, p, len - 1);
+    mnv_free(p);
 }
 
 
@@ -3817,7 +3817,7 @@ mch_dirname(
 	    if (STRLEN(p) >= (size_t)len)
 	    {
 		// long path name is too long, fall back to short one
-		VIM_CLEAR(p);
+		MNV_CLEAR(p);
 	    }
 	}
     }
@@ -3827,8 +3827,8 @@ mch_dirname(
     if (p == NULL)
 	return FAIL;
 
-    vim_strncpy(buf, p, len - 1);
-    vim_free(p);
+    mnv_strncpy(buf, p, len - 1);
+    mnv_free(p);
     return OK;
 }
 
@@ -3863,7 +3863,7 @@ mch_setperm(char_u *name, long perm)
 	return FAIL;
 
     n = _wchmod(p, perm);
-    vim_free(p);
+    mnv_free(p);
     if (n == -1)
 	return FAIL;
 
@@ -3940,7 +3940,7 @@ mch_mkdir(char_u *name)
     if (p == NULL)
 	return -1;
     retval = _wmkdir(p);
-    vim_free(p);
+    mnv_free(p);
     return retval;
 }
 
@@ -3958,7 +3958,7 @@ mch_rmdir(char_u *name)
     if (p == NULL)
 	return -1;
     retval = _wrmdir(p);
-    vim_free(p);
+    mnv_free(p);
     return retval;
 }
 
@@ -3991,7 +3991,7 @@ mch_is_symbolic_link(char_u *name)
 	return FALSE;
 
     hFind = FindFirstFileW(wn, &findDataW);
-    vim_free(wn);
+    mnv_free(wn);
     if (hFind != INVALID_HANDLE_VALUE)
     {
 	fileFlags = findDataW.dwFileAttributes;
@@ -4044,7 +4044,7 @@ win32_fileinfo(char_u *fname, BY_HANDLE_FILE_INFORMATION *info)
 	    OPEN_EXISTING,	// creation disposition
 	    FILE_FLAG_BACKUP_SEMANTICS,	// file attributes
 	    NULL);		// handle to template file
-    vim_free(wn);
+    mnv_free(wn);
 
     if (hFile == INVALID_HANDLE_VALUE)
 	return FILEINFO_READ_FAIL;
@@ -4074,7 +4074,7 @@ win32_getattrs(char_u *name)
 	return INVALID_FILE_ATTRIBUTES;
 
     attr = GetFileAttributesW(p);
-    vim_free(p);
+    mnv_free(p);
 
     return attr;
 }
@@ -4095,7 +4095,7 @@ win32_setattrs(char_u *name, int attrs)
 	return -1;
 
     res = SetFileAttributesW(p, attrs);
-    vim_free(p);
+    mnv_free(p);
 
     return res ? 0 : -1;
 }
@@ -4154,7 +4154,7 @@ mch_nodetype(char_u *name)
     WCHAR	*wn;
 
     // We can't open a file with a name "\\.\con" or "\\.\prn" and trying to
-    // read from it later will cause Vim to hang.  Thus return NODE_WRITABLE
+    // read from it later will cause MNV to hang.  Thus return NODE_WRITABLE
     // here.
     if (STRNCMP(name, "\\\\.\\", 4) == 0)
 	return NODE_WRITABLE;
@@ -4170,7 +4170,7 @@ mch_nodetype(char_u *name)
 	    OPEN_EXISTING,	    // creation disposition
 	    0,			    // file attributes
 	    NULL);		    // handle to template file
-    vim_free(wn);
+    mnv_free(wn);
     if (hFile == INVALID_HANDLE_VALUE)
 	return NODE_NORMAL;
 
@@ -4198,11 +4198,11 @@ struct my_acl
  * Return a pointer to the ACL of file "fname" in allocated memory.
  * Return NULL if the ACL is not available for whatever reason.
  */
-    vim_acl_T
+    mnv_acl_T
 mch_get_acl(char_u *fname)
 {
 #ifndef HAVE_ACL
-    return (vim_acl_T)NULL;
+    return (mnv_acl_T)NULL;
 #else
     struct my_acl   *p = NULL;
     DWORD   err;
@@ -4215,7 +4215,7 @@ mch_get_acl(char_u *fname)
 	wn = enc_to_utf16(fname, NULL);
 	if (wn == NULL)
 	{
-	    vim_free(p);
+	    mnv_free(p);
 	    return NULL;
 	}
 
@@ -4248,13 +4248,13 @@ mch_get_acl(char_u *fname)
 	}
 	if (p->pSecurityDescriptor == NULL)
 	{
-	    mch_free_acl((vim_acl_T)p);
+	    mch_free_acl((mnv_acl_T)p);
 	    p = NULL;
 	}
-	vim_free(wn);
+	mnv_free(wn);
     }
 
-    return (vim_acl_T)p;
+    return (mnv_acl_T)p;
 #endif
 }
 
@@ -4287,7 +4287,7 @@ is_acl_inherited(PACL acl)
  * This must only be called with "acl" equal to what mch_get_acl() returned.
  */
     void
-mch_set_acl(char_u *fname, vim_acl_T acl)
+mch_set_acl(char_u *fname, mnv_acl_T acl)
 {
 #ifdef HAVE_ACL
     struct my_acl   *p = (struct my_acl *)acl;
@@ -4326,12 +4326,12 @@ mch_set_acl(char_u *fname, vim_acl_T acl)
 	    p->pDacl,		// Discretionary information.
 	    p->pSacl		// For auditing purposes.
 	    );
-    vim_free(wn);
+    mnv_free(wn);
 #endif
 }
 
     void
-mch_free_acl(vim_acl_T acl)
+mch_free_acl(mnv_acl_T acl)
 {
 #ifdef HAVE_ACL
     struct my_acl   *p = (struct my_acl *)acl;
@@ -4339,12 +4339,12 @@ mch_free_acl(vim_acl_T acl)
     if (p != NULL)
     {
 	LocalFree(p->pSecurityDescriptor);	// Free the memory just in case
-	vim_free(p);
+	mnv_free(p);
     }
 #endif
 }
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
 /*
  * handler for ctrl-break, ctrl-c interrupts, and fatal events.
@@ -4384,7 +4384,7 @@ handler_routine(
 	windgoto((int)Rows - 1, cmdline_col_off);
 	g_fForceExit = TRUE;
 
-	vim_snprintf((char *)IObuff, IOSIZE, _("Vim: Caught %s event\n"),
+	mnv_snprintf((char *)IObuff, IOSIZE, _("MNV: Caught %s event\n"),
 		(dwCtrlType == CTRL_CLOSE_EVENT
 		     ? _("close")
 		     : dwCtrlType == CTRL_LOGOFF_EVENT
@@ -4414,7 +4414,7 @@ mch_settmode(tmode_T tmode)
     DWORD cmodeout;
     BOOL bEnableHandler;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return;
 # endif
@@ -4477,7 +4477,7 @@ mch_get_shellsize(void)
 {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return OK;
 # endif
@@ -4486,7 +4486,7 @@ mch_get_shellsize(void)
 	/*
 	 * For some reason, we are trying to get the screen dimensions
 	 * even though we are not in termcap mode.  The 'Rows' and 'Columns'
-	 * variables are really intended to mean the size of Vim screen
+	 * variables are really intended to mean the size of MNV screen
 	 * while in termcap mode.
 	 */
 	Rows = g_cbTermcap.Info.dwSize.Y;
@@ -4637,7 +4637,7 @@ mch_set_shellsize(void)
 {
     COORD coordScreen;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return;
 # endif
@@ -4668,7 +4668,7 @@ mch_set_shellsize(void)
     void
 mch_new_shellsize(void)
 {
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return;
 # endif
@@ -4693,7 +4693,7 @@ mch_set_winsize_now(void)
 #endif
 
     static BOOL
-vim_create_process(
+mnv_create_process(
     char		*cmd,
     BOOL		inherit_handles,
     DWORD		flags,
@@ -4727,14 +4727,14 @@ vim_create_process(
 	    (LPSTARTUPINFOW)si,	// Startup information
 	    pi);		// Process information
 theend:
-    vim_free(wcmd);
-    vim_free(wcwd);
+    mnv_free(wcmd);
+    mnv_free(wcwd);
     return ret;
 }
 
 
     static HINSTANCE
-vim_shell_execute(
+mnv_shell_execute(
     char *cmd,
     INT	 n_show_cmd)
 {
@@ -4746,7 +4746,7 @@ vim_shell_execute(
 	return (HINSTANCE) 0;
 
     ret = ShellExecuteW(NULL, NULL, wcmd, NULL, NULL, n_show_cmd);
-    vim_free(wcmd);
+    mnv_free(wcmd);
     return ret;
 }
 
@@ -4776,7 +4776,7 @@ mch_system_classic(char *cmd, int options)
     si.dwFlags = STARTF_USESHOWWINDOW;
     /*
      * It's nicer to run a filter command in a minimized window.
-     * Don't activate the window to keep focus on Vim.
+     * Don't activate the window to keep focus on MNV.
      */
     if (options & SHELL_DOOUT)
 	si.wShowWindow = SW_SHOWMINNOACTIVE;
@@ -4786,7 +4786,7 @@ mch_system_classic(char *cmd, int options)
     si.lpReserved2 = NULL;
 
     // Now, run the command
-    vim_create_process(cmd, FALSE,
+    mnv_create_process(cmd, FALSE,
 	    CREATE_DEFAULT_ERROR_MODE |	CREATE_NEW_CONSOLE,
 	    &si, &pi, NULL, NULL);
 
@@ -4836,7 +4836,7 @@ mch_system_classic(char *cmd, int options)
 
 /*
  * Thread launched by the gui to send the current buffer data to the
- * process. This way avoid to hang up vim totally if the children
+ * process. This way avoid to hang up mnv totally if the children
  * process take a long time to process the lines.
  */
     static unsigned int __stdcall
@@ -4862,7 +4862,7 @@ sub_process_writer(LPVOID param)
 	}
 	else
 	{
-	    s = vim_strchr(lp + written, NL);
+	    s = mnv_strchr(lp + written, NL);
 	    WriteFile(g_hChildStd_IN_Wr, (char *)lp + written,
 		      s == NULL ? l : (DWORD)(s - (lp + written)),
 		      &len, NULL);
@@ -4879,7 +4879,7 @@ sub_process_writer(LPVOID param)
 			|| curbuf->b_p_eol)))
 	    {
 		WriteFile(g_hChildStd_IN_Wr, "\n", 1,
-						  (LPDWORD)&vim_ignored, NULL);
+						  (LPDWORD)&mnv_ignored, NULL);
 	    }
 
 	    ++lnum;
@@ -5080,7 +5080,7 @@ mch_system_piped(char *cmd, int options)
 
     if (cmd != NULL)
     {
-	p = (char *)vim_strsave((char_u *)cmd);
+	p = (char *)mnv_strsave((char_u *)cmd);
 	if (p != NULL)
 	    unescape_shellxquote((char_u *)p, p_sxe);
 	else
@@ -5091,11 +5091,11 @@ mch_system_piped(char *cmd, int options)
     // About "Inherit handles" being TRUE: this command can be litigious,
     // handle inheritance was deactivated for pending temp file, but, if we
     // deactivate it, the pipes don't work for some reason.
-    vim_create_process(p, TRUE, CREATE_DEFAULT_ERROR_MODE,
+    mnv_create_process(p, TRUE, CREATE_DEFAULT_ERROR_MODE,
 						&si, &pi, NULL, NULL);
 
     if (p != cmd)
-	vim_free(p);
+	mnv_free(p);
 
     // Close our unused side of the pipes
     CloseHandle(g_hChildStd_IN_Rd);
@@ -5292,7 +5292,7 @@ mch_system_g(char *cmd, int options)
 }
 #endif
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
     static int
 mch_system_c(char *cmd, int options UNUSED)
 {
@@ -5310,7 +5310,7 @@ mch_system_c(char *cmd, int options UNUSED)
 	buf = alloc(len);
 	if (buf == NULL)
 	    return -1;
-	vim_snprintf((char *)buf, len, "(%s)", cmd);
+	mnv_snprintf((char *)buf, len, "(%s)", cmd);
 	wcmd = enc_to_utf16(buf, NULL);
 	free(buf);
     }
@@ -5321,7 +5321,7 @@ mch_system_c(char *cmd, int options UNUSED)
 	return -1;
 
     ret = _wsystem(wcmd);
-    vim_free(wcmd);
+    mnv_free(wcmd);
     return ret;
 }
 
@@ -5330,7 +5330,7 @@ mch_system_c(char *cmd, int options UNUSED)
     static int
 mch_system(char *cmd, int options)
 {
-#ifdef VIMDLL
+#ifdef MNVDLL
     if (gui.in_use || gui.starting)
 	return mch_system_g(cmd, options);
     else
@@ -5349,7 +5349,7 @@ mch_system(char *cmd, int options)
     static int
 mch_call_shell_terminal(
     char_u	*cmd,
-    int		options UNUSED)	// SHELL_*, see vim.h
+    int		options UNUSED)	// SHELL_*, see mnv.h
 {
     jobopt_T	opt;
     char_u	*newcmd = NULL;
@@ -5375,7 +5375,7 @@ mch_call_shell_terminal(
     }
     else
     {
-	vim_snprintf((char *)newcmd, cmdlen, "%s %s %s", p_sh, p_shcf, cmd);
+	mnv_snprintf((char *)newcmd, cmdlen, "%s %s %s", p_sh, p_shcf, cmd);
 	ch_log(NULL, "starting terminal for system command '%s'", cmd);
     }
 
@@ -5387,7 +5387,7 @@ mch_call_shell_terminal(
     buf = term_start(argvar, NULL, &opt, TERM_START_SYSTEM);
     if (buf == NULL)
     {
-	vim_free(newcmd);
+	mnv_free(newcmd);
 	return 255;
     }
 
@@ -5424,7 +5424,7 @@ mch_call_shell_terminal(
     wait_return(TRUE);
     do_buffer(DOBUF_WIPE, DOBUF_FIRST, FORWARD, buf->b_fnum, TRUE);
 
-    vim_free(newcmd);
+    mnv_free(newcmd);
     return retval;
 }
 #endif
@@ -5436,12 +5436,12 @@ restore_env_var(char_u *name, char_u *old_value, int must_free)
 {
     if (old_value != NULL)
     {
-	vim_setenv(name, old_value);
+	mnv_setenv(name, old_value);
 	if (must_free)
-	    vim_free(old_value);
+	    mnv_free(old_value);
 	return;
     }
-    vim_unsetenv(name);
+    mnv_unsetenv(name);
 }
 
 /*
@@ -5450,7 +5450,7 @@ restore_env_var(char_u *name, char_u *old_value, int must_free)
     int
 mch_call_shell(
     char_u  *cmd,
-    int	    options)	// SHELL_*, see vim.h
+    int	    options)	// SHELL_*, see mnv.h
 {
     int		x = 0;
     int		tmode = cur_tmode;
@@ -5477,15 +5477,15 @@ mch_call_shell(
 			    ARRAY_LENGTH(szShellTitle)))
 		    wcscat(szShellTitle, wn);
 		SetConsoleTitleW(szShellTitle);
-		vim_free(wn);
+		mnv_free(wn);
 	    }
 	}
     }
     // do not execute anything from the current directory by setting the
     // environment variable $NoDefaultCurrentDirectoryInExePath
-    oldval = vim_getenv((char_u *)"NoDefaultCurrentDirectoryInExePath",
+    oldval = mnv_getenv((char_u *)"NoDefaultCurrentDirectoryInExePath",
 	    &must_free);
-    vim_setenv((char_u *)"NoDefaultCurrentDirectoryInExePath", (char_u *)"1");
+    mnv_setenv((char_u *)"NoDefaultCurrentDirectoryInExePath", (char_u *)"1");
 
     out_flush();
 
@@ -5499,10 +5499,10 @@ mch_call_shell(
 #if defined(FEAT_GUI) && defined(FEAT_TERMINAL)
     // TODO: make the terminal window work with input or output redirected.
     if (
-# ifdef VIMDLL
+# ifdef MNVDLL
 	    gui.in_use &&
 # endif
-	    vim_strchr(p_go, GO_TERMINAL) != NULL
+	    mnv_strchr(p_go, GO_TERMINAL) != NULL
 	 && (options & (SHELL_FILTER|SHELL_DOOUT|SHELL_WRITE|SHELL_READ)) == 0)
     {
 	char_u	*cmdbase = cmd;
@@ -5514,7 +5514,7 @@ mch_call_shell(
 
 	// Check the command does not begin with "start "
 	if (cmdbase == NULL || STRNICMP(cmdbase, "start", 5) != 0
-						   || !VIM_ISWHITE(cmdbase[5]))
+						   || !MNV_ISWHITE(cmdbase[5]))
 	{
 	    // Use a terminal window to run the command in.
 	    x = mch_call_shell_terminal(cmd, options);
@@ -5558,7 +5558,7 @@ mch_call_shell(
 	if (*cmdbase == '(')
 	    ++cmdbase;
 
-	if ((STRNICMP(cmdbase, "start", 5) == 0) && VIM_ISWHITE(cmdbase[5]))
+	if ((STRNICMP(cmdbase, "start", 5) == 0) && MNV_ISWHITE(cmdbase[5]))
 	{
 	    STARTUPINFO		si;
 	    PROCESS_INFORMATION	pi;
@@ -5577,7 +5577,7 @@ mch_call_shell(
 
 	    cmdbase = skipwhite(cmdbase + 5);
 	    if ((STRNICMP(cmdbase, "/min", 4) == 0)
-		    && VIM_ISWHITE(cmdbase[4]))
+		    && MNV_ISWHITE(cmdbase[4]))
 	    {
 		cmdbase = skipwhite(cmdbase + 4);
 		si.dwFlags = STARTF_USESHOWWINDOW;
@@ -5585,7 +5585,7 @@ mch_call_shell(
 		n_show_cmd = SW_SHOWMINNOACTIVE;
 	    }
 	    else if ((STRNICMP(cmdbase, "/b", 2) == 0)
-		    && VIM_ISWHITE(cmdbase[2]))
+		    && MNV_ISWHITE(cmdbase[2]))
 	    {
 		cmdbase = skipwhite(cmdbase + 2);
 		flags = CREATE_NO_WINDOW;
@@ -5631,7 +5631,7 @@ mch_call_shell(
 		if (cmd_shell == NULL || *cmd_shell == NUL)
 		    cmd_shell = (char_u *)default_shell();
 
-		subcmd = vim_strsave_escaped_ext(cmdbase,
+		subcmd = mnv_strsave_escaped_ext(cmdbase,
 			(char_u *)"|", '^', FALSE);
 		if (subcmd != NULL)
 		{
@@ -5639,11 +5639,11 @@ mch_call_shell(
 		    cmdlen = STRLEN(cmd_shell) + STRLEN(subcmd) + 5;
 		    newcmd = alloc(cmdlen);
 		    if (newcmd != NULL)
-			vim_snprintf((char *)newcmd, cmdlen, "%s /c %s",
+			mnv_snprintf((char *)newcmd, cmdlen, "%s /c %s",
 						       cmd_shell, subcmd);
 		    else
 			newcmd = cmdbase;
-		    vim_free(subcmd);
+		    mnv_free(subcmd);
 		}
 	    }
 
@@ -5652,17 +5652,17 @@ mch_call_shell(
 	     * inherit our handles which causes unpleasant dangling swap
 	     * files if we exit before the spawned process
 	     */
-	    if (vim_create_process((char *)newcmd, FALSE, flags,
+	    if (mnv_create_process((char *)newcmd, FALSE, flags,
 			&si, &pi, NULL, NULL))
 		x = 0;
-	    else if (vim_shell_execute((char *)newcmd, n_show_cmd)
+	    else if (mnv_shell_execute((char *)newcmd, n_show_cmd)
 							       > (HINSTANCE)32)
 		x = 0;
 	    else
 	    {
 		x = -1;
 #ifdef FEAT_GUI_MSWIN
-# ifdef VIMDLL
+# ifdef MNVDLL
 		if (gui.in_use)
 # endif
 		    emsg(_(e_command_not_found));
@@ -5670,7 +5670,7 @@ mch_call_shell(
 	    }
 
 	    if (newcmd != cmdbase)
-		vim_free(newcmd);
+		mnv_free(newcmd);
 
 	    if (si.dwFlags == STARTF_USESTDHANDLES && si.hStdInput != NULL)
 	    {
@@ -5686,8 +5686,8 @@ mch_call_shell(
 	    cmdlen =
 #ifdef FEAT_GUI_MSWIN
 		((gui.in_use || gui.starting) ?
-		    (!s_dont_use_vimrun && p_stmp ?
-			vimrun_path.length : STRLEN(p_sh) + STRLEN(p_shcf))
+		    (!s_dont_use_mnvrun && p_stmp ?
+			mnvrun_path.length : STRLEN(p_sh) + STRLEN(p_shcf))
 		    : 0) +
 #endif
 		STRLEN(p_sh) + STRLEN(p_shcf) + STRLEN(cmd) + 10;
@@ -5697,50 +5697,50 @@ mch_call_shell(
 	    {
 #if defined(FEAT_GUI_MSWIN)
 		if (
-# ifdef VIMDLL
+# ifdef MNVDLL
 		    (gui.in_use || gui.starting) &&
 # endif
-		    need_vimrun_warning)
+		    need_mnvrun_warning)
 		{
-		    char *msg = _("VIMRUN.EXE not found in your $PATH.\n"
+		    char *msg = _("MNVRUN.EXE not found in your $PATH.\n"
 			"External commands will not pause after completion.\n"
-			"See  :help win32-vimrun  for more information.");
-		    char *title = _("Vim Warning");
+			"See  :help win32-mnvrun  for more information.");
+		    char *title = _("MNV Warning");
 		    WCHAR *wmsg = enc_to_utf16((char_u *)msg, NULL);
 		    WCHAR *wtitle = enc_to_utf16((char_u *)title, NULL);
 
 		    if (wmsg != NULL && wtitle != NULL)
 			MessageBoxW(NULL, wmsg, wtitle, MB_ICONWARNING);
-		    vim_free(wmsg);
-		    vim_free(wtitle);
-		    need_vimrun_warning = FALSE;
+		    mnv_free(wmsg);
+		    mnv_free(wtitle);
+		    need_mnvrun_warning = FALSE;
 		}
 		if (
-# ifdef VIMDLL
+# ifdef MNVDLL
 		    (gui.in_use || gui.starting) &&
 # endif
-		    !s_dont_use_vimrun && p_stmp)
-		    // Use vimrun to execute the command.  It opens a console
-		    // window, which can be closed without killing Vim.
-		    vim_snprintf((char *)newcmd, cmdlen, "%s%s%s %s %s",
-			    vimrun_path.string,
+		    !s_dont_use_mnvrun && p_stmp)
+		    // Use mnvrun to execute the command.  It opens a console
+		    // window, which can be closed without killing MNV.
+		    mnv_snprintf((char *)newcmd, cmdlen, "%s%s%s %s %s",
+			    mnvrun_path.string,
 			    (msg_silent != 0 || (options & SHELL_DOOUT))
 								 ? "-s " : "",
 			    p_sh, p_shcf, cmd);
 		else if (
-# ifdef VIMDLL
+# ifdef MNVDLL
 			(gui.in_use || gui.starting) &&
 # endif
-			s_dont_use_vimrun && STRCMP(p_shcf, "/c") == 0)
-		    // workaround for the case that "vimrun" does not exist
-		    vim_snprintf((char *)newcmd, cmdlen, "%s %s %s %s %s",
+			s_dont_use_mnvrun && STRCMP(p_shcf, "/c") == 0)
+		    // workaround for the case that "mnvrun" does not exist
+		    mnv_snprintf((char *)newcmd, cmdlen, "%s %s %s %s %s",
 					   p_sh, p_shcf, p_sh, p_shcf, cmd);
 		else
 #endif
-		    vim_snprintf((char *)newcmd, cmdlen, "%s %s %s",
+		    mnv_snprintf((char *)newcmd, cmdlen, "%s %s %s",
 							   p_sh, p_shcf, cmd);
 		x = mch_system((char *)newcmd, options);
-		vim_free(newcmd);
+		mnv_free(newcmd);
 	    }
 	}
     }
@@ -5756,11 +5756,11 @@ mch_call_shell(
 	settmode(TMODE_RAW);	// set to raw mode
     }
 
-    // Print the return value, unless "vimrun" was used.
+    // Print the return value, unless "mnvrun" was used.
     if (x != 0 && !(options & SHELL_SILENT) && !emsg_silent
 #if defined(FEAT_GUI_MSWIN)
 	    && ((gui.in_use || gui.starting) ?
-		((options & SHELL_DOOUT) || s_dont_use_vimrun || !p_stmp) : 1)
+		((options & SHELL_DOOUT) || s_dont_use_mnvrun || !p_stmp) : 1)
 #endif
 	    )
     {
@@ -5800,13 +5800,13 @@ job_io_file_open(
     h = CreateFileW(wn, dwDesiredAccess, dwShareMode,
 	    lpSecurityAttributes, dwCreationDisposition,
 	    dwFlagsAndAttributes, NULL);
-    vim_free(wn);
+    mnv_free(wn);
     return h;
 }
 
 /*
  * Turn the dictionary "env" into a NUL separated list that can be used as the
- * environment argument of vim_create_process().
+ * environment argument of mnv_create_process().
  */
     void
 win32_build_env(dict_T *env, garray_T *gap, int is_terminal)
@@ -5844,8 +5844,8 @@ win32_build_env(dict_T *env, garray_T *gap, int is_terminal)
 			*((WCHAR*)gap->ga_data + gap->ga_len++) = wval[n];
 		    *((WCHAR*)gap->ga_data + gap->ga_len++) = L'\0';
 		}
-		vim_free(wkey);
-		vim_free(wval);
+		mnv_free(wkey);
+		mnv_free(wval);
 	    }
 	}
     }
@@ -5871,15 +5871,15 @@ win32_build_env(dict_T *env, garray_T *gap, int is_terminal)
 # if defined(FEAT_CLIENTSERVER) || defined(FEAT_TERMINAL)
     {
 #  ifdef FEAT_CLIENTSERVER
-	char_u	*servername = get_vim_var_str(VV_SEND_SERVER);
+	char_u	*servername = get_mnv_var_str(VV_SEND_SERVER);
 	size_t	servername_len = STRLEN(servername);
 #  endif
 #  ifdef FEAT_TERMINAL
-	char_u	*version = get_vim_var_str(VV_VERSION);
+	char_u	*version = get_mnv_var_str(VV_VERSION);
 	size_t	version_len = STRLEN(version);
 #  endif
-	// size of "VIM_SERVERNAME=" and value,
-	// plus "VIM_TERMINAL=" and value,
+	// size of "MNV_SERVERNAME=" and value,
+	// plus "MNV_TERMINAL=" and value,
 	// plus two terminating NULs
 	size_t	n = 0
 #  ifdef FEAT_CLIENTSERVER
@@ -5895,7 +5895,7 @@ win32_build_env(dict_T *env, garray_T *gap, int is_terminal)
 #  ifdef FEAT_CLIENTSERVER
 	    for (n = 0; n < 15; n++)
 		*((WCHAR*)gap->ga_data + gap->ga_len++) =
-		    (WCHAR)"VIM_SERVERNAME="[n];
+		    (WCHAR)"MNV_SERVERNAME="[n];
 	    for (n = 0; n < servername_len; n++)
 		*((WCHAR*)gap->ga_data + gap->ga_len++) =
 		    (WCHAR)servername[n];
@@ -5906,7 +5906,7 @@ win32_build_env(dict_T *env, garray_T *gap, int is_terminal)
 	    {
 		for (n = 0; n < 13; n++)
 		    *((WCHAR*)gap->ga_data + gap->ga_len++) =
-			(WCHAR)"VIM_TERMINAL="[n];
+			(WCHAR)"MNV_TERMINAL="[n];
 		for (n = 0; n < version_len; n++)
 		    *((WCHAR*)gap->ga_data + gap->ga_len++) =
 			(WCHAR)version[n];
@@ -5929,7 +5929,7 @@ create_pipe_pair(HANDLE handles[2])
     char		name[64];
     SECURITY_ATTRIBUTES sa;
 
-    sprintf(name, "\\\\?\\pipe\\vim-%08lx-%08lx",
+    sprintf(name, "\\\\?\\pipe\\mnv-%08lx-%08lx",
 	    GetCurrentProcessId(),
 	    InterlockedIncrement(&s));
 
@@ -6084,7 +6084,7 @@ mch_get_cmd_output_direct(
 	    hChildStdinRd = CreateFileW(winfile, GENERIC_READ,
 		    FILE_SHARE_READ, &saAttr, OPEN_EXISTING,
 		    FILE_ATTRIBUTE_NORMAL, NULL);
-	    vim_free(winfile);
+	    mnv_free(winfile);
 	}
     }
 
@@ -6101,7 +6101,7 @@ mch_get_cmd_output_direct(
     ch_log(NULL, "directly executing: %s", (char *)cmd_ga.ga_data);
 
     // Create the child process directly, without going through the shell.
-    if (!vim_create_process((char *)cmd_ga.ga_data, TRUE,
+    if (!mnv_create_process((char *)cmd_ga.ga_data, TRUE,
 		CREATE_DEFAULT_ERROR_MODE | CREATE_NEW_PROCESS_GROUP,
 		&si, &pi, NULL, NULL))
     {
@@ -6140,7 +6140,7 @@ mch_get_cmd_output_direct(
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
-    set_vim_var_nr(VV_SHELL_ERROR, (long)exit_code);
+    set_mnv_var_nr(VV_SHELL_ERROR, (long)exit_code);
 
     if (out_ga.ga_len > 0)
     {
@@ -6302,7 +6302,7 @@ mch_job_start(char *cmd, job_T *job, jobopt_T *options)
 	    goto failed;
     }
 
-    if (!vim_create_process(cmd, TRUE,
+    if (!mnv_create_process(cmd, TRUE,
 	    CREATE_SUSPENDED |
 	    CREATE_DEFAULT_ERROR_MODE |
 	    CREATE_NEW_PROCESS_GROUP |
@@ -6502,7 +6502,7 @@ mch_clear_job(job_T *job)
 #endif
 
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
 /*
  * Start termcap mode
@@ -6627,7 +6627,7 @@ termcap_mode_end(void)
 #endif
 
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
 /*
  * clear `n' chars, starting from `coord'
@@ -6818,7 +6818,7 @@ insert_lines(unsigned cLines)
     // Here we have to deal with a win32 console flake: If the scroll
     // region looks like abc and we scroll c to a and fill with d we get
     // cbd... if we scroll block c one line at a time to a, we get cdd...
-    // vim expects cdd consistently... So we have to deal with that
+    // mnv expects cdd consistently... So we have to deal with that
     // here... (this also occurs scrolling the same way in the other
     // direction).
 
@@ -7099,7 +7099,7 @@ visual_bell(void)
     {
 	WriteConsoleOutputAttribute(g_hConOut, oldattrs, Rows * Columns,
 				coordOrigin, &dwDummy);
-	vim_free(oldattrs);
+	mnv_free(oldattrs);
     }
 }
 
@@ -7152,7 +7152,7 @@ write_chars(
 							unicodebuf, unibuflen);
 	    if (length && length <= unibuflen)
 		break;
-	    vim_free(unicodebuf);
+	    mnv_free(unicodebuf);
 	    unicodebuf = length ? LALLOC_MULT(WCHAR, length) : NULL;
 	    unibuflen = unibuflen ? 0 : length;
 	} while (TRUE);
@@ -7348,7 +7348,7 @@ mch_write(
 {
     char_u  *end = s + len;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
 	return;
 # endif
@@ -7703,7 +7703,7 @@ notsgr:
 # endif
 }
 
-#else // FEAT_GUI_MSWIN && !VIMDLL
+#else // FEAT_GUI_MSWIN && !MNVDLL
     void
 mch_write(
     char_u  *s UNUSED,
@@ -7723,10 +7723,10 @@ mch_delay(
     long    msec,
     int	    flags UNUSED)
 {
-#if defined(FEAT_GUI_MSWIN) && !defined(VIMDLL)
+#if defined(FEAT_GUI_MSWIN) && !defined(MNVDLL)
     Sleep((int)msec);	    // never wait for input
 #else // Console
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (gui.in_use)
     {
 	Sleep((int)msec);	    // never wait for input
@@ -7742,7 +7742,7 @@ mch_delay(
 	    // if msec is large enough, wait by portions in p_mzq
 	    while (msec > 0)
 	    {
-		mzvim_check_threads();
+		mzmnv_check_threads();
 		if (msec < towait)
 		    towait = msec;
 		Sleep(towait);
@@ -7783,7 +7783,7 @@ mch_remove(char_u *name)
 	return -1;
 
     n = DeleteFileW(wn) ? 0 : -1;
-    vim_free(wn);
+    mnv_free(wn);
     return n;
 }
 
@@ -7794,8 +7794,8 @@ mch_remove(char_u *name)
     void
 mch_breakcheck(int force UNUSED)
 {
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
-# ifdef VIMDLL
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
+# ifdef MNVDLL
     if (!gui.in_use)
 # endif
 	if (g_fCtrlCPressed || g_fCBrkPressed)
@@ -7811,7 +7811,7 @@ mch_breakcheck(int force UNUSED)
 #define WINNT_RESERVE_BYTES     (256*1024*1024)
 
 /*
- * How much main memory in KiB that can be used by VIM.
+ * How much main memory in KiB that can be used by MNV.
  */
     long_u
 mch_total_mem(int special UNUSED)
@@ -7900,7 +7900,7 @@ mch_wrename(WCHAR *wold, WCHAR *wnew)
     *p = NUL;
 
     // Get (and create) a unique temporary file name in directory of new file
-    if (GetTempFileNameW(szNewPath, L"VIM", 0, szTempFile) == 0)
+    if (GetTempFileNameW(szNewPath, L"MNV", 0, szTempFile) == 0)
 	return -2;
 
     // blow the temp file away
@@ -7963,8 +7963,8 @@ mch_rename(
     wnew = enc_to_utf16((char_u *)pszNewFile, NULL);
     if (wold != NULL && wnew != NULL)
 	retval = mch_wrename(wold, wnew);
-    vim_free(wold);
-    vim_free(wnew);
+    mnv_free(wold);
+    mnv_free(wnew);
     return retval;
 }
 
@@ -8023,7 +8023,7 @@ mch_access(char *n, int p)
 	    // directories on read-only network shares.  However, in
 	    // directories whose ACL allows writes but denies deletes will end
 	    // up keeping the temporary file :-(.
-	    if (!GetTempFileNameW(wn, L"VIM", 0, TempNameW))
+	    if (!GetTempFileNameW(wn, L"MNV", 0, TempNameW))
 		goto getout;
 	    else
 		DeleteFileW(TempNameW);
@@ -8048,7 +8048,7 @@ mch_access(char *n, int p)
 
     retval = 0;	    // success
 getout:
-    vim_free(wn);
+    mnv_free(wn);
     return retval;
 }
 
@@ -8066,7 +8066,7 @@ mch_open(const char *name, int flags, int mode)
 	return -1;
 
     f = _wopen(wn, flags, mode);
-    vim_free(wn);
+    mnv_free(wn);
     return f;
 }
 
@@ -8095,8 +8095,8 @@ mch_fopen(const char *name, const char *mode)
     wm = enc_to_utf16((char_u *)mode, NULL);
     if (wn != NULL && wm != NULL)
 	f = _wfopen(wn, wm);
-    vim_free(wn);
-    vim_free(wm);
+    mnv_free(wn);
+    mnv_free(wm);
 
 #if defined(DEBUG) && _MSC_VER >= 1400
     _set_fmode(oldMode);
@@ -8246,8 +8246,8 @@ copy_infostreams(char_u *from, char_u *to)
 	    CloseHandle(sh);
 	}
     }
-    vim_free(fromw);
-    vim_free(tow);
+    mnv_free(fromw);
+    mnv_free(tow);
 }
 
 /*
@@ -8402,7 +8402,7 @@ copy_extattr(char_u *from, char_u *to)
 	    if (pNtQueryEaFile(h, &iosb, ea, eainfo.EaSize, FALSE,
 			NULL, 0, NULL, TRUE) != STATUS_SUCCESS)
 	    {
-		VIM_CLEAR(ea);
+		MNV_CLEAR(ea);
 	    }
 	}
     }
@@ -8422,11 +8422,11 @@ copy_extattr(char_u *from, char_u *to)
     }
 
 theend:
-    vim_free(fromf);
-    vim_free(tof);
-    vim_free(fromw);
-    vim_free(tow);
-    vim_free(ea);
+    mnv_free(fromf);
+    mnv_free(tof);
+    mnv_free(fromw);
+    mnv_free(tow);
+    mnv_free(ea);
 }
 
 /*
@@ -8619,7 +8619,7 @@ fix_arg_enc(void)
 		r = concat_fnames(str, gettail(alist_name(&GARGLIST[0])), TRUE);
 		if (r != NULL)
 		{
-		    vim_free(str);
+		    mnv_free(str);
 		    str = r;
 		}
 	    }
@@ -8647,11 +8647,11 @@ fix_arg_enc(void)
 	// Now expand wildcards in the arguments.
 	// Temporarily add '(' and ')' to 'isfname'.  These are valid
 	// filename characters but are excluded from 'isfname' to make
-	// "gf" work on a file name in parentheses (e.g.: see vim.h).
+	// "gf" work on a file name in parentheses (e.g.: see mnv.h).
 	// Also, unset wildignore to not be influenced by this option.
 	// The arguments specified in command-line should be kept even if
 	// encoding options were changed.
-	// Use :legacy so that it also works when in Vim9 script.
+	// Use :legacy so that it also works when in MNV9 script.
 	do_cmdline_cmd((char_u *)":legacy let g:SaVe_ISF = &isf|set isf+=(,)");
 	do_cmdline_cmd((char_u *)":legacy let g:SaVe_WIG = &wig|set wig=");
 	alist_expand(fnum_list, used_alist_count);
@@ -8667,7 +8667,7 @@ fix_arg_enc(void)
     {
 	do_cmdline_cmd((char_u *)":rewind");
 	if (GARGCOUNT == 1 && used_file_full_path
-		&& vim_chdirfile(alist_name(&GARGLIST[0]), "drop") == OK)
+		&& mnv_chdirfile(alist_name(&GARGLIST[0]), "drop") == OK)
 	    last_chdir_reason = "drop";
     }
 
@@ -8688,7 +8688,7 @@ mch_setenv(char *var, char *value, int x UNUSED)
 
     p = enc_to_utf16(envbuf, NULL);
 
-    vim_free(envbuf);
+    mnv_free(envbuf);
     if (p == NULL)
 	return -1;
     _wputenv(p);
@@ -8696,7 +8696,7 @@ mch_setenv(char *var, char *value, int x UNUSED)
     libintl_wputenv(p);
 #endif
     // Unlike Un*x systems, we can free the string for _wputenv().
-    vim_free(p);
+    mnv_free(p);
 
     return 0;
 }
@@ -8750,11 +8750,11 @@ mch_setenv(char *var, char *value, int x UNUSED)
     static void
 vtp_flag_init(void)
 {
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
     DWORD   mode;
     HANDLE  out;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (!gui.in_use)
 # endif
     {
@@ -8769,7 +8769,7 @@ vtp_flag_init(void)
 	// VTP uses alternate screen buffer.
 	// But, not if running in a nested terminal
 	use_alternate_screen_buffer = win_version >= MAKE_VER(10, 0, 19045)
-	    && p_rs && vtp_working && !mch_getenv("VIM_TERMINAL");
+	    && p_rs && vtp_working && !mch_getenv("MNV_TERMINAL");
     }
 #endif
 
@@ -8791,7 +8791,7 @@ vtp_flag_init(void)
 	conpty_fix_type = 1;
 }
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 
     static void
 vtp_init(void)
@@ -8838,7 +8838,7 @@ vtp_printf(
 	return 0;
 
     va_start(list, format);
-    len = vim_vsnprintf((char *)buf, 100, (char *)format, list);
+    len = mnv_vsnprintf((char *)buf, 100, (char *)format, list);
     va_end(list);
     WriteConsoleA(g_hConOut, buf, (DWORD)len, &result, NULL);
     return (int)result;
@@ -9209,7 +9209,7 @@ get_conpty_fix_type(void)
     return conpty_fix_type;
 }
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
     void
 resize_console_buf(void)
 {
@@ -9256,7 +9256,7 @@ GetWin32Error(void)
     // clean oldmsg if remained.
     if (oldmsg != NULL)
     {
-	vim_free(oldmsg);
+	mnv_free(oldmsg);
 	oldmsg = NULL;
     }
 

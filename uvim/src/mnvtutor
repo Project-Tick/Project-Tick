@@ -1,0 +1,213 @@
+#!/bin/sh
+
+# Start MNV on a copy of the tutor file.
+
+# Type "man mnvtutor" (or "mnvtutor --help") to learn more about the supported
+# command-line options.
+#
+# Tutors in several human languages are distributed.  Type "mnvtutor" to use
+# a tutor in the language of the current locale (:help v:lang), if available;
+# otherwise fall back to using the English tutor.  To request any bundled
+# tutor, specify its ISO639 name as an argument, e.g. "mnvtutor nl".
+
+# MNV could be called "mnv" or "vi".  Also check for "mnvN", for people who
+# have MNV installed with its version number.
+seq="mnv mnv91 mnv90 mnv81 mnv80 mnv8 mnv74 mnv73 mnv72 mnv71 mnv70 mnv7 mnv6 vi"
+
+usage()
+{
+    echo "==USAGE========================================================================================="
+    echo "${0##*/} [[-(-l)anguage] ISO639] [-(-c)hapter NUMBER] [-(-g)ui] | [-(-h)elp] | [--list]"
+    printf "\twhere:\n"
+    printf "\t\tISO639 (default=en) is a 2 or 3 character language code\n"
+    printf "\t\tNUMBER (default=1) is a chapter number (1 or 2)\n"
+    printf "\texamples:\n"
+    printf "\t\tmnvtutor -l es -c 2 -g\n"
+    printf "\t\tmnvtutor --language de --chapter 2\n"
+    printf "\t\tmnvtutor fr\n"
+    echo "More information at 'man mnvtutor'"
+    echo "================================================================================================"
+}
+
+listOptions()
+{
+    echo "==OPTIONS======================================================================================="
+    echo "Chapter: 1"
+    printf "\tLang: %-3s => %s\n" \
+bar Bavarian \
+bg Bulgarian \
+ca Catalan \
+cs Czech \
+da Danish \
+de German \
+el Greek \
+en English\(default\) \
+eo Esperanto \
+es Spanish \
+fr French \
+hr Croatian \
+hu Hungarian \
+it Italian \
+ja Japanese \
+ko Korean \
+lt Lithuanian \
+lv Latvian \
+nb Bokmål \
+nl Dutch \
+no Norwegian \
+pl Polish \
+pt Portuguese \
+ru Russian \
+sk Slovak \
+sr Serbian \
+sv Swedish \
+tr Turkish \
+uk Ukrainian \
+vi Vietnamese \
+zh Chinese
+
+    echo "Chapter: 2"
+    printf "\tLang: %-3s => %s\n" \
+en English\(default\) \
+fr French
+    echo "================================================================================================"
+}
+
+validateLang()
+{
+    case "$xx" in
+	'' | *[!a-z]* )
+	    echo "Error: iso639 code must contain only [a-z]"
+	    exit 1
+    esac
+
+    case "${#xx}" in
+	[23] )
+	    ;;
+	* )
+	    echo "Error: iso639 code must be 2 or 3 characters only"
+	    exit 1
+    esac
+
+    export xx
+}
+
+validateChapter()
+{
+    case "$cc" in
+	'' | *[!0-9]* )
+	    echo "Error: chapter argument must contain digits only"
+	    exit 1
+	    ;;
+	[12] )
+	    ;;
+	* )
+	    echo "Error: invalid chapter number: [12]"
+	    exit 1
+    esac
+
+    export CHAPTER="$cc"
+}
+
+while [ "$1" != "" ]; do
+    case "$1" in
+	-g | --gui )
+	    seq="gmnv gmnv91 gmnv90 gmnv81 gmnv80 gmnv8 gmnv74 gmnv73 gmnv72 gmnv71 gmnv70 gmnv7 gmnv6 $seq"
+	    ;;
+	-l | --language )
+	    shift
+	    xx="$1"
+	    validateLang
+	    ;;
+	-l[a-z][a-z][a-z] | -l[a-z][a-z] )
+	    export xx="${1#*l}"
+	    ;;
+	--language[a-z][a-z][a-z] | --language[a-z][a-z] )
+	    export xx="${1#*e}"
+	    ;;
+	[a-z][a-z][a-z] | [a-z][a-z] )
+	    export xx="$1"
+	    ;;
+	-c | --chapter )
+	    shift
+	    cc="$1"
+	    validateChapter
+	    ;;
+	-c[12] )
+	    export CHAPTER="${1#*c}"
+	    ;;
+	--chapter[12] )
+	    export CHAPTER="${1#*r}"
+	    ;;
+	-h | --help )
+	    usage
+	    exit
+	    ;;
+	--list )
+	    listOptions
+	    exit
+	    ;;
+	"" )
+	    ;;
+	* )
+	    usage
+	    exit 1
+    esac
+
+    shift
+done
+
+
+# We need a temp file for the copy.  First try using a standard command.
+tmp="${TMPDIR-/tmp}"
+# shellcheck disable=SC2186
+TUTORCOPY=$(mktemp "$tmp/tutorXXXXXX" || tempfile -p tutor || echo none)
+
+# If the standard commands failed then create a directory to put the copy in.
+# That is a secure way to make a temp file.
+if test "$TUTORCOPY" = none; then
+    tmpdir="$tmp/mnvtutor$$"
+    OLD_UMASK=$(umask)
+    umask 077
+    getout=no
+    mkdir "$tmpdir" || getout=yes
+    umask "$OLD_UMASK"
+    if test "$getout" = yes; then
+	echo "Could not create directory for tutor copy, exiting."
+	exit 1
+    fi
+    TUTORCOPY="$tmpdir/tutorcopy"
+    touch "$TUTORCOPY"
+    TODELETE="$tmpdir"
+else
+    TODELETE="$TUTORCOPY"
+fi
+
+export TUTORCOPY
+
+# remove the copy of the tutor on exit
+trap 'rm -rf "$TODELETE"' EXIT HUP INT QUIT SEGV PIPE TERM
+
+for i in $seq; do
+    testmnv=$(command -v "$i" 2>/dev/null)
+    if test -f "$testmnv"; then
+	MNV="$i"
+	break
+    fi
+done
+
+# When no MNV version was found fall back to "mnv", you'll get an error message
+# below.
+if test -z "$MNV"; then
+    MNV=mnv
+fi
+
+# Use MNV to copy the tutor, it knows the value of $MNVRUNTIME
+# The script tutor.mnv tells MNV which file to copy
+
+$MNV -f -u NONE -c "so \$MNVRUNTIME/tutor/tutor.mnv"
+
+# Start mnv without any .mnvrc, set 'nocompatible' and 'showcmd'
+$MNV -f -u NONE -c "set nocp showcmd" "$TUTORCOPY"
+
+# mnv:sw=4:ts=8:noet:nosta:

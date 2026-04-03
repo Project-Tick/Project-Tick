@@ -1,15 +1,15 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * CSCOPE support for Vim added by Andy Kahn <kahn@zk3.dec.com>
+ * CSCOPE support for MNV added by Andy Kahn <kahn@zk3.dec.com>
  * Ported to Win32 by Sergey Khorev <sergey.khorev@gmail.com>
  *
- * The basic idea/structure of cscope for Vim was borrowed from Nvi.  There
+ * The basic idea/structure of cscope for MNV was borrowed from Nvi.  There
  * might be a few lines of code that look similar to what Nvi has.
  *
- * See README.txt for an overview of the Vim source code.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_CSCOPE)
 
@@ -94,7 +94,7 @@ static int	    cs_insert_filelist(char *, char *, char *,
 static int	    cs_kill(exarg_T *eap);
 static void	    cs_kill_execute(int, char *);
 static cscmd_T *    cs_lookup_cmd(exarg_T *eap);
-static char *	    cs_make_vim_style_matches(char *, char *,
+static char *	    cs_make_mnv_style_matches(char *, char *,
 			char *, char *);
 static char *	    cs_manage_matches(char **, char **, int, mcmd_e);
 static void	    cs_print_tags_priv(char **, char **, int);
@@ -193,7 +193,7 @@ get_cscope_name(expand_T *xp UNUSED, int idx)
 		    continue;
 		if (current_idx++ == idx)
 		{
-		    vim_snprintf(connection, sizeof(connection), "%d", i);
+		    mnv_snprintf(connection, sizeof(connection), "%d", i);
 		    return (char_u *)connection;
 		}
 	    }
@@ -377,7 +377,7 @@ ex_cstag(exarg_T *eap)
 
 
 /*
- * This simulates a vim_fgets(), but for cscope, returns the next line
+ * This simulates a mnv_fgets(), but for cscope, returns the next line
  * from the cscope output.  should only be called from find_tags()
  *
  * returns TRUE if eof, FALSE otherwise
@@ -389,7 +389,7 @@ cs_fgets(char_u *buf, int size)
 
     if ((p = cs_manage_matches(NULL, NULL, -1, Get)) == NULL)
 	return TRUE;
-    vim_strncpy(buf, (char_u *)p, size - 1);
+    mnv_strncpy(buf, (char_u *)p, size - 1);
 
     return FALSE;
 }
@@ -557,8 +557,8 @@ cs_add_common(
 					      (char_u **)&fname, &fbuf, &len);
     if (fname == NULL)
 	goto add_err;
-    fname = (char *)vim_strnsave((char_u *)fname, len);
-    vim_free(fbuf);
+    fname = (char *)mnv_strnsave((char_u *)fname, len);
+    mnv_free(fbuf);
 
     ret = mch_stat(fname, &statbuf);
     if (ret < 0)
@@ -645,15 +645,15 @@ staterr:
 	}
     }
 
-    vim_free(fname);
-    vim_free(fname2);
-    vim_free(ppath);
+    mnv_free(fname);
+    mnv_free(fname2);
+    mnv_free(ppath);
     return CSCOPE_SUCCESS;
 
 add_err:
-    vim_free(fname2);
-    vim_free(fname);
-    vim_free(ppath);
+    mnv_free(fname2);
+    mnv_free(fname);
+    mnv_free(ppath);
     return CSCOPE_FAILURE;
 }
 
@@ -717,7 +717,7 @@ cs_cnt_matches(int idx)
 
 	    cs_reading_emsg(idx);
 
-	    vim_free(buf);
+	    mnv_free(buf);
 	    return -1;
 	}
 
@@ -752,7 +752,7 @@ cs_cnt_matches(int idx)
 	break;
     }
 
-    vim_free(buf);
+    mnv_free(buf);
     return nlines;
 }
 
@@ -806,7 +806,7 @@ cs_create_cmd(char *csoption, char *pattern)
     // they may want to use the leading white space.
     pat = pattern;
     if (search != 4 && search != 6)
-	while VIM_ISWHITE(*pat)
+	while MNV_ISWHITE(*pat)
 	    ++pat;
 
     if ((cmd = alloc(strlen(pat) + 2)) == NULL)
@@ -928,7 +928,7 @@ err_closing:
 	    // expand the prepend path for env var's
 	    if ((ppath = alloc(MAXPATHL + 1)) == NULL)
 	    {
-		vim_free(prog);
+		mnv_free(prog);
 # ifdef UNIX
 		exit(EXIT_FAILURE);
 # else
@@ -944,8 +944,8 @@ err_closing:
 
 	if ((cmd = alloc(cmdlen)) == NULL)
 	{
-	    vim_free(prog);
-	    vim_free(ppath);
+	    mnv_free(prog);
+	    mnv_free(ppath);
 # ifdef UNIX
 	    exit(EXIT_FAILURE);
 # else
@@ -956,29 +956,29 @@ err_closing:
 
 	// run the cscope command
 # ifdef UNIX
-	vim_snprintf(cmd, cmdlen, "/bin/sh -c \"exec %s -dl -f %s",
+	mnv_snprintf(cmd, cmdlen, "/bin/sh -c \"exec %s -dl -f %s",
 							prog, csinfo[i].fname);
 # else
-	vim_snprintf(cmd, cmdlen, "%s -dl -f %s", prog, csinfo[i].fname);
+	mnv_snprintf(cmd, cmdlen, "%s -dl -f %s", prog, csinfo[i].fname);
 # endif
 	if (csinfo[i].ppath != NULL)
 	{
 	    len = (int)STRLEN(cmd);
-	    vim_snprintf(cmd + len, cmdlen - len, " -P%s", csinfo[i].ppath);
+	    mnv_snprintf(cmd + len, cmdlen - len, " -P%s", csinfo[i].ppath);
 	}
 	if (csinfo[i].flags != NULL)
 	{
 	    len = (int)STRLEN(cmd);
-	    vim_snprintf(cmd + len, cmdlen - len, " %s", csinfo[i].flags);
+	    mnv_snprintf(cmd + len, cmdlen - len, " %s", csinfo[i].flags);
 	}
 # ifdef UNIX
 	// terminate the -c command argument
 	STRCAT(cmd, "\"");
 
 	// on Win32 we still need prog
-	vim_free(prog);
+	mnv_free(prog);
 # endif
-	vim_free(ppath);
+	mnv_free(ppath);
 
 # if defined(UNIX)
 #  if defined(HAVE_SETSID) || defined(HAVE_SETPGID)
@@ -1025,8 +1025,8 @@ err_closing:
     si.hStdInput  = stdin_rd;
     created = CreateProcess(NULL, cmd, NULL, NULL, TRUE, CREATE_NEW_CONSOLE,
 							NULL, NULL, &si, &pi);
-    vim_free(prog);
-    vim_free(cmd);
+    mnv_free(prog);
+    mnv_free(cmd);
 
     if (!created)
     {
@@ -1157,7 +1157,7 @@ cs_find_common(
 	cmdletter = opt[0];
     }
 
-    qfpos = (char *)vim_strchr(p_csqf, cmdletter);
+    qfpos = (char *)mnv_strchr(p_csqf, cmdletter);
     if (qfpos != NULL)
     {
 	qfpos++;
@@ -1189,7 +1189,7 @@ cs_find_common(
     nummatches = ALLOC_MULT(int, csinfo_size);
     if (nummatches == NULL)
     {
-	vim_free(cmd);
+	mnv_free(cmd);
 	return FALSE;
     }
 
@@ -1215,14 +1215,14 @@ cs_find_common(
 	if (nummatches[i] == 0)
 	    (void)cs_read_prompt(i);
     }
-    vim_free(cmd);
+    mnv_free(cmd);
 
     if (totmatches == 0)
     {
 	if (verbose)
 	    (void)semsg(_(e_no_matches_found_for_cscope_query_str_of_str),
 								     opt, pat);
-	vim_free(nummatches);
+	mnv_free(nummatches);
 	return FALSE;
     }
 
@@ -1231,13 +1231,13 @@ cs_find_common(
     {
 	// fill error list
 	FILE	    *f;
-	char_u	    *tmp = vim_tempname('c', TRUE);
+	char_u	    *tmp = mnv_tempname('c', TRUE);
 	qf_info_T   *qi = NULL;
 	win_T	    *wp = NULL;
 
 	if (tmp == NULL)
 	{
-	    vim_free(nummatches);
+	    mnv_free(nummatches);
 	    return FALSE;
 	}
 
@@ -1275,8 +1275,8 @@ cs_find_common(
 	    }
 	}
 	mch_remove(tmp);
-	vim_free(tmp);
-	vim_free(nummatches);
+	mnv_free(tmp);
+	mnv_free(nummatches);
 	return TRUE;
     }
     else
@@ -1288,7 +1288,7 @@ cs_find_common(
 	// read output
 	cs_fill_results(pat, totmatches, nummatches, &matches,
 							 &contexts, &matched);
-	vim_free(nummatches);
+	mnv_free(nummatches);
 	if (matches == NULL)
 	    return FALSE;
 
@@ -1311,7 +1311,7 @@ cs_help(exarg_T *eap UNUSED)
     while (cmdp->name != NULL)
     {
 	char *help = _(cmdp->help);
-	int  space_cnt = 30 - vim_strsize((char_u *)help);
+	int  space_cnt = 30 - mnv_strsize((char_u *)help);
 
 	// Use %*s rather than %30s to ensure proper alignment in utf-8
 	if (space_cnt < 0)
@@ -1444,10 +1444,10 @@ cs_insert_filelist(
 
 	    // Reallocate space for more connections.
 	    csinfo_size *= 2;
-	    csinfo = vim_realloc(csinfo, sizeof(csinfo_T)*csinfo_size);
+	    csinfo = mnv_realloc(csinfo, sizeof(csinfo_T)*csinfo_size);
 	    if (csinfo == NULL)
 	    {
-		vim_free(t_csinfo);
+		mnv_free(t_csinfo);
 		csinfo_size = 0;
 	    }
 	}
@@ -1460,16 +1460,16 @@ cs_insert_filelist(
     if ((csinfo[i].fname = alloc(strlen(fname)+1)) == NULL)
 	return -1;
 
-    vim_strncpy((char_u *)csinfo[i].fname, (char_u *)fname, strlen((const char *)fname));
+    mnv_strncpy((char_u *)csinfo[i].fname, (char_u *)fname, strlen((const char *)fname));
 
     if (ppath != NULL)
     {
 	if ((csinfo[i].ppath = alloc(strlen(ppath) + 1)) == NULL)
 	{
-	    VIM_CLEAR(csinfo[i].fname);
+	    MNV_CLEAR(csinfo[i].fname);
 	    return -1;
 	}
-	vim_strncpy((char_u *)csinfo[i].ppath, (char_u *)ppath, strlen((const char *)ppath));
+	mnv_strncpy((char_u *)csinfo[i].ppath, (char_u *)ppath, strlen((const char *)ppath));
     }
     else
 	csinfo[i].ppath = NULL;
@@ -1478,11 +1478,11 @@ cs_insert_filelist(
     {
 	if ((csinfo[i].flags = alloc(strlen(flags) + 1)) == NULL)
 	{
-	    VIM_CLEAR(csinfo[i].fname);
-	    VIM_CLEAR(csinfo[i].ppath);
+	    MNV_CLEAR(csinfo[i].fname);
+	    MNV_CLEAR(csinfo[i].ppath);
 	    return -1;
 	}
-	vim_strncpy((char_u *)csinfo[i].flags, (char_u *)flags, strlen((const char *)flags));
+	mnv_strncpy((char_u *)csinfo[i].flags, (char_u *)flags, strlen((const char *)flags));
     }
     else
 	csinfo[i].flags = NULL;
@@ -1545,9 +1545,9 @@ cs_kill(exarg_T *eap UNUSED)
     }
 
     // only single digit positive and negative integers are allowed
-    if ((strlen(stok) < 2 && VIM_ISDIGIT((int)(stok[0])))
+    if ((strlen(stok) < 2 && MNV_ISDIGIT((int)(stok[0])))
 	    || (strlen(stok) < 3 && stok[0] == '-'
-					      && VIM_ISDIGIT((int)(stok[1]))))
+					      && MNV_ISDIGIT((int)(stok[1]))))
 	i = atoi(stok);
     else
     {
@@ -1605,7 +1605,7 @@ cs_kill_execute(
  * Convert the cscope output into a ctags style entry (as might be found
  * in a ctags tags file).  there's one catch though: cscope doesn't tell you
  * the type of the tag you are looking for.  for example, in Darren Hiebert's
- * ctags (the one that comes with vim), #define's use a line number to find the
+ * ctags (the one that comes with mnv), #define's use a line number to find the
  * tag in a file while function definitions use a regexp search pattern.
  *
  * I'm going to always use the line number because cscope does something
@@ -1620,21 +1620,21 @@ cs_kill_execute(
  * characters to comply with ctags formatting.
  */
     static char *
-cs_make_vim_style_matches(
+cs_make_mnv_style_matches(
     char *fname,
     char *slno,
     char *search,
     char *tagstr)
 {
-    // vim style is ctags:
+    // mnv style is ctags:
     //
     //	    <tagstr>\t<filename>\t<linenum_or_search>"\t<extra>
     //
     // but as mentioned above, we'll always use the line number and
     // put the search pattern (if one exists) as "extra"
     //
-    // buf is used as part of vim's method of handling tags, and
-    // (i think) vim frees it when you pop your tags and get replaced
+    // buf is used as part of mnv's method of handling tags, and
+    // (i think) mnv frees it when you pop your tags and get replaced
     // by new ones on the tag stack.
     char *buf;
     int amt;
@@ -1666,9 +1666,9 @@ cs_make_vim_style_matches(
  * Store: keep a ptr to the (malloc'd) memory of matches originally
  * generated from cs_find().  the matches are originally lines directly
  * from cscope output, but transformed to look like something out of a
- * ctags.  see cs_make_vim_style_matches for more details.
+ * ctags.  see cs_make_mnv_style_matches for more details.
  *
- * Get: used only from cs_fgets(), this simulates a vim_fgets() to return
+ * Get: used only from cs_fgets(), this simulates a mnv_fgets() to return
  * the next line from the cscope output.  it basically keeps track of which
  * lines have been "used" and returns the next one.
  *
@@ -1714,12 +1714,12 @@ cs_manage_matches(
 	    if (cnt > 0)
 		while (cnt--)
 		{
-		    vim_free(mp[cnt]);
+		    mnv_free(mp[cnt]);
 		    if (cp != NULL)
-			vim_free(cp[cnt]);
+			mnv_free(cp[cnt]);
 		}
-	    vim_free(mp);
-	    vim_free(cp);
+	    mnv_free(mp);
+	    mnv_free(cp);
 	}
 	mp = NULL;
 	cp = NULL;
@@ -1829,7 +1829,7 @@ cs_file_results(FILE *f, int *nummatches_a)
 	   context = alloc(strlen(cntx)+5);
 	   if (context == NULL)
 	   {
-	       vim_free(fullname);
+	       mnv_free(fullname);
 	       continue;
 	   }
 
@@ -1843,19 +1843,19 @@ cs_file_results(FILE *f, int *nummatches_a)
 	   else
 	       fprintf(f, "%s\t%s\t%s %s\n", fullname, slno, context, search);
 
-	   vim_free(context);
-	   vim_free(fullname);
+	   mnv_free(context);
+	   mnv_free(fullname);
 	} // for all matches
 
 	(void)cs_read_prompt(i);
 
     } // for all cscope connections
-    vim_free(buf);
+    mnv_free(buf);
 }
 # endif
 
 /*
- * Get parsed cscope output and calls cs_make_vim_style_matches to convert
+ * Get parsed cscope output and calls cs_make_mnv_style_matches to convert
  * into ctags format.
  * When there are no matches sets "*matches_p" to NULL.
  */
@@ -1899,17 +1899,17 @@ cs_fill_results(
 			   &slno, &search)) == NULL)
 		continue;
 
-	    matches[totsofar] = cs_make_vim_style_matches(fullname, slno,
+	    matches[totsofar] = cs_make_mnv_style_matches(fullname, slno,
 							  search, tagstr);
 
-	    vim_free(fullname);
+	    mnv_free(fullname);
 
 	    if (strcmp(cntx, "<global>") == 0)
 		cntxts[totsofar] = NULL;
 	    else
-		// note: if vim_strsave returns NULL, then the context
+		// note: if mnv_strsave returns NULL, then the context
 		// will be "<global>", which is misleading.
-		cntxts[totsofar] = (char *)vim_strsave((char_u *)cntx);
+		cntxts[totsofar] = (char *)mnv_strsave((char_u *)cntx);
 
 	    if (matches[totsofar] != NULL)
 		totsofar++;
@@ -1924,14 +1924,14 @@ parse_out:
     if (totsofar == 0)
     {
 	// No matches, free the arrays and return NULL in "*matches_p".
-	VIM_CLEAR(matches);
-	VIM_CLEAR(cntxts);
+	MNV_CLEAR(matches);
+	MNV_CLEAR(cntxts);
     }
     *matched = totsofar;
     *matches_p = matches;
     *cntxts_p = cntxts;
 
-    vim_free(buf);
+    mnv_free(buf);
 }
 
 
@@ -1998,7 +1998,7 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
     ptag = strtok(tbuf, "\t");
     if (ptag == NULL)
     {
-	vim_free(tbuf);
+	mnv_free(tbuf);
 	return;
     }
 
@@ -2011,7 +2011,7 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
 	msg_puts_attr(buf, HL_ATTR(HLF_T));
     }
 
-    vim_free(tbuf);
+    mnv_free(tbuf);
 
     msg_puts_attr(_("\n   #   line"), HL_ATTR(HLF_T));    // strlen is 7
     msg_advance(msg_col + 2);
@@ -2033,7 +2033,7 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
 		|| (fname = strtok(NULL, (const char *)"\t")) == NULL
 		|| (lno = strtok(NULL, (const char *)"\t")) == NULL)
 	{
-	    vim_free(tbuf);
+	    mnv_free(tbuf);
 	    continue;
 	}
 	extra = strtok(NULL, (const char *)"\t");
@@ -2045,11 +2045,11 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
 	if (bufsize < newsize)
 	{
 	    t_buf = buf;
-	    buf = vim_realloc(buf, newsize);
+	    buf = mnv_realloc(buf, newsize);
 	    if (buf == NULL)
 	    {
 		bufsize = 0;
-		vim_free(t_buf);
+		mnv_free(t_buf);
 	    }
 	    else
 		bufsize = newsize;
@@ -2073,11 +2073,11 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
 	if (bufsize < newsize)
 	{
 	    t_buf = buf;
-	    buf = vim_realloc(buf, newsize);
+	    buf = mnv_realloc(buf, newsize);
 	    if (buf == NULL)
 	    {
 		bufsize = 0;
-		vim_free(t_buf);
+		mnv_free(t_buf);
 	    }
 	    else
 		bufsize = newsize;
@@ -2099,7 +2099,7 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
 	    msg_outtrans_long_attr((char_u *)extra, 0);
 	}
 
-	vim_free(tbuf); // only after printing extra due to strtok use
+	mnv_free(tbuf); // only after printing extra due to strtok use
 
 	if (msg_col)
 	    msg_putchar('\n');
@@ -2114,7 +2114,7 @@ cs_print_tags_priv(char **matches, char **cntxts, int num_matches)
 	num++;
     } // for all matches
 
-    vim_free(buf);
+    mnv_free(buf);
 }
 
 
@@ -2140,7 +2140,7 @@ cs_read_prompt(int i)
     {
 	while ((ch = getc(csinfo[i].fr_fp)) != EOF && ch != CSCOPE_PROMPT[0])
 	    // if there is room and char is printable
-	    if (bufpos < maxlen - 1 && vim_isprintc(ch))
+	    if (bufpos < maxlen - 1 && mnv_isprintc(ch))
 	    {
 		if (buf == NULL) // lazy buffer allocation
 		    buf = alloc(maxlen);
@@ -2180,7 +2180,7 @@ cs_read_prompt(int i)
 		else if (p_csverbose)
 		    cs_reading_emsg(i); // don't have additional information
 		cs_release_csp(i, TRUE);
-		vim_free(buf);
+		mnv_free(buf);
 		return CSCOPE_FAILURE;
 	    }
 
@@ -2196,7 +2196,7 @@ cs_read_prompt(int i)
 	break;		    // did find the prompt
     }
 
-    vim_free(buf);
+    mnv_free(buf);
     return CSCOPE_SUCCESS;
 }
 
@@ -2281,7 +2281,7 @@ cs_release_csp(int i, int freefnpp)
 	    if (waitpid_errno == ECHILD)
 	    {
 		/*
-		 * When using 'vim -g', vim is forked and cscope process is
+		 * When using 'mnv -g', mnv is forked and cscope process is
 		 * no longer a child process but a sibling.  So waitpid()
 		 * fails with errno being ECHILD (No child processes).
 		 * Don't send SIGKILL to cscope immediately but wait
@@ -2328,9 +2328,9 @@ cs_release_csp(int i, int freefnpp)
 
     if (freefnpp)
     {
-	vim_free(csinfo[i].fname);
-	vim_free(csinfo[i].ppath);
-	vim_free(csinfo[i].flags);
+	mnv_free(csinfo[i].fname);
+	mnv_free(csinfo[i].ppath);
+	mnv_free(csinfo[i].flags);
     }
 
     clear_csinfo(i);
@@ -2356,9 +2356,9 @@ cs_reset(exarg_T *eap UNUSED)
     fllist = ALLOC_MULT(char *, csinfo_size);
     if (dblist == NULL || pplist == NULL || fllist == NULL)
     {
-	vim_free(dblist);
-	vim_free(pplist);
-	vim_free(fllist);
+	mnv_free(dblist);
+	mnv_free(pplist);
+	mnv_free(fllist);
 	return CSCOPE_FAILURE;
     }
 
@@ -2386,13 +2386,13 @@ cs_reset(exarg_T *eap UNUSED)
 		msg_puts_attr(buf, HL_ATTR(HLF_R));
 	    }
 	}
-	vim_free(dblist[i]);
-	vim_free(pplist[i]);
-	vim_free(fllist[i]);
+	mnv_free(dblist[i]);
+	mnv_free(pplist[i]);
+	mnv_free(fllist[i]);
     }
-    vim_free(dblist);
-    vim_free(pplist);
-    vim_free(fllist);
+    mnv_free(dblist);
+    mnv_free(pplist);
+    mnv_free(fllist);
 
     if (p_csverbose)
 	msg_attr(_("All cscope databases reset"), HL_ATTR(HLF_R) | MSG_HIST);
@@ -2418,8 +2418,8 @@ cs_resolve_file(int i, char *name)
 
     /*
      * Ppath is freed when we destroy the cscope connection.
-     * Fullname is freed after cs_make_vim_style_matches, after it's been
-     * copied into the tag buffer used by Vim.
+     * Fullname is freed after cs_make_mnv_style_matches, after it's been
+     * copied into the tag buffer used by MNV.
      */
     len = (int)(strlen(name) + 2);
     if (csinfo[i].ppath != NULL)
@@ -2431,7 +2431,7 @@ cs_resolve_file(int i, char *name)
 	csdir = alloc(MAXPATHL);
 	if (csdir != NULL)
 	{
-	    vim_strncpy(csdir, (char_u *)csinfo[i].fname,
+	    mnv_strncpy(csdir, (char_u *)csinfo[i].fname,
 					  gettail((char_u *)csinfo[i].fname)
 						 - (char_u *)csinfo[i].fname);
 	    len += (int)STRLEN(csdir);
@@ -2460,10 +2460,10 @@ cs_resolve_file(int i, char *name)
     }
     else
     {
-	fullname = (char *)vim_strsave((char_u *)name);
+	fullname = (char *)mnv_strsave((char_u *)name);
     }
 
-    vim_free(csdir);
+    mnv_free(csdir);
     return fullname;
 }
 
@@ -2503,7 +2503,7 @@ cs_show(exarg_T *eap UNUSED)
 
 
 /*
- * Only called when VIM exits to quit any cscope sessions.
+ * Only called when MNV exits to quit any cscope sessions.
  */
     void
 cs_end(void)
@@ -2512,7 +2512,7 @@ cs_end(void)
 
     for (i = 0; i < csinfo_size; i++)
 	cs_release_csp(i, TRUE);
-    vim_free(csinfo);
+    mnv_free(csinfo);
     csinfo_size = 0;
 }
 
@@ -2534,7 +2534,7 @@ f_cscope_connection(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     char_u	*prepend = NULL;
     char_u	buf[NUMBUFLEN];
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_opt_number_arg(argvars, 0) == FAIL
 		|| (argvars[0].v_type != VAR_UNKNOWN
 		    && (check_for_opt_string_arg(argvars, 1) == FAIL

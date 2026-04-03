@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -58,7 +58,7 @@
 #define EX_NONWHITE_OK 0x2000000  // command can be followed by non-white
 #define EX_KEEPSCRIPT  0x4000000  // keep sctx of where command was invoked
 #define EX_EXPR_ARG    0x8000000  // argument is an expression
-#define EX_WHOLE      0x10000000  // command name cannot be shortened in Vim9
+#define EX_WHOLE      0x10000000  // command name cannot be shortened in MNV9
 #define EX_EXPORT     0x20000000  // command can be used after :export
 
 #define EX_FILES (EX_XFILE | EX_EXTRA)	// multiple extra files allowed
@@ -686,7 +686,7 @@ EXCMD(CMD_grepadd,	"grepadd",	ex_make,
 EXCMD(CMD_gui,		"gui",		ex_gui,
 	EX_BANG|EX_FILES|EX_CMDARG|EX_ARGOPT|EX_TRLBAR|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
-EXCMD(CMD_gvim,		"gvim",		ex_gui,
+EXCMD(CMD_gmnv,		"gmnv",		ex_gui,
 	EX_BANG|EX_FILES|EX_CMDARG|EX_ARGOPT|EX_TRLBAR|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
 EXCMD(CMD_help,		"help",		ex_help,
@@ -980,10 +980,10 @@ EXCMD(CMD_luado,	"luado",	ex_luado,
 EXCMD(CMD_luafile,	"luafile",	ex_luafile,
 	EX_RANGE|EX_FILE1|EX_NEEDARG|EX_CMDWIN|EX_LOCK_OK|EX_RESTRICT,
 	ADDR_LINES),
-EXCMD(CMD_lvimgrep,	"lvimgrep",	ex_vimgrep,
+EXCMD(CMD_lmnvgrep,	"lmnvgrep",	ex_mnvgrep,
 	EX_RANGE|EX_BANG|EX_NEEDARG|EX_EXTRA|EX_NOTRLCOM|EX_TRLBAR|EX_XFILE|EX_LOCK_OK,
 	ADDR_OTHER),
-EXCMD(CMD_lvimgrepadd,	"lvimgrepadd",	ex_vimgrep,
+EXCMD(CMD_lmnvgrepadd,	"lmnvgrepadd",	ex_mnvgrep,
 	EX_RANGE|EX_BANG|EX_NEEDARG|EX_EXTRA|EX_NOTRLCOM|EX_TRLBAR|EX_XFILE|EX_LOCK_OK,
 	ADDR_OTHER),
 EXCMD(CMD_lwindow,	"lwindow",	ex_cwindow,
@@ -1031,7 +1031,7 @@ EXCMD(CMD_mksession,	"mksession",	ex_mkrc,
 EXCMD(CMD_mkspell,	"mkspell",	ex_mkspell,
 	EX_BANG|EX_NEEDARG|EX_EXTRA|EX_NOTRLCOM|EX_TRLBAR|EX_XFILE,
 	ADDR_NONE),
-EXCMD(CMD_mkvimrc,	"mkvimrc",	ex_mkrc,
+EXCMD(CMD_mkmnvrc,	"mkmnvrc",	ex_mkrc,
 	EX_BANG|EX_FILE1|EX_TRLBAR|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
 EXCMD(CMD_mkview,	"mkview",	ex_mkrc,
@@ -1334,7 +1334,7 @@ EXCMD(CMD_rubyfile,	"rubyfile",	ex_rubyfile,
 EXCMD(CMD_rundo,	"rundo",	ex_rundo,
 	EX_NEEDARG|EX_FILE1,
 	ADDR_NONE),
-EXCMD(CMD_rviminfo,	"rviminfo",	ex_viminfo,
+EXCMD(CMD_rmnvinfo,	"rmnvinfo",	ex_mnvinfo,
 	EX_BANG|EX_FILE1|EX_TRLBAR|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
 EXCMD(CMD_substitute,	"substitute",	ex_substitute,
@@ -1745,16 +1745,16 @@ EXCMD(CMD_visual,	"visual",	ex_edit,
 EXCMD(CMD_view,		"view",		ex_edit,
 	EX_BANG|EX_FILE1|EX_CMDARG|EX_ARGOPT|EX_TRLBAR,
 	ADDR_NONE),
-EXCMD(CMD_vimgrep,	"vimgrep",	ex_vimgrep,
+EXCMD(CMD_mnvgrep,	"mnvgrep",	ex_mnvgrep,
 	EX_RANGE|EX_BANG|EX_NEEDARG|EX_EXTRA|EX_NOTRLCOM|EX_TRLBAR|EX_XFILE|EX_LOCK_OK,
 	ADDR_OTHER),
-EXCMD(CMD_vimgrepadd,	"vimgrepadd",	ex_vimgrep,
+EXCMD(CMD_mnvgrepadd,	"mnvgrepadd",	ex_mnvgrep,
 	EX_RANGE|EX_BANG|EX_NEEDARG|EX_EXTRA|EX_NOTRLCOM|EX_TRLBAR|EX_XFILE|EX_LOCK_OK,
 	ADDR_OTHER),
-EXCMD(CMD_vim9cmd,	"vim9cmd",	ex_wrongmodifier,
+EXCMD(CMD_mnv9cmd,	"mnv9cmd",	ex_wrongmodifier,
 	EX_NEEDARG|EX_EXTRA|EX_NOTRLCOM|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
-EXCMD(CMD_vim9script,	"vim9script",	ex_vim9script,
+EXCMD(CMD_mnv9script,	"mnv9script",	ex_mnv9script,
 	EX_WORD1|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
 EXCMD(CMD_viusage,	"viusage",	ex_viusage,
@@ -1829,7 +1829,7 @@ EXCMD(CMD_wqall,	"wqall",	do_wqall,
 EXCMD(CMD_wundo,	"wundo",	ex_wundo,
 	EX_BANG|EX_NEEDARG|EX_FILE1,
 	ADDR_NONE),
-EXCMD(CMD_wviminfo,	"wviminfo",	ex_viminfo,
+EXCMD(CMD_wmnvinfo,	"wmnvinfo",	ex_mnvinfo,
 	EX_BANG|EX_FILE1|EX_TRLBAR|EX_CMDWIN|EX_LOCK_OK,
 	ADDR_NONE),
 EXCMD(CMD_xit,		"xit",		ex_exit,

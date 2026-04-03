@@ -69,8 +69,8 @@ void clip_mch_lose_selection(Clipboard_T *cbd);
 int clip_mch_own_selection(Clipboard_T *cbd);
 void clip_mch_set_selection(Clipboard_T *cbd);
 int clip_gtk_owner_exists(Clipboard_T *cbd);
-void gui_mch_menu_grey(vimmenu_T *menu, int grey);
-void gui_mch_menu_hidden(vimmenu_T *menu, int hidden);
+void gui_mch_menu_grey(mnvmenu_T *menu, int grey);
+void gui_mch_menu_hidden(mnvmenu_T *menu, int hidden);
 void gui_mch_draw_menubar(void);
 void gui_mch_enable_scrollbar(scrollbar_T *sb, int flag);
 guicolor_T gui_mch_get_rgb(guicolor_T pixel);
@@ -81,4 +81,4 @@ void mch_set_mouse_shape(int shape);
 void gui_mch_drawsign(int row, int col, int typenr);
 void *gui_mch_register_sign(char_u *signfile);
 void gui_mch_destroy_sign(void *sign);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

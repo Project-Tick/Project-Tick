@@ -1,15 +1,15 @@
-// VIM_TEST_SETUP setlocal fen fdc=2 fdl=8 fdm=syntax
-// VIM_TEST_SETUP let g:java_foldtext_show_first_or_second_line = 1
-// VIM_TEST_SETUP let g:java_highlight_java_lang = 1
-// VIM_TEST_SETUP let g:java_ignore_folding = "x"
-// VIM_TEST_SETUP let g:java_lookbehind_byte_counts = {'javaBlock': -1}
+// MNV_TEST_SETUP setlocal fen fdc=2 fdl=8 fdm=syntax
+// MNV_TEST_SETUP let g:java_foldtext_show_first_or_second_line = 1
+// MNV_TEST_SETUP let g:java_highlight_java_lang = 1
+// MNV_TEST_SETUP let g:java_ignore_folding = "x"
+// MNV_TEST_SETUP let g:java_lookbehind_byte_counts = {'javaBlock': -1}
 
 
 
 
 
-// VIM_TEST_SETUP highlight link javaBlockOtherStart Structure
-// VIM_TEST_SETUP highlight link javaBlockStart Todo
+// MNV_TEST_SETUP highlight link javaBlockOtherStart Structure
+// MNV_TEST_SETUP highlight link javaBlockStart Todo
 
 
 

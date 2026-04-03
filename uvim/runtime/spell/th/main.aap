@@ -1,10 +1,10 @@
-# Aap recipe for Thai Vim spell files.
+# Aap recipe for Thai MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = th.aff th.dic
@@ -12,7 +12,7 @@ FILES    = th.aff th.dic
 all: $SPELLDIR/th.utf-8.spl ../README_th.txt
 
 $SPELLDIR/th.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                 -c "mkspell! $SPELLDIR/th th" -c q
 
 ../README_th.txt: README_th.txt
@@ -51,7 +51,7 @@ th.aff th.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff

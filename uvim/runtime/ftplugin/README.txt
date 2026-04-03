@@ -1,16 +1,16 @@
-The ftplugin directory is for Vim plugin scripts that are only used for a
+The ftplugin directory is for MNV plugin scripts that are only used for a
 specific filetype.
 
-All files ending in .vim in this directory and subdirectories will be sourced
-by Vim when it detects the filetype that matches the name of the file or
+All files ending in .mnv in this directory and subdirectories will be sourced
+by MNV when it detects the filetype that matches the name of the file or
 subdirectory.
 For example, these are all loaded for the "c" filetype:
 
-	c.vim
-	c_extra.vim
-	c/settings.vim
+	c.mnv
+	c_extra.mnv
+	c/settings.mnv
 
-Note that the "_" in "c_extra.vim" is required to separate the filetype name
+Note that the "_" in "c_extra.mnv" is required to separate the filetype name
 from the following arbitrary name.
 
 The filetype plugins are only loaded when the ":filetype plugin" command has
@@ -21,4 +21,4 @@ want to use.  They do not contain personal preferences, like the value of
 'shiftwidth'.
 
 If you want to do additional settings, or overrule the default filetype
-plugin, you can create your own plugin file.  See ":help ftplugin" in Vim.
+plugin, you can create your own plugin file.  See ":help ftplugin" in MNV.

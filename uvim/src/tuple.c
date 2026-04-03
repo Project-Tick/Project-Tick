@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * tuple.c: Tuple support functions.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -192,7 +192,7 @@ tuple_free_list(tuple_T  *tuple)
 	tuple->tv_used_next->tv_used_prev = tuple->tv_used_prev;
 
     free_type(tuple->tv_type);
-    vim_free(tuple);
+    mnv_free(tuple);
 }
 
     void
@@ -388,7 +388,7 @@ tuple_slice_or_index(
     if (n1 < 0 || n1 >= len)
     {
 	// For a range we allow invalid values and for legacy script return an
-	// empty tuple, for Vim9 script start at the first item.
+	// empty tuple, for MNV9 script start at the first item.
 	// A tuple index out of range is an error.
 	if (!range)
 	{
@@ -396,7 +396,7 @@ tuple_slice_or_index(
 		semsg(_(e_tuple_index_out_of_range_nr), (long)n1_arg);
 	    return FAIL;
 	}
-	if (in_vim9script())
+	if (in_mnv9script())
 	    n1 = n1 < 0 ? 0 : len;
 	else
 	    n1 = len;
@@ -497,7 +497,7 @@ eval_tuple(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int do_error)
 					 : evalarg->eval_flags & EVAL_EVALUATE;
     tuple_T	*tuple = NULL;
     typval_T	tv;
-    int		vim9script = in_vim9script();
+    int		mnv9script = in_mnv9script();
     int		had_comma;
 
     if (check_typval_is_value(rettv) == FAIL)
@@ -528,7 +528,7 @@ eval_tuple(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int do_error)
 	// empty tuple
 	goto done;
 
-    if (vim9script && !IS_WHITE_NL_OR_NUL((*arg)[1]) && (*arg)[1] != ')')
+    if (mnv9script && !IS_WHITE_NL_OR_NUL((*arg)[1]) && (*arg)[1] != ')')
     {
 	semsg(_(e_white_space_required_after_str_str), ",", *arg);
 	goto failret;
@@ -555,14 +555,14 @@ eval_tuple(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int do_error)
 	    }
 	}
 
-	if (!vim9script)
+	if (!mnv9script)
 	    *arg = skipwhite(*arg);
 
 	// the comma must come after the value
 	had_comma = **arg == ',';
 	if (had_comma)
 	{
-	    if (vim9script && !IS_WHITE_NL_OR_NUL((*arg)[1]) && (*arg)[1] != ')')
+	    if (mnv9script && !IS_WHITE_NL_OR_NUL((*arg)[1]) && (*arg)[1] != ')')
 	    {
 		semsg(_(e_white_space_required_after_str_str), ",", *arg);
 		goto failret;
@@ -679,7 +679,7 @@ tuple_join_inner(
 	}
 	else
 	{
-	    p->s.string = vim_strnsave(s.string, s.length);
+	    p->s.string = mnv_strnsave(s.string, s.length);
 	    p->s.length = s.length;
 	    p->tofree = p->s.string;
 	}
@@ -753,7 +753,7 @@ tuple_join(
     p = (join_T *)join_ga.ga_data;
     for (i = 0; i < join_ga.ga_len; ++i)
     {
-	vim_free(p->tofree);
+	mnv_free(p->tofree);
 	++p;
     }
     ga_clear(&join_ga);
@@ -777,7 +777,7 @@ tuple2string(typval_T *tv, int copyID, int restore_copyID)
     if (tuple_join(&ga, tv->vval.v_tuple, (char_u *)", ",
 				       FALSE, restore_copyID, copyID) == FAIL)
     {
-	vim_free(ga.ga_data);
+	mnv_free(ga.ga_data);
 	return NULL;
     }
     ga_append(&ga, ')');
@@ -800,15 +800,15 @@ tuple_foreach(
     typval_T	newtv;
     funccall_T	*fc;
 
-    // set_vim_var_nr() doesn't set the type
-    set_vim_var_type(VV_KEY, VAR_NUMBER);
+    // set_mnv_var_nr() doesn't set the type
+    set_mnv_var_type(VV_KEY, VAR_NUMBER);
 
     // Create one funccall_T for all eval_expr_typval() calls.
     fc = eval_expr_get_funccal(expr, &newtv);
 
     for (int idx = 0; idx < len; idx++)
     {
-	set_vim_var_nr(VV_KEY, idx);
+	set_mnv_var_nr(VV_KEY, idx);
 	if (filter_map_one(TUPLE_ITEM(tuple, idx), expr, filtermap, fc,
 						     &newtv, &rem) == FAIL)
 	    break;
@@ -874,7 +874,7 @@ tuple2items(typval_T *argvars, typval_T *rettv)
 
 	if (list_append_list(rettv->vval.v_list, l) == FAIL)
 	{
-	    vim_free(l);
+	    mnv_free(l);
 	    break;
 	}
 	if (list_append_number(l, idx) == FAIL
@@ -933,17 +933,17 @@ indexof_tuple(tuple_T *tuple, long startidx, typval_T *expr)
 	    startidx = 0;
     }
 
-    set_vim_var_type(VV_KEY, VAR_NUMBER);
+    set_mnv_var_type(VV_KEY, VAR_NUMBER);
 
     int		called_emsg_start = called_emsg;
 
     for (idx = startidx; idx < len; idx++)
     {
-	set_vim_var_nr(VV_KEY, idx);
-	copy_tv(TUPLE_ITEM(tuple, idx), get_vim_var_tv(VV_VAL));
+	set_mnv_var_nr(VV_KEY, idx);
+	copy_tv(TUPLE_ITEM(tuple, idx), get_mnv_var_tv(VV_VAL));
 
 	found = indexof_eval_expr(expr);
-	clear_tv(get_vim_var_tv(VV_VAL));
+	clear_tv(get_mnv_var_tv(VV_VAL));
 
 	if (found)
 	    return idx;

@@ -51,4 +51,4 @@ void scroll_cursor_halfway(int atend, int prefer_above);
 void cursor_correct(void);
 int pagescroll(int dir, long count, int half);
 void do_check_cursorbind(void);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

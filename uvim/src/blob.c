@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * blob.c: Blob support by Yasuhiro Matsumoto
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -77,7 +77,7 @@ blob_copy(blob_T *from, typval_T *to)
     if (len > 0)
     {
 	to->vval.v_blob->bv_ga.ga_data =
-	    vim_memsave(from->bv_ga.ga_data, len);
+	    mnv_memsave(from->bv_ga.ga_data, len);
 	if (to->vval.v_blob->bv_ga.ga_data == NULL)
 	    len = 0;
     }
@@ -91,7 +91,7 @@ blob_copy(blob_T *from, typval_T *to)
 blob_free(blob_T *b)
 {
     ga_clear(&b->bv_ga);
-    vim_free(b);
+    mnv_free(b);
 }
 
 /*
@@ -226,7 +226,7 @@ read_blob(FILE *fd, typval_T *rettv, off_T offset, off_T size_arg)
     }
     if (size <= 0)
 	return OK;
-    if (offset != 0 && vim_fseek(fd, offset, whence) != 0)
+    if (offset != 0 && mnv_fseek(fd, offset, whence) != 0)
 	return OK;
 
     if (ga_grow(&blob->bv_ga, (int)size) == FAIL)
@@ -283,7 +283,7 @@ blob2string(blob_T *blob, char_u **tofree, char_u *numbuf)
 
 	if (i > 0 && (i & 3) == 0)
 	    GA_CONCAT_LITERAL(&ga, ".");
-	numbuflen = vim_snprintf_safelen((char *)numbuf, NUMBUFLEN,
+	numbuflen = mnv_snprintf_safelen((char *)numbuf, NUMBUFLEN,
 	    "%02X", blob_get(blob, i));
 	ga_concat_len(&ga, numbuf, numbuflen);
     }
@@ -314,7 +314,7 @@ blob2items(typval_T *argvars, typval_T *rettv)
 
 	if (list_append_list(rettv->vval.v_list, l2) == FAIL)
 	{
-	    vim_free(l2);
+	    mnv_free(l2);
 	    return;
 	}
 
@@ -339,13 +339,13 @@ string2blob(char_u *str)
     if (s[0] != '0' || (s[1] != 'z' && s[1] != 'Z'))
 	goto failed;
     s += 2;
-    while (vim_isxdigit(*s))
+    while (mnv_isxdigit(*s))
     {
-	if (!vim_isxdigit(s[1]))
+	if (!mnv_isxdigit(s[1]))
 	    goto failed;
 	ga_append(&blob->bv_ga, (hex2nr(s[0]) << 4) + hex2nr(s[1]));
 	s += 2;
-	if (*s == '.' && vim_isxdigit(s[1]))
+	if (*s == '.' && mnv_isxdigit(s[1]))
 	    ++s;
     }
     if (*skipwhite(s) != NUL)
@@ -528,7 +528,7 @@ blob_add(typval_T *argvars, typval_T *rettv)
 
     if (b == NULL)
     {
-	if (in_vim9script())
+	if (in_mnv9script())
 	    emsg(_(e_cannot_add_to_null_blob));
 	return;
     }
@@ -603,7 +603,7 @@ blob_remove(typval_T *argvars, typval_T *rettv, char_u *arg_errmsg)
     newblob->bv_ga.ga_len = end - idx + 1;
     if (ga_grow(&newblob->bv_ga, end - idx + 1) == FAIL)
     {
-	vim_free(newblob);
+	mnv_free(newblob);
 	return;
     }
     p = (char_u *)b->bv_ga.ga_data;
@@ -657,8 +657,8 @@ blob_filter_map(
 	b_ret = rettv->vval.v_blob;
     }
 
-    // set_vim_var_nr() doesn't set the type
-    set_vim_var_type(VV_KEY, VAR_NUMBER);
+    // set_mnv_var_nr() doesn't set the type
+    set_mnv_var_type(VV_KEY, VAR_NUMBER);
 
     int prev_lock = b->bv_lock;
     if (b->bv_lock == 0)
@@ -672,7 +672,7 @@ blob_filter_map(
 	tv.v_type = VAR_NUMBER;
 	val = blob_get(b, i);
 	tv.vval.v_number = val;
-	set_vim_var_nr(VV_KEY, idx);
+	set_mnv_var_nr(VV_KEY, idx);
 	if (filter_map_one(&tv, expr, filtermap, fc, &newtv, &rem) == FAIL
 		|| did_emsg)
 	    break;
@@ -721,7 +721,7 @@ blob_insert_func(typval_T *argvars, typval_T *rettv)
 
     if (b == NULL)
     {
-	if (in_vim9script())
+	if (in_mnv9script())
 	    emsg(_(e_cannot_add_to_null_blob));
 	return;
     }

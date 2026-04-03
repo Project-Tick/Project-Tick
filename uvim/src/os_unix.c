@@ -1,12 +1,12 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *	      OS/2 port by Paul Slootman
  *	      VMS merge by Zoltan Arpadffy
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -18,7 +18,7 @@
  * changed beyond recognition.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef FEAT_MZSCHEME
 # include "if_mzsch.h"
@@ -204,7 +204,7 @@ typedef struct {
 # define SS_CMD_INFO_SIZE (sizeof(char_u) + (sizeof(uint32_t) * 2))
 # define SS_MSG_INFO_SIZE (sizeof(char_u) + sizeof(uint32_t))
 
-// Represents a pending reply from a command sent to a Vim server. When a
+// Represents a pending reply from a command sent to a MNV server. When a
 // command is sent out, we generate unique serial number with it. When we
 // receive any reply, we check which pending command has a matching serial
 // number, and is therefore the reply for that pending command.
@@ -229,7 +229,7 @@ static uint32_t ss_serial = 0;
 
 // Represents a reply from a server2client call. Each client that calls a
 // server2client call to us has its own ss_reply_T. Each time a client sends
-// data using server2client, Vim creates a ss_reply_T if it doesn't exist and
+// data using server2client, MNV creates a ss_reply_T if it doesn't exist and
 // adds the string to the array. When remote_read is called, the server id is
 // used to find the specific ss_reply_T, and a single string is popped from the
 // array.
@@ -434,7 +434,7 @@ static struct signalinfo
 #endif
 #if defined(SIGPROF) && !defined(FEAT_MZSCHEME) && !defined(WE_ARE_PROFILING)
     // MzScheme uses SIGPROF for its own needs; On Linux with profiling
-    // this makes Vim exit.  WE_ARE_PROFILING is defined in Makefile.
+    // this makes MNV exit.  WE_ARE_PROFILING is defined in Makefile.
     {SIGPROF,	    "PROF",	TRUE},
 #endif
 #ifdef SIGXCPU
@@ -548,7 +548,7 @@ mch_chdir(char *path)
     void
 mch_write(char_u *s, int len)
 {
-    vim_ignored = (int)write(1, (char *)s, len);
+    mnv_ignored = (int)write(1, (char *)s, len);
     if (p_wd)		// Unix is too fast, slow down a bit more
 	RealWaitForChar(read_cmd_fd, p_wd, NULL, NULL);
 }
@@ -755,7 +755,7 @@ mch_total_mem(int special UNUSED)
 # endif
 
     // Return the minimum of the physical memory and the user limit, because
-    // using more than the user limit may cause Vim to be terminated.
+    // using more than the user limit may cause MNV to be terminated.
 # if defined(HAVE_SYS_RESOURCE_H) && defined(HAVE_GETRLIMIT)
     {
 	struct rlimit	rlp;
@@ -1230,7 +1230,7 @@ deathtrap SIGDEFARG(sigarg)
 # ifdef SIGQUIT
     // While in mch_delay() we go to cooked mode to allow a CTRL-C to
     // interrupt us.  But in cooked mode we may also get SIGQUIT, e.g., when
-    // pressing CTRL-\, but we don't want Vim to exit then.
+    // pressing CTRL-\, but we don't want MNV to exit then.
     if (in_mch_delay && sigarg == SIGQUIT)
 	return;
 # endif
@@ -1259,7 +1259,7 @@ deathtrap SIGDEFARG(sigarg)
 		|| sigarg == SIGUSR2
 # endif
 		)
-	    && !vim_handle_signal(sigarg))
+	    && !mnv_handle_signal(sigarg))
 	return;
 #endif
 
@@ -1272,7 +1272,7 @@ deathtrap SIGDEFARG(sigarg)
 
 #ifdef FEAT_EVAL
     // Set the v:dying variable.
-    set_vim_var_nr(VV_DYING, (long)entered);
+    set_mnv_var_nr(VV_DYING, (long)entered);
 #endif
     v_dying = entered;
 
@@ -1283,12 +1283,12 @@ deathtrap SIGDEFARG(sigarg)
 #endif
 
 #if 0
-    // This is for opening gdb the moment Vim crashes.
-    // You need to manually adjust the file name and Vim executable name.
+    // This is for opening gdb the moment MNV crashes.
+    // You need to manually adjust the file name and MNV executable name.
     // Suggested by SungHyun Nam.
     {
-# define VI_GDB_FILE "/tmp/vimgdb"
-# define VIM_NAME "/usr/bin/vim"
+# define VI_GDB_FILE "/tmp/mnvgdb"
+# define MNV_NAME "/usr/bin/mnv"
 	FILE *fp = fopen(VI_GDB_FILE, "w");
 	if (fp)
 	{
@@ -1297,7 +1297,7 @@ deathtrap SIGDEFARG(sigarg)
 		    "attach %d\n"
 		    "set height 1000\n"
 		    "bt full\n"
-		    , VIM_NAME, getpid());
+		    , MNV_NAME, getpid());
 	    fclose(fp);
 	    system("xterm -e gdb -x "VI_GDB_FILE);
 	    unlink(VI_GDB_FILE);
@@ -1335,17 +1335,17 @@ deathtrap SIGDEFARG(sigarg)
     if (entered == 2)
     {
 	// No translation, it may call malloc().
-	OUT_STR("Vim: Double signal, exiting\n");
+	OUT_STR("MNV: Double signal, exiting\n");
 	out_flush();
 	getout(1);
     }
 
     // No translation, it may call malloc().
 #ifdef SIGHASARG
-    sprintf((char *)IObuff, "Vim: Caught deadly signal %s\r\n",
+    sprintf((char *)IObuff, "MNV: Caught deadly signal %s\r\n",
 							 signal_info[i].name);
 #else
-    sprintf((char *)IObuff, "Vim: Caught deadly signal\r\n");
+    sprintf((char *)IObuff, "MNV: Caught deadly signal\r\n");
 #endif
 
     // Preserve files and exit.  This sets the really_exiting flag to prevent
@@ -1428,7 +1428,7 @@ static void *clip_plus_save = NULL;
 # if defined(FEAT_CLIPBOARD) && (defined(FEAT_X11) \
 	|| defined(FEAT_WAYLAND_CLIPBOARD))
 /*
- * Called when Vim is going to sleep or execute a shell command.
+ * Called when MNV is going to sleep or execute a shell command.
  * We can't respond to requests for the X or Wayland selections.
  * Lose them, otherwise other applications will hang.  But first
  * copy the text to cut buffer 0 (for X11). Wayland users must have
@@ -1525,7 +1525,7 @@ mch_suspend(void)
      * Wait for the SIGCONT signal to be handled. It generally happens
      * immediately, but somehow not all the time, probably because it's handled
      * in another thread. Do not call pause() because there would be race
-     * condition which would hang Vim if signal happened in between the test of
+     * condition which would hang MNV if signal happened in between the test of
      * sigcont_received and the call to pause(). If signal is not yet received,
      * sleep 0, 1, 2, 3 ms. Don't bother waiting further if signal is not
      * received after 1+2+3 ms (not expected to happen).
@@ -1557,7 +1557,7 @@ mch_init(void)
     // Check whether we were invoked with SIGTSTP set to be ignored. If it is
     // that indicates the shell (or program) that launched us does not support
     // tty job control and thus we should ignore that signal. If invoked as a
-    // restricted editor (e.g., as "rvim") SIGTSTP is always ignored.
+    // restricted editor (e.g., as "rmnv") SIGTSTP is always ignored.
     ignore_sigtstp = restricted || SIG_IGN == mch_signal(SIGTSTP, SIG_ERR);
 #endif
     set_signals();
@@ -1636,7 +1636,7 @@ set_signals(void)
 #endif
 
     /*
-     * Arrange for other signals to gracefully shutdown Vim.
+     * Arrange for other signals to gracefully shutdown MNV.
      */
     catch_signals(deathtrap, SIG_ERR);
 
@@ -1760,10 +1760,10 @@ unblock_signals(sigset_t *set)
  * "when" == SIGNAL_BLOCK:   Going to be busy, block signals
  * "when" == SIGNAL_UNBLOCK: Going to wait, unblock signals, use postponed
  *			     signal
- * Returns TRUE when Vim should exit.
+ * Returns TRUE when MNV should exit.
  */
     int
-vim_handle_signal(int sig)
+mnv_handle_signal(int sig)
 {
     static int got_signal = 0;
     static int blocked = TRUE;
@@ -1844,7 +1844,7 @@ static int	got_x_error = FALSE;
 x_error_handler(Display *dpy, XErrorEvent *error_event)
 {
     XGetErrorText(dpy, error_event->error_code, (char *)IObuff, IOSIZE);
-    STRCAT(IObuff, _("\nVim: Got X error\n"));
+    STRCAT(IObuff, _("\nMNV: Got X error\n"));
 
     // In the GUI we cannot print a message and continue, because no X calls
     // are allowed here (causes my system to hang).  Silently continuing seems
@@ -1895,7 +1895,7 @@ x_connect_to_server(void)
 	if (regprog_in_use(clip_exclude_prog))
 	    return FALSE;
 
-	if (vim_regexec_prog(&clip_exclude_prog, FALSE, T_NAME, (colnr_T)0))
+	if (mnv_regexec_prog(&clip_exclude_prog, FALSE, T_NAME, (colnr_T)0))
 	    return FALSE;
     }
     return TRUE;
@@ -1940,7 +1940,7 @@ x_IOerror_handler(Display *dpy UNUSED)
 
 /*
  * If the X11 connection was lost try to restore it.
- * Helps when the X11 server was stopped and restarted while Vim was inactive
+ * Helps when the X11 server was stopped and restarted while MNV was inactive
  * (e.g. through tmux).
  */
     static void
@@ -1952,7 +1952,7 @@ may_restore_x11_clipboard(void)
 	--xterm_dpy_retry_count;
 
 #  ifndef LESSTIF_VERSION
-	// This has been reported to avoid Vim getting stuck.
+	// This has been reported to avoid MNV getting stuck.
 	if (app_context != (XtAppContext)NULL)
 	{
 	    XtDestroyApplicationContext(app_context);
@@ -1974,8 +1974,8 @@ ex_xrestore(exarg_T *eap)
     if (eap->arg != NULL && (arglen = STRLEN(eap->arg)) > 0)
     {
 	if (xterm_display_allocated)
-	    vim_free(xterm_display);
-	xterm_display = (char *)vim_strnsave(eap->arg, arglen);
+	    mnv_free(xterm_display);
+	xterm_display = (char *)mnv_strnsave(eap->arg, arglen);
 	xterm_display_allocated = TRUE;
     }
     smsg(_("restoring X11 display %s"), xterm_display == NULL
@@ -2049,7 +2049,7 @@ get_x11_windis(void)
     if (gui.in_use)
     {
 	/*
-	 * If the X11 display was opened here before, for the window where Vim
+	 * If the X11 display was opened here before, for the window where MNV
 	 * was started, close that one now to avoid a memory leak.
 	 */
 	if (x11_display_from == XD_HERE && x11_display != NULL)
@@ -2100,7 +2100,7 @@ get_x11_windis(void)
 	{
 	    /*
 	     * If the X11 display was opened here before, for the window where
-	     * Vim was started, close that one now to avoid a memory leak.
+	     * MNV was started, close that one now to avoid a memory leak.
 	     */
 	    if (x11_display_from == XD_HERE && x11_display != NULL)
 		XCloseDisplay(x11_display);
@@ -2179,7 +2179,7 @@ get_x11_windis(void)
 	return (result = FAIL);
 
 # ifdef FEAT_EVAL
-    set_vim_var_nr(VV_WINDOWID, (long)x11_window);
+    set_mnv_var_nr(VV_WINDOWID, (long)x11_window);
 # endif
 
     return (result = OK);
@@ -2208,9 +2208,9 @@ get_x11_icon(int test_only)
     if (oldicon == NULL && !test_only)
     {
 	if (STRNCMP(T_NAME, "builtin_", 8) == 0)
-	    oldicon = vim_strsave(T_NAME + 8);
+	    oldicon = mnv_strsave(T_NAME + 8);
 	else
-	    oldicon = vim_strsave(T_NAME);
+	    oldicon = mnv_strsave(T_NAME);
     }
 
     return retval;
@@ -2272,15 +2272,15 @@ get_x11_thing(
 	if (!test_only)
 	{
 	    if (get_title)
-		vim_free(oldtitle);
+		mnv_free(oldtitle);
 	    else
-		vim_free(oldicon);
+		mnv_free(oldicon);
 	    if (text_prop.encoding == XA_STRING && !has_mbyte)
 	    {
 		if (get_title)
-		    oldtitle = vim_strsave((char_u *)text_prop.value);
+		    oldtitle = mnv_strsave((char_u *)text_prop.value);
 		else
-		    oldicon = vim_strsave((char_u *)text_prop.value);
+		    oldicon = mnv_strsave((char_u *)text_prop.value);
 	    }
 	    else
 	    {
@@ -2294,17 +2294,17 @@ get_x11_thing(
 		if (transform_status >= Success && n > 0 && cl[0])
 		{
 		    if (get_title)
-			oldtitle = vim_strsave((char_u *) cl[0]);
+			oldtitle = mnv_strsave((char_u *) cl[0]);
 		    else
-			oldicon = vim_strsave((char_u *) cl[0]);
+			oldicon = mnv_strsave((char_u *) cl[0]);
 		    XFreeStringList(cl);
 		}
 		else
 		{
 		    if (get_title)
-			oldtitle = vim_strsave((char_u *)text_prop.value);
+			oldtitle = mnv_strsave((char_u *)text_prop.value);
 		    else
-			oldicon = vim_strsave((char_u *)text_prop.value);
+			oldicon = mnv_strsave((char_u *)text_prop.value);
 		}
 	    }
 	}
@@ -2410,9 +2410,9 @@ get_x11_icon(int test_only)
     if (!test_only)
     {
 	if (STRNCMP(T_NAME, "builtin_", 8) == 0)
-	    oldicon = vim_strsave(T_NAME + 8);
+	    oldicon = mnv_strsave(T_NAME + 8);
 	else
-	    oldicon = vim_strsave(T_NAME);
+	    oldicon = mnv_strsave(T_NAME);
     }
     return FALSE;
 }
@@ -2473,7 +2473,7 @@ mch_settitle(char_u *title, char_u *icon)
 	if (oldtitle_outdated)
 	{
 	    oldtitle_outdated = FALSE;
-	    VIM_CLEAR(oldtitle);
+	    MNV_CLEAR(oldtitle);
 	}
 	if (oldtitle == NULL
 #ifdef FEAT_GUI
@@ -2546,13 +2546,13 @@ mch_restore_title(int which)
     char_u *tofree = NULL;
     if (title == oldtitle && oldtitle != NULL)
     {
-	tofree = vim_strsave(title);
+	tofree = mnv_strsave(title);
 	if (tofree != NULL)
 	    title = tofree;
     }
     mch_settitle(title,
 	       ((which & SAVE_RESTORE_ICON) && did_set_icon) ? oldicon : NULL);
-    vim_free(tofree);
+    mnv_free(tofree);
 
     if (do_push_pop)
     {
@@ -2571,7 +2571,7 @@ mch_restore_title(int which)
  * Seiichi Sato mentioned that "mlterm" works like xterm.
  */
     int
-vim_is_xterm(char_u *name)
+mnv_is_xterm(char_u *name)
 {
     if (name == NULL)
 	return FALSE;
@@ -2630,7 +2630,7 @@ use_xterm_mouse(void)
  * Return TRUE if "name" is an iris-ansi terminal name.
  */
     int
-vim_is_iris(char_u *name)
+mnv_is_iris(char_u *name)
 {
     if (name == NULL)
 	return FALSE;
@@ -2643,14 +2643,14 @@ vim_is_iris(char_u *name)
  * Return TRUE if "name" is a vt300-like terminal name.
  */
     int
-vim_is_vt300(char_u *name)
+mnv_is_vt300(char_u *name)
 {
     if (name == NULL)
 	return FALSE;
     // Actually all ANSI compatible terminals should be here.
     // Catch at least VT1xx - VT5xx
     return ((STRNICMP(name, "vt", 2) == 0
-			     && vim_strchr((char_u *)"12345", name[2]) != NULL)
+			     && mnv_strchr((char_u *)"12345", name[2]) != NULL)
 	    || STRCMP(name, "builtin_vt320") == 0);
 }
 #endif
@@ -2663,7 +2663,7 @@ vim_is_vt300(char_u *name)
 mch_get_user_name(char_u *s, int len)
 {
 #ifdef VMS
-    vim_strncpy(s, (char_u *)cuserid(NULL), len - 1);
+    mnv_strncpy(s, (char_u *)cuserid(NULL), len - 1);
     return OK;
 #else
     return mch_get_uname(getuid(), s, len);
@@ -2683,7 +2683,7 @@ mch_get_uname(uid_t uid, char_u *s, int len)
     if ((pw = getpwuid(uid)) != NULL
 	    && pw->pw_name != NULL && *(pw->pw_name) != NUL)
     {
-	vim_strncpy(s, (char_u *)pw->pw_name, len - 1);
+	mnv_strncpy(s, (char_u *)pw->pw_name, len - 1);
 	return OK;
     }
 #endif
@@ -2704,7 +2704,7 @@ mch_get_host_name(char_u *s, int len)
     if (uname(&vutsname) < 0)
 	*s = NUL;
     else
-	vim_strncpy(s, (char_u *)vutsname.nodename, len - 1);
+	mnv_strncpy(s, (char_u *)vutsname.nodename, len - 1);
 }
 #else // HAVE_SYS_UTSNAME_H
 
@@ -2834,7 +2834,7 @@ mch_FullName(
     // Expand it if forced or not an absolute path.
     // Do not do it for "/file", the result is always "/".
     if ((force || !mch_isFullName(fname))
-	    && ((p = vim_strrchr(fname, '/')) == NULL || p != fname))
+	    && ((p = mnv_strrchr(fname, '/')) == NULL || p != fname))
     {
 	if (p == NULL && STRCMP(fname, "..") == 0)
 	    // Handle ".." without path separators.
@@ -2889,7 +2889,7 @@ mch_FullName(
 		    retval = FAIL;
 		else
 		{
-		    vim_strncpy(buf, fname, p - fname);
+		    mnv_strncpy(buf, fname, p - fname);
 		    if (mch_chdir((char *)buf))
 		    {
 			// Path does not exist (yet).  For a full path fail,
@@ -3003,7 +3003,7 @@ fname_case(
 	return;
 
     // Open the directory where the file is located.
-    slash = vim_strrchr(name, '/');
+    slash = mnv_strrchr(name, '/');
     if (slash == NULL)
     {
 	dirp = opendir(".");
@@ -3032,8 +3032,8 @@ fname_case(
 	    struct stat st2;
 
 	    // Verify the inode is equal.
-	    vim_strncpy(newname, name, MAXPATHL);
-	    vim_strncpy(newname + (tail - name), (char_u *)dp->d_name,
+	    mnv_strncpy(newname, name, MAXPATHL);
+	    mnv_strncpy(newname + (tail - name), (char_u *)dp->d_name,
 		    MAXPATHL - (tail - name));
 	    if (mch_lstat((char *)newname, &st2) >= 0
 		    && st.st_ino == st2.st_ino
@@ -3111,10 +3111,10 @@ mch_fsetperm(int fd, long perm)
 # endif
 
 # ifdef HAVE_SOLARIS_ACL
-typedef struct vim_acl_solaris_T {
+typedef struct mnv_acl_solaris_T {
     int acl_cnt;
     aclent_t *acl_entry;
-} vim_acl_solaris_T;
+} mnv_acl_solaris_T;
 # endif
 
 # if defined(HAVE_SELINUX)
@@ -3214,7 +3214,7 @@ mch_copy_sec(char_u *from_file, char_u *to_file)
 	    ret = setxattr((char*)to_file, name, buffer, (size_t)size, 0);
 	    if (ret < 0)
 	    {
-		vim_snprintf((char *)IObuff, IOSIZE,
+		mnv_snprintf((char *)IObuff, IOSIZE,
 			_("Could not set security context %s for %s"),
 			name, to_file);
 		msg_outtrans(IObuff);
@@ -3234,7 +3234,7 @@ mch_copy_sec(char_u *from_file, char_u *to_file)
 		case ERANGE:
 		default:
 		    // no enough size OR unexpected error
-		     vim_snprintf((char *)IObuff, IOSIZE,
+		     mnv_snprintf((char *)IObuff, IOSIZE,
 			    _("Could not get security context %s for %s. Removing it!"),
 			    name, from_file);
 		    msg_puts((char *)IObuff);
@@ -3336,8 +3336,8 @@ mch_copy_xattr(char_u *from_file, char_u *to_file)
 
     }
 error_exit:
-    vim_free(xattr_buf);
-    vim_free(val);
+    mnv_free(xattr_buf);
+    mnv_free(val);
 
     if (errmsg != NULL)
 	emsg(_(errmsg));
@@ -3348,24 +3348,24 @@ error_exit:
  * Return a pointer to the ACL of file "fname" in allocated memory.
  * Return NULL if the ACL is not available for whatever reason.
  */
-    vim_acl_T
+    mnv_acl_T
 mch_get_acl(char_u *fname UNUSED)
 {
-    vim_acl_T	ret = NULL;
+    mnv_acl_T	ret = NULL;
 # ifdef HAVE_POSIX_ACL
-    ret = (vim_acl_T)acl_get_file((char *)fname, ACL_TYPE_ACCESS);
+    ret = (mnv_acl_T)acl_get_file((char *)fname, ACL_TYPE_ACCESS);
 # else
 #  ifdef HAVE_SOLARIS_ZFS_ACL
     acl_t *aclent;
 
     if (acl_get((char *)fname, 0, &aclent) < 0)
 	return NULL;
-    ret = (vim_acl_T)aclent;
+    ret = (mnv_acl_T)aclent;
 #  else
 #   ifdef HAVE_SOLARIS_ACL
-    vim_acl_solaris_T   *aclent;
+    mnv_acl_solaris_T   *aclent;
 
-    aclent = malloc(sizeof(vim_acl_solaris_T));
+    aclent = malloc(sizeof(mnv_acl_solaris_T));
     if (aclent == NULL)
 	return NULL;
     if ((aclent->acl_cnt = acl((char *)fname, GETACLCNT, 0, NULL)) < 0)
@@ -3385,7 +3385,7 @@ mch_get_acl(char_u *fname UNUSED)
 	free(aclent);
 	return NULL;
     }
-    ret = (vim_acl_T)aclent;
+    ret = (mnv_acl_T)aclent;
 #   else
 #    if defined(HAVE_AIX_ACL)
     int		aclsize;
@@ -3413,7 +3413,7 @@ mch_get_acl(char_u *fname UNUSED)
 	    return NULL;
 	}
     }
-    ret = (vim_acl_T)aclent;
+    ret = (mnv_acl_T)aclent;
 #    endif // HAVE_AIX_ACL
 #   endif // HAVE_SOLARIS_ACL
 #  endif // HAVE_SOLARIS_ZFS_ACL
@@ -3425,7 +3425,7 @@ mch_get_acl(char_u *fname UNUSED)
  * Set the ACL of file "fname" to "acl" (unless it's NULL).
  */
     void
-mch_set_acl(char_u *fname UNUSED, vim_acl_T aclent)
+mch_set_acl(char_u *fname UNUSED, mnv_acl_T aclent)
 {
     if (aclent == NULL)
 	return;
@@ -3436,8 +3436,8 @@ mch_set_acl(char_u *fname UNUSED, vim_acl_T aclent)
     acl_set((char *)fname, (acl_t *)aclent);
 #  else
 #   ifdef HAVE_SOLARIS_ACL
-    acl((char *)fname, SETACL, ((vim_acl_solaris_T *)aclent)->acl_cnt,
-	    ((vim_acl_solaris_T *)aclent)->acl_entry);
+    acl((char *)fname, SETACL, ((mnv_acl_solaris_T *)aclent)->acl_cnt,
+	    ((mnv_acl_solaris_T *)aclent)->acl_entry);
 #   else
 #    ifdef HAVE_AIX_ACL
     chacl((char *)fname, aclent, ((struct acl *)aclent)->acl_len);
@@ -3448,7 +3448,7 @@ mch_set_acl(char_u *fname UNUSED, vim_acl_T aclent)
 }
 
     void
-mch_free_acl(vim_acl_T aclent)
+mch_free_acl(mnv_acl_T aclent)
 {
     if (aclent == NULL)
 	return;
@@ -3459,7 +3459,7 @@ mch_free_acl(vim_acl_T aclent)
     acl_free((acl_t *)aclent);
 #  else
 #   ifdef HAVE_SOLARIS_ACL
-    free(((vim_acl_solaris_T *)aclent)->acl_entry);
+    free(((mnv_acl_solaris_T *)aclent)->acl_entry);
     free(aclent);
 #   else
 #    ifdef HAVE_AIX_ACL
@@ -3574,7 +3574,7 @@ mch_can_exe(char_u *name, char_u **path, int use_path)
 		if (name[0] != '/')
 		    *path = FullName_save(name, TRUE);
 		else
-		    *path = vim_strsave(name);
+		    *path = mnv_strsave(name);
 	    }
 	    return TRUE;
 	}
@@ -3605,7 +3605,7 @@ mch_can_exe(char_u *name, char_u **path, int use_path)
 	    p = (char_u *)"./";
 	    elen = STRLEN_LITERAL("./");
 	}
-	buflen = vim_snprintf((char *)buf, bufsize, "%.*s%s%s",
+	buflen = mnv_snprintf((char *)buf, bufsize, "%.*s%s%s",
 		(int)elen,
 		p,
 		(after_pathsep(p, p + elen)) ? "" : PATHSEPSTR,
@@ -3618,7 +3618,7 @@ mch_can_exe(char_u *name, char_u **path, int use_path)
 		if (buf[0] != '/')
 		    *path = FullName_save(buf, TRUE);
 		else
-		    *path = vim_strnsave(buf, buflen);
+		    *path = mnv_strnsave(buf, buflen);
 	    }
 	    break;
 	}
@@ -3628,7 +3628,7 @@ mch_can_exe(char_u *name, char_u **path, int use_path)
 	p = e + 1;
     }
 
-    vim_free(buf);
+    mnv_free(buf);
     return retval;
 }
 
@@ -3679,7 +3679,7 @@ mch_early_init(void)
 #endif
 
     /*
-     * Inform the macOS scheduler that Vim renders UI, and so shouldn’t have its
+     * Inform the macOS scheduler that MNV renders UI, and so shouldn’t have its
      * threads’ quality of service classes clamped.
      */
 #ifdef MACOS_X
@@ -3725,10 +3725,10 @@ mch_free_mem(void)
 	XCloseDisplay(x11_display);
 # endif
 # if defined(HAVE_SIGALTSTACK) || defined(HAVE_SIGSTACK)
-    VIM_CLEAR(signal_stack);
+    MNV_CLEAR(signal_stack);
 # endif
-    vim_free(oldtitle);
-    vim_free(oldicon);
+    mnv_free(oldtitle);
+    mnv_free(oldicon);
 }
 #endif
 
@@ -3819,7 +3819,7 @@ mch_exit(int r)
 	    exit_scroll();
 
 	// Cursor may have been switched off without calling starttermcap()
-	// when doing "vim -u vimrc" and vimrc contains ":q".
+	// when doing "mnv -u mnvrc" and mnvrc contains ":q".
 	if (full_screen)
 	    cursor_on();
     }
@@ -4484,7 +4484,7 @@ mch_get_shellsize(void)
      *    When being POSIX compliant ('|' flag in 'cpoptions') this overrules
      *    the ioctl() values!
      */
-    if (columns == 0 || rows == 0 || vim_strchr(p_cpo, CPO_TSIZE) != NULL)
+    if (columns == 0 || rows == 0 || mnv_strchr(p_cpo, CPO_TSIZE) != NULL)
     {
 	if ((p = (char_u *)getenv("LINES")))
 	{
@@ -4721,12 +4721,12 @@ set_child_environment(
 #  ifdef FEAT_TERMINAL
     if (is_terminal)
     {
-	sprintf((char *)envbuf, "%ld",  (long)get_vim_var_nr(VV_VERSION));
-	setenv("VIM_TERMINAL", (char *)envbuf, 1);
+	sprintf((char *)envbuf, "%ld",  (long)get_mnv_var_nr(VV_VERSION));
+	setenv("MNV_TERMINAL", (char *)envbuf, 1);
     }
 #  endif
 #  ifdef FEAT_CLIENTSERVER
-    setenv("VIM_SERVERNAME", serverName == NULL ? "" : (char *)serverName, 1);
+    setenv("MNV_SERVERNAME", serverName == NULL ? "" : (char *)serverName, 1);
 #  endif
 # else
     /*
@@ -4734,28 +4734,28 @@ set_child_environment(
      * Use a static array to avoid losing allocated memory.
      * This won't work well when running multiple children...
      */
-    vim_snprintf(envbuf_Term, sizeof(envbuf_Term), "TERM=%s", term);
+    mnv_snprintf(envbuf_Term, sizeof(envbuf_Term), "TERM=%s", term);
     putenv(envbuf_Term);
-    vim_snprintf(envbuf_Rows, sizeof(envbuf_Rows), "ROWS=%ld", rows);
+    mnv_snprintf(envbuf_Rows, sizeof(envbuf_Rows), "ROWS=%ld", rows);
     putenv(envbuf_Rows);
-    vim_snprintf(envbuf_Lines, sizeof(envbuf_Lines), "LINES=%ld", rows);
+    mnv_snprintf(envbuf_Lines, sizeof(envbuf_Lines), "LINES=%ld", rows);
     putenv(envbuf_Lines);
-    vim_snprintf(envbuf_Columns, sizeof(envbuf_Columns),
+    mnv_snprintf(envbuf_Columns, sizeof(envbuf_Columns),
 						       "COLUMNS=%ld", columns);
     putenv(envbuf_Columns);
-    vim_snprintf(envbuf_Colors, sizeof(envbuf_Colors), "COLORS=%ld", t_colors);
+    mnv_snprintf(envbuf_Colors, sizeof(envbuf_Colors), "COLORS=%ld", t_colors);
     putenv(envbuf_Colors);
 #  ifdef FEAT_TERMINAL
     if (is_terminal)
     {
-	vim_snprintf(envbuf_Version, sizeof(envbuf_Version),
-			 "VIM_TERMINAL=%ld", (long)get_vim_var_nr(VV_VERSION));
+	mnv_snprintf(envbuf_Version, sizeof(envbuf_Version),
+			 "MNV_TERMINAL=%ld", (long)get_mnv_var_nr(VV_VERSION));
 	putenv(envbuf_Version);
     }
 #  endif
 #  ifdef FEAT_CLIENTSERVER
-    vim_snprintf(envbuf_Servername, sizeof(envbuf_Servername),
-	    "VIM_SERVERNAME=%s", serverName == NULL ? "" : (char *)serverName);
+    mnv_snprintf(envbuf_Servername, sizeof(envbuf_Servername),
+	    "MNV_SERVERNAME=%s", serverName == NULL ? "" : (char *)serverName);
     putenv(envbuf_Servername);
 #  endif
 # endif
@@ -4805,9 +4805,9 @@ open_pty(int *pty_master_fd, int *pty_slave_fd, char_u **name1, char_u **name2)
     else
     {
 	if (name1 != NULL)
-	    *name1 = vim_strsave((char_u *)tty_name);
+	    *name1 = mnv_strsave((char_u *)tty_name);
 	if (name2 != NULL)
-	    *name2 = vim_strsave((char_u *)tty_name);
+	    *name2 = mnv_strsave((char_u *)tty_name);
     }
 }
 #endif
@@ -4849,7 +4849,7 @@ unix_build_argv(
     char	**argv = NULL;
     int		argc;
 
-    *sh_tofree = vim_strsave(p_sh);
+    *sh_tofree = mnv_strsave(p_sh);
     if (*sh_tofree == NULL)		// out of memory
 	return FAIL;
 
@@ -4895,7 +4895,7 @@ unix_build_argv(
     static int
 mch_call_shell_terminal(
     char_u	*cmd,
-    int		options UNUSED)	// SHELL_*, see vim.h
+    int		options UNUSED)	// SHELL_*, see mnv.h
 {
     jobopt_T	opt;
     char	**argv = NULL;
@@ -4953,9 +4953,9 @@ mch_call_shell_terminal(
     do_buffer(DOBUF_WIPE, DOBUF_FIRST, FORWARD, buf->b_fnum, TRUE);
 
 theend:
-    vim_free(argv);
-    vim_free(tofree1);
-    vim_free(tofree2);
+    mnv_free(argv);
+    mnv_free(tofree1);
+    mnv_free(tofree2);
     return retval;
 }
 #endif
@@ -4967,7 +4967,7 @@ theend:
     static int
 mch_call_shell_system(
     char_u	*cmd,
-    int		options)	// SHELL_*, see vim.h
+    int		options)	// SHELL_*, see mnv.h
 {
 # ifdef VMS
     char	*ifn = NULL;
@@ -5023,7 +5023,7 @@ mch_call_shell_system(
 		    (char *)p_shcf,
 		    (char *)cmd);
 	    x = system((char *)newcmd);
-	    vim_free(newcmd);
+	    mnv_free(newcmd);
 	}
 # endif
     }
@@ -5067,7 +5067,7 @@ mch_call_shell_system(
     static int
 mch_call_shell_fork(
     char_u	*cmd,
-    int		options)	// SHELL_*, see vim.h
+    int		options)	// SHELL_*, see mnv.h
 {
     tmode_T	tmode = cur_tmode;
     pid_t	pid;
@@ -5101,7 +5101,7 @@ mch_call_shell_fork(
     /*
      * For the GUI, when writing the output into the buffer and when reading
      * input from the buffer: Try using a pseudo-tty to get the stdin/stdout
-     * of the executed command into the Vim window.  Or use a pipe.
+     * of the executed command into the MNV window.  Or use a pipe.
      */
     if ((options & (SHELL_READ|SHELL_WRITE))
 # ifdef FEAT_GUI
@@ -5214,9 +5214,9 @@ mch_call_shell_fork(
 		 */
 		if (fd >= 0)
 		{
-		    vim_ignored = dup(fd); // To replace stdin  (fd 0)
-		    vim_ignored = dup(fd); // To replace stdout (fd 1)
-		    vim_ignored = dup(fd); // To replace stderr (fd 2)
+		    mnv_ignored = dup(fd); // To replace stdin  (fd 0)
+		    mnv_ignored = dup(fd); // To replace stdout (fd 1)
+		    mnv_ignored = dup(fd); // To replace stderr (fd 2)
 
 		    // Don't need this now that we've duplicated it
 		    close(fd);
@@ -5272,13 +5272,13 @@ mch_call_shell_fork(
 
 		    // set up stdin/stdout/stderr for the child
 		    close(0);
-		    vim_ignored = dup(pty_slave_fd);
+		    mnv_ignored = dup(pty_slave_fd);
 		    close(1);
-		    vim_ignored = dup(pty_slave_fd);
+		    mnv_ignored = dup(pty_slave_fd);
 		    if (gui.in_use)
 		    {
 			close(2);
-			vim_ignored = dup(pty_slave_fd);
+			mnv_ignored = dup(pty_slave_fd);
 		    }
 
 		    close(pty_slave_fd);    // has been dupped, close it now
@@ -5289,13 +5289,13 @@ mch_call_shell_fork(
 		    // set up stdin for the child
 		    close(fd_toshell[1]);
 		    close(0);
-		    vim_ignored = dup(fd_toshell[0]);
+		    mnv_ignored = dup(fd_toshell[0]);
 		    close(fd_toshell[0]);
 
 		    // set up stdout for the child
 		    close(fd_fromshell[0]);
 		    close(1);
-		    vim_ignored = dup(fd_fromshell[1]);
+		    mnv_ignored = dup(fd_fromshell[1]);
 		    close(fd_fromshell[1]);
 
 # ifdef FEAT_GUI
@@ -5303,7 +5303,7 @@ mch_call_shell_fork(
 		    {
 			// set up stderr for the child
 			close(2);
-			vim_ignored = dup(1);
+			mnv_ignored = dup(1);
 		    }
 # endif
 		}
@@ -5420,7 +5420,7 @@ mch_call_shell_fork(
 				len = write(toshell_fd, "", (size_t)1);
 			    else
 			    {
-				char_u	*s = vim_strchr(lp + written, NL);
+				char_u	*s = mnv_strchr(lp + written, NL);
 
 				len = write(toshell_fd, (char *)lp + written,
 					   s == NULL ? lplen - written
@@ -5436,7 +5436,7 @@ mch_call_shell_fork(
 					|| (lnum != curbuf->b_no_eol_lnum
 					    && (lnum != curbuf->b_ml.ml_line_count
 						    || curbuf->b_p_eol)))
-				    vim_ignored = write(toshell_fd, "\n",
+				    mnv_ignored = write(toshell_fd, "\n",
 								   (size_t)1);
 				++lnum;
 				if (lnum > curbuf->b_op_end.lnum)
@@ -5529,7 +5529,7 @@ mch_call_shell_fork(
 			    }
 			}
 
-			// Remove Vim-specific codes from the input.
+			// Remove MNV-specific codes from the input.
 			len = term_replace_keycodes(ta_buf, ta_len, len);
 
 			/*
@@ -5850,7 +5850,7 @@ finished:
 
 	    /*
 	     * Set to raw mode right now, otherwise a CTRL-C after
-	     * catch_signals() will kill Vim.
+	     * catch_signals() will kill MNV.
 	     */
 	    if (tmode == TMODE_RAW)
 		settmode(TMODE_RAW);
@@ -5887,9 +5887,9 @@ error:
 	if (tmode == TMODE_RAW)
 	    settmode(TMODE_RAW);	// set to raw mode
     resettitle();
-    vim_free(argv);
-    vim_free(tofree1);
-    vim_free(tofree2);
+    mnv_free(argv);
+    mnv_free(tofree1);
+    mnv_free(tofree2);
 
     return retval;
 }
@@ -5898,13 +5898,13 @@ error:
     int
 mch_call_shell(
     char_u	*cmd,
-    int		options)	// SHELL_*, see vim.h
+    int		options)	// SHELL_*, see mnv.h
 {
 #ifdef FEAT_EVAL
     ch_log(NULL, "executing shell command: %s", cmd);
 #endif
 #if defined(FEAT_GUI) && defined(FEAT_TERMINAL)
-    if (gui.in_use && vim_strchr(p_go, GO_TERMINAL) != NULL
+    if (gui.in_use && mnv_strchr(p_go, GO_TERMINAL) != NULL
 					      && (options & SHELL_SILENT) == 0)
 	return mch_call_shell_terminal(cmd, options);
 #endif
@@ -5979,7 +5979,7 @@ mch_get_cmd_output_direct(
 	    if (fd_in >= 0)
 	    {
 		close(0);
-		vim_ignored = dup(fd_in);
+		mnv_ignored = dup(fd_in);
 		close(fd_in);
 	    }
 	}
@@ -5989,7 +5989,7 @@ mch_get_cmd_output_direct(
 	    if (nullfd >= 0)
 	    {
 		close(0);
-		vim_ignored = dup(nullfd);
+		mnv_ignored = dup(nullfd);
 		close(nullfd);
 	    }
 	}
@@ -5997,10 +5997,10 @@ mch_get_cmd_output_direct(
 	// Set up stdout: write end of pipe.
 	close(fd_out[0]);
 	close(1);
-	vim_ignored = dup(fd_out[1]);
+	mnv_ignored = dup(fd_out[1]);
 	// Also redirect stderr to the pipe.
 	close(2);
-	vim_ignored = dup(fd_out[1]);
+	mnv_ignored = dup(fd_out[1]);
 	close(fd_out[1]);
 
 	execvp(argv[0], argv);
@@ -6033,7 +6033,7 @@ mch_get_cmd_output_direct(
 	status = WEXITSTATUS(status);
     else
 	status = -1;
-    set_vim_var_nr(VV_SHELL_ERROR, (long)status);
+    set_mnv_var_nr(VV_SHELL_ERROR, (long)status);
 
     if (ga.ga_len > 0)
     {
@@ -6239,7 +6239,7 @@ mch_job_start(char **argv, job_T *job, jobopt_T *options, int is_terminal)
 		{
 		    typval_T *item = &dict_lookup(hi)->di_tv;
 
-		    vim_setenv(hi->hi_key, tv_get_string(item));
+		    mnv_setenv(hi->hi_key, tv_get_string(item));
 		    --todo;
 		}
 	}
@@ -6268,34 +6268,34 @@ mch_job_start(char **argv, job_T *job, jobopt_T *options, int is_terminal)
 	// set up stdin for the child
 	close(0);
 	if (use_null_for_in && null_fd >= 0)
-	    vim_ignored = dup(null_fd);
+	    mnv_ignored = dup(null_fd);
 	else if (fd_in[0] < 0)
-	    vim_ignored = dup(pty_slave_fd);
+	    mnv_ignored = dup(pty_slave_fd);
 	else
-	    vim_ignored = dup(fd_in[0]);
+	    mnv_ignored = dup(fd_in[0]);
 
 	// set up stderr for the child
 	close(2);
 	if (use_null_for_err && null_fd >= 0)
 	{
-	    vim_ignored = dup(null_fd);
+	    mnv_ignored = dup(null_fd);
 	    stderr_works = FALSE;
 	}
 	else if (use_out_for_err)
-	    vim_ignored = dup(fd_out[1]);
+	    mnv_ignored = dup(fd_out[1]);
 	else if (fd_err[1] < 0)
-	    vim_ignored = dup(pty_slave_fd);
+	    mnv_ignored = dup(pty_slave_fd);
 	else
-	    vim_ignored = dup(fd_err[1]);
+	    mnv_ignored = dup(fd_err[1]);
 
 	// set up stdout for the child
 	close(1);
 	if (use_null_for_out && null_fd >= 0)
-	    vim_ignored = dup(null_fd);
+	    mnv_ignored = dup(null_fd);
 	else if (fd_out[1] < 0)
-	    vim_ignored = dup(pty_slave_fd);
+	    mnv_ignored = dup(pty_slave_fd);
 	else
-	    vim_ignored = dup(fd_out[1]);
+	    mnv_ignored = dup(fd_out[1]);
 
 	if (fd_in[0] >= 0)
 	    close(fd_in[0]);
@@ -6416,14 +6416,14 @@ get_signal_name(int sig)
     char_u	numbuf[NUMBUFLEN];
 
     if (sig == SIGKILL)
-	return vim_strnsave((char_u *)"kill", STRLEN_LITERAL("kill"));
+	return mnv_strnsave((char_u *)"kill", STRLEN_LITERAL("kill"));
 
     for (i = 0; signal_info[i].sig != -1; i++)
 	if (sig == signal_info[i].sig)
 	    return strlow_save((char_u *)signal_info[i].name);
 
-    i = vim_snprintf((char *)numbuf, NUMBUFLEN, "%d", sig);
-    return vim_strnsave(numbuf, i);
+    i = mnv_snprintf((char *)numbuf, NUMBUFLEN, "%d", sig);
+    return mnv_strnsave(numbuf, i);
 }
 
     char *
@@ -6806,7 +6806,7 @@ RealWaitForChar(int fd, long msec, int *check_for_gpm UNUSED, int *interrupted)
 	int		towait = (int)msec;
 
 #  ifdef FEAT_MZSCHEME
-	mzvim_check_threads();
+	mzmnv_check_threads();
 	if (mzthreads_allowed() && p_mzq > 0 && (msec < 0 || msec > p_mzq))
 	{
 	    towait = (int)p_mzq;    // don't wait longer than 'mzquantum'
@@ -6949,7 +6949,7 @@ RealWaitForChar(int fd, long msec, int *check_for_gpm UNUSED, int *interrupted)
 	long		towait = msec;
 
 #  ifdef FEAT_MZSCHEME
-	mzvim_check_threads();
+	mzmnv_check_threads();
 	if (mzthreads_allowed() && p_mzq > 0 && (msec < 0 || msec > p_mzq))
 	{
 	    towait = p_mzq;	// don't wait longer than 'mzquantum'
@@ -7251,7 +7251,7 @@ mch_expand_wildcards(
     char_u	*buffer;
 # define STYLE_ECHO	0	// use "echo", the default
 # define STYLE_GLOB	1	// use "glob", for csh
-# define STYLE_VIMGLOB	2	// use "vimglob", for Posix sh
+# define STYLE_MNVGLOB	2	// use "mnvglob", for Posix sh
 # define STYLE_PRINT	3	// use "print -N", for zsh
 # define STYLE_BT	4	// `cmd` expansion, execute the pattern directly
 # define STYLE_GLOBSTAR	5	// use extended shell glob for bash (this uses extended
@@ -7262,9 +7262,9 @@ mch_expand_wildcards(
     int		ampersand = FALSE;
 # define STRING_INIT(s) \
 		{(char_u *)(s), STRLEN_LITERAL(s)}
-				// vimglob() function to define for Posix shell
-    static string_T sh_vimglob_func = STRING_INIT("vimglob() { while [ $# -ge 1 ]; do echo \"$1\"; shift; done }; vimglob >");
-				// vimglob() function with globstar setting enabled, only for bash >= 4.X
+				// mnvglob() function to define for Posix shell
+    static string_T sh_mnvglob_func = STRING_INIT("mnvglob() { while [ $# -ge 1 ]; do echo \"$1\"; shift; done }; mnvglob >");
+				// mnvglob() function with globstar setting enabled, only for bash >= 4.X
     static string_T sh_globstar_opt = STRING_INIT("[[ ${BASH_VERSINFO[0]} -ge 4 ]] && shopt -s globstar; ");
 # undef STRING_INIT
 
@@ -7290,14 +7290,14 @@ mch_expand_wildcards(
      */
     if (secure || restricted)
 	for (i = 0; i < num_pat; ++i)
-	    if (vim_strchr(pat[i], '`') != NULL
+	    if (mnv_strchr(pat[i], '`') != NULL
 		    && (check_restricted() || check_secure()))
 		return FAIL;
 
     /*
      * get a name for the temp file
      */
-    if ((tempname = vim_tempname('o', FALSE)) == NULL)
+    if ((tempname = mnv_tempname('o', FALSE)) == NULL)
     {
 	emsg(_(e_cant_get_temp_file_name));
 	return FAIL;
@@ -7312,10 +7312,10 @@ mch_expand_wildcards(
      *	    If we use *csh, "glob" will work better than "echo".
      * STYLE_PRINT:	NL or NUL separated
      *	    If we use *zsh, "print -N" will work better than "glob".
-     * STYLE_VIMGLOB:	NL separated
-     *	    If we use *sh*, we define "vimglob()".
+     * STYLE_MNVGLOB:	NL separated
+     *	    If we use *sh*, we define "mnvglob()".
      * STYLE_GLOBSTAR:	NL separated
-     *	    If we use *bash*, we define "vimglob() and enable globstar option".
+     *	    If we use *bash*, we define "mnvglob() and enable globstar option".
      * STYLE_ECHO:	space separated.
      *	    A shell we don't know, stay safe and use "echo".
      */
@@ -7335,7 +7335,7 @@ mch_expand_wildcards(
 	if (strstr((char *)gettail(p_sh), "bash") != NULL)
 	    shell_style = STYLE_GLOBSTAR;
 	else if (strstr((char *)gettail(p_sh), "sh") != NULL)
-	    shell_style = STYLE_VIMGLOB;
+	    shell_style = STYLE_MNVGLOB;
     }
 
     // Compute the length of the command.  We need 2 extra bytes: for the
@@ -7343,10 +7343,10 @@ mch_expand_wildcards(
     // Worst case: "unset nonomatch; print -N >" plus two is 29
     tempnamelen = STRLEN(tempname);
     len = tempnamelen + 29;
-    if (shell_style == STYLE_VIMGLOB)
-	len += sh_vimglob_func.length;
+    if (shell_style == STYLE_MNVGLOB)
+	len += sh_mnvglob_func.length;
     else if (shell_style == STYLE_GLOBSTAR)
-	len += sh_vimglob_func.length + sh_globstar_opt.length;
+	len += sh_mnvglob_func.length + sh_globstar_opt.length;
 
     for (i = 0; i < num_pat; ++i)
     {
@@ -7358,7 +7358,7 @@ mch_expand_wildcards(
 	++len;				// add space
 	for (j = 0; pat[i][j] != NUL; ++j)
 	{
-	    if (vim_strchr(SHELL_SPECIAL, pat[i][j]) != NULL)
+	    if (mnv_strchr(SHELL_SPECIAL, pat[i][j]) != NULL)
 		++len;		// may add a backslash
 	    ++len;
 	}
@@ -7368,7 +7368,7 @@ mch_expand_wildcards(
     if (command == NULL)
     {
 	// out of memory
-	vim_free(tempname);
+	mnv_free(tempname);
 	return FAIL;
     }
 
@@ -7383,7 +7383,7 @@ mch_expand_wildcards(
     if (shell_style == STYLE_BT)
     {
 	// change `command; command& ` to (command; command )
-	commandlen = vim_snprintf((char *)command, len, "(%s)>%s", pat[0] + 1, tempname);   // +1 to exclude first backtick
+	commandlen = mnv_snprintf((char *)command, len, "(%s)>%s", pat[0] + 1, tempname);   // +1 to exclude first backtick
 
 	p = (char_u *)strstr((char *)command, ")>");
 	if (p == NULL)
@@ -7393,13 +7393,13 @@ mch_expand_wildcards(
 	else
 	{
 	    --p;
-	    while (p > command && VIM_ISWHITE(*p))
+	    while (p > command && MNV_ISWHITE(*p))
 		--p;
 	    if (*p == '`')			    // remove backtick
 		*p = ' ';
 
 	    --p;
-	    while (p > command && VIM_ISWHITE(*p))
+	    while (p > command && MNV_ISWHITE(*p))
 		--p;
 	    if (*p == '&')			    // remove ampersand
 	    {
@@ -7415,18 +7415,18 @@ mch_expand_wildcards(
 	    // Assume the nonomatch option is valid only for csh like shells,
 	    // otherwise, this may set the positional parameters for the shell,
 	    // e.g. "$*".
-	    commandlen = vim_snprintf((char *)command, len, "%sset nonomatch; glob >%s",
+	    commandlen = mnv_snprintf((char *)command, len, "%sset nonomatch; glob >%s",
 				(flags & EW_NOTFOUND) ? "" : "un", tempname);
 	}
 	else if (shell_style == STYLE_PRINT)
-	    commandlen = vim_snprintf((char *)command, len, "print -N >%s", tempname);
-	else if (shell_style == STYLE_VIMGLOB)
-	    commandlen = vim_snprintf((char *)command, len, "%s%s", sh_vimglob_func.string, tempname);
+	    commandlen = mnv_snprintf((char *)command, len, "print -N >%s", tempname);
+	else if (shell_style == STYLE_MNVGLOB)
+	    commandlen = mnv_snprintf((char *)command, len, "%s%s", sh_mnvglob_func.string, tempname);
 	else if (shell_style == STYLE_GLOBSTAR)
-	    commandlen = vim_snprintf((char *)command, len, "%s%s%s", sh_globstar_opt.string,
-				sh_vimglob_func.string, tempname);
+	    commandlen = mnv_snprintf((char *)command, len, "%s%s%s", sh_globstar_opt.string,
+				sh_mnvglob_func.string, tempname);
 	else
-	    commandlen = vim_snprintf((char *)command, len, "echo >%s", tempname);
+	    commandlen = mnv_snprintf((char *)command, len, "echo >%s", tempname);
 
 	for (i = 0; i < num_pat; ++i)
 	{
@@ -7434,7 +7434,7 @@ mch_expand_wildcards(
 	    // is started twice.  Otherwise put a backslash before special
 	    // characters, except inside ``.
 # ifdef USE_SYSTEM
-	    commandlen += vim_snprintf((char *)command + commandlen, len, " \"%s\"", pat[i]);
+	    commandlen += mnv_snprintf((char *)command + commandlen, len, " \"%s\"", pat[i]);
 # else
 	    int intick = FALSE;
 
@@ -7450,14 +7450,14 @@ mch_expand_wildcards(
 		    // backslash inside backticks, before a special character
 		    // and before a backtick.
 		    if (intick
-			  || vim_strchr(SHELL_SPECIAL, pat[i][j + 1]) != NULL
+			  || mnv_strchr(SHELL_SPECIAL, pat[i][j + 1]) != NULL
 			  || pat[i][j + 1] == '`')
 			*p++ = '\\';
 		    ++j;
 		}
 		else if (!intick
 			 && ((flags & EW_KEEPDOLLAR) == 0 || pat[i][j] != '$')
-			      && vim_strchr(SHELL_SPECIAL, pat[i][j]) != NULL)
+			      && mnv_strchr(SHELL_SPECIAL, pat[i][j]) != NULL)
 		    // Put a backslash before a special character, but not
 		    // when inside ``. And not for $var when EW_KEEPDOLLAR is
 		    // set.
@@ -7504,12 +7504,12 @@ mch_expand_wildcards(
 
     extra_shell_arg = NULL;		// cleanup
     show_shell_mess = TRUE;
-    vim_free(command);
+    mnv_free(command);
 
     if (i != 0)				// mch_call_shell() failed
     {
 	mch_remove(tempname);
-	vim_free(tempname);
+	mnv_free(tempname);
 	/*
 	 * With interactive completion, the error message is not printed.
 	 * However with USE_SYSTEM, I don't know how to turn off error messages
@@ -7549,7 +7549,7 @@ mch_expand_wildcards(
 	    msg(_(e_cannot_expand_wildcards));
 	    msg_start();		// don't overwrite this message
 	}
-	vim_free(tempname);
+	mnv_free(tempname);
 	goto notfound;
     }
     fseek(fd, 0L, SEEK_END);
@@ -7564,7 +7564,7 @@ mch_expand_wildcards(
     {
 	// out of memory
 	mch_remove(tempname);
-	vim_free(tempname);
+	mnv_free(tempname);
 	fclose(fd);
 	return FAIL;
     }
@@ -7576,11 +7576,11 @@ mch_expand_wildcards(
     {
 	// unexpected read error
 	semsg(_(e_cant_read_file_str), tempname);
-	vim_free(tempname);
-	vim_free(buffer);
+	mnv_free(tempname);
+	mnv_free(buffer);
 	return FAIL;
     }
-    vim_free(tempname);
+    mnv_free(tempname);
 
 # ifdef __CYGWIN__
     // Translate <CR><NL> into <NL>.  Caution, buffer may contain NUL.
@@ -7606,7 +7606,7 @@ mch_expand_wildcards(
     }
     // file names are separated with NL
     else if (shell_style == STYLE_BT ||
-	    shell_style == STYLE_VIMGLOB ||
+	    shell_style == STYLE_MNVGLOB ||
 	    shell_style == STYLE_GLOBSTAR)
     {
 	buffer[len] = NUL;		// make sure the buffer ends in NUL
@@ -7667,7 +7667,7 @@ mch_expand_wildcards(
 	 * /bin/sh will happily expand it to nothing rather than returning an
 	 * error; and hey, it's good to check anyway -- webb.
 	 */
-	vim_free(buffer);
+	mnv_free(buffer);
 	goto notfound;
     }
     *num_file = i;
@@ -7675,7 +7675,7 @@ mch_expand_wildcards(
     if (*file == NULL)
     {
 	// out of memory
-	vim_free(buffer);
+	mnv_free(buffer);
 	return FAIL;
     }
 
@@ -7688,7 +7688,7 @@ mch_expand_wildcards(
 	(*file)[i] = p;
 	// Space or NL separates
 	if (shell_style == STYLE_ECHO || shell_style == STYLE_BT
-		|| shell_style == STYLE_VIMGLOB || shell_style == STYLE_GLOBSTAR)
+		|| shell_style == STYLE_MNVGLOB || shell_style == STYLE_GLOBSTAR)
 	{
 	    while (!(shell_style == STYLE_ECHO && *p == ' ')
 						   && *p != '\n' && *p != NUL)
@@ -7737,12 +7737,12 @@ mch_expand_wildcards(
 	    (*file)[j++] = p;
 	}
     }
-    vim_free(buffer);
+    mnv_free(buffer);
     *num_file = j;
 
     if (*num_file == 0)	    // rejected all entries
     {
-	VIM_CLEAR(*file);
+	MNV_CLEAR(*file);
 	goto notfound;
     }
 
@@ -7771,7 +7771,7 @@ save_patterns(
 	return FAIL;
     for (i = 0; i < num_pat; i++)
     {
-	s = vim_strsave(pat[i]);
+	s = mnv_strsave(pat[i]);
 	if (s != NULL)
 	    // Be compatible with expand_filename(): halve the number of
 	    // backslashes.
@@ -7794,7 +7794,7 @@ mch_has_exp_wildcard(char_u *p)
 	if (*p == '\\' && p[1] != NUL)
 	    ++p;
 	else
-	    if (vim_strchr((char_u *)
+	    if (mnv_strchr((char_u *)
 #ifdef VMS
 				    "*?%"
 #else
@@ -7818,7 +7818,7 @@ mch_has_wildcard(char_u *p)
 	if (*p == '\\' && p[1] != NUL)
 	    ++p;
 	else
-	    if (vim_strchr((char_u *)
+	    if (mnv_strchr((char_u *)
 #ifdef VMS
 				    "*?%$"
 #else
@@ -7848,7 +7848,7 @@ have_dollars(int num, char_u **file)
     int	    i;
 
     for (i = 0; i < num; i++)
-	if (vim_strchr(file[i], '$') != NULL)
+	if (mnv_strchr(file[i], '$') != NULL)
 	    return TRUE;
     return FALSE;
 }
@@ -7956,7 +7956,7 @@ gpm_open(void)
 	Gpm_Close(); // We don't want to talk to xterm via gpm
 
 	// Gpm_Close fails to properly restore the WINCH and TSTP handlers,
-	// leading to Vim ignoring resize signals. We have to re-initialize
+	// leading to MNV ignoring resize signals. We have to re-initialize
 	// these handlers again here.
 # ifdef SIGWINCH
 	mch_signal(SIGWINCH, sig_winch);
@@ -7998,7 +7998,7 @@ mch_gpm_process(void)
     int			button;
     static Gpm_Event	gpm_event;
     char_u		string[6];
-    int_u		vim_modifiers;
+    int_u		mnv_modifiers;
     int			row,col;
     unsigned char	buttons_mask;
     unsigned char	gpm_modifiers;
@@ -8054,18 +8054,18 @@ mch_gpm_process(void)
     }
     // This code is based on gui_x11_mouse_cb in gui_x11.c
     gpm_modifiers = gpm_event.modifiers;
-    vim_modifiers = 0x0;
+    mnv_modifiers = 0x0;
     // I ignore capslock stats. Aren't we all just hate capslock mixing with
-    // Vim commands ? Besides, gpm_event.modifiers is unsigned char, and
+    // MNV commands ? Besides, gpm_event.modifiers is unsigned char, and
     // K_CAPSSHIFT is defined 8, so it probably isn't even reported
     if (gpm_modifiers & ((1 << KG_SHIFT) | (1 << KG_SHIFTR) | (1 << KG_SHIFTL)))
-	vim_modifiers |= MOUSE_SHIFT;
+	mnv_modifiers |= MOUSE_SHIFT;
 
     if (gpm_modifiers & ((1 << KG_CTRL) | (1 << KG_CTRLR) | (1 << KG_CTRLL)))
-	vim_modifiers |= MOUSE_CTRL;
+	mnv_modifiers |= MOUSE_CTRL;
     if (gpm_modifiers & ((1 << KG_ALT) | (1 << KG_ALTGR)))
-	vim_modifiers |= MOUSE_ALT;
-    string[3] |= vim_modifiers;
+	mnv_modifiers |= MOUSE_ALT;
+    string[3] |= mnv_modifiers;
     string[4] = (char_u)(col + ' ' + 1);
     string[5] = (char_u)(row + ' ' + 1);
     add_to_input_buf(string, 6);
@@ -8339,7 +8339,7 @@ mch_libcall(
 	    else if (retval_str != NULL
 		    && retval_str != (char_u *)1
 		    && retval_str != (char_u *)-1)
-		*string_result = vim_strsave(retval_str);
+		*string_result = mnv_strsave(retval_str);
 	}
 
 # ifdef USING_SETJMP
@@ -8427,7 +8427,7 @@ setup_term_clip(void)
 # endif
 	{
 	    xterm_dpy = XtOpenDisplay(app_context, xterm_display,
-		    "vim_xterm", "Vim_xterm", NULL, 0, &z, &strp);
+		    "mnv_xterm", "MNV_xterm", NULL, 0, &z, &strp);
 	    if (xterm_dpy != NULL)
 		xterm_dpy_retry_count = 0;
 # if defined(USING_SETJMP)
@@ -8462,12 +8462,12 @@ setup_term_clip(void)
 # endif
 
 	// Create a Shell to make converters work.
-	AppShell = XtVaAppCreateShell("vim_xterm", "Vim_xterm",
+	AppShell = XtVaAppCreateShell("mnv_xterm", "MNV_xterm",
 		applicationShellWidgetClass, xterm_dpy,
 		NULL);
 	if (AppShell == (Widget)0)
 	    return;
-	xterm_Shell = XtVaCreatePopupShell("VIM",
+	xterm_Shell = XtVaCreatePopupShell("MNV",
 		topLevelShellWidgetClass, AppShell,
 		XtNmappedWhenManaged, 0,
 		XtNwidth, 1,
@@ -8667,7 +8667,7 @@ xterm_update(void)
     {
 	XtInputMask mask = XtAppPending(app_context);
 
-	if (mask == 0 || vim_is_input_buf_full())
+	if (mask == 0 || mnv_is_input_buf_full())
 	    break;
 
 	if (mask & XtIMXEvent)
@@ -8943,7 +8943,7 @@ xsmp_init(void)
 	    // If the message is too long it might not be NUL terminated.  Add
 	    // a NUL at the end to make sure we don't go over the end.
 	    errorstring[sizeof(errorstring) - 1] = NUL;
-	    vim_snprintf(errorreport, sizeof(errorreport),
+	    mnv_snprintf(errorreport, sizeof(errorreport),
 			 _("XSMP SmcOpenConnection failed: %s"), errorstring);
 	    verb_msg(errorreport);
 	}
@@ -8953,7 +8953,7 @@ xsmp_init(void)
 
 # if 0
     // ID ourselves
-    smname.value = "vim";
+    smname.value = "mnv";
     smname.length = 3;
     smnameprop.name = "SmProgram";
     smnameprop.type = "SmARRAY8";
@@ -9219,7 +9219,7 @@ mch_create_anon_file(void)
 {
     int fd = -1;
 #ifdef HAVE_SHM_OPEN
-    const char template[] = "/vimXXXXXX";
+    const char template[] = "/mnvXXXXXX";
 
     for (int i = 0; i < 100; i++)
     {
@@ -9239,14 +9239,14 @@ mch_create_anon_file(void)
     {
 	char_u	*tempname;
 	// get a name for the temp file
-	if ((tempname = vim_tempname('w', FALSE)) == NULL)
+	if ((tempname = mnv_tempname('w', FALSE)) == NULL)
 	{
 	    emsg(_(e_cant_get_temp_file_name));
 	    return -1;
 	}
 	fd = mch_open((char *)tempname, O_CREAT | O_RDWR | O_EXCL, 0600);
 	mch_remove(tempname);
-	vim_free(tempname);
+	mnv_free(tempname);
     }
     return fd;
 }
@@ -9284,7 +9284,7 @@ socket_server_init(char_u *name)
 
     if (fd == -1)
     {
-	vim_free(path);
+	mnv_free(path);
 	return FAIL;
     }
 
@@ -9295,14 +9295,14 @@ socket_server_init(char_u *name)
     if (name[0] == '/' || STRNCMP(name, "./", 2) == 0 ||
 	    STRNCMP(name, "../", 3) == 0)
 	num_printed =
-	    vim_snprintf((char *)path, sizeof(addr.sun_path), "%s", name);
+	    mnv_snprintf((char *)path, sizeof(addr.sun_path), "%s", name);
     else
     {
 	const char_u	*dir;
 	char_u		*buf;
 
 	// Check if there are slashes in the name
-	if (vim_strchr(name, '/') != NULL)
+	if (mnv_strchr(name, '/') != NULL)
 	{
 	    emsg(_(e_socket_name_no_slashes));
 	    goto fail;
@@ -9327,31 +9327,31 @@ socket_server_init(char_u *name)
 	    if (buf == NULL)
 		goto fail;
 
-	    vim_snprintf((char *)buf, sz, "%s/vim-%lu", dir,
+	    mnv_snprintf((char *)buf, sz, "%s/mnv-%lu", dir,
 		    (unsigned long int)getuid());
 	}
 	else
 	{
-	    buf = alloc(STRLEN(dir) + STRLEN("vim") + 2);
+	    buf = alloc(STRLEN(dir) + STRLEN("mnv") + 2);
 
 	    if (buf == NULL)
 		goto fail;
 
-	    sprintf((char *)buf, "%s/vim", dir);
+	    sprintf((char *)buf, "%s/mnv", dir);
 	}
 
 	// Always set directory permissions to 0700 for security
-	if (vim_mkdir(buf, 0700) == -1 && errno != EEXIST)
+	if (mnv_mkdir(buf, 0700) == -1 && errno != EEXIST)
 	{
 	    semsg(_("Failed creating socket directory: %s"), strerror(errno));
-	    vim_free(buf);
+	    mnv_free(buf);
 	    goto fail;
 	}
 
-	num_printed = vim_snprintf((char *)path, sizeof(addr.sun_path),
+	num_printed = mnv_snprintf((char *)path, sizeof(addr.sun_path),
 		"%s/%s", buf, name);
 
-	vim_free(buf);
+	mnv_free(buf);
     }
 
     // Check if path was too big
@@ -9361,7 +9361,7 @@ socket_server_init(char_u *name)
 	goto fail;
     }
 
-    vim_snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", path);
+    mnv_snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", path);
 
     // Bind to a suitable path/address
     while (i < 1000)
@@ -9391,7 +9391,7 @@ socket_server_init(char_u *name)
 	else
 	    break;
 
-	num_printed = vim_snprintf(addr.sun_path, sizeof(addr.sun_path),
+	num_printed = mnv_snprintf(addr.sun_path, sizeof(addr.sun_path),
 		"%s%d", path, i);
 
 	if ((size_t)num_printed >= sizeof(addr.sun_path))
@@ -9423,13 +9423,13 @@ socket_server_init(char_u *name)
     if (mch_FullName((char_u *)addr.sun_path, socket_server_path,
 		MAXPATHL, FALSE) == FAIL)
     {
-	vim_free(socket_server_path);
+	mnv_free(socket_server_path);
 	goto fail;
     }
 
-    serverName = vim_strsave(socket_server_path);
+    serverName = mnv_strsave(socket_server_path);
 # ifdef FEAT_EVAL
-    set_vim_var_string(VV_SEND_SERVER, serverName, -1);
+    set_mnv_var_string(VV_SEND_SERVER, serverName, -1);
 # endif
 
     socket_server_fd = fd;
@@ -9440,11 +9440,11 @@ socket_server_init(char_u *name)
 	gui_gtk_init_socket_server();
 # endif
 
-    vim_free(path);
+    mnv_free(path);
     return OK;
 fail:
     close(fd);
-    vim_free(path);
+    mnv_free(path);
     socket_server_uninit();
     return FAIL;
 }
@@ -9461,7 +9461,7 @@ socket_server_uninit(void)
     if (socket_server_path != NULL)
     {
 	mch_remove(socket_server_path);
-	vim_free(socket_server_path);
+	mnv_free(socket_server_path);
 	socket_server_path = NULL;
     }
 # ifdef FEAT_GUI_GTK
@@ -9472,7 +9472,7 @@ socket_server_uninit(void)
 
 /*
  * List available sockets that can be connected to, only in common directories
- * that Vim knows about. Vim instances with custom socket paths will not be
+ * that MNV knows about. MNV instances with custom socket paths will not be
  * detected. Returns a newline separated string on success and NULL on failure.
  */
     char_u *
@@ -9494,7 +9494,7 @@ socket_server_list_sockets(void)
 	return NULL;
     if ((path.string = alloc(sizeof(addr.sun_path))) == NULL)
     {
-	vim_free(buf.string);
+	mnv_free(buf.string);
 	return NULL;
     }
     buf.length = 0;
@@ -9511,11 +9511,11 @@ socket_server_list_sockets(void)
 
 	if (STRCMP(dir, "/tmp") == 0 ||
 		(known_dirs[1] != NULL && STRCMP(dir, known_dirs[1]) == 0))
-	    path.length = vim_snprintf_safelen((char *)path.string, sizeof(addr.sun_path),
-		"%s/vim-%lu", dir, (unsigned long int)getuid());
+	    path.length = mnv_snprintf_safelen((char *)path.string, sizeof(addr.sun_path),
+		"%s/mnv-%lu", dir, (unsigned long int)getuid());
 	else
-	    path.length = vim_snprintf_safelen((char *)path.string, sizeof(addr.sun_path),
-		"%s/vim", dir);
+	    path.length = mnv_snprintf_safelen((char *)path.string, sizeof(addr.sun_path),
+		"%s/mnv", dir);
 
 	dirp = opendir((char *)path.string);
 	if (dirp == NULL)
@@ -9527,7 +9527,7 @@ socket_server_list_sockets(void)
 	    if (STRCMP(dp->d_name, ".") == 0 || STRCMP(dp->d_name, "..") == 0)
 		continue;
 
-	    buf.length = vim_snprintf_safelen((char *)buf.string, sizeof(addr.sun_path),
+	    buf.length = mnv_snprintf_safelen((char *)buf.string, sizeof(addr.sun_path),
 		"%s/%s", path.string, dp->d_name);
 
 	    // Don't want to send to ourselves, but we do want to list our
@@ -9553,8 +9553,8 @@ socket_server_list_sockets(void)
 	break;
     }
 
-    vim_free(path.string);
-    vim_free(buf.string);
+    mnv_free(path.string);
+    mnv_free(buf.string);
 
     ga_append(&str, NUL);
 
@@ -9600,7 +9600,7 @@ socket_server_valid(void)
 }
 
 /*
- * If "name" is a pathless name such as "VIM", search known directories for the
+ * If "name" is a pathless name such as "MNV", search known directories for the
  * socket named "name", and return the alloc'ed path to it. If "name" starts
  * with a '/', './' or '../', then a copy of "name" is returned. Returns NULL
  * on failure or if no socket was found.
@@ -9622,7 +9622,7 @@ socket_server_get_path_from_name(char_u *name)
     // Ignore if name is a path
     if (name[0] == '/' || STRNCMP(name, "./", 2) == 0 ||
 	    STRNCMP(name, "../", 3) == 0)
-	return vim_strsave(name);
+	return mnv_strsave(name);
 
     buf = alloc(MAXPATHL);
 
@@ -9637,10 +9637,10 @@ socket_server_get_path_from_name(char_u *name)
 	    continue;
 	else if (STRCMP(dir, "/tmp") == 0 ||
 		(known_dirs[1] != NULL && STRCMP(dir, known_dirs[1]) == 0))
-	    vim_snprintf((char *)buf, MAXPATHL, "%s/vim-%lu/%s", dir,
+	    mnv_snprintf((char *)buf, MAXPATHL, "%s/mnv-%lu/%s", dir,
 		    (unsigned long int)getuid(), name);
 	else
-	    vim_snprintf((char *)buf, MAXPATHL, "%s/vim/%s", dir, name);
+	    mnv_snprintf((char *)buf, MAXPATHL, "%s/mnv/%s", dir, name);
 
 	if (mch_stat((char *)buf,&s) == 0 && S_ISSOCK(s.st_mode))
 	{
@@ -9651,7 +9651,7 @@ socket_server_get_path_from_name(char_u *name)
 	}
     }
 
-    vim_free(buf);
+    mnv_free(buf);
     return NULL;
 }
 
@@ -9695,9 +9695,9 @@ socket_server_send(
     // Execute locally if target is ourselves
     if (serverName != NULL && STRICMP(path, serverName) == 0)
     {
-	vim_free(path);
+	mnv_free(path);
 	close(socket_fd);
-	return sendToLocalVim(str, is_expr, result);
+	return sendToLocalMNV(str, is_expr, result);
     }
 
     socket_server_init_cmd(&cmd,
@@ -9728,14 +9728,14 @@ socket_server_send(
 	if (final != NULL)
 	    emsg(_(e_failed_to_send_command_to_destination_program));
 
-	vim_free(path);
+	mnv_free(path);
 	socket_server_free_cmd(&cmd);
 	close(socket_fd);
-	vim_free(final);
+	mnv_free(final);
 	return -1;
     }
     socket_server_free_cmd(&cmd);
-    vim_free(final);
+    mnv_free(final);
 
 
     close(socket_fd);
@@ -9744,7 +9744,7 @@ socket_server_send(
 	if (receiver != NULL)
 	    *receiver = path;
 	else
-	    vim_free(path);
+	    mnv_free(path);
 
 	// Exit, we aren't waiting for a response
 	return 0;
@@ -9773,19 +9773,19 @@ socket_server_send(
     if (pending.result == NULL)
     {
 	socket_server_pop_pending_cmd(&pending);
-	vim_free(path);
+	mnv_free(path);
 	return -1;
     }
 
     if (result != NULL)
 	*result = pending.result;
     else
-	vim_free(pending.result);
+	mnv_free(pending.result);
 
     if (receiver != NULL)
 	*receiver = path;
     else
-	vim_free(path);
+	mnv_free(path);
 
     socket_server_pop_pending_cmd(&pending);
 
@@ -9934,13 +9934,13 @@ socket_server_send_reply(char_u *client, char_u *str)
 	    socket_server_write(socket_fd, final, sz, 1000) == FAIL)
     {
 	socket_server_free_cmd(&cmd);
-	vim_free(final);
+	mnv_free(final);
 	close(socket_fd);
 	return FAIL;
     }
 
     socket_server_free_cmd(&cmd);
-    vim_free(final);
+    mnv_free(final);
     close(socket_fd);
 
     return OK;
@@ -9969,7 +9969,7 @@ socket_server_connect(char_u *name, char_u **path, int silent)
     if (STRLEN(socket_path) >= sizeof(addr.sun_path))
     {
 	// Path too big
-	vim_free(socket_path);
+	mnv_free(socket_path);
 	return -1;
     }
 
@@ -9977,12 +9977,12 @@ socket_server_connect(char_u *name, char_u **path, int silent)
 
     if (socket_fd == -1)
     {
-	vim_free(socket_path);
+	mnv_free(socket_path);
 	return -1;
     }
 
     addr.sun_family = AF_UNIX;
-    vim_snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", socket_path);
+    mnv_snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", socket_path);
 
     res = connect(socket_fd, (struct sockaddr *)&addr, sizeof(addr));
 
@@ -9992,14 +9992,14 @@ socket_server_connect(char_u *name, char_u **path, int silent)
 	    semsg(_(e_socket_server_failed_connecting), socket_path,
 		    strerror(errno));
 	close(socket_fd);
-	vim_free(socket_path);
+	mnv_free(socket_path);
 	return -1;
     }
 
     if (path != NULL)
 	*path = socket_path;
     else
-	vim_free(socket_path);
+	mnv_free(socket_path);
 
     return socket_fd;
 
@@ -10094,7 +10094,7 @@ socket_server_free_cmd(ss_cmd_T *cmd)
     {
 	ss_msg_T *msg = cmd->cmd_msgs + i;
 
-	vim_free(msg->msg_contents);
+	mnv_free(msg->msg_contents);
     }
 }
 
@@ -10159,7 +10159,7 @@ socket_server_decode_cmd(ss_cmd_T *cmd, int socket_fd, int timeout)
 # endif
 
     // We also poll the socket server listening file descriptor to handle
-    // recursive remote calls between Vim instances, such as when one Vim
+    // recursive remote calls between MNV instances, such as when one MNV
     // instance calls remote_expr for an expression that calls remote_expr to
     // itself again.
 # ifndef HAVE_SELECT
@@ -10234,7 +10234,7 @@ socket_server_decode_cmd(ss_cmd_T *cmd, int socket_fd, int timeout)
 
 		// Now that we now the total size of messages, we can realloc
 		// the buffer to contain all data
-		tmp = vim_realloc(buf, SS_CMD_INFO_SIZE + cmd->cmd_len);
+		tmp = mnv_realloc(buf, SS_CMD_INFO_SIZE + cmd->cmd_len);
 
 		if (tmp == NULL)
 		    goto fail;
@@ -10289,11 +10289,11 @@ continue_loop:
     }
 
 exit:
-    vim_free(buf);
+    mnv_free(buf);
     return OK;
 fail:
     socket_server_free_cmd(cmd);
-    vim_free(buf);
+    mnv_free(buf);
     return FAIL;
 }
 
@@ -10396,7 +10396,7 @@ socket_server_add_reply(char_u *sender)
     {
 	reply = ((ss_reply_T *)ss_replies.ga_data) + ss_replies.ga_len++;
 
-	reply->sender = vim_strsave(sender);
+	reply->sender = mnv_strsave(sender);
 
 	if (reply->sender == NULL)
 	    return NULL;
@@ -10418,7 +10418,7 @@ socket_server_remove_reply(char_u *sender)
 	ss_reply_T *arr = ss_replies.ga_data;
 
 	// Free strings
-	vim_free(reply->sender);
+	mnv_free(reply->sender);
 	ga_clear_strings(&reply->strings);
 
 	// Move all elements after the removed reply forward by one
@@ -10460,8 +10460,8 @@ socket_server_exec_cmd(ss_cmd_T *cmd, int fd)
 	    sender = msg->msg_contents;
 
 	    // Save in global
-	    vim_free(client_socket);
-	    client_socket = vim_strsave(sender);
+	    mnv_free(client_socket);
+	    client_socket = mnv_strsave(sender);
 	}
     }
 
@@ -10527,14 +10527,14 @@ socket_server_exec_cmd(ss_cmd_T *cmd, int fd)
 
 		    if (fd2 >= 0)
 			socket_server_write(fd2, buf, sz, 1000);
-		    vim_free(buf);
+		    mnv_free(buf);
 		    close(fd2);
 		}
 
 		socket_server_free_cmd(&rcmd);
-		vim_free(result);
+		mnv_free(result);
 	    }
-	    vim_free(to_free);
+	    mnv_free(to_free);
 	}
 	return;
     }
@@ -10554,7 +10554,7 @@ socket_server_exec_cmd(ss_cmd_T *cmd, int fd)
 		    pending->code = rcode;
 
 		    if (to_free == NULL)
-			pending->result = vim_strsave(str);
+			pending->result = mnv_strsave(str);
 		    else
 			pending->result = str;
 		    break;
@@ -10580,8 +10580,8 @@ socket_server_exec_cmd(ss_cmd_T *cmd, int fd)
 
 	    apply_autocmds(EVENT_REMOTEREPLY, sender, str, TRUE, curbuf);
 
-	    vim_free(to_free);
-	    vim_free(to_free2);
+	    mnv_free(to_free);
+	    mnv_free(to_free2);
 	}
 	return;
     }
@@ -10722,11 +10722,11 @@ socket_server_check_alive(char_u *name)
     if (final == NULL ||
 	    socket_server_write(socket_fd, final, sz, 1000) == FAIL)
     {
-	vim_free(final);
+	mnv_free(final);
 	close(socket_fd);
 	return FALSE;
     }
-    vim_free(final);
+    mnv_free(final);
 
     // Poll for response
 # ifndef HAVE_SELECT
@@ -10764,7 +10764,7 @@ socket_server_get_fd(void)
     static int
 socket_server_name_is_valid(char_u *name)
 {
-    if (STRLEN(name) == 0 || (name[0] != '/' && vim_strchr(name, '/') != NULL))
+    if (STRLEN(name) == 0 || (name[0] != '/' && mnv_strchr(name, '/') != NULL))
     {
 	semsg(_(e_invalid_server_id_used_str), name);
 	return FALSE;

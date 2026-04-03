@@ -1,10 +1,10 @@
-# Aap recipe for Polish Vim spell files.
+# Aap recipe for Polish MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = pl_PL.aff pl_PL.dic
@@ -13,13 +13,13 @@ all: $SPELLDIR/pl.iso-8859-2.spl $SPELLDIR/pl.utf-8.spl \
         $SPELLDIR/pl.cp1250.spl ../README_pl.txt
 
 $SPELLDIR/pl.iso-8859-2.spl : $FILES
-        :sys env LANG=pl_PL.ISO8859-2 $VIM -u NONE -e -c "mkspell! $SPELLDIR/pl pl_PL" -c q
+        :sys env LANG=pl_PL.ISO8859-2 $MNV -u NONE -e -c "mkspell! $SPELLDIR/pl pl_PL" -c q
 
 $SPELLDIR/pl.utf-8.spl : $FILES
-        :sys env LANG=pl_PL.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/pl pl_PL" -c q
+        :sys env LANG=pl_PL.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/pl pl_PL" -c q
 
 $SPELLDIR/pl.cp1250.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/pl pl_PL" -c q
+        :sys $MNV -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/pl pl_PL" -c q
 
 ../README_pl.txt: README_pl_PL.txt
         :copy $source $target
@@ -56,7 +56,7 @@ pl_PL.aff pl_PL.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -89,4 +89,4 @@ check:
             :delete $fname
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

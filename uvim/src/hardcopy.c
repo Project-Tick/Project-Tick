@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * hardcopy.c: printing to paper
  */
 
-#include "vim.h"
+#include "mnv.h"
 #include "version.h"
 
 #if defined(FEAT_PRINTER)
@@ -202,13 +202,13 @@ parse_list_options(
     stringp = option_str;
     while (*stringp)
     {
-	colonp = vim_strchr(stringp, ':');
+	colonp = mnv_strchr(stringp, ':');
 	if (colonp == NULL)
 	{
 	    ret = e_missing_colon_3;
 	    break;
 	}
-	commap = vim_strchr(stringp, ',');
+	commap = mnv_strchr(stringp, ',');
 	if (commap == NULL)
 	    commap = option_str + STRLEN(option_str);
 
@@ -228,7 +228,7 @@ parse_list_options(
 
 	if (table[idx].hasnum)
 	{
-	    if (!VIM_ISDIGIT(*p))
+	    if (!MNV_ISDIGIT(*p))
 	    {
 		ret = e_digit_expected_2;
 		break;
@@ -251,7 +251,7 @@ parse_list_options(
 	for (idx = 0; idx < table_size; ++idx)
 	    table[idx] = old_opts[idx];
     }
-    vim_free(old_opts);
+    mnv_free(old_opts);
     return ret;
 }
 
@@ -519,7 +519,7 @@ prt_header(
 	p += l;
     }
 
-    vim_free(tbuf);
+    mnv_free(tbuf);
 
 #ifdef FEAT_SYN_HL
     if (psettings->do_syntax)
@@ -791,7 +791,7 @@ ex_hardcopy(exarg_T *eap)
 	    page_prtpos = prtpos;
 	}
 
-	vim_snprintf((char *)IObuff, IOSIZE, _("Printed: %s"),
+	mnv_snprintf((char *)IObuff, IOSIZE, _("Printed: %s"),
 							    settings.jobname);
 	prt_message(IObuff);
     }
@@ -1255,11 +1255,11 @@ struct prt_ps_resource_S
 
 // The PS prolog file version number has to match - if the prolog file is
 // updated, increment the number in the file and here.  Version checking was
-// added as of VIM 6.2.
+// added as of MNV 6.2.
 // The CID prolog file version number behaves as per PS prolog.
-// Table of VIM and prolog versions:
+// Table of MNV and prolog versions:
 //
-// VIM      Prolog  CIDProlog
+// MNV      Prolog  CIDProlog
 // 6.2      1.3
 // 7.0      1.4	    1.0
 # define PRT_PROLOG_VERSION  ((char_u *)"1.4")
@@ -1282,7 +1282,7 @@ static char *prt_resource_types[] =
 # define PRT_RESOURCE_CMAP	    "CMap"
 
 
-// Data for table based DSC comment recognition, easy to extend if VIM needs to
+// Data for table based DSC comment recognition, easy to extend if MNV needs to
 // read more comments.
 # define PRT_DSC_MISC_TYPE	    (-1)
 # define PRT_DSC_TITLE_TYPE	    (1)
@@ -1385,7 +1385,7 @@ static char_u prt_line_buffer[257];
 static garray_T prt_ps_buffer;
 
 static int prt_do_conv;
-static vimconv_T prt_conv;
+static mnvconv_T prt_conv;
 
 static int prt_out_mbyte;
 static int prt_custom_cmap;
@@ -1426,7 +1426,7 @@ prt_write_file_len(char_u *buffer, int bytes)
     static void
 prt_write_string(char *s)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer), "%s", s);
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer), "%s", s);
     prt_write_file(prt_line_buffer);
 }
 
@@ -1460,14 +1460,14 @@ prt_def_font(
     int		height,
     char	*font)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
-			  "/_%s /VIM-%s /%s ref\n", new_name, encoding, font);
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+			  "/_%s /MNV-%s /%s ref\n", new_name, encoding, font);
     prt_write_file(prt_line_buffer);
     if (prt_out_mbyte)
 	sprintf((char *)prt_line_buffer, "/%s %d %f /_%s sffs\n",
 		       new_name, height, 500./prt_ps_courier_font.wx, new_name);
     else
-	vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+	mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 			     "/%s %d /_%s ffs\n", new_name, height, new_name);
     prt_write_file(prt_line_buffer);
 }
@@ -1478,10 +1478,10 @@ prt_def_font(
     static void
 prt_def_cidfont(char *new_name, int height, char *cidfont)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
-	      "/_%s /%s[/%s] vim_composefont\n", new_name, prt_cmap, cidfont);
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+	      "/_%s /%s[/%s] mnv_composefont\n", new_name, prt_cmap, cidfont);
     prt_write_file(prt_line_buffer);
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 			     "/%s %d /_%s ffs\n", new_name, height, new_name);
     prt_write_file(prt_line_buffer);
 }
@@ -1492,7 +1492,7 @@ prt_def_cidfont(char *new_name, int height, char *cidfont)
     static void
 prt_dup_cidfont(char *original_name, char *new_name)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 				       "/%s %s d\n", new_name, original_name);
     prt_write_file(prt_line_buffer);
 }
@@ -1562,7 +1562,7 @@ prt_write_real(double val, int prec)
     static void
 prt_def_var(char *name, double value, int prec)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 								"/%s ", name);
     prt_write_file(prt_line_buffer);
     prt_write_real(value, prec);
@@ -1669,17 +1669,17 @@ prt_find_resource(char *name, struct prt_ps_resource_S *resource)
     if (buffer == NULL)
 	return FALSE;
 
-    vim_strncpy(resource->name, (char_u *)name, 63);
+    mnv_strncpy(resource->name, (char_u *)name, 63);
     // Look for named resource file in runtimepath
     STRCPY(buffer, "print");
     add_pathsep(buffer);
-    vim_strcat(buffer, (char_u *)name, MAXPATHL);
-    vim_strcat(buffer, (char_u *)".ps", MAXPATHL);
+    mnv_strcat(buffer, (char_u *)name, MAXPATHL);
+    mnv_strcat(buffer, (char_u *)".ps", MAXPATHL);
     resource->filename[0] = NUL;
     retval = (do_in_runtimepath(buffer, 0, prt_resource_name,
 							   resource->filename)
 	    && resource->filename[0] != NUL);
-    vim_free(buffer);
+    mnv_free(buffer);
     return retval;
 }
 
@@ -1910,14 +1910,14 @@ prt_open_resource(struct prt_ps_resource_S *resource)
 	switch (dsc_line.type)
 	{
 	case PRT_DSC_TITLE_TYPE:
-	    vim_strncpy(resource->title, dsc_line.string, dsc_line.len);
+	    mnv_strncpy(resource->title, dsc_line.string, dsc_line.len);
 	    seen_title = TRUE;
 	    if (seen_version)
 		seen_all = TRUE;
 	    break;
 
 	case PRT_DSC_VERSION_TYPE:
-	    vim_strncpy(resource->version, dsc_line.string, dsc_line.len);
+	    mnv_strncpy(resource->version, dsc_line.string, dsc_line.len);
 	    seen_version = TRUE;
 	    if (seen_title)
 		seen_all = TRUE;
@@ -1968,7 +1968,7 @@ prt_dsc_start(void)
     static void
 prt_dsc_noarg(char *comment)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 							 "%%%%%s\n", comment);
     prt_write_file(prt_line_buffer);
 }
@@ -1976,7 +1976,7 @@ prt_dsc_noarg(char *comment)
     static void
 prt_dsc_textline(char *comment, char *text)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 					       "%%%%%s: %s\n", comment, text);
     prt_write_file(prt_line_buffer);
 }
@@ -1985,7 +1985,7 @@ prt_dsc_textline(char *comment, char *text)
 prt_dsc_text(char *comment, char *text)
 {
     // TODO - should scan 'text' for any chars needing escaping!
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 					     "%%%%%s: (%s)\n", comment, text);
     prt_write_file(prt_line_buffer);
 }
@@ -1997,7 +1997,7 @@ prt_dsc_ints(char *comment, int count, int *ints)
 {
     int		i;
 
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 							  "%%%%%s:", comment);
     prt_write_file(prt_line_buffer);
 
@@ -2017,14 +2017,14 @@ prt_dsc_resources(
     char	*string)
 {
     if (comment != NULL)
-	vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+	mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 						 "%%%%%s: %s", comment, type);
     else
-	vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+	mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 							    "%%%%+ %s", type);
     prt_write_file(prt_line_buffer);
 
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 							     " %s\n", string);
     prt_write_file(prt_line_buffer);
 }
@@ -2087,7 +2087,7 @@ prt_dsc_docmedia(
     char	*colour,
     char	*type)
 {
-    vim_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
+    mnv_snprintf((char *)prt_line_buffer, sizeof(prt_line_buffer),
 					"%%%%DocumentMedia: %s ", paper_name);
     prt_write_file(prt_line_buffer);
     prt_write_real(width, 2);
@@ -2118,7 +2118,7 @@ mch_print_cleanup(void)
 	for (i = PRT_PS_FONT_ROMAN; i <= PRT_PS_FONT_BOLDOBLIQUE; i++)
 	{
 	    if (prt_ps_mb_font.ps_fontname[i] != NULL)
-		VIM_CLEAR(prt_ps_mb_font.ps_fontname[i]);
+		MNV_CLEAR(prt_ps_mb_font.ps_fontname[i]);
 	}
     }
 
@@ -2134,7 +2134,7 @@ mch_print_cleanup(void)
 	prt_file_error = FALSE;
     }
     if (prt_ps_file_name != NULL)
-	VIM_CLEAR(prt_ps_file_name);
+	MNV_CLEAR(prt_ps_file_name);
 }
 
     static float
@@ -2225,7 +2225,7 @@ prt_build_cid_fontname(int font, char_u *name, int name_len)
     fontname = alloc(name_len + 1);
     if (fontname == NULL)
 	return FALSE;
-    vim_strncpy((char_u *)fontname, name, name_len);
+    mnv_strncpy((char_u *)fontname, name, name_len);
     prt_ps_mb_font.ps_fontname[font] = fontname;
 
     return TRUE;
@@ -2417,7 +2417,7 @@ mch_print_init(
 	    // Add charset name if not empty
 	    if (p_mbchar->cmap_charset != NULL)
 	    {
-		vim_strncpy((char_u *)prt_cmap,
+		mnv_strncpy((char_u *)prt_cmap,
 		      (char_u *)p_mbchar->cmap_charset, sizeof(prt_cmap) - 3);
 		STRCAT(prt_cmap, "-");
 	    }
@@ -2430,7 +2430,7 @@ mch_print_init(
 		emsg(_(e_printmbcharset_cannot_be_empty_with_multi_byte_encoding));
 		return FALSE;
 	    }
-	    vim_strncpy((char_u *)prt_cmap, p_pmcs, sizeof(prt_cmap) - 3);
+	    mnv_strncpy((char_u *)prt_cmap, p_pmcs, sizeof(prt_cmap) - 3);
 	    STRCAT(prt_cmap, "-");
 	}
 
@@ -2549,8 +2549,8 @@ mch_print_init(
      * Set up the font size.
      */
     fontsize = PRT_PS_DEFAULT_FONTSIZE;
-    for (p = p_pfn; (p = vim_strchr(p, ':')) != NULL; ++p)
-	if (p[1] == 'h' && VIM_ISDIGIT(p[2]))
+    for (p = p_pfn; (p = mnv_strchr(p, ':')) != NULL; ++p)
+	if (p[1] == 'h' && MNV_ISDIGIT(p[2]))
 	    fontsize = atoi((char *)p + 2);
     prt_font_metrics(fontsize);
 
@@ -2615,7 +2615,7 @@ mch_print_init(
     // If the user didn't specify a file name, use a temp file.
     if (psettings->outfile == NULL)
     {
-	prt_ps_file_name = vim_tempname('p', TRUE);
+	prt_ps_file_name = mnv_tempname('p', TRUE);
 	if (prt_ps_file_name == NULL)
 	{
 	    emsg(_(e_cant_get_temp_file_name));
@@ -2629,7 +2629,7 @@ mch_print_init(
 	if (p != NULL)
 	{
 	    prt_ps_fd = mch_fopen((char *)p, WRITEBIN);
-	    vim_free(p);
+	    mnv_free(p);
 	}
     }
     if (prt_ps_fd == NULL)
@@ -2737,7 +2737,7 @@ mch_print_begin(prt_settings_T *psettings)
     if (!get_user_name((char_u *)buffer, 256))
 	STRCPY(buffer, "Unknown");
     prt_dsc_textline("For", buffer);
-    prt_dsc_textline("Creator", VIM_VERSION_LONG);
+    prt_dsc_textline("Creator", MNV_VERSION_LONG);
     // Note: to ensure Clean8bit I don't think we can use LC_TIME
 
     prt_dsc_textline("CreationDate", get_ctime(time(NULL), FALSE));
@@ -2791,7 +2791,7 @@ mch_print_begin(prt_settings_T *psettings)
 	    prt_dsc_resources(NULL, "cmap", prt_cmap);
     }
 
-    // Search for external resources VIM supplies
+    // Search for external resources MNV supplies
     if (!prt_find_resource("prolog", res_prolog))
     {
 	semsg(_(e_cant_find_postscript_resource_file_str_ps), "prolog");
@@ -2818,7 +2818,7 @@ mch_print_begin(prt_settings_T *psettings)
     // Find an encoding to use for printing.
     // Check 'printencoding'. If not set or not found, then use 'encoding'. If
     // that cannot be found then default to "latin1".
-    // Note: VIM specific encoding header is always skipped.
+    // Note: MNV specific encoding header is always skipped.
     if (!prt_out_mbyte)
     {
 	p_encoding = enc_skip(p_penc);
@@ -3023,7 +3023,7 @@ mch_print_begin(prt_settings_T *psettings)
     {
 	// Define the CID fonts to be used in the job.	Typically CJKV fonts do
 	// not have an italic form being a western style, so where no font is
-	// defined for these faces VIM falls back to an existing face.
+	// defined for these faces MNV falls back to an existing face.
 	// Note: if using Courier for the ASCII range then the printout will
 	// have bold/italic/bolditalic regardless of the setting of printmbfont.
 	prt_dsc_resources("IncludeResource", "font",
@@ -3086,10 +3086,10 @@ mch_print_begin(prt_settings_T *psettings)
     retval = !prt_file_error;
 
 theend:
-    vim_free(res_prolog);
-    vim_free(res_encoding);
-    vim_free(res_cidfont);
-    vim_free(res_cmap);
+    mnv_free(res_prolog);
+    mnv_free(res_encoding);
+    mnv_free(res_cidfont);
+    mnv_free(res_cmap);
 
     return retval;
 }
@@ -3221,8 +3221,8 @@ mch_print_text_out(char_u *textp, int len UNUSED)
 
     char_width = prt_char_width;
 
-    // Ideally VIM would create a rearranged CID font to combine a Roman and
-    // CJKV font to do what VIM is doing here - use a Roman font for characters
+    // Ideally MNV would create a rearranged CID font to combine a Roman and
+    // CJKV font to do what MNV is doing here - use a Roman font for characters
     // in the ASCII range, and the original CID font for everything else.
     // The problem is that GhostScript still (as of 8.13) does not support
     // rearranged fonts even though they have been documented by Adobe for 7
@@ -3394,7 +3394,7 @@ mch_print_text_out(char_u *textp, int len UNUSED)
     }
 
     // Need to free any translated characters
-    vim_free(tofree);
+    mnv_free(tofree);
 
     prt_text_run += char_width;
     prt_pos_x += char_width;

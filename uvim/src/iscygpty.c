@@ -5,7 +5,7 @@
  * Copyright (c) 2015-2023 K.Takata
  *
  * You can redistribute it and/or modify it under the terms of either
- * the MIT license (as described below) or the Vim license.
+ * the MIT license (as described below) or the MNV license.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -187,4 +187,4 @@ int is_cygpty_used(void)
 
 #endif // _WIN32
 
-// vim: set ts=4 sw=4:
+// mnv: set ts=4 sw=4:

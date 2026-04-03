@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * search.c: code for normal mode searching commands
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef FEAT_EVAL
 static void set_vv_searchforward(void);
@@ -118,7 +118,7 @@ typedef struct SearchedFile
 #endif
 
 /*
- * translate search pattern for vim_regcomp()
+ * translate search pattern for mnv_regcomp()
  *
  * pat_save == RE_SEARCH: save pat in spats[RE_SEARCH].pat (normal search cmd)
  * pat_save == RE_SUBST: save pat in spats[RE_SUBST].pat (:substitute command)
@@ -177,13 +177,13 @@ search_regcomp(
     if (used_pat)
 	*used_pat = pat;
 
-    vim_free(mr_pattern);
+    mnv_free(mr_pattern);
 #ifdef FEAT_RIGHTLEFT
     if (curwin->w_p_rl && *curwin->w_p_rlc == 's')
 	mr_pattern = reverse_text(pat);
     else
 #endif
-	mr_pattern = vim_strnsave(pat, patlen);
+	mr_pattern = mnv_strnsave(pat, patlen);
     if (mr_pattern == NULL)
 	mr_patternlen = 0;
     else
@@ -206,7 +206,7 @@ search_regcomp(
 
     regmatch->rmm_ic = ignorecase(pat);
     regmatch->rmm_maxcol = 0;
-    regmatch->regprog = vim_regcomp(pat, magic ? RE_MAGIC : 0);
+    regmatch->regprog = mnv_regcomp(pat, magic ? RE_MAGIC : 0);
     if (regmatch->regprog == NULL)
 	return FAIL;
     return OK;
@@ -227,8 +227,8 @@ save_re_pat(int idx, char_u *pat, size_t patlen, int magic)
     if (spats[idx].pat == pat)
 	return;
 
-    vim_free(spats[idx].pat);
-    spats[idx].pat = vim_strnsave(pat, patlen);
+    mnv_free(spats[idx].pat);
+    spats[idx].pat = mnv_strnsave(pat, patlen);
     if (spats[idx].pat == NULL)
 	spats[idx].patlen = 0;
     else
@@ -263,7 +263,7 @@ save_search_patterns(void)
 	saved_spats[i] = spats[i];
 	if (spats[i].pat != NULL)
 	{
-	    saved_spats[i].pat = vim_strnsave(spats[i].pat, spats[i].patlen);
+	    saved_spats[i].pat = mnv_strnsave(spats[i].pat, spats[i].patlen);
 	    if (saved_spats[i].pat == NULL)
 		saved_spats[i].patlen = 0;
 	    else
@@ -273,7 +273,7 @@ save_search_patterns(void)
     if (mr_pattern == NULL)
 	saved_mr_pattern = NULL;
     else
-	saved_mr_pattern = vim_strnsave(mr_pattern, mr_patternlen);
+	saved_mr_pattern = mnv_strnsave(mr_pattern, mr_patternlen);
     if (saved_mr_pattern == NULL)
 	saved_mr_patternlen = 0;
     else
@@ -294,13 +294,13 @@ restore_search_patterns(void)
 
     for (i = 0; i < (int)ARRAY_LENGTH(spats); ++i)
     {
-	vim_free(spats[i].pat);
+	mnv_free(spats[i].pat);
 	spats[i] = saved_spats[i];
     }
 #if defined(FEAT_EVAL)
     set_vv_searchforward();
 #endif
-    vim_free(mr_pattern);
+    mnv_free(mr_pattern);
     mr_pattern = saved_mr_pattern;
     mr_patternlen = saved_mr_patternlen;
 #ifdef FEAT_SEARCH_EXTRA
@@ -317,10 +317,10 @@ free_search_patterns(void)
 
     for (i = 0; i < (int)ARRAY_LENGTH(spats); ++i)
     {
-	VIM_CLEAR(spats[i].pat);
+	MNV_CLEAR(spats[i].pat);
 	spats[i].patlen = 0;
     }
-    VIM_CLEAR(mr_pattern);
+    MNV_CLEAR(mr_pattern);
     mr_patternlen = 0;
 }
 #endif
@@ -353,7 +353,7 @@ save_last_search_pattern(void)
     saved_last_search_spat = spats[RE_SEARCH];
     if (spats[RE_SEARCH].pat != NULL)
     {
-	saved_last_search_spat.pat = vim_strnsave(spats[RE_SEARCH].pat, spats[RE_SEARCH].patlen);
+	saved_last_search_spat.pat = mnv_strnsave(spats[RE_SEARCH].pat, spats[RE_SEARCH].patlen);
 	if (saved_last_search_spat.pat == NULL)
 	    saved_last_search_spat.patlen = 0;
 	else
@@ -375,7 +375,7 @@ restore_last_search_pattern(void)
 	return;
     }
 
-    vim_free(spats[RE_SEARCH].pat);
+    mnv_free(spats[RE_SEARCH].pat);
     spats[RE_SEARCH] = saved_last_search_spat;
     saved_last_search_spat.pat = NULL;
     saved_last_search_spat.patlen = 0;
@@ -553,9 +553,9 @@ reset_search_dir(void)
 #endif
 }
 
-#if defined(FEAT_EVAL) || defined(FEAT_VIMINFO)
+#if defined(FEAT_EVAL) || defined(FEAT_MNVINFO)
 /*
- * Set the last search pattern.  For ":let @/ =" and viminfo.
+ * Set the last search pattern.  For ":let @/ =" and mnvinfo.
  * Also set the saved search pattern, so that this works in an autocommand.
  */
     void
@@ -565,14 +565,14 @@ set_last_search_pat(
     int		magic,
     int		setlast)
 {
-    vim_free(spats[idx].pat);
+    mnv_free(spats[idx].pat);
     // An empty string means that nothing should be matched.
     if (*s == NUL)
 	spats[idx].pat = NULL;
     else
     {
 	spats[idx].patlen = STRLEN(s);
-	spats[idx].pat = vim_strnsave(s, spats[idx].patlen);
+	spats[idx].pat = mnv_strnsave(s, spats[idx].patlen);
     }
     if (spats[idx].pat == NULL)
 	spats[idx].patlen = 0;
@@ -589,12 +589,12 @@ set_last_search_pat(
 	last_idx = idx;
     if (save_level)
     {
-	vim_free(saved_spats[idx].pat);
+	mnv_free(saved_spats[idx].pat);
 	saved_spats[idx] = spats[0];
 	if (spats[idx].pat == NULL)
 	    saved_spats[idx].pat = NULL;
 	else
-	    saved_spats[idx].pat = vim_strnsave(spats[idx].pat, spats[idx].patlen);
+	    saved_spats[idx].pat = mnv_strnsave(spats[idx].pat, spats[idx].patlen);
 	if (saved_spats[idx].pat == NULL)
 	    saved_spats[idx].patlen = 0;
 	else
@@ -700,7 +700,7 @@ searchit(
 	return FAIL;
     }
 
-    search_from_match_end = vim_strchr(p_cpo, CPO_SEARCH) != NULL;
+    search_from_match_end = mnv_strchr(p_cpo, CPO_SEARCH) != NULL;
 
     if (extra_arg != NULL)
     {
@@ -796,9 +796,9 @@ searchit(
 		 */
 		col = at_first_line && (options & SEARCH_COL) ? pos->col
 								 : (colnr_T)0;
-		nmatched = vim_regexec_multi(&regmatch, win, buf,
+		nmatched = mnv_regexec_multi(&regmatch, win, buf,
 							 lnum, col, timed_out);
-		// vim_regexec_multi() may clear "regprog"
+		// mnv_regexec_multi() may clear "regprog"
 		if (regmatch.regprog == NULL)
 		    break;
 		// Abort searching on an error (e.g., out of stack).
@@ -887,14 +887,14 @@ searchit(
 			    if (matchcol == 0 && (options & SEARCH_START))
 				break;
 			    if (ptr[matchcol] == NUL
-				    || (nmatched = vim_regexec_multi(&regmatch,
+				    || (nmatched = mnv_regexec_multi(&regmatch,
 					      win, buf, lnum + matchpos.lnum,
 					      matchcol, timed_out)) == 0)
 			    {
 				match_ok = FALSE;
 				break;
 			    }
-			    // vim_regexec_multi() may clear "regprog"
+			    // mnv_regexec_multi() may clear "regprog"
 			    if (regmatch.regprog == NULL)
 				break;
 			    matchpos = regmatch.startpos[0];
@@ -992,7 +992,7 @@ searchit(
 				}
 			    }
 			    if (ptr[matchcol] == NUL
-				    || (nmatched = vim_regexec_multi(&regmatch,
+				    || (nmatched = mnv_regexec_multi(&regmatch,
 					      win, buf, lnum + matchpos.lnum,
 					      matchcol, timed_out)) == 0)
 			    {
@@ -1003,7 +1003,7 @@ searchit(
 				    match_ok = FALSE;
 				break;
 			    }
-			    // vim_regexec_multi() may clear "regprog"
+			    // mnv_regexec_multi() may clear "regprog"
 			    if (regmatch.regprog == NULL)
 				break;
 
@@ -1098,7 +1098,7 @@ searchit(
 	    }
 	    at_first_line = FALSE;
 
-	    // vim_regexec_multi() may clear "regprog"
+	    // mnv_regexec_multi() may clear "regprog"
 	    if (regmatch.regprog == NULL)
 		break;
 
@@ -1149,7 +1149,7 @@ searchit(
     if (extra_arg != NULL && extra_arg->sa_tm > 0)
 	disable_regexp_timeout();
 #endif
-    vim_regfree(regmatch.regprog);
+    mnv_regfree(regmatch.regprog);
 
     if (!found)		    // did not find it
     {
@@ -1189,7 +1189,7 @@ set_search_direction(int cdir)
     static void
 set_vv_searchforward(void)
 {
-    set_vim_var_nr(VV_SEARCHFORWARD, (long)(spats[0].off.dir == '/'));
+    set_mnv_var_nr(VV_SEARCHFORWARD, (long)(spats[0].off.dir == '/'));
 }
 
 /*
@@ -1268,7 +1268,7 @@ do_search(
     /*
      * A line offset is not remembered, this is vi compatible.
      */
-    if (spats[0].off.line && vim_strchr(p_cpo, CPO_LINEOFF) != NULL)
+    if (spats[0].off.line && mnv_strchr(p_cpo, CPO_LINEOFF) != NULL)
     {
 	spats[0].off.line = FALSE;
 	spats[0].off.off = 0;
@@ -1401,7 +1401,7 @@ do_search(
 	     * offset, because it is meaningless and the 's' could be a
 	     * substitute command.
 	     */
-	    if (*p == '+' || *p == '-' || VIM_ISDIGIT(*p))
+	    if (*p == '+' || *p == '-' || MNV_ISDIGIT(*p))
 		spats[0].off.line = TRUE;
 	    else if ((options & SEARCH_OPT)
 				      && (*p == 'e' || *p == 's' || *p == 'b'))
@@ -1410,17 +1410,17 @@ do_search(
 		    spats[0].off.end = SEARCH_END;
 		++p;
 	    }
-	    if (VIM_ISDIGIT(*p) || *p == '+' || *p == '-')  // got an offset
+	    if (MNV_ISDIGIT(*p) || *p == '+' || *p == '-')  // got an offset
 	    {
 					    // 'nr' or '+nr' or '-nr'
-		if (VIM_ISDIGIT(*p) || VIM_ISDIGIT(*(p + 1)))
+		if (MNV_ISDIGIT(*p) || MNV_ISDIGIT(*(p + 1)))
 		    spats[0].off.off = atol((char *)p);
 		else if (*p == '-')	    // single '-'
 		    spats[0].off.off = -1;
 		else			    // single '+'
 		    spats[0].off.off = 1;
 		++p;
-		while (VIM_ISDIGIT(*p))	    // skip number
+		while (MNV_ISDIGIT(*p))	    // skip number
 		    ++p;
 	    }
 
@@ -1455,7 +1455,7 @@ do_search(
 		    off_buf[off_len++] = 's';
 		off_buf[off_len] = NUL;
 		if (spats[0].off.off != 0 || spats[0].off.line)
-		    off_len += vim_snprintf((char *)off_buf + off_len,
+		    off_len += mnv_snprintf((char *)off_buf + off_len,
 			   sizeof(off_buf) - off_len, "%+ld", spats[0].off.off);
 	    }
 
@@ -1490,7 +1490,7 @@ do_search(
 		// Reserve enough space for the search pattern + offset.
 		msgbufsize = plen + off_len + 3;
 
-	    vim_free(msgbuf);
+	    mnv_free(msgbuf);
 	    msgbuf = alloc(msgbufsize);
 	    if (msgbuf == NULL)
 	    {
@@ -1498,7 +1498,7 @@ do_search(
 	    }
 	    else
 	    {
-		vim_memset(msgbuf, ' ', msgbufsize);
+		mnv_memset(msgbuf, ' ', msgbufsize);
 		msgbuflen = msgbufsize - 1;
 		msgbuf[msgbuflen] = NUL;
 		// do not fill the msgbuf buffer, if cmd_silent is set, leave it
@@ -1523,7 +1523,7 @@ do_search(
 		    trunc = msg_strtrunc(msgbuf, TRUE);
 		    if (trunc != NULL)
 		    {
-			vim_free(msgbuf);
+			mnv_free(msgbuf);
 			msgbuf = trunc;
 			msgbuflen = STRLEN(msgbuf);
 		    }
@@ -1541,7 +1541,7 @@ do_search(
 			r = reverse_text(msgbuf);
 			if (r != NULL)
 			{
-			    vim_free(msgbuf);
+			    mnv_free(msgbuf);
 			    msgbuf = r;
 			    msgbuflen = STRLEN(msgbuf);
 			    // move reversed text to beginning of buffer
@@ -1551,9 +1551,9 @@ do_search(
 			    mch_memmove(msgbuf, r, pat_len);
 			    // overwrite old text
 			    if ((size_t)(r - msgbuf) >= pat_len)
-				vim_memset(r, ' ', pat_len);
+				mnv_memset(r, ' ', pat_len);
 			    else
-				vim_memset(msgbuf + pat_len, ' ', r - msgbuf);
+				mnv_memset(msgbuf + pat_len, ' ', r - msgbuf);
 			}
 		    }
 #endif
@@ -1718,8 +1718,8 @@ do_search(
 end_do_search:
     if ((options & SEARCH_KEEP) || (cmdmod.cmod_flags & CMOD_KEEPPATTERNS))
 	spats[0].off = old_off;
-    vim_free(strcopy);
-    vim_free(msgbuf);
+    mnv_free(strcopy);
+    mnv_free(msgbuf);
 
     return retval;
 }
@@ -1856,7 +1856,7 @@ searchc(cmdarg_T *cap, int t_cmd)
 	// Force a move of at least one char, so ";" and "," will move the
 	// cursor, even if the cursor is right in front of char we are looking
 	// at.
-	if (vim_strchr(p_cpo, CPO_SCOLON) == NULL && count == 1 && t_cmd)
+	if (mnv_strchr(p_cpo, CPO_SCOLON) == NULL && count == 1 && t_cmd)
 	    stop = FALSE;
     }
 
@@ -1983,7 +1983,7 @@ find_rawstring_end(char_u *linep, pos_T *startpos, pos_T *endpos)
     for (p = linep + startpos->col + 1; *p && *p != '('; ++p)
 	;
     delim_len = (p - linep) - startpos->col - 1;
-    delim_copy = vim_strnsave(linep + startpos->col + 1, delim_len);
+    delim_copy = mnv_strnsave(linep + startpos->col + 1, delim_len);
     if (delim_copy == NULL)
 	return FALSE;
     for (lnum = startpos->lnum; lnum <= endpos->lnum; ++lnum)
@@ -2005,7 +2005,7 @@ find_rawstring_end(char_u *linep, pos_T *startpos, pos_T *endpos)
 	if (found)
 	    break;
     }
-    vim_free(delim_copy);
+    mnv_free(delim_copy);
     return found;
 }
 
@@ -2161,8 +2161,8 @@ findmatchlimit(
     pos.coladd = 0;
     linep = ml_get(pos.lnum);
 
-    cpo_match = (vim_strchr(p_cpo, CPO_MATCH) != NULL);
-    cpo_bsl = (vim_strchr(p_cpo, CPO_MATCHBSL) != NULL);
+    cpo_match = (mnv_strchr(p_cpo, CPO_MATCH) != NULL);
+    cpo_bsl = (mnv_strchr(p_cpo, CPO_MATCHBSL) != NULL);
 
     // Direction to search when initc is '/', '*' or '#'
     if (flags & FM_BACKWARD)
@@ -2375,7 +2375,7 @@ findmatchlimit(
 #ifdef FEAT_RIGHTLEFT
     // This is just guessing: when 'rightleft' is set, search for a matching
     // paren/brace in the other direction.
-    if (curwin->w_p_rl && vim_strchr((char_u *)"()[]{}<>", initc) != NULL)
+    if (curwin->w_p_rl && mnv_strchr((char_u *)"()[]{}<>", initc) != NULL)
 	backwards = !backwards;
 #endif
 
@@ -2497,7 +2497,7 @@ findmatchlimit(
 		{
 		    if (linep[pos.col - 1] == 'R'
 			&& linep[pos.col] == '"'
-			&& vim_strchr(linep + pos.col + 1, '(') != NULL)
+			&& mnv_strchr(linep + pos.col + 1, '(') != NULL)
 		    {
 			// Possible start of raw string. Now that we have the
 			// delimiter we can check if it ends before where we
@@ -2699,7 +2699,7 @@ findmatchlimit(
 	     * (actually, we skip #\( et al)
 	     */
 	    if (curbuf->b_p_lisp
-		    && vim_strchr((char_u *)"{}()[]", c) != NULL
+		    && mnv_strchr((char_u *)"{}()[]", c) != NULL
 		    && pos.col > 1
 		    && check_prevcol(linep, pos.col, '\\', NULL)
 		    && check_prevcol(linep, pos.col - 1, '#', NULL))
@@ -2755,12 +2755,12 @@ check_linecomment(char_u *line)
     // skip Lispish one-line comments
     if (curbuf->b_p_lisp)
     {
-	if (vim_strchr(p, ';') != NULL) // there may be comments
+	if (mnv_strchr(p, ';') != NULL) // there may be comments
 	{
 	    int in_str = FALSE;	// inside of string
 
 	    p = line;		// scan from start
-	    while ((p = vim_strpbrk(p, (char_u *)"\";")) != NULL)
+	    while ((p = mnv_strpbrk(p, (char_u *)"\";")) != NULL)
 	    {
 		if (*p == '"')
 		{
@@ -2785,7 +2785,7 @@ check_linecomment(char_u *line)
 	    p = NULL;
     }
     else
-	while ((p = vim_strchr(p, '/')) != NULL)
+	while ((p = mnv_strchr(p, '/')) != NULL)
 	{
 	    // Accept a double /, unless it's preceded with * and followed by
 	    // *, because * / / * is an end and start of a C comment.  Only
@@ -2850,7 +2850,7 @@ showmatch(
 
     if ((lpos = findmatch(NULL, NUL)) == NULL)	    // no match, so beep
     {
-	vim_beep(BO_MATCH);
+	mnv_beep(BO_MATCH);
 	return;
     }
 
@@ -2900,7 +2900,7 @@ showmatch(
      * brief pause, unless 'm' is present in 'cpo' and a character is
      * available.
      */
-    if (vim_strchr(p_cpo, CPO_SHOWMATCH) != NULL)
+    if (mnv_strchr(p_cpo, CPO_SHOWMATCH) != NULL)
 	ui_delay(p_mat * 100L + 8, TRUE);
     else if (!char_avail())
 	ui_delay(p_mat * 100L + 9, FALSE);
@@ -2967,7 +2967,7 @@ is_zero_width(
 	do
 	{
 	    regmatch.startpos[0].col++;
-	    nmatched = vim_regexec_multi(&regmatch, curwin, curbuf,
+	    nmatched = mnv_regexec_multi(&regmatch, curwin, curbuf,
 			       pos.lnum, regmatch.startpos[0].col, NULL);
 	    if (nmatched != 0)
 		break;
@@ -2983,7 +2983,7 @@ is_zero_width(
 	}
     }
 
-    vim_regfree(regmatch.regprog);
+    mnv_regfree(regmatch.regprog);
     return result;
 }
 
@@ -3184,30 +3184,30 @@ cmdline_search_stat(
     if (curwin->w_p_rl && *curwin->w_p_rlc == 's')
     {
 	if (stat.incomplete == 1)
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[?/??]");
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[?/??]");
 	else if (stat.cnt > maxcount && stat.cur > maxcount)
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[>%d/>%d]",
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[>%d/>%d]",
 		    maxcount, maxcount);
 	else if (stat.cnt > maxcount)
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[>%d/%d]",
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[>%d/%d]",
 		    maxcount, stat.cur);
 	else
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[%d/%d]",
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[%d/%d]",
 		    stat.cnt, stat.cur);
     }
     else
 #endif
     {
 	if (stat.incomplete == 1)
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[?/??]");
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[?/??]");
 	else if (stat.cnt > maxcount && stat.cur > maxcount)
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[>%d/>%d]",
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[>%d/>%d]",
 		    maxcount, maxcount);
 	else if (stat.cnt > maxcount)
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[%d/>%d]",
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[%d/>%d]",
 		    stat.cur, maxcount);
 	else
-	    len = vim_snprintf(t, SEARCH_STAT_BUF_LEN, "[%d/%d]",
+	    len = mnv_snprintf(t, SEARCH_STAT_BUF_LEN, "[%d/%d]",
 		    stat.cur, stat.cnt);
     }
 
@@ -3346,8 +3346,8 @@ update_search_stat(
 	    cur = -1; // abort
 	if (done_search)
 	{
-	    vim_free(lastpat);
-	    lastpat = vim_strnsave(spats[last_idx].pat, spats[last_idx].patlen);
+	    mnv_free(lastpat);
+	    lastpat = mnv_strnsave(spats[last_idx].pat, spats[last_idx].patlen);
 	    if (lastpat == NULL)
 		lastpatlen = 0;
 	    else
@@ -3377,7 +3377,7 @@ get_line_and_copy(linenr_T lnum, char_u *buf)
 {
     char_u *line = ml_get(lnum);
 
-    vim_strncpy(buf, line, LSIZE - 1);
+    mnv_strncpy(buf, line, LSIZE - 1);
     return buf;
 }
 
@@ -3450,18 +3450,18 @@ find_pattern_in_path(
 	pat = alloc(len + 5);
 	if (pat == NULL)
 	    goto fpip_end;
-	vim_snprintf((char *)pat, len + 5, whole ? "\\<%.*s\\>" : "%.*s", len, ptr);
+	mnv_snprintf((char *)pat, len + 5, whole ? "\\<%.*s\\>" : "%.*s", len, ptr);
 	// ignore case according to p_ic, p_scs and pat
 	regmatch.rm_ic = ignorecase(pat);
-	regmatch.regprog = vim_regcomp(pat, magic_isset() ? RE_MAGIC : 0);
-	vim_free(pat);
+	regmatch.regprog = mnv_regcomp(pat, magic_isset() ? RE_MAGIC : 0);
+	mnv_free(pat);
 	if (regmatch.regprog == NULL)
 	    goto fpip_end;
     }
     inc_opt = (*curbuf->b_p_inc == NUL) ? p_inc : curbuf->b_p_inc;
     if (*inc_opt != NUL)
     {
-	incl_regmatch.regprog = vim_regcomp(inc_opt,
+	incl_regmatch.regprog = mnv_regcomp(inc_opt,
 						 magic_isset() ? RE_MAGIC : 0);
 	if (incl_regmatch.regprog == NULL)
 	    goto fpip_end;
@@ -3469,7 +3469,7 @@ find_pattern_in_path(
     }
     if (type == FIND_DEFINE && (*curbuf->b_p_def != NUL || *p_def != NUL))
     {
-	def_regmatch.regprog = vim_regcomp(*curbuf->b_p_def == NUL ? p_def : curbuf->b_p_def,
+	def_regmatch.regprog = mnv_regcomp(*curbuf->b_p_def == NUL ? p_def : curbuf->b_p_def,
 						 magic_isset() ? RE_MAGIC : 0);
 	if (def_regmatch.regprog == NULL)
 	    goto fpip_end;
@@ -3491,7 +3491,7 @@ find_pattern_in_path(
     for (;;)
     {
 	if (incl_regmatch.regprog != NULL
-		&& vim_regexec(&incl_regmatch, line, (colnr_T)0))
+		&& mnv_regexec(&incl_regmatch, line, (colnr_T)0))
 	{
 	    char_u *p_fname = (curr_fname == curbuf->b_fname)
 					      ? curbuf->b_ffname : curr_fname;
@@ -3532,7 +3532,7 @@ find_pattern_in_path(
 				prev_fname = NULL;
 			    }
 			}
-			VIM_CLEAR(new_fname);
+			MNV_CLEAR(new_fname);
 			already_searched = TRUE;
 			break;
 		    }
@@ -3589,9 +3589,9 @@ find_pattern_in_path(
 			{
 			    // find the file name after the end of the match
 			    for (p = incl_regmatch.endp[0];
-						  *p && !vim_isfilec(*p); p++)
+						  *p && !mnv_isfilec(*p); p++)
 				;
-			    for (i = 0; vim_isfilec(p[i]); i++)
+			    for (i = 0; mnv_isfilec(p[i]); i++)
 				;
 			}
 
@@ -3651,13 +3651,13 @@ find_pattern_in_path(
 			    bigger[i + max_path_depth] = files[i];
 			old_files += max_path_depth;
 			max_path_depth *= 2;
-			vim_free(files);
+			mnv_free(files);
 			files = bigger;
 		    }
 		}
 		if ((files[depth + 1].fp = mch_fopen((char *)new_fname, "r"))
 								    == NULL)
-		    vim_free(new_fname);
+		    mnv_free(new_fname);
 		else
 		{
 		    if (++depth == old_files)
@@ -3666,7 +3666,7 @@ find_pattern_in_path(
 			 * lalloc() for 'bigger' must have failed above.  We
 			 * will forget one of our already visited files now.
 			 */
-			vim_free(files[old_files].name);
+			mnv_free(files[old_files].name);
 			++old_files;
 		    }
 		    files[depth].name = curr_fname = new_fname;
@@ -3676,7 +3676,7 @@ find_pattern_in_path(
 			    && !shortmess(SHM_COMPLETIONSCAN) && !silent)
 		    {
 			msg_hist_off = TRUE;	// reset in msg_trunc_attr()
-			vim_snprintf((char*)IObuff, IOSIZE,
+			mnv_snprintf((char*)IObuff, IOSIZE,
 				_("Scanning included file: %s"),
 				(char *)new_fname);
 			msg_trunc_attr((char *)IObuff, TRUE, HL_ATTR(HLF_R));
@@ -3701,7 +3701,7 @@ find_pattern_in_path(
 search_line:
 	    define_matched = FALSE;
 	    if (def_regmatch.regprog != NULL
-			      && vim_regexec(&def_regmatch, line, (colnr_T)0))
+			      && mnv_regexec(&def_regmatch, line, (colnr_T)0))
 	    {
 		/*
 		 * Pattern must be first identifier after 'define', so skip
@@ -3709,7 +3709,7 @@ search_line:
 		 * don't let it match beyond the end of this identifier.
 		 */
 		p = def_regmatch.endp[0];
-		while (*p && !vim_iswordc(*p))
+		while (*p && !mnv_iswordc(*p))
 		    p++;
 		define_matched = TRUE;
 	    }
@@ -3729,11 +3729,11 @@ search_line:
 		    else
 			matched = !STRNCMP(startp, ptr, len);
 		    if (matched && define_matched && whole
-						  && vim_iswordc(startp[len]))
+						  && mnv_iswordc(startp[len]))
 			matched = FALSE;
 		}
 		else if (regmatch.regprog != NULL
-			 && vim_regexec(&regmatch, line, (colnr_T)(p - line)))
+			 && mnv_regexec(&regmatch, line, (colnr_T)(p - line)))
 		{
 		    matched = TRUE;
 		    startp = regmatch.startp[0];
@@ -3796,7 +3796,7 @@ search_line:
 		if (compl_status_adding() && (int)STRLEN(p) >= ins_compl_len())
 		{
 		    p += ins_compl_len();
-		    if (vim_iswordp(p))
+		    if (mnv_iswordp(p))
 			goto exit_matched;
 		    p = find_word_start(p);
 		}
@@ -3817,7 +3817,7 @@ search_line:
 			    goto exit_matched;
 			line = get_line_and_copy(++lnum, file_line);
 		    }
-		    else if (vim_fgets(line = file_line,
+		    else if (mnv_fgets(line = file_line,
 						      LSIZE, files[depth].fp))
 			goto exit_matched;
 
@@ -3836,7 +3836,7 @@ search_line:
 			    // IObuf =~ "\(\k\|\i\).* ", thus i >= 2
 			    if (p_js
 				&& (IObuff[i-2] == '.'
-				    || (vim_strchr(p_cpo, CPO_JOINSP) == NULL
+				    || (mnv_strchr(p_cpo, CPO_JOINSP) == NULL
 					&& (IObuff[i-2] == '?'
 					    || IObuff[i-2] == '!'))))
 				IObuff[i++] = ' ';
@@ -4001,7 +4001,7 @@ exit_matched:
 	 * it.
 	 */
 	while (depth >= 0 && !already
-		&& vim_fgets(line = file_line, LSIZE, files[depth].fp))
+		&& mnv_fgets(line = file_line, LSIZE, files[depth].fp))
 	{
 	    fclose(files[depth].fp);
 	    --old_files;
@@ -4037,11 +4037,11 @@ exit_matched:
     for (i = 0; i <= depth; i++)
     {
 	fclose(files[i].fp);
-	vim_free(files[i].name);
+	mnv_free(files[i].name);
     }
     for (i = old_files; i < max_path_depth; i++)
-	vim_free(files[i].name);
-    vim_free(files);
+	mnv_free(files[i].name);
+    mnv_free(files);
 
     if (type == CHECK_PATH)
     {
@@ -4066,10 +4066,10 @@ exit_matched:
 	msg_end();
 
 fpip_end:
-    vim_free(file_line);
-    vim_regfree(regmatch.regprog);
-    vim_regfree(incl_regmatch.regprog);
-    vim_regfree(def_regmatch.regprog);
+    mnv_free(file_line);
+    mnv_regfree(regmatch.regprog);
+    mnv_regfree(incl_regmatch.regprog);
+    mnv_regfree(def_regmatch.regprog);
 }
 
     static void
@@ -4122,7 +4122,7 @@ show_pat_in_path(
 
 	if (fp != NULL)
 	{
-	    if (vim_fgets(line, LSIZE, fp)) // end of file
+	    if (mnv_fgets(line, LSIZE, fp)) // end of file
 		break;
 	    linelen = STRLEN(line);
 	    ++*lnum;
@@ -4139,7 +4139,7 @@ show_pat_in_path(
 }
 #endif
 
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 /*
  * Return the last used search pattern at "idx".
  */
@@ -4176,7 +4176,7 @@ f_searchcount(typval_T *argvars, typval_T *rettv)
     if (rettv_dict_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_dict_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_dict_arg(argvars, 0) == FAIL)
 	return;
 
     if (shortmess(SHM_SEARCHCOUNT))	// 'shortmess' contains 'S' flag
@@ -4259,9 +4259,9 @@ f_searchcount(typval_T *argvars, typval_T *rettv)
     {
 	if (*pattern == NUL)
 	    goto the_end;
-	vim_free(spats[last_idx].pat);
+	mnv_free(spats[last_idx].pat);
 	spats[last_idx].patlen = STRLEN(pattern);
-	spats[last_idx].pat = vim_strnsave(pattern, spats[last_idx].patlen);
+	spats[last_idx].pat = mnv_strnsave(pattern, spats[last_idx].patlen);
 	if (spats[last_idx].pat == NULL)
 	    spats[last_idx].patlen = 0;
     }

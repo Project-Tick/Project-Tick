@@ -12,13 +12,13 @@ CONTENTS                                                      *rust*
 INTRODUCTION                                                      *rust-intro*
 
 This plugin provides syntax and supporting functionality for the Rust
-filetype. It requires Vim 8 or higher for full functionality. Some commands
+filetype. It requires MNV 8 or higher for full functionality. Some commands
 will not work on earlier versions.
 
 ==============================================================================
 SETTINGS                                                       *rust-settings*
 
-This plugin has a few variables you can define in your vimrc that change the
+This plugin has a few variables you can define in your mnvrc that change the
 behavior of the plugin.
 
 Some variables can be set buffer local (`:b` prefix), and the buffer local
@@ -59,7 +59,7 @@ g:rust_conceal_pub~
 
                                                      *g:rust_recommended_style*
 g:rust_recommended_style~
-        Set this option to enable vim indentation and textwidth settings to
+        Set this option to enable mnv indentation and textwidth settings to
         conform to style conventions of the Rust style guide (i.e. use 4
         spaces for indents and set 'textwidth' to 100). This option is enabled
 	by default. To disable it: >
@@ -88,19 +88,19 @@ g:rust_bang_comment_leader~
                                                 *g:rust_use_custom_ctags_defs*
 g:rust_use_custom_ctags_defs~
 	Set this option to 1 if you have customized ctags definitions for Rust
-	and do not wish for those included with rust.vim to be used: >
+	and do not wish for those included with rust.mnv to be used: >
 	    let g:rust_use_custom_ctags_defs = 1
 <
 
-	NOTE: rust.vim's built-in definitions are only used for the Tagbar Vim
+	NOTE: rust.mnv's built-in definitions are only used for the Tagbar MNV
 	plugin, if you have it installed, AND if Universal Ctags is not
 	detected. This is because Universal Ctags already has built-in
 	support for Rust when used with Tagbar.
 
 	Also, note that when using ctags other than Universal Ctags, it is not
-	automatically used when generating |tags| files that Vim can use to
+	automatically used when generating |tags| files that MNV can use to
 	navigate to definitions across different source files. Feel free to
-	copy `rust.vim/ctags/rust.ctags` into your own `~/.ctags` if you wish
+	copy `rust.mnv/ctags/rust.ctags` into your own `~/.ctags` if you wish
 	to generate |tags| files.
 
 
@@ -154,7 +154,7 @@ g:rustfmt_options~
 <
                                                        *g:rustfmt_emit_files*
 g:rustfmt_emit_files~
-	If not specified rust.vim tries to detect the right parameter to
+	If not specified rust.mnv tries to detect the right parameter to
 	pass to rustfmt based on its reported version. Otherwise, it
 	determines whether to run rustfmt with '--emit=files' (when 1 is
 	provided) instead of '--write-mode=overwrite'. >
@@ -298,7 +298,7 @@ COMMANDS                                                       *rust-commands*
 Invoking Cargo
 --------------
 
-This plug defines very simple shortcuts for invoking Cargo from with Vim.
+This plug defines very simple shortcuts for invoking Cargo from with MNV.
 
 :Cargo <args>                                                       *:Cargo*
                 Runs 'cargo' with the provided arguments.
@@ -362,8 +362,8 @@ Playpen integration
 -------------------
 
 :RustPlay                                                          *:RustPlay*
-		This command will only work if you have web-api.vim installed
-		(available at https://github.com/mattn/webapi-vim).  It sends the
+		This command will only work if you have web-api.mnv installed
+		(available at https://github.com/mattn/webapi-mnv).  It sends the
 		current selection, or if nothing is selected, the entirety of the
 		current buffer to the Rust playpen, and emits a message with the
 		shortened URL to the playpen.
@@ -383,7 +383,7 @@ Evaluation of a single Rust file
 
 NOTE: These commands are useful only when working with standalone Rust files,
 which is usually not the case for common Rust development. If you wish to
-building Rust crates from with Vim can should use Vim's make, Syntastic, or
+building Rust crates from with MNV can should use MNV's make, Syntastic, or
 functionality from other plugins.
 
 
@@ -476,18 +476,18 @@ Running test(s)
 		    :belowright 16RustTest
 		    :leftabove vert 80RustTest
 <
-rust.vim Debugging
+rust.mnv Debugging
 ------------------
 
 :RustInfo                                                          *:RustInfo*
-		Emits debugging info of the Vim Rust plugin.
+		Emits debugging info of the MNV Rust plugin.
 
 :RustInfoToClipboard                                      *:RustInfoClipboard*
-		Saves debugging info of the Vim Rust plugin to the default
+		Saves debugging info of the MNV Rust plugin to the default
 		register.
 
 :RustInfoToFile [filename]                                   *:RustInfoToFile*
-		Saves debugging info of the Vim Rust plugin to the given file,
+		Saves debugging info of the MNV Rust plugin to the given file,
 		overwriting it.
 
 ==============================================================================
@@ -496,4 +496,4 @@ MAPPINGS                                                       *rust-mappings*
 This plugin defines mappings for |[[| and |]]| to support hanging indents.
 
 ==============================================================================
- vim:tw=78:sw=4:noet:ts=8:ft=help:norl:
+ mnv:tw=78:sw=4:noet:ts=8:ft=help:norl:

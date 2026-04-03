@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
-# Server that will communicate with Vim through the netbeans interface.
-# Used by test_netbeans.vim.
+# Server that will communicate with MNV through the netbeans interface.
+# Used by test_netbeans.mnv.
 #
 # This requires Python 2.6 or later.
 
@@ -22,7 +22,7 @@ except ImportError:
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 
     def process_msgs(self, msgbuf):
-        # Process all the received netbeans commands/responses/events from Vim.
+        # Process all the received netbeans commands/responses/events from MNV.
         # Each one is separated by a newline character. If a partial command
         # is received, process it later after the rest of it is received.
         while True:

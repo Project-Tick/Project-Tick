@@ -54,19 +54,19 @@ void gui_mch_set_text_area_pos(int x, int y, int w, int h);
 int gui_mch_haskey(char_u *name);
 void gui_mch_enable_menu(int flag);
 void gui_mch_set_menu_pos(int x, int y, int w, int h);
-void gui_mch_add_menu(vimmenu_T *menu, int index);
-void gui_mch_add_menu_item(vimmenu_T *menu, int index);
-void gui_mch_destroy_menu(vimmenu_T *menu);
-void gui_mch_menu_grey(vimmenu_T *menu, int grey);
-void gui_mch_menu_hidden(vimmenu_T *menu, int hidden);
+void gui_mch_add_menu(mnvmenu_T *menu, int index);
+void gui_mch_add_menu_item(mnvmenu_T *menu, int index);
+void gui_mch_destroy_menu(mnvmenu_T *menu);
+void gui_mch_menu_grey(mnvmenu_T *menu, int grey);
+void gui_mch_menu_hidden(mnvmenu_T *menu, int hidden);
 void gui_mch_draw_menubar(void);
-void gui_mch_show_popupmenu(vimmenu_T *menu);
+void gui_mch_show_popupmenu(mnvmenu_T *menu);
 void gui_mch_toggle_tearoffs(int enable);
 void gui_mch_show_toolbar(int showit);
-int gui_mch_init_font(char_u *vim_font_name, int fontset);
+int gui_mch_init_font(char_u *mnv_font_name, int fontset);
 int gui_mch_adjust_charheight(void);
-GuiFont gui_mch_get_font(char_u *vim_font_name, int report_error);
+GuiFont gui_mch_get_font(char_u *mnv_font_name, int report_error);
 char_u *gui_mch_get_fontname(GuiFont font, char_u *name);
 void gui_mch_set_font(GuiFont font);
 void gui_mch_free_font(GuiFont font);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

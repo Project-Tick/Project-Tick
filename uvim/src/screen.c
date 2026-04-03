@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -40,7 +40,7 @@
  * ScreenLines[].
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * The attributes that are actually active for writing to the screen.
@@ -81,7 +81,7 @@ conceal_cursor_line(win_T *wp)
 	c = 'c';
     else
 	return FALSE;
-    return vim_strchr(wp->w_p_cocu, c) != NULL;
+    return mnv_strchr(wp->w_p_cocu, c) != NULL;
 }
 
 /*
@@ -217,7 +217,7 @@ win_draw_end(
 		      row, endrow, hl_combine_attr(win_attr, HL_ATTR(HLF_SC)));
 #endif
 	if ((wp->w_p_nu || wp->w_p_rnu)
-				  && vim_strchr(p_cpo, CPO_NUMCOL) == NULL)
+				  && mnv_strchr(p_cpo, CPO_NUMCOL) == NULL)
 	    // draw the number column
 	    n = screen_fill_end(wp, ' ', ' ', n, number_width(wp) + 1,
 		       row, endrow, hl_combine_attr(win_attr, HL_ATTR(HLF_N)));
@@ -283,7 +283,7 @@ fill_foldcolumn(
     int		n;
 
     // Init to all spaces.
-    vim_memset(p, ' ', MAX_MCO * fdc + 1);
+    mnv_memset(p, ' ', MAX_MCO * fdc + 1);
 
     level = win_foldinfo.fi_level;
     empty = (fdc == 1) ? 0 : 1;
@@ -326,7 +326,7 @@ fill_foldcolumn(
 	    byte_counter -= len;
 	    if (len > 1)
 		// for a multibyte character, erase all the bytes
-		vim_memset(p + byte_counter, ' ', len);
+		mnv_memset(p + byte_counter, ' ', len);
 	}
 	symbol = wp->w_fill_chars.foldclosed;
 	len = utf_char2bytes(symbol, &p[byte_counter]);
@@ -1255,9 +1255,9 @@ get_keymap_str(
 #endif
 	    p = (char_u *)"lang";
     }
-    plen = vim_snprintf((char *)buf, len, (char *)fmt, p);
+    plen = mnv_snprintf((char *)buf, len, (char *)fmt, p);
 #ifdef FEAT_EVAL
-    vim_free(s);
+    mnv_free(s);
 #endif
     if (plen < 0 || plen > len - 1)
     {
@@ -1338,7 +1338,7 @@ win_redr_custom(
 		if (*++stl == '-')
 		    stl++;
 		if (atoi((char *)stl))
-		    while (VIM_ISDIGIT(*stl))
+		    while (MNV_ISDIGIT(*stl))
 			stl++;
 		if (*stl++ != '(')
 		    stl = p_ruf;
@@ -1385,7 +1385,7 @@ win_redr_custom(
 
     // Make a copy, because the statusline may include a function call that
     // might change the option value and free the memory.
-    stl = vim_strsave(stl);
+    stl = mnv_strsave(stl);
     char_u *stl_tmp = (stl == NULL) ? (char_u *)"" : stl;
     int col_save = col;
 
@@ -1402,8 +1402,8 @@ win_redr_custom(
 	p = transstr(buf);
 	if (p != NULL)
 	{
-	    len = vim_snprintf((char *)buf, sizeof(buf), "%s", p);
-	    vim_free(p);
+	    len = mnv_snprintf((char *)buf, sizeof(buf), "%s", p);
+	    mnv_free(p);
 	}
 	else
 	    len = (int)STRLEN(buf);
@@ -1425,7 +1425,7 @@ win_redr_custom(
 	{
 	    len = (int)(hltab[n].start - p);
 	    screen_puts_len(p, len, row + i, col, curattr);
-	    col += vim_strnsize(p, len);
+	    col += mnv_strnsize(p, len);
 	    p = hltab[n].start;
 
 	    if (hltab[n].userhl == 0)
@@ -1454,7 +1454,7 @@ win_redr_custom(
     // original "stl" internally.  After the loop, stl_tmp must be freed
     // instead of stl, as it holds the current buffer ownership.
     if (stl != NULL)
-	vim_free(stl_tmp);
+	mnv_free(stl_tmp);
 
     if (wp == NULL)
     {
@@ -1465,7 +1465,7 @@ win_redr_custom(
 	fillchar = 0;
 	for (n = 0; tabtab[n].start != NULL; n++)
 	{
-	    len += vim_strnsize(p, (int)(tabtab[n].start - p));
+	    len += mnv_strnsize(p, (int)(tabtab[n].start - p));
 	    while (col < len)
 		TabPageIdxs[col++] = fillchar;
 	    p = tabtab[n].start;
@@ -1868,7 +1868,7 @@ end_search_hl(void)
     if (screen_search_hl.rm.regprog == NULL)
 	return;
 
-    vim_regfree(screen_search_hl.rm.regprog);
+    mnv_regfree(screen_search_hl.rm.regprog);
     screen_search_hl.rm.regprog = NULL;
 }
 #endif
@@ -2203,7 +2203,7 @@ screen_stop_highlight(void)
 }
 
 /*
- * Reset the colors for a cterm.  Used when leaving Vim.
+ * Reset the colors for a cterm.  Used when leaving MNV.
  * The machine specific code may override this again.
  */
     void
@@ -2850,7 +2850,7 @@ retry:
     win_new_shellsize();    // fit the windows in the new sized shell
 
 #ifdef FEAT_GUI_HAIKU
-    vim_lock_screen();  // be safe, put it here
+    mnv_lock_screen();  // be safe, put it here
 #endif
 
     comp_col();		// recompute columns for shown command and ruler
@@ -2882,7 +2882,7 @@ retry:
 #endif
 
     new_ScreenLines = LALLOC_MULT(schar_T, (Rows + 1) * Columns);
-    vim_memset(new_ScreenLinesC, 0, sizeof(u8char_T *) * MAX_MCO);
+    mnv_memset(new_ScreenLinesC, 0, sizeof(u8char_T *) * MAX_MCO);
     if (enc_utf8)
     {
 	new_ScreenLinesUC = LALLOC_MULT(u8char_T, (Rows + 1) * Columns);
@@ -2971,20 +2971,20 @@ give_up:
 	    // and over again.
 	    done_outofmem_msg = TRUE;
 	}
-	VIM_CLEAR(new_ScreenLines);
-	VIM_CLEAR(new_ScreenLinesUC);
+	MNV_CLEAR(new_ScreenLines);
+	MNV_CLEAR(new_ScreenLinesUC);
 	for (int i = 0; i < p_mco; ++i)
-	    VIM_CLEAR(new_ScreenLinesC[i]);
-	VIM_CLEAR(new_ScreenLines2);
-	VIM_CLEAR(new_ScreenAttrs);
-	VIM_CLEAR(new_ScreenCols);
-	VIM_CLEAR(new_LineOffset);
-	VIM_CLEAR(new_LineWraps);
-	VIM_CLEAR(new_TabPageIdxs);
+	    MNV_CLEAR(new_ScreenLinesC[i]);
+	MNV_CLEAR(new_ScreenLines2);
+	MNV_CLEAR(new_ScreenAttrs);
+	MNV_CLEAR(new_ScreenCols);
+	MNV_CLEAR(new_LineOffset);
+	MNV_CLEAR(new_LineWraps);
+	MNV_CLEAR(new_TabPageIdxs);
 #ifdef FEAT_PROP_POPUP
-	VIM_CLEAR(new_popup_mask);
-	VIM_CLEAR(new_popup_mask_next);
-	VIM_CLEAR(new_popup_transparent);
+	MNV_CLEAR(new_popup_mask);
+	MNV_CLEAR(new_popup_mask_next);
+	MNV_CLEAR(new_popup_transparent);
 #endif
     }
     else
@@ -2996,23 +2996,23 @@ give_up:
 	    new_LineOffset[new_row] = new_row * Columns;
 	    new_LineWraps[new_row] = FALSE;
 
-	    (void)vim_memset(new_ScreenLines + new_row * Columns,
+	    (void)mnv_memset(new_ScreenLines + new_row * Columns,
 				  ' ', (size_t)Columns * sizeof(schar_T));
 	    if (enc_utf8)
 	    {
-		(void)vim_memset(new_ScreenLinesUC + new_row * Columns,
+		(void)mnv_memset(new_ScreenLinesUC + new_row * Columns,
 				   0, (size_t)Columns * sizeof(u8char_T));
 		for (int i = 0; i < p_mco; ++i)
-		    (void)vim_memset(new_ScreenLinesC[i]
+		    (void)mnv_memset(new_ScreenLinesC[i]
 						      + new_row * Columns,
 				   0, (size_t)Columns * sizeof(u8char_T));
 	    }
 	    if (enc_dbcs == DBCS_JPNU)
-		(void)vim_memset(new_ScreenLines2 + new_row * Columns,
+		(void)mnv_memset(new_ScreenLines2 + new_row * Columns,
 				   0, (size_t)Columns * sizeof(schar_T));
-	    (void)vim_memset(new_ScreenAttrs + new_row * Columns,
+	    (void)mnv_memset(new_ScreenAttrs + new_row * Columns,
 				    0, (size_t)Columns * sizeof(sattr_T));
-	    (void)vim_memset(new_ScreenCols + new_row * Columns,
+	    (void)mnv_memset(new_ScreenCols + new_row * Columns,
 				    0, (size_t)Columns * sizeof(colnr_T));
 
 	    /*
@@ -3066,8 +3066,8 @@ give_up:
 	current_ScreenLine = new_ScreenLines + Rows * Columns;
 
 #ifdef FEAT_PROP_POPUP
-	vim_memset(new_popup_mask, 0, Rows * Columns * sizeof(short));
-	vim_memset(new_popup_transparent, 0, Rows * Columns * sizeof(char));
+	mnv_memset(new_popup_mask, 0, Rows * Columns * sizeof(short));
+	mnv_memset(new_popup_transparent, 0, Rows * Columns * sizeof(char));
 #endif
     }
 
@@ -3124,7 +3124,7 @@ give_up:
     clear_TabPageIdxs();
 
 #ifdef FEAT_GUI_HAIKU
-    vim_unlock_screen();
+    mnv_unlock_screen();
 #endif
 
     entered = FALSE;
@@ -3137,7 +3137,7 @@ give_up:
      */
     if (starting == 0 && ++retry_count <= 3)
     {
-	apply_autocmds(EVENT_VIMRESIZED, NULL, NULL, FALSE, curbuf);
+	apply_autocmds(EVENT_MNVRESIZED, NULL, NULL, FALSE, curbuf);
 	// In rare cases, autocommands may have altered Rows or Columns,
 	// jump back to check if we need to allocate the screen again.
 	goto retry;
@@ -3149,20 +3149,20 @@ free_screenlines(void)
 {
     int		i;
 
-    VIM_CLEAR(ScreenLinesUC);
+    MNV_CLEAR(ScreenLinesUC);
     for (i = 0; i < Screen_mco; ++i)
-	VIM_CLEAR(ScreenLinesC[i]);
-    VIM_CLEAR(ScreenLines2);
-    VIM_CLEAR(ScreenLines);
-    VIM_CLEAR(ScreenAttrs);
-    VIM_CLEAR(ScreenCols);
-    VIM_CLEAR(LineOffset);
-    VIM_CLEAR(LineWraps);
-    VIM_CLEAR(TabPageIdxs);
+	MNV_CLEAR(ScreenLinesC[i]);
+    MNV_CLEAR(ScreenLines2);
+    MNV_CLEAR(ScreenLines);
+    MNV_CLEAR(ScreenAttrs);
+    MNV_CLEAR(ScreenCols);
+    MNV_CLEAR(LineOffset);
+    MNV_CLEAR(LineWraps);
+    MNV_CLEAR(TabPageIdxs);
 #ifdef FEAT_PROP_POPUP
-    VIM_CLEAR(popup_mask);
-    VIM_CLEAR(popup_mask_next);
-    VIM_CLEAR(popup_transparent);
+    MNV_CLEAR(popup_mask);
+    MNV_CLEAR(popup_mask_next);
+    MNV_CLEAR(popup_transparent);
 #endif
 }
 
@@ -3266,12 +3266,12 @@ screenclear2(int doclear)
     static void
 lineclear(unsigned off, int width, int attr)
 {
-    (void)vim_memset(ScreenLines + off, ' ', (size_t)width * sizeof(schar_T));
+    (void)mnv_memset(ScreenLines + off, ' ', (size_t)width * sizeof(schar_T));
     if (enc_utf8)
-	(void)vim_memset(ScreenLinesUC + off, 0,
+	(void)mnv_memset(ScreenLinesUC + off, 0,
 					  (size_t)width * sizeof(u8char_T));
-    (void)vim_memset(ScreenAttrs + off, attr, (size_t)width * sizeof(sattr_T));
-    (void)vim_memset(ScreenCols + off, -1, (size_t)width * sizeof(colnr_T));
+    (void)mnv_memset(ScreenAttrs + off, attr, (size_t)width * sizeof(sattr_T));
+    (void)mnv_memset(ScreenCols + off, -1, (size_t)width * sizeof(colnr_T));
 }
 
 /*
@@ -3281,8 +3281,8 @@ lineclear(unsigned off, int width, int attr)
     static void
 lineinvalid(unsigned off, int width)
 {
-    (void)vim_memset(ScreenAttrs + off, -1, (size_t)width * sizeof(sattr_T));
-    (void)vim_memset(ScreenCols + off, -1, (size_t)width * sizeof(colnr_T));
+    (void)mnv_memset(ScreenAttrs + off, -1, (size_t)width * sizeof(sattr_T));
+    (void)mnv_memset(ScreenCols + off, -1, (size_t)width * sizeof(colnr_T));
 }
 
 /*
@@ -3646,7 +3646,7 @@ setcursor_mayforce(int force)
 		curwin->w_p_rl ? ((int)curwin->w_width - curwin->w_wcol
 		    - ((has_mbyte
 			   && (*mb_ptr2cells)(ml_get_cursor()) == 2
-			   && vim_isprintc(gchar_cursor())) ? 2 : 1)) :
+			   && mnv_isprintc(gchar_cursor())) ? 2 : 1)) :
 #endif
 					    curwin->w_wcol));
     }
@@ -4049,7 +4049,7 @@ screen_ins_lines(
 #endif
 
 #ifdef FEAT_GUI_HAIKU
-    vim_lock_screen();
+    mnv_lock_screen();
 #endif
 
 #ifdef FEAT_GUI
@@ -4107,7 +4107,7 @@ screen_ins_lines(
     }
 
 #ifdef FEAT_GUI_HAIKU
-    vim_unlock_screen();
+    mnv_unlock_screen();
 #endif
 
     screen_stop_highlight();
@@ -4277,7 +4277,7 @@ screen_del_lines(
 #endif
 
 #ifdef FEAT_GUI_HAIKU
-    vim_lock_screen();
+    mnv_lock_screen();
 #endif
 
 #ifdef FEAT_GUI
@@ -4343,7 +4343,7 @@ screen_del_lines(
     }
 
 #ifdef FEAT_GUI_HAIKU
-    vim_unlock_screen();
+    mnv_unlock_screen();
 #endif
 
     if (screen_attr != clear_attr)
@@ -4512,12 +4512,12 @@ showmode(void)
 		// window.  Prefer showing edit_submode_extra.
 		length = (Rows - msg_row) * cmdline_width - 3;
 		if (edit_submode_extra != NULL)
-		    length -= vim_strsize(edit_submode_extra);
+		    length -= mnv_strsize(edit_submode_extra);
 		if (length > 0)
 		{
 		    if (edit_submode_pre != NULL)
-			length -= vim_strsize(edit_submode_pre);
-		    if (length - vim_strsize(edit_submode) > 0)
+			length -= mnv_strsize(edit_submode_pre);
+		    if (length - mnv_strsize(edit_submode) > 0)
 		    {
 			if (edit_submode_pre != NULL)
 			    msg_puts_attr((char *)edit_submode_pre, attr);
@@ -4712,7 +4712,7 @@ mouse_has_any(void)
 }
 
 /*
- * Draw the tab pages line at the top of the Vim window.
+ * Draw the tab pages line at the top of the MNV window.
  */
     void
 draw_tabline(void)
@@ -4824,7 +4824,7 @@ draw_tabline(void)
 	    {
 		if (wincount > 1)
 		{
-		    len = vim_snprintf((char *)NameBuff, MAXPATHL, "%d", wincount);
+		    len = mnv_snprintf((char *)NameBuff, MAXPATHL, "%d", wincount);
 		    if (col + len >= Columns - 3)
 			break;
 		    screen_puts_len(NameBuff, len, 0, col,
@@ -4849,7 +4849,7 @@ draw_tabline(void)
 		// Get buffer name in NameBuff[]
 		get_trans_bufname(cwp->w_buffer);
 		shorten_dir(NameBuff);
-		len = vim_strsize(NameBuff);
+		len = mnv_strsize(NameBuff);
 		p = NameBuff;
 		if (has_mbyte)
 		    while (len > room)
@@ -4919,7 +4919,7 @@ draw_tabline(void)
 get_trans_bufname(buf_T *buf)
 {
     if (buf_spname(buf) != NULL)
-	vim_strncpy(NameBuff, buf_spname(buf), MAXPATHL - 1);
+	mnv_strncpy(NameBuff, buf_spname(buf), MAXPATHL - 1);
     else
 	home_replace(buf, buf->b_fname, NameBuff, MAXPATHL, TRUE);
     trans_characters(NameBuff, MAXPATHL);
@@ -5053,7 +5053,7 @@ comp_col(void)
     if (ru_col <= 0)
 	ru_col = 1;
 #ifdef FEAT_EVAL
-    set_vim_var_nr(VV_ECHOSPACE, sc_col - 1);
+    set_mnv_var_nr(VV_ECHOSPACE, sc_col - 1);
 #endif
 }
 
@@ -5211,7 +5211,7 @@ field_value_err(char *errbuf, size_t errbuflen, char *fmt, char_u *field)
 {
     if (errbuf == NULL)
 	return "";
-    vim_snprintf(errbuf, errbuflen, _(fmt), field);
+    mnv_snprintf(errbuf, errbuflen, _(fmt), field);
     return errbuf;
 }
 
@@ -5474,8 +5474,8 @@ set_chars_option(win_T *wp, char_u *value, int is_listchars, int apply,
     {
 	if (is_listchars)
 	{
-	    vim_free(wp->w_lcs_chars.multispace);
-	    vim_free(wp->w_lcs_chars.leadmultispace);
+	    mnv_free(wp->w_lcs_chars.multispace);
+	    mnv_free(wp->w_lcs_chars.leadmultispace);
 	    wp->w_lcs_chars = lcs_chars;
 	}
 	else

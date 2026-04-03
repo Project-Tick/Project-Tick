@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *				GUI/Motif support by Robert Webb
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 // Structure containing all the GUI information
 gui_T gui;
@@ -57,7 +57,7 @@ static int disable_flush = 0;	// If > 0, gui_mch_flush() is disabled.
  * gui_start -- Called when user wants to start the GUI.
  *
  * Careful: This function can be called recursively when there is a ":gui"
- * command in the .gvimrc file.  Only the first call should fork, not the
+ * command in the .gmnvrc file.  Only the first call should fork, not the
  * recursive call.
  */
     void
@@ -71,11 +71,11 @@ gui_start(char_u *arg UNUSED)
     char	*msg = NULL;
 #endif
 
-    old_term = vim_strsave(T_NAME);
+    old_term = mnv_strsave(T_NAME);
 
     settmode(TMODE_COOK);		// stop RAW mode
     if (full_screen)
-	cursor_on();			// needed for ":gui" in .vimrc
+	cursor_on();			// needed for ":gui" in .mnvrc
     full_screen = FALSE;
 
     // If GUI fails to start, then we will recover afterwards
@@ -85,13 +85,13 @@ gui_start(char_u *arg UNUSED)
     ++recursive;
     /*
      * Quit the current process and continue in the child.
-     * Makes "gvim file" disconnect from the shell it was started in.
-     * Don't do this when Vim was started with "-f" or the 'f' flag is present
+     * Makes "gmnv file" disconnect from the shell it was started in.
+     * Don't do this when MNV was started with "-f" or the 'f' flag is present
      * in 'guioptions'.
      * Don't do this when there is a running job, we can only get the status
      * of a child from the parent.
      */
-    if (gui.dofork && !vim_strchr(p_go, GO_FORG) && recursive <= 1
+    if (gui.dofork && !mnv_strchr(p_go, GO_FORG) && recursive <= 1
 # ifdef FEAT_JOB_CHANNEL
 	    && !job_any_running()
 # endif
@@ -106,7 +106,7 @@ gui_start(char_u *arg UNUSED)
 # ifdef EXPERIMENTAL_GUI_CMD
 	    && gui.dofork
 # endif
-	    && !vim_strchr(p_go, GO_FORG)
+	    && !mnv_strchr(p_go, GO_FORG)
 	    && !anyBufIsChanged()
 # ifdef FEAT_JOB_CHANNEL
 	    && !job_any_running()
@@ -166,11 +166,11 @@ gui_start(char_u *arg UNUSED)
 
 #ifdef FEAT_GUI_MSWIN
     // Enable fullscreen mode
-    if (vim_strchr(p_go, GO_FULLSCREEN) != NULL)
+    if (mnv_strchr(p_go, GO_FULLSCREEN) != NULL)
        gui_mch_set_fullscreen(TRUE);
 #endif
 
-    vim_free(old_term);
+    mnv_free(old_term);
 
     // If the GUI started successfully, trigger the GUIEnter event, otherwise
     // the GUIFailed event.
@@ -186,9 +186,9 @@ gui_start(char_u *arg UNUSED)
  * Set_termname() will call gui_init() to start the GUI.
  * Set the "starting" flag, to indicate that the GUI will start.
  *
- * We don't want to open the GUI shell until after we've read .gvimrc,
+ * We don't want to open the GUI shell until after we've read .gmnvrc,
  * otherwise we don't know what font we will use, and hence we don't know
- * what size the shell should be.  So if there are errors in the .gvimrc
+ * what size the shell should be.  So if there are errors in the .gmnvrc
  * file, they will have to go to the terminal: Set full_screen to FALSE.
  * full_screen will be set to TRUE again by a successful termcapinit().
  */
@@ -215,7 +215,7 @@ gui_attempt_start(void)
 	Display	*x11_display;
 
 	if (gui_get_x11_windis(&x11_window, &x11_display) == OK)
-	    set_vim_var_nr(VV_WINDOWID, (long)x11_window);
+	    set_mnv_var_nr(VV_WINDOWID, (long)x11_window);
 # endif
 	// Display error messages in a dialog now.
 	display_errors();
@@ -270,8 +270,8 @@ gui_do_fork(void)
     else if (pid > 0)	    // Parent
     {
 	// Give the child some time to do the setsid(), otherwise the
-	// exit() may kill the child too (when starting gvim from inside a
-	// gvim).
+	// exit() may kill the child too (when starting gmnv from inside a
+	// gmnv).
 	if (!pipe_error)
 	{
 	    // The read returns when the child closes the pipe (or when
@@ -319,7 +319,7 @@ gui_do_fork(void)
 # if defined(HAVE_SETSID) || defined(HAVE_SETPGID)
     /*
      * Change our process group.  On some systems/shells a CTRL-C in the
-     * shell where Vim was started would otherwise kill gvim!
+     * shell where MNV was started would otherwise kill gmnv!
      */
 #  if defined(HAVE_SETSID)
     (void)setsid();
@@ -383,7 +383,7 @@ gui_read_child_pipe(int fd)
 #endif // GUI_MAY_FORK
 
 /*
- * Call this when vim starts up, whether or not the GUI is started
+ * Call this when mnv starts up, whether or not the GUI is started
  */
     void
 gui_prepare(int *argc, char **argv)
@@ -395,7 +395,7 @@ gui_prepare(int *argc, char **argv)
 
 /*
  * Try initializing the GUI and check if it can be started.
- * Used from main() to check early if "vim -g" can start the GUI.
+ * Used from main() to check early if "mnv -g" can start the GUI.
  * Used from gui_init() to prepare for starting the GUI.
  * Returns FAIL or OK.
  */
@@ -474,14 +474,14 @@ gui_init_check(void)
     gui.prev_wrap = -1;
 
 #if defined(FEAT_GUI_GTK) || defined(FEAT_GUI_MSWIN)
-    // Note: gui_set_ligatures() might already have been called e.g. from .vimrc,
+    // Note: gui_set_ligatures() might already have been called e.g. from .mnvrc,
     // and in that case we don't want to overwrite ligatures map that has already
     // been correctly populated (as that would lead to a cleared ligatures maps).
     if (*p_guiligatures == NUL)
 	CLEAR_FIELD(gui.ligatures_map);
 #endif
 
-#if defined(ALWAYS_USE_GUI) || defined(VIMDLL)
+#if defined(ALWAYS_USE_GUI) || defined(MNVDLL)
     result = OK;
 #else
 # ifdef FEAT_GUI_GTK
@@ -490,7 +490,7 @@ gui_init_check(void)
 #  endif
     /*
      * Note: Don't call gtk_init_check() before fork, it will be called after
-     * the fork. When calling it before fork, it make vim hang for a while.
+     * the fork. When calling it before fork, it make mnv hang for a while.
      * See gui_do_fork().
      * Use a simpler check if the GUI window can probably be opened.
      */
@@ -513,10 +513,10 @@ gui_init(void)
     static int	recursive = 0;
 
     /*
-     * It's possible to use ":gui" in a .gvimrc file.  The first half of this
+     * It's possible to use ":gui" in a .gmnvrc file.  The first half of this
      * function will then be executed at the first call, the rest by the
      * recursive call.  This allow the shell to be opened halfway reading a
-     * gvimrc file.
+     * gmnvrc file.
      */
     if (!recursive)
     {
@@ -545,7 +545,7 @@ gui_init(void)
 	 * Set up system-wide default menus.
 	 */
 #if defined(SYS_MENU_FILE) && defined(FEAT_MENU)
-	if (vim_strchr(p_go, GO_NOSYSMENU) == NULL)
+	if (mnv_strchr(p_go, GO_NOSYSMENU) == NULL)
 	{
 	    sys_menu = TRUE;
 	    do_source((char_u *)SYS_MENU_FILE, FALSE, DOSO_NONE, NULL);
@@ -555,7 +555,7 @@ gui_init(void)
 
 	/*
 	 * Switch on the mouse by default, unless the user changed it already.
-	 * This can then be changed in the .gvimrc.
+	 * This can then be changed in the .gmnvrc.
 	 */
 	if (!option_was_set((char_u *)"mouse"))
 	    set_string_option_direct((char_u *)"mouse", -1,
@@ -565,59 +565,59 @@ gui_init(void)
 	 * If -U option given, use only the initializations from that file and
 	 * nothing else.  Skip all initializations for "-U NONE" or "-u NORC".
 	 */
-	if (use_gvimrc != NULL)
+	if (use_gmnvrc != NULL)
 	{
-	    if (STRCMP(use_gvimrc, "NONE") != 0
-		    && STRCMP(use_gvimrc, "NORC") != 0
-		    && do_source(use_gvimrc, FALSE, DOSO_NONE, NULL) != OK)
-		semsg(_(e_cannot_read_from_str), use_gvimrc);
+	    if (STRCMP(use_gmnvrc, "NONE") != 0
+		    && STRCMP(use_gmnvrc, "NORC") != 0
+		    && do_source(use_gmnvrc, FALSE, DOSO_NONE, NULL) != OK)
+		semsg(_(e_cannot_read_from_str), use_gmnvrc);
 	}
 	else
 	{
 	    /*
-	     * Get system wide defaults for gvim, only when file name defined.
+	     * Get system wide defaults for gmnv, only when file name defined.
 	     */
-#ifdef SYS_GVIMRC_FILE
-	    do_source((char_u *)SYS_GVIMRC_FILE, FALSE, DOSO_NONE, NULL);
+#ifdef SYS_GMNVRC_FILE
+	    do_source((char_u *)SYS_GMNVRC_FILE, FALSE, DOSO_NONE, NULL);
 #endif
 
 	    /*
 	     * Try to read GUI initialization commands from the following
 	     * places:
-	     * - environment variable GVIMINIT
-	     * - the user gvimrc file (~/.gvimrc)
-	     * - the second user gvimrc file ($VIM/.gvimrc for Dos)
-	     * - the third user gvimrc file ($VIM/.gvimrc for Amiga)
+	     * - environment variable GMNVINIT
+	     * - the user gmnvrc file (~/.gmnvrc)
+	     * - the second user gmnvrc file ($MNV/.gmnvrc for Dos)
+	     * - the third user gmnvrc file ($MNV/.gmnvrc for Amiga)
 	     * The first that exists is used, the rest is ignored.
 	     */
-	    if (process_env((char_u *)"GVIMINIT", FALSE) == FAIL
-		 && do_source((char_u *)USR_GVIMRC_FILE, TRUE,
-						     DOSO_GVIMRC, NULL) == FAIL
-#ifdef USR_GVIMRC_FILE2
-		 && do_source((char_u *)USR_GVIMRC_FILE2, TRUE,
-						     DOSO_GVIMRC, NULL) == FAIL
+	    if (process_env((char_u *)"GMNVINIT", FALSE) == FAIL
+		 && do_source((char_u *)USR_GMNVRC_FILE, TRUE,
+						     DOSO_GMNVRC, NULL) == FAIL
+#ifdef USR_GMNVRC_FILE2
+		 && do_source((char_u *)USR_GMNVRC_FILE2, TRUE,
+						     DOSO_GMNVRC, NULL) == FAIL
 #endif
-#ifdef USR_GVIMRC_FILE3
-		 && do_source((char_u *)USR_GVIMRC_FILE3, TRUE,
-						     DOSO_GVIMRC, NULL) == FAIL
+#ifdef USR_GMNVRC_FILE3
+		 && do_source((char_u *)USR_GMNVRC_FILE3, TRUE,
+						     DOSO_GMNVRC, NULL) == FAIL
 #endif
 				)
 	    {
-#ifdef USR_GVIMRC_FILE4
-		(void)do_source((char_u *)USR_GVIMRC_FILE4, TRUE,
-							    DOSO_GVIMRC, NULL);
+#ifdef USR_GMNVRC_FILE4
+		(void)do_source((char_u *)USR_GMNVRC_FILE4, TRUE,
+							    DOSO_GMNVRC, NULL);
 #endif
 	    }
 
 	    /*
-	     * Read initialization commands from ".gvimrc" in current
+	     * Read initialization commands from ".gmnvrc" in current
 	     * directory.  This is only done if the 'exrc' option is set.
 	     * Because of security reasons we disallow shell and write
 	     * commands now, except for unix if the file is owned by the user
 	     * or 'secure' option has been reset in environment of global
-	     * ".gvimrc".
-	     * Only do this if GVIMRC_FILE is not the same as USR_GVIMRC_FILE,
-	     * USR_GVIMRC_FILE2, USR_GVIMRC_FILE3 or SYS_GVIMRC_FILE.
+	     * ".gmnvrc".
+	     * Only do this if GMNVRC_FILE is not the same as USR_GMNVRC_FILE,
+	     * USR_GMNVRC_FILE2, USR_GMNVRC_FILE3 or SYS_GMNVRC_FILE.
 	     */
 	    if (p_exrc)
 	    {
@@ -625,35 +625,35 @@ gui_init(void)
 		{
 		    stat_T s;
 
-		    // if ".gvimrc" file is not owned by user, set 'secure'
+		    // if ".gmnvrc" file is not owned by user, set 'secure'
 		    // mode
-		    if (mch_stat(GVIMRC_FILE, &s) || s.st_uid != getuid())
+		    if (mch_stat(GMNVRC_FILE, &s) || s.st_uid != getuid())
 			secure = p_secure;
 		}
 #else
 		secure = p_secure;
 #endif
 
-		if (       fullpathcmp((char_u *)USR_GVIMRC_FILE,
-				(char_u *)GVIMRC_FILE, FALSE, TRUE) != FPC_SAME
-#ifdef SYS_GVIMRC_FILE
-			&& fullpathcmp((char_u *)SYS_GVIMRC_FILE,
-				(char_u *)GVIMRC_FILE, FALSE, TRUE) != FPC_SAME
+		if (       fullpathcmp((char_u *)USR_GMNVRC_FILE,
+				(char_u *)GMNVRC_FILE, FALSE, TRUE) != FPC_SAME
+#ifdef SYS_GMNVRC_FILE
+			&& fullpathcmp((char_u *)SYS_GMNVRC_FILE,
+				(char_u *)GMNVRC_FILE, FALSE, TRUE) != FPC_SAME
 #endif
-#ifdef USR_GVIMRC_FILE2
-			&& fullpathcmp((char_u *)USR_GVIMRC_FILE2,
-				(char_u *)GVIMRC_FILE, FALSE, TRUE) != FPC_SAME
+#ifdef USR_GMNVRC_FILE2
+			&& fullpathcmp((char_u *)USR_GMNVRC_FILE2,
+				(char_u *)GMNVRC_FILE, FALSE, TRUE) != FPC_SAME
 #endif
-#ifdef USR_GVIMRC_FILE3
-			&& fullpathcmp((char_u *)USR_GVIMRC_FILE3,
-				(char_u *)GVIMRC_FILE, FALSE, TRUE) != FPC_SAME
+#ifdef USR_GMNVRC_FILE3
+			&& fullpathcmp((char_u *)USR_GMNVRC_FILE3,
+				(char_u *)GMNVRC_FILE, FALSE, TRUE) != FPC_SAME
 #endif
-#ifdef USR_GVIMRC_FILE4
-			&& fullpathcmp((char_u *)USR_GVIMRC_FILE4,
-				(char_u *)GVIMRC_FILE, FALSE, TRUE) != FPC_SAME
+#ifdef USR_GMNVRC_FILE4
+			&& fullpathcmp((char_u *)USR_GMNVRC_FILE4,
+				(char_u *)GMNVRC_FILE, FALSE, TRUE) != FPC_SAME
 #endif
 			)
-		    do_source((char_u *)GVIMRC_FILE, TRUE, DOSO_GVIMRC, NULL);
+		    do_source((char_u *)GMNVRC_FILE, TRUE, DOSO_GMNVRC, NULL);
 
 		if (secure == 2)
 		    need_wait_return = TRUE;
@@ -679,7 +679,7 @@ gui_init(void)
 	goto error;
 
     // Avoid a delay for an error message that was printed in the terminal
-    // where Vim was started.
+    // where MNV was started.
     emsg_on_display = FALSE;
     msg_scrolled = 0;
     clear_sb_text(TRUE);
@@ -778,7 +778,7 @@ gui_init(void)
 # ifdef FEAT_MENU
 	// If there is no 'm' in 'guioptions' we need to remove the menu now.
 	// It was still there to make F10 work.
-	if (vim_strchr(p_go, GO_MENUS) == NULL)
+	if (mnv_strchr(p_go, GO_MENUS) == NULL)
 	{
 	    --gui.starting;
 	    gui_mch_enable_menu(FALSE);
@@ -803,9 +803,9 @@ gui_init(void)
 	if (balloonEval != NULL)
 	{
 # ifdef FEAT_VARTABS
-	    vim_free(balloonEval->vts);
+	    mnv_free(balloonEval->vts);
 # endif
-	    vim_free(balloonEval);
+	    mnv_free(balloonEval);
 	}
 	balloonEvalForTerm = FALSE;
 # ifdef FEAT_GUI_GTK
@@ -875,9 +875,9 @@ gui_exit(int rc)
 # define NEED_GUI_UPDATE_SCREEN 1
 /*
  * Called when the GUI shell is closed by the user.  If there are no changed
- * files Vim exits, otherwise there will be a dialog to ask the user what to
+ * files MNV exits, otherwise there will be a dialog to ask the user what to
  * do.
- * When this function returns, Vim should NOT exit!
+ * When this function returns, MNV should NOT exit!
  */
     void
 gui_shell_closed(void)
@@ -1467,7 +1467,7 @@ gui_position_components(int total_width UNUSED)
 
 #if defined(FEAT_TOOLBAR) && (defined(FEAT_GUI_MOTIF) \
 	|| defined(FEAT_GUI_HAIKU) || defined(FEAT_GUI_MSWIN))
-    if (vim_strchr(p_go, GO_TOOLBAR) != NULL)
+    if (mnv_strchr(p_go, GO_TOOLBAR) != NULL)
     {
 # if defined(FEAT_GUI_HAIKU)
 	gui_mch_set_toolbar_pos(0, text_area_y,
@@ -1549,7 +1549,7 @@ gui_get_base_height(void)
 	base_height += gui.menu_height;
 # endif
 # ifdef FEAT_TOOLBAR
-    if (vim_strchr(p_go, GO_TOOLBAR) != NULL)
+    if (mnv_strchr(p_go, GO_TOOLBAR) != NULL)
 	base_height += gui.toolbar_height;
 # endif
 # if defined(FEAT_GUI_TABLINE) && (defined(FEAT_GUI_MSWIN) \
@@ -1593,7 +1593,7 @@ again:
     busy = TRUE;
 
 #ifdef FEAT_GUI_HAIKU
-    vim_lock_screen();
+    mnv_lock_screen();
 #endif
 
     // Flush pending output before redrawing
@@ -1622,7 +1622,7 @@ again:
     }
 
 #ifdef FEAT_GUI_HAIKU
-    vim_unlock_screen();
+    mnv_unlock_screen();
 #endif
 
     gui_update_scrollbars(TRUE);
@@ -1673,7 +1673,7 @@ gui_get_shellsize(void)
 }
 
 /*
- * Set the size of the Vim shell according to Rows and Columns.
+ * Set the size of the MNV shell according to Rows and Columns.
  * If "fit_to_display" is TRUE then the size may be reduced to fit the window
  * on the screen.
  * When "mustset" is TRUE the size was set by the user. When FALSE a UI
@@ -1705,7 +1705,7 @@ gui_set_shellsize(
 #if defined(MSWIN) || defined(FEAT_GUI_GTK)
     // If not setting to a user specified size and maximized, calculate the
     // number of characters that fit in the maximized window.
-    if (!mustset && (vim_strchr(p_go, GO_KEEPWINSIZE) != NULL
+    if (!mustset && (mnv_strchr(p_go, GO_KEEPWINSIZE) != NULL
 						       || gui_mch_maximized()))
     {
 	gui_mch_newfont();
@@ -1777,7 +1777,7 @@ gui_set_shellsize(
 
     if (fit_to_display && x >= 0 && y >= 0)
     {
-	// Some window managers put the Vim window left of/above the screen.
+	// Some window managers put the MNV window left of/above the screen.
 	// Only change the position if it wasn't already negative before
 	// (happens on MS-Windows with a secondary monitor).
 	gui_mch_update();
@@ -1902,7 +1902,7 @@ gui_write(
 	if (s[0] == ESC && s[1] == '|')
 	{
 	    p = s + 2;
-	    if (VIM_ISDIGIT(*p) || (*p == '-' && VIM_ISDIGIT(*(p + 1))))
+	    if (MNV_ISDIGIT(*p) || (*p == '-' && MNV_ISDIGIT(*(p + 1))))
 	    {
 		arg1 = getdigits(&p);
 		if (p > s + len)
@@ -2073,7 +2073,7 @@ gui_write(
     gui.dragged_sb = SBAR_NONE;
 #endif
 
-    gui_may_flush();		    // In case vim decides to take a nap
+    gui_may_flush();		    // In case mnv decides to take a nap
 }
 
 /*
@@ -2258,7 +2258,7 @@ gui_screenstr(
 
 	buf[outlen] = NUL; // only to aid debugging
 	retval = gui_outstr_nowrap(buf, outlen, flags, fg, bg, back);
-	vim_free(buf);
+	mnv_free(buf);
 
 	return retval;
     }
@@ -2281,7 +2281,7 @@ gui_screenstr(
 
 	buf[outlen] = NUL; // only to aid debugging
 	retval = gui_outstr_nowrap(buf, outlen, flags, fg, bg, back);
-	vim_free(buf);
+	mnv_free(buf);
 
 	return retval;
     }
@@ -2365,7 +2365,7 @@ gui_outstr_nowrap(
 
 	    slen = MIN(n, (int)sizeof(extra) - 1);
 	}
-	vim_memset(extra, ' ', slen);
+	mnv_memset(extra, ' ', slen);
 	extra[slen] = NUL;
 	s = extra;
 	if (len == 1 && col > 0)
@@ -2753,7 +2753,7 @@ gui_redraw(
      * its location after a scroll.
      * (maybe be more strict even and test col too?)
      * These things may be outside the update/clipping region and reality may
-     * not reflect Vims internal ideas if these operations are clipped away.
+     * not reflect MNVs internal ideas if these operations are clipped away.
      */
     if (gui.row == gui.cursor_row)
 	gui_update_cursor(TRUE, TRUE);
@@ -3372,7 +3372,7 @@ button_set:
 
     /*
      * If we are dragging and the mouse hasn't moved far enough to be on a
-     * different character, then don't send an event to vim.
+     * different character, then don't send an event to mnv.
      */
     if (button == MOUSE_DRAG)
     {
@@ -3464,7 +3464,7 @@ gui_xy2colrow(int x, int y, int *colp)
  * Callback function for when a menu entry has been selected.
  */
     void
-gui_menu_cb(vimmenu_T *menu)
+gui_menu_cb(mnvmenu_T *menu)
 {
     char_u  bytes[sizeof(long_u)];
 
@@ -3533,8 +3533,8 @@ gui_init_which_components(char_u *oldval UNUSED)
 	/*
 	 * Check if the menus go from grey to non-grey or vice versa.
 	 */
-	grey_old = (vim_strchr(oldval, GO_GREY) != NULL);
-	grey_new = (vim_strchr(p_go, GO_GREY) != NULL);
+	grey_old = (mnv_strchr(oldval, GO_GREY) != NULL);
+	grey_new = (mnv_strchr(p_go, GO_GREY) != NULL);
 	if (grey_old != grey_new)
 	{
 	    temp = p_go;
@@ -3759,7 +3759,7 @@ gui_init_which_components(char_u *oldval UNUSED)
     int
 gui_use_tabline(void)
 {
-    return gui.in_use && vim_strchr(p_go, GO_TABLINE) != NULL;
+    return gui.in_use && mnv_strchr(p_go, GO_TABLINE) != NULL;
 }
 
 /*
@@ -3825,7 +3825,7 @@ get_tabline_label(
 
 	printer_page_num = tabpage_index(tp);
 # ifdef FEAT_EVAL
-	set_vim_var_nr(VV_LNUM, printer_page_num);
+	set_mnv_var_nr(VV_LNUM, printer_page_num);
 # endif
 	// It's almost as going to the tabpage, but without autocommands.
 	curtab->tp_firstwin = firstwin;
@@ -3880,7 +3880,7 @@ get_tabline_label(
 	    size_t  NameBufflen = STRLEN(NameBuff);
 
 	    if (wincount > 1)
-		buflen = vim_snprintf_safelen(
+		buflen = mnv_snprintf_safelen(
 		    (char *)buf,
 		    sizeof(buf),
 		    "%d%s ",
@@ -4022,9 +4022,9 @@ gui_find_scrollbar(long ident)
  * For most systems: Put a code in the input buffer for a dragged scrollbar.
  *
  * For Win32, Macintosh and GTK+ 2:
- * Scrollbars seem to grab focus and vim doesn't read the input queue until
+ * Scrollbars seem to grab focus and mnv doesn't read the input queue until
  * you stop dragging the scrollbar.  We get here each time the scrollbar is
- * dragged another pixel, but as far as the rest of vim goes, it thinks
+ * dragged another pixel, but as far as the rest of mnv goes, it thinks
  * we're just hanging in the call to DispatchMessage() in
  * process_message().  The DispatchMessage() call that hangs was passed a
  * mouse button click event in the scrollbar window. -- webb.
@@ -4101,7 +4101,7 @@ gui_drag_scrollbar(scrollbar_T *sb, long value, int still_dragging)
 #ifdef USE_ON_FLY_SCROLL
     // When not allowed to do the scrolling right now, return.
     // This also checked input_available(), but that causes the first click in
-    // a scrollbar to be ignored when Vim doesn't have focus.
+    // a scrollbar to be ignored when MNV doesn't have focus.
     if (dont_scroll)
 	return;
 #endif
@@ -4370,7 +4370,7 @@ gui_update_scrollbars(
 
 #if defined(FEAT_TOOLBAR) && (defined(FEAT_GUI_MSWIN) \
 	|| defined(FEAT_GUI_HAIKU))
-	    if (vim_strchr(p_go, GO_TOOLBAR) != NULL)
+	    if (mnv_strchr(p_go, GO_TOOLBAR) != NULL)
 		y += gui.toolbar_height;
 #endif
 
@@ -4687,14 +4687,14 @@ gui_check_colors(void)
 gui_set_fg_color(char_u *name)
 {
     gui.norm_pixel = gui_get_color(name);
-    hl_set_fg_color_name(vim_strsave(name));
+    hl_set_fg_color_name(mnv_strsave(name));
 }
 
     static void
 gui_set_bg_color(char_u *name)
 {
     gui.back_pixel = gui_get_color(name);
-    hl_set_bg_color_name(vim_strsave(name));
+    hl_set_bg_color_name(mnv_strsave(name));
 }
 
 /*
@@ -4788,7 +4788,7 @@ gui_focus_change(int in_focus)
 {
 /*
  * Skip this code to avoid drawing the cursor when debugging and switching
- * between the debugger window and gvim.
+ * between the debugger window and gmnv.
  */
 #if 1
     gui.in_focus = in_focus;
@@ -4839,9 +4839,9 @@ gui_mouse_focus(int x, int y)
 	    && State != MODE_HITRETURN	// but not hit-return prompt
 	    && msg_scrolled == 0	// no scrolled message
 	    && !need_mouse_correct	// not moving the pointer
-	    && gui.in_focus)		// gvim in focus
+	    && gui.in_focus)		// gmnv in focus
     {
-	// Don't move the mouse when it's left or right of the Vim window
+	// Don't move the mouse when it's left or right of the MNV window
 	if (x < 0 || x > Columns * gui.char_width)
 	    return;
 #ifndef FEAT_MOUSESHAPE
@@ -4921,7 +4921,7 @@ gui_mouse_window(mouse_find_T popup)
 	return NULL;
     gui_mch_getmouse(&x, &y);
 
-    // Only use the mouse when it's on the Vim window
+    // Only use the mouse when it's on the MNV window
     if (x >= 0 && x <= Columns * gui.char_width
 	    && y >= 0 && Y_2_ROW(y) >= tabline_height())
 	return xy2win(x, y, popup);
@@ -4998,7 +4998,7 @@ xy2win(int x, int y, mouse_find_T popup)
 }
 
 /*
- * ":gui" and ":gvim": Change from the terminal version to the GUI version.
+ * ":gui" and ":gmnv": Change from the terminal version to the GUI version.
  * File names may be given to redefine the args list.
  */
     void
@@ -5008,19 +5008,19 @@ ex_gui(exarg_T *eap)
 
     /*
      * Check for "-f" argument: foreground, don't fork.
-     * Also don't fork when started with "gvim -f".
+     * Also don't fork when started with "gmnv -f".
      * Do fork when using "gui -b".
      */
     if (arg[0] == '-'
 	    && (arg[1] == 'f' || arg[1] == 'b')
-	    && (arg[2] == NUL || VIM_ISWHITE(arg[2])))
+	    && (arg[2] == NUL || MNV_ISWHITE(arg[2])))
     {
 	gui.dofork = (arg[1] == 'b');
 	eap->arg = skipwhite(eap->arg + 2);
     }
     if (!gui.in_use)
     {
-#if defined(VIMDLL) && !defined(EXPERIMENTAL_GUI_CMD)
+#if defined(MNVDLL) && !defined(EXPERIMENTAL_GUI_CMD)
 	if (!gui.starting)
 	{
 	    emsg(_(e_gui_cannot_be_used_not_enabled_at_compile_time));
@@ -5075,7 +5075,7 @@ gui_find_bitmap(char_u *name, char_u *buffer, char *ext)
 {
     if (STRLEN(name) > MAXPATHL - 14)
 	return FAIL;
-    vim_snprintf((char *)buffer, MAXPATHL, "bitmaps/%s.%s", name, ext);
+    mnv_snprintf((char *)buffer, MAXPATHL, "bitmaps/%s.%s", name, ext);
     if (do_in_runtimepath(buffer, 0, gfp_setname, buffer) == FAIL
 							    || *buffer == NUL)
 	return FAIL;
@@ -5124,7 +5124,7 @@ display_errors(void)
 	    // Truncate a very long message, it will go off-screen.
 	    if (STRLEN(p) > 2000)
 		STRCPY(p + 2000 - 14, "...(truncated)");
-	    (void)do_dialog(VIM_ERROR, (char_u *)_("Error"),
+	    (void)do_dialog(MNV_ERROR, (char_u *)_("Error"),
 		    p, (char_u *)_("&Ok"), 1, NULL, FALSE);
 	    break;
 	}
@@ -5136,7 +5136,7 @@ display_errors(void)
 /*
  * Return TRUE if still starting up and there is no place to enter text.
  * For GTK and X11 we check if stderr is not a tty, which means we were
- * (probably) started from the desktop.  Also check stdin, "vim >& file" does
+ * (probably) started from the desktop.  Also check stdin, "mnv >& file" does
  * allow typing on stdin.
  */
     int
@@ -5238,7 +5238,7 @@ get_find_dialog_text(
     {
 	int len = (int)STRLEN(text);
 
-	text = vim_strnsave(text, len);
+	text = mnv_strnsave(text, len);
 	if (text != NULL)
 	{
 	    int i;
@@ -5324,10 +5324,10 @@ gui_do_findrepl(
     if (flags & FRD_WHOLE_WORD)
 	GA_CONCAT_LITERAL(&ga, "\\<");
     // escape slash and backslash
-    p = vim_strsave_escaped(find_text, (char_u *)"/\\");
+    p = mnv_strsave_escaped(find_text, (char_u *)"/\\");
     if (p != NULL)
 	ga_concat(&ga, p);
-    vim_free(p);
+    mnv_free(p);
     if (flags & FRD_WHOLE_WORD)
 	GA_CONCAT_LITERAL(&ga, "\\>");
 
@@ -5336,11 +5336,11 @@ gui_do_findrepl(
 	GA_CONCAT_LITERAL(&ga, "/");
 	// Escape slash and backslash.
 	// Also escape tilde and ampersand if 'magic' is set.
-	p = vim_strsave_escaped(repl_text,
+	p = mnv_strsave_escaped(repl_text,
 				p_magic ? (char_u *)"/\\~&" : (char_u *)"/\\");
 	if (p != NULL)
 	    ga_concat(&ga, p);
-	vim_free(p);
+	mnv_free(p);
 	GA_CONCAT_LITERAL(&ga, "/g");
     }
     ga_append(&ga, NUL);
@@ -5349,12 +5349,12 @@ gui_do_findrepl(
     {
 	// Do the replacement when the text at the cursor matches.  Thus no
 	// replacement is done if the cursor was moved!
-	regmatch.regprog = vim_regcomp(ga.ga_data, RE_MAGIC + RE_STRING);
+	regmatch.regprog = mnv_regcomp(ga.ga_data, RE_MAGIC + RE_STRING);
 	regmatch.rm_ic = 0;
 	if (regmatch.regprog != NULL)
 	{
 	    p = ml_get_cursor();
-	    if (vim_regexec_nl(&regmatch, p, (colnr_T)0)
+	    if (mnv_regexec_nl(&regmatch, p, (colnr_T)0)
 						   && regmatch.startp[0] == p)
 	    {
 		// Clear the command line to remove any old "No match"
@@ -5373,7 +5373,7 @@ gui_do_findrepl(
 	    }
 	    else
 		msg(_("No match at cursor, finding next"));
-	    vim_regfree(regmatch.regprog);
+	    mnv_regfree(regmatch.regprog);
 	}
     }
 
@@ -5400,10 +5400,10 @@ gui_do_findrepl(
 	{
 	    // We need to escape '?' if and only if we are searching in the up
 	    // direction
-	    p = vim_strsave_escaped(ga.ga_data, (char_u *)"?");
+	    p = mnv_strsave_escaped(ga.ga_data, (char_u *)"?");
 	    if (p != NULL)
 		(void)do_search(NULL, '?', '?', p, STRLEN(p), 1L, searchflags, NULL);
-	    vim_free(p);
+	    mnv_free(p);
 	}
 
 	msg_scroll = i;	    // don't let an error message set msg_scroll
@@ -5420,7 +5420,7 @@ gui_do_findrepl(
 	need_wait_return = FALSE;	// don't wait for return
     }
 
-    vim_free(ga.ga_data);
+    mnv_free(ga.ga_data);
     busy = FALSE;
     return (ga.ga_len > 0);
 }
@@ -5466,9 +5466,9 @@ drop_callback(void *cookie)
 	    if (mch_chdir((char *)p) == 0)
 		do_shorten = TRUE;
 	}
-	else if (vim_chdirfile(p, "drop") == OK)
+	else if (mnv_chdirfile(p, "drop") == OK)
 	    do_shorten = TRUE;
-	vim_free(p);
+	mnv_free(p);
 	if (do_shorten)
 	{
 	    shorten_fnames(TRUE);
@@ -5531,17 +5531,17 @@ gui_handle_drop(
 		// about which characters need to be escaped.  Only escape the
 		// most common ones.
 # ifdef BACKSLASH_IN_FILENAME
-		p = vim_strsave_escaped(fnames[i], (char_u *)" \t\"|");
+		p = mnv_strsave_escaped(fnames[i], (char_u *)" \t\"|");
 # else
-		p = vim_strsave_escaped(fnames[i], (char_u *)"\\ \t\"|");
+		p = mnv_strsave_escaped(fnames[i], (char_u *)"\\ \t\"|");
 # endif
 		if (p != NULL)
 		    add_to_input_buf_csi(p, (int)STRLEN(p));
-		vim_free(p);
-		vim_free(fnames[i]);
+		mnv_free(p);
+		mnv_free(fnames[i]);
 	    }
 	}
-	vim_free(fnames);
+	mnv_free(fnames);
     }
     else
     {
@@ -5552,7 +5552,7 @@ gui_handle_drop(
 
 	// If Shift held down, remember the first item.
 	if ((modifiers & MOUSE_SHIFT) != 0)
-	    p = vim_strsave(fnames[0]);
+	    p = mnv_strsave(fnames[0]);
 	else
 	    p = NULL;
 
@@ -5562,9 +5562,9 @@ gui_handle_drop(
 	if (count == 1 && (modifiers & MOUSE_SHIFT) != 0
 						     && mch_isdir(fnames[0]))
 	{
-	    vim_free(fnames[0]);
-	    vim_free(fnames);
-	    vim_free(p);
+	    mnv_free(fnames[0]);
+	    mnv_free(fnames);
+	    mnv_free(p);
 	}
 	else
 	    handle_drop(count, fnames, (modifiers & MOUSE_CTRL) != 0,

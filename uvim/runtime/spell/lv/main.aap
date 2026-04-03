@@ -1,10 +1,10 @@
-# Aap recipe for Latvian Vim spell files.
+# Aap recipe for Latvian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = lv_LV.aff lv_LV.dic
@@ -14,10 +14,10 @@ all: $SPELLDIR/lv.iso-8859-13.spl $SPELLDIR/lv.utf-8.spl \
          ../README_lv.txt
 
 $SPELLDIR/lv.iso-8859-13.spl : $FILES
-        :sys env LANG=lt_LT.ISO8859-13 $VIM -u NONE -e -c "mkspell! $SPELLDIR/lv lv_LV" -c q
+        :sys env LANG=lt_LT.ISO8859-13 $MNV -u NONE -e -c "mkspell! $SPELLDIR/lv lv_LV" -c q
 
 $SPELLDIR/lv.utf-8.spl : $FILES
-        :sys env LANG=lt_LT.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/lv lv_LV" -c q
+        :sys env LANG=lt_LT.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/lv lv_LV" -c q
 
 ../README_lv.txt: README_lv_LV.txt
         :copy $source $target
@@ -37,9 +37,9 @@ lv_LV.aff lv_LV.dic: {buildcheck=}
         :sys $UNZIP lv_LV.zip
         :delete lv_LV.zip
         :delete changelog.txt gpl.txt lin-lv_LV_add.sh win-lv_LV_add.bat
-        :sys $VIM lv_LV.aff -u NONE -e -N -c "%s/\r//" -c update -c q
-        :sys $VIM lv_LV.dic -u NONE -e -N -c "%s/\r//" -c update -c q
-        :sys $VIM README_lv_LV.txt -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV lv_LV.aff -u NONE -e -N -c "%s/\r//" -c update -c q
+        :sys $MNV lv_LV.dic -u NONE -e -N -c "%s/\r//" -c update -c q
+        :sys $MNV README_lv_LV.txt -u NONE -e -c "set ff=unix" -c update -c q
         @if not os.path.exists('lv_LV.orig.aff'):
             :copy lv_LV.aff lv_LV.orig.aff
         @if not os.path.exists('lv_LV.orig.dic'):
@@ -49,7 +49,7 @@ lv_LV.aff lv_LV.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -80,4 +80,4 @@ check:
             :delete lv_LV.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

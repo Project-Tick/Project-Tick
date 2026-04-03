@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 /*
  * if_perl.xs: Main code for Perl interface support.
@@ -24,7 +24,7 @@
 # define _USE_32BIT_TIME_T
 #endif
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef _MSC_VER
 // Work around for using MSVC and ActivePerl 5.18.
@@ -72,7 +72,7 @@ const char PL_memory_wrap[] = "panic: memory wrap";
 #endif
 
 /*
- * Work around clashes between Perl and Vim namespace.	proto.h doesn't
+ * Work around clashes between Perl and MNV namespace.	proto.h doesn't
  * include if_perl.pro and perlsfio.pro when IN_PERL_FILE is defined, because
  * we need the CV typedef.  proto.h can't be moved to after including
  * if_perl.h, because we get all sorts of name clashes then.
@@ -93,7 +93,7 @@ const char PL_memory_wrap[] = "panic: memory wrap";
 #endif
 
 
-// Work around for ActivePerl 5.20.3+: Avoid generating (g)vim.lib.
+// Work around for ActivePerl 5.20.3+: Avoid generating (g)mnv.lib.
 #if defined(ACTIVEPERL_VERSION) && (ACTIVEPERL_VERSION >= 2003) \
 	&& defined(MSWIN) && defined(USE_DYNAMIC_LOADING)
 # undef XS_EXTERNAL
@@ -145,7 +145,7 @@ const char PL_memory_wrap[] = "panic: memory wrap";
 
 static PerlInterpreter *perl_interp = NULL;
 static void xs_init(pTHX);
-static void VIM_init(void);
+static void MNV_init(void);
 EXTERN_C void boot_DynaLoader(pTHX_ CV*);
 
 /*
@@ -166,7 +166,7 @@ typedef int perl_key;
 
 # ifdef MSWIN
 #  define PERL_PROC FARPROC
-#  define load_dll vimLoadLib
+#  define load_dll mnvLoadLib
 #  define symbol_from_dll GetProcAddress
 #  define close_dll FreeLibrary
 #  define load_dll_error GetWin32Error
@@ -674,7 +674,7 @@ static struct {
 /*
  * Make all runtime-links of perl.
  *
- * 1. Get module handle using dlopen() or vimLoadLib().
+ * 1. Get module handle using dlopen() or mnvLoadLib().
  * 2. Get pointer to perl function by GetProcAddress.
  * 3. Repeat 2, until get all functions will be used.
  *
@@ -721,7 +721,7 @@ perl_enabled(int verbose)
 #endif /* DYNAMIC_PERL */
 
 #if defined(PERLIO_LAYERS)
-static void vim_IOLayer_init(void);
+static void mnv_IOLayer_init(void);
 #endif
 
 /*
@@ -742,10 +742,10 @@ perl_init(void)
     perl_interp = perl_alloc();
     perl_construct(perl_interp);
     perl_parse(perl_interp, xs_init, argc, argv, 0);
-    perl_call_argv("VIM::bootstrap", (long)G_DISCARD, bootargs);
-    VIM_init();
+    perl_call_argv("MNV::bootstrap", (long)G_DISCARD, bootargs);
+    MNV_init();
 #if defined(PERLIO_LAYERS)
-    vim_IOLayer_init();
+    mnv_IOLayer_init();
 #endif
 }
 
@@ -924,11 +924,11 @@ struct ufuncs cw_funcs = { cur_val, 0, 0 };
 struct ufuncs cb_funcs = { cur_val, 0, 1 };
 
 /*
- * VIM_init(): Vim-specific initialisation.
+ * MNV_init(): MNV-specific initialisation.
  * Make the magical main::curwin and main::curbuf variables
  */
     static void
-VIM_init(void)
+MNV_init(void)
 {
     static char cw[] = "main::curwin";
     static char cb[] = "main::curbuf";
@@ -948,7 +948,7 @@ VIM_init(void)
      * XXX: Only shares the 'Msg' routine (which has to be called
      * like 'Msg(...)').
      */
-    (void)perl_eval_pv( "if ( eval( 'require Safe' ) ) { $VIM::safe = Safe->new(); $VIM::safe->share_from( 'VIM', ['Msg'] ); }", G_DISCARD | G_VOID );
+    (void)perl_eval_pv( "if ( eval( 'require Safe' ) ) { $MNV::safe = Safe->new(); $MNV::safe->share_from( 'MNV', ['Msg'] ); }", G_DISCARD | G_VOID );
 
 }
 
@@ -973,7 +973,7 @@ ex_perl(exarg_T *eap)
     script = (char *)script_get(eap, eap->arg);
     if (eap->skip)
     {
-	vim_free(script);
+	mnv_free(script);
 	return;
     }
 
@@ -983,7 +983,7 @@ ex_perl(exarg_T *eap)
 	if (!perl_enabled(TRUE))
 	{
 	    emsg(_(e_noperl));
-	    vim_free(script);
+	    mnv_free(script);
 	    return;
 	}
 #endif
@@ -1000,12 +1000,12 @@ ex_perl(exarg_T *eap)
     else
     {
 	sv = newSVpv(script, 0);
-	vim_free(script);
+	mnv_free(script);
     }
 
     if (sandbox || secure)
     {
-	safe = perl_get_sv("VIM::safe", FALSE);
+	safe = perl_get_sv("MNV::safe", FALSE);
 # ifndef MAKE_TEST  /* avoid a warning for unreachable code */
 	if (safe == NULL || !SvTRUE(safe))
 	    emsg(_(e_perl_evaluation_forbidden_in_sandbox_without_safe_module));
@@ -1059,7 +1059,7 @@ replace_line(linenr_T *line, linenr_T *end)
 }
 
 static struct ref_map_S {
-    void *vim_ref;
+    void *mnv_ref;
     SV   *perl_ref;
     struct ref_map_S *next;
 } *ref_map = NULL;
@@ -1073,7 +1073,7 @@ ref_map_free(void)
     while (refs) {
 	tofree = refs;
 	refs = refs->next;
-	vim_free(tofree);
+	mnv_free(tofree);
     }
     ref_map = NULL;
 }
@@ -1096,7 +1096,7 @@ ref_map_find_SV(SV *const sv)
 	if (!refs)
 	    return NULL;
 	refs->perl_ref = sv;
-	refs->vim_ref = NULL;
+	refs->mnv_ref = NULL;
 	refs->next = ref_map;
 	ref_map = refs;
     }
@@ -1105,7 +1105,7 @@ ref_map_find_SV(SV *const sv)
 }
 
     static int
-perl_to_vim(SV *sv, typval_T *rettv)
+perl_to_mnv(SV *sv, typval_T *rettv)
 {
     if (SvROK(sv))
 	sv = SvRV(sv);
@@ -1156,13 +1156,13 @@ perl_to_vim(SV *sv, typval_T *rettv)
 	    if ((refs = ref_map_find_SV(sv)) == NULL)
 		return FAIL;
 
-	    if (refs->vim_ref)
-		list = (list_T *) refs->vim_ref;
+	    if (refs->mnv_ref)
+		list = (list_T *) refs->mnv_ref;
 	    else
 	    {
 		if ((list = list_alloc()) == NULL)
 		    return FAIL;
-		refs->vim_ref = list;
+		refs->mnv_ref = list;
 
 		for (size = av_len((AV*)sv); size >= 0; size--)
 		{
@@ -1177,7 +1177,7 @@ perl_to_vim(SV *sv, typval_T *rettv)
 		    item2 = av_fetch((AV *)sv, size, 0);
 
 		    if (item2 == NULL || *item2 == NULL ||
-				    perl_to_vim(*item2, &item->li_tv) == FAIL)
+				    perl_to_mnv(*item2, &item->li_tv) == FAIL)
 			break;
 		}
 	    }
@@ -1198,14 +1198,14 @@ perl_to_vim(SV *sv, typval_T *rettv)
 	    if ((refs = ref_map_find_SV(sv)) == NULL)
 		return FAIL;
 
-	    if (refs->vim_ref)
-		dict = (dict_T *) refs->vim_ref;
+	    if (refs->mnv_ref)
+		dict = (dict_T *) refs->mnv_ref;
 	    else
 	    {
 
 		if ((dict = dict_alloc()) == NULL)
 		    return FAIL;
-		refs->vim_ref = dict;
+		refs->mnv_ref = dict;
 
 		hv_iterinit((HV *)sv);
 
@@ -1229,7 +1229,7 @@ perl_to_vim(SV *sv, typval_T *rettv)
 			break;
 		    }
 		    item2 = hv_iterval((HV *)sv, entry);
-		    if (item2 == NULL || perl_to_vim(item2, &item->di_tv) == FAIL)
+		    if (item2 == NULL || perl_to_mnv(item2, &item->di_tv) == FAIL)
 			break;
 		}
 	    }
@@ -1241,7 +1241,7 @@ perl_to_vim(SV *sv, typval_T *rettv)
 	{
 	    char *val	    = SvPV_nolen(sv);
 	    rettv->v_type   = VAR_STRING;
-	    rettv->vval.v_string = val ? vim_strsave((char_u *)val) : NULL;
+	    rettv->vval.v_string = val ? mnv_strsave((char_u *)val) : NULL;
 	    break;
 	}
     }
@@ -1280,7 +1280,7 @@ do_perleval(char_u *str, typval_T *rettv)
 
 	if (sandbox || secure)
 	{
-	    safe = get_sv("VIM::safe", FALSE);
+	    safe = get_sv("MNV::safe", FALSE);
 # ifndef MAKE_TEST  /* avoid a warning for unreachable code */
 	    if (safe == NULL || !SvTRUE(safe))
 		emsg(_(e_perl_evaluation_forbidden_in_sandbox_without_safe_module));
@@ -1303,7 +1303,7 @@ do_perleval(char_u *str, typval_T *rettv)
 	    sv = eval_pv((char *)str, 0);
 
 	if (sv) {
-	    perl_to_vim(sv, rettv);
+	    perl_to_mnv(sv, rettv);
 	    ref_map_free();
 	    err = SvPV(GvSV(PL_errgv), err_len);
 	}
@@ -1343,8 +1343,8 @@ ex_perldo(exarg_T *eap)
     {
     dSP;
     length = strlen((char *)eap->arg);
-    sv = newSV(length + sizeof("sub VIM::perldo {") - 1 + 1);
-    sv_setpvn(sv, "sub VIM::perldo {", sizeof("sub VIM::perldo {") - 1);
+    sv = newSV(length + sizeof("sub MNV::perldo {") - 1 + 1);
+    sv_setpvn(sv, "sub MNV::perldo {", sizeof("sub MNV::perldo {") - 1);
     sv_catpvn(sv, (char *)eap->arg, length);
     sv_catpvn(sv, "}", 1);
     perl_eval_sv(sv, G_DISCARD | G_NOARGS);
@@ -1365,7 +1365,7 @@ ex_perldo(exarg_T *eap)
 	    break;
 	sv_setpv(GvSV(PL_defgv), (char *)ml_get(i));
 	PUSHMARK(sp);
-	perl_call_pv("VIM::perldo", G_SCALAR | G_EVAL);
+	perl_call_pv("MNV::perldo", G_SCALAR | G_EVAL);
 	str = SvPV(GvSV(PL_errgv), length);
 	if (length || curbuf != was_curbuf || i > curbuf->b_ml.ml_line_count)
 	    break;
@@ -1397,13 +1397,13 @@ err:
 typedef struct {
     struct _PerlIO base;
     int attr;
-} PerlIOVim;
+} PerlIOMNV;
 
     static IV
-PerlIOVim_pushed(pTHX_ PerlIO *f, const char *mode,
+PerlIOMNV_pushed(pTHX_ PerlIO *f, const char *mode,
 		 SV *arg, PerlIO_funcs *tab)
 {
-    PerlIOVim *s = PerlIOSelf(f, PerlIOVim);
+    PerlIOMNV *s = PerlIOSelf(f, PerlIOMNV);
     s->attr = 0;
     if (arg && SvPOK(arg))
 	s->attr = syn_name2attr((char_u *)SvPV_nolen(arg));
@@ -1411,26 +1411,26 @@ PerlIOVim_pushed(pTHX_ PerlIO *f, const char *mode,
 }
 
     static SSize_t
-PerlIOVim_write(pTHX_ PerlIO *f, const void *vbuf, Size_t count)
+PerlIOMNV_write(pTHX_ PerlIO *f, const void *vbuf, Size_t count)
 {
     char_u *str;
-    PerlIOVim * s = PerlIOSelf(f, PerlIOVim);
+    PerlIOMNV * s = PerlIOSelf(f, PerlIOMNV);
 
-    str = vim_strnsave((char_u *)vbuf, count);
+    str = mnv_strnsave((char_u *)vbuf, count);
     if (str == NULL)
 	return 0;
     msg_split((char_u *)str, s->attr);
-    vim_free(str);
+    mnv_free(str);
 
     return (SSize_t)count;
 }
 
-static PERLIO_FUNCS_DECL(PerlIO_Vim) = {
+static PERLIO_FUNCS_DECL(PerlIO_MNV) = {
     sizeof(PerlIO_funcs),
-    "Vim",
-    sizeof(PerlIOVim),
+    "MNV",
+    sizeof(PerlIOMNV),
     PERLIO_K_DUMMY,	/* flags */
-    PerlIOVim_pushed,
+    PerlIOMNV_pushed,
     NULL,		/* popped */
     NULL,		/* open */
     NULL,		/* binmode */
@@ -1439,7 +1439,7 @@ static PERLIO_FUNCS_DECL(PerlIO_Vim) = {
     NULL,		/* dup */
     NULL,		/* read */
     NULL,		/* unread */
-    PerlIOVim_write,
+    PerlIOMNV_write,
     NULL,		/* seek */
     NULL,		/* tell */
     NULL,		/* close */
@@ -1456,13 +1456,13 @@ static PERLIO_FUNCS_DECL(PerlIO_Vim) = {
     NULL		/* set_ptrcnt */
 };
 
-/* Use Vim routine for print operator */
+/* Use MNV routine for print operator */
     static void
-vim_IOLayer_init(void)
+mnv_IOLayer_init(void)
 {
-    PerlIO_define_layer(aTHX_ PERLIO_FUNCS_CAST(&PerlIO_Vim));
-    (void)eval_pv(   "binmode(STDOUT, ':Vim')"
-                "  && binmode(STDERR, ':Vim(ErrorMsg)');", 0);
+    PerlIO_define_layer(aTHX_ PERLIO_FUNCS_CAST(&PerlIO_MNV));
+    (void)eval_pv(   "binmode(STDOUT, ':MNV')"
+                "  && binmode(STDERR, ':MNV(ErrorMsg)');", 0);
 }
 #endif /* PERLIO_LAYERS */
 
@@ -1533,7 +1533,7 @@ IV Perl_sv_2iv_flags(pTHX_ SV *const sv, const I32 flags)
 
 #endif // DYNAMIC_PERL
 
-XS(boot_VIM);
+XS(boot_MNV);
 
     static void
 xs_init(pTHX)
@@ -1542,13 +1542,13 @@ xs_init(pTHX)
 
     /* DynaLoader is a special case */
     newXS("DynaLoader::boot_DynaLoader", boot_DynaLoader, file);
-    newXS("VIM::bootstrap", boot_VIM, file);
+    newXS("MNV::bootstrap", boot_MNV, file);
 }
 
 typedef win_T *	VIWIN;
 typedef buf_T *	VIBUF;
 
-MODULE = VIM	    PACKAGE = VIM
+MODULE = MNV	    PACKAGE = MNV
 
 void
 Msg(text, hl=NULL)
@@ -1601,7 +1601,7 @@ Eval(str)
 	{
 	    XPUSHs(sv_2mortal(newSViv(1)));
 	    XPUSHs(sv_2mortal(newSVpv((char *)value, 0)));
-	    vim_free(value);
+	    mnv_free(value);
 	}
 
 SV*
@@ -1629,7 +1629,7 @@ void
 Buffers(...)
 
     PREINIT:
-    buf_T *vimbuf;
+    buf_T *mnvbuf;
     int i, b;
 
     PPCODE:
@@ -1638,15 +1638,15 @@ Buffers(...)
 	if (GIMME_V == G_SCALAR)
 	{
 	    i = 0;
-	    FOR_ALL_BUFFERS(vimbuf)
+	    FOR_ALL_BUFFERS(mnvbuf)
 		++i;
 
 	    XPUSHs(sv_2mortal(newSViv(i)));
 	}
 	else
 	{
-	    FOR_ALL_BUFFERS(vimbuf)
-		XPUSHs(sv_2mortal(newBUFrv(newSV(0), vimbuf)));
+	    FOR_ALL_BUFFERS(mnvbuf)
+		XPUSHs(sv_2mortal(newBUFrv(newSV(0), mnvbuf)));
 	}
     }
     else
@@ -1669,9 +1669,9 @@ Buffers(...)
 
 	    if (b >= 0)
 	    {
-		vimbuf = buflist_findnr(b);
-		if (vimbuf)
-		    XPUSHs(sv_2mortal(newBUFrv(newSV(0), vimbuf)));
+		mnvbuf = buflist_findnr(b);
+		if (mnvbuf)
+		    XPUSHs(sv_2mortal(newBUFrv(newSV(0), mnvbuf)));
 	    }
 	}
     }
@@ -1680,7 +1680,7 @@ void
 Windows(...)
 
     PREINIT:
-    win_T   *vimwin;
+    win_T   *mnvwin;
     int	    i, w;
 
     PPCODE:
@@ -1690,8 +1690,8 @@ Windows(...)
 	    XPUSHs(sv_2mortal(newSViv(win_count())));
 	else
 	{
-	    FOR_ALL_WINDOWS(vimwin)
-		XPUSHs(sv_2mortal(newWINrv(newSV(0), vimwin)));
+	    FOR_ALL_WINDOWS(mnvwin)
+		XPUSHs(sv_2mortal(newWINrv(newSV(0), mnvwin)));
 	}
     }
     else
@@ -1699,13 +1699,13 @@ Windows(...)
 	for (i = 0; i < items; i++)
 	{
 	    w = (int) SvIV(ST(i));
-	    vimwin = win_find_nr(w);
-	    if (vimwin)
-		XPUSHs(sv_2mortal(newWINrv(newSV(0), vimwin)));
+	    mnvwin = win_find_nr(w);
+	    if (mnvwin)
+		XPUSHs(sv_2mortal(newWINrv(newSV(0), mnvwin)));
 	}
     }
 
-MODULE = VIM	    PACKAGE = VIWIN
+MODULE = MNV	    PACKAGE = VIWIN
 
 void
 DESTROY(win)
@@ -1770,94 +1770,94 @@ Cursor(win, ...)
       update_screen(UPD_NOT_VALID);
     }
 
-MODULE = VIM	    PACKAGE = VIBUF
+MODULE = MNV	    PACKAGE = VIBUF
 
 void
-DESTROY(vimbuf)
-    VIBUF vimbuf;
+DESTROY(mnvbuf)
+    VIBUF mnvbuf;
 
     CODE:
-    if (buf_valid(vimbuf))
-	vimbuf->b_perl_private = 0;
+    if (buf_valid(mnvbuf))
+	mnvbuf->b_perl_private = 0;
 
 void
-Name(vimbuf)
-    VIBUF vimbuf;
+Name(mnvbuf)
+    VIBUF mnvbuf;
 
     PPCODE:
-    if (!buf_valid(vimbuf))
-	vimbuf = curbuf;
+    if (!buf_valid(mnvbuf))
+	mnvbuf = curbuf;
     /* No file name returns an empty string */
-    if (vimbuf->b_fname == NULL)
+    if (mnvbuf->b_fname == NULL)
 	XPUSHs(sv_2mortal(newSVpv("", 0)));
     else
-	XPUSHs(sv_2mortal(newSVpv((char *)vimbuf->b_fname, 0)));
+	XPUSHs(sv_2mortal(newSVpv((char *)mnvbuf->b_fname, 0)));
 
 void
-Number(vimbuf)
-    VIBUF vimbuf;
+Number(mnvbuf)
+    VIBUF mnvbuf;
 
     PPCODE:
-    if (!buf_valid(vimbuf))
-	vimbuf = curbuf;
-    XPUSHs(sv_2mortal(newSViv(vimbuf->b_fnum)));
+    if (!buf_valid(mnvbuf))
+	mnvbuf = curbuf;
+    XPUSHs(sv_2mortal(newSViv(mnvbuf->b_fnum)));
 
 void
-Count(vimbuf)
-    VIBUF vimbuf;
+Count(mnvbuf)
+    VIBUF mnvbuf;
 
     PPCODE:
-    if (!buf_valid(vimbuf))
-	vimbuf = curbuf;
-    XPUSHs(sv_2mortal(newSViv(vimbuf->b_ml.ml_line_count)));
+    if (!buf_valid(mnvbuf))
+	mnvbuf = curbuf;
+    XPUSHs(sv_2mortal(newSViv(mnvbuf->b_ml.ml_line_count)));
 
 void
-Get(vimbuf, ...)
-    VIBUF vimbuf;
+Get(mnvbuf, ...)
+    VIBUF mnvbuf;
 
     PREINIT:
     char_u *line;
     int i;
     long lnum;
     PPCODE:
-    if (buf_valid(vimbuf))
+    if (buf_valid(mnvbuf))
     {
 	for (i = 1; i < items; i++)
 	{
 	    lnum = (long) SvIV(ST(i));
-	    if (lnum > 0 && lnum <= vimbuf->b_ml.ml_line_count)
+	    if (lnum > 0 && lnum <= mnvbuf->b_ml.ml_line_count)
 	    {
-		line = ml_get_buf(vimbuf, lnum, FALSE);
+		line = ml_get_buf(mnvbuf, lnum, FALSE);
 		XPUSHs(sv_2mortal(newSVpv((char *)line, 0)));
 	    }
 	}
     }
 
 void
-Set(vimbuf, ...)
-    VIBUF vimbuf;
+Set(mnvbuf, ...)
+    VIBUF mnvbuf;
 
     PREINIT:
     int i;
     long lnum;
     char *line;
     PPCODE:
-    if (buf_valid(vimbuf))
+    if (buf_valid(mnvbuf))
     {
 	if (items < 3)
-	    croak("Usage: VIBUF::Set(vimbuf, lnum, @lines)");
+	    croak("Usage: VIBUF::Set(mnvbuf, lnum, @lines)");
 
 	lnum = (long) SvIV(ST(1));
 	for(i = 2; i < items; i++, lnum++)
 	{
 	    line = SvPV(ST(i),PL_na);
-	    if (lnum > 0 && lnum <= vimbuf->b_ml.ml_line_count && line != NULL)
+	    if (lnum > 0 && lnum <= mnvbuf->b_ml.ml_line_count && line != NULL)
 	    {
 		aco_save_T	aco;
 
-		/* Set curwin/curbuf for "vimbuf" and save some things. */
-		aucmd_prepbuf(&aco, vimbuf);
-		if (curbuf == vimbuf)
+		/* Set curwin/curbuf for "mnvbuf" and save some things. */
+		aucmd_prepbuf(&aco, mnvbuf);
+		if (curbuf == mnvbuf)
 		{
 		    /* Only when a window was found. */
 		    if (u_savesub(lnum) == OK)
@@ -1868,20 +1868,20 @@ Set(vimbuf, ...)
 
 		    /* restore curwin/curbuf and a few other things */
 		    aucmd_restbuf(&aco);
-		    /* Careful: autocommands may have made "vimbuf" invalid! */
+		    /* Careful: autocommands may have made "mnvbuf" invalid! */
 		}
 	    }
 	}
     }
 
 void
-Delete(vimbuf, ...)
-    VIBUF vimbuf;
+Delete(mnvbuf, ...)
+    VIBUF mnvbuf;
 
     PREINIT:
     long i, lnum = 0, count = 0;
     PPCODE:
-    if (buf_valid(vimbuf))
+    if (buf_valid(mnvbuf))
     {
 	if (items == 2)
 	{
@@ -1904,13 +1904,13 @@ Delete(vimbuf, ...)
 	{
 	    for (i = 0; i < count; i++)
 	    {
-		if (lnum > 0 && lnum <= vimbuf->b_ml.ml_line_count)
+		if (lnum > 0 && lnum <= mnvbuf->b_ml.ml_line_count)
 		{
 		    aco_save_T	aco;
 
-		    /* set curwin/curbuf for "vimbuf" and save some things */
-		    aucmd_prepbuf(&aco, vimbuf);
-		    if (curbuf == vimbuf)
+		    /* set curwin/curbuf for "mnvbuf" and save some things */
+		    aucmd_prepbuf(&aco, mnvbuf);
+		    if (curbuf == mnvbuf)
 		    {
 			/* Only when a window was found. */
 			if (u_savedel(lnum, 1) == OK)
@@ -1922,7 +1922,7 @@ Delete(vimbuf, ...)
 
 			/* restore curwin/curbuf and a few other things */
 			aucmd_restbuf(&aco);
-			/* Careful: autocommands may have made "vimbuf"
+			/* Careful: autocommands may have made "mnvbuf"
 			 * invalid! */
 		    }
 
@@ -1933,32 +1933,32 @@ Delete(vimbuf, ...)
     }
 
 void
-Append(vimbuf, ...)
-    VIBUF vimbuf;
+Append(mnvbuf, ...)
+    VIBUF mnvbuf;
 
     PREINIT:
     int		i;
     long	lnum;
     char	*line;
     PPCODE:
-    if (buf_valid(vimbuf))
+    if (buf_valid(mnvbuf))
     {
 	if (items < 3)
-	    croak("Usage: VIBUF::Append(vimbuf, lnum, @lines)");
+	    croak("Usage: VIBUF::Append(mnvbuf, lnum, @lines)");
 
 	lnum = (long) SvIV(ST(1));
 	for (i = 2; i < items; i++, lnum++)
 	{
 	    line = SvPV(ST(i),PL_na);
-	    if (lnum >= 0 && lnum <= vimbuf->b_ml.ml_line_count && line != NULL)
+	    if (lnum >= 0 && lnum <= mnvbuf->b_ml.ml_line_count && line != NULL)
 	    {
 		aco_save_T	aco;
 
-		/* set curwin/curbuf for "vimbuf" and save some things */
-		aucmd_prepbuf(&aco, vimbuf);
-		if (curbuf == vimbuf)
+		/* set curwin/curbuf for "mnvbuf" and save some things */
+		aucmd_prepbuf(&aco, mnvbuf);
+		if (curbuf == mnvbuf)
 		{
-		    /* Only when a window for "vimbuf" was found. */
+		    /* Only when a window for "mnvbuf" was found. */
 		    if (u_inssub(lnum + 1) == OK)
 		    {
 			ml_append(lnum, (char_u *)line, (colnr_T)0, FALSE);
@@ -1967,7 +1967,7 @@ Append(vimbuf, ...)
 
 		    /* restore curwin/curbuf and a few other things */
 		    aucmd_restbuf(&aco);
-		    /* Careful: autocommands may have made "vimbuf" invalid! */
+		    /* Careful: autocommands may have made "mnvbuf" invalid! */
 		    }
 
 		update_curbuf(UPD_VALID);

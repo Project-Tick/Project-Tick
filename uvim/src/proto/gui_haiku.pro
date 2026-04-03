@@ -3,7 +3,7 @@
 void gui_mch_prepare(int *argc, char **argv);
 int gui_mch_init(void);
 int gui_mch_open(void);
-void gui_mch_exit(int vim_exitcode);
+void gui_mch_exit(int mnv_exitcode);
 int gui_mch_init_check(void);
 void gui_mch_flush(void);
 int gui_mch_is_blink_off(void);
@@ -66,13 +66,13 @@ void gui_mch_mousehide(int hide);
 
 void gui_mch_enable_menu(int flag);
 void gui_mch_set_menu_pos(int x, int y, int w, int h);
-void gui_mch_add_menu(vimmenu_T *menu, int idx);
-void gui_mch_add_menu_item(vimmenu_T *menu, int idx);
-void gui_mch_destroy_menu(vimmenu_T *menu);
-void gui_mch_menu_grey(vimmenu_T *menu, int grey);
-void gui_mch_menu_hidden(vimmenu_T *menu, int hidden);
+void gui_mch_add_menu(mnvmenu_T *menu, int idx);
+void gui_mch_add_menu_item(mnvmenu_T *menu, int idx);
+void gui_mch_destroy_menu(mnvmenu_T *menu);
+void gui_mch_menu_grey(mnvmenu_T *menu, int grey);
+void gui_mch_menu_hidden(mnvmenu_T *menu, int hidden);
 void gui_mch_draw_menubar(void);
-void gui_mch_show_popupmenu(vimmenu_T *menu);
+void gui_mch_show_popupmenu(mnvmenu_T *menu);
 void gui_mch_toggle_tearoffs(int enable);
 
 void clip_mch_request_selection(Clipboard_T *cbd);

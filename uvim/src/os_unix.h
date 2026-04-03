@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 #include <stdio.h>
@@ -57,11 +57,11 @@
 // always use unlink() to remove files
 #ifndef PROTO
 # ifdef VMS
-#  define vim_mkdir(x, y) mkdir((char *)vms_fixfilename(x), y)
+#  define mnv_mkdir(x, y) mkdir((char *)vms_fixfilename(x), y)
 #  define mch_rmdir(x)  delete((char *)vms_fixfilename(x))
 #  define mch_remove(x) delete((char *)vms_fixfilename(x))
 # else
-#  define vim_mkdir(x, y) mkdir((char *)(x), y)
+#  define mnv_mkdir(x, y) mkdir((char *)(x), y)
 #  define mch_rmdir(x) rmdir((char *)(x))
 #  define mch_remove(x) unlink((char *)(x))
 # endif
@@ -187,17 +187,17 @@ typedef struct dsc$descriptor   DESC;
 /*
  * Unix system-dependent file names
  */
-#ifndef SYS_VIMRC_FILE
-# define SYS_VIMRC_FILE "$VIM/vimrc"
+#ifndef SYS_MNVRC_FILE
+# define SYS_MNVRC_FILE "$MNV/mnvrc"
 #endif
-#ifndef SYS_GVIMRC_FILE
-# define SYS_GVIMRC_FILE "$VIM/gvimrc"
+#ifndef SYS_GMNVRC_FILE
+# define SYS_GMNVRC_FILE "$MNV/gmnvrc"
 #endif
 #ifndef DFLT_HELPFILE
-# define DFLT_HELPFILE	"$VIMRUNTIME/doc/help.txt"
+# define DFLT_HELPFILE	"$MNVRUNTIME/doc/help.txt"
 #endif
 #ifndef SYS_MENU_FILE
-# define SYS_MENU_FILE	"$VIMRUNTIME/menu.vim"
+# define SYS_MENU_FILE	"$MNVRUNTIME/menu.mnv"
 #endif
 
 #ifndef USR_EXRC_FILE
@@ -212,79 +212,79 @@ typedef struct dsc$descriptor   DESC;
 # define USR_EXRC_FILE2 "sys$login:_exrc"
 #endif
 
-#ifndef USR_VIMRC_FILE
+#ifndef USR_MNVRC_FILE
 # ifdef VMS
-#  define USR_VIMRC_FILE  "sys$login:.vimrc"
+#  define USR_MNVRC_FILE  "sys$login:.mnvrc"
 # else
-#  define USR_VIMRC_FILE "$HOME/.vimrc"
+#  define USR_MNVRC_FILE "$HOME/.mnvrc"
 # endif
 #endif
 
 
-#if !defined(USR_VIMRC_FILE2)
+#if !defined(USR_MNVRC_FILE2)
 # ifdef VMS
-#  define USR_VIMRC_FILE2	"sys$login:vimfiles/vimrc"
+#  define USR_MNVRC_FILE2	"sys$login:mnvfiles/mnvrc"
 # else
-#  define USR_VIMRC_FILE2	"~/.vim/vimrc"
+#  define USR_MNVRC_FILE2	"~/.mnv/mnvrc"
 # endif
 #endif
 
-#ifndef XDG_VIMRC_FILE
-# define XDG_VIMRC_FILE (mch_getenv((char_u *)"XDG_CONFIG_HOME") \
-	? "$XDG_CONFIG_HOME/vim/vimrc" \
-	: "~/.config/vim/vimrc")
+#ifndef XDG_MNVRC_FILE
+# define XDG_MNVRC_FILE (mch_getenv((char_u *)"XDG_CONFIG_HOME") \
+	? "$XDG_CONFIG_HOME/mnv/mnvrc" \
+	: "~/.config/mnv/mnvrc")
 #endif
 
-#if !defined(USR_VIMRC_FILE3) && defined(VMS)
-# define USR_VIMRC_FILE3 "sys$login:_vimrc"
+#if !defined(USR_MNVRC_FILE3) && defined(VMS)
+# define USR_MNVRC_FILE3 "sys$login:_mnvrc"
 #endif
 
-#ifndef USR_GVIMRC_FILE
+#ifndef USR_GMNVRC_FILE
 # ifdef VMS
-#  define USR_GVIMRC_FILE "sys$login:.gvimrc"
+#  define USR_GMNVRC_FILE "sys$login:.gmnvrc"
 # else
-#  define USR_GVIMRC_FILE "$HOME/.gvimrc"
+#  define USR_GMNVRC_FILE "$HOME/.gmnvrc"
 # endif
 #endif
 
-#ifndef USR_GVIMRC_FILE2
+#ifndef USR_GMNVRC_FILE2
 # ifdef VMS
-#  define USR_GVIMRC_FILE2	"sys$login:vimfiles/gvimrc"
+#  define USR_GMNVRC_FILE2	"sys$login:mnvfiles/gmnvrc"
 # else
-#  define USR_GVIMRC_FILE2	"~/.vim/gvimrc"
+#  define USR_GMNVRC_FILE2	"~/.mnv/gmnvrc"
 # endif
 #endif
 
 #ifdef VMS
-# ifndef USR_GVIMRC_FILE3
-#  define USR_GVIMRC_FILE3  "sys$login:_gvimrc"
+# ifndef USR_GMNVRC_FILE3
+#  define USR_GMNVRC_FILE3  "sys$login:_gmnvrc"
 # endif
 #else
-# ifndef USR_GVIMRC_FILE3
-#  define USR_GVIMRC_FILE3 (mch_getenv("XDG_CONFIG_HOME") \
-	? "$XDG_CONFIG_HOME/vim/gvimrc" \
-	: "~/.config/vim/gvimrc")
+# ifndef USR_GMNVRC_FILE3
+#  define USR_GMNVRC_FILE3 (mch_getenv("XDG_CONFIG_HOME") \
+	? "$XDG_CONFIG_HOME/mnv/gmnvrc" \
+	: "~/.config/mnv/gmnvrc")
 # endif
 #endif
 
-#ifndef VIM_DEFAULTS_FILE
-# define VIM_DEFAULTS_FILE "$VIMRUNTIME/defaults.vim"
+#ifndef MNV_DEFAULTS_FILE
+# define MNV_DEFAULTS_FILE "$MNVRUNTIME/defaults.mnv"
 #endif
 
-#ifndef EVIM_FILE
-# define EVIM_FILE	"$VIMRUNTIME/evim.vim"
+#ifndef EMNV_FILE
+# define EMNV_FILE	"$MNVRUNTIME/emnv.mnv"
 #endif
 
-#ifdef FEAT_VIMINFO
-# ifndef VIMINFO_FILE
+#ifdef FEAT_MNVINFO
+# ifndef MNVINFO_FILE
 #  ifdef VMS
-#   define VIMINFO_FILE  "sys$login:.viminfo"
+#   define MNVINFO_FILE  "sys$login:.mnvinfo"
 #  else
-#   define VIMINFO_FILE "$HOME/.viminfo"
+#   define MNVINFO_FILE "$HOME/.mnvinfo"
 #  endif
 # endif
-# if !defined(VIMINFO_FILE2) && defined(VMS)
-#  define VIMINFO_FILE2 "sys$login:_viminfo"
+# if !defined(MNVINFO_FILE2) && defined(VMS)
+#  define MNVINFO_FILE2 "sys$login:_mnvinfo"
 # endif
 #endif
 
@@ -292,18 +292,18 @@ typedef struct dsc$descriptor   DESC;
 # define EXRC_FILE	".exrc"
 #endif
 
-#ifndef VIMRC_FILE
-# define VIMRC_FILE	".vimrc"
+#ifndef MNVRC_FILE
+# define MNVRC_FILE	".mnvrc"
 #endif
 
 #ifdef FEAT_GUI
-# ifndef GVIMRC_FILE
-#  define GVIMRC_FILE	".gvimrc"
+# ifndef GMNVRC_FILE
+#  define GMNVRC_FILE	".gmnvrc"
 # endif
 #endif
 
 #ifndef SYNTAX_FNAME
-# define SYNTAX_FNAME	"$VIMRUNTIME/syntax/%s.vim"
+# define SYNTAX_FNAME	"$MNVRUNTIME/syntax/%s.mnv"
 #endif
 
 #ifndef DFLT_BDIR
@@ -324,11 +324,11 @@ typedef struct dsc$descriptor   DESC;
 
 #ifndef DFLT_VDIR
 # ifdef VMS
-#  define DFLT_VDIR    "sys$login:vimfiles/view"
+#  define DFLT_VDIR    "sys$login:mnvfiles/view"
 # else
-#  define DFLT_VDIR    "$HOME/.vim/view"       // default for 'viewdir'
+#  define DFLT_VDIR    "$HOME/.mnv/view"       // default for 'viewdir'
 #  define XDG_VDIR     (mch_getenv("XDG_CONFIG_HOME") ? \
-	"$XDG_CONFIG_HOME/vim/view" : "~/.config/vim/view")
+	"$XDG_CONFIG_HOME/mnv/view" : "~/.config/mnv/view")
 # endif
 #endif
 
@@ -337,26 +337,26 @@ typedef struct dsc$descriptor   DESC;
 #ifndef DFLT_RUNTIMEPATH
 
 # ifdef VMS
-#  define DFLT_RUNTIMEPATH      "sys$login:vimfiles,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,sys$login:vimfiles/after"
-#  define CLEAN_RUNTIMEPATH      "$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after"
+#  define DFLT_RUNTIMEPATH      "sys$login:mnvfiles,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,sys$login:mnvfiles/after"
+#  define CLEAN_RUNTIMEPATH      "$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after"
 # else
 #  ifdef RUNTIME_GLOBAL
 #   ifdef RUNTIME_GLOBAL_AFTER
-#    define DFLT_RUNTIMEPATH	"~/.vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER ",~/.vim/after"
-#    define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER ",$XDG_CONFIG_HOME/vim/after"
-#    define XDG_RUNTIMEPATH_FB	"~/.config/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER ",~/.config/vim/after"
-#    define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER
+#    define DFLT_RUNTIMEPATH	"~/.mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER ",~/.mnv/after"
+#    define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER ",$XDG_CONFIG_HOME/mnv/after"
+#    define XDG_RUNTIMEPATH_FB	"~/.config/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER ",~/.config/mnv/after"
+#    define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER
 #   else
-#    define DFLT_RUNTIMEPATH	"~/.vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after,~/.vim/after"
-#    define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after,$XDG_CONFIG_HOME/vim/after"
-#    define XDG_RUNTIMEPATH_FB	"~/.config/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after,~/.config/vim/after"
-#    define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after"
+#    define DFLT_RUNTIMEPATH	"~/.mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after,~/.mnv/after"
+#    define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after,$XDG_CONFIG_HOME/mnv/after"
+#    define XDG_RUNTIMEPATH_FB	"~/.config/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after,~/.config/mnv/after"
+#    define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after"
 #   endif
 #  else
-#   define DFLT_RUNTIMEPATH	"~/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/after"
-#   define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$XDG_CONFIG_HOME/vim/after"
-#   define XDG_RUNTIMEPATH_FB	"~/.config/vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.config/vim/after"
-#   define CLEAN_RUNTIMEPATH	"$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after"
+#   define DFLT_RUNTIMEPATH	"~/.mnv,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,~/.mnv/after"
+#   define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/mnv,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,$XDG_CONFIG_HOME/mnv/after"
+#   define XDG_RUNTIMEPATH_FB	"~/.config/mnv,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,~/.config/mnv/after"
+#   define CLEAN_RUNTIMEPATH	"$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after"
 #  endif
 # endif
 
@@ -403,7 +403,7 @@ typedef struct dsc$descriptor   DESC;
 #  define DFLT_MAXMEM	(5*1024)	 // use up to 5 Mbyte for a buffer
 # endif
 # ifndef DFLT_MAXMEMTOT
-#  define DFLT_MAXMEMTOT	(10*1024)    // use up to 10 Mbyte for Vim
+#  define DFLT_MAXMEMTOT	(10*1024)    // use up to 10 Mbyte for MNV
 # endif
 #endif
 

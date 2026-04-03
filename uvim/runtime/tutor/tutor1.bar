@@ -14,7 +14,7 @@
    OBACHT:
    Die Faudungen,  wost daader finddst,  gaand istig  s Gwort öndern.  Dösswögn
    machst eyn n Böstn glei  ayn Aamum von derer Dautticht daader.  Haast alsnan
-   dös Gwort daader mit n Befelh  "vimtutor bar"  ausherlaassn, ist s ee schoon
+   dös Gwort daader mit n Befelh  "mnvtutor bar"  ausherlaassn, ist s ee schoon
    ayn Aamum.
    Mir kan s  nit oft gnueg  sagn,  däß  der Schainer daader  istig  gan n Üebn
    ghoert.  Also muesst schoon aau die Befelh +ausfüern, wennst ys gscheid ler-
@@ -60,7 +60,7 @@ Non öbbs: Allweil, wenn dyr niemer ganz wol ist, wasst öbbenn druckt haast, af
      haast.
 
   3. Balst önn Eingib seghst, gib dö Faudung ein,  wo di zo dönn Schainer brun-
-     gen haat, also   vimtutor bar<EIN>  .
+     gen haat, also   mnvtutor bar<EIN>  .
 
   4. Also, wenn ietz allsse sitzt, naacherd füerst d Schritt 1 hinst 3 aus, mit
      wasst ys Blat verlaasst und aft wider einhinkimmst.
@@ -149,7 +149,7 @@ Und ganz wichtig:  Dyrweilst dönn Schainer durcharechtst,  versuech nit öbbenn
 
   1. Verlaaß also s Blat, wie s in dyr Letzn 1.1.2. haisst, mit  :q!  !
 
-  2. Gib dö Faudung eyn n Eingib ein:  vim Schainer<EIN>  . 'vim' ruefft s Blat
+  2. Gib dö Faudung eyn n Eingib ein:  mnv Schainer<EIN>  . 'mnv' ruefft s Blat
      auf,  und  'Schainer'  haisst de Dautticht,  wost barechtn willst.  Dyrmit
      haast also ayn Dautticht, dö wost barechtn kanst.
 
@@ -168,7 +168,7 @@ Und ganz wichtig:  Dyrweilst dönn Schainer durcharechtst,  versuech nit öbbenn
   1. Dyr Mörkl werd mit de Tastnen hjkl older aau mit de Pfeiltastnen gsteuert.
               h (winst)     j (ab)        k (auf)       l (zes)
 
-  2. Um önn Wimm umbb n Eingib aus z ginnen, demmlt:  vim DAUTTICHT<EIN>  .
+  2. Um önn Wimm umbb n Eingib aus z ginnen, demmlt:  mnv DAUTTICHT<EIN>  .
 
   3. Willst önn Wimm verlaassn und aau allss verwerffen, aft gibst ein:
                 <ESC>  und  :q!<EIN>  .
@@ -638,7 +638,7 @@ Und wolgmörkt:    Alle Befelh,  wo mit  :  angeend,  müessend mit  <EIN>  bst�
      Nam POCH. Dös kanst leicht überprüeffen, indem däßst ainfach  :!ls   older
      :!dir  zipfst und dyrmit deinn Verzaichnissinhalt seghst.
 
-Anmörkung:  Stigst ietz aus n Wimm aus und gännst n aft wider mit   vim POCH  ,
+Anmörkung:  Stigst ietz aus n Wimm aus und gännst n aft wider mit   mnv POCH  ,
             naacherd wär dö Dautticht ayn gnaune Aamum von n Schainer dyrselbn,
             wiest n gspeichert haast.
 
@@ -882,21 +882,21 @@ Anmörkung:  Sollt klain/grooß bei ayner ainzignen Suech wurst sein,  benutz  \
 
   Dyr Wimm besitzt ayn Wösn Schäftungen,  wo über n Urwimm aushingeend, aber de
   meerern dyrvon  seind in dyr Vorgaab ausgschaltt.  Dyrmitst meerer aus n Wimm
-  ausherholst, erstöllst ayn "vimrc"-Dautticht.
+  ausherholst, erstöllst ayn "mnvrc"-Dautticht.
 
-  1. Lög ayn "vimrc"-Dautticht an;  dös geet  ie naach Betribsgebäu  verschidn:
-     :e ~/.vimrc     für s Unix
-     :e ~/_vimrc     bei n Fenstl
+  1. Lög ayn "mnvrc"-Dautticht an;  dös geet  ie naach Betribsgebäu  verschidn:
+     :e ~/.mnvrc     für s Unix
+     :e ~/_mnvrc     bei n Fenstl
 
-  2. Ietz lis önn Inhalt von dyr Beispil-"vimrc"-Dautticht ein:
-     :r $VIMRUNTIME/vimrc_example.vim
+  2. Ietz lis önn Inhalt von dyr Beispil-"mnvrc"-Dautticht ein:
+     :r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Speichert de Dautticht mit:
      :w
 
   4. Bei n naehstn Gin von n Wimm  ist aft d Füegnussvürherhöbung zuegschalttn.
      Du kanst dyr allss  eyn dö Dautticht  einhinschreibn,  wasst bständig habn
-     willst. Meerer dyrzue erfarst unter:   :help vimrc-intro
+     willst. Meerer dyrzue erfarst unter:   :help mnvrc-intro
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                               Letzn 1.7.3: VERGÖNTZN
 
@@ -932,7 +932,7 @@ Anmörkung:  D Vergöntzung  geit s für aynn Hauffen Faudungen.  Versuech ainfa
 
   4. Zipf  :q  , um s Hilffenster z schliessn.
 
-  5. Erstöll ayn vimrc-Ginschripf  zuer Sicherung von deine Mötzneinstöllungen.
+  5. Erstöll ayn mnvrc-Ginschripf  zuer Sicherung von deine Mötzneinstöllungen.
 
   6. Druck  <STRG>d  , aft däßst naach   :   ayn Faudung  angfangt haast,  dyr-
      mitst mügliche Vergöntzungen anzaigt kriegst.
@@ -952,7 +952,7 @@ Anmörkung:  D Vergöntzung  geit s für aynn Hauffen Faudungen.  Versuech ainfa
   Naehsts aynmaal s Benutzerhandbuech:   :help user-manual
 
   Zo n Weiterlösn und Weiterlernen wör dös Buech daader zo n Empfelhen:
-    Vim - Vi Improved - von n OUALLINE Steve
+    MNV - MNV is not Vim - von n OUALLINE Steve
     Verlaag: New Riders
   Dös ist dös eerste Buech, wo ganz yn n Wimm gwidmt ist, netty dös Grechte für
   Anfönger. Es haat ayn Wösn Beispiler und aau Bilder drinn.
@@ -966,7 +966,7 @@ Anmörkung:  D Vergöntzung  geit s für aynn Hauffen Faudungen.  Versuech ainfa
   De söxte Ausgaab enthaltt aau schoon öbbs über n Wimm.
   Als ietzunde Bezugniss für d Fassung 7  und ayn pfrenge Einfüerung  dient dös
   folgete Buech:
-    vim ge-packt  von n WOBST Reinhard
+    mnv ge-packt  von n WOBST Reinhard
     mitp-Verlaag, Buechlaittzal 978-3-8266-1781-2
   Trotz dyr recht pfrengen Darstöllung  ist s durch seine viln nützlichnen Bei-
   spiler aau für Einsteiger grad grecht.  Probhaeupster und de Beispilschripfer

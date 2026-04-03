@@ -1,9 +1,9 @@
-.TH XXD 1 "Sierpieñ 1996" "Strona podrêcznika dla xxd"
+.TH XXD 1 "Sierpieï¿½ 1996" "Strona podrï¿½cznika dla xxd"
 .\"
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .SH NAZWA
 .I xxd
 \- zrzut pliku do hex lub odwrotnie
@@ -18,109 +18,109 @@
 \-r[evert] [opcje] [plik_we [plik_wy]]
 .SH OPIS
 .I xxd
-tworzy zrzut heksowy podanego pliku lub standardowego wej¶cia.
-Mo¿e tak¿e przetworzyæ zrzut heksowy z powrotem do oryginalnej,
+tworzy zrzut heksowy podanego pliku lub standardowego wejï¿½cia.
+Moï¿½e takï¿½e przetworzyï¿½ zrzut heksowy z powrotem do oryginalnej,
 binarnej formy.
 Podobnie jak
 .BR uuencode (1)
 i
 .BR uudecode (1)
 pozwala na przekazanie danych binarnych w bezpiecznej w poczcie formie
-ASCII, ale ma zalety dekodowania na standardowe wyj¶cie.
-Ponadto mo¿na go u¿yæ do binarnego ³atania plików.
+ASCII, ale ma zalety dekodowania na standardowe wyjï¿½cie.
+Ponadto moï¿½na go uï¿½yï¿½ do binarnego ï¿½atania plikï¿½w.
 .SH OPCJE
-Je¶li nie podano
+Jeï¿½li nie podano
 .I plik_we
-xxd czyta ze standardowego wej¶cia.
-Je¶li okre¶lono
+xxd czyta ze standardowego wejï¿½cia.
+Jeï¿½li okreï¿½lono
 .I plik_we
 jako znak
 .RB \` \- '
-wtedy dane wej¶ciowe czytane s± ze standardowego wej¶cia.
-Je¶li nie podano
+wtedy dane wejï¿½ciowe czytane sï¿½ ze standardowego wejï¿½cia.
+Jeï¿½li nie podano
 .I plik_wy
 (lub podano jako
 .RB \` \- '
-), wyniki s± wysy³ane na standardowe wyj¶cie.
+), wyniki sï¿½ wysyï¿½ane na standardowe wyjï¿½cie.
 .PP
-Pamiêtaj, ¿e u¿yty zosta³ "leniwy" parser, który nie sprawdza wiêcej
-ni¿ pierwszej litery opcji (o ile ta nie zosta³a obdarzona
-parametrem). Spacje miêdzy jedno literowymi opcjami i ich parametrami
-s± opcjonalne. Parametry opcji mog± byæ okre¶lone w notacji dziesiêtnej,
+Pamiï¿½taj, ï¿½e uï¿½yty zostaï¿½ "leniwy" parser, ktï¿½ry nie sprawdza wiï¿½cej
+niï¿½ pierwszej litery opcji (o ile ta nie zostaï¿½a obdarzona
+parametrem). Spacje miï¿½dzy jedno literowymi opcjami i ich parametrami
+sï¿½ opcjonalne. Parametry opcji mogï¿½ byï¿½ okreï¿½lone w notacji dziesiï¿½tnej,
 heksadecymalej lub oktalnej.
-St±d
+Stï¿½d
 .BR \-c8 ,
 .BR "\-c 8" ,
 .B \-c 010
 i
 .B \-cols 8
-s± sobie równowa¿ne.
+sï¿½ sobie rï¿½wnowaï¿½ne.
 .PP
 .TP
 .IR \-a " | " \-autoskip
-prze³±cza autoskip: pojedyncza '*' zastêpuje linie nul. Domy¶lnie
-wy³±czone.
+przeï¿½ï¿½cza autoskip: pojedyncza '*' zastï¿½puje linie nul. Domyï¿½lnie
+wyï¿½ï¿½czone.
 .TP
 .IR \-b " | " \-bits
-Prze³±cza do zrzutu bitowego (cyfr binarnych) zamiast heksowego.
+Przeï¿½ï¿½cza do zrzutu bitowego (cyfr binarnych) zamiast heksowego.
 Opcja ta zapisuje oktety jako osiem cyfr 1 lub 0 zamiast normalnego
-zrzutu heksowego. Ka¿da linia jest poprzedzona przez
-heksadecymalny numer linii a po nim jego reprezentacj± w ascii (lub
-ebcdic). Opcje linii poleceñ \-p, \-i nie dzia³aj± w tym
+zrzutu heksowego. Kaï¿½da linia jest poprzedzona przez
+heksadecymalny numer linii a po nim jego reprezentacjï¿½ w ascii (lub
+ebcdic). Opcje linii poleceï¿½ \-p, \-i nie dziaï¿½ajï¿½ w tym
 trybie.
 .TP
 .IR "\-c cols " | " \-cols cols"
-formatuje liczbê
+formatuje liczbï¿½
 .RI < cols >
-oktetów na wiersz. Domy¶lnie 16 (\-i: 12, \-ps: 30, \-b: 6). Maks.
+oktetï¿½w na wiersz. Domyï¿½lnie 16 (\-i: 12, \-ps: 30, \-b: 6). Maks.
 256.
 .TP
 .IR \-E " | "\-EBCDIC
-zmienia kodowanie znaków w prawej kolumnie z ASCII na EBCDIC.
-Nie zmienia prezentacji heksadecymalej. Opcja nie dzia³a w po³±czeniu
+zmienia kodowanie znakï¿½w w prawej kolumnie z ASCII na EBCDIC.
+Nie zmienia prezentacji heksadecymalej. Opcja nie dziaï¿½a w poï¿½ï¿½czeniu
 z \-r, \-p lub \-i.
 .TP
-.IR "\-g bajtów " | " \-groupsize bajtów"
-oddziela wyj¶cie ka¿dych
-.RI < bajtów >
-bajtów (dwa heksowe znaki lub osiem cyfr binarnych ka¿de) przez bia³y
+.IR "\-g bajtï¿½w " | " \-groupsize bajtï¿½w"
+oddziela wyjï¿½cie kaï¿½dych
+.RI < bajtï¿½w >
+bajtï¿½w (dwa heksowe znaki lub osiem cyfr binarnych kaï¿½de) przez biaï¿½y
 znak.
-Okre¶l
+Okreï¿½l
 .I \-g 0
-by wy³±czyæ grupowanie.
-.RI < Bajtów "> domy¶lnie jest " 2
-w trybie normalnym i \fI1\fP w trybie bitów.
-Grupowanie nie dzia³a w trybie postscriptu lub w³±czania.
+by wyï¿½ï¿½czyï¿½ grupowanie.
+.RI < Bajtï¿½w "> domyï¿½lnie jest " 2
+w trybie normalnym i \fI1\fP w trybie bitï¿½w.
+Grupowanie nie dziaï¿½a w trybie postscriptu lub wï¿½ï¿½czania.
 .TP
 .IR \-h " | " \-help
-wypisuje podsumowanie dostêpnych poleceñ i koñczy dzia³anie. Nie
-zostaje przeprowadzony ¿aden zrzut.
+wypisuje podsumowanie dostï¿½pnych poleceï¿½ i koï¿½czy dziaï¿½anie. Nie
+zostaje przeprowadzony ï¿½aden zrzut.
 .TP
 .IR \-i " | " \-include
-wyj¶cie w stylu w³±czania pliku w C. Zostaje zapisana kompletna
-statyczna tablica definicji (nazwana wed³ug pliku wej¶cia), o ile xxd
-nie czyta ze standardowego wej¶cia.
+wyjï¿½cie w stylu wï¿½ï¿½czania pliku w C. Zostaje zapisana kompletna
+statyczna tablica definicji (nazwana wedï¿½ug pliku wejï¿½cia), o ile xxd
+nie czyta ze standardowego wejï¿½cia.
 .TP
 .IR "\-l len " | "\-len len"
-zakoñcz po wypisaniu
+zakoï¿½cz po wypisaniu
 .RI < len >
-oktetów.
+oktetï¿½w.
 .TP
 .IR \-p " | " \-ps " | " \-postscript " | " \-plain
-wyj¶cie w postcriptowym ci±g³ym stylu zrzutu heksowego. Znany tak¿e
-jako zwyk³y zrzut heksowy.
+wyjï¿½cie w postcriptowym ciï¿½gï¿½ym stylu zrzutu heksowego. Znany takï¿½e
+jako zwykï¿½y zrzut heksowy.
 .TP
 .IR \-r " | " \-revert
-odwróæ operacjê: przekonwertuj (lub za³ataj) zrzut heksowy w binarkê.
-Je¶li nie zapisuje na standardowe wyj¶cie, xxd zapisze plik wyj¶ciowy
-bez obcinania go. U¿yj kombinacji
+odwrï¿½ï¿½ operacjï¿½: przekonwertuj (lub zaï¿½ataj) zrzut heksowy w binarkï¿½.
+Jeï¿½li nie zapisuje na standardowe wyjï¿½cie, xxd zapisze plik wyjï¿½ciowy
+bez obcinania go. Uï¿½yj kombinacji
 .I \-r \-p
-by odczytaæ zwyk³y zrzut heksadecymalny bez numerów linii
-i okre¶lonego uk³adu kolumn. Dodatkowe bia³e znaki i ³amanie wierszy
-s± wszêdzie dozwolone.
+by odczytaï¿½ zwykï¿½y zrzut heksadecymalny bez numerï¿½w linii
+i okreï¿½lonego ukï¿½adu kolumn. Dodatkowe biaï¿½e znaki i ï¿½amanie wierszy
+sï¿½ wszï¿½dzie dozwolone.
 .TP
 .I \-seek offset
-Kiedy u¿yty po
+Kiedy uï¿½yty po
 .IR \-r :
 odwraca z
 .RI < offset >
@@ -129,42 +129,42 @@ dodanym do pozycji w pliku odnalezionym w zrzucie heksowym.
 .I \-s [+][\-]seek
 zaczyna na
 .RI < seek >
-bajtów bezwglêdnego (lub wzglêdnego) offsetu pliku wej¶ciowego.
-\fI+ \fRwskazuje, ¿e seek jest wzglêdne do bie¿±cej pozycji pliku (bez
-znaczenia je¶li nie wczytuje ze standardowego wej¶cia). \fI\- \fRwskazuje
-¿e seek powinno byæ o tyle znaków od koñca wej¶cia (lub je¶li
-po³±czone z \fI+\fR: przed bie¿±c± pozycj± pliku na standardowym
-wej¶ciu).
-Bez opcji \-s xxd zaczyna od bie¿±cej pozycji w pliku.
+bajtï¿½w bezwglï¿½dnego (lub wzglï¿½dnego) offsetu pliku wejï¿½ciowego.
+\fI+ \fRwskazuje, ï¿½e seek jest wzglï¿½dne do bieï¿½ï¿½cej pozycji pliku (bez
+znaczenia jeï¿½li nie wczytuje ze standardowego wejï¿½cia). \fI\- \fRwskazuje
+ï¿½e seek powinno byï¿½ o tyle znakï¿½w od koï¿½ca wejï¿½cia (lub jeï¿½li
+poï¿½ï¿½czone z \fI+\fR: przed bieï¿½ï¿½cï¿½ pozycjï¿½ pliku na standardowym
+wejï¿½ciu).
+Bez opcji \-s xxd zaczyna od bieï¿½ï¿½cej pozycji w pliku.
 .TP
 .I \-u
-u¿yj wielkich liter w znakach heksowych. Domy¶lnie s± ma³e znaki.
+uï¿½yj wielkich liter w znakach heksowych. Domyï¿½lnie sï¿½ maï¿½e znaki.
 .TP
 .IR \-v " | " \-version
-pokazuje wersjê programu.
-.SH OSTRZE¯ENIA
+pokazuje wersjï¿½ programu.
+.SH OSTRZEï¿½ENIA
 .PP
 .I xxd \-r
-potrafi okre¶liæ numery linii. Je¶li plik wyj¶cia jest mo¿liwy do
-przeszukania wtedy numery linii na pocz±tku wiersza zrzutu heksowego
-mog± byæ nie po kolei, mo¿e brakowaæ wierszy lub nak³adaæ siê na
-siebie. W takich wypadkach xxd u¿yje lseek(2) by znale¼æ nastêpn±
-pozycjê. Je¶li plik wyj¶ciowy nie jest mo¿liwy do przeszukania mo¿liwe
-s± tylko przerwy, które zostan± wype³nione bajtami null.
+potrafi okreï¿½liï¿½ numery linii. Jeï¿½li plik wyjï¿½cia jest moï¿½liwy do
+przeszukania wtedy numery linii na poczï¿½tku wiersza zrzutu heksowego
+mogï¿½ byï¿½ nie po kolei, moï¿½e brakowaï¿½ wierszy lub nakï¿½adaï¿½ siï¿½ na
+siebie. W takich wypadkach xxd uï¿½yje lseek(2) by znaleï¿½ï¿½ nastï¿½pnï¿½
+pozycjï¿½. Jeï¿½li plik wyjï¿½ciowy nie jest moï¿½liwy do przeszukania moï¿½liwe
+sï¿½ tylko przerwy, ktï¿½re zostanï¿½ wypeï¿½nione bajtami null.
 .PP
 .I xxd \-r
-nigdy nie podaje b³êdów analizy. ¦mieci s± po cichu ignorowane.
+nigdy nie podaje bï¿½ï¿½dï¿½w analizy. ï¿½mieci sï¿½ po cichu ignorowane.
 .PP
-W czasie edycji zrzutów heksowych, proszê zauwa¿yæ ¿e
+W czasie edycji zrzutï¿½w heksowych, proszï¿½ zauwaï¿½yï¿½ ï¿½e
 .I xxd \-r
-pomija wszystko w linii wej¶cia po odczytaniu wystarczaj±cej ilo¶ci
-kolumn danych heksadecymalnych (zobacz opcjê \-c). Oznacza to tak¿e,
-¿e zmiany w drukowanych kolumnach ascii (lub ebcdic) s± zawsze
-ignorowane. Odwrócenie zwyk³ego (lub postscriptowego) stylu zrzutu
-poprzez xxd \-r \-p nie zale¿y od kolejno¶ci kolumn. Tutaj cokolwiek
-co wygl±da jak para znaków heks jest interpretowane.
+pomija wszystko w linii wejï¿½cia po odczytaniu wystarczajï¿½cej iloï¿½ci
+kolumn danych heksadecymalnych (zobacz opcjï¿½ \-c). Oznacza to takï¿½e,
+ï¿½e zmiany w drukowanych kolumnach ascii (lub ebcdic) sï¿½ zawsze
+ignorowane. Odwrï¿½cenie zwykï¿½ego (lub postscriptowego) stylu zrzutu
+poprzez xxd \-r \-p nie zaleï¿½y od kolejnoï¿½ci kolumn. Tutaj cokolwiek
+co wyglï¿½da jak para znakï¿½w heks jest interpretowane.
 .PP
-Zauwa¿ ró¿nicê miêdzy
+Zauwaï¿½ rï¿½nicï¿½ miï¿½dzy
 .br
 \fI% xxd \-i plik\fR
 .br
@@ -173,22 +173,22 @@ i
 \fI% xxd \-i < plik\fR
 .PP
 .I xxd \-s \+seek
-mo¿e byæ ró¿ne od
+moï¿½e byï¿½ rï¿½ne od
 .IR "xxd \-s seek" ,
-poniewa¿ lseek(2) jest u¿yty do "przewiniêcie" wej¶cia. '+' stanowi
-ró¿nicê je¶li ¼ród³em wej¶cia jest standardowe wej¶cie i je¶li pozycja
-w pliku ze standardowego wej¶cia nie jest pocz±tkiem pliku w chwili
-uruchomienia xxd. Nastêpuj±ce przyk³ady mog± wyja¶niæ (lub bardziej
-zmyliæ!)...
+poniewaï¿½ lseek(2) jest uï¿½yty do "przewiniï¿½cie" wejï¿½cia. '+' stanowi
+rï¿½nicï¿½ jeï¿½li ï¿½rï¿½dï¿½em wejï¿½cia jest standardowe wejï¿½cie i jeï¿½li pozycja
+w pliku ze standardowego wejï¿½cia nie jest poczï¿½tkiem pliku w chwili
+uruchomienia xxd. Nastï¿½pujï¿½ce przykï¿½ady mogï¿½ wyjaï¿½niï¿½ (lub bardziej
+zmyliï¿½!)...
 .PP
-Przewiñ standardowe wej¶cie przed przeczytaniem; potrzebne poniewa¿
-`cat' ju¿ odczyta³ do koñca standardowego wej¶cia.
+Przewiï¿½ standardowe wejï¿½cie przed przeczytaniem; potrzebne poniewaï¿½
+`cat' juï¿½ odczytaï¿½ do koï¿½ca standardowego wejï¿½cia.
 .br
-\fI% sh \-c 'cat > zwyk³a_kopia; xxd \-s 0 > hex_kopia' < plik\fR
+\fI% sh \-c 'cat > zwykï¿½a_kopia; xxd \-s 0 > hex_kopia' < plik\fR
 .PP
-Zrzut heksowy od pozycji pliku 0x480 (=1024+128) w przód.
-Znak `+' oznacza "wzglêdny wobec bie¿±cej pozycji", st±d `128' dodaje
-do 1k gdzie zakoñczy³ dd.
+Zrzut heksowy od pozycji pliku 0x480 (=1024+128) w przï¿½d.
+Znak `+' oznacza "wzglï¿½dny wobec bieï¿½ï¿½cej pozycji", stï¿½d `128' dodaje
+do 1k gdzie zakoï¿½czyï¿½ dd.
 .br
 \fI% sh \-c 'dd of=plain_snippet bs=1k count=1; xxd \-s +128 > hex_snippet' < file\fR
 .PP
@@ -196,27 +196,27 @@ Zrzut heksowy od pozycji pliku 0x100 ( = 1024\-768) dalej.
 .br
 \fI% sh \-c 'dd of=plain_snippet bs=1k count=1; xxd \-s +-768 > hex_snippet' < file\fR
 .PP
-Jakkolwiek, jest to rzadka sytuacja i u¿ycie `+' jest rzadko
+Jakkolwiek, jest to rzadka sytuacja i uï¿½ycie `+' jest rzadko
 potrzebne.
-Autor woli monitorowaæ dzia³anie xxd przy pomocy strace(1) lub truss(1) kiedy \-s jest u¿yte.
-.SH PRZYK£ADY
+Autor woli monitorowaï¿½ dziaï¿½anie xxd przy pomocy strace(1) lub truss(1) kiedy \-s jest uï¿½yte.
+.SH PRZYKï¿½ADY
 .PP
 .br
-Wypisz wszystko z wyj±tkiem pierwszych trzech linii (heksowe 0x30 bajtów)
+Wypisz wszystko z wyjï¿½tkiem pierwszych trzech linii (heksowe 0x30 bajtï¿½w)
 .B pliku
 \.
 .br
 \fI% xxd \-s 0x30 plik\fR
 .PP
 .br
-Wypisz trzy linie (heksowe 0x30 bajtów) z koñca
+Wypisz trzy linie (heksowe 0x30 bajtï¿½w) z koï¿½ca
 .B pliku
 \.
 .br
 \fI% xxd \-s \-0x30 plik\fR
 .PP
 .br
-Wypisz 120 bajtów jako ci±g³y zrzut heksowy z 20 oktetami na liniê.
+Wypisz 120 bajtï¿½w jako ciï¿½gï¿½y zrzut heksowy z 20 oktetami na liniï¿½.
 .br
 \fI% xxd \-l 120 \-ps \-c 20 xxd.1\fR
 .br
@@ -234,8 +234,8 @@ Wypisz 120 bajtów jako ci±g³y zrzut heksowy z 20 oktetami na liniê.
 .br
 
 .br
-Zrzut heksowy z pierwszymi 120 bajtami tej strony podrêcznika z 12
-oktetami na liniê.
+Zrzut heksowy z pierwszymi 120 bajtami tej strony podrï¿½cznika z 12
+oktetami na liniï¿½.
 .br
 \fI% xxd \-l 120 \-c 12 xxd.1\fR
 .br
@@ -260,7 +260,7 @@ oktetami na liniê.
 000006c: 3c74 6f6e 7940 7363 746e 7567  <tony@sctnug
 .PP
 .br
-Poka¿ tylko datê z pliku xxd.1
+Pokaï¿½ tylko datï¿½ z pliku xxd.1
 .br
 \fI% xxd \-s 0x36 \-l 13 \-c 13 xxd.1\fR
 .br
@@ -271,13 +271,13 @@ Kopiuj
 .B plik_we
 do
 .B plik_wy
-i poprzed¼ 100 bajtami o warto¶ci 0x00.
+i poprzedï¿½ 100 bajtami o wartoï¿½ci 0x00.
 .br
 \fI% xxd plik_we | xxd \-r \-s 100 \> plik_wy\fR
 .br
 
 .br
-Podmieñ datê w pliku xxd.1
+Podmieï¿½ datï¿½ w pliku xxd.1
 .br
 \fI% echo '0000037: 3574 68' | xxd \-r \- xxd.1\fR
 .br
@@ -286,8 +286,8 @@ Podmieñ datê w pliku xxd.1
 0000036: 3235 7468 204d 6179 2031 3939 36  25th May 1996
 .PP
 .br
-Utwórz plik o 65537 bajtach, wszystkich równych 0x00,
-z wyj±tkiem ostatniego, który ma byæ 'A' (hex 0x41).
+Utwï¿½rz plik o 65537 bajtach, wszystkich rï¿½wnych 0x00,
+z wyjï¿½tkiem ostatniego, ktï¿½ry ma byï¿½ 'A' (hex 0x41).
 .br
 \fI% echo '010000: 41' | xxd \-r \> plik\fR
 .PP
@@ -302,28 +302,28 @@ Zrzut heksowy tego pliku z autoskipem.
 .br
 000fffc: 0000 0000 40                   ....A
 .PP
-Utwórz jedno bajtowy plik zawieraj±cy pojedncz± literê 'A'.
+Utwï¿½rz jedno bajtowy plik zawierajï¿½cy pojednczï¿½ literï¿½ 'A'.
 Liczba po '\-r \-s' dodaje numery linii znalezione w pliku;
-w efekcie poprzedzaj±ce bajty s± ukryte.
+w efekcie poprzedzajï¿½ce bajty sï¿½ ukryte.
 .br
 \fI% echo '010000: 41' | xxd \-r \-s \-0x10000 \> plik\fR
 .PP
-U¿yj xxd jako filtra wewn±trz edytora takiego jak
-.B vim(1)
-aby uzyskaæ zrzut heksowy zakresu miêdzy markerami `a' i `z'.
+Uï¿½yj xxd jako filtra wewnï¿½trz edytora takiego jak
+.B mnv(1)
+aby uzyskaï¿½ zrzut heksowy zakresu miï¿½dzy markerami `a' i `z'.
 .br
 \fI:'a,'z!xxd\fR
 .PP
-U¿yj xxd jako filtra wewn±trz edytora takiego jak
-.B vim(1)
-by odzyskaæ binarny zrzut heksowy zakresu pomiêdzy markerami `a'
+Uï¿½yj xxd jako filtra wewnï¿½trz edytora takiego jak
+.B mnv(1)
+by odzyskaï¿½ binarny zrzut heksowy zakresu pomiï¿½dzy markerami `a'
 i `z'.
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
-U¿yj xxd jako filtra wewn±trz edytora takiego jak
-.B vim(1)
-by odzyskaæ jedn± liniê zrzutu heksowego. Przejd¼ z kursorem na liniê
+Uï¿½yj xxd jako filtra wewnï¿½trz edytora takiego jak
+.B mnv(1)
+by odzyskaï¿½ jednï¿½ liniï¿½ zrzutu heksowego. Przejdï¿½ z kursorem na liniï¿½
 i wpisz:
 .br
 \fI!!xxd \-r\fR
@@ -336,38 +336,38 @@ Odczytaj pojednycze znaki z portu szeregowego
 .br
 \fI% echo \-n foo > /dev/term/b\fR
 .PP
-.SH "ZWRACANE WARTO¦CI"
-Zwracane s± nastêpuj±ce warto¶ci b³êdów:
+.SH "ZWRACANE WARTOï¿½CI"
+Zwracane sï¿½ nastï¿½pujï¿½ce wartoï¿½ci bï¿½ï¿½dï¿½w:
 .TP
 0
-nie znaleziono b³êdów.
+nie znaleziono bï¿½ï¿½dï¿½w.
 .TP
 \-1
 operacja nie jest wspierana (
 .I xxd \-r \-i
-ca³y czas niemo¿liwa).
+caï¿½y czas niemoï¿½liwa).
 .TP
 1
-b³±d w czasie analizowania opcji.
+bï¿½ï¿½d w czasie analizowania opcji.
 .TP
 2
-problemy z plikiem wej¶ciowym.
+problemy z plikiem wejï¿½ciowym.
 .TP
 3
-problemy z plikiem wyj¶ciowym.
+problemy z plikiem wyjï¿½ciowym.
 .TP
 4,5
-¿±dana pozycja jest nieosi±galna.
-.SH "ZOBACZ TAK¯E"
+ï¿½ï¿½dana pozycja jest nieosiï¿½galna.
+.SH "ZOBACZ TAKï¿½E"
 uuencode(1), uudecode(1), patch(1)
 .br
-.SH OSTRZE¯ENIA
-Dziwaczno¶æ narzêdzi dorównuje dziwaczno¶ci mózgu twórcy.
-U¿ywaj wy³±cznie na w³asn± odpowiedzialno¶æ. Kopiuj pliki. Analizuj
-je. Stañ siê czarodziejem.
+.SH OSTRZEï¿½ENIA
+Dziwacznoï¿½ï¿½ narzï¿½dzi dorï¿½wnuje dziwacznoï¿½ci mï¿½zgu twï¿½rcy.
+Uï¿½ywaj wyï¿½ï¿½cznie na wï¿½asnï¿½ odpowiedzialnoï¿½ï¿½. Kopiuj pliki. Analizuj
+je. Staï¿½ siï¿½ czarodziejem.
 .br
 .SH WERSJA
-Strona podrêcznika opisuje xxd w wersji 1.7
+Strona podrï¿½cznika opisuje xxd w wersji 1.7
 .SH AUTOR
 .br
 (c) 1990-1997 by Juergen Weigert
@@ -376,14 +376,14 @@ Strona podrêcznika opisuje xxd w wersji 1.7
 .LP
 Kopiuj do woli i podaj moje dane,
 .br
-zarabiaj pieni±dze i dziel siê ze mn±,
+zarabiaj pieniï¿½dze i dziel siï¿½ ze mnï¿½,
 .br
-traæ pieni±dze i nie miej do mnie pretensji.
+traï¿½ pieniï¿½dze i nie miej do mnie pretensji.
 .PP
-Strona podrêcznika zapocz±tkowana przez Tony'ego Nugenta
+Strona podrï¿½cznika zapoczï¿½tkowana przez Tony'ego Nugenta
 .br
 <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
 .br
-Ma³e zmiany: Bram Moolenaar.
+Maï¿½e zmiany: Bram Moolenaar.
 Redakcja: Juergen Weigert.
 .PP

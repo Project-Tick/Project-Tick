@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * gui_xim.c: functions for the X Input Method
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if !defined(GTK_CHECK_VERSION)
 # define GTK_CHECK_VERSION(a, b, c) 0
@@ -72,7 +72,7 @@ xim_log(char *s, ...)
 #endif
 
 #if defined(FEAT_EVAL) && \
-     (defined(FEAT_XIM) || defined(IME_WITHOUT_XIM) || defined(VIMDLL))
+     (defined(FEAT_XIM) || defined(IME_WITHOUT_XIM) || defined(MNVDLL))
 static callback_T imaf_cb;	    // 'imactivatefunc' callback function
 static callback_T imsf_cb;	    // 'imstatusfunc' callback function
 
@@ -133,7 +133,7 @@ call_imstatusfunc(void)
 free_xim_stuff(void)
 {
 # if defined(FEAT_EVAL) && \
-    (defined(FEAT_XIM) || defined(IME_WITHOUT_XIM) || defined(VIMDLL))
+    (defined(FEAT_XIM) || defined(IME_WITHOUT_XIM) || defined(MNVDLL))
     free_callback(&imaf_cb);
     free_callback(&imsf_cb);
 # endif
@@ -150,7 +150,7 @@ set_ref_in_im_funcs(int copyID UNUSED)
 {
     int abort = FALSE;
 
-# if defined(FEAT_XIM) || defined(IME_WITHOUT_XIM) || defined(VIMDLL)
+# if defined(FEAT_XIM) || defined(IME_WITHOUT_XIM) || defined(MNVDLL)
     abort = set_ref_in_callback(&imaf_cb, copyID);
     abort = abort || set_ref_in_callback(&imsf_cb, copyID);
 # endif
@@ -257,7 +257,7 @@ im_add_to_input(char_u *str, int len)
     add_to_input_buf_csi(str, len);
 
     if (input_conv.vc_type != CONV_NONE)
-	vim_free(str);
+	mnv_free(str);
 
     if (p_mh) // blank out the pointer if necessary
 	gui_mch_mousehide(TRUE);
@@ -309,7 +309,7 @@ im_preedit_window_open(void)
 	gtk_window_set_transient_for(GTK_WINDOW(preedit_window),
 						     GTK_WINDOW(gui.mainwin));
 	preedit_label = gtk_label_new("");
-	gtk_widget_set_name(preedit_label, "vim-gui-preedit-area");
+	gtk_widget_set_name(preedit_label, "mnv-gui-preedit-area");
 	gtk_container_add(GTK_CONTAINER(preedit_window), preedit_label);
     }
 
@@ -340,7 +340,7 @@ im_preedit_window_open(void)
 	    fontsize_propval = g_strdup_printf("inherit");
 
 	css = g_strdup_printf(
-		"#vim-gui-preedit-area {\n"
+		"#mnv-gui-preedit-area {\n"
 		"  font-family: %s,monospace;\n"
 		"  font-size: %s;\n"
 		"  color: #%.2lx%.2lx%.2lx;\n"
@@ -366,22 +366,22 @@ im_preedit_window_open(void)
 #  elif GTK_CHECK_VERSION(3,0,0)
     gtk_widget_override_font(preedit_label, gui.norm_font);
 
-    vim_snprintf(buf, sizeof(buf), "#%06X", gui.norm_pixel);
+    mnv_snprintf(buf, sizeof(buf), "#%06X", gui.norm_pixel);
     gdk_rgba_parse(&color, buf);
     gtk_widget_override_color(preedit_label, GTK_STATE_FLAG_NORMAL, &color);
 
-    vim_snprintf(buf, sizeof(buf), "#%06X", gui.back_pixel);
+    mnv_snprintf(buf, sizeof(buf), "#%06X", gui.back_pixel);
     gdk_rgba_parse(&color, buf);
     gtk_widget_override_background_color(preedit_label, GTK_STATE_FLAG_NORMAL,
 								      &color);
 #  else
     gtk_widget_modify_font(preedit_label, gui.norm_font);
 
-    vim_snprintf(buf, sizeof(buf), "#%06X", (unsigned)gui.norm_pixel);
+    mnv_snprintf(buf, sizeof(buf), "#%06X", (unsigned)gui.norm_pixel);
     gdk_color_parse(buf, &color);
     gtk_widget_modify_fg(preedit_label, GTK_STATE_NORMAL, &color);
 
-    vim_snprintf(buf, sizeof(buf), "#%06X", (unsigned)gui.back_pixel);
+    mnv_snprintf(buf, sizeof(buf), "#%06X", (unsigned)gui.back_pixel);
     gdk_color_parse(buf, &color);
     gtk_widget_modify_bg(preedit_window, GTK_STATE_NORMAL, &color);
 #  endif
@@ -527,7 +527,7 @@ im_commit_cb(GtkIMContext *context UNUSED,
 	// The thing which setting "preedit_start_col" to MAXCOL means that
 	// "preedit_start_col" will be set forcedly when calling
 	// preedit_changed_cb() next time.
-	// "preedit_start_col" should not reset with MAXCOL on this part. Vim
+	// "preedit_start_col" should not reset with MAXCOL on this part. MNV
 	// is simulating the preediting by using add_to_input_str(). when
 	// preedit begin immediately before committed, the typebuf is not
 	// flushed to screen, then it can't get correct "preedit_start_col".
@@ -544,7 +544,7 @@ im_commit_cb(GtkIMContext *context UNUSED,
 	clen = mb_string2cells(im_str, len);
 
 	if (input_conv.vc_type != CONV_NONE)
-	    vim_free(im_str);
+	    mnv_free(im_str);
 	preedit_start_col += clen;
     }
 
@@ -654,7 +654,7 @@ im_preedit_end_cb(GtkIMContext *context UNUSED, gpointer data UNUSED)
  *   for proper operation.
  *
  * Conclusions:  I think support for preediting needs to be moved to the
- * core parts of Vim.  Ideally, until it has been committed, the preediting
+ * core parts of MNV.  Ideally, until it has been committed, the preediting
  * string should only be displayed and not affect the buffer content at all.
  * The question how to deal with the synchronization issue still remains.
  * Circumventing the input buffer is probably not desirable.  Anyway, I think
@@ -665,7 +665,7 @@ im_preedit_end_cb(GtkIMContext *context UNUSED, gpointer data UNUSED)
  * at the receiving end of the queue.  This, however, would have a rather large
  * impact on the code base.  If there is an easy way to force processing of all
  * remaining input from within the "retrieve_surrounding" signal handler, this
- * might not be necessary.  Gotta ask on vim-dev for opinions.
+ * might not be necessary.  Gotta ask on mnv-dev for opinions.
  */
     static void
 im_preedit_changed_cb(GtkIMContext *context, gpointer data UNUSED)
@@ -775,8 +775,8 @@ im_preedit_changed_cb(GtkIMContext *context, gpointer data UNUSED)
 }
 
 /*
- * Translate the Pango attributes at iter to Vim highlighting attributes.
- * Ignore attributes not supported by Vim highlighting.  This shouldn't have
+ * Translate the Pango attributes at iter to MNV highlighting attributes.
+ * Ignore attributes not supported by MNV highlighting.  This shouldn't have
  * too much impact -- right now we handle even more attributes than necessary
  * for the IM modules I tested with.
  */
@@ -1099,7 +1099,7 @@ xim_queue_key_press_event(GdkEventKey *event, int down)
 		    && (State & (MODE_INSERT | MODE_CMDLINE
 					      | MODE_NORMAL | MODE_EXTERNCMD)))
     {
-	// Filter 'imactivatekey' and map it to CTRL-^.  This way, Vim is
+	// Filter 'imactivatekey' and map it to CTRL-^.  This way, MNV is
 	// always aware of the current status of IM, and can even emulate
 	// the activation key for modules that don't support one.
 	if (event->keyval == im_activatekey_keyval
@@ -1158,7 +1158,7 @@ xim_queue_key_press_event(GdkEventKey *event, int down)
 		// 3. line changed key.
 		// 4. preedited string.
 		// 5. remove preedited string.
-		// if 3, Vim can't move back the above line for 5.
+		// if 3, MNV can't move back the above line for 5.
 		// thus, this part should not parse the key.
 		if (!imresult && preedit_start_col != MAXCOL
 					    && event->keyval == GDK_Return)
@@ -1212,7 +1212,7 @@ im_is_preediting(void)
 
 static int	xim_is_active = FALSE;  // XIM should be active in the current
 					// mode
-static int	xim_has_focus = FALSE;	// XIM is really being used for Vim
+static int	xim_has_focus = FALSE;	// XIM is really being used for MNV
 #  ifdef FEAT_GUI_X11
 static XIMStyle	input_style;
 static int	status_area_enabled = TRUE;
@@ -1233,7 +1233,7 @@ im_set_active(int active_arg)
     else if (input_style & XIMPreeditPosition)
 	// There is a problem in switching XIM off when preediting is used,
 	// and it is not clear how this can be solved.  For now, keep XIM on
-	// all the time, like it was done in Vim 5.8.
+	// all the time, like it was done in MNV 5.8.
 	active = TRUE;
 
 #  if defined(FEAT_EVAL)
@@ -1251,7 +1251,7 @@ im_set_active(int active_arg)
     if (xic == NULL)
 	return;
 
-    // Remember the active state, it is needed when Vim gets keyboard focus.
+    // Remember the active state, it is needed when MNV gets keyboard focus.
     xim_is_active = active;
     xim_set_preedit();
 }
@@ -1266,7 +1266,7 @@ xim_set_focus(int focus)
     if (xic == NULL)
 	return;
 
-    // XIM only gets focus when the Vim window has keyboard focus and XIM has
+    // XIM only gets focus when the MNV window has keyboard focus and XIM has
     // been set active for the current mode.
     if (focus && xim_is_active)
     {
@@ -1786,11 +1786,11 @@ xim_get_status_area_height(void)
 
 #else // !defined(FEAT_XIM)
 
-# if defined(IME_WITHOUT_XIM) || defined(VIMDLL)
+# if defined(IME_WITHOUT_XIM) || defined(MNVDLL)
 static int im_was_set_active = FALSE;
 
     int
-#  ifdef VIMDLL
+#  ifdef MNVDLL
 mbyte_im_get_status(void)
 #  else
 im_get_status(void)
@@ -1804,7 +1804,7 @@ im_get_status(void)
 }
 
     void
-#  ifdef VIMDLL
+#  ifdef MNVDLL
 mbyte_im_set_active(int active_arg)
 #  else
 im_set_active(int active_arg)
@@ -1821,7 +1821,7 @@ im_set_active(int active_arg)
 #  endif
 }
 
-#  if defined(FEAT_GUI) && !defined(FEAT_GUI_HAIKU) && !defined(VIMDLL)
+#  if defined(FEAT_GUI) && !defined(FEAT_GUI_HAIKU) && !defined(MNVDLL)
     void
 im_set_position(int row UNUSED, int col UNUSED)
 {

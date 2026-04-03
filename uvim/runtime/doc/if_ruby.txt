@@ -1,23 +1,23 @@
-*if_ruby.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*if_ruby.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Shugo Maeda
+		  MNV REFERENCE MANUAL	  by Shugo Maeda
 
 
-The Ruby Interface to Vim				*ruby* *Ruby*
+The Ruby Interface to MNV				*ruby* *Ruby*
 
 
 1. Commands			|ruby-commands|
-2. The Vim module		|ruby-vim|
-3. Vim::Buffer objects		|ruby-buffer|
-4. Vim::Window objects		|ruby-window|
+2. The MNV module		|ruby-mnv|
+3. MNV::Buffer objects		|ruby-buffer|
+4. MNV::Window objects		|ruby-window|
 5. Global variables		|ruby-globals|
-6. rubyeval() Vim function	|ruby-rubyeval|
+6. rubyeval() MNV function	|ruby-rubyeval|
 7. Dynamic loading		|ruby-dynamic|
 
 			*E266* *E267* *E268* *E269* *E270* *E271* *E272* *E273*
 
-{only available when Vim was compiled with the |+ruby| feature}
+{only available when MNV was compiled with the |+ruby| feature}
 
 The home page for ruby is http://www.ruby-lang.org/.  You can find links for
 downloading Ruby there.
@@ -40,22 +40,22 @@ downloading Ruby there.
 
 
 			This form of the |:ruby| command is mainly useful for
-			including ruby code in vim scripts.
+			including ruby code in mnv scripts.
 
 			Note: This command doesn't work when the Ruby feature
 			wasn't compiled in.  To avoid errors, see
 			|script-here|.
 
-Example Vim script: >
+Example MNV script: >
 
 	function! RedGem()
 	ruby << EOF
 	class Garnet
 		def initialize(s)
-			@buffer = Vim::Buffer.current
-			vimputs(s)
+			@buffer = MNV::Buffer.current
+			mnvputs(s)
 		end
-		def vimputs(s)
+		def mnvputs(s)
 			@buffer.append(@buffer.count,s)
 		end
 	end
@@ -82,19 +82,19 @@ To see what version of Ruby you have: >
 Executing Ruby commands is not possible in the |sandbox|.
 
 ==============================================================================
-2. The Vim module					*ruby-vim*
+2. The MNV module					*ruby-mnv*
 
-Ruby code gets all of its access to vim via the "Vim" module.
+Ruby code gets all of its access to mnv via the "MNV" module.
 
 Overview: >
 	print "Hello"			      # displays a message
-	Vim.command(cmd)		      # execute an Ex command
-	num = Vim::Window.count		      # gets the number of windows
-	w = Vim::Window[n]		      # gets window "n"
-	cw = Vim::Window.current	      # gets the current window
-	num = Vim::Buffer.count		      # gets the number of buffers
-	b = Vim::Buffer[n]		      # gets buffer "n"
-	cb = Vim::Buffer.current	      # gets the current buffer
+	MNV.command(cmd)		      # execute an Ex command
+	num = MNV::Window.count		      # gets the number of windows
+	w = MNV::Window[n]		      # gets window "n"
+	cw = MNV::Window.current	      # gets the current window
+	num = MNV::Buffer.count		      # gets the number of buffers
+	b = MNV::Buffer[n]		      # gets buffer "n"
+	cb = MNV::Buffer.current	      # gets the current buffer
 	w.height = lines		      # sets the window height
 	w.cursor = [row, col]		      # sets the window cursor position
 	pos = w.cursor			      # gets an array [row, col]
@@ -104,46 +104,46 @@ Overview: >
 	b[n] = str			      # sets a line in the buffer
 	b.delete(n)			      # deletes a line
 	b.append(n, str)		      # appends a line after n
-	line = Vim::Buffer.current.line       # gets the current line
-	num = Vim::Buffer.current.line_number # gets the current line number
-	Vim::Buffer.current.line = "test"     # sets the current line number
+	line = MNV::Buffer.current.line       # gets the current line
+	num = MNV::Buffer.current.line_number # gets the current line number
+	MNV::Buffer.current.line = "test"     # sets the current line number
 <
 
 Module Functions:
 
 							*ruby-message*
-Vim::message({msg})
+MNV::message({msg})
 	Displays the message {msg}.
 
 							*ruby-blob*
-Vim::blob({arg})
+MNV::blob({arg})
 	Return |Blob| literal string from {arg}.
 
 							*ruby-set_option*
-Vim::set_option({arg})
-	Sets a vim option.  {arg} can be any argument that the ":set" command
+MNV::set_option({arg})
+	Sets a mnv option.  {arg} can be any argument that the ":set" command
 	accepts.  Note that this means that no spaces are allowed in the
 	argument!  See |:set|.
 
 							*ruby-command*
-Vim::command({cmd})
+MNV::command({cmd})
 	Executes Ex command {cmd}.
 
 							*ruby-evaluate*
-Vim::evaluate({expr})
-	Evaluates {expr} using the vim internal expression evaluator (see
+MNV::evaluate({expr})
+	Evaluates {expr} using the mnv internal expression evaluator (see
 	|expression|).  Returns the expression result as:
-	- a Integer if the Vim expression evaluates to a number
-	- a Float if the Vim expression evaluates to a float
-	- a String if the Vim expression evaluates to a string
-	- a Array if the Vim expression evaluates to a Vim list
-	- a Hash if the Vim expression evaluates to a Vim dictionary
+	- a Integer if the MNV expression evaluates to a number
+	- a Float if the MNV expression evaluates to a float
+	- a String if the MNV expression evaluates to a string
+	- a Array if the MNV expression evaluates to a MNV list
+	- a Hash if the MNV expression evaluates to a MNV dictionary
 	Dictionaries and lists are recursively expanded.
 
 ==============================================================================
-3. Vim::Buffer objects					*ruby-buffer*
+3. MNV::Buffer objects					*ruby-buffer*
 
-Vim::Buffer objects represent vim buffers.
+MNV::Buffer objects represent mnv buffers.
 
 Class Methods:
 
@@ -171,9 +171,9 @@ line_number     Returns the number of the current line if the buffer is
 		active.
 
 ==============================================================================
-4. Vim::Window objects					*ruby-window*
+4. MNV::Window objects					*ruby-window*
 
-Vim::Window objects represent vim windows.
+MNV::Window objects represent mnv windows.
 
 Class Methods:
 
@@ -203,10 +203,10 @@ $curwin		The current window object.
 $curbuf		The current buffer object.
 
 ==============================================================================
-6. rubyeval() Vim function				*ruby-rubyeval*
+6. rubyeval() MNV function				*ruby-rubyeval*
 
 To facilitate bi-directional interface, you can use |rubyeval()| function to
-evaluate Ruby expressions and pass their values to Vim script.
+evaluate Ruby expressions and pass their values to MNV script.
 
 The Ruby value "true", "false" and "nil" are converted to v:true, v:false and
 v:null, respectively.
@@ -217,9 +217,9 @@ v:null, respectively.
 On MS-Windows and Unix the Ruby library can be loaded dynamically.  The
 |:version| output then includes |+ruby/dyn|.
 
-This means that Vim will search for the Ruby DLL file or shared library only
+This means that MNV will search for the Ruby DLL file or shared library only
 when needed.  When you don't use the Ruby interface you don't need it, thus
-you can use Vim even though this library file is not on your system.
+you can use MNV even though this library file is not on your system.
 
 
 MS-Windows ~
@@ -233,14 +233,14 @@ To use the Ruby interface the Ruby DLL must be in your search path.  In a
 console window type "path" to see what directories are used.  The 'rubydll'
 option can be also used to specify the Ruby DLL.
 
-The name of the DLL must match the Ruby version Vim was compiled with.
+The name of the DLL must match the Ruby version MNV was compiled with.
 Currently the name is "msvcrt-ruby220.dll".  That is for Ruby 2.2.X.  To know
-for sure edit "gvim.exe" and search for "ruby\d*.dll\c".
+for sure edit "gmnv.exe" and search for "ruby\d*.dll\c".
 
-If you want to build Vim with RubyInstaller 1.9 or 2.X using MSVC, you need
+If you want to build MNV with RubyInstaller 1.9 or 2.X using MSVC, you need
 some tricks.  See the src/INSTALLpc.txt for detail.
 
-If Vim is built with RubyInstaller 2.4 or later, you may also need to add
+If MNV is built with RubyInstaller 2.4 or later, you may also need to add
 "C:\Ruby<version>\bin\ruby_builtin_dlls" to the PATH environment variable.
 
 
@@ -248,8 +248,8 @@ Unix ~
 
 The 'rubydll' option can be used to specify the Ruby shared library file
 instead of DYNAMIC_RUBY_DLL file what was specified at compile time.  The
-version of the shared library must match the Ruby version Vim was compiled
+version of the shared library must match the Ruby version MNV was compiled
 with.
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

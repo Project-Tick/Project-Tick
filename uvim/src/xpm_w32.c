@@ -3,10 +3,10 @@
  * Load XPM image.
  *
  * This function is placed in separate file because Xpm headers conflict with
- * Vim ones :(
+ * MNV ones :(
  *
  * Written by Sergey Khorev.
- * (original link, now dead: iamphet.nm.ru/vim/index.html)
+ * (original link, now dead: iamphet.nm.ru/mnv/index.html)
  */
 
 #ifndef WIN32_LEAN_AND_MEAN

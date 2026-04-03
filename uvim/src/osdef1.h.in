@@ -4,10 +4,10 @@
  * can clean out the forest. Everything else belongs in os_unix.h
  *
  * How this works:
- * - This file contains all unix prototypes that Vim might need.
+ * - This file contains all unix prototypes that MNV might need.
  * - The shell script osdef.sh is executed at compile time to remove all the
  *   prototypes that are in an include file. This results in osdef.h.
- * - osdef.h is included in vim.h.
+ * - osdef.h is included in mnv.h.
  *
  * sed cannot always handle so many commands, this is file 1 of 2
  */

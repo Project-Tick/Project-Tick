@@ -1,7 +1,7 @@
-*tabpage.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*tabpage.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Editing with windows in multiple tab pages.		*tab-page* *tabpage*
@@ -29,7 +29,7 @@ A tab page holds one or more windows.  You can easily switch between tab
 pages, so that you have several collections of windows to work on different
 things.
 
-Usually you will see a list of labels at the top of the Vim window, one for
+Usually you will see a list of labels at the top of the MNV window, one for
 each tab page.  With the mouse you can click on the label to jump to that tab
 page.  There are other ways to move between tab pages, see below.
 
@@ -47,7 +47,7 @@ and close the tab page.
 
 OPENING A NEW TAB PAGE:
 
-When starting Vim "vim -p filename ..." opens each file argument in a separate
+When starting MNV "mnv -p filename ..." opens each file argument in a separate
 tab page (up to 'tabpagemax').  See |-p|
 
 A double click with the mouse in the non-GUI tab pages line opens a new, empty
@@ -433,7 +433,7 @@ side of the window.  It looks like this:
 	|(1)        |text text text text text text text
 	|  ~/aaa.txt|text text text text text text text
 	|(2)        |text text text text text text text
-	|  ~/.vimrc |text text text text text text text
+	|  ~/.mnvrc |text text text text text text text
 	|(3)        |text text text text text text text
 	|  ~/bbb.js |text text text text text text text
 	|  ~/ccc.css|text text text text text text text
@@ -546,4 +546,4 @@ If you want to show something specific for a tab page, you might want to use a
 tab page local variable. |t:var|
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

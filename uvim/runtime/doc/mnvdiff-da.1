@@ -1,0 +1,50 @@
+.TH MNVDIFF 1 "30. marts 2001"
+.SH NAVN
+mnvdiff \- rediger to, tre eller fire version af en fil med MNV,
+og vis forskellene
+.SH SYNOPSIS
+.br
+.B mnvdiff
+[tilvalg] fil1 fil2 [fil3 [fil4]]
+.PP
+.B gmnvdiff
+.SH BESKRIVELSE
+.B MNVdiff
+starter
+.B MNV
+p� to (eller tre eller fire) filer.
+Hver fil f�r sit eget vindue.
+Forskellene mellem filerne fremh�ves.
+Det er en fin m�de til at inspicere �ndringer og til at flytte �ndringer fra
+en version til en anden version af den samme fil.
+.PP
+Se mnv(1) for detaljer om selve MNV.
+.PP
+N�r den startes som
+.B gmnvdiff
+, s� starter den GUI'en, hvis den er tilg�ngelig.
+.PP
+I hvert vindue s�ttes 'diff'-valgmuligheden, som f�r forskellene
+til at blive fremh�vet.
+.br
+\'wrap'- og 'scrollbind'-valgmulighederne s�ttes for at f� teksten til
+at se godt ud.
+.br
+\'foldmethod'-valgmuligheden s�ttes til "diff", hvilket l�gger omr�der af
+linjer uden �ndringer i en sammenfoldning. 'foldcolumn' s�ttes til to,
+for at g�re det lettere at se sammenfoldningerne og �bne eller lukke dem.
+.SH TILVALG
+Lodrette opdelinger bruges til at opstille linjerne, som hvis "\-O"-argumentet
+blev brugt.
+Brug "\-o"-argumentet, for i stedet at bruge vandrette opdelinger.
+.PP
+Se mnv(1) for alle andre argumenter.
+.SH SE OGS�
+mnv(1)
+.SH FORFATTER
+Det meste af
+.B MNV
+blev lavet af Bram Moolenaar, med en masse hj�lp fra andre.
+Se ":help credits" i
+.B MNV\c
+\&.

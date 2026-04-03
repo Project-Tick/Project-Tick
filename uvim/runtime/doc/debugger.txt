@@ -1,17 +1,17 @@
-*debugger.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*debugger.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Gordon Prieur
+		  MNV REFERENCE MANUAL	  by Gordon Prieur
 
 
 Debugger Support Features				*debugger-support*
 
 These features are for integration with a debugger or an Integrated
 Programming Environment (IPE) or Integrated Development Environment (IDE).
-For the debugger running in a Vim terminal window see |terminal-debugger|.
+For the debugger running in a MNV terminal window see |terminal-debugger|.
 
 1. Debugger Features		|debugger-features|
-2. Vim Compile Options		|debugger-compilation|
+2. MNV Compile Options		|debugger-compilation|
 
 ==============================================================================
 1. Debugger Features					*debugger-features*
@@ -24,21 +24,21 @@ The following features are available:
 	Message Footer					|gui-footer|
 	Balloon Evaluation				|balloon-eval|
 
-These features were added specifically for use in the Motif version of gvim.
+These features were added specifically for use in the Motif version of gmnv.
 However, the |alt-input| and |debug-highlight| were written to be usable in
-both vim and gvim.  Some of the other features could be used in the non-GUI
-vim with slight modifications.  However, I did not do this nor did I test the
-reliability of building for vim or non Motif GUI versions.
+both mnv and gmnv.  Some of the other features could be used in the non-GUI
+mnv with slight modifications.  However, I did not do this nor did I test the
+reliability of building for mnv or non Motif GUI versions.
 
 
 1.1 Alternate Command Input				*alt-input*
 
-For Vim to work with a debugger there must be at least an input connection
+For MNV to work with a debugger there must be at least an input connection
 with a debugger or external tool.  In many cases there will also be an output
 connection but this isn't absolutely necessary.
 
 The purpose of the input connection is to let the external debugger send
-commands to Vim.  The commands sent by the debugger should give the debugger
+commands to MNV.  The commands sent by the debugger should give the debugger
 enough control to display the current debug environment and state.
 
 The current implementation is based on the X Toolkit dispatch loop and the
@@ -67,8 +67,8 @@ Debug signs are defined and placed using the |:sign| command.
 
 This feature allows a line to have a predominant highlight.  The highlight is
 intended to make a specific line stand out.  The highlight could be made to
-work for both vim and gvim, whereas the debug sign is, in most cases, limited
-to gvim.  The one exception to this is Sun Microsystem's dtterm.  The dtterm
+work for both mnv and gmnv, whereas the debug sign is, in most cases, limited
+to gmnv.  The one exception to this is Sun Microsystem's dtterm.  The dtterm
 from Sun has a "sign gutter" for showing signs.
 
 
@@ -110,7 +110,7 @@ toolbar.  The 'ballooneval' option does not need to be set for this.  But the
 other settings apply.
 
 ==============================================================================
-2. Vim Compile Options					*debugger-compilation*
+2. MNV Compile Options					*debugger-compilation*
 
 The debugger features were added for use with Sun's Visual WorkShop Integrated
 Programming Environment (ipe).  However, they were done in as generic a manner
@@ -131,4 +131,4 @@ product no longer exists.
 For Sun NetBeans support see |netbeans|.
 
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

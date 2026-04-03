@@ -1,10 +1,10 @@
 @echo off
-rem batch file to start Vim with less.vim.
+rem batch file to start MNV with less.mnv.
 rem Read stdin if no arguments were given.
 rem Written by Ken Takata.
 
 if "%1"=="" (
-  vim --cmd "let no_plugin_maps = 1" -c "runtime! macros/less.vim" -
+  mnv --cmd "let no_plugin_maps = 1" -c "runtime! macros/less.mnv" -
 ) else (
-  vim --cmd "let no_plugin_maps = 1" -c "runtime! macros/less.vim" %*
+  mnv --cmd "let no_plugin_maps = 1" -c "runtime! macros/less.mnv" %*
 )

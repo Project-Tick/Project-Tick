@@ -1,5 +1,5 @@
 #
-# Makefile to run all tests for Vim on VMS
+# Makefile to run all tests for MNV on VMS
 #
 # Authors:	Zoltan Arpadffy, <arpadffy@polarhome.com>
 #		Sandor Kopanyi,  <sandor.kopanyi@mailbox.hu>
@@ -33,7 +33,7 @@
 # Please, do not change anything below without programming experience.
 #######################################################################
 
-VIMPROG = <->vim.exe
+MNVPROG = <->mnv.exe
 
 .SUFFIXES : .out .in
 
@@ -56,7 +56,7 @@ GUI_OPTION = -g
 	-@ write sys$output "                "$*" "
 	-@ write sys$output "-----------------------------------------------"
 	-@ !run the test
-	-@ create/term/wait/nodetach mcr $(VIMPROG) $(GUI_OPTION) -u util/vms.vim --noplugin -s dotest.in $*.in
+	-@ create/term/wait/nodetach mcr $(MNVPROG) $(GUI_OPTION) -u util/vms.mnv --noplugin -s dotest.in $*.in
 	-@ !analyse the result
 	-@ directory /size/date test.out
 	-@ if "''F$SEARCH("test.out.*")'" .NES. "" then rename/nolog test.out $*.out 
@@ -77,11 +77,11 @@ all : clean nolog $(START_WITH) $(SCRIPT) nolog
 nolog :
 	-@ define sys$output test.log
 	-@ write sys$output "-----------------------------------------------"
-	-@ write sys$output "           Standard VIM test cases"
+	-@ write sys$output "           Standard MNV test cases"
 	-@ write sys$output "-----------------------------------------------"
 	-@ write sys$output " OpenVMS version: ''F$GETSYI("VERSION")'"
-	-@ write sys$output " Vim version:"
-	-@ mcr $(VIMPROG) --version
+	-@ write sys$output " MNV version:"
+	-@ mcr $(MNVPROG) --version
 	-@ write sys$output " Test date:"
 	-@ show time
 	-@ write sys$output "-----------------------------------------------"
@@ -89,9 +89,9 @@ nolog :
 	-@ write sys$output "-----------------------------------------------"
 	-@ write sys$output "MAKE_VMS.MMS options:"
 	-@ write sys$output "   WANT_GUI   = ""$(WANT_GUI)"" "
-	-@ write sys$output "Default vimrc file is util/VMS.VIM:"
+	-@ write sys$output "Default mnvrc file is util/VMS.MNV:"
 	-@ write sys$output "-----------------------------------------------"
-	-@ type util/VMS.VIM
+	-@ type util/VMS.MNV
 
 clean :
 	-@ if "''F$SEARCH("*.out")'"        .NES. "" then delete/noconfirm/nolog *.out.*
@@ -104,5 +104,5 @@ clean :
 	-@ if "''F$SEARCH("*.*_sw*")'"      .NES. "" then delete/noconfirm/nolog *.*_sw*.*
 	-@ if "''F$SEARCH("*.failed")'"     .NES. "" then delete/noconfirm/nolog *.failed.*
 	-@ if "''F$SEARCH("*.rej")'"        .NES. "" then delete/noconfirm/nolog *.rej.*
-	-@ if "''F$SEARCH("viminfo.*")'"    .NES. "" then delete/noconfirm/nolog viminfo.*.*
+	-@ if "''F$SEARCH("mnvinfo.*")'"    .NES. "" then delete/noconfirm/nolog mnvinfo.*.*
 

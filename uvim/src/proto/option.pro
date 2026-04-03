@@ -139,7 +139,7 @@ int ExpandOldSetting(int *numMatches, char_u ***matches);
 int ExpandStringSetting(expand_T *xp, regmatch_T *regmatch, int *numMatches, char_u ***matches);
 int ExpandSettingSubtract(expand_T *xp, regmatch_T *regmatch, int *numMatches, char_u ***matches);
 int shortmess(int x);
-void vimrc_found(char_u *fname, char_u *envname);
+void mnvrc_found(char_u *fname, char_u *envname);
 void change_compatible(int on);
 int option_was_set(char_u *name);
 int reset_option_was_set(char_u *name);
@@ -155,4 +155,4 @@ int fill_culopt_flags(char_u *val, win_T *wp);
 int magic_isset(void);
 int option_set_callback_func(char_u *optval, callback_T *optcb);
 char *did_set_showtabpanel(optset_T *args);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

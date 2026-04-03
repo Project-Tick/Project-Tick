@@ -30,4 +30,4 @@ void f_argc(typval_T *argvars, typval_T *rettv);
 void f_argidx(typval_T *argvars, typval_T *rettv);
 void f_arglistid(typval_T *argvars, typval_T *rettv);
 void f_argv(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

@@ -3,7 +3,7 @@
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .\"    French translation by David Blanchet <david.blanchet@free.fr> 2005-03
 .SH NOM
 .I xxd
@@ -313,19 +313,19 @@ fichier ; les octets initiaux sont supprimés.
 \fI% echo '010000: 41' | xxd \-r \-s \-0x10000 \> fichier\fR
 .PP
 Utiliser xxd comme filtre dans un éditeur tel que
-.B vim(1)
+.B mnv(1)
 pour convertir une zone comprise entre les marques 'a' et 'z'.
 .br
 \fI:'a,'z!xxd\fR
 .PP
 Utiliser xxd comme filtre dans un éditeur tel que
-.B vim(1)
+.B mnv(1)
 pour récupérer une conversion binaire comprise entre les marques 'a' et 'z'.
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
 Utiliser xxd comme filtre dans un éditeur tel que
-.B vim(1)
+.B mnv(1)
 pour récupérer une ligne convertie. Placez le curseur sur la ligne et tapez :
 .br
 \fI!!xxd \-r\fR

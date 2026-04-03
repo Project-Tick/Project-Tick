@@ -21,7 +21,7 @@ char_u *eval_to_string_safe(char_u *arg, int use_sandbox, int keep_script_versio
 varnumber_T eval_to_number(char_u *expr, int use_simple_function);
 typval_T *eval_expr(char_u *arg, exarg_T *eap);
 typval_T *eval_expr_ext(char_u *arg, exarg_T *eap, int use_simple_function);
-int call_vim_function(char_u *func, int argc, typval_T *argv, typval_T *rettv);
+int call_mnv_function(char_u *func, int argc, typval_T *argv, typval_T *rettv);
 void *call_func_retstr(char_u *func, int argc, typval_T *argv);
 void *call_func_retlist(char_u *func, int argc, typval_T *argv);
 int eval_foldexpr(win_T *wp, int *cp);
@@ -45,7 +45,7 @@ int eval1(char_u **arg, typval_T *rettv, evalarg_T *evalarg);
 void eval_addblob(typval_T *tv1, typval_T *tv2);
 int eval_addlist(typval_T *tv1, typval_T *tv2);
 int eval_addtuple(typval_T *tv1, typval_T *tv2);
-int eval_leader(char_u **arg, int vim9);
+int eval_leader(char_u **arg, int mnv9);
 int handle_predefined(char_u *s, int len, typval_T *rettv);
 int check_can_index(typval_T *rettv, int evaluate, int verbose);
 int eval_index_inner(typval_T *rettv, int is_range, typval_T *var1, typval_T *var2, int exclusive, char_u *key, int keylen, int verbose);
@@ -74,4 +74,4 @@ void ex_execute(exarg_T *eap);
 char_u *find_option_end(char_u **arg, int *scope);
 void last_set_msg(sctx_T script_ctx);
 char_u *do_string_sub(char_u *str, size_t len, char_u *pat, char_u *sub, typval_T *expr, char_u *flags, size_t *ret_len);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

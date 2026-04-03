@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -13,7 +13,7 @@
 
 #define MESSAGE_FILE		// don't include prototype for smsg()
 
-#include "vim.h"
+#include "mnv.h"
 
 static void add_msg_hist(char_u *s, int len, int attr);
 static void check_msg_hist(void);
@@ -156,7 +156,7 @@ msg_attr_keep(
 
 #ifdef FEAT_EVAL
     if (attr == 0)
-	set_vim_var_string(VV_STATUSMSG, (char_u *)s, -1);
+	set_mnv_var_string(VV_STATUSMSG, (char_u *)s, -1);
 #endif
 
     /*
@@ -193,13 +193,13 @@ msg_attr_keep(
     msg_clr_eos();
     retval = msg_end();
 
-    if (keep && retval && vim_strsize((char_u *)s)
+    if (keep && retval && mnv_strsize((char_u *)s)
 		    < (int)(Rows - cmdline_row - 1) * cmdline_width + sc_col)
 	set_keep_msg((char_u *)s, 0);
 
     need_fileinfo = FALSE;
 
-    vim_free(buf);
+    mnv_free(buf);
     --entered;
     return retval;
 }
@@ -221,7 +221,7 @@ msg_strtrunc(
     if ((!msg_scroll && !need_wait_return && shortmess(SHM_TRUNCALL)
 			       && !exmode_active && msg_silent == 0) || force)
     {
-	len = vim_strsize(s);
+	len = mnv_strsize(s);
 	if (msg_scrolled != 0
 #ifdef HAS_MESSAGE_WINDOW
 		|| in_echowindow
@@ -310,7 +310,7 @@ trunc_string(
 	// For DBCS going backwards in a string is slow, but
 	// computing the cell width isn't too slow: go forward
 	// until the rest fits.
-	n = vim_strsize(s + i);
+	n = mnv_strsize(s + i);
 	while (len + n > room)
 	{
 	    n -= ptr2cells(s + i);
@@ -380,7 +380,7 @@ trunc_string(
  */
 #ifndef PROTO
 
-int vim_snprintf(char *str, size_t str_m, const char *fmt, ...);
+int mnv_snprintf(char *str, size_t str_m, const char *fmt, ...);
 
     int
 smsg(const char *s, ...)
@@ -395,7 +395,7 @@ smsg(const char *s, ...)
     va_list arglist;
 
     va_start(arglist, s);
-    vim_vsnprintf((char *)IObuff, IOSIZE, s, arglist);
+    mnv_vsnprintf((char *)IObuff, IOSIZE, s, arglist);
     va_end(arglist);
     return msg((char *)IObuff);
 }
@@ -413,7 +413,7 @@ smsg_attr(int attr, const char *s, ...)
     va_list arglist;
 
     va_start(arglist, s);
-    vim_vsnprintf((char *)IObuff, IOSIZE, s, arglist);
+    mnv_vsnprintf((char *)IObuff, IOSIZE, s, arglist);
     va_end(arglist);
     return msg_attr((char *)IObuff, attr);
 }
@@ -431,7 +431,7 @@ smsg_attr_keep(int attr, const char *s, ...)
     va_list arglist;
 
     va_start(arglist, s);
-    vim_vsnprintf((char *)IObuff, IOSIZE, s, arglist);
+    mnv_vsnprintf((char *)IObuff, IOSIZE, s, arglist);
     va_end(arglist);
     return msg_attr_keep((char *)IObuff, attr, TRUE);
 }
@@ -452,7 +452,7 @@ static char_u   *last_sourcing_name = NULL;
     void
 reset_last_sourcing(void)
 {
-    VIM_CLEAR(last_sourcing_name);
+    MNV_CLEAR(last_sourcing_name);
     last_sourcing_lnum = 0;
 }
 
@@ -498,7 +498,7 @@ get_emsg_source(void)
 	Buf = alloc(STRLEN(sname) + STRLEN(p));
 	if (Buf != NULL)
 	    sprintf((char *)Buf, (char *)p, sname);
-	vim_free(tofree);
+	mnv_free(tofree);
 	return Buf;
     }
     return NULL;
@@ -551,22 +551,22 @@ msg_source(int attr)
     {
 	msg_scroll = TRUE;  // this will take more than one line
 	msg_attr((char *)p, attr);
-	vim_free(p);
+	mnv_free(p);
     }
     p = get_emsg_lnum();
     if (p != NULL)
     {
 	msg_attr((char *)p, HL_ATTR(HLF_N));
-	vim_free(p);
+	mnv_free(p);
 	last_sourcing_lnum = SOURCING_LNUM;  // only once for each line
     }
 
     // remember the last sourcing name printed, also when it's empty
     if (SOURCING_NAME == NULL || other_sourcing_name())
     {
-	VIM_CLEAR(last_sourcing_name);
+	MNV_CLEAR(last_sourcing_name);
 	if (SOURCING_NAME != NULL)
-	    last_sourcing_name = vim_strsave(SOURCING_NAME);
+	    last_sourcing_name = mnv_strsave(SOURCING_NAME);
     }
     --no_wait_return;
 
@@ -582,8 +582,8 @@ msg_source(int attr)
     static int
 emsg_not_now(void)
 {
-    if ((emsg_off > 0 && vim_strchr(p_debug, 'm') == NULL
-					  && vim_strchr(p_debug, 't') == NULL)
+    if ((emsg_off > 0 && mnv_strchr(p_debug, 'm') == NULL
+					  && mnv_strchr(p_debug, 't') == NULL)
 #ifdef FEAT_EVAL
 	    || emsg_skip > 0
 #endif
@@ -671,7 +671,7 @@ emsg_core(const char *s)
     emsg_severe = FALSE;
 #endif
 
-    if (!emsg_off || vim_strchr(p_debug, 't') != NULL)
+    if (!emsg_off || mnv_strchr(p_debug, 't') != NULL)
     {
 #ifdef FEAT_EVAL
 	/*
@@ -690,15 +690,15 @@ emsg_core(const char *s)
 
 	if (in_assert_fails && emsg_assert_fails_msg == NULL)
 	{
-	    emsg_assert_fails_msg = vim_strsave((char_u *)s);
+	    emsg_assert_fails_msg = mnv_strsave((char_u *)s);
 	    emsg_assert_fails_lnum = SOURCING_LNUM;
-	    vim_free(emsg_assert_fails_context);
-	    emsg_assert_fails_context = vim_strsave(
+	    mnv_free(emsg_assert_fails_context);
+	    emsg_assert_fails_context = mnv_strsave(
 			 SOURCING_NAME == NULL ? (char_u *)"" : SOURCING_NAME);
 	}
 
 	// set "v:errmsg", also when using ":silent! cmd"
-	set_vim_var_string(VV_ERRMSG, (char_u *)s, -1);
+	set_mnv_var_string(VV_ERRMSG, (char_u *)s, -1);
 #endif
 
 	/*
@@ -718,14 +718,14 @@ emsg_core(const char *s)
 		{
 		    STRCAT(p, "\n");
 		    redir_write(p, -1);
-		    vim_free(p);
+		    mnv_free(p);
 		}
 		p = get_emsg_lnum();
 		if (p != NULL)
 		{
 		    STRCAT(p, "\n");
 		    redir_write(p, -1);
-		    vim_free(p);
+		    mnv_free(p);
 		}
 		redir_write((char_u *)s, -1);
 	    }
@@ -829,7 +829,7 @@ semsg(const char *s, ...)
     va_list ap;
 
     va_start(ap, s);
-    vim_vsnprintf((char *)IObuff, IOSIZE, s, ap);
+    mnv_vsnprintf((char *)IObuff, IOSIZE, s, ap);
     va_end(ap);
     return emsg_core((char *)IObuff);
 }
@@ -838,7 +838,7 @@ semsg(const char *s, ...)
 /*
  * Same as emsg(...), but abort on error when ABORT_ON_INTERNAL_ERROR is
  * defined. It is used for internal errors only, so that they can be
- * detected when fuzzing vim.
+ * detected when fuzzing mnv.
  */
     void
 iemsg(char *s)
@@ -852,7 +852,7 @@ iemsg(char *s)
 
     emsg_core(s);
 #if defined(ABORT_ON_INTERNAL_ERROR) && defined(FEAT_EVAL)
-    set_vim_var_string(VV_ERRMSG, (char_u *)s, -1);
+    set_mnv_var_string(VV_ERRMSG, (char_u *)s, -1);
     msg_putchar('\n');  // avoid overwriting the error message
     out_flush();
     abort();
@@ -863,7 +863,7 @@ iemsg(char *s)
 /*
  * Same as semsg(...) but abort on error when ABORT_ON_INTERNAL_ERROR is
  * defined. It is used for internal errors only, so that they can be
- * detected when fuzzing vim.
+ * detected when fuzzing mnv.
  * Note: caller must not pass 'IObuff' as 1st argument.
  */
     void
@@ -887,7 +887,7 @@ siemsg(const char *s, ...)
 	va_list ap;
 
 	va_start(ap, s);
-	vim_vsnprintf((char *)IObuff, IOSIZE, s, ap);
+	mnv_vsnprintf((char *)IObuff, IOSIZE, s, ap);
 	va_end(ap);
 	emsg_core((char *)IObuff);
     }
@@ -915,7 +915,7 @@ internal_error(char *where)
 #if defined(FEAT_EVAL)
 /*
  * Like internal_error() but do not call abort(), to avoid tests using
- * test_unknown() and test_void() causing Vim to exit.
+ * test_unknown() and test_void() causing MNV to exit.
  */
     void
 internal_error_no_abort(char *where)
@@ -943,10 +943,10 @@ emsg_invreg(int name)
     void
 emsg_namelen(char *msg, char_u *name, int len)
 {
-    char_u *copy = vim_strnsave(name, len);
+    char_u *copy = mnv_strnsave(name, len);
 
     semsg(msg, copy == NULL ? "NULL" : (char *)copy);
-    vim_free(copy);
+    mnv_free(copy);
 }
 #endif
 
@@ -995,7 +995,7 @@ msg_may_trunc(int force, char_u *s)
     {
 	if (has_mbyte)
 	{
-	    int	size = vim_strsize(s);
+	    int	size = mnv_strsize(s);
 
 	    // There may be room anyway when there are multibyte chars.
 	    if (size <= room)
@@ -1040,7 +1040,7 @@ add_msg_hist(
     }
     while (len > 0 && s[len - 1] == '\n')
 	--len;
-    p->msg = vim_strnsave(s, len);
+    p->msg = mnv_strnsave(s, len);
     p->next = NULL;
     p->attr = attr;
     if (last_msg_hist != NULL)
@@ -1068,8 +1068,8 @@ delete_first_msg(void)
     first_msg_hist = p->next;
     if (first_msg_hist == NULL)
 	last_msg_hist = NULL;  // history is empty
-    vim_free(p->msg);
-    vim_free(p);
+    mnv_free(p->msg);
+    mnv_free(p);
     --msg_hist_len;
     return OK;
 }
@@ -1102,7 +1102,7 @@ messagesopt_changed(void)
 	}
 	else if (STRNCMP(p, MESSAGES_OPT_WAIT,
 		  STRLEN_LITERAL(MESSAGES_OPT_WAIT)) == 0
-	    && VIM_ISDIGIT(p[STRLEN_LITERAL(MESSAGES_OPT_WAIT)]))
+	    && MNV_ISDIGIT(p[STRLEN_LITERAL(MESSAGES_OPT_WAIT)]))
 	{
 	    p += STRLEN_LITERAL(MESSAGES_OPT_WAIT);
 	    messages_wait_new = getdigits(&p);
@@ -1110,7 +1110,7 @@ messagesopt_changed(void)
 	}
 	else if (STRNCMP(p, MESSAGES_OPT_HISTORY,
 		  STRLEN_LITERAL(MESSAGES_OPT_HISTORY)) == 0
-	    && VIM_ISDIGIT(p[STRLEN_LITERAL(MESSAGES_OPT_HISTORY)]))
+	    && MNV_ISDIGIT(p[STRLEN_LITERAL(MESSAGES_OPT_HISTORY)]))
 	{
 	    p += STRLEN_LITERAL(MESSAGES_OPT_HISTORY);
 	    messages_history_new = getdigits(&p);
@@ -1200,7 +1200,7 @@ ex_messages(exarg_T *eap)
 	    msg_attr(
 		    // Translator: Please replace the name and email address
 		    // with the appropriate text for your translation.
-		    _("Messages maintainer: The Vim Project"),
+		    _("Messages maintainer: The MNV Project"),
 		    HL_ATTR(HLF_T));
     }
 
@@ -1419,7 +1419,7 @@ wait_return(int redraw)
 	    if (c == K_LEFTMOUSE || c == K_MIDDLEMOUSE || c == K_RIGHTMOUSE
 					|| c == K_X1MOUSE || c == K_X2MOUSE)
 		(void)jump_to_mouse(MOUSE_SETPOS, NULL, 0);
-	    else if (vim_strchr((char_u *)"\r\n ", c) == NULL && c != Ctrl_C
+	    else if (mnv_strchr((char_u *)"\r\n ", c) == NULL && c != Ctrl_C
 		    && c != 'q')
 	    {
 		// Put the character back in the typeahead buffer.  Don't use
@@ -1477,9 +1477,9 @@ wait_return(int redraw)
     emsg_on_display = FALSE;	// can delete error message now
     lines_left = -1;		// reset lines_left at next msg_start()
     reset_last_sourcing();
-    if (keep_msg != NULL && vim_strsize(keep_msg) >=
+    if (keep_msg != NULL && mnv_strsize(keep_msg) >=
 			    (Rows - cmdline_row - 1) * cmdline_width + sc_col)
-	VIM_CLEAR(keep_msg);	    // don't redisplay message, it's too long
+	MNV_CLEAR(keep_msg);	    // don't redisplay message, it's too long
 
     if (tmpState == MODE_SETWSIZE)  // got resize event while in vgetc()
     {
@@ -1520,9 +1520,9 @@ hit_return_msg(void)
     void
 set_keep_msg(char_u *s, int attr)
 {
-    vim_free(keep_msg);
+    mnv_free(keep_msg);
     if (s != NULL && msg_silent == 0)
-	keep_msg = vim_strsave(s);
+	keep_msg = mnv_strsave(s);
     else
 	keep_msg = NULL;
     keep_msg_more = FALSE;
@@ -1554,7 +1554,7 @@ msg_start(void)
 
     if (!msg_silent)
     {
-	VIM_CLEAR(keep_msg);
+	MNV_CLEAR(keep_msg);
 	need_fileinfo = FALSE;
     }
 
@@ -1681,7 +1681,7 @@ msg_home_replace_attr(char_u *fname, int attr)
     name = home_replace_save(NULL, fname);
     if (name != NULL)
 	msg_outtrans_attr(name, attr);
-    vim_free(name);
+    mnv_free(name);
 }
 
 /*
@@ -1779,7 +1779,7 @@ msg_outtrans_len_attr(char_u *msgstr, int len, int attr)
 	if (has_mbyte && mb_l > 1)
 	{
 	    c = (*mb_ptr2char)(str);
-	    if (vim_isprintc(c))
+	    if (mnv_isprintc(c))
 		// printable multi-byte char: count the cells.
 		retval += (*mb_ptr2cells)(str);
 	    else
@@ -1886,7 +1886,7 @@ msg_outtrans_special(
 	if (text[0] != NUL && text[1] == NUL)
 	    // single-byte character or illegal byte
 	    text = (char *)transchar_byte_buf(NULL, (char_u)text[0]);
-	len = vim_strsize((char_u *)text);
+	len = mnv_strsize((char_u *)text);
 	if (maxlen > 0 && retval + len >= maxlen)
 	    break;
 	// Highlight special keys
@@ -2061,7 +2061,7 @@ msg_prt_line(char_u *s, int list)
 	if (curwin->w_lcs_chars.trail)
 	{
 	    trail = s + STRLEN(s);
-	    while (trail > s && VIM_ISWHITE(trail[-1]))
+	    while (trail > s && MNV_ISWHITE(trail[-1]))
 		--trail;
 	}
 	// find end of leading whitespace
@@ -2070,7 +2070,7 @@ msg_prt_line(char_u *s, int list)
 				 || curwin->w_lcs_chars.leadtab1 != NUL)
 	{
 	    lead = s;
-	    while (VIM_ISWHITE(lead[0]))
+	    while (MNV_ISWHITE(lead[0]))
 		lead++;
 	    // in a line full of spaces all of them are treated as trailing
 	    if (*lead == NUL)
@@ -2409,7 +2409,7 @@ put_msg_win(win_T *wp, int where, char_u *t_s, char_u *end, linenr_T lnum)
     {
 	if (*end != NUL)
 	{
-	    p = vim_strnsave(t_s, end - t_s);
+	    p = mnv_strnsave(t_s, end - t_s);
 	    if (p == NULL)
 		return;
 	}
@@ -2417,7 +2417,7 @@ put_msg_win(win_T *wp, int where, char_u *t_s, char_u *end, linenr_T lnum)
 	    p = t_s;
 	ml_append_buf(wp->w_buffer, lnum, p, (colnr_T)0, FALSE);
 	if (p != t_s)
-	    vim_free(p);
+	    mnv_free(p);
     }
     else
     {
@@ -2434,7 +2434,7 @@ put_msg_win(win_T *wp, int where, char_u *t_s, char_u *end, linenr_T lnum)
 	}
 	else
 	{
-	    newp = vim_strnsave(t_s, end - t_s);
+	    newp = mnv_strnsave(t_s, end - t_s);
 	    if (newp == NULL)
 		return;
 	}
@@ -2723,7 +2723,7 @@ msg_puts_display(
 		while (msg_col & 7);
 	}
 	else if (*s == BELL)		// beep (from ":sh")
-	    vim_beep(BO_SH);
+	    mnv_beep(BO_SH);
 	else
 	{
 	    if (has_mbyte)
@@ -2800,7 +2800,7 @@ message_filtered(char_u *msg)
 
     if (cmdmod.cmod_filter_regmatch.regprog == NULL)
 	return FALSE;
-    match = vim_regexec(&cmdmod.cmod_filter_regmatch, msg, (colnr_T)0);
+    match = mnv_regexec(&cmdmod.cmod_filter_regmatch, msg, (colnr_T)0);
     return cmdmod.cmod_filter_force ? match : !match;
 }
 
@@ -2849,7 +2849,7 @@ msg_scroll_up(void)
 inc_msg_scrolled(void)
 {
 #ifdef FEAT_EVAL
-    if (*get_vim_var_str(VV_SCROLLSTART) == NUL)
+    if (*get_mnv_var_str(VV_SCROLLSTART) == NUL)
     {
 	string_T    p = {SOURCING_NAME, 0};
 	char_u	    *tofree = NULL;
@@ -2869,13 +2869,13 @@ inc_msg_scrolled(void)
 	    tofree = alloc(tofreesize);
 	    if (tofree != NULL)
 	    {
-		p.length = vim_snprintf_safelen((char *)tofree, tofreesize,
+		p.length = mnv_snprintf_safelen((char *)tofree, tofreesize,
 		    _("%s line %ld"), p.string, (long)SOURCING_LNUM);
 		p.string = tofree;
 	    }
 	}
-	set_vim_var_string(VV_SCROLLSTART, p.string, (int)p.length);
-	vim_free(tofree);
+	set_mnv_var_string(VV_SCROLLSTART, p.string, (int)p.length);
+	mnv_free(tofree);
     }
 #endif
     ++msg_scrolled;
@@ -2940,7 +2940,7 @@ store_sb_text(
 	    mp->sb_eol = finish;
 	    mp->sb_msg_col = *sb_col;
 	    mp->sb_attr = attr;
-	    vim_strncpy(mp->sb_text, *sb_str, s - *sb_str);
+	    mnv_strncpy(mp->sb_text, *sb_str, s - *sb_str);
 
 	    if (last_msgchunk == NULL)
 	    {
@@ -3013,7 +3013,7 @@ sb_text_restart_cmdline(void)
     {
 	msgchunk_T *tofree_next = tofree->sb_next;
 
-	vim_free(tofree);
+	mnv_free(tofree);
 	tofree = tofree_next;
     }
 }
@@ -3050,7 +3050,7 @@ clear_sb_text(int all)
     while (*lastp != NULL)
     {
 	mp = (*lastp)->sb_prev;
-	vim_free(*lastp);
+	mnv_free(*lastp);
 	*lastp = mp;
     }
 }
@@ -3067,7 +3067,7 @@ show_sb_text(void)
     // weird, typing a command without output results in one line.
     mp = msg_sb_start(last_msgchunk);
     if (mp == NULL || mp->sb_prev == NULL)
-	vim_beep(BO_MESS);
+	mnv_beep(BO_MESS);
     else
     {
 	do_more_prompt('G');
@@ -3171,8 +3171,8 @@ t_puts(
 msg_use_printf(void)
 {
     return (!msg_check_screen()
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-# ifdef VIMDLL
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+# ifdef MNVDLL
 	    || (!gui.in_use && !termcap_active)
 # else
 	    || !termcap_active
@@ -3217,7 +3217,7 @@ msg_puts_printf(char_u *str, int maxlen)
 			mch_msg((char *)buf);
 		    else
 			mch_errmsg((char *)buf);
-		    vim_free(buf);
+		    mnv_free(buf);
 		}
 		p = s + 1;
 	    }
@@ -3247,10 +3247,10 @@ msg_puts_printf(char_u *str, int maxlen)
     {
 	char_u *tofree = NULL;
 
-	if (maxlen > 0 && vim_strlen_maxlen((char *)p, (size_t)maxlen)
+	if (maxlen > 0 && mnv_strlen_maxlen((char *)p, (size_t)maxlen)
 							     >= (size_t)maxlen)
 	{
-	    tofree = vim_strnsave(p, (size_t)maxlen);
+	    tofree = mnv_strnsave(p, (size_t)maxlen);
 	    p = tofree;
 	}
 	if (p != NULL)
@@ -3259,7 +3259,7 @@ msg_puts_printf(char_u *str, int maxlen)
 		mch_msg((char *)p);
 	    else
 		mch_errmsg((char *)p);
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	}
     }
 
@@ -3562,7 +3562,7 @@ do_more_prompt(int typed_char)
 #  undef mch_msg
 # endif
 
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
     static void
 mch_errmsg_c(char *str)
 {
@@ -3579,7 +3579,7 @@ mch_errmsg_c(char *str)
 	if (w != NULL)
 	{
 	    WriteConsoleW(h, w, len, &nwrite, NULL);
-	    vim_free(w);
+	    mnv_free(w);
 	}
     }
     else
@@ -3601,7 +3601,7 @@ mch_errmsg(char *str)
     int		len;
 # endif
 
-# if (defined(UNIX) || defined(FEAT_GUI)) && !defined(ALWAYS_USE_GUI) && !defined(VIMDLL)
+# if (defined(UNIX) || defined(FEAT_GUI)) && !defined(ALWAYS_USE_GUI) && !defined(MNVDLL)
     // On Unix use stderr if it's a tty.
     // When not going to start the GUI also use stderr.
     // On Mac, when started from Finder, stderr is the console.
@@ -3626,8 +3626,8 @@ mch_errmsg(char *str)
     }
 # endif
 
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-#  ifdef VIMDLL
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+#  ifdef MNVDLL
     if (!(gui.in_use || gui.starting))
 #  endif
     {
@@ -3658,7 +3658,7 @@ mch_errmsg(char *str)
 	    p = (char_u *)error_ga.ga_data + error_ga.ga_len;
 	    for (;;)
 	    {
-		p = vim_strchr(p, '\r');
+		p = mnv_strchr(p, '\r');
 		if (p == NULL)
 		    break;
 		*p = ' ';
@@ -3671,7 +3671,7 @@ mch_errmsg(char *str)
 # endif
 }
 
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
     static void
 mch_msg_c(char *str)
 {
@@ -3688,7 +3688,7 @@ mch_msg_c(char *str)
 	if (w != NULL)
 	{
 	    WriteConsoleW(h, w, len, &nwrite, NULL);
-	    vim_free(w);
+	    mnv_free(w);
 	}
     }
     else
@@ -3706,8 +3706,8 @@ mch_msg_c(char *str)
     void
 mch_msg(char *str)
 {
-# if (defined(UNIX) || defined(FEAT_GUI)) && !defined(ALWAYS_USE_GUI) && !defined(VIMDLL)
-    // On Unix use stdout if we have a tty.  This allows "vim -h | more" and
+# if (defined(UNIX) || defined(FEAT_GUI)) && !defined(ALWAYS_USE_GUI) && !defined(MNVDLL)
+    // On Unix use stdout if we have a tty.  This allows "mnv -h | more" and
     // uses mch_errmsg() when started from the desktop.
     // When not going to start the GUI also use stdout.
     // On Mac, when started from Finder, stderr is the console.
@@ -3732,8 +3732,8 @@ mch_msg(char *str)
     }
 # endif
 
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-#  ifdef VIMDLL
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+#  ifdef MNVDLL
     if (!(gui.in_use || gui.starting))
 #  endif
     {
@@ -3787,7 +3787,7 @@ msg_moremsg(int full)
     if (full)
 	screen_puts((char_u *)
 		_(" SPACE/d/j: screen/page/line down, b/u/k: up, q: quit "),
-		(int)Rows - 1, cmdline_col_off + vim_strsize(s), attr);
+		(int)Rows - 1, cmdline_col_off + mnv_strsize(s), attr);
 }
 
 /*
@@ -4155,9 +4155,9 @@ give_warning_with_source(char_u *message, int hl, int with_source)
     ++no_wait_return;
 
 #ifdef FEAT_EVAL
-    set_vim_var_string(VV_WARNINGMSG, message, -1);
+    set_mnv_var_string(VV_WARNINGMSG, message, -1);
 #endif
-    VIM_CLEAR(keep_msg);
+    MNV_CLEAR(keep_msg);
     if (hl)
 	keep_msg_attr = HL_ATTR(HLF_W);
     else
@@ -4196,7 +4196,7 @@ give_warning2(char_u *message, char_u *a1, int hl)
     }
     else
     {
-	vim_snprintf((char *)IObuff, IOSIZE, (char *)message, a1);
+	mnv_snprintf((char *)IObuff, IOSIZE, (char *)message, a1);
 	give_warning(IObuff, hl);
     }
 }
@@ -4249,7 +4249,7 @@ msg_warn_missing_clipboard(void)
  * versions, get this generic handler which uses the command line.
  *
  * type  = one of:
- *	   VIM_QUESTION, VIM_INFO, VIM_WARNING, VIM_ERROR or VIM_GENERIC
+ *	   MNV_QUESTION, MNV_INFO, MNV_WARNING, MNV_ERROR or MNV_GENERIC
  * title = title string (can be NULL for default)
  * (neither used in console dialogs at the moment)
  *
@@ -4290,7 +4290,7 @@ do_dialog(
 
 # ifdef FEAT_GUI_DIALOG
     // When GUI is running and 'c' not in 'guioptions', use the GUI dialog
-    if (gui.in_use && vim_strchr(p_go, GO_CONDIALOG) == NULL)
+    if (gui.in_use && mnv_strchr(p_go, GO_CONDIALOG) == NULL)
     {
 	// --gui-dialog-file: write text to a file
 	if (gui_dialog_log(title, message))
@@ -4377,7 +4377,7 @@ do_dialog(
 	    break;
 	}
 
-	vim_free(hotkeys);
+	mnv_free(hotkeys);
     }
 
     settmode(save_tmode);
@@ -4556,7 +4556,7 @@ msg_show_console_dialog(
 	    /*
 	     * Now allocate and load the strings
 	     */
-	    vim_free(confirm_msg);
+	    mnv_free(confirm_msg);
 	    confirm_msg = alloc(len);
 	    if (confirm_msg == NULL)
 		return NULL;
@@ -4604,7 +4604,7 @@ display_confirm_msg(void)
 #if defined(FEAT_CON_DIALOG) || defined(FEAT_GUI_DIALOG)
 
     int
-vim_dialog_yesno(
+mnv_dialog_yesno(
     int		type,
     char_u	*title,
     char_u	*message,
@@ -4614,12 +4614,12 @@ vim_dialog_yesno(
 		title == NULL ? (char_u *)_("Question") : title,
 		message,
 		(char_u *)_("&Yes\n&No"), dflt, NULL, FALSE) == 1)
-	return VIM_YES;
-    return VIM_NO;
+	return MNV_YES;
+    return MNV_NO;
 }
 
     int
-vim_dialog_yesnocancel(
+mnv_dialog_yesnocancel(
     int		type,
     char_u	*title,
     char_u	*message,
@@ -4630,14 +4630,14 @@ vim_dialog_yesnocancel(
 		message,
 		(char_u *)_("&Yes\n&No\n&Cancel"), dflt, NULL, FALSE))
     {
-	case 1: return VIM_YES;
-	case 2: return VIM_NO;
+	case 1: return MNV_YES;
+	case 2: return MNV_NO;
     }
-    return VIM_CANCEL;
+    return MNV_CANCEL;
 }
 
     int
-vim_dialog_yesnoallcancel(
+mnv_dialog_yesnoallcancel(
     int		type,
     char_u	*title,
     char_u	*message,
@@ -4649,12 +4649,12 @@ vim_dialog_yesnoallcancel(
 		(char_u *)_("&Yes\n&No\nSave &All\n&Discard All\n&Cancel"),
 							   dflt, NULL, FALSE))
     {
-	case 1: return VIM_YES;
-	case 2: return VIM_NO;
-	case 3: return VIM_ALL;
-	case 4: return VIM_DISCARDALL;
+	case 1: return MNV_YES;
+	case 2: return MNV_NO;
+	case 3: return MNV_ALL;
+	case 4: return MNV_DISCARDALL;
     }
-    return VIM_CANCEL;
+    return MNV_CANCEL;
 }
 
 #endif // FEAT_GUI_DIALOG || FEAT_CON_DIALOG

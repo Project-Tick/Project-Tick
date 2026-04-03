@@ -1,7 +1,7 @@
-# UK English Translation for Vim
+# UK English Translation for MNV
 #
-# Do ":help uganda"  in Vim to read copying and usage conditions.
-# Do ":help credits" in Vim to see a list of people who contributed.
+# Do ":help uganda"  in MNV to read copying and usage conditions.
+# Do ":help credits" in MNV to see a list of people who contributed.
 #
 # FIRST AUTHOR Mike Williams <mrmrdubya@gmail.com>, 2003.
 #
@@ -25,7 +25,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim 9.0 (UK English)\n"
+"Project-Id-Version: MNV 9.0 (UK English)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-28 09:49+0100\n"
 "PO-Revision-Date: 2022-05-12 10:05+1000\n"
@@ -108,11 +108,11 @@ msgstr "-foreground <colour>\tUse <colour> for normal text (also: -fg)"
 msgid "+reverse\t\tDon't use reverse video (also: +rv)"
 msgstr "+reverse\t\tDo not use reverse video (also: +rv)"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Messages maintainer: Mike Williams <mrmrdubya@gmail.com>"
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: Cannot open window!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: Cannot open window!\n"
 
 #, c-format
 msgid "Unrecognized or duplicate item in %s line %d: %s"
@@ -141,8 +141,8 @@ msgid "E102: Can't find buffer \"%s\""
 msgstr "E102: Cannot find buffer \"%s\""
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: Cannot write viminfo file %s!"
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: Cannot write mnvinfo file %s!"
 
 msgid "E146: Regular expressions can't be delimited by letters"
 msgstr "E146: Regular expressions cannot be delimited by letters"
@@ -329,18 +329,18 @@ msgstr "E818: SHA-256 test failed"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: Eval did not return a valid Python object"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: Failed to convert returned Python object to a Vim value"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: Failed to convert returned Python object to a MNV value"
 
 msgid "E871: (NFA regexp) Can't have a multi follow a multi"
 msgstr "E871: (NFA regexp) Cannot have a multi follow a multi"
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
-msgstr "E880: Cannot handle SystemExit of Python exception in vim"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
+msgstr "E880: Cannot handle SystemExit of Python exception in mnv"
 
 #, c-format
-msgid "E886: Can't rename viminfo file to %s!"
-msgstr "E886: Cannot rename viminfo file to %s!"
+msgid "E886: Can't rename mnvinfo file to %s!"
+msgstr "E886: Cannot rename mnvinfo file to %s!"
 
 msgid "E952: Autocommand caused recursive behavior"
 msgstr "E952: Autocommand caused recursive behaviour"

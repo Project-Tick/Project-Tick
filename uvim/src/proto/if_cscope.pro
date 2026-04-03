@@ -9,4 +9,4 @@ void cs_free_tags(void);
 void cs_print_tags(void);
 void cs_end(void);
 void f_cscope_connection(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

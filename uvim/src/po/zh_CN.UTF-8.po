@@ -1,7 +1,7 @@
-# Chinese (simplified) Translation for Vim
+# Chinese (simplified) Translation for MNV
 #
-# Do ":help uganda"  in Vim to read copying and usage conditions.
-# Do ":help credits" in Vim to see a list of people who contributed.
+# Do ":help uganda"  in MNV to read copying and usage conditions.
+# Do ":help credits" in MNV to see a list of people who contributed.
 #
 # FIRST AUTHOR  Wang Jun <junw@turbolinux.com.cn>
 #
@@ -16,8 +16,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim(Simplified Chinese)\n"
-"Report-Msgid-Bugs-To: vim-dev@vim.org\n"
+"Project-Id-Version: MNV(Simplified Chinese)\n"
+"Report-Msgid-Bugs-To: mnv-dev@mnv.org\n"
 "POT-Creation-Date: 2026-03-20 20:44+0800\n"
 "PO-Revision-Date: 2025-12-28 14:27+0800\n"
 "Last-Translator: Mao-Yining\n"
@@ -630,8 +630,8 @@ msgstr[0] "还有 %d 个文件未编辑。确实要退出吗？"
 msgid "unknown"
 msgstr "未知"
 
-msgid "Greetings, Vim user!"
-msgstr "您好，Vim 用户！"
+msgid "Greetings, MNV user!"
+msgstr "您好，MNV 用户！"
 
 msgid "Already only one tab page"
 msgstr "已经只剩一个标签页了"
@@ -727,8 +727,8 @@ msgstr "[文件过大]"
 msgid "[Permission Denied]"
 msgstr "[权限不足]"
 
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: 从标准输入读取...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: 从标准输入读取...\n"
 
 msgid "Reading from stdin..."
 msgstr "从标准输入读取..."
@@ -808,9 +808,9 @@ msgstr "[最后一行不完整]"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as "
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as "
 "well"
-msgstr "W12: 警告: 文件 \"%s\" 已变动，并且在 Vim 中的缓冲区也已变动"
+msgstr "W12: 警告: 文件 \"%s\" 已变动，并且在 MNV 中的缓冲区也已变动"
 
 msgid "See \":help W12\" for more info."
 msgstr "请参阅 \":help W12\" 以获取更多信息。"
@@ -915,11 +915,11 @@ msgstr "取消"
 msgid "Input _Methods"
 msgstr "输入法(_M)"
 
-msgid "VIM - Search and Replace..."
-msgstr "VIM - 查找和替换..."
+msgid "MNV - Search and Replace..."
+msgstr "MNV - 查找和替换..."
 
-msgid "VIM - Search..."
-msgstr "VIM - 查找..."
+msgid "MNV - Search..."
+msgstr "MNV - 查找..."
 
 msgid "Find what:"
 msgstr "查找内容:"
@@ -954,8 +954,8 @@ msgstr "全部替换"
 msgid "_Close"
 msgstr "关闭(_C)"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: 从会话管理器收到 \"die\" 请求\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: 从会话管理器收到 \"die\" 请求\n"
 
 msgid "Close tab"
 msgstr "关闭标签"
@@ -966,8 +966,8 @@ msgstr "新建标签"
 msgid "Open Tab..."
 msgstr "打开标签..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: 主窗口被意外地摧毁\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: 主窗口被意外地摧毁\n"
 
 msgid "&Filter"
 msgstr "过滤(&F)"
@@ -993,8 +993,8 @@ msgstr "确定(&O)"
 msgid "Selection"
 msgstr "选择"
 
-msgid "Vim dialog"
-msgstr "Vim 对话框"
+msgid "MNV dialog"
+msgstr "MNV 对话框"
 
 msgid "Find &Next"
 msgstr "查找下一个(&N)"
@@ -1052,8 +1052,8 @@ msgstr "取消(&D)"
 msgid "no specific match"
 msgstr "找不到匹配的项"
 
-msgid "Vim - Font Selector"
-msgstr "Vim - 字体选择器"
+msgid "MNV - Font Selector"
+msgstr "MNV - 字体选择器"
 
 msgid "Name:"
 msgstr "名称:"
@@ -1238,14 +1238,14 @@ msgstr "无法插入行"
 msgid "string cannot contain newlines"
 msgstr "字符串不能包含换行(NL)"
 
-msgid "error converting Scheme values to Vim"
-msgstr "将 Scheme 值转换到 Vim 时出错"
+msgid "error converting Scheme values to MNV"
+msgstr "将 Scheme 值转换到 MNV 时出错"
 
-msgid "Vim error: ~a"
-msgstr "Vim 错误: ~a"
+msgid "MNV error: ~a"
+msgstr "MNV 错误: ~a"
 
-msgid "Vim error"
-msgstr "Vim 错误"
+msgid "MNV error"
+msgstr "MNV 错误"
 
 msgid "buffer is invalid"
 msgstr "缓冲区无效"
@@ -1256,7 +1256,7 @@ msgstr "窗口无效"
 msgid "linenr out of range"
 msgstr "行号超出范围"
 
-msgid "not allowed in the Vim sandbox"
+msgid "not allowed in the MNV sandbox"
 msgstr "不允许在 sandbox 中使用"
 
 msgid "invalid buffer number"
@@ -1287,8 +1287,8 @@ msgstr "行号超出范围"
 msgid "unknown flag: "
 msgstr "未知的标志: "
 
-msgid "unknown vimOption"
-msgstr "未知的 vim 选项"
+msgid "unknown mnvOption"
+msgstr "未知的 mnv 选项"
 
 msgid "keyboard interrupt"
 msgstr "键盘中断"
@@ -1480,8 +1480,8 @@ msgstr "此 GUI 中不支持 netbeans\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "'-nb' 无法使用：编译时未启用\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "此 Vim 编译时没有加入比对（diff）功能。"
+msgid "This MNV was not compiled with the diff feature."
+msgstr "此 MNV 编译时没有加入比对（diff）功能。"
 
 msgid "Attempt to open script file again: \""
 msgstr "试图再次打开脚本文件: \""
@@ -1492,27 +1492,27 @@ msgstr "无法打开并读取: \""
 msgid "Cannot open for script output: \""
 msgstr "无法打开并输出脚本: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: 错误: 无法从 NetBeans 中启动 gvim\n"
+msgid "MNV: Error: Failure to start gmnv from NetBeans\n"
+msgstr "MNV: 错误: 无法从 NetBeans 中启动 gmnv\n"
 
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: 错误: 此版本的 Vim 不支持在 Cygwin 终端中运行\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: 错误: 此版本的 MNV 不支持在 Cygwin 终端中运行\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: 警告: 输出不是到终端(屏幕)\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: 警告: 输出不是到终端(屏幕)\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: 警告: 输入不是来自终端(键盘)\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: 警告: 输入不是来自终端(键盘)\n"
 
-msgid "pre-vimrc command line"
-msgstr "pre-vimrc 命令行"
+msgid "pre-mnvrc command line"
+msgstr "pre-mnvrc 命令行"
 
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"更多信息请见: \"vim -h\"\n"
+"更多信息请见: \"mnv -h\"\n"
 
 msgid "[file ..]       edit specified file(s)"
 msgstr "[文件 ..]       编辑指定的文件"
@@ -1535,8 +1535,8 @@ msgstr ""
 "\n"
 "用法:"
 
-msgid " vim [arguments] "
-msgstr " vim [参数] "
+msgid " mnv [arguments] "
+msgstr " mnv [参数] "
 
 msgid ""
 "\n"
@@ -1575,14 +1575,14 @@ msgstr "--\t\t\t在这以后只有文件名"
 msgid "--literal\t\tDon't expand wildcards"
 msgstr "--literal\t\t不扩展通配符"
 
-msgid "-register\t\tRegister this gvim for OLE"
-msgstr "-register\t\t注册此 gvim 到 OLE"
+msgid "-register\t\tRegister this gmnv for OLE"
+msgstr "-register\t\t注册此 gmnv 到 OLE"
 
-msgid "-unregister\t\tUnregister gvim for OLE"
-msgstr "-unregister\t\t取消 OLE 中的 gvim 注册"
+msgid "-unregister\t\tUnregister gmnv for OLE"
+msgstr "-unregister\t\t取消 OLE 中的 gmnv 注册"
 
-msgid "-g\t\t\tRun using GUI (like \"gvim\")"
-msgstr "-g\t\t\t使用图形界面 (同 \"gvim\")"
+msgid "-g\t\t\tRun using GUI (like \"gmnv\")"
+msgstr "-g\t\t\t使用图形界面 (同 \"gmnv\")"
 
 msgid "-f  or  --nofork\tForeground: Don't fork when starting GUI"
 msgstr "-f  或  --nofork\t前台: 启动图形界面时不 fork"
@@ -1599,17 +1599,17 @@ msgstr "-E\t\t\t改进的 Ex 模式"
 msgid "-s\t\t\tSilent (batch) mode (only for \"ex\")"
 msgstr "-s\t\t\t安静(批处理)模式 (只能与 \"ex\" 一起使用)"
 
-msgid "-d\t\t\tDiff mode (like \"vimdiff\")"
-msgstr "-d\t\t\tDiff 模式 (同 \"vimdiff\")"
+msgid "-d\t\t\tDiff mode (like \"mnvdiff\")"
+msgstr "-d\t\t\tDiff 模式 (同 \"mnvdiff\")"
 
-msgid "-y\t\t\tEasy mode (like \"evim\", modeless)"
-msgstr "-y\t\t\t容易模式 (同 \"evim\"，无模式)"
+msgid "-y\t\t\tEasy mode (like \"emnv\", modeless)"
+msgstr "-y\t\t\t容易模式 (同 \"emnv\"，无模式)"
 
 msgid "-R\t\t\tReadonly mode (like \"view\")"
 msgstr "-R\t\t\t只读模式 (同 \"view\")"
 
-msgid "-Z\t\t\tRestricted mode (like \"rvim\")"
-msgstr "-Z\t\t\t限制模式 (同 \"rvim\")"
+msgid "-Z\t\t\tRestricted mode (like \"rmnv\")"
+msgstr "-Z\t\t\t限制模式 (同 \"rmnv\")"
 
 msgid "-m\t\t\tModifications (writing files) not allowed"
 msgstr "-m\t\t\t不可修改(写入文件)"
@@ -1671,11 +1671,11 @@ msgstr "--gui-dialog-file {fname}  测试用：输出对话文本"
 msgid "--ttyfail\t\tExit if input or output is not a terminal"
 msgstr "--ttyfail\t\t如果输入或输出不是终端就退出"
 
-msgid "-u <vimrc>\t\tUse <vimrc> instead of any .vimrc"
-msgstr "-u <vimrc>\t\t使用 <vimrc> 替代任何 .vimrc"
+msgid "-u <mnvrc>\t\tUse <mnvrc> instead of any .mnvrc"
+msgstr "-u <mnvrc>\t\t使用 <mnvrc> 替代任何 .mnvrc"
 
-msgid "-U <gvimrc>\t\tUse <gvimrc> instead of any .gvimrc"
-msgstr "-U <gvimrc>\t\t使用 <gvimrc> 替代任何 .gvimrc"
+msgid "-U <gmnvrc>\t\tUse <gmnvrc> instead of any .gmnvrc"
+msgstr "-U <gmnvrc>\t\t使用 <gmnvrc> 替代任何 .gmnvrc"
 
 msgid "--noplugin\t\tDon't load plugin scripts"
 msgstr "--noplugin\t\t不加载 plugin 脚本"
@@ -1695,8 +1695,8 @@ msgstr "+\t\t\t启动后跳到文件末尾"
 msgid "+<lnum>\t\tStart at line <lnum>"
 msgstr "+<lnum>\t\t启动后跳到第 <lnum> 行"
 
-msgid "--cmd <command>\tExecute <command> before loading any vimrc file"
-msgstr "--cmd <command>\t加载任何 vimrc 文件前执行 <command>"
+msgid "--cmd <command>\tExecute <command> before loading any mnvrc file"
+msgstr "--cmd <command>\t加载任何 mnvrc 文件前执行 <command>"
 
 msgid "-c <command>\t\tExecute <command> after loading the first file"
 msgstr "-c <command>\t\t加载第一个文件后执行 <command>"
@@ -1716,8 +1716,8 @@ msgstr "-W <scriptout>\t将所有输入的命令写入到文件 <scriptout>"
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\t编辑加密的文件"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
-msgstr "-display <display>\t将 Vim 与指定的 X-server 连接"
+msgid "-display <display>\tConnect MNV to this particular X-server"
+msgstr "-display <display>\t将 MNV 与指定的 X-server 连接"
 
 msgid "-X\t\t\tDo not connect to X server"
 msgstr "-X\t\t\t不连接到 X Server"
@@ -1728,8 +1728,8 @@ msgstr "-Y\t\t\t不连接到 Wayland compositor"
 msgid "--clientserver <socket|x11> Backend for clientserver communication"
 msgstr "--clientserver <socket|x11> 客户端-服务器通信的后端实现"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
-msgstr "--remote <files>\t如有可能，在 Vim 服务器上编辑 <files>"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
+msgstr "--remote <files>\t如有可能，在 MNV 服务器上编辑 <files>"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr "--remote-silent <files>  同上，找不到服务器时不给出消息"
@@ -1747,17 +1747,17 @@ msgid ""
 msgstr ""
 "--remote-tab[-wait][-silent] <files>  同 --remote 但对每个文件打开一个标签页"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
-msgstr "--remote-send <keys>\t送出 <keys> 到 Vim 服务器并退出"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
+msgstr "--remote-send <keys>\t送出 <keys> 到 MNV 服务器并退出"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
-msgstr "--remote-expr <expr>\t在 Vim 服务器上求 <expr> 的值并打印结果"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
+msgstr "--remote-expr <expr>\t在 MNV 服务器上求 <expr> 的值并打印结果"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
-msgstr "--serverlist\t\t列出可用的 Vim 服务器名称并退出"
+msgid "--serverlist\t\tList available MNV server names and exit"
+msgstr "--serverlist\t\t列出可用的 MNV 服务器名称并退出"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
-msgstr "--servername <名称>\t发送到或成为 Vim 服务器 <名称>"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
+msgstr "--servername <名称>\t发送到或成为 MNV 服务器 <名称>"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
 msgstr "--startuptime <文件>\t将启动计时信息写入 <文件>"
@@ -1765,11 +1765,11 @@ msgstr "--startuptime <文件>\t将启动计时信息写入 <文件>"
 msgid "--log <file>\t\tStart logging to <file> early"
 msgstr "--log <文件>\t\t尽早开始记录日志到 <文件>"
 
-msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
-msgstr "-i <viminfo>\t\t使用 <viminfo> 取代 .viminfo"
+msgid "-i <mnvinfo>\t\tUse <mnvinfo> instead of .mnvinfo"
+msgstr "-i <mnvinfo>\t\t使用 <mnvinfo> 取代 .mnvinfo"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
-msgstr "--clean\t\t'nocompatible', Vim 默认选项, 不加载插件, 不读写 viminfo"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no mnvinfo"
+msgstr "--clean\t\t'nocompatible', MNV 默认选项, 不加载插件, 不读写 mnvinfo"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h  或  --help\t打印帮助(本信息)并退出"
@@ -1779,15 +1779,15 @@ msgstr "--version\t\t打印版本信息并退出"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Motif version):\n"
+"Arguments recognised by gmnv (Motif version):\n"
 msgstr ""
 "\n"
-"gvim (Motif 版本) 可识别的参数:\n"
+"gmnv (Motif 版本) 可识别的参数:\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <display>\t在 <display> 上运行 vim"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <display>\t在 <display> 上运行 mnv"
 
-msgid "-iconic\t\tStart Vim iconified"
+msgid "-iconic\t\tStart MNV iconified"
 msgstr "-iconic\t\t启动后最小化"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
@@ -1825,28 +1825,28 @@ msgstr "-xrm <resource>\t设定指定的资源"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (GTK+ version):\n"
+"Arguments recognised by gmnv (GTK+ version):\n"
 msgstr ""
 "\n"
-"gvim (GTK+ 版本) 可识别的参数:\n"
+"gmnv (GTK+ 版本) 可识别的参数:\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <display>\t在 <display> 上运行 Vim (也可用 --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <display>\t在 <display> 上运行 MNV (也可用 --display)"
 
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr "--role <role>\t设置用于区分主窗口的窗口角色名"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\t在另一个 GTK 部件中打开 Vim"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\t在另一个 GTK 部件中打开 MNV"
 
-msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
-msgstr "--echo-wid\t\t让 gvim 在标准输出上显示窗口 ID"
+msgid "--echo-wid\t\tMake gmnv echo the Window ID on stdout"
+msgstr "--echo-wid\t\t让 gmnv 在标准输出上显示窗口 ID"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
-msgstr "-P <parent title>\t在父应用程序中打开 Vim"
+msgid "-P <parent title>\tOpen MNV inside parent application"
+msgstr "-P <parent title>\t在父应用程序中打开 MNV"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\t在另一个 win32 控件中打开 Vim"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\t在另一个 win32 控件中打开 MNV"
 
 msgid "Seen modifyOtherKeys: true\n"
 msgstr "检测到 modifyOtherKeys: true\n"
@@ -1912,16 +1912,16 @@ msgstr "无法读取块 0: "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"可能你没做过任何修改或是 Vim 还来不及更新交换文件。"
+"可能你没做过任何修改或是 MNV 还来不及更新交换文件。"
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " 不能在该版本的 Vim 中使用。\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " 不能在该版本的 MNV 中使用。\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "使用 Vim 3.0。\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "使用 MNV 3.0。\n"
 
 msgid " cannot be used on this computer.\n"
 msgstr " 不能在这台电脑上使用。\n"
@@ -2078,11 +2078,11 @@ msgstr "    日期: "
 msgid "             dated: "
 msgstr "              日期: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [来自 Vim 版本 3.0]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [来自 MNV 版本 3.0]"
 
-msgid "         [does not look like a Vim swap file]"
-msgstr "         [不像是 Vim 交换文件]"
+msgid "         [does not look like a MNV swap file]"
+msgstr "         [不像是 MNV 交换文件]"
 
 msgid "         file name: "
 msgstr "            文件名: "
@@ -2129,10 +2129,10 @@ msgstr " （还！在！运！行！）"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [不能在该版本的 Vim 上使用]"
+"         [不能在该版本的 MNV 上使用]"
 
 msgid ""
 "\n"
@@ -2192,8 +2192,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) 上次编辑此文件时崩溃。\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    如果是这样，请用 \":recover\" 或 \"vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    如果是这样，请用 \":recover\" 或 \"mnv -r "
 
 msgid ""
 "\"\n"
@@ -2221,8 +2221,8 @@ msgstr "交换文件 \""
 msgid "\" already exists!"
 msgstr "\" 已存在！"
 
-msgid "VIM - ATTENTION"
-msgstr "VIM - 注意"
+msgid "MNV - ATTENTION"
+msgstr "MNV - 注意"
 
 msgid "Swap file already exists!"
 msgstr "交换文件已存在！"
@@ -2277,7 +2277,7 @@ msgstr "处理 %s 时发生错误:"
 msgid "line %4ld:"
 msgstr "第 %4ld 行:"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "简体中文消息维护者: Yuheng Xie <elephant@linux.net.cn>"
 
 msgid "Interrupt: "
@@ -2354,11 +2354,11 @@ msgstr "调用 shell 执行: \"%s\""
 msgid "Warning: terminal cannot highlight"
 msgstr "警告: 你的终端不能显示高亮"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
-msgstr "输入  :qa!  并按回车键来放弃所有更改并退出 Vim"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
+msgstr "输入  :qa!  并按回车键来放弃所有更改并退出 MNV"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "输入  :qa 并按回车键来退出 Vim"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "输入  :qa 并按回车键来退出 MNV"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -2447,8 +2447,8 @@ msgstr ""
 msgid "cannot open "
 msgstr "不能打开"
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: 不能打开窗口!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: 不能打开窗口!\n"
 
 msgid "Need Amigados version 2.04 or later\n"
 msgstr "需要 Amigados 版本 2.04 以上\n"
@@ -2464,8 +2464,8 @@ msgid "Cannot create "
 msgstr "不能创建 "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vim 返回值: %d\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNV 返回值: %d\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "不能切换主控台(console)模式 !?\n"
@@ -2508,10 +2508,10 @@ msgstr "打开 X display 用时 %ld 秒"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: X 错误\n"
+"MNV: X 错误\n"
 
 #, c-format
 msgid "restoring X11 display %s"
@@ -2623,8 +2623,8 @@ msgid "At line"
 msgstr "在行号"
 
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: 拦截到 %s 事件\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: 拦截到 %s 事件\n"
 
 msgid "close"
 msgstr "关闭"
@@ -2636,16 +2636,16 @@ msgid "shutdown"
 msgstr "关机"
 
 msgid ""
-"VIMRUN.EXE not found in your $PATH.\n"
+"MNVRUN.EXE not found in your $PATH.\n"
 "External commands will not pause after completion.\n"
-"See  :help win32-vimrun  for more information."
+"See  :help win32-mnvrun  for more information."
 msgstr ""
-"在你的 $PATH 中找不到 VIMRUN.EXE。\n"
+"在你的 $PATH 中找不到 MNVRUN.EXE。\n"
 "外部命令执行完毕后将不会暂停。\n"
-"请参阅 :help win32-vimrun 以获取更多信息。"
+"请参阅 :help win32-mnvrun 以获取更多信息。"
 
-msgid "Vim Warning"
-msgstr "Vim 警告"
+msgid "MNV Warning"
+msgstr "MNV 警告"
 
 #, c-format
 msgid "shell returned %d"
@@ -2772,8 +2772,8 @@ msgstr "正在查找 \"%s\""
 msgid "not found in '%s': \"%s\""
 msgstr "在 '%s' 中找不到：\"%s\""
 
-msgid "Source Vim script"
-msgstr "执行 Vim 脚本"
+msgid "Source MNV script"
+msgstr "执行 MNV 脚本"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -3328,8 +3328,8 @@ msgstr[0] "%ld 秒前"
 msgid "new shell started\n"
 msgstr "启动新 shell\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: 读错误，退出中...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: 读错误，退出中...\n"
 
 msgid "No undo possible; continue anyway"
 msgstr "无法撤销；仍然继续"
@@ -3607,20 +3607,20 @@ msgstr "带图形界面。"
 msgid "  Features included (+) or not (-):\n"
 msgstr "  可使用(+)与不可使用(-)的功能:\n"
 
-msgid "   system vimrc file: \""
-msgstr "     系统 vimrc 文件: \""
+msgid "   system mnvrc file: \""
+msgstr "     系统 mnvrc 文件: \""
 
-msgid "     user vimrc file: \""
-msgstr "     用户 vimrc 文件: \""
+msgid "     user mnvrc file: \""
+msgstr "     用户 mnvrc 文件: \""
 
-msgid " 2nd user vimrc file: \""
-msgstr " 第二用户 vimrc 文件: \""
+msgid " 2nd user mnvrc file: \""
+msgstr " 第二用户 mnvrc 文件: \""
 
-msgid " 3rd user vimrc file: \""
-msgstr " 第三用户 vimrc 文件: \""
+msgid " 3rd user mnvrc file: \""
+msgstr " 第三用户 mnvrc 文件: \""
 
-msgid " 4th user vimrc file: \""
-msgstr " 第四用户 vimrc 文件: \""
+msgid " 4th user mnvrc file: \""
+msgstr " 第四用户 mnvrc 文件: \""
 
 msgid "      user exrc file: \""
 msgstr "      用户 exrc 文件: \""
@@ -3628,17 +3628,17 @@ msgstr "      用户 exrc 文件: \""
 msgid "  2nd user exrc file: \""
 msgstr "  第二用户 exrc 文件: \""
 
-msgid "  system gvimrc file: \""
-msgstr "    系统 gvimrc 文件: \""
+msgid "  system gmnvrc file: \""
+msgstr "    系统 gmnvrc 文件: \""
 
-msgid "    user gvimrc file: \""
-msgstr "    用户 gvimrc 文件: \""
+msgid "    user gmnvrc file: \""
+msgstr "    用户 gmnvrc 文件: \""
 
-msgid "2nd user gvimrc file: \""
-msgstr "第二用户 gvimrc 文件: \""
+msgid "2nd user gmnvrc file: \""
+msgstr "第二用户 gmnvrc 文件: \""
 
-msgid "3rd user gvimrc file: \""
-msgstr "第三用户 gvimrc 文件: \""
+msgid "3rd user gmnvrc file: \""
+msgstr "第三用户 gmnvrc 文件: \""
 
 msgid "       defaults file: \""
 msgstr "       defaults 文件: \""
@@ -3646,11 +3646,11 @@ msgstr "       defaults 文件: \""
 msgid "    system menu file: \""
 msgstr "        系统菜单文件: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "         $VIM 预设值: \""
+msgid "  fall-back for $MNV: \""
+msgstr "         $MNV 预设值: \""
 
-msgid " f-b for $VIMRUNTIME: \""
-msgstr "  $VIMRUNTIME 预设值: \""
+msgid " f-b for $MNVRUNTIME: \""
+msgstr "  $MNVRUNTIME 预设值: \""
 
 msgid "Compilation: "
 msgstr "编译方式: "
@@ -3664,8 +3664,8 @@ msgstr "链接方式: "
 msgid "  DEBUG BUILD"
 msgstr "  调试版本"
 
-msgid "VIM - Vi IMproved"
-msgstr "VIM - Vi IMproved"
+msgid "MNV - MNV is not Vim"
+msgstr "MNV - MNV is not Vim"
 
 msgid "version "
 msgstr "版本 "
@@ -3673,8 +3673,8 @@ msgstr "版本 "
 msgid "by Bram Moolenaar et al."
 msgstr "作者 Bram Moolenaar 等"
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim 是可自由分发的开放源代码软件"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV 是可自由分发的开放源代码软件"
 
 msgid "Help poor children in Uganda!"
 msgstr "帮助乌干达的可怜儿童！"
@@ -3694,7 +3694,7 @@ msgstr "输入  :help version9<Enter>   查看版本信息"
 msgid "Running in Vi compatible mode"
 msgstr "运行于 Vi 兼容模式"
 
-msgid "type  :set nocp<Enter>        for Vim defaults"
+msgid "type  :set nocp<Enter>        for MNV defaults"
 msgstr "输入  :set nocp<Enter>        恢复默认模式"
 
 msgid "type  :help cp-default<Enter> for info on this"
@@ -3715,11 +3715,11 @@ msgstr "                              切换两种模式"
 msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "菜单  编辑->全局设置->切换 Vi 兼容性      "
 
-msgid "                              for Vim defaults   "
+msgid "                              for MNV defaults   "
 msgstr "                              恢复默认模式"
 
-msgid "Sponsor Vim development!"
-msgstr "赞助 Vim 的开发！"
+msgid "Sponsor MNV development!"
+msgstr "赞助 MNV 的开发！"
 
 msgid "type  :help sponsor<Enter>    for information "
 msgstr "输入  :help sponsor<Enter>    查看如何赞助"
@@ -3787,8 +3787,8 @@ msgstr ""
 
 # bad to translate
 #, c-format
-msgid "%sviminfo: %s in line: "
-msgstr "%sviminfo: %s 位于行: "
+msgid "%smnvinfo: %s in line: "
+msgstr "%smnvinfo: %s 位于行: "
 
 msgid ""
 "\n"
@@ -3850,8 +3850,8 @@ msgstr ""
 
 # do not translate to avoid writing Chinese in files
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# 这个 viminfo 文件是由 Vim %s 生成的。\n"
+msgid "# This mnvinfo file was generated by MNV %s.\n"
+msgstr "# 这个 mnvinfo 文件是由 MNV %s 生成的。\n"
 
 # do not translate to avoid writing Chinese in files
 msgid ""
@@ -3865,8 +3865,8 @@ msgid "# Value of 'encoding' when this file was written\n"
 msgstr "# 此文件建立时 'encoding' 的值\n"
 
 #, c-format
-msgid "Reading viminfo file \"%s\"%s%s%s%s"
-msgstr "读取 viminfo 文件 \"%s\"%s%s%s%s"
+msgid "Reading mnvinfo file \"%s\"%s%s%s%s"
+msgstr "读取 mnvinfo 文件 \"%s\"%s%s%s%s"
 
 msgid " info"
 msgstr " 信息"
@@ -3881,8 +3881,8 @@ msgid " FAILED"
 msgstr " 失败"
 
 #, c-format
-msgid "Writing viminfo file \"%s\""
-msgstr "写入 viminfo 文件 \"%s\""
+msgid "Writing mnvinfo file \"%s\""
+msgstr "写入 mnvinfo 文件 \"%s\""
 
 msgid "wayland protocol error -> "
 msgstr "Wayland 协议错误 -> "
@@ -3904,32 +3904,32 @@ msgstr "E370: 无法加载库 %s"
 msgid "Sorry, this command is disabled: the Perl library could not be loaded."
 msgstr "抱歉，此命令不可用: 无法加载 Perl 库。"
 
-msgid "Edit with Vim using &tabpages"
-msgstr "用 Vim 标签页编辑(&T)"
+msgid "Edit with MNV using &tabpages"
+msgstr "用 MNV 标签页编辑(&T)"
 
-msgid "Edit with single &Vim"
-msgstr "用单个 Vim 编辑(&V)"
+msgid "Edit with single &MNV"
+msgstr "用单个 MNV 编辑(&V)"
 
-msgid "Diff with Vim"
-msgstr "用 Vim 比较(diff)"
+msgid "Diff with MNV"
+msgstr "用 MNV 比较(diff)"
 
-msgid "Edit with &Vim"
-msgstr "用 Vim 编辑(&V)"
+msgid "Edit with &MNV"
+msgstr "用 MNV 编辑(&V)"
 
-msgid "Edit with existing Vim"
-msgstr "用已有的 Vim 编辑"
+msgid "Edit with existing MNV"
+msgstr "用已有的 MNV 编辑"
 
-msgid "Edit with existing Vim - "
-msgstr "用当前的 Vim 编辑 - "
+msgid "Edit with existing MNV - "
+msgstr "用当前的 MNV 编辑 - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "用 Vim 编辑选中的文件"
+msgid "Edits the selected file(s) with MNV"
+msgstr "用 MNV 编辑选中的文件"
 
-msgid "Error creating process: Check if gvim is in your path!"
-msgstr "创建进程失败: 请检查 gvim 是否在路径中！"
+msgid "Error creating process: Check if gmnv is in your path!"
+msgstr "创建进程失败: 请检查 gmnv 是否在路径中！"
 
-msgid "gvimext.dll error"
-msgstr "gvimext.dll 错误"
+msgid "gmnvext.dll error"
+msgstr "gmnvext.dll 错误"
 
 msgid "Interrupted"
 msgstr "已中断"
@@ -3940,8 +3940,8 @@ msgstr "E10: \\ 后面应该跟有 /、? 或 &"
 msgid "E11: Invalid in command-line window; :q<CR> closes the window"
 msgstr "E11: 在命令行窗口中无效；:q<CR> 关闭窗口"
 
-msgid "E12: Command not allowed from exrc/vimrc in current dir or tag search"
-msgstr "E12: 当前目录中的 exrc/vimrc 或 tag 查找中不允许此命令"
+msgid "E12: Command not allowed from exrc/mnvrc in current dir or tag search"
+msgstr "E12: 当前目录中的 exrc/mnvrc 或 tag 查找中不允许此命令"
 
 msgid "E13: File exists (add ! to override)"
 msgstr "E13: 文件已存在 (请加 ! 强制执行)"
@@ -4346,16 +4346,16 @@ msgstr "E134: 不能把行范围移动到自已中"
 msgid "E135: *Filter* Autocommands must not change current buffer"
 msgstr "E135: *Filter* 自动命令不可以改变当前缓冲区"
 
-msgid "E136: viminfo: Too many errors, skipping rest of file"
-msgstr "E136: viminfo: 错误过多，忽略文件的剩余部分"
+msgid "E136: mnvinfo: Too many errors, skipping rest of file"
+msgstr "E136: mnvinfo: 错误过多，忽略文件的剩余部分"
 
 #, c-format
-msgid "E137: Viminfo file is not writable: %s"
-msgstr "E137: Viminfo 文件不可写入: %s"
+msgid "E137: MNVinfo file is not writable: %s"
+msgstr "E137: MNVinfo 文件不可写入: %s"
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: 无法写入 viminfo 文件 %s！"
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: 无法写入 mnvinfo 文件 %s！"
 
 msgid "E139: File is loaded in another buffer"
 msgstr "E139: 文件已在另一个缓冲区中被加载"
@@ -4377,8 +4377,8 @@ msgstr "E143: 自动命令意外地删除了新缓冲区 %s"
 msgid "E144: Non-numeric argument to :z"
 msgstr "E144: :z 不接受非数字的参数"
 
-msgid "E145: Shell commands and some functionality not allowed in rvim"
-msgstr "E145: rvim 中禁止使用 shell 命令和某些功能"
+msgid "E145: Shell commands and some functionality not allowed in rmnv"
+msgstr "E145: rmnv 中禁止使用 shell 命令和某些功能"
 
 msgid "E146: Regular expressions can't be delimited by letters"
 msgstr "E146: 正则表达式不能用字母作分界"
@@ -4557,8 +4557,8 @@ msgstr "E193: %s 不在函数中"
 msgid "E194: No alternate file name to substitute for '#'"
 msgstr "E194: 没有用于替换 '#' 的交替文件名"
 
-msgid "E195: Cannot open viminfo file for reading"
-msgstr "E195: 无法打开并读取 viminfo 文件"
+msgid "E195: Cannot open mnvinfo file for reading"
+msgstr "E195: 无法打开并读取 mnvinfo 文件"
 
 msgid "E196: No digraphs in this version"
 msgstr "E196: 此版本无二合字符"
@@ -4740,8 +4740,8 @@ msgstr "E249: 窗口布局意外地改变了"
 msgid "E250: Fonts for the following charsets are missing in fontset %s:"
 msgstr "E250: Fontset %s 缺少下列字符集的字体:"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
-msgstr "E251: VIM 实例注册属性有误。已删除！"
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
+msgstr "E251: MNV 实例注册属性有误。已删除！"
 
 #, c-format
 msgid "E252: Fontset name: %s - Font '%s' is not fixed-width"
@@ -4898,8 +4898,8 @@ msgid "E306: Cannot open %s"
 msgstr "E306: 无法打开 %s"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s 看起来不像是 Vim 交换文件"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s 看起来不像是 MNV 交换文件"
 
 msgid "E308: Warning: Original file may have been changed"
 msgstr "E308: 警告: 原始文件可能已被修改"
@@ -5902,8 +5902,8 @@ msgstr "E606: :finally 缺少对应的 :try"
 msgid "E607: Multiple :finally"
 msgstr "E607: 多个 :finally"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: 不能 :throw 前缀为 'Vim' 的异常"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: 不能 :throw 前缀为 'MNV' 的异常"
 
 #, c-format
 msgid "E609: Cscope error: %s"
@@ -6120,8 +6120,8 @@ msgstr "E677: 写临时文件出错"
 msgid "E678: Invalid character after %s%%[dxouU]"
 msgstr "E678: %s%%[dxouU] 后面有无效的字符"
 
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: 加载 syncolor.vim 时出现递归环"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: 加载 syncolor.mnv 时出现递归环"
 
 #, c-format
 msgid "E680: <buffer=%d>: invalid buffer number"
@@ -6441,8 +6441,8 @@ msgstr "E770: 拼写文件中存在不支持的节"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: 旧版本的拼写文件，需要更新"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: 为更高版本的 Vim 所用的拼写文件"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: 为更高版本的 MNV 所用的拼写文件"
 
 #, c-format
 msgid "E773: Symlink loop for \"%s\""
@@ -6469,8 +6469,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: 旧的 .sug 文件，需要更新：%s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: .sug 文件是为新版 Vim 的：%s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: .sug 文件是为新版 MNV 的：%s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -6656,8 +6656,8 @@ msgstr "E832: 文件未加密，但是撤销文件被加密：%s"
 
 #, c-format
 msgid ""
-"E833: %s is encrypted and this version of Vim does not support encryption"
-msgstr "E833: %s 被加密，但是此版本的 Vim 不支持加密"
+"E833: %s is encrypted and this version of MNV does not support encryption"
+msgstr "E833: %s 被加密，但是此版本的 MNV 不支持加密"
 
 msgid "E834: Conflicts with value of 'listchars'"
 msgstr "E834: 与 'listchars' 的值有冲突"
@@ -6665,11 +6665,11 @@ msgstr "E834: 与 'listchars' 的值有冲突"
 msgid "E835: Conflicts with value of 'fillchars'"
 msgstr "E835: 与 'fillchars' 的值有冲突"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
-msgstr "E836: 此 Vim 无法在使用了 :py3 之后执行 :python"
+msgid "E836: This MNV cannot execute :python after using :py3"
+msgstr "E836: 此 MNV 无法在使用了 :py3 之后执行 :python"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
-msgstr "E837: 此 Vim 无法在使用了 :python 之后执行 :py3"
+msgid "E837: This MNV cannot execute :py3 after using :python"
+msgstr "E837: 此 MNV 无法在使用了 :python 之后执行 :py3"
 
 msgid "E838: NetBeans is not supported with this GUI"
 msgstr "E838: 此 GUI 中不支持 NetBeans"
@@ -6736,8 +6736,8 @@ msgstr "E857: 需要字典键 \"%s\""
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: eval 未能返回有效的 Python 对象"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: 无法将返回的 Python 对象转换为 Vim 值"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: 无法将返回的 Python 对象转换为 MNV 值"
 
 msgid "E860: Need 'id' and 'type' or 'types' with 'both'"
 msgstr "E860: 使用 'both' 时需要 'id' 和 'type' 或 'types'"
@@ -6812,8 +6812,8 @@ msgstr "E878: (NFA regexp) 无法为分支遍历分配内存！"
 msgid "E879: (NFA regexp) Too many \\z("
 msgstr "E879: (NFA regexp) 太多 \\z("
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
-msgstr "E880: 在 Vim 里无法处理 Python 的 SystemExit 异常"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
+msgstr "E880: 在 MNV 里无法处理 Python 的 SystemExit 异常"
 
 msgid "E881: Line count changed unexpectedly"
 msgstr "E881: 行计数意外地改变了"
@@ -6835,8 +6835,8 @@ msgid "E885: Not possible to change sign %s"
 msgstr "E885: 不可能改变标号 %s"
 
 #, c-format
-msgid "E886: Can't rename viminfo file to %s!"
-msgstr "E886: 无法重命名 viminfo 文件为 %s！"
+msgid "E886: Can't rename mnvinfo file to %s!"
+msgstr "E886: 无法重命名 mnvinfo 文件为 %s！"
 
 msgid ""
 "E887: Sorry, this command is disabled, the Python's site module could not be "
@@ -6983,8 +6983,8 @@ msgid "E928: String required"
 msgstr "E928: 需要字符串"
 
 #, c-format
-msgid "E929: Too many viminfo temp files, like %s!"
-msgstr "E929: 太多 viminfo 临时文件，如 %s！"
+msgid "E929: Too many mnvinfo temp files, like %s!"
+msgstr "E929: 太多 mnvinfo 临时文件，如 %s！"
 
 msgid "E930: Cannot use :redir inside execute()"
 msgstr "E930: 在 execute() 内不能使用 :redir"
@@ -7154,8 +7154,8 @@ msgstr "E979: Blob 索引超出范围: %ld"
 msgid "E980: Lowlevel input not supported"
 msgstr "E980: 不支持低级输入"
 
-msgid "E981: Command not allowed in rvim"
-msgstr "E981: rvim 中禁止使用命令"
+msgid "E981: Command not allowed in rmnv"
+msgstr "E981: rmnv 中禁止使用命令"
 
 msgid "E982: ConPTY is not available"
 msgstr "E982: ConPTY 不可用"
@@ -7176,8 +7176,8 @@ msgstr "E986: 在 tagfunc 中不能修改 tag 栈"
 msgid "E987: Invalid return value from tagfunc"
 msgstr "E987: 从 tagfunc 返回了无效的值"
 
-msgid "E988: GUI cannot be used. Cannot execute gvim.exe."
-msgstr "E988: 无法使用图形界面。不能执行 gvim.exe。"
+msgid "E988: GUI cannot be used. Cannot execute gmnv.exe."
+msgstr "E988: 无法使用图形界面。不能执行 gmnv.exe。"
 
 msgid "E989: Non-default argument follows default argument"
 msgstr "E989: 默认参数后有非默认参数"
@@ -7375,21 +7375,21 @@ msgstr "E1036: %c 需要整数或浮点数参数"
 msgid "E1037: Cannot use \"%s\" with %s"
 msgstr "E1037: 不能对 %2$s 使用 \"%1$s\""
 
-msgid "E1038: \"vim9script\" can only be used in a script"
-msgstr "E1038: \"vim9script\" 只能在脚本中使用"
+msgid "E1038: \"mnv9script\" can only be used in a script"
+msgstr "E1038: \"mnv9script\" 只能在脚本中使用"
 
-msgid "E1039: \"vim9script\" must be the first command in a script"
-msgstr "E1039: \"vim9script\" 必须是脚本中的第一条命令"
+msgid "E1039: \"mnv9script\" must be the first command in a script"
+msgstr "E1039: \"mnv9script\" 必须是脚本中的第一条命令"
 
-msgid "E1040: Cannot use :scriptversion after :vim9script"
-msgstr "E1040: :vim9script 之后不能使用 :scriptversion"
+msgid "E1040: Cannot use :scriptversion after :mnv9script"
+msgstr "E1040: :mnv9script 之后不能使用 :scriptversion"
 
 #, c-format
 msgid "E1041: Redefining script item: \"%s\""
 msgstr "E1041: 重定义脚本项目：\"%s\""
 
-msgid "E1042: Export can only be used in vim9script"
-msgstr "E1042: 导出只能在 vim9script 中使用"
+msgid "E1042: Export can only be used in mnv9script"
+msgstr "E1042: 导出只能在 mnv9script 中使用"
 
 msgid "E1043: Invalid command after :export"
 msgstr "E1043: :export 后无效的命令"
@@ -7525,8 +7525,8 @@ msgid "E1083: Missing backtick"
 msgstr "E1083: 缺少 `"
 
 #, c-format
-msgid "E1084: Cannot delete Vim9 script function %s"
-msgstr "E1084: 无法删除 Vim9 函数 %s"
+msgid "E1084: Cannot delete MNV9 script function %s"
+msgstr "E1084: 无法删除 MNV9 函数 %s"
 
 #, c-format
 msgid "E1085: Not a callable type: %s"
@@ -7578,8 +7578,8 @@ msgid "E1099: Unknown error while executing %s"
 msgstr "E1099: 执行 %s 时遇到未知错误"
 
 #, c-format
-msgid "E1100: Command not supported in Vim9 script (missing :var?): %s"
-msgstr "E1100: Vim9 脚本不支持此命令（缺少 :var？）: %s"
+msgid "E1100: Command not supported in MNV9 script (missing :var?): %s"
+msgstr "E1100: MNV9 脚本不支持此命令（缺少 :var？）: %s"
 
 #, c-format
 msgid "E1101: Cannot declare a script variable in a function: %s"
@@ -7661,14 +7661,14 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: 参数前缺少逗号：%s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: \"%s\" 不能在老式 Vim 脚本中使用"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: \"%s\" 不能在老式 MNV 脚本中使用"
 
 msgid "E1125: Final requires a value"
 msgstr "E1125: final 需要值"
 
-msgid "E1126: Cannot use :let in Vim9 script"
-msgstr "E1126: 不能在 Vim9 脚本中使用 :let"
+msgid "E1126: Cannot use :let in MNV9 script"
+msgstr "E1126: 不能在 MNV9 脚本中使用 :let"
 
 msgid "E1127: Missing name after dot"
 msgstr "E1127: 点后面缺少名称"
@@ -7768,8 +7768,8 @@ msgstr "E1156: 不能递归修改参数列表"
 msgid "E1157: Missing return type"
 msgstr "E1157: 缺少返回类型"
 
-msgid "E1158: Cannot use flatten() in Vim9 script, use flattennew()"
-msgstr "E1158: 在 Vim9 脚本中不能用 flatten()，要用 flattennew()"
+msgid "E1158: Cannot use flatten() in MNV9 script, use flattennew()"
+msgstr "E1158: 在 MNV9 脚本中不能用 flatten()，要用 flattennew()"
 
 msgid "E1159: Cannot split a window when closing the buffer"
 msgstr "E1159: 关闭缓冲区时不能分割窗口"
@@ -7793,8 +7793,8 @@ msgstr "E1163: 变量 %d: 类型不匹配，需要 %s 但得到 %s"
 msgid "E1163: Variable %d: type mismatch, expected %s but got %s in %s"
 msgstr "E1163: %4$s 中变量 %1$d: 类型不匹配，需要 %2$s 但得到 %3$s"
 
-msgid "E1164: vim9cmd must be followed by a command"
-msgstr "E1164: vim9cmd 后边必须是命令"
+msgid "E1164: mnv9cmd must be followed by a command"
+msgstr "E1164: mnv9cmd 后边必须是命令"
 
 #, c-format
 msgid "E1165: Cannot use a range with an assignment: %s"
@@ -7860,8 +7860,8 @@ msgid "E1181: Cannot use an underscore here"
 msgstr "E1181: 不能在这里使用下划线"
 
 #, c-format
-msgid "E1182: Cannot define a dict function in Vim9 script: %s"
-msgstr "E1182: 无法在 Vim9 脚本中定义字典函数：%s"
+msgid "E1182: Cannot define a dict function in MNV9 script: %s"
+msgstr "E1182: 无法在 MNV9 脚本中定义字典函数：%s"
 
 #, c-format
 msgid "E1183: Cannot use a range with an assignment operator: %s"
@@ -7877,8 +7877,8 @@ msgstr "E1185: 缺少 :redir END"
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: 表达式不产生值：%s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: source defaults.vim 失败"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: source defaults.mnv 失败"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: 无法从命令行窗口打开终端"
@@ -7899,8 +7899,8 @@ msgstr "E1191: 调用编译失败的函数：%s"
 msgid "E1192: Empty function name"
 msgstr "E1192: 空函数名"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
-msgstr "E1193: cryptmethod xchacha20 没有编译进此 Vim"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
+msgstr "E1193: cryptmethod xchacha20 没有编译进此 MNV"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: 无法加密头部，空间不足"
@@ -8090,8 +8090,8 @@ msgstr "E1243: ASCII 码不在 32-127 范围内"
 msgid "E1244: Bad color string: %s"
 msgstr "E1244: 无效的颜色的字符串: %s"
 
-msgid "E1245: Cannot expand <sfile> in a Vim9 function"
-msgstr "E1245: 不能在 Vim9 函数中扩展 <sfile>"
+msgid "E1245: Cannot expand <sfile> in a MNV9 function"
+msgstr "E1245: 不能在 MNV9 函数中扩展 <sfile>"
 
 #, c-format
 msgid "E1246: Cannot find variable to (un)lock: %s"
@@ -8133,8 +8133,8 @@ msgid "E1256: String or function required for argument %d"
 msgstr "E1256: 参数 %d 需要字符串或函数"
 
 #, c-format
-msgid "E1257: Imported script must use \"as\" or end in .vim: %s"
-msgstr "E1257: 导入的脚本必须使用 \"as\" 或以 .vim结尾：%s"
+msgid "E1257: Imported script must use \"as\" or end in .mnv: %s"
+msgstr "E1257: 导入的脚本必须使用 \"as\" 或以 .mnv结尾：%s"
 
 #, c-format
 msgid "E1258: No '.' after imported name: %s"
@@ -8148,15 +8148,15 @@ msgstr "E1259: 导入名后缺少名称：%s"
 msgid "E1260: Cannot unlet an imported item: %s"
 msgstr "E1260: 无法 unlet 导入项：%s"
 
-msgid "E1261: Cannot import .vim without using \"as\""
-msgstr "E1261: 不使用 \"as\" 无法导入 .vim"
+msgid "E1261: Cannot import .mnv without using \"as\""
+msgstr "E1261: 不使用 \"as\" 无法导入 .mnv"
 
 #, c-format
 msgid "E1262: Cannot import the same script twice: %s"
 msgstr "E1262: 不能导入相同的脚本两次：%s"
 
-msgid "E1263: Cannot use name with # in Vim9 script, use export instead"
-msgstr "E1263: 在 Vim9 脚本中不能使用带有 # 的名称，请使用 export 代替"
+msgid "E1263: Cannot use name with # in MNV9 script, use export instead"
+msgstr "E1263: 在 MNV9 脚本中不能使用带有 # 的名称，请使用 export 代替"
 
 #, c-format
 msgid "E1264: Autoload import cannot use absolute or relative path: %s"
@@ -8175,15 +8175,15 @@ msgid "E1267: Function name must start with a capital: %s"
 msgstr "E1267: 函数名必须以大写字母开头：%s"
 
 #, c-format
-msgid "E1268: Cannot use s: in Vim9 script: %s"
-msgstr "E1268: 在 Vim9 脚本中不能使用 s:：%s"
+msgid "E1268: Cannot use s: in MNV9 script: %s"
+msgstr "E1268: 在 MNV9 脚本中不能使用 s:：%s"
 
 #, c-format
-msgid "E1269: Cannot create a Vim9 script variable in a function: %s"
-msgstr "E1269: 在函数中不能创建 Vim9 脚本变量：%s"
+msgid "E1269: Cannot create a MNV9 script variable in a function: %s"
+msgstr "E1269: 在函数中不能创建 MNV9 脚本变量：%s"
 
-msgid "E1270: Cannot use :s\\/sub/ in Vim9 script"
-msgstr "E1270: 在 Vim9 脚本中不能使用 :s\\/sub/"
+msgid "E1270: Cannot use :s\\/sub/ in MNV9 script"
+msgstr "E1270: 在 MNV9 脚本中不能使用 :s\\/sub/"
 
 #, c-format
 msgid "E1271: Compiling closure without context: %s"
@@ -8345,8 +8345,8 @@ msgstr "E1314: 类名必须以大写字母开头：%s"
 msgid "E1315: White space required after name: %s"
 msgstr "E1315: 名称后需要空白字符：%s"
 
-msgid "E1316: Class can only be defined in Vim9 script"
-msgstr "E1316: 类只能在 Vim9 脚本中定义"
+msgid "E1316: Class can only be defined in MNV9 script"
+msgstr "E1316: 类只能在 MNV9 脚本中定义"
 
 #, c-format
 msgid "E1317: Invalid object variable declaration: %s"
@@ -8419,8 +8419,8 @@ msgstr "E1340: 参数已在类中声明：%s"
 msgid "E1341: Variable already declared in the class: %s"
 msgstr "E1341: 变量已在类中声明：%s"
 
-msgid "E1342: Interface can only be defined in Vim9 script"
-msgstr "E1342: 接口只能在 Vim9 脚本中定义"
+msgid "E1342: Interface can only be defined in MNV9 script"
+msgstr "E1342: 接口只能在 MNV9 脚本中定义"
 
 #, c-format
 msgid "E1343: Interface name must start with an uppercase letter: %s"
@@ -8603,8 +8603,8 @@ msgstr "E1391: 不能在类 \"%2$s\" 中（解）锁变量 \"%1$s\""
 msgid "E1392: Cannot (un)lock class variable \"%s\" in class \"%s\""
 msgstr "E1392: 不能在类 \"%2$s\" 中（解）锁类变量 \"%1$s\""
 
-msgid "E1393: Type can only be defined in Vim9 script"
-msgstr "E1393: 类型只能在 Vim9 脚本中定义"
+msgid "E1393: Type can only be defined in MNV9 script"
+msgstr "E1393: 类型只能在 MNV9 脚本中定义"
 
 #, c-format
 msgid "E1394: Type name must start with an uppercase letter: %s"
@@ -8661,8 +8661,8 @@ msgstr "E1412: 不支持内置对象方法 \"%s\""
 msgid "E1413: Builtin class method not supported"
 msgstr "E1413: 不支持内置类方法"
 
-msgid "E1414: Enum can only be defined in Vim9 script"
-msgstr "E1414: 枚举只能在 Vim9 脚本中定义"
+msgid "E1414: Enum can only be defined in MNV9 script"
+msgstr "E1414: 枚举只能在 MNV9 脚本中定义"
 
 #, c-format
 msgid "E1415: Enum name must start with an uppercase letter: %s"
@@ -8920,8 +8920,8 @@ msgstr "E1545: Quickfix 列表栈不可用"
 msgid "E1546: Cannot switch to a closing buffer"
 msgstr "E1546: 不能切换到正在关闭的缓冲区"
 
-msgid "E1547: This version of Vim does support :redrawtabpanel"
-msgstr "E1547: 此版本的 Vim 支持 :redrawtabpanel"
+msgid "E1547: This version of MNV does support :redrawtabpanel"
+msgstr "E1547: 此版本的 MNV 支持 :redrawtabpanel"
 
 msgid "E1548: Wayland connection is unavailable"
 msgstr "E1548: Wayland 连接不可用"
@@ -9133,8 +9133,8 @@ msgstr "预期 imp.find_module() 的结果是三元组，但得到了 %d 元组"
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "内部错误：imp.find_module 返回了含有 NULL 的元组"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "不能删除 vim.Dictionary 的属性"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "不能删除 mnv.Dictionary 的属性"
 
 msgid "cannot modify fixed dictionary"
 msgstr "不能修改已固定的字典"
@@ -9157,8 +9157,8 @@ msgid "list index out of range"
 msgstr "列表索引超出范围"
 
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "内部错误：无法获取 Vim 列表项 %d"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "内部错误：无法获取 MNV 列表项 %d"
 
 msgid "slice step cannot be zero"
 msgstr "切片步长不能为零"
@@ -9168,8 +9168,8 @@ msgid "attempt to assign sequence of size greater than %d to extended slice"
 msgstr "尝试将大小大于 %d 的序列赋值给扩展切片"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "内部错误：Vim 列表没有第 %d 项"
+msgid "internal error: no MNV list item %d"
+msgstr "内部错误：MNV 列表没有第 %d 项"
 
 msgid "internal error: not enough list items"
 msgstr "内部错误：列表项目不够"
@@ -9184,8 +9184,8 @@ msgstr "尝试将大小为 %d 的序列分配给大小为 %d 的扩展切片"
 msgid "failed to add item to list"
 msgstr "未能将项目添加到列表"
 
-msgid "cannot delete vim.List attributes"
-msgstr "不能删除 vim.List 的属性"
+msgid "cannot delete mnv.List attributes"
+msgstr "不能删除 mnv.List 的属性"
 
 msgid "cannot modify fixed list"
 msgstr "不能修改固定列表"
@@ -9196,8 +9196,8 @@ msgstr "元组构造器不接受关键字参数"
 msgid "tuple index out of range"
 msgstr "元组索引超出范围"
 
-msgid "cannot delete vim.Tuple attributes"
-msgstr "不能删除 vim.Tuple 的属性"
+msgid "cannot delete mnv.Tuple attributes"
+msgstr "不能删除 mnv.Tuple 的属性"
 
 msgid "cannot modify fixed tuple"
 msgstr "不能修改固定元组"
@@ -9259,16 +9259,16 @@ msgid "mark name must be a single character"
 msgstr "标记名称必须为单个字符"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "期望 vim.Buffer 对象，但得到 %s"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "期望 mnv.Buffer 对象，但得到 %s"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "切换到缓冲区 %d 失败"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "期望 vim.Window 对象，但得到 %s"
+msgid "expected mnv.Window object, but got %s"
+msgstr "期望 mnv.Window 对象，但得到 %s"
 
 msgid "failed to find window in the current tab page"
 msgstr "未能在当前标签页中找到窗口"
@@ -9277,8 +9277,8 @@ msgid "did not switch to the specified window"
 msgstr "没有切换到指定的窗口"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "期望 vim.TabPage 对象，但得到 %s"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "期望 mnv.TabPage 对象，但得到 %s"
 
 msgid "did not switch to the specified tab page"
 msgstr "没有切换到指定的标签页"
@@ -9287,16 +9287,16 @@ msgid "failed to run the code"
 msgstr "运行代码失败"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "无法将 %s 转换为 Vim 字典"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "无法将 %s 转换为 MNV 字典"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "无法将 %s 转换为 Vim 列表"
+msgid "unable to convert %s to a MNV list"
+msgstr "无法将 %s 转换为 MNV 列表"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "无法将 %s 转换为 Vim 结构"
+msgid "unable to convert %s to a MNV structure"
+msgstr "无法将 %s 转换为 MNV 结构"
 
 msgid "internal error: NULL reference passed"
 msgstr "内部错误：传递了 NULL 引用"
@@ -9307,26 +9307,26 @@ msgstr "内部错误：无效的值类型"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.MNV_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "路径钩子设置失败：sys.path_hooks 不是列表\n"
 "你现在应该做以下事情：\n"
-"- 添加 vim.path_hook 到 sys.path_hooks\n"
-"- 添加 vim.VIM_SPECIAL_PATH 到 sys.path\n"
+"- 添加 mnv.path_hook 到 sys.path_hooks\n"
+"- 添加 mnv.MNV_SPECIAL_PATH 到 sys.path\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.MNV_SPECIAL_PATH to sys.path"
 msgstr ""
 "路径设置失败：sys.path 不是列表\n"
-"你应该现在添加 vim.VIM_SPECIAL_PATH 到 sys.path"
+"你应该现在添加 mnv.MNV_SPECIAL_PATH 到 sys.path"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Vim 宏文件 (*.vim)\t*.vim\n"
+"MNV 宏文件 (*.mnv)\t*.mnv\n"
 "所有文件 (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -9337,19 +9337,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "所有文件 (*.*)\t*.*\n"
 "C 源码 (*.c, *.h)\t*.c;*.h\n"
 "C++ 源码 (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB 代码 (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim 文件 (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV 文件 (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Vim 宏文件 (*.vim)\t*.vim\n"
+"MNV 宏文件 (*.mnv)\t*.mnv\n"
 "所有文件 (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -9359,15 +9359,15 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "所有文件 (*)\t*\n"
 "C 源码 (*.c, *.h)\t*.c;*.h\n"
 "C++ 源码 (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim 文件 (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV 文件 (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
-msgid "GVim"
-msgstr "GVim"
+msgid "GMNV"
+msgstr "GMNV"
 
 msgid "Text Editor"
 msgstr "文本编辑器"
@@ -9378,8 +9378,8 @@ msgstr "编辑文本文件"
 msgid "Text;editor;"
 msgstr "Text;editor;文本;编辑器;"
 
-msgid "Vim"
-msgstr "Vim"
+msgid "MNV"
+msgstr "MNV"
 
 msgid "(local to window)"
 msgstr "(局部于窗口)"
@@ -9810,8 +9810,8 @@ msgstr "此窗口的光标与其他已绑定的窗口一起移动"
 msgid "size of a terminal window"
 msgstr "终端窗口的大小"
 
-msgid "key that precedes Vim commands in a terminal window"
-msgstr "终端窗口中 Vim 命令的前导键"
+msgid "key that precedes MNV commands in a terminal window"
+msgstr "终端窗口中 MNV 命令的前导键"
 
 msgid "max number of lines to keep for scrollback in a terminal window"
 msgstr "终端窗口中用于回滚的最大行数"
@@ -9888,8 +9888,8 @@ msgstr "窗口标题的 'columns' 的百分比"
 msgid "when not empty, string to be used for the window title"
 msgstr "非空时，用于窗口标题的字符串"
 
-msgid "string to restore the title to when exiting Vim"
-msgstr "退出 Vim 时用于恢复标题的字符串"
+msgid "string to restore the title to when exiting MNV"
+msgstr "退出 MNV 时用于恢复标题的字符串"
 
 msgid "set the text of the icon for this window"
 msgstr "设置此窗口图标的文本"
@@ -9897,8 +9897,8 @@ msgstr "设置此窗口图标的文本"
 msgid "when not empty, text for the icon of this window"
 msgstr "非空时，设置此窗口图标的文本"
 
-msgid "restore the screen contents when exiting Vim"
-msgstr "退出 Vim 时恢复屏幕内容"
+msgid "restore the screen contents when exiting MNV"
+msgstr "退出 MNV 时恢复屏幕内容"
 
 msgid "timeout used for terminal OSC responses"
 msgstr "终端 OSC 响应的超时时间"
@@ -10488,8 +10488,8 @@ msgstr "类似于 'autowrite'，但适用于更多命令"
 msgid "always write without asking for confirmation"
 msgstr "写文件时总是不需要确认"
 
-msgid "automatically read a file when it was modified outside of Vim"
-msgstr "在 Vim 之外修改了文件时，自动读取文件"
+msgid "automatically read a file when it was modified outside of MNV"
+msgstr "在 MNV 之外修改了文件时，自动读取文件"
 
 msgid "keep oldest version of a file; specifies file name extension"
 msgstr "保存最旧版本的文件；指定文件扩展名"
@@ -10732,10 +10732,10 @@ msgid "multi-byte characters"
 msgstr "多字节字符"
 
 msgid ""
-"character encoding used in Vim: \"latin1\", \"utf-8\",\n"
+"character encoding used in MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", etc."
 msgstr ""
-"在 Vim 中使用的字符编码：\"latin1\", \"utf-8\",\n"
+"在 MNV 中使用的字符编码：\"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\" 等"
 
 msgid "character encoding for the current file"
@@ -10782,8 +10782,8 @@ msgstr "在一个窗口中要忽略的自动命令事件列表"
 msgid "load plugin scripts when starting up"
 msgstr "启动时加载插件脚本"
 
-msgid "enable reading .vimrc/.exrc/.gvimrc in the current directory"
-msgstr "启用读取在当前目录下的 .vimrc/.exrc/.gvimrc"
+msgid "enable reading .mnvrc/.exrc/.gmnvrc in the current directory"
+msgstr "启用读取在当前目录下的 .mnvrc/.exrc/.gmnvrc"
 
 msgid "safer working with script files in the current directory"
 msgstr "在当前目录下使用脚本文件时更安全"
@@ -10809,11 +10809,11 @@ msgstr "指定 :mkview 保存的内容的单词列表"
 msgid "directory where to store files with :mkview"
 msgstr ":mkview 存放文件的目录"
 
-msgid "list that specifies what to write in the viminfo file"
-msgstr "指定在 viminfo 文件中写入的内容的列表"
+msgid "list that specifies what to write in the mnvinfo file"
+msgstr "指定在 mnvinfo 文件中写入的内容的列表"
 
-msgid "file name used for the viminfo file"
-msgstr "viminfo 文件使用的文件名"
+msgid "file name used for the mnvinfo file"
+msgstr "mnvinfo 文件使用的文件名"
 
 msgid "what happens with a buffer when it's no longer in a window"
 msgstr "当缓冲区不再位于窗口中时，会发生什么"

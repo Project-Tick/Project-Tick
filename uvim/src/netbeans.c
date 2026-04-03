@@ -1,29 +1,29 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *			Netbeans integration by David Weatherford
  *			Adopted for Win32 by Sergey Khorev
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
  * Implements client side of org.netbeans.modules.emacs editor
  * integration protocol.  Be careful!  The protocol uses offsets
- * which are *between* characters, whereas vim uses line number
+ * which are *between* characters, whereas mnv uses line number
  * and column number which are *on* characters.
  * See ":help netbeans-protocol" for explanation.
  *
  * The Netbeans messages are received and queued in the gui event loop, or in
- * the select loop when Vim runs in a terminal. These messages are processed
- * by netbeans_parse_messages() which is invoked in the idle loop when Vim is
+ * the select loop when MNV runs in a terminal. These messages are processed
+ * by netbeans_parse_messages() which is invoked in the idle loop when MNV is
  * waiting for user input. The function netbeans_parse_messages() is also
  * called from the ":sleep" command, to allow the execution of test cases that
  * may not invoke the idle loop.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_NETBEANS_INTG)
 
@@ -176,33 +176,33 @@ netbeans_connect(char *params, int doabort)
 	    if (address == NULL)
 		address = getenv("__NETBEANS_SOCKET");
 	    if (password == NULL)
-		password = getenv("__NETBEANS_VIM_PASSWORD");
+		password = getenv("__NETBEANS_MNV_PASSWORD");
 
 	    // Move values to allocated memory.
 	    if (hostname != NULL)
-		hostname = (char *)vim_strsave((char_u *)hostname);
+		hostname = (char *)mnv_strsave((char_u *)hostname);
 	    if (address != NULL)
-		address = (char *)vim_strsave((char_u *)address);
+		address = (char *)mnv_strsave((char_u *)address);
 	    if (password != NULL)
-		password = (char *)vim_strsave((char_u *)password);
+		password = (char *)mnv_strsave((char_u *)password);
 	}
     }
 
     // Use the default when a value is missing.
     if (hostname == NULL || *hostname == '\0')
     {
-	vim_free(hostname);
-	hostname = (char *)vim_strsave((char_u *)NB_DEF_HOST);
+	mnv_free(hostname);
+	hostname = (char *)mnv_strsave((char_u *)NB_DEF_HOST);
     }
     if (address == NULL || *address == '\0')
     {
-	vim_free(address);
-	address = (char *)vim_strsave((char_u *)NB_DEF_ADDR);
+	mnv_free(address);
+	address = (char *)mnv_strsave((char_u *)NB_DEF_ADDR);
     }
     if (password == NULL || *password == '\0')
     {
-	vim_free(password);
-	password = (char *)vim_strsave((char_u *)NB_DEF_PASS);
+	mnv_free(password);
+	password = (char *)mnv_strsave((char_u *)NB_DEF_PASS);
     }
     if (hostname != NULL && address != NULL && password != NULL)
     {
@@ -216,7 +216,7 @@ netbeans_connect(char *params, int doabort)
 #endif
 
 	    // success, login
-	    vim_snprintf(buf, sizeof(buf), "AUTH %s\n", password);
+	    mnv_snprintf(buf, sizeof(buf), "AUTH %s\n", password);
 	    nb_send(buf, "netbeans_connect");
 
 	    sprintf(buf, "0:version=0 \"%s\"\n", ExtEdProtocolVersion);
@@ -227,9 +227,9 @@ netbeans_connect(char *params, int doabort)
     if (nb_channel == NULL && doabort)
 	getout(1);
 
-    vim_free(hostname);
-    vim_free(address);
-    vim_free(password);
+    mnv_free(hostname);
+    mnv_free(address);
+    mnv_free(password);
     return NETBEANS_OPEN ? OK : FAIL;
 }
 
@@ -274,23 +274,23 @@ getConnInfo(char *file, char **host, char **port, char **auth)
     // Read the file. There should be one of each parameter
     while ((lp = (char_u *)fgets((char *)buf, BUFSIZ, fp)) != NULL)
     {
-	if ((nlp = vim_strchr(lp, '\n')) != NULL)
+	if ((nlp = mnv_strchr(lp, '\n')) != NULL)
 	    *nlp = 0;	    // strip off the trailing newline
 
 	if (STRNCMP(lp, "host=", 5) == 0)
 	{
-	    vim_free(*host);
-	    *host = (char *)vim_strsave(&buf[5]);
+	    mnv_free(*host);
+	    *host = (char *)mnv_strsave(&buf[5]);
 	}
 	else if (STRNCMP(lp, "port=", 5) == 0)
 	{
-	    vim_free(*port);
-	    *port = (char *)vim_strsave(&buf[5]);
+	    mnv_free(*port);
+	    *port = (char *)mnv_strsave(&buf[5]);
 	}
 	else if (STRNCMP(lp, "auth=", 5) == 0)
 	{
-	    vim_free(*auth);
-	    *auth = (char *)vim_strsave(&buf[5]);
+	    mnv_free(*auth);
+	    *auth = (char *)mnv_strsave(&buf[5]);
 	}
     }
     fclose(fp);
@@ -337,7 +337,7 @@ postpone_keycommand(char_u *keystr)
     keyHead.prev->next = node;
     keyHead.prev = node;
 
-    node->keystr = vim_strsave(keystr);
+    node->keystr = mnv_strsave(keystr);
 }
 
 /*
@@ -359,10 +359,10 @@ handle_key_queue(void)
 	// and change keyHead.
 	if (node->keystr != NULL)
 	    postponed = !netbeans_keystring(node->keystr);
-	vim_free(node->keystr);
+	mnv_free(node->keystr);
 
 	// Finally, dispose of the node
-	vim_free(node);
+	mnv_free(node);
     }
 }
 
@@ -419,7 +419,7 @@ netbeans_parse_messages(void)
 
 	if (own_node)
 	    // buffer finished, dispose of it
-	    vim_free(buffer);
+	    mnv_free(buffer);
 	else if (nb_channel != NULL)
 	    // more follows, move it to the start
 	    channel_consume(nb_channel, PART_SOCK, (int)(p - buffer));
@@ -570,15 +570,15 @@ nb_free(void)
     for (i = 0; i < buf_list_used; i++)
     {
 	buf = buf_list[i];
-	vim_free(buf.displayname);
-	vim_free(buf.signmap);
+	mnv_free(buf.displayname);
+	mnv_free(buf.signmap);
 	if (buf.bufp != NULL && buf_valid(buf.bufp))
 	{
 	    buf.bufp->b_netbeans_file = FALSE;
 	    buf.bufp->b_was_netbeans_file = FALSE;
 	}
     }
-    VIM_CLEAR(buf_list);
+    MNV_CLEAR(buf_list);
     buf_list_size = 0;
     buf_list_used = 0;
 
@@ -586,8 +586,8 @@ nb_free(void)
     while (key_node != NULL && key_node != &keyHead)
     {
 	keyQ_T *next = key_node->next;
-	vim_free(key_node->keystr);
-	vim_free(key_node);
+	mnv_free(key_node->keystr);
+	mnv_free(key_node);
 	if (next == &keyHead)
 	{
 	    keyHead.next = &keyHead;
@@ -626,12 +626,12 @@ isNetbeansBuffer(buf_T *bufp)
 }
 
 /*
- * NetBeans and Vim have different undo models. In Vim, the file isn't
+ * NetBeans and MNV have different undo models. In MNV, the file isn't
  * changed if changes are undone via the undo command. In NetBeans, once
  * a change has been made the file is marked as modified until saved. It
  * doesn't matter if the change was undone.
  *
- * So this function is for the corner case where Vim thinks a buffer is
+ * So this function is for the corner case where MNV thinks a buffer is
  * unmodified but NetBeans thinks it IS modified.
  */
     int
@@ -686,14 +686,14 @@ nb_get_buf(int bufno)
 		// list size overflow, bail out
 		return NULL;
 	    }
-	    buf_list = vim_realloc(buf_list, bufsize);
+	    buf_list = mnv_realloc(buf_list, bufsize);
 	    if (buf_list == NULL)
 	    {
-		vim_free(t_buf_list);
+		mnv_free(t_buf_list);
 		buf_list_size = 0;
 		return NULL;
 	    }
-	    vim_memset(buf_list + buf_list_size - incr, 0,
+	    mnv_memset(buf_list + buf_list_size - incr, 0,
 						      incr * sizeof(nbbuf_T));
 	}
 
@@ -802,7 +802,7 @@ nb_reply_text(int cmdno, char_u *result)
     sprintf((char *)reply, "%d %s\n", cmdno, (char *)result);
     nb_send((char *)reply, "nb_reply_text");
 
-    vim_free(reply);
+    mnv_free(reply);
 }
 
 
@@ -1011,7 +1011,7 @@ nb_do_cmd(
 	}
 	else if (streq((char *)cmd, "saveAndExit"))
 	{
-	    // Note: this will exit Vim if successful.
+	    // Note: this will exit MNV if successful.
 	    coloncmd(":confirm qall");
 
 	    // We didn't exit: return the number of changed buffers.
@@ -1111,7 +1111,7 @@ nb_do_cmd(
 			    p += STRLEN(line);
 			    *p++ = '\\';
 			    *p++ = 'n';
-			    vim_free(line);
+			    mnv_free(line);
 			}
 		    }
 		    *p++ = '\"';
@@ -1123,7 +1123,7 @@ nb_do_cmd(
 	    else
 	    {
 		nb_reply_text(cmdno, text);
-		vim_free(text);
+		mnv_free(text);
 	    }
 // =====================================================================
 	}
@@ -1368,7 +1368,7 @@ nb_do_cmd(
 		do_update = 1;
 		while (*args != NUL)
 		{
-		    nlp = vim_strchr(args, '\n');
+		    nlp = mnv_strchr(args, '\n');
 		    if (nlp == NULL)
 		    {
 			// Incomplete line, probably truncated.  Next "insert"
@@ -1457,7 +1457,7 @@ nb_do_cmd(
 		// Undo info is invalid now...
 		u_clearallandblockfree(curbuf);
 	    }
-	    vim_free(to_free);
+	    mnv_free(to_free);
 	    nb_reply_nil(cmdno); // or !error
 	}
 	else
@@ -1479,7 +1479,7 @@ nb_do_cmd(
 		emsg(_(e_invalid_buffer_identifier_in_create));
 		return FAIL;
 	    }
-	    VIM_CLEAR(buf->displayname);
+	    MNV_CLEAR(buf->displayname);
 
 	    netbeansReadFile = 0; // don't try to open disk file
 	    do_ecmd(0, NULL, 0, 0, ECMD_ONE, ECMD_HIDE + ECMD_OLDBUF, curwin);
@@ -1551,7 +1551,7 @@ nb_do_cmd(
 		else
 		{
 		    // NetBeans uses stopDocumentListen when it stops editing
-		    // a file.  It then expects the buffer in Vim to
+		    // a file.  It then expects the buffer in MNV to
 		    // disappear.
 		    do_bufdel(DOBUF_DEL, (char_u *)"", 1,
 				  buf->bufp->b_fnum, buf->bufp->b_fnum, TRUE);
@@ -1568,7 +1568,7 @@ nb_do_cmd(
 		emsg(_(e_invalid_buffer_identifier_in_settitle));
 		return FAIL;
 	    }
-	    vim_free(buf->displayname);
+	    mnv_free(buf->displayname);
 	    buf->displayname = nb_unquote(args, NULL);
 // =====================================================================
 	}
@@ -1605,7 +1605,7 @@ nb_do_cmd(
 	    if (path == NULL)
 		return FAIL;
 	    bufp = buflist_findname(path);
-	    vim_free(path);
+	    mnv_free(path);
 	    if (bufp == NULL)
 	    {
 		nbdebug(("    File %s not found in setBufferNumber\n", args));
@@ -1637,7 +1637,7 @@ nb_do_cmd(
 		emsg(_(e_invalid_buffer_identifier_in_setfullname));
 		return FAIL;
 	    }
-	    vim_free(buf->displayname);
+	    mnv_free(buf->displayname);
 	    buf->displayname = nb_unquote(args, NULL);
 
 	    netbeansReadFile = 0; // don't try to open disk file
@@ -1661,7 +1661,7 @@ nb_do_cmd(
 		return FAIL;
 	    }
 	    // Edit a file: like create + setFullName + read the file.
-	    vim_free(buf->displayname);
+	    mnv_free(buf->displayname);
 	    buf->displayname = nb_unquote(args, NULL);
 	    do_ecmd(0, (char_u *)buf->displayname, NULL, NULL, ECMD_ONE,
 					     ECMD_HIDE + ECMD_OLDBUF, curwin);
@@ -1709,7 +1709,7 @@ nb_do_cmd(
 	else if (streq((char *)cmd, "raise"))
 	{
 #ifdef FEAT_GUI
-	    // Bring gvim to the foreground.
+	    // Bring gmnv to the foreground.
 	    if (gui.in_use)
 		gui_mch_set_foreground();
 #endif
@@ -1793,7 +1793,7 @@ nb_do_cmd(
 	     */
 	    if (balloonEval != NULL)
 	    {
-		vim_free(text);
+		mnv_free(text);
 		text = nb_unquote(args, NULL);
 		if (text != NULL)
 		    gui_mch_post_balloon(balloonEval, (char_u *)text);
@@ -1931,8 +1931,8 @@ nb_do_cmd(
 	    args = skipwhite(args + 1);
 
 	    p = (char_u *)nb_unquote(args, &args);
-	    glyphFile = vim_strsave_escaped(p, escape_chars);
-	    vim_free(p);
+	    glyphFile = mnv_strsave_escaped(p, escape_chars);
+	    mnv_free(p);
 
 	    args = skipwhite(args + 1);
 	    p = skiptowhite(args);
@@ -1941,22 +1941,22 @@ nb_do_cmd(
 		*p = NUL;
 		p = skipwhite(p + 1);
 	    }
-	    fg = vim_strsave(args);
-	    bg = vim_strsave(p);
+	    fg = mnv_strsave(args);
+	    bg = mnv_strsave(p);
 	    if (STRLEN(fg) > MAX_COLOR_LENGTH || STRLEN(bg) > MAX_COLOR_LENGTH)
 	    {
 		emsg(_(e_highlighting_color_name_too_long_in_defineAnnoType));
-		VIM_CLEAR(typeName);
+		MNV_CLEAR(typeName);
 		parse_error = TRUE;
 	    }
 	    else if (typeName != NULL && tooltip != NULL && glyphFile != NULL)
 		addsigntype(buf, typeNum, typeName, tooltip, glyphFile, fg, bg);
 
-	    vim_free(typeName);
-	    vim_free(fg);
-	    vim_free(bg);
-	    vim_free(tooltip);
-	    vim_free(glyphFile);
+	    mnv_free(typeName);
+	    mnv_free(fg);
+	    mnv_free(bg);
+	    mnv_free(tooltip);
+	    mnv_free(glyphFile);
 	    if (parse_error)
 		return FAIL;
 
@@ -1992,10 +1992,10 @@ nb_do_cmd(
 	    pos = get_off_or_lnum(buf->bufp, &args);
 
 	    cp = (char *)args;
-	    vim_ignored = (int)strtol(cp, &cp, 10);
+	    mnv_ignored = (int)strtol(cp, &cp, 10);
 	    args = (char_u *)cp;
 # ifdef NBDEBUG
-	    if (vim_ignored != -1)
+	    if (mnv_ignored != -1)
 		nbdebug(("    partial line annotation -- Not Yet Implemented!\n"));
 # endif
 	    if (serNum >= GUARDEDOFFSET)
@@ -2261,7 +2261,7 @@ nb_set_curbuf(buf_T *buf)
 }
 
 /*
- * Process a vim colon command.
+ * Process a mnv colon command.
  */
     static void
 coloncmd(char *cmd, ...)
@@ -2270,7 +2270,7 @@ coloncmd(char *cmd, ...)
     va_list ap;
 
     va_start(ap, cmd);
-    vim_vsnprintf(buf, sizeof(buf), cmd, ap);
+    mnv_vsnprintf(buf, sizeof(buf), cmd, ap);
     va_end(ap);
 
     nbdebug(("    COLONCMD %s\n", buf));
@@ -2321,14 +2321,14 @@ special_keys(char_u *args)
 
 	if (strlen(tok) + i < KEYBUFLEN)
 	{
-	    vim_strncpy((char_u *)&keybuf[i], (char_u *)tok, KEYBUFLEN - i - 1);
-	    vim_snprintf(cmdbuf, sizeof(cmdbuf),
+	    mnv_strncpy((char_u *)&keybuf[i], (char_u *)tok, KEYBUFLEN - i - 1);
+	    mnv_snprintf(cmdbuf, sizeof(cmdbuf),
 				 "<silent><%s> :nbkey %s<CR>", keybuf, keybuf);
 	    do_map(MAPTYPE_MAP, (char_u *)cmdbuf, MODE_NORMAL, FALSE);
 	}
 	tok = strtok(NULL, " ");
     }
-    vim_free(save_str);
+    mnv_free(save_str);
 }
 
     void
@@ -2485,16 +2485,16 @@ netbeans_beval_cb(
 	    p = nb_quote(text);
 	    if (p != NULL)
 	    {
-		vim_snprintf(buf, MAXPATHL * 2 + 25,
+		mnv_snprintf(buf, MAXPATHL * 2 + 25,
 			"0:balloonText=%d \"%s\"\n", r_cmdno, p);
-		vim_free(p);
+		mnv_free(p);
 	    }
 	    nbdebug(("EVT: %s", buf));
 	    nb_send(buf, "netbeans_beval_cb");
-	    vim_free(buf);
+	    mnv_free(buf);
 	}
     }
-    vim_free(text);
+    mnv_free(text);
 }
 #endif
 
@@ -2607,18 +2607,18 @@ netbeans_file_activated(buf_T *bufp)
 	return;
     if (bp == NULL)
     {
-	vim_free(q);
+	mnv_free(q);
 	return;
     }
 
-    vim_snprintf(buffer, sizeof(buffer),  "%d:fileOpened=%d \"%s\" %s %s\n",
+    mnv_snprintf(buffer, sizeof(buffer),  "%d:fileOpened=%d \"%s\" %s %s\n",
 	    bufno,
 	    bufno,
 	    (char *)q,
 	    "T",  // open in NetBeans
 	    "F"); // modified
 
-    vim_free(q);
+    mnv_free(q);
     nbdebug(("EVT: %s", buffer));
 
     nb_send(buffer, "netbeans_file_opened");
@@ -2647,18 +2647,18 @@ netbeans_file_opened(buf_T *bufp)
     else
 	bnum = 0;
 
-    vim_snprintf(buffer, sizeof(buffer), "%d:fileOpened=%d \"%s\" %s %s\n",
+    mnv_snprintf(buffer, sizeof(buffer), "%d:fileOpened=%d \"%s\" %s %s\n",
 	    bnum,
 	    0,
 	    (char *)q,
 	    "T",  // open in NetBeans
 	    "F"); // modified
 
-    vim_free(q);
+    mnv_free(q);
     nbdebug(("EVT: %s", buffer));
 
     nb_send(buffer, "netbeans_file_opened");
-    if (p_acd && vim_chdirfile(bufp->b_ffname, "auto") == OK)
+    if (p_acd && mnv_chdirfile(bufp->b_ffname, "auto") == OK)
     {
 	last_chdir_reason = "netbeans";
 	shorten_fnames(TRUE);
@@ -2692,7 +2692,7 @@ netbeans_file_killed(buf_T *bufp)
 }
 
 /*
- * Get a pointer to the Netbeans buffer for Vim buffer "bufp".
+ * Get a pointer to the Netbeans buffer for MNV buffer "bufp".
  * Return NULL if there is no such buffer or changes are not to be reported.
  * Otherwise store the buffer number in "*bufnop".
  */
@@ -2749,7 +2749,7 @@ netbeans_inserted(
 
     // send the "insert" EVT
     newtxt = alloc(newlen + 1);
-    vim_strncpy(newtxt, txt, newlen);
+    mnv_strncpy(newtxt, txt, newlen);
 
     // Note: this may make "txt" invalid
     pos.lnum = linenr;
@@ -2764,10 +2764,10 @@ netbeans_inserted(
 						      bufno, r_cmdno, off, p);
 	nbdebug(("EVT: %s", buf));
 	nb_send((char *)buf, "netbeans_inserted");
-	vim_free(p);
-	vim_free(buf);
+	mnv_free(p);
+	mnv_free(buf);
     }
-    vim_free(newtxt);
+    mnv_free(newtxt);
 }
 
 /*
@@ -2895,12 +2895,12 @@ netbeans_keystring(char_u *keyName)
 						 : nb_quote(curbuf->b_ffname);
 	if (q == NULL)
 	    return TRUE;
-	vim_snprintf(buf, sizeof(buf), "0:fileOpened=%d \"%s\" %s %s\n", 0,
+	mnv_snprintf(buf, sizeof(buf), "0:fileOpened=%d \"%s\" %s %s\n", 0,
 		q,
 		"T",  // open in NetBeans
 		"F"); // modified
 	if (curbuf->b_ffname != NULL)
-	    vim_free(q);
+	    mnv_free(q);
 	nbdebug(("EVT: %s", buf));
 	nb_send(buf, "netbeans_keycommand");
 
@@ -2919,13 +2919,13 @@ netbeans_keystring(char_u *keyName)
     // more synchronous
 
     // now send keyCommand event
-    vim_snprintf(buf, sizeof(buf), "%d:keyCommand=%d \"%s\"\n",
+    mnv_snprintf(buf, sizeof(buf), "%d:keyCommand=%d \"%s\"\n",
 						     bufno, r_cmdno, keyName);
     nbdebug(("EVT: %s", buf));
     nb_send(buf, "netbeans_keycommand");
 
     // New: do both at once and include the lnum/col.
-    vim_snprintf(buf, sizeof(buf), "%d:keyAtPos=%d \"%s\" %ld %ld/%ld\n",
+    mnv_snprintf(buf, sizeof(buf), "%d:keyAtPos=%d \"%s\" %ld %ld/%ld\n",
 	    bufno, r_cmdno, keyName,
 		off, (long)curwin->w_cursor.lnum, (long)curwin->w_cursor.col);
     nbdebug(("EVT: %s", buf));
@@ -3205,7 +3205,7 @@ addsigntype(
 	    if (*glyphFile == NUL)
 		// no glyph, line highlighting only
 		coloncmd(":sign define %d linehl=NB_%s", i + 1, typeName);
-	    else if (vim_strsize(glyphFile) <= 2)
+	    else if (mnv_strsize(glyphFile) <= 2)
 		// one- or two-character glyph name, use as text glyph with
 		// texthl
 		coloncmd(":sign define %d text=%s texthl=NB_%s", i + 1,
@@ -3237,19 +3237,19 @@ addsigntype(
 
 		globalsignmaplen *= 2;
 		incr = globalsignmaplen - oldlen;
-		globalsignmap = vim_realloc(globalsignmap,
+		globalsignmap = mnv_realloc(globalsignmap,
 					   globalsignmaplen * sizeof(char *));
 		if (globalsignmap == NULL)
 		{
-		    vim_free(t_globalsignmap);
+		    mnv_free(t_globalsignmap);
 		    globalsignmaplen = 0;
 		    return;
 		}
-		vim_memset(globalsignmap + oldlen, 0, incr * sizeof(char *));
+		mnv_memset(globalsignmap + oldlen, 0, incr * sizeof(char *));
 	    }
 	}
 
-	globalsignmap[i] = (char *)vim_strsave(typeName);
+	globalsignmap[i] = (char *)mnv_strsave(typeName);
 	globalsignmapused = i + 1;
     }
 
@@ -3274,15 +3274,15 @@ addsigntype(
 
 	    buf->signmaplen *= 2;
 	    incr = buf->signmaplen - oldlen;
-	    buf->signmap = vim_realloc(buf->signmap,
+	    buf->signmap = mnv_realloc(buf->signmap,
 					       buf->signmaplen * sizeof(int));
 	    if (buf->signmap == NULL)
 	    {
-		vim_free(t_signmap);
+		mnv_free(t_signmap);
 		buf->signmaplen = 0;
 		return;
 	    }
-	    vim_memset(buf->signmap + oldlen, 0, incr * sizeof(int));
+	    mnv_memset(buf->signmap + oldlen, 0, incr * sizeof(int));
 	}
     }
 
@@ -3439,7 +3439,7 @@ print_read_msg(nbbuf_T *buf)
     msg_add_lines(c, (long)lnum, nchars);
 
     // Now display it
-    VIM_CLEAR(keep_msg);
+    MNV_CLEAR(keep_msg);
     msg_scrolled_ign = TRUE;
     msg_trunc_attr((char *)IObuff, FALSE, 0);
     msg_scrolled_ign = FALSE;
@@ -3466,7 +3466,7 @@ print_save_msg(nbbuf_T *buf, off_T nchars)
 	msg_add_lines(c, buf->bufp->b_ml.ml_line_count,
 						buf->bufp->b_orig_size);
 
-	VIM_CLEAR(keep_msg);
+	MNV_CLEAR(keep_msg);
 	msg_scrolled_ign = TRUE;
 	p = (char_u *)msg_trunc_attr((char *)IObuff, FALSE, 0);
 	if ((msg_scrolled && !need_wait_return) || !buf->initDone)
@@ -3486,7 +3486,7 @@ print_save_msg(nbbuf_T *buf, off_T nchars)
     {
 	char msgbuf[IOSIZE];
 
-	vim_snprintf(msgbuf, IOSIZE,
+	mnv_snprintf(msgbuf, IOSIZE,
 		       _(e_is_read_only_add_bang_to_override), IObuff);
 	nbdebug(("    %s\n", msgbuf));
 	emsg(msgbuf);

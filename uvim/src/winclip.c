@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved by Bram Moolenaar
+ * MNV - MNV is not Vim by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -14,7 +14,7 @@
  * Also used by Cygwin, using os_unix.c.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * Compile only the clipboard handling features when compiling for cygwin
@@ -171,16 +171,16 @@ win_clip_init(void)
     clip_init(TRUE);
 
     /*
-     * Vim's own clipboard format recognises whether the text is char, line,
-     * or rectangular block.  Only useful for copying between two Vims.
+     * MNV's own clipboard format recognises whether the text is char, line,
+     * or rectangular block.  Only useful for copying between two MNVs.
      * "Clipboard_T" was used for previous versions, using the first
      * character to specify MCHAR, MLINE or MBLOCK.
      */
-    clip_star.format = RegisterClipboardFormat("VimClipboard2");
-    clip_star.format_raw = RegisterClipboardFormat("VimRawBytes");
+    clip_star.format = RegisterClipboardFormat("MNVClipboard2");
+    clip_star.format_raw = RegisterClipboardFormat("MNVRawBytes");
 }
 
-// Type used for the clipboard type of Vim's data.
+// Type used for the clipboard type of MNV's data.
 typedef struct
 {
     int type;		// MCHAR, MBLOCK or MLINE
@@ -188,10 +188,10 @@ typedef struct
     int ucslen;		// length of CF_UNICODETEXT in words
     int rawlen;		// length of clip_star.format_raw, including encoding,
 			// excluding terminating NUL
-} VimClipType_t;
+} MNVClipType_t;
 
 /*
- * Make vim the owner of the current selection.  Return OK upon success.
+ * Make mnv the owner of the current selection.  Return OK upon success.
  */
     int
 clip_mch_own_selection(Clipboard_T *cbd UNUSED)
@@ -204,7 +204,7 @@ clip_mch_own_selection(Clipboard_T *cbd UNUSED)
 }
 
 /*
- * Make vim NOT the owner of the current selection.
+ * Make mnv NOT the owner of the current selection.
  */
     void
 clip_mch_lose_selection(Clipboard_T *cbd UNUSED)
@@ -249,7 +249,7 @@ crnl_to_nl(const char_u *str, int *size)
  * Returns TRUE for success.
  */
     static int
-vim_open_clipboard(void)
+mnv_open_clipboard(void)
 {
     int delay = 10;
 
@@ -277,7 +277,7 @@ vim_open_clipboard(void)
     void
 clip_mch_request_selection(Clipboard_T *cbd)
 {
-    VimClipType_t	metadata = { -1, -1, -1, -1 };
+    MNVClipType_t	metadata = { -1, -1, -1, -1 };
     HGLOBAL		hMem = NULL;
     char_u		*str = NULL;
     char_u		*to_free = NULL;
@@ -290,23 +290,23 @@ clip_mch_request_selection(Clipboard_T *cbd)
      * Don't pass GetActiveWindow() as an argument to OpenClipboard() because
      * then we can't paste back into the same window for some reason - webb.
      */
-    if (!vim_open_clipboard())
+    if (!mnv_open_clipboard())
 	return;
 
-    // Check for vim's own clipboard format first.  This only gets the type of
+    // Check for mnv's own clipboard format first.  This only gets the type of
     // the data, still need to use CF_UNICODETEXT or CF_TEXT for the text.
     if (IsClipboardFormatAvailable(cbd->format))
     {
-	VimClipType_t	*meta_p;
+	MNVClipType_t	*meta_p;
 	HGLOBAL		meta_h;
 
 	// We have metadata on the clipboard; try to get it.
 	if ((meta_h = GetClipboardData(cbd->format)) != NULL
-		&& (meta_p = (VimClipType_t *)GlobalLock(meta_h)) != NULL)
+		&& (meta_p = (MNVClipType_t *)GlobalLock(meta_h)) != NULL)
 	{
-	    // The size of "VimClipType_t" changed, "rawlen" was added later.
+	    // The size of "MNVClipType_t" changed, "rawlen" was added later.
 	    // Only copy what is available for backwards compatibility.
-	    n = sizeof(VimClipType_t);
+	    n = sizeof(MNVClipType_t);
 	    if (GlobalSize(meta_h) < n)
 		n = GlobalSize(meta_h);
 	    memcpy(&metadata, meta_p, n);
@@ -314,7 +314,7 @@ clip_mch_request_selection(Clipboard_T *cbd)
 	}
     }
 
-    // Check for Vim's raw clipboard format first.  This is used without
+    // Check for MNV's raw clipboard format first.  This is used without
     // conversion, but only if 'encoding' matches.
     if (IsClipboardFormatAvailable(cbd->format_raw)
 				      && metadata.rawlen > (int)STRLEN(p_enc))
@@ -418,7 +418,7 @@ clip_mch_request_selection(Clipboard_T *cbd)
 	if (temp_clipboard != NULL)
 	{
 	    clip_yank_selection(metadata.type, temp_clipboard, str_size, cbd);
-	    vim_free(temp_clipboard);
+	    mnv_free(temp_clipboard);
 	}
     }
 
@@ -428,7 +428,7 @@ clip_mch_request_selection(Clipboard_T *cbd)
     if (rawh != NULL)
 	GlobalUnlock(rawh);
     CloseClipboard();
-    vim_free(to_free);
+    mnv_free(to_free);
 }
 
 /*
@@ -438,11 +438,11 @@ clip_mch_request_selection(Clipboard_T *cbd)
 clip_mch_set_selection(Clipboard_T *cbd)
 {
     char_u		*str = NULL;
-    VimClipType_t	metadata;
+    MNVClipType_t	metadata;
     long_u		txtlen;
     HGLOBAL		hMemRaw = NULL;
     HGLOBAL		hMem = NULL;
-    HGLOBAL		hMemVim = NULL;
+    HGLOBAL		hMemMNV = NULL;
     HGLOBAL		hMemW = NULL;
 
     // If the '*' register isn't already filled in, fill it in now
@@ -459,7 +459,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
     metadata.rawlen = 0;
 
     // Always set the raw bytes: 'encoding', NUL and the text.  This is used
-    // when copy/paste from/to Vim with the same 'encoding', so that illegal
+    // when copy/paste from/to MNV with the same 'encoding', so that illegal
     // bytes can also be copied and no conversion is needed.
     {
 	LPSTR lpszMemRaw;
@@ -493,11 +493,11 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	    // p_enc, which has no relation to the Active codepage.
 	    metadata.txtlen = WideCharToMultiByte(GetACP(), 0, out, len,
 							       NULL, 0, 0, 0);
-	    vim_free(str);
+	    mnv_free(str);
 	    str = alloc(metadata.txtlen == 0 ? 1 : metadata.txtlen);
 	    if (str == NULL)
 	    {
-		vim_free(out);
+		mnv_free(out);
 		return;		// out of memory
 	    }
 	    WideCharToMultiByte(GetACP(), 0, out, len,
@@ -514,7 +514,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
 		lpszMemW[len] = NUL;
 		GlobalUnlock(hMemW);
 	    }
-	    vim_free(out);
+	    mnv_free(out);
 	    metadata.ucslen = len;
 	}
     }
@@ -533,29 +533,29 @@ clip_mch_set_selection(Clipboard_T *cbd)
 
     // Set up metadata:
     {
-	VimClipType_t *lpszMemVim = NULL;
+	MNVClipType_t *lpszMemMNV = NULL;
 
-	hMemVim = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE,
-						       sizeof(VimClipType_t));
-	lpszMemVim = (VimClipType_t *)GlobalLock(hMemVim);
-	memcpy(lpszMemVim, &metadata, sizeof(metadata));
-	GlobalUnlock(hMemVim);
+	hMemMNV = GlobalAlloc(GMEM_MOVEABLE|GMEM_DDESHARE,
+						       sizeof(MNVClipType_t));
+	lpszMemMNV = (MNVClipType_t *)GlobalLock(hMemMNV);
+	memcpy(lpszMemMNV, &metadata, sizeof(metadata));
+	GlobalUnlock(hMemMNV);
     }
 
     /*
      * Open the clipboard, clear it and put our text on it.
-     * Always set our Vim format.  Put Unicode and plain text on it.
+     * Always set our MNV format.  Put Unicode and plain text on it.
      *
      * Don't pass GetActiveWindow() as an argument to OpenClipboard()
      * because then we can't paste back into the same window for some
      * reason - webb.
      */
-    if (vim_open_clipboard())
+    if (mnv_open_clipboard())
     {
 	if (EmptyClipboard())
 	{
-	    SetClipboardData(cbd->format, hMemVim);
-	    hMemVim = 0;
+	    SetClipboardData(cbd->format, hMemMNV);
+	    hMemMNV = 0;
 	    if (hMemW != NULL)
 	    {
 		if (SetClipboardData(CF_UNICODETEXT, hMemW) != NULL)
@@ -569,7 +569,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	CloseClipboard();
     }
 
-    vim_free(str);
+    mnv_free(str);
     // Free any allocations we didn't give to the clipboard:
     if (hMemRaw)
 	GlobalFree(hMemRaw);
@@ -577,8 +577,8 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	GlobalFree(hMem);
     if (hMemW)
 	GlobalFree(hMemW);
-    if (hMemVim)
-	GlobalFree(hMemVim);
+    if (hMemMNV)
+	GlobalFree(hMemMNV);
 }
 
 #endif // FEAT_CLIPBOARD
@@ -598,7 +598,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
     short_u *
 enc_to_utf16(char_u *str, int *lenp)
 {
-    vimconv_T	conv;
+    mnvconv_T	conv;
     WCHAR	*ret;
     char_u	*allocbuf = NULL;
     int		len_loc;
@@ -642,7 +642,7 @@ enc_to_utf16(char_u *str, int *lenp)
 	    ret[length] = 0;
 	}
 
-	vim_free(allocbuf);
+	mnv_free(allocbuf);
     }
 
     *lenp = length;
@@ -660,7 +660,7 @@ enc_to_utf16(char_u *str, int *lenp)
     char_u *
 utf16_to_enc(short_u *str, int *lenp)
 {
-    vimconv_T	conv;
+    mnvconv_T	conv;
     char_u	*utf8_str = NULL, *enc_str = NULL;
     int		len_loc;
 
@@ -699,7 +699,7 @@ utf16_to_enc(short_u *str, int *lenp)
 	else
 	{
 	    enc_str = string_convert(&conv, utf8_str, lenp);
-	    vim_free(utf8_str);
+	    mnv_free(utf8_str);
 	}
 
 	convert_setup(&conv, NULL, NULL);
@@ -730,7 +730,7 @@ acp_to_enc(
 	return;
     ++*outlen;	// Include the 0 after the string
     *out = utf16_to_enc((short_u *)widestr, outlen);
-    vim_free(widestr);
+    mnv_free(widestr);
 }
 
 /*
@@ -754,5 +754,5 @@ enc_to_acp(
 	return;
     WideCharToMultiByte_alloc(GetACP(), 0, widestr, len,
 	    (LPSTR *)out, outlen, 0, 0);
-    vim_free(widestr);
+    mnv_free(widestr);
 }

@@ -1,7 +1,7 @@
-*usr_04.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_04.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			     Making small changes
@@ -44,9 +44,9 @@ command deletes four words.
 
 	To err is human. you need a computer. ~
 
-Vim only deletes up to the position where the motion takes the cursor.  That's
-because Vim knows that you probably don't want to delete the first character
-of a word.  If you use the "e" command to move to the end of a word, Vim
+MNV only deletes up to the position where the motion takes the cursor.  That's
+because MNV knows that you probably don't want to delete the first character
+of a word.  If you use the "e" command to move to the end of a word, MNV
 guesses that you do want to include that last character:
 
 	To err is human. you need a computer. ~
@@ -100,7 +100,7 @@ simple, clear, and wrong.  That is the case with the example used here for the
 exception: "cw".  It actually works like "ce", change to end of word.  Thus
 the space after the word isn't included.  This is an exception that dates back
 to the old Vi.  Since many people are used to it now, the inconsistency has
-remained in Vim.
+remained in MNV.
 
 
 MORE CHANGES
@@ -163,7 +163,7 @@ line break.
 ==============================================================================
 *04.3*	Repeating a change
 
-The "." command is one of the simplest yet powerful commands in Vim.  It
+The "." command is one of the simplest yet powerful commands in MNV.  It
 repeats the last change.  For instance, suppose you are editing an HTML file
 and want to delete all the <B> tags.  You position the cursor on the first <
 and delete the <B> with the command "df>".  You then go to the < of the next
@@ -274,7 +274,7 @@ where they open a new line below or above the cursor.
 *04.5*	Moving text
 
 When you delete something with "d", "x", or another command, the text is
-saved.  You can paste it back by using the "p" command.  (The Vim name for
+saved.  You can paste it back by using the "p" command.  (The MNV name for
 this is put).
    Take a look at how this works.  First you will delete an entire line, by
 putting the cursor on the line you want to delete and typing "dd".  Now you
@@ -316,7 +316,7 @@ same deleted line.
 SWAPPING TWO CHARACTERS
 
 Frequently when you are typing, your fingers get ahead of your brain (or the
-other way around?).  The result is a typo such as "teh" for "the".  Vim
+other way around?).  The result is a typo such as "teh" for "the".  MNV
 makes it easy to correct such problems.  Just put the cursor on the e of "teh"
 and execute the command "xp".  This works as follows: "x" deletes the
 character e and places it in a register.  "p" puts the text after the cursor,
@@ -332,7 +332,7 @@ To copy text from one place to another, you could delete it, use "u" to undo
 the deletion and then "p" to put it somewhere else.  There is an easier way:
 yanking.  The "y" operator copies text into a register.  Then a "p" command
 can be used to put it.
-   Yanking is just a Vim name for copying.  The "c" letter was already used
+   Yanking is just a MNV name for copying.  The "c" letter was already used
 for the change operator, and "y" was still available.  Calling this
 operator "yank" made it easier to remember to use the "y" key.
 
@@ -364,18 +364,18 @@ Use "y$" to yank to the end of the line.
 ==============================================================================
 *04.7*	Using the clipboard
 
-If you are using the GUI version of Vim (gvim), you can find the "Copy" item
+If you are using the GUI version of MNV (gmnv), you can find the "Copy" item
 in the "Edit" menu.  First select some text with Visual mode, then use the
 Edit/Copy menu item.  The selected text is now copied to the clipboard.  You
-can paste the text in other programs.  In Vim itself too.
+can paste the text in other programs.  In MNV itself too.
 
 If you have copied text to the clipboard in another application, you can paste
-it in Vim with the Edit/Paste menu item.  This works in Normal mode and Insert
+it in MNV with the Edit/Paste menu item.  This works in Normal mode and Insert
 mode.  In Visual mode the selected text is replaced with the pasted text.
 
 The "Cut" menu item deletes the text before it's put on the clipboard.  The
 "Copy", "Cut" and "Paste" items are also available in the popup menu (only
-when there is a popup menu, of course).  If your Vim has a toolbar, you can
+when there is a popup menu, of course).  If your MNV has a toolbar, you can
 also find these items there.
 
 If you are not using the GUI, or if you don't like using a menu, you have to
@@ -388,7 +388,7 @@ To put text from the clipboard back into the text: >
 
 	"*p
 
-This only works on versions of Vim that include clipboard support.  More about
+This only works on versions of MNV that include clipboard support.  More about
 the clipboard can be found in section |09.3| and here: |clipboard|.
 
 ==============================================================================
@@ -408,7 +408,7 @@ stands for "A Word".  Thus "daw" is "Delete A Word".  To be precise, the white
 space after the word is also deleted (or the white space before the word if at
 the end of the line).
 
-Using text objects is the third way to make changes in Vim.  We already had
+Using text objects is the third way to make changes in MNV.  We already had
 operator-motion and Visual mode.  Now we add operator-text object.
    It is very similar to operator-motion, but instead of operating on the text
 between the cursor position before and after a movement command, the text
@@ -450,7 +450,7 @@ You can find a long list of text objects here: |text-objects|.
 ==============================================================================
 *04.9*	Replace mode
 
-The "R" command causes Vim to enter replace mode.  In this mode, each
+The "R" command causes MNV to enter replace mode.  In this mode, each
 character you type replaces the one under the cursor.  This continues until
 you type <Esc>.
    In this example you start Replace mode on the first "t" of "text":
@@ -515,4 +515,4 @@ else:
 
 Next chapter: |usr_05.txt|  Set your settings
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

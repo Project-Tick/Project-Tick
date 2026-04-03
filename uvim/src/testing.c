@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * testing.c: Support for tests.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -35,12 +35,12 @@ prepare_assert_error(garray_T *gap)
 	char    buf[NUMBUFLEN];
 	size_t	buflen;
 
-	buflen = vim_snprintf_safelen(buf, sizeof(buf), "line %ld", (long)SOURCING_LNUM);
+	buflen = mnv_snprintf_safelen(buf, sizeof(buf), "line %ld", (long)SOURCING_LNUM);
 	ga_concat_len(gap, (char_u *)buf, buflen);
     }
     if (sname != NULL || SOURCING_LNUM > 0)
 	GA_CONCAT_LITERAL(gap, ": ");
-    vim_free(sname);
+    mnv_free(sname);
 }
 
 /*
@@ -74,7 +74,7 @@ ga_concat_esc(garray_T *gap, char_u *p, int clen)
 	   {
 		size_t	buflen;
 
-		buflen = vim_snprintf_safelen((char *)buf, sizeof(buf),
+		buflen = mnv_snprintf_safelen((char *)buf, sizeof(buf),
 		    "\\x%02x", *p);
 		ga_concat_len(gap, buf, buflen);
 	   }
@@ -121,7 +121,7 @@ ga_concat_shorten_esc(garray_T *gap, char_u *str)
 	    GA_CONCAT_LITERAL(gap, "\\[");
 	    ga_concat_esc(gap, p, clen);
 	    GA_CONCAT_LITERAL(gap, " occurs ");
-	    buflen = vim_snprintf_safelen((char *)buf, sizeof(buf),
+	    buflen = mnv_snprintf_safelen((char *)buf, sizeof(buf),
 		"%d", same_len);
 	    ga_concat_len(gap, buf, buflen);
 	    GA_CONCAT_LITERAL(gap, " times]");
@@ -160,7 +160,7 @@ fill_assert_error(
 		    || *opt_msg_tv->vval.v_string == NUL)))
     {
 	ga_concat(gap, echo_string(opt_msg_tv, &tofree, numbuf, 0));
-	vim_free(tofree);
+	mnv_free(tofree);
 	GA_CONCAT_LITERAL(gap, ": ");
     }
 
@@ -235,7 +235,7 @@ fill_assert_error(
 	}
 
 	ga_concat_shorten_esc(gap, tv2string(exp_tv, &tofree, numbuf, 0));
-	vim_free(tofree);
+	mnv_free(tofree);
     }
     else
     {
@@ -254,14 +254,14 @@ fill_assert_error(
 	else
 	    GA_CONCAT_LITERAL(gap, " but got ");
 	ga_concat_shorten_esc(gap, tv2string(got_tv, &tofree, numbuf, 0));
-	vim_free(tofree);
+	mnv_free(tofree);
 
 	if (omitted != 0)
 	{
 	    char    buf[100];
 	    size_t  buflen;
 
-	    buflen = vim_snprintf_safelen(buf, sizeof(buf),
+	    buflen = mnv_snprintf_safelen(buf, sizeof(buf),
 		" - %d equal item%s omitted", omitted, omitted == 1 ? "" : "s");
 	    ga_concat_len(gap, (char_u *)buf, buflen);
 	}
@@ -299,7 +299,7 @@ assert_match_common(typval_T *argvars, assert_type_T atype)
     char_u	buf1[NUMBUFLEN];
     char_u	buf2[NUMBUFLEN];
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_string_arg(argvars, 2) == FAIL))
@@ -357,7 +357,7 @@ assert_append_cmd_or_arg(garray_T *gap, typval_T *argvars, char_u *cmd)
     if (argvars[1].v_type != VAR_UNKNOWN && argvars[2].v_type != VAR_UNKNOWN)
     {
 	ga_concat(gap, echo_string(&argvars[2], &tofree, numbuf, 0));
-	vim_free(tofree);
+	mnv_free(tofree);
     }
     else
 	ga_concat(gap, cmd);
@@ -370,15 +370,15 @@ assert_beeps(typval_T *argvars, int no_beep)
     garray_T	ga;
     int		ret = 0;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return 0;
 
     cmd = tv_get_string_chk(&argvars[0]);
-    called_vim_beep = FALSE;
+    called_mnv_beep = FALSE;
     suppress_errthrow = TRUE;
     emsg_silent = FALSE;
     do_cmdline_cmd(cmd);
-    if (no_beep ? called_vim_beep : !called_vim_beep)
+    if (no_beep ? called_mnv_beep : !called_mnv_beep)
     {
 	prepare_assert_error(&ga);
 	if (no_beep)
@@ -402,7 +402,7 @@ assert_beeps(typval_T *argvars, int no_beep)
     void
 f_assert_beeps(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->vval.v_number = assert_beeps(argvars, FALSE);
@@ -414,7 +414,7 @@ f_assert_beeps(typval_T *argvars, typval_T *rettv)
     void
 f_assert_nobeep(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->vval.v_number = assert_beeps(argvars, TRUE);
@@ -451,7 +451,7 @@ assert_equalfile(typval_T *argvars)
     fd1 = mch_fopen((char *)fname1, READBIN);
     if (fd1 == NULL)
     {
-	IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE,
+	IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE,
 	    (char *)e_cant_read_file_str, fname1);
     }
     else
@@ -460,7 +460,7 @@ assert_equalfile(typval_T *argvars)
 	if (fd2 == NULL)
 	{
 	    fclose(fd1);
-	    IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE,
+	    IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE,
 		(char *)e_cant_read_file_str, fname2);
 	}
 	else
@@ -495,7 +495,7 @@ assert_equalfile(typval_T *argvars)
 		    ++lineidx;
 		    if (c1 != c2)
 		    {
-			IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE,
+			IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE,
 			    "difference at byte %ld, line %ld", count, linecount);
 			break;
 		    }
@@ -528,7 +528,7 @@ assert_equalfile(typval_T *argvars)
 	    char_u	*tofree;
 
 	    ga_concat(&ga, echo_string(&argvars[2], &tofree, numbuf, 0));
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	    GA_CONCAT_LITERAL(&ga, ": ");
 	}
 	ga_concat_len(&ga, IObuff, IObufflen);
@@ -559,7 +559,7 @@ assert_equalfile(typval_T *argvars)
     void
 f_assert_equalfile(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_string_arg(argvars, 2) == FAIL))
@@ -586,13 +586,13 @@ f_assert_exception(typval_T *argvars, typval_T *rettv)
     garray_T	ga;
     char_u	*error;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL))
 	return;
 
     error = tv_get_string_chk(&argvars[0]);
-    if (*get_vim_var_str(VV_EXCEPTION) == NUL)
+    if (*get_mnv_var_str(VV_EXCEPTION) == NUL)
     {
 	prepare_assert_error(&ga);
 	GA_CONCAT_LITERAL(&ga, "v:exception is not set");
@@ -601,11 +601,11 @@ f_assert_exception(typval_T *argvars, typval_T *rettv)
 	rettv->vval.v_number = 1;
     }
     else if (error != NULL
-	&& strstr((char *)get_vim_var_str(VV_EXCEPTION), (char *)error) == NULL)
+	&& strstr((char *)get_mnv_var_str(VV_EXCEPTION), (char *)error) == NULL)
     {
 	prepare_assert_error(&ga);
 	fill_assert_error(&ga, &argvars[1], NULL, &argvars[0],
-				  get_vim_var_tv(VV_EXCEPTION), ASSERT_OTHER);
+				  get_mnv_var_tv(VV_EXCEPTION), ASSERT_OTHER);
 	assert_error(&ga);
 	ga_clear(&ga);
 	rettv->vval.v_number = 1;
@@ -694,7 +694,7 @@ f_assert_fails(typval_T *argvars, typval_T *rettv)
 	    else if (list->lv_len == 2)
 	    {
 		// make a copy, an error in pattern_match() may free it
-		tofree = actual = vim_strsave(get_vim_var_str(VV_ERRMSG));
+		tofree = actual = mnv_strsave(get_mnv_var_str(VV_ERRMSG));
 		if (actual != NULL)
 		{
 		    tv = &list->lv_u.mat.lv_last->li_tv;
@@ -788,9 +788,9 @@ theend:
     emsg_on_display = FALSE;
     msg_scrolled = 0;
     lines_left = Rows;
-    VIM_CLEAR(emsg_assert_fails_msg);
-    vim_free(tofree);
-    set_vim_var_string(VV_ERRMSG, NULL, 0);
+    MNV_CLEAR(emsg_assert_fails_msg);
+    mnv_free(tofree);
+    set_mnv_var_string(VV_ERRMSG, NULL, 0);
     if (wrong_arg_msg != NULL)
 	emsg(_(wrong_arg_msg));
 }
@@ -822,7 +822,7 @@ assert_inrange(typval_T *argvars)
 	if (factual < flower || factual > fupper)
 	{
 	    prepare_assert_error(&ga);
-	    vim_snprintf((char *)expected_str, 200, "range %g - %g,",
+	    mnv_snprintf((char *)expected_str, 200, "range %g - %g,",
 							       flower, fupper);
 	    fill_assert_error(&ga, &argvars[3], expected_str, NULL,
 						    &argvars[2], ASSERT_OTHER);
@@ -842,7 +842,7 @@ assert_inrange(typval_T *argvars)
 	if (actual < lower || actual > upper)
 	{
 	    prepare_assert_error(&ga);
-	    vim_snprintf((char *)expected_str, 200, "range %ld - %ld,",
+	    mnv_snprintf((char *)expected_str, 200, "range %ld - %ld,",
 						     (long)lower, (long)upper);
 	    fill_assert_error(&ga, &argvars[3], expected_str, NULL,
 						    &argvars[2], ASSERT_OTHER);
@@ -895,7 +895,7 @@ f_assert_report(typval_T *argvars, typval_T *rettv)
 {
     garray_T	ga;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     prepare_assert_error(&ga);
@@ -920,7 +920,7 @@ f_assert_true(typval_T *argvars, typval_T *rettv)
     void
 f_test_alloc_fail(typval_T *argvars, typval_T *rettv UNUSED)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_number_arg(argvars, 2) == FAIL))
@@ -963,11 +963,11 @@ f_test_feedinput(typval_T *argvars, typval_T *rettv UNUSED)
 #ifdef USE_INPUT_BUF
     char_u	*val;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     val = tv_get_string_chk(&argvars[0]);
-# ifdef VIMDLL
+# ifdef MNVDLL
     // this doesn't work in the console
     if (!gui.in_use)
 	return;
@@ -1186,7 +1186,7 @@ f_test_garbagecollect_now(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 {
     // This is dangerous, any Lists and Dicts used internally may be freed
     // while still in use.
-    if (!get_vim_var_nr(VV_TESTING))
+    if (!get_mnv_var_nr(VV_TESTING))
 	emsg(_(e_calling_test_garbagecollect_now_while_v_testing_is_not_set));
     else
 	garbage_collect(TRUE);
@@ -1292,7 +1292,7 @@ f_test_void(typval_T *argvars UNUSED, typval_T *rettv)
     void
 f_test_setmouse(typval_T *argvars, typval_T *rettv UNUSED)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL))
 	return;
@@ -1347,12 +1347,12 @@ test_gui_drop_files(dict_T *args UNUSED)
 		|| li->li_tv.vval.v_string == NULL)
 	    continue;
 
-	fnames[count] = vim_strsave(li->li_tv.vval.v_string);
+	fnames[count] = mnv_strsave(li->li_tv.vval.v_string);
 	if (fnames[count] == NULL)
 	{
 	    while (--count >= 0)
-		vim_free(fnames[count]);
-	    vim_free(fnames);
+		mnv_free(fnames[count]);
+	    mnv_free(fnames);
 	    return FALSE;
 	}
 	count++;
@@ -1361,7 +1361,7 @@ test_gui_drop_files(dict_T *args UNUSED)
     if (count > 0)
 	gui_handle_drop(TEXT_X(col - 1), TEXT_Y(row - 1), mods, fnames, count);
     else
-	vim_free(fnames);
+	mnv_free(fnames);
 # endif
 
     return TRUE;
@@ -1389,8 +1389,8 @@ test_gui_find_repl(dict_T *args)
     forward = (int)dict_get_number(args, "forward");
 
     retval = gui_do_findrepl(flags, find_text, repl_text, forward);
-    vim_free(find_text);
-    vim_free(repl_text);
+    mnv_free(find_text);
+    mnv_free(repl_text);
 
     return retval;
 }
@@ -1430,7 +1430,7 @@ test_gui_mouse_event(dict_T *args)
 	if (dict_get_bool(args, "cell", FALSE))
 	{
 	    // calculate the middle of the character cell
-	    // Note: Cell coordinates are 1-based from Vim script
+	    // Note: Cell coordinates are 1-based from MNV script
 	    pY = (row - 1) * gui.char_height + gui.char_height / 2;
 	    pX = (col - 1) * gui.char_width + gui.char_width / 2;
 	}
@@ -1602,7 +1602,7 @@ f_test_gui_event(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     void
 f_test_settime(typval_T *argvars, typval_T *rettv UNUSED)
 {
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     time_for_testing = (time_t)tv_get_number(&argvars[0]);

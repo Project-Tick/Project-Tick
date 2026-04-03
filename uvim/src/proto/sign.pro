@@ -30,4 +30,4 @@ sign_entry_T *get_first_valid_sign(win_T *wp);
 int signcolumn_on(win_T *wp);
 void f_sign_unplace(typval_T *argvars, typval_T *rettv);
 void f_sign_unplacelist(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

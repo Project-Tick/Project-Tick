@@ -1,10 +1,10 @@
 ===============================================================================
-=    Benvenuto  alla   G u i d a    all'Editor   V I M   -    Versione 1.7    =
+=    Benvenuto  alla   G u i d a    all'Editor   M N V   -    Versione 1.7    =
 ===============================================================================
 =			  C A P I T O L O   DUE				      =
 ===============================================================================
 
-     Hic Sunt Dracones: Se questa è la prima volta che vi accostate a vim
+     Hic Sunt Dracones: Se questa è la prima volta che vi accostate a mnv
      e preferite iniziare dal capitolo introduttivo, gentilmente immettete
      :q<INVIO> e poi iniziate da quello.
 
@@ -40,7 +40,7 @@ NOTA: Anche una parola cancellata può essere inviata ad un registro, p.es.,
       nel registro (s)
 RIFERIMENTI: 	Registri 	  :h registers
 		Registri con nome :h quotea
-		Movimento	  :h motion.txt<INVIO> /inner<INVIO>
+		Momnvento	  :h motion.txt<INVIO> /inner<INVIO>
 		CTRL-R		  :h insert<INVIO> /CTRL-R<INVIO>
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,7 +104,7 @@ NOTA: Dovreste notare che le righe cancellate per prime scendono nella
 
 NOTA: Le cancellazioni di righe intere (dd) sopravvivono nei registri numerati
       molto più a lungo delle copie di righe intere (yy), o delle
-      cancellazioni che implicano movimenti minori
+      cancellazioni che implicano momnventi minori
 
 RIFERIMENTI: 	Registri numerati 	:h quote0
 
@@ -156,10 +156,10 @@ NOTA: Provare più volte quest'operazione, per impratichirsi    ma$%"ad'a
 
 NOTA: marcature e registri non hanno niente in comune, quindi il registro
       a è completamente indipendente dalla marcatura a. Questo non vale
-      per i nomi dei registri e quelli delle macro di Vim.
+      per i nomi dei registri e quelli delle macro di MNV.
 
 RIFERIMENTI: 	Marcature		:h marks
-		Movimenti marcature 	:h mark-motions (differenza fra ' e `)
+		Momnventi marcature 	:h mark-motions (differenza fra ' e `)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -190,7 +190,7 @@ RIFERIMENTI: 	Marcature		:h marks
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Qui finisce il capitolo due della guida Vim. Ci sono lavori in corso.
+  Qui finisce il capitolo due della guida MNV. Ci sono lavori in corso.
 
   Questo capitolo è stato scritto da Paul D. Parker
   e tradotto da Antonio Colombo

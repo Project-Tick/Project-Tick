@@ -1,33 +1,33 @@
 /* vi:set ts=8 sw=8 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *			Visual Workshop integration by Gordon Prieur
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * NetBeans Debugging Tools. What are these tools and why are they important?
  * There are two main tools here. The first tool is a tool for delaying or
- * stopping gvim during startup.  The second tool is a protocol log tool.
+ * stopping gmnv during startup.  The second tool is a protocol log tool.
  *
  * The startup delay tool is called nbdebug_wait(). This is very important for
- * debugging startup problems because gvim will be started automatically from
+ * debugging startup problems because gmnv will be started automatically from
  * netbeans and cannot be run directly from a debugger. The only way to debug
- * a gvim started by netbeans is by attaching a debugger to it. Without this
+ * a gmnv started by netbeans is by attaching a debugger to it. Without this
  * tool all startup code will have completed before you can get the pid and
  * attach.
  *
  * The second tool is a log tool.
  *
- * This code must have NBDEBUG defined for it to be compiled into vim/gvim.
+ * This code must have NBDEBUG defined for it to be compiled into mnv/gmnv.
  */
 
 #ifdef NBDEBUG
 
-#include "vim.h"
+#include "mnv.h"
 
 FILE		*nb_debug = NULL;
 u_int		 nb_dlevel = 0;		// nb_debug verbosity level
@@ -40,9 +40,9 @@ static int	 errorHandler(Display *, XErrorEvent *);
 #endif
 
 /*
- * nbdebug_wait	-   This function can be used to delay or stop execution of vim.
+ * nbdebug_wait	-   This function can be used to delay or stop execution of mnv.
  *		    It's normally used to delay startup while attaching a
- *		    debugger to a running process. Since NetBeans starts gvim
+ *		    debugger to a running process. Since NetBeans starts gmnv
  *		    from a background process this is the only way to debug
  *		    startup problems.
  */
@@ -63,11 +63,11 @@ nbdebug_wait(
 	{
 		sleep(atoi(getenv(wait_var)));
 	}
-	else if (wait_flags & WT_WAIT && lookup("~/.gvimwait"))
+	else if (wait_flags & WT_WAIT && lookup("~/.gmnvwait"))
 	{
 		sleep(wait_secs > 0 && wait_secs < 120 ? wait_secs : 20);
 	}
-	else if (wait_flags & WT_STOP && lookup("~/.gvimstop"))
+	else if (wait_flags & WT_STOP && lookup("~/.gmnvstop"))
 	{
 		int w = 1;
 		while (w)
@@ -147,7 +147,7 @@ errorHandler(
 	char		 buf[256];
 
 	XGetErrorText(dpy, err->error_code, msg, sizeof(msg));
-	nbdbg("\n\nNBDEBUG Vim: X Error of failed request: %s\n", msg);
+	nbdbg("\n\nNBDEBUG MNV: X Error of failed request: %s\n", msg);
 
 	sprintf(buf, "%d", err->request_code);
 	XGetErrorDatabaseText(dpy,

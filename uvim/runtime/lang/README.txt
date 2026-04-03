@@ -1,4 +1,4 @@
-Language files for Vim: Translated menus
+Language files for MNV: Translated menus
 
 The contents of each menu file is a sequence of lines with "menutrans"
 commands.  Read one of the existing files to get an idea of how this works.
@@ -11,12 +11,12 @@ More information in the on-line help:
 	:help :language
 
 You can find a couple of helper tools for translating menus on github:
-https://github.com/adaext/vim-menutrans-helper
+https://github.com/adaext/mnv-menutrans-helper
 
-The "$VIMRUNTIME/menu.vim" file will search for a menu translation file.  This
+The "$MNVRUNTIME/menu.mnv" file will search for a menu translation file.  This
 depends on the value of the "v:lang" variable.
 
-	"menu_" . v:lang . ".vim"
+	"menu_" . v:lang . ".mnv"
 
 When the 'menutrans' option is set, its value will be used instead of v:lang.
 
@@ -29,7 +29,7 @@ For example, to use the Big5 (Taiwan) menus on MS-Windows the $LANG will be
 
 and use the menu translation file:
 
-	$VIMRUNTIME/lang/menu_chinese(taiwan)_taiwan.950.vim
+	$MNVRUNTIME/lang/menu_chinese(taiwan)_taiwan.950.mnv
 
 On Unix you should set $LANG, depending on your shell:
 
@@ -38,18 +38,18 @@ On Unix you should set $LANG, depending on your shell:
 
 and the menu translation file is:
 
-	$VIMRUNTIME/lang/menu_zh_tw.big5.vim
+	$MNVRUNTIME/lang/menu_zh_tw.big5.mnv
 
-The menu translation file should set the "did_menu_trans" variable so that Vim
+The menu translation file should set the "did_menu_trans" variable so that MNV
 will not load another file.
 
 
 AUTOMATIC CONVERSION
 
-When Vim was compiled with multi-byte support, conversion between latin1 and
+When MNV was compiled with multi-byte support, conversion between latin1 and
 UTF-8 will always be possible.  Other conversions depend on the iconv
 library, which is not always available.
-For UTF-8 menu files which only use latin1 characters, you can rely on Vim
+For UTF-8 menu files which only use latin1 characters, you can rely on MNV
 doing the conversion.  Let the UTF-8 menu file source the latin1 menu file,
 and put "scriptencoding latin1" in that one.
 Other conversions may not always be available (e.g., between iso-8859-# and

@@ -24,4 +24,4 @@ void vwl_data_offer_add_listener(vwl_data_offer_T *self, const vwl_data_offer_li
 void vwl_data_device_set_selection(vwl_data_device_T *self, vwl_data_source_T *source, uint32_t serial, wayland_selection_T selection);
 void vwl_data_source_offer(vwl_data_source_T *self, const char *mime_type);
 void vwl_data_offer_receive(vwl_data_offer_T *self, const char *mime_type, int32_t fd);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

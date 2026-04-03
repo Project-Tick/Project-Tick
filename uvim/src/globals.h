@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -234,7 +234,7 @@ EXTERN int	did_emsg_def;		    // set by emsg() when emsg_silent
 					    // is set before calling a function
 EXTERN int	did_emsg_cumul;		    // cumulative did_emsg, increased
 					    // when did_emsg is reset.
-EXTERN int	called_vim_beep;	    // set if vim_beep() is called
+EXTERN int	called_mnv_beep;	    // set if mnv_beep() is called
 EXTERN int	uncaught_emsg;		    // number of times emsg() was
 					    // called and did show a message
 #endif
@@ -244,7 +244,7 @@ EXTERN int	called_emsg;		    // always incremented by emsg()
 EXTERN int	in_echowindow;		    // executing ":echowindow"
 EXTERN int	ex_exitval INIT(= 0);	    // exit value for ex mode
 EXTERN int	emsg_on_display INIT(= FALSE);	// there is an error message
-EXTERN int	rc_did_emsg INIT(= FALSE);  // vim_regcomp() called emsg()
+EXTERN int	rc_did_emsg INIT(= FALSE);  // mnv_regcomp() called emsg()
 
 EXTERN int	no_wait_return INIT(= 0);   // don't wait for return for now
 EXTERN int	need_wait_return INIT(= 0); // need to wait for return later
@@ -268,8 +268,8 @@ EXTERN int	x_force_connect INIT(= FALSE);	// Do connect to X server.
 EXTERN int	ex_keep_indent INIT(= FALSE); // getexmodeline(): keep indent
 EXTERN int	vgetc_busy INIT(= 0);	      // when inside vgetc() then > 0
 
-EXTERN int	didset_vim INIT(= FALSE);	    // did set $VIM ourselves
-EXTERN int	didset_vimruntime INIT(= FALSE);    // idem for $VIMRUNTIME
+EXTERN int	didset_mnv INIT(= FALSE);	    // did set $MNV ourselves
+EXTERN int	didset_mnvruntime INIT(= FALSE);    // idem for $MNVRUNTIME
 
 /*
  * Lines left before a "more" message.	Ex mode needs to be able to reset this
@@ -817,7 +817,7 @@ EXTERN int	highlight_stltermnc[9];		// On top of user
 EXTERN int	skip_term_loop INIT(= FALSE);
 #endif
 #ifdef FEAT_GUI
-EXTERN char_u	*use_gvimrc INIT(= NULL);	// "-U" cmdline argument
+EXTERN char_u	*use_gmnvrc INIT(= NULL);	// "-U" cmdline argument
 #endif
 EXTERN int	cterm_normal_fg_color INIT(= 0);
 EXTERN int	cterm_normal_fg_bold INIT(= 0);
@@ -910,7 +910,7 @@ EXTERN int	dont_parse_messages INIT(= FALSE);
 
 #ifdef FEAT_MENU
 // The root of the menu hierarchy.
-EXTERN vimmenu_T	*root_menu INIT(= NULL);
+EXTERN mnvmenu_T	*root_menu INIT(= NULL);
 /*
  * While defining the system menu, sys_menu is TRUE.  This avoids
  * overruling of menus that the user already defined.
@@ -921,7 +921,7 @@ EXTERN int	sys_menu INIT(= FALSE);
 #ifdef FEAT_GUI
 # ifdef FEAT_MENU
 // Menu item just selected, set by check_termcode()
-EXTERN vimmenu_T	*current_menu;
+EXTERN mnvmenu_T	*current_menu;
 
 // Set to TRUE after adding/removing menus to ensure they are updated
 EXTERN int force_menu_update INIT(= FALSE);
@@ -1104,9 +1104,9 @@ EXTERN int	sc_col;		// column for shown command
 #ifdef TEMPDIRNAMES
 # if defined(UNIX) && defined(HAVE_FLOCK) \
 	&& (defined(HAVE_DIRFD) || defined(__hpux))
-EXTERN DIR	*vim_tempdir_dp INIT(= NULL); // File descriptor of temp dir
+EXTERN DIR	*mnv_tempdir_dp INIT(= NULL); // File descriptor of temp dir
 # endif
-EXTERN char_u	*vim_tempdir INIT(= NULL); // Name of Vim's own temp dir.
+EXTERN char_u	*mnv_tempdir INIT(= NULL); // Name of MNV's own temp dir.
 					   // Ends in a slash.
 #endif
 
@@ -1118,7 +1118,7 @@ EXTERN int	starting INIT(= NO_SCREEN);
 				// first NO_SCREEN, then NO_BUFFERS and then
 				// set to 0 when starting up finished
 EXTERN int	exiting INIT(= FALSE);
-				// TRUE when planning to exit Vim.  Might
+				// TRUE when planning to exit MNV.  Might
 				// still keep on running if there is a changed
 				// buffer.
 EXTERN int	really_exiting INIT(= FALSE);
@@ -1141,10 +1141,10 @@ EXTERN volatile sig_atomic_t full_screen INIT(= FALSE);
 				// otherwise only writing some messages
 
 EXTERN int	restricted INIT(= FALSE);
-				// TRUE when started as "rvim"
+				// TRUE when started as "rmnv"
 EXTERN int	secure INIT(= FALSE);
 				// non-zero when only "safe" commands are
-				// allowed, e.g. when sourcing .exrc or .vimrc
+				// allowed, e.g. when sourcing .exrc or .mnvrc
 				// in current directory
 
 EXTERN int	textlock INIT(= 0);
@@ -1320,8 +1320,8 @@ EXTERN char	mb_bytelen_tab[256];
 
 // Variables that tell what conversion is used for keyboard input and display
 // output.
-EXTERN vimconv_T input_conv;			// type of input conversion
-EXTERN vimconv_T output_conv;			// type of output conversion
+EXTERN mnvconv_T input_conv;			// type of input conversion
+EXTERN mnvconv_T output_conv;			// type of output conversion
 
 /*
  * Function pointers, used to quickly get to the right function.  Each has
@@ -1390,7 +1390,7 @@ EXTERN guicolor_T	xim_bg_color INIT(= INVALCOLOR);
 #endif
 
 /*
- * "State" is the main state of Vim.
+ * "State" is the main state of MNV.
  * There are other variables that modify the state:
  * "Visual_mode"    When State is MODE_NORMAL or MODE_INSERT.
  * "finish_op"	    When State is MODE_NORMAL, after typing the operator and
@@ -1411,7 +1411,7 @@ EXTERN int	motion_force INIT(= 0); // motion force for pending operator
 /*
  * Ex mode (Q) state
  */
-EXTERN int exmode_active INIT(= 0);	// zero, EXMODE_NORMAL or EXMODE_VIM
+EXTERN int exmode_active INIT(= 0);	// zero, EXMODE_NORMAL or EXMODE_MNV
 
 // Flag set when main_loop() should exit when entering Ex mode.
 EXTERN int pending_exmode_active INIT(= FALSE);
@@ -1599,9 +1599,9 @@ EXTERN int	searchcmdlen;		    // length of previous search cmd
 EXTERN int	reg_do_extmatch INIT(= 0);  // Used when compiling regexp:
 					    // REX_SET to allow \z\(...\),
 					    // REX_USE to allow \z\1 et al.
-EXTERN reg_extmatch_T *re_extmatch_in INIT(= NULL); // Used by vim_regexec():
+EXTERN reg_extmatch_T *re_extmatch_in INIT(= NULL); // Used by mnv_regexec():
 					    // strings for \z\1...\z\9
-EXTERN reg_extmatch_T *re_extmatch_out INIT(= NULL); // Set by vim_regexec()
+EXTERN reg_extmatch_T *re_extmatch_out INIT(= NULL); // Set by mnv_regexec()
 					    // to store \z\(...\) matches
 #endif
 
@@ -1701,8 +1701,8 @@ extern char *longVersion;
  * Makefile to make their value depend on the Makefile.
  */
 #ifdef HAVE_PATHDEF
-extern char_u *default_vim_dir;
-extern char_u *default_vimruntime_dir;
+extern char_u *default_mnv_dir;
+extern char_u *default_mnvruntime_dir;
 extern char_u *all_cflags;
 extern char_u *all_lflags;
 # ifdef VMS
@@ -1865,7 +1865,7 @@ EXTERN int	echo_wid_arg INIT(= FALSE);	// --echo-wid argument
 #ifdef FEAT_GUI_MSWIN
 /*
  * The value of the --windowid argument.
- * For embedding gvim inside another application.
+ * For embedding gmnv inside another application.
  */
 EXTERN long_u	win_socket_id INIT(= 0);
 #endif
@@ -1963,8 +1963,8 @@ EXTERN FILE *time_fd INIT(= NULL);  // where to write startup timing
  * can't do anything useful with the value.  Assign to this variable to avoid
  * the warning.
  */
-EXTERN int vim_ignored;
-EXTERN char *vim_ignoredp;
+EXTERN int mnv_ignored;
+EXTERN char *mnv_ignoredp;
 
 #ifdef FEAT_EVAL
 // set by alloc_fail(): ID

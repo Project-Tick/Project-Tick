@@ -1,22 +1,22 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * textformat.c: text formatting functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static int	did_add_space = FALSE;	// auto_format() added an extra space
 					// under the cursor
 
-#define WHITECHAR(cc) (VIM_ISWHITE(cc) && (!enc_utf8 || !utf_iscomposing(utf_ptr2char(ml_get_cursor() + 1))))
+#define WHITECHAR(cc) (MNV_ISWHITE(cc) && (!enc_utf8 || !utf_iscomposing(utf_ptr2char(ml_get_cursor() + 1))))
 
 /*
  * Return TRUE if format option 'x' is in effect.
@@ -27,7 +27,7 @@ has_format_option(int x)
 {
     if (p_paste)
 	return FALSE;
-    return (vim_strchr(curbuf->b_p_fo, x) != NULL);
+    return (mnv_strchr(curbuf->b_p_fo, x) != NULL);
 }
 
 /*
@@ -56,7 +56,7 @@ internal_format(
     colnr_T	leader_len;
     int		no_leader = FALSE;
     int		do_comments = (flags & INSCHAR_DO_COM);
-    int		safe_tw = trim_to_int(8 * (vimlong_T)textwidth);
+    int		safe_tw = trim_to_int(8 * (mnvlong_T)textwidth);
 #ifdef FEAT_LINEBREAK
     int		has_lbr = curwin->w_p_lbr;
     int		has_bri = curwin->w_p_bri;
@@ -71,7 +71,7 @@ internal_format(
     if (!curbuf->b_p_ai && !(State & VREPLACE_FLAG))
     {
 	cc = gchar_cursor();
-	if (VIM_ISWHITE(cc))
+	if (MNV_ISWHITE(cc))
 	{
 	    save_char = cc;
 	    pchar_cursor('x');
@@ -369,7 +369,7 @@ internal_format(
 	{
 	    // In MODE_VREPLACE state, we will backspace over the text to be
 	    // wrapped, so save a copy now to put on the next line.
-	    saved_text = vim_strnsave(ml_get_cursor(), ml_get_cursor_len());
+	    saved_text = mnv_strnsave(ml_get_cursor(), ml_get_cursor_len());
 	    curwin->w_cursor.col = orig_col;
 	    if (saved_text == NULL)
 		break;	// Can't do it, out of memory
@@ -450,7 +450,7 @@ internal_format(
 	    // In MODE_VREPLACE state we have backspaced over the text to be
 	    // moved, now we re-insert it into the new line.
 	    ins_bytes(saved_text);
-	    vim_free(saved_text);
+	    mnv_free(saved_text);
 	}
 	else
 	{
@@ -535,7 +535,7 @@ ends_in_white(linenr_T lnum)
     if (*s == NUL)
 	return FALSE;
     l = ml_get_len(lnum) - 1;
-    return VIM_ISWHITE(s[l]);
+    return MNV_ISWHITE(s[l]);
 }
 
 /*
@@ -589,26 +589,26 @@ same_leader(
 
     // Get current line and next line, compare the leaders.
     // The first line has to be saved, only one line can be locked at a time.
-    line1 = vim_strnsave(ml_get(lnum), ml_get_len(lnum));
+    line1 = mnv_strnsave(ml_get(lnum), ml_get_len(lnum));
     if (line1 != NULL)
     {
 	char_u  *line2;
 
-	for (idx1 = 0; VIM_ISWHITE(line1[idx1]); ++idx1)
+	for (idx1 = 0; MNV_ISWHITE(line1[idx1]); ++idx1)
 	    ;
 	line2 = ml_get(lnum + 1);
 	for (idx2 = 0; idx2 < leader2_len; ++idx2)
 	{
-	    if (!VIM_ISWHITE(line2[idx2]))
+	    if (!MNV_ISWHITE(line2[idx2]))
 	    {
 		if (line1[idx1++] != line2[idx2])
 		    break;
 	    }
 	    else
-		while (VIM_ISWHITE(line1[idx1]))
+		while (MNV_ISWHITE(line1[idx1]))
 		    ++idx1;
 	}
-	vim_free(line1);
+	mnv_free(line1);
     }
     return (idx2 == leader2_len && idx1 == leader1_len);
 }
@@ -763,7 +763,7 @@ auto_format(
 	colnr_T	len = ml_get_curline_len();
 	if (curwin->w_cursor.col == len)
 	{
-	    char_u *pnew = vim_strnsave(new, len + 2);
+	    char_u *pnew = mnv_strnsave(new, len + 2);
 	    if (pnew == NULL)
 		return;
 	    pnew[len] = ' ';
@@ -964,12 +964,12 @@ fex_format(
 
     // Set v:lnum to the first line number and v:count to the number of lines.
     // Set v:char to the character to be inserted (can be NUL).
-    set_vim_var_nr(VV_LNUM, lnum);
-    set_vim_var_nr(VV_COUNT, count);
-    set_vim_var_char(c);
+    set_mnv_var_nr(VV_LNUM, lnum);
+    set_mnv_var_nr(VV_COUNT, count);
+    set_mnv_var_char(c);
 
     // Make a copy, the option could be changed while calling it.
-    fex = vim_strsave(curbuf->b_p_fex);
+    fex = mnv_strsave(curbuf->b_p_fex);
     if (fex == NULL)
 	return 0;
     current_sctx = curbuf->b_p_script_ctx[BV_FEX];
@@ -981,8 +981,8 @@ fex_format(
     if (use_sandbox)
 	--sandbox;
 
-    set_vim_var_string(VV_CHAR, NULL, -1);
-    vim_free(fex);
+    set_mnv_var_string(VV_CHAR, NULL, -1);
+    mnv_free(fex);
     current_sctx = save_sctx;
 
     return r;
@@ -1177,7 +1177,7 @@ format_lines(
 		// put cursor on last non-space
 		State = MODE_NORMAL;	// don't go past end-of-line
 		coladvance((colnr_T)MAXCOL);
-		while (curwin->w_cursor.col && vim_isspace(gchar_cursor()))
+		while (curwin->w_cursor.col && mnv_isspace(gchar_cursor()))
 		    dec_cursor();
 
 		// do the formatting, without 'showmode'

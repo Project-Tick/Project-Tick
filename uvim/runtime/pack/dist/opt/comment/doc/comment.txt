@@ -1,7 +1,7 @@
-*comment.txt*   For Vim version 9.1.  Last change:  2025 Jun 22
+*comment.txt*   For MNV version 9.1.  Last change:  2025 Jun 22
 
 
-		  VIM REFERENCE MANUAL
+		  MNV REFERENCE MANUAL
 
 Commenting and un-commenting text.
 
@@ -9,7 +9,7 @@ Commenting and un-commenting text.
 
 See |comment-install| on how to activate this package.
 
-The comment.vim package, allows to toggle comments for a single line, a range
+The comment.mnv package, allows to toggle comments for a single line, a range
 of lines or a selected text object.  It defines the following mappings:
 
 							*o_gc*
@@ -51,26 +51,26 @@ will be commented out.  Blank and empty lines are ignored.
 The value of 'commentstring' is the same for the entire buffer and determined
 by its filetype (|filetypes|). To adapt it within the buffer for embedded
 languages, you can use a plug-in such as
-https://github.com/suy/vim-context-commentstring.
+https://github.com/suy/mnv-context-commentstring.
 
 The comment marker will always be padded with blanks whether or not the
 'commentstring' value contains whitespace around "%s".
 
 If the mapping does not seem to work (or uses wrong comment markers), it might
 be because of several reasons:
-- the filetype is not detected by Vim, see |new-filetype|,
+- the filetype is not detected by MNV, see |new-filetype|,
 - filetype plugins are not enabled, see |:filetype-plugin-on| or
 - the filetype plugin does not set the (correct) 'commentstring' option.
 
 You can simply configure this using the following autocommand (e.g. for legacy
-Vim script): >
+MNV script): >
 
-	autocmd Filetype vim :setlocal commentstring="%s
+	autocmd Filetype mnv :setlocal commentstring="%s
 
-This example sets the " as start of a comment for legacy Vim script.  For Vim9
+This example sets the " as start of a comment for legacy MNV script.  For MNV9
 script, you would instead use the "#" char: >
 
-	autocmd Filetype vim :setlocal commentstring=#\ %s
+	autocmd Filetype mnv :setlocal commentstring=#\ %s
 
 ==============================================================================
 Options:
@@ -87,7 +87,7 @@ Options:
     target specific filetype(s).
 
 *g:comment_mappings*
-    Set to false to disable the default keyboard mappings, e.g. in your vimrc
+    Set to false to disable the default keyboard mappings, e.g. in your mnvrc
 >
         let g:comment_mappings = v:false
 <
@@ -115,7 +115,7 @@ keyboard mappings.
     Operator pending and visual modes, mapped to ac by default
 
 The default keyboard mappings are shown below, you can copy these if you wish
-to customise them in your vimrc:
+to customise them in your mnvrc:
 >
     nmap gc <Plug>(comment-toggle)
     xmap gc <Plug>(comment-toggle)
@@ -128,4 +128,4 @@ to customise them in your vimrc:
     xmap ac <Plug>(comment-text-object-outer)
 <
 ==============================================================================
-vim:tw=78:ts=8:fo=tcq2:ft=help:
+mnv:tw=78:ts=8:fo=tcq2:ft=help:

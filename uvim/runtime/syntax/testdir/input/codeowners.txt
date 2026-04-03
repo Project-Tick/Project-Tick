@@ -9,4 +9,4 @@
 docs/*	docs@example.com @other
 **/logs @octocat
 
-# vim: set ft=codeowners:
+# mnv: set ft=codeowners:

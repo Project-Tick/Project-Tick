@@ -43,4 +43,4 @@ TOUCH = if exist %1 (copy /b %1+,, %1) else (break> %1)
 #	{New-Item $$input -Type file}
 !ENDIF
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

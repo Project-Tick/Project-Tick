@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 #if defined(FEAT_OLE) && defined(FEAT_GUI_MSWIN)
@@ -13,7 +13,7 @@
  * See os_mswin.c for the client side.
  */
 extern "C" {
-# include "vim.h"
+# include "mnv.h"
 }
 
 #include <windows.h>
@@ -21,7 +21,7 @@ extern "C" {
 
 extern "C" {
 extern HWND s_hwnd;
-extern HWND vim_parent_hwnd;
+extern HWND mnv_parent_hwnd;
 }
 
 #if (defined(_MSC_VER) && (_MSC_VER >= 1700)) || (__cplusplus >= 201103L)
@@ -43,8 +43,8 @@ WINOLEAUTAPI UnRegisterTypeLib(REFGUID libID, WORD wVerMajor,
  1. Internal definitions for this file
 *****************************************************************************/
 
-class CVim;
-class CVimCF;
+class CMNV;
+class CMNVCF;
 
 /* Internal data */
 // The identifier of the registered class factory
@@ -54,23 +54,23 @@ static unsigned long cf_id = 0;
 static unsigned long app_id = 0;
 
 // The single global instance of the class factory
-static CVimCF *cf = 0;
+static CMNVCF *cf = 0;
 
 // The single global instance of the application object
-static CVim *app = 0;
+static CMNV *app = 0;
 
 /* GUIDs, versions and type library information */
-#define MYCLSID CLSID_Vim
-#define MYLIBID LIBID_Vim
-#define MYIID IID_IVim
+#define MYCLSID CLSID_MNV
+#define MYLIBID LIBID_MNV
+#define MYIID IID_IMNV
 
 #define MAJORVER 1
 #define MINORVER 0
 #define LOCALE 0x0409
 
-#define MYNAME "Vim"
-#define MYPROGID "Vim.Application.1"
-#define MYVIPROGID "Vim.Application"
+#define MYNAME "MNV"
+#define MYPROGID "MNV.Application.1"
+#define MYVIPROGID "MNV.Application"
 
 #define MAX_CLSID_LEN 100
 
@@ -82,11 +82,11 @@ static CVim *app = 0;
  * ----------
  */
 
-class CVim FINAL : public IVim
+class CMNV FINAL : public IMNV
 {
 public:
-    virtual ~CVim();
-    static CVim *Create(int *pbDoRestart);
+    virtual ~CMNV();
+    static CMNV *Create(int *pbDoRestart);
 
     // IUnknown members
     STDMETHOD(QueryInterface)(REFIID riid, void ** ppv);
@@ -99,15 +99,15 @@ public:
     STDMETHOD(GetIDsOfNames)(const IID &iid, OLECHAR **names, UINT n, LCID, DISPID *dispids);
     STDMETHOD(Invoke)(DISPID member, const IID &iid, LCID, WORD flags, DISPPARAMS *dispparams, VARIANT *result, EXCEPINFO *excepinfo, UINT *argerr);
 
-    // IVim members
+    // IMNV members
     STDMETHOD(SendKeys)(BSTR keys);
     STDMETHOD(Eval)(BSTR expr, BSTR *result);
     STDMETHOD(SetForeground)(void);
     STDMETHOD(GetHwnd)(UINT_PTR *result);
 
 private:
-    // Constructor is private - create using CVim::Create()
-    CVim() : ref(0), typeinfo(0) {};
+    // Constructor is private - create using CMNV::Create()
+    CMNV() : ref(0), typeinfo(0) {};
 
     // Reference count
     unsigned long ref;
@@ -120,20 +120,20 @@ private:
  * --------------
  */
 
-CVim *CVim::Create(int *pbDoRestart)
+CMNV *CMNV::Create(int *pbDoRestart)
 {
     HRESULT hr;
-    CVim *me = 0;
+    CMNV *me = 0;
     ITypeLib *typelib = 0;
     ITypeInfo *typeinfo = 0;
 
     *pbDoRestart = FALSE;
 
     // Create the object
-    me = new CVim();
+    me = new CMNV();
     if (me == NULL)
     {
-	MessageBox(0, "Cannot create application object", "Vim Initialisation", 0);
+	MessageBox(0, "Cannot create application object", "MNV Initialisation", 0);
 	return NULL;
     }
 
@@ -154,8 +154,8 @@ CVim *CVim::Create(int *pbDoRestart)
 	}
 	RegCloseKey(hKey);
 
-	if (MessageBox(0, "Cannot load registered type library.\nDo you want to register Vim now?",
-		    "Vim Initialisation", MB_YESNO | MB_ICONQUESTION) != IDYES)
+	if (MessageBox(0, "Cannot load registered type library.\nDo you want to register MNV now?",
+		    "MNV Initialisation", MB_YESNO | MB_ICONQUESTION) != IDYES)
 	{
 	    delete me;
 	    return NULL;
@@ -167,8 +167,8 @@ CVim *CVim::Create(int *pbDoRestart)
 	hr = LoadRegTypeLib(MYLIBID, 1, 0, 0x00, &typelib);
 	if (FAILED(hr))
 	{
-	    MessageBox(0, "You must restart Vim in order for the registration to take effect.",
-						     "Vim Initialisation", 0);
+	    MessageBox(0, "You must restart MNV in order for the registration to take effect.",
+						     "MNV Initialisation", 0);
 	    *pbDoRestart = TRUE;
 	    delete me;
 	    return NULL;
@@ -182,7 +182,7 @@ CVim *CVim::Create(int *pbDoRestart)
     if (FAILED(hr))
     {
 	MessageBox(0, "Cannot get interface type information",
-						     "Vim Initialisation", 0);
+						     "MNV Initialisation", 0);
 	delete me;
 	return NULL;
     }
@@ -192,15 +192,15 @@ CVim *CVim::Create(int *pbDoRestart)
     return me;
 }
 
-CVim::~CVim()
+CMNV::~CMNV()
 {
-    if (typeinfo && vim_parent_hwnd == NULL)
+    if (typeinfo && mnv_parent_hwnd == NULL)
 	typeinfo->Release();
     typeinfo = 0;
 }
 
 STDMETHODIMP
-CVim::QueryInterface(REFIID riid, void **ppv)
+CMNV::QueryInterface(REFIID riid, void **ppv)
 {
     if (IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IDispatch) || IsEqualIID(riid, MYIID))
     {
@@ -214,13 +214,13 @@ CVim::QueryInterface(REFIID riid, void **ppv)
 }
 
 STDMETHODIMP_(ULONG)
-CVim::AddRef()
+CMNV::AddRef()
 {
     return ++ref;
 }
 
 STDMETHODIMP_(ULONG)
-CVim::Release()
+CMNV::Release()
 {
     // Don't delete the object when the reference count reaches zero, as there
     // is only a single application object, and its lifetime is controlled by
@@ -231,14 +231,14 @@ CVim::Release()
 }
 
 STDMETHODIMP
-CVim::GetTypeInfoCount(UINT *pCount)
+CMNV::GetTypeInfoCount(UINT *pCount)
 {
     *pCount = 1;
     return S_OK;
 }
 
 STDMETHODIMP
-CVim::GetTypeInfo(UINT iTypeInfo, LCID, ITypeInfo **ppITypeInfo)
+CMNV::GetTypeInfo(UINT iTypeInfo, LCID, ITypeInfo **ppITypeInfo)
 {
     *ppITypeInfo = 0;
 
@@ -251,7 +251,7 @@ CVim::GetTypeInfo(UINT iTypeInfo, LCID, ITypeInfo **ppITypeInfo)
 }
 
 STDMETHODIMP
-CVim::GetIDsOfNames(
+CMNV::GetIDsOfNames(
 	const IID &iid,
 	OLECHAR **names,
 	UINT n,
@@ -265,7 +265,7 @@ CVim::GetIDsOfNames(
 }
 
 STDMETHODIMP
-CVim::Invoke(
+CMNV::Invoke(
 	DISPID member,
 	const IID &iid,
 	LCID,
@@ -285,22 +285,22 @@ CVim::Invoke(
 }
 
 STDMETHODIMP
-CVim::GetHwnd(UINT_PTR *result)
+CMNV::GetHwnd(UINT_PTR *result)
 {
     *result = (UINT_PTR)s_hwnd;
     return S_OK;
 }
 
 STDMETHODIMP
-CVim::SetForeground(void)
+CMNV::SetForeground(void)
 {
-    /* Make the Vim window come to the foreground */
+    /* Make the MNV window come to the foreground */
     gui_mch_set_foreground();
     return S_OK;
 }
 
 STDMETHODIMP
-CVim::SendKeys(BSTR keys)
+CMNV::SendKeys(BSTR keys)
 {
     int len;
     char *buffer;
@@ -318,7 +318,7 @@ CVim::SendKeys(BSTR keys)
 
     if (len == 0)
     {
-	vim_free(buffer);
+	mnv_free(buffer);
 	return E_INVALIDARG;
     }
 
@@ -329,7 +329,7 @@ CVim::SendKeys(BSTR keys)
      * so we can free the old one.
      */
     if (ptr)
-	vim_free((char_u *)(buffer));
+	mnv_free((char_u *)(buffer));
 
     /* Reject strings too long to fit in the input buffer. Allow 10 bytes
      * space to cover for the (remote) possibility that characters may enter
@@ -337,9 +337,9 @@ CVim::SendKeys(BSTR keys)
      * processed. If more than 10 characters enter the input buffer in that
      * time, the WM_OLE processing will simply fail to insert the characters.
      */
-    if ((int)(STRLEN(str)) > (vim_free_in_input_buf() - 10))
+    if ((int)(STRLEN(str)) > (mnv_free_in_input_buf() - 10))
     {
-	vim_free(str);
+	mnv_free(str);
 	return E_INVALIDARG;
     }
 
@@ -348,7 +348,7 @@ CVim::SendKeys(BSTR keys)
      * to post it then.
      */
     if (*str == NUL)
-	vim_free(str);
+	mnv_free(str);
     else
 	PostMessage(NULL, WM_OLE, 0, (LPARAM)str);
 
@@ -356,7 +356,7 @@ CVim::SendKeys(BSTR keys)
 }
 
 STDMETHODIMP
-CVim::Eval(BSTR expr, BSTR *result)
+CMNV::Eval(BSTR expr, BSTR *result)
 {
 #ifdef FEAT_EVAL
     int len;
@@ -383,25 +383,25 @@ CVim::Eval(BSTR expr, BSTR *result)
     ++emsg_skip;
     str = (char *)eval_to_string((char_u *)buffer, TRUE, FALSE);
     --emsg_skip;
-    vim_free(buffer);
+    mnv_free(buffer);
     if (str == NULL)
 	return E_FAIL;
 
     /* Convert the result to wide characters */
     MultiByteToWideChar_alloc(CP_ACP, 0, str, -1, &w_buffer, &len);
-    vim_free(str);
+    mnv_free(str);
     if (w_buffer == NULL)
 	return E_OUTOFMEMORY;
 
     if (len == 0)
     {
-	vim_free(w_buffer);
+	mnv_free(w_buffer);
 	return E_FAIL;
     }
 
     /* Store the result */
     *result = SysAllocString(w_buffer);
-    vim_free(w_buffer);
+    mnv_free(w_buffer);
 
     return S_OK;
 #else
@@ -417,11 +417,11 @@ CVim::Eval(BSTR expr, BSTR *result)
  * ----------
  */
 
-class CVimCF FINAL : public IClassFactory
+class CMNVCF FINAL : public IClassFactory
 {
 public:
-    static CVimCF *Create();
-    virtual ~CVimCF() {};
+    static CMNVCF *Create();
+    virtual ~CMNVCF() {};
 
     STDMETHOD(QueryInterface)(REFIID riid, void ** ppv);
     STDMETHOD_(unsigned long, AddRef)(void);
@@ -431,7 +431,7 @@ public:
 
 private:
     // Constructor is private - create via Create()
-    CVimCF() : ref(0) {};
+    CMNVCF() : ref(0) {};
 
     // Reference count
     unsigned long ref;
@@ -441,18 +441,18 @@ private:
  * --------------
  */
 
-CVimCF *CVimCF::Create()
+CMNVCF *CMNVCF::Create()
 {
-    CVimCF *me = new CVimCF();
+    CMNVCF *me = new CMNVCF();
 
     if (me == NULL)
-	MessageBox(0, "Cannot create class factory", "Vim Initialisation", 0);
+	MessageBox(0, "Cannot create class factory", "MNV Initialisation", 0);
 
     return me;
 }
 
 STDMETHODIMP
-CVimCF::QueryInterface(REFIID riid, void **ppv)
+CMNVCF::QueryInterface(REFIID riid, void **ppv)
 {
     if (IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory))
     {
@@ -466,13 +466,13 @@ CVimCF::QueryInterface(REFIID riid, void **ppv)
 }
 
 STDMETHODIMP_(ULONG)
-CVimCF::AddRef()
+CMNVCF::AddRef()
 {
     return ++ref;
 }
 
 STDMETHODIMP_(ULONG)
-CVimCF::Release()
+CMNVCF::Release()
 {
     // Don't delete the object when the reference count reaches zero, as there
     // is only a single application object, and its lifetime is controlled by
@@ -484,14 +484,14 @@ CVimCF::Release()
 
 /*ARGSUSED*/
 STDMETHODIMP
-CVimCF::CreateInstance(IUnknown *punkOuter, REFIID riid, void **ppv)
+CMNVCF::CreateInstance(IUnknown *punkOuter, REFIID riid, void **ppv)
 {
     return app->QueryInterface(riid, ppv);
 }
 
 /*ARGSUSED*/
 STDMETHODIMP
-CVimCF::LockServer(BOOL lock)
+CMNVCF::LockServer(BOOL lock)
 {
     return S_OK;
 }
@@ -558,7 +558,7 @@ extern "C" void RegisterMe(int silent)
     {
 	if (!silent)
 	    MessageBox(0, "Cannot load type library to register",
-						       "Vim Registration", 0);
+						       "MNV Registration", 0);
 	ok = FALSE;
     }
     else
@@ -567,14 +567,14 @@ extern "C" void RegisterMe(int silent)
 	{
 	    if (!silent)
 		MessageBox(0, "Cannot register type library",
-						       "Vim Registration", 0);
+						       "MNV Registration", 0);
 	    ok = FALSE;
 	}
 	typelib->Release();
     }
 
     if (ok && !silent)
-	MessageBox(0, "Registered successfully", "Vim", 0);
+	MessageBox(0, "Registered successfully", "MNV", 0);
 }
 
 // Remove the component from the registry
@@ -616,7 +616,7 @@ extern "C" void UnregisterMe(int bNotifyUser)
     RecursiveDeleteKey(HKEY_CLASSES_ROOT, MYPROGID);
 
     if (bNotifyUser)
-	MessageBox(0, "Unregistered successfully", "Vim", 0);
+	MessageBox(0, "Unregistered successfully", "MNV", 0);
 }
 
 /****************************************************************************/
@@ -710,17 +710,17 @@ extern "C" void InitOLE(int *pbDoRestart)
     hr = OleInitialize(NULL);
     if (FAILED(hr))
     {
-	MessageBox(0, "Cannot initialise OLE", "Vim Initialisation", 0);
+	MessageBox(0, "Cannot initialise OLE", "MNV Initialisation", 0);
 	goto error0;
     }
 
     // Create the application object
-    app = CVim::Create(pbDoRestart);
+    app = CMNV::Create(pbDoRestart);
     if (app == NULL)
 	goto error1;
 
     // Create the class factory
-    cf = CVimCF::Create();
+    cf = CMNVCF::Create();
     if (cf == NULL)
 	goto error1;
 
@@ -734,7 +734,7 @@ extern "C" void InitOLE(int *pbDoRestart)
 
     if (FAILED(hr))
     {
-	MessageBox(0, "Cannot register class factory", "Vim Initialisation", 0);
+	MessageBox(0, "Cannot register class factory", "MNV Initialisation", 0);
 	goto error1;
     }
 
@@ -747,7 +747,7 @@ extern "C" void InitOLE(int *pbDoRestart)
 
     if (FAILED(hr))
     {
-	MessageBox(0, "Cannot register application object", "Vim Initialisation", 0);
+	MessageBox(0, "Cannot register application object", "MNV Initialisation", 0);
 	goto error1;
     }
 

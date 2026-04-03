@@ -1,7 +1,7 @@
-*scroll.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*scroll.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Scrolling						*scrolling*
@@ -188,7 +188,7 @@ ze			Scroll the text horizontally to position the cursor
 5. Scrolling synchronously				*scroll-binding*
 
 Occasionally, it is desirable to bind two or more windows together such that
-when one window is scrolled, the other windows are also scrolled.  In Vim,
+when one window is scrolled, the other windows are also scrolled.  In MNV,
 windows can be given this behavior by setting the (window-specific)
 'scrollbind' option.  When a window that has 'scrollbind' set is scrolled, all
 other 'scrollbind' windows are scrolled the same amount, if possible.  The
@@ -236,7 +236,7 @@ This allows quick adjustment of the relative offset of 'scrollbind' windows.
 ==============================================================================
 6. Scrolling with a mouse wheel				*scroll-mouse-wheel*
 
-When your mouse has a scroll wheel, it should work with Vim in the GUI.  How
+When your mouse has a scroll wheel, it should work with MNV in the GUI.  How
 it works depends on your system.  It might also work in an xterm
 |xterm-mouse-wheel|.  By default only vertical scroll wheels are supported,
 but some GUIs also support horizontal scroll wheels.
@@ -264,7 +264,7 @@ keys are:
     <C-ScrollWheelRight>    scroll one page right	*<C-ScrollWheelRight>*
 This should work in all modes, except when editing the command line.
 
-The value of N depends on the system.  By default Vim scrolls three lines when
+The value of N depends on the system.  By default MNV scrolls three lines when
 moving vertically, and six columns when moving horizontally.  On MS-Windows
 the amount of lines and columns for each scroll action is taken from the
 system-wide settings.
@@ -282,7 +282,7 @@ the scroll wheel move one line or half a page in Normal mode: >
    :map <S-ScrollWheelDown> <C-D>
 You can also use Alt and Ctrl modifiers.
 
-This only works when Vim gets the scroll wheel events, of course.  You can
+This only works when MNV gets the scroll wheel events, of course.  You can
 check if this works with the "xev" program.
 							*mouse-scrolling-off*
 If you do not want the mouse to cause scrolling (e.g. because resting your
@@ -314,8 +314,8 @@ work in your Xserver, as mentioned above.
 To use the mouse wheel in an older xterm you must do this:
 1. Make it work in your Xserver, as mentioned above.
 2. Add translations for the xterm, so that the xterm will pass a scroll event
-   to Vim as an escape sequence.
-3. Add mappings in Vim, to interpret the escape sequences as <ScrollWheelDown>
+   to MNV as an escape sequence.
+3. Add mappings in MNV, to interpret the escape sequences as <ScrollWheelDown>
    or <ScrollWheelUp> keys.
 
 You can do the translations by adding this to your ~.Xdefaults file (or other
@@ -329,7 +329,7 @@ file where your X resources are kept): >
 		<Btn4Up>: \n\
 		<Btn5Up>:
 
-Add these mappings to your vimrc file: >
+Add these mappings to your mnvrc file: >
 	:map <M-Esc>[62~ <ScrollWheelUp>
 	:map! <M-Esc>[62~ <ScrollWheelUp>
 	:map <M-Esc>[63~ <ScrollWheelDown>
@@ -339,4 +339,4 @@ Add these mappings to your vimrc file: >
 	:map <M-Esc>[65~ <S-ScrollWheelDown>
 	:map! <M-Esc>[65~ <S-ScrollWheelDown>
 <
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

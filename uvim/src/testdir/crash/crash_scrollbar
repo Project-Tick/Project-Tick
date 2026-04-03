@@ -1,2 +1,2 @@
-" this goes to insert mode and presses key k_VerScrollbar which may cause a redraw in exmode, which used ot crash Vim
-norm o€ùX
+" this goes to insert mode and presses key k_VerScrollbar which may cause a redraw in exmode, which used ot crash MNV
+norm oï¿½ï¿½X

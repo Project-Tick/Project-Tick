@@ -1,10 +1,10 @@
 ===============================================================================
-=    D o b r o d o š l i   u   VIM   p r i r u č n i k    -    Verzija 1.7    =
+=    D o b r o d o š l i   u   MNV   p r i r u č n i k    -    Verzija 1.7    =
 ===============================================================================
 =			  DRUGO   P O G L A V LJ E			      =
 ===============================================================================
 
-     Evo zmajeva: ako je ovo vaš prvi dodir sa programom vim i nameravali
+     Evo zmajeva: ako je ovo vaš prvi dodir sa programom mnv i nameravali
      ste da uronite u uvodno poglavlje, molimo vas da otkucate :q<enter> i
      pokušate ponovo.
 
@@ -187,7 +187,7 @@ REFERENCE: 	Markeri 	:h marks
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Ovim se završava drugo poglavlje Vim priručnika. Još uvek se radi na njemu.
+  Omnv se završava drugo poglavlje MNV priručnika. Još uvek se radi na njemu.
 
   Ovo poglavlje je napisao Pol D. Parker.
 

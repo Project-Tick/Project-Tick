@@ -84,7 +84,7 @@ rm osdef0.c osdef0.cc osdef0.ccc osdef11.sed osdef21.sed osdef2.sed
 if test -f core*; then
   file core*
   echo "  Sorry, your sed is broken. Call the system administrator."
-  echo "  Meanwhile, you may try to compile Vim with an empty osdef.h file."
+  echo "  Meanwhile, you may try to compile MNV with an empty osdef.h file."
   echo "  If you compiler complains about missing prototypes, move the needed"
   echo "  ones from osdef1.h.in and osdef2.h.in to osdef.h."
   exit 1

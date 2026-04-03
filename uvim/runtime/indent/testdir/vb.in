@@ -1,4 +1,4 @@
-' vim: filetype=vb shiftwidth=4 expandtab
+' mnv: filetype=vb shiftwidth=4 expandtab
 '
 ' START_INDENT
 #Const Debug = False

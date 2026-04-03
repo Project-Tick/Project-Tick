@@ -101,4 +101,4 @@ super - z : echo "super is cmd alias"
 
 # End of configuration
 
-# vim:ft=skhd:
+# mnv:ft=skhd:

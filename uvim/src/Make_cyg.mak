@@ -1,9 +1,9 @@
 #
-# Makefile for VIM on Win32, using MinGW cross compiler on Cygwin
+# Makefile for MNV on Win32, using MinGW cross compiler on Cygwin
 #
 # Also read INSTALLpc.txt!
 #
-# This compiles Vim as a Windows application.  If you want Vim to run as a
+# This compiles MNV as a Windows application.  If you want MNV to run as a
 # Cygwin application use the Makefile (just like on Unix).
 #
 # The old Make_cyg.mak (maintained by Dan Sharp et al.) was merged into
@@ -50,4 +50,4 @@ CROSS_COMPILE = i686-w64-mingw32-
 UNDER_CYGWIN = yes
 include Make_cyg_ming.mak
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=0:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=0:

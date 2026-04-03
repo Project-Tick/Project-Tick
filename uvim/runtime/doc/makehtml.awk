@@ -35,7 +35,7 @@ BEGIN   {
 #
 # protect special chars
 #
-/[><&á]/ {gsub(/&/,"\\&amp;");gsub(/>/,"\\&gt;");gsub(/</,"\\&lt;");gsub("á","\\&aacute;");}
+/[><&ï¿½]/ {gsub(/&/,"\\&amp;");gsub(/>/,"\\&gt;");gsub(/</,"\\&lt;");gsub("ï¿½","\\&aacute;");}
 #
 # end of sample lines by non-blank in first column
 #
@@ -128,11 +128,11 @@ NR == 1 { nf=split(FILENAME,f,".")
 	    # common case - Latin1
 	    print "<META HTTP-EQUIV=\"Content-type\" content=\"text/html; charset=ISO-8859-1\">";
 	}
-	print "<TITLE>Vim documentation: " f[1] "</TITLE>";
+	print "<TITLE>MNV documentation: " f[1] "</TITLE>";
 	print "</HEAD>";
 
 	print "<BODY BGCOLOR=\"#ffffff\">";
-	print "<H1>Vim documentation: " f[1] "</H1>";
+	print "<H1>MNV documentation: " f[1] "</H1>";
 	print "<A NAME=\"top\"></A>";
 	if ( FILENAME != "help.txt" ) {
 	  print "<A HREF=\"index.html\">main help file</A>\n";
@@ -146,8 +146,8 @@ NR == 1 { nf=split(FILENAME,f,".")
 # NR == 99999 { exit; }
 
 # ignore underlines and tags
-substr($0,1,5) == " vim:" { next; }
-substr($0,1,4) == "vim:" { next; }
+substr($0,1,5) == " mnv:" { next; }
+substr($0,1,4) == "mnv:" { next; }
 # keep just whole lines of "-", "="
 substr($0,1,3) == "===" && substr($0,75,1) != "=" { next; }
 substr($0,1,3) == "---" && substr($0,75,1) != "-" { next; }
@@ -245,7 +245,7 @@ npipe > 2 && nstar < 3 {
 				}
 				else {
 					if ( f[1] == "index" ) {
-		printf "|<A HREF=\"vimindex.html\">" p[i] "</A>|";
+		printf "|<A HREF=\"mnvindex.html\">" p[i] "</A>|";
 					} else {
 						if ( f[1] == "help" ) {
 		printf "|<A HREF=\"index.html\">" p[i] "</A>|";

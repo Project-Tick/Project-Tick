@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -31,7 +31,7 @@
  * "Let's give this some time to mature."
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef FEAT_GUI_GTK
 # include "gui_gtk_f.h"
@@ -112,7 +112,7 @@ static void recent_func_log_func(
 #if defined(FEAT_TOOLBAR)
 /*
  * Table from BuiltIn## icon indices to GTK+ stock IDs.  Order must exactly
- * match toolbar_names[] in menu.c!  All stock icons including the "vim-*"
+ * match toolbar_names[] in menu.c!  All stock icons including the "mnv-*"
  * ones can be overridden in your gtkrc file.
  */
 # if GTK_CHECK_VERSION(3,10,0)
@@ -132,49 +132,49 @@ static const char * const menu_themed_names[] =
 #  if GTK_CHECK_VERSION(3,14,0)
     // Use the file names in gui_gtk_res.xml, cutting off the extension.
     // Similar changes follow.
-    /* 11 */ "stock_vim_save_all",
-    /* 12 */ "stock_vim_session_save",
-    /* 13 */ "stock_vim_session_new",
-    /* 14 */ "stock_vim_session_load",
+    /* 11 */ "stock_mnv_save_all",
+    /* 12 */ "stock_mnv_session_save",
+    /* 13 */ "stock_mnv_session_new",
+    /* 14 */ "stock_mnv_session_load",
 #  else
-    /* 11 */ "vim-save-all",
-    /* 12 */ "vim-session-save",
-    /* 13 */ "vim-session-new",
-    /* 14 */ "vim-session-load",
+    /* 11 */ "mnv-save-all",
+    /* 12 */ "mnv-session-save",
+    /* 13 */ "mnv-session-new",
+    /* 14 */ "mnv-session-load",
 #  endif
     /* 15 */ "system-run",		// sub. GTK_STOCK_EXECUTE
     /* 16 */ "edit-find-replace",	// sub. GTK_STOCK_FIND_AND_REPLACE
     /* 17 */ "window-close",		// sub. GTK_STOCK_CLOSE, FIXME: fuzzy
 #  if GTK_CHECK_VERSION(3,14,0)
-    /* 18 */ "stock_vim_window_maximize",
-    /* 19 */ "stock_vim_window_minimize",
-    /* 20 */ "stock_vim_window_split",
-    /* 21 */ "stock_vim_shell",
+    /* 18 */ "stock_mnv_window_maximize",
+    /* 19 */ "stock_mnv_window_minimize",
+    /* 20 */ "stock_mnv_window_split",
+    /* 21 */ "stock_mnv_shell",
 #  else
-    /* 18 */ "vim-window-maximize",
-    /* 19 */ "vim-window-minimize",
-    /* 20 */ "vim-window-split",
-    /* 21 */ "vim-shell",
+    /* 18 */ "mnv-window-maximize",
+    /* 19 */ "mnv-window-minimize",
+    /* 20 */ "mnv-window-split",
+    /* 21 */ "mnv-shell",
 #  endif
     /* 22 */ "go-previous",		// sub. GTK_STOCK_GO_BACK
     /* 23 */ "go-next",			// sub. GTK_STOCK_GO_FORWARD
 #  if GTK_CHECK_VERSION(3,14,0)
-    /* 24 */ "stock_vim_find_help",
+    /* 24 */ "stock_mnv_find_help",
 #  else
-    /* 24 */ "vim-find-help",
+    /* 24 */ "mnv-find-help",
 #  endif
     /* 25 */ "gtk-convert",		// sub. GTK_STOCK_CONVERT
     /* 26 */ "go-jump",			// sub. GTK_STOCK_JUMP_TO
 #  if GTK_CHECK_VERSION(3,14,0)
-    /* 27 */ "stock_vim_build_tags",
-    /* 28 */ "stock_vim_window_split_vertical",
-    /* 29 */ "stock_vim_window_maximize_width",
-    /* 30 */ "stock_vim_window_minimize_width",
+    /* 27 */ "stock_mnv_build_tags",
+    /* 28 */ "stock_mnv_window_split_vertical",
+    /* 29 */ "stock_mnv_window_maximize_width",
+    /* 30 */ "stock_mnv_window_minimize_width",
 #  else
-    /* 27 */ "vim-build-tags",
-    /* 28 */ "vim-window-split-vertical",
-    /* 29 */ "vim-window-maximize-width",
-    /* 30 */ "vim-window-minimize-width",
+    /* 27 */ "mnv-build-tags",
+    /* 28 */ "mnv-window-split-vertical",
+    /* 29 */ "mnv-window-maximize-width",
+    /* 30 */ "mnv-window-minimize-width",
 #  endif
     /* 31 */ "application-exit",	// GTK_STOCK_QUIT
 };
@@ -192,26 +192,26 @@ static const char * const menu_stock_ids[] =
     /* 08 */ GTK_STOCK_PRINT,
     /* 09 */ GTK_STOCK_HELP,
     /* 10 */ GTK_STOCK_FIND,
-    /* 11 */ "vim-save-all",
-    /* 12 */ "vim-session-save",
-    /* 13 */ "vim-session-new",
-    /* 14 */ "vim-session-load",
+    /* 11 */ "mnv-save-all",
+    /* 12 */ "mnv-session-save",
+    /* 13 */ "mnv-session-new",
+    /* 14 */ "mnv-session-load",
     /* 15 */ GTK_STOCK_EXECUTE,
     /* 16 */ GTK_STOCK_FIND_AND_REPLACE,
     /* 17 */ GTK_STOCK_CLOSE,		// FIXME: fuzzy
-    /* 18 */ "vim-window-maximize",
-    /* 19 */ "vim-window-minimize",
-    /* 20 */ "vim-window-split",
-    /* 21 */ "vim-shell",
+    /* 18 */ "mnv-window-maximize",
+    /* 19 */ "mnv-window-minimize",
+    /* 20 */ "mnv-window-split",
+    /* 21 */ "mnv-shell",
     /* 22 */ GTK_STOCK_GO_BACK,
     /* 23 */ GTK_STOCK_GO_FORWARD,
-    /* 24 */ "vim-find-help",
+    /* 24 */ "mnv-find-help",
     /* 25 */ GTK_STOCK_CONVERT,
     /* 26 */ GTK_STOCK_JUMP_TO,
-    /* 27 */ "vim-build-tags",
-    /* 28 */ "vim-window-split-vertical",
-    /* 29 */ "vim-window-maximize-width",
-    /* 30 */ "vim-window-minimize-width",
+    /* 27 */ "mnv-build-tags",
+    /* 28 */ "mnv-window-split-vertical",
+    /* 29 */ "mnv-window-maximize-width",
+    /* 30 */ "mnv-window-minimize-width",
     /* 31 */ GTK_STOCK_QUIT
 };
 # endif // !GTK_CHECK_VERSION(3,10,0)
@@ -223,20 +223,20 @@ typedef struct IconNames {
     const char *file_name;
 } IconNames;
 
-static IconNames stock_vim_icons[] = {
-    { "vim-build-tags", "stock_vim_build_tags.png" },
-    { "vim-find-help", "stock_vim_find_help.png" },
-    { "vim-save-all", "stock_vim_save_all.png" },
-    { "vim-session-load", "stock_vim_session_load.png" },
-    { "vim-session-new", "stock_vim_session_new.png" },
-    { "vim-session-save", "stock_vim_session_save.png" },
-    { "vim-shell", "stock_vim_shell.png" },
-    { "vim-window-maximize", "stock_vim_window_maximize.png" },
-    { "vim-window-maximize-width", "stock_vim_window_maximize_width.png" },
-    { "vim-window-minimize", "stock_vim_window_minimize.png" },
-    { "vim-window-minimize-width", "stock_vim_window_minimize_width.png" },
-    { "vim-window-split", "stock_vim_window_split.png" },
-    { "vim-window-split-vertical", "stock_vim_window_split_vertical.png" },
+static IconNames stock_mnv_icons[] = {
+    { "mnv-build-tags", "stock_mnv_build_tags.png" },
+    { "mnv-find-help", "stock_mnv_find_help.png" },
+    { "mnv-save-all", "stock_mnv_save_all.png" },
+    { "mnv-session-load", "stock_mnv_session_load.png" },
+    { "mnv-session-new", "stock_mnv_session_new.png" },
+    { "mnv-session-save", "stock_mnv_session_save.png" },
+    { "mnv-shell", "stock_mnv_shell.png" },
+    { "mnv-window-maximize", "stock_mnv_window_maximize.png" },
+    { "mnv-window-maximize-width", "stock_mnv_window_maximize_width.png" },
+    { "mnv-window-minimize", "stock_mnv_window_minimize.png" },
+    { "mnv-window-minimize-width", "stock_mnv_window_minimize_width.png" },
+    { "mnv-window-split", "stock_mnv_window_split.png" },
+    { "mnv-window-split-vertical", "stock_mnv_window_split_vertical.png" },
     { NULL, NULL }
 };
 #  endif
@@ -269,7 +269,7 @@ lookup_menu_iconfile(char_u *iconfile, char_u *dest)
 
     if (mch_isFullName(dest))
     {
-	return vim_fexists(dest);
+	return mnv_fexists(dest);
     }
     else
     {
@@ -362,7 +362,7 @@ load_menu_iconfile(char_u *name, GtkIconSize icon_size)
 }
 
     static GtkWidget *
-create_menu_icon(vimmenu_T *menu, GtkIconSize icon_size)
+create_menu_icon(mnvmenu_T *menu, GtkIconSize icon_size)
 {
     GtkWidget	*image = NULL;
     char_u	buf[MAXPATHL];
@@ -411,7 +411,7 @@ toolbar_button_focus_in_event(GtkWidget *widget UNUSED,
 			      gpointer data UNUSED)
 {
     // When we're in a GtkPlug, we don't have window focus events, only widget
-    // focus.  To emulate stand-alone gvim, if a button gets focus (e.g.,
+    // focus.  To emulate stand-alone gmnv, if a button gets focus (e.g.,
     // <Tab> into GtkPlug) immediately pass it to mainwin.
     if (gtk_socket_id != 0)
 	gtk_widget_grab_focus(gui.drawarea);
@@ -432,26 +432,26 @@ gui_gtk_register_stock_icons(void)
     factory = gtk_icon_factory_new();
 #  define ADD_ICON(Name, Data) add_stock_icon(factory, Name, Data, (int)sizeof(Data))
 
-    ADD_ICON("vim-build-tags",		  stock_vim_build_tags);
-    ADD_ICON("vim-find-help",		  stock_vim_find_help);
-    ADD_ICON("vim-save-all",		  stock_vim_save_all);
-    ADD_ICON("vim-session-load",	  stock_vim_session_load);
-    ADD_ICON("vim-session-new",		  stock_vim_session_new);
-    ADD_ICON("vim-session-save",	  stock_vim_session_save);
-    ADD_ICON("vim-shell",		  stock_vim_shell);
-    ADD_ICON("vim-window-maximize",	  stock_vim_window_maximize);
-    ADD_ICON("vim-window-maximize-width", stock_vim_window_maximize_width);
-    ADD_ICON("vim-window-minimize",	  stock_vim_window_minimize);
-    ADD_ICON("vim-window-minimize-width", stock_vim_window_minimize_width);
-    ADD_ICON("vim-window-split",	  stock_vim_window_split);
-    ADD_ICON("vim-window-split-vertical", stock_vim_window_split_vertical);
+    ADD_ICON("mnv-build-tags",		  stock_mnv_build_tags);
+    ADD_ICON("mnv-find-help",		  stock_mnv_find_help);
+    ADD_ICON("mnv-save-all",		  stock_mnv_save_all);
+    ADD_ICON("mnv-session-load",	  stock_mnv_session_load);
+    ADD_ICON("mnv-session-new",		  stock_mnv_session_new);
+    ADD_ICON("mnv-session-save",	  stock_mnv_session_save);
+    ADD_ICON("mnv-shell",		  stock_mnv_shell);
+    ADD_ICON("mnv-window-maximize",	  stock_mnv_window_maximize);
+    ADD_ICON("mnv-window-maximize-width", stock_mnv_window_maximize_width);
+    ADD_ICON("mnv-window-minimize",	  stock_mnv_window_minimize);
+    ADD_ICON("mnv-window-minimize-width", stock_mnv_window_minimize_width);
+    ADD_ICON("mnv-window-split",	  stock_mnv_window_split);
+    ADD_ICON("mnv-window-split-vertical", stock_mnv_window_split_vertical);
 
 #  undef ADD_ICON
 
     gtk_icon_factory_add_default(factory);
     g_object_unref(factory);
 # else // defined(USE_GRESOURCE)
-    const char * const path_prefix = "/org/vim/gui/icon";
+    const char * const path_prefix = "/org/mnv/gui/icon";
 #  if GTK_CHECK_VERSION(3,14,0)
     GdkScreen    *screen = NULL;
     GtkIconTheme *icon_theme = NULL;
@@ -465,11 +465,11 @@ gui_gtk_register_stock_icons(void)
 #  elif GTK_CHECK_VERSION(3,0,0)
     IconNames *names;
 
-    for (names = stock_vim_icons; names->icon_name != NULL; names++)
+    for (names = stock_mnv_icons; names->icon_name != NULL; names++)
     {
 	char path[MAXPATHL];
 
-	vim_snprintf(path, MAXPATHL, "%s/%s", path_prefix, names->file_name);
+	mnv_snprintf(path, MAXPATHL, "%s/%s", path_prefix, names->file_name);
 	GdkPixbuf *pixbuf = NULL;
 	pixbuf = gdk_pixbuf_new_from_resource(path, NULL);
 	if (pixbuf != NULL)
@@ -484,7 +484,7 @@ gui_gtk_register_stock_icons(void)
 		// won't prepare size variants for us out of a single
 		// fixed-size image.
 		//
-		// Currently, Vim provides 24x24 images only while the
+		// Currently, MNV provides 24x24 images only while the
 		// icon size on the menu and the toolbar is set to 16x16
 		// by default.
 		//
@@ -507,12 +507,12 @@ gui_gtk_register_stock_icons(void)
     GtkIconFactory * const factory = gtk_icon_factory_new();
     IconNames *names;
 
-    for (names = stock_vim_icons; names->icon_name != NULL; names++)
+    for (names = stock_mnv_icons; names->icon_name != NULL; names++)
     {
 	char path[MAXPATHL];
 	GdkPixbuf *pixbuf;
 
-	vim_snprintf(path, MAXPATHL, "%s/%s", path_prefix, names->file_name);
+	mnv_snprintf(path, MAXPATHL, "%s/%s", path_prefix, names->file_name);
 	pixbuf = gdk_pixbuf_new_from_resource(path, NULL);
 	if (pixbuf != NULL)
 	{
@@ -534,8 +534,8 @@ gui_gtk_register_stock_icons(void)
 #if defined(FEAT_MENU)
 
 /*
- * Translate Vim's mnemonic tagging to GTK+ style and convert to UTF-8
- * if necessary.  The caller must vim_free() the returned string.
+ * Translate MNV's mnemonic tagging to GTK+ style and convert to UTF-8
+ * if necessary.  The caller must mnv_free() the returned string.
  *
  *	Input	Output
  *	_	__
@@ -591,14 +591,14 @@ translate_mnemonic_tag(char_u *name, int use_mnemonic)
 }
 
     static void
-menu_item_new(vimmenu_T *menu, GtkWidget *parent_widget)
+menu_item_new(mnvmenu_T *menu, GtkWidget *parent_widget)
 {
     GtkWidget	*box;
     char_u	*text;
     int		use_mnemonic;
 
     // It would be neat to have image menu items, but that would require major
-    // changes to Vim's menu system.  Not to mention that all the translations
+    // changes to MNV's menu system.  Not to mention that all the translations
     // had to be updated.
     menu->id = gtk_menu_item_new();
 # if GTK_CHECK_VERSION(3,2,0)
@@ -612,7 +612,7 @@ menu_item_new(vimmenu_T *menu, GtkWidget *parent_widget)
     text = translate_mnemonic_tag(menu->name, use_mnemonic);
 
     menu->label = gtk_label_new_with_mnemonic((const char *)text);
-    vim_free(text);
+    mnv_free(text);
 
     gtk_box_pack_start(GTK_BOX(box), menu->label, FALSE, FALSE, 0);
 
@@ -632,9 +632,9 @@ menu_item_new(vimmenu_T *menu, GtkWidget *parent_widget)
 }
 
     void
-gui_mch_add_menu(vimmenu_T *menu, int idx)
+gui_mch_add_menu(mnvmenu_T *menu, int idx)
 {
-    vimmenu_T	*parent;
+    mnvmenu_T	*parent;
     GtkWidget	*parent_widget;
 
     if (menu->name[0] == ']' || menu_is_popup(menu->name))
@@ -667,7 +667,7 @@ gui_mch_add_menu(vimmenu_T *menu, int idx)
 
 # if !GTK_CHECK_VERSION(3,4,0)
     menu->tearoff_handle = gtk_tearoff_menu_item_new();
-    if (vim_strchr(p_go, GO_TEAROFF) != NULL)
+    if (mnv_strchr(p_go, GO_TEAROFF) != NULL)
 	gtk_widget_show(menu->tearoff_handle);
 #  if GTK_CHECK_VERSION(3,0,0)
     gtk_menu_shell_prepend(GTK_MENU_SHELL(menu->submenu_id),
@@ -681,19 +681,19 @@ gui_mch_add_menu(vimmenu_T *menu, int idx)
     static void
 menu_item_activate(GtkWidget *widget UNUSED, gpointer data)
 {
-    gui_menu_cb((vimmenu_T *)data);
+    gui_menu_cb((mnvmenu_T *)data);
 }
 
     static void
 menu_item_select(GtkWidget *widget UNUSED, gpointer data)
 {
-    vimmenu_T	*menu;
+    mnvmenu_T	*menu;
     char_u	*tooltip;
     static int	did_msg = FALSE;
 
     if (State & MODE_CMDLINE)
 	return;
-    menu = (vimmenu_T *)data;
+    menu = (mnvmenu_T *)data;
     tooltip = CONVERT_TO_UTF8(menu->strings[MENU_INDEX_TIP]);
     if (tooltip != NULL && utf_valid_string(tooltip, NULL))
     {
@@ -713,9 +713,9 @@ menu_item_select(GtkWidget *widget UNUSED, gpointer data)
 }
 
     void
-gui_mch_add_menu_item(vimmenu_T *menu, int idx)
+gui_mch_add_menu_item(mnvmenu_T *menu, int idx)
 {
-    vimmenu_T *parent;
+    mnvmenu_T *parent;
 
     parent = menu->parent;
 
@@ -853,7 +853,7 @@ gui_mch_set_text_area_pos(int x, int y, int w, int h)
     void
 gui_gtk_set_mnemonics(int enable)
 {
-    vimmenu_T	*menu;
+    mnvmenu_T	*menu;
     char_u	*name;
 
     FOR_ALL_MENUS(menu)
@@ -864,13 +864,13 @@ gui_gtk_set_mnemonics(int enable)
 	name = translate_mnemonic_tag(menu->name, enable);
 	gtk_label_set_text_with_mnemonic(GTK_LABEL(menu->label),
 					 (const char *)name);
-	vim_free(name);
+	mnv_free(name);
     }
 }
 
 # if !GTK_CHECK_VERSION(3,4,0)
     static void
-recurse_tearoffs(vimmenu_T *menu, int val)
+recurse_tearoffs(mnvmenu_T *menu, int val)
 {
     for (; menu != NULL; menu = menu->next)
     {
@@ -904,9 +904,9 @@ gui_mch_toggle_tearoffs(int enable)
 
 #if defined(FEAT_TOOLBAR)
     static int
-get_menu_position(vimmenu_T *menu)
+get_menu_position(mnvmenu_T *menu)
 {
-    vimmenu_T	*node;
+    mnvmenu_T	*node;
     int		idx = 0;
 
     for (node = menu->parent->children; node != menu; node = node->next)
@@ -922,7 +922,7 @@ get_menu_position(vimmenu_T *menu)
 
 #if defined(FEAT_TOOLBAR)
     void
-gui_mch_menu_set_tip(vimmenu_T *menu)
+gui_mch_menu_set_tip(mnvmenu_T *menu)
 {
     if (menu->id == NULL || menu->parent == NULL || gui.toolbar == NULL)
 	return;
@@ -949,7 +949,7 @@ gui_mch_menu_set_tip(vimmenu_T *menu)
  * Destroy the machine specific menu widget.
  */
     void
-gui_mch_destroy_menu(vimmenu_T *menu)
+gui_mch_destroy_menu(mnvmenu_T *menu)
 {
     // Don't let gtk_container_remove automatically destroy menu->id.
     if (menu->id != NULL)
@@ -1222,7 +1222,7 @@ gui_mch_browse(int saving,
     // GTK has a bug, it only works with an absolute path.
     if (initdir == NULL || *initdir == NUL)
 	mch_dirname(dirbuf, MAXPATHL);
-    else if (vim_FullName(initdir, dirbuf, MAXPATHL - 2, FALSE) == FAIL)
+    else if (mnv_FullName(initdir, dirbuf, MAXPATHL - 2, FALSE) == FAIL)
 	dirbuf[0] = NUL;
     // Always need a trailing slash for a directory.
     add_pathsep(dirbuf);
@@ -1298,7 +1298,7 @@ gui_mch_browse(int saving,
 		i++;
 	    }
 	}
-	vim_free(patt);
+	mnv_free(patt);
     }
     if (saving && dflt != NULL && *dflt != NUL)
 	gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(fc), (char *)dflt);
@@ -1329,7 +1329,7 @@ gui_mch_browse(int saving,
 	return NULL;
 
     // shorten the file name if possible
-    return vim_strsave(shorten_fname1(gui.browse_fname));
+    return mnv_strsave(shorten_fname1(gui.browse_fname));
 }
 
 /*
@@ -1372,7 +1372,7 @@ gui_mch_browsedir(
 
     // GTK appears to insist on an absolute path.
     if (initdir == NULL || *initdir == NUL
-	       || vim_FullName(initdir, dirbuf, MAXPATHL - 10, FALSE) == FAIL)
+	       || mnv_FullName(initdir, dirbuf, MAXPATHL - 10, FALSE) == FAIL)
 	mch_dirname(dirbuf, MAXPATHL - 10);
 
     // Always need a trailing slash for a directory.
@@ -1391,7 +1391,7 @@ gui_mch_browsedir(
 	return NULL;
 
     // shorten the file name if possible
-    p = vim_strsave(shorten_fname1(dirname));
+    p = mnv_strsave(shorten_fname1(dirname));
     g_free(dirname);
     return p;
 
@@ -1414,9 +1414,9 @@ create_message_dialog(int type, char_u *title, char_u *message)
 
     switch (type)
     {
-	case VIM_ERROR:	    message_type = GTK_MESSAGE_ERROR;	 break;
-	case VIM_WARNING:   message_type = GTK_MESSAGE_WARNING;	 break;
-	case VIM_QUESTION:  message_type = GTK_MESSAGE_QUESTION; break;
+	case MNV_ERROR:	    message_type = GTK_MESSAGE_ERROR;	 break;
+	case MNV_WARNING:   message_type = GTK_MESSAGE_WARNING;	 break;
+	case MNV_QUESTION:  message_type = GTK_MESSAGE_QUESTION; break;
 	default:	    message_type = GTK_MESSAGE_INFO;	 break;
     }
 
@@ -1434,9 +1434,9 @@ create_message_dialog(int type, char_u *title, char_u *message)
 	gtk_window_set_title(GTK_WINDOW(dialog), (const char *)title);
 	CONVERT_TO_UTF8_FREE(title);
     }
-    else if (type == VIM_GENERIC)
+    else if (type == MNV_GENERIC)
     {
-	gtk_window_set_title(GTK_WINDOW(dialog), "VIM");
+	gtk_window_set_title(GTK_WINDOW(dialog), "MNV");
     }
 
     return dialog;
@@ -1444,7 +1444,7 @@ create_message_dialog(int type, char_u *title, char_u *message)
 
 /*
  * Split up button_string into individual button labels by inserting
- * NUL bytes.  Also replace the Vim-style mnemonic accelerator prefix
+ * NUL bytes.  Also replace the MNV-style mnemonic accelerator prefix
  * '&' with '_'.  button_string must point to allocated memory!
  * Return an allocated array of pointers into button_string.
  */
@@ -1502,7 +1502,7 @@ split_button_translation(const char *message)
 	if (output_conv.vc_type != CONV_NONE)
 	    str = string_convert(&output_conv, str, NULL);
 	else
-	    str = vim_strsave(str);
+	    str = mnv_strsave(str);
 
 	if (str != NULL)
 	    buttons = split_button_string(str, &n_buttons);
@@ -1514,15 +1514,15 @@ split_button_translation(const char *message)
      */
     if (buttons == NULL || n_buttons != n_expected)
     {
-	vim_free(buttons);
-	vim_free(str);
+	mnv_free(buttons);
+	mnv_free(str);
 	buttons = NULL;
-	str = vim_strsave((char_u *)message);
+	str = mnv_strsave((char_u *)message);
 
 	if (str != NULL)
 	    buttons = split_button_string(str, &n_buttons);
 	if (buttons == NULL)
-	    vim_free(str);
+	    mnv_free(str);
     }
 
     return buttons;
@@ -1558,12 +1558,12 @@ dialog_add_buttons(GtkDialog *dialog, char_u *button_string)
     int	    n_buttons = 0;
     int	    idx;
 
-    button_string = vim_strsave(button_string); // must be writable
+    button_string = mnv_strsave(button_string); // must be writable
     if (button_string == NULL)
 	return;
 
     // Check 'v' flag in 'guioptions': vertical button placement.
-    if (vim_strchr(p_go, GO_VERTICAL) != NULL)
+    if (mnv_strchr(p_go, GO_VERTICAL) != NULL)
     {
 # if GTK_CHECK_VERSION(3,0,0)
 	// Add GTK+ 3 code if necessary.
@@ -1608,7 +1608,7 @@ dialog_add_buttons(GtkDialog *dialog, char_u *button_string)
 	 * button string to get things right.  Yes, this is hackish :/
 	 *
 	 * But even the common button labels aren't necessarily translated,
-	 * since anyone can create their own dialogs using Vim functions.
+	 * since anyone can create their own dialogs using MNV functions.
 	 * Thus we have to check for those too.
 	 */
 	if (ok != NULL && ync != NULL) // almost impossible to fail
@@ -1639,20 +1639,20 @@ dialog_add_buttons(GtkDialog *dialog, char_u *button_string)
     }
 
     if (ok != NULL)
-	vim_free(*ok);
+	mnv_free(*ok);
     if (ync != NULL)
-	vim_free(*ync);
-    vim_free(ok);
-    vim_free(ync);
-    vim_free(buttons);
-    vim_free(button_string);
+	mnv_free(*ync);
+    mnv_free(ok);
+    mnv_free(ync);
+    mnv_free(buttons);
+    mnv_free(button_string);
 }
 
 /*
  * Allow mnemonic accelerators to be activated without pressing <Alt>.
  * I'm not sure if it's a wise idea to do this.  However, the old GTK+ 1.2
  * GUI used to work this way, and I consider the impact on UI consistency
- * low enough to justify implementing this as a special Vim feature.
+ * low enough to justify implementing this as a special MNV feature.
  */
 typedef struct _DialogInfo
 {
@@ -1786,7 +1786,7 @@ gui_mch_dialog(int	type,	    // type of dialog
 	    text = (char_u *)gtk_entry_get_text(GTK_ENTRY(entry));
 	    text = CONVERT_FROM_UTF8(text);
 
-	    vim_strncpy(textfield, text, IOSIZE - 1);
+	    mnv_strncpy(textfield, text, IOSIZE - 1);
 
 	    CONVERT_FROM_UTF8_FREE(text);
 	}
@@ -1802,7 +1802,7 @@ gui_mch_dialog(int	type,	    // type of dialog
 #if defined(FEAT_MENU)
 
     void
-gui_mch_show_popupmenu(vimmenu_T *menu)
+gui_mch_show_popupmenu(mnvmenu_T *menu)
 {
 # if defined(FEAT_XIM)
     /*
@@ -1811,7 +1811,7 @@ gui_mch_show_popupmenu(vimmenu_T *menu)
      */
 #  if !GTK_CHECK_VERSION(3,10,0)
     if (xic != NULL && g_object_get_data(G_OBJECT(menu->submenu_id),
-					 "vim-has-im-menu") == NULL)
+					 "mnv-has-im-menu") == NULL)
     {
 	GtkWidget   *menuitem;
 	GtkWidget   *submenu;
@@ -1834,7 +1834,7 @@ gui_mch_show_popupmenu(vimmenu_T *menu)
 	gtk_im_multicontext_append_menuitems(GTK_IM_MULTICONTEXT(xic),
 					     GTK_MENU_SHELL(submenu));
 	g_object_set_data(G_OBJECT(menu->submenu_id),
-			  "vim-has-im-menu", GINT_TO_POINTER(TRUE));
+			  "mnv-has-im-menu", GINT_TO_POINTER(TRUE));
     }
 #  endif
 # endif // FEAT_XIM
@@ -1910,7 +1910,7 @@ popup_menu_position_func(GtkMenu *menu UNUSED,
     void
 gui_make_popup(char_u *path_name, int mouse_pos)
 {
-    vimmenu_T *menu;
+    mnvmenu_T *menu;
 
     popup_mouse_pos = mouse_pos;
 
@@ -2083,7 +2083,7 @@ convert_localized_message(char_u **buffer, const char *message)
     if (output_conv.vc_type == CONV_NONE)
 	return message;
 
-    vim_free(*buffer);
+    mnv_free(*buffer);
     *buffer = string_convert(&output_conv, (char_u *)message, NULL);
 
     return (const char *)*buffer;
@@ -2143,7 +2143,7 @@ find_replace_dialog_create(char_u *arg, int do_replace)
     {
 	char_u *old_text = entry_text;
 	entry_text = string_convert(&output_conv, entry_text, NULL);
-	vim_free(old_text);
+	mnv_free(old_text);
     }
 
     /*
@@ -2168,7 +2168,7 @@ find_replace_dialog_create(char_u *arg, int do_replace)
 	if (do_replace && entry_get_text_length(GTK_ENTRY(frdp->what)) > 0)
 	    gtk_widget_grab_focus(frdp->with);
 
-	vim_free(entry_text);
+	mnv_free(entry_text);
 	return;
     }
 
@@ -2184,12 +2184,12 @@ find_replace_dialog_create(char_u *arg, int do_replace)
     if (do_replace)
     {
 	gtk_window_set_title(GTK_WINDOW(frdp->dialog),
-			     CONV(_("VIM - Search and Replace...")));
+			     CONV(_("MNV - Search and Replace...")));
     }
     else
     {
 	gtk_window_set_title(GTK_WINDOW(frdp->dialog),
-			     CONV(_("VIM - Search...")));
+			     CONV(_("MNV - Search...")));
     }
 
 #if GTK_CHECK_VERSION(3,2,0)
@@ -2487,8 +2487,8 @@ find_replace_dialog_create(char_u *arg, int do_replace)
     gtk_widget_show_all(hbox);
     gtk_widget_show(frdp->dialog);
 
-    vim_free(entry_text);
-    vim_free(conv_buffer);
+    mnv_free(entry_text);
+    mnv_free(conv_buffer);
 #undef CONV
 }
 

@@ -1,16 +1,16 @@
 ﻿===============================================================================
-=    Xin chào mừng bạn đến với Hướng dẫn dùng Vim    -    Phiên bản 1.5      =
+=    Xin chào mừng bạn đến với Hướng dẫn dùng MNV    -    Phiên bản 1.5      =
 ===============================================================================
-	Vim là một trình soạn thảo rất mạnh. Vim có rất nhiều câu lệnh,
+	MNV là một trình soạn thảo rất mạnh. MNV có rất nhiều câu lệnh,
 	chính vì thế không thể trình bày hết được trong cuốn hướng dẫn này.
-	Cuốn hướng dẫn chỉ đưa ra những câu lệnh để giúp bạn sử dụng Vim
+	Cuốn hướng dẫn chỉ đưa ra những câu lệnh để giúp bạn sử dụng MNV
 	được dễ dàng hơn. Đây cũng chính là mục đich của sách
 
 	Cần khoảng 25-30 phút để hoàn thành bài học, phụ thuộc vào thời
 	gian thực hành.
 
 	Các câu lệnh trong bài học sẽ thay đổi văn bản này. Vì thế hãy tạo
-	một bản sao của tập tin này để thực hành (nếu bạn dùng "vimtutor"
+	một bản sao của tập tin này để thực hành (nếu bạn dùng "mnvtutor"
 	thì đây đã là bản sao).
 
 	Hãy nhớ rằng hướng dẫn này viết với nguyên tắc "học đi đôi với hành".
@@ -44,7 +44,7 @@ Chú ý: Các phím mũi tên cũng làm việc. Nhưng một khi sử dụng th
 	 bạn sẽ di chuyển con trỏ nhanh hơn so với các phím mũi tên.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		     Bài 1.1.2: VÀO VÀ THOÁT VIM
+		     Bài 1.1.2: VÀO VÀ THOÁT MNV
 
 
   !! CHÚ Ý: Trước khi thực hiện bất kỳ lệnh nào, xin hãy đọc cả bài học này!!
@@ -58,10 +58,10 @@ Chú ý: Các phím mũi tên cũng làm việc. Nhưng một khi sử dụng th
 				:wq  <ENTER>
 
   3. Khi thấy dấu nhắc shell, hãy gõ câu lệnh đã đưa bạn tới hướng dẫn này. Có
-	 thể là lệnh:	vimtutor vi <ENTER>
-     Thông thường bạn dùng:	vim tutor.vi<ENTER>
+	 thể là lệnh:	mnvtutor vi <ENTER>
+     Thông thường bạn dùng:	mnv tutor.vi<ENTER>
 
----> 'vim' là trình soạn thảo vim, 'tutor.vi' là tập tin bạn muốn soạn thảo.
+---> 'mnv' là trình soạn thảo mnv, 'tutor.vi' là tập tin bạn muốn soạn thảo.
 
   4. Nếu bạn đã nhớ và nắm chắc những câu lệnh trên, hãy thực hiện các bước từ
 	 1 tới 3 để thoát và quay vào trình soạn thảo. Sau đó di chuyển con trỏ
@@ -119,9 +119,9 @@ Chú ý: Khi học theo cuốn hướng dẫn này đừng cố nhớ, mà học
   1. Con trỏ được di chuyển bởi các phím mũi tên hoặc các phím hjkl.
 	 h (trái)	j (xuống)       k (lên)	    l (phải)
 
-  2. Để vào Vim (từ dấu nhắc %) gõ:  vim TÊNTẬPTIN <ENTER>
+  2. Để vào MNV (từ dấu nhắc %) gõ:  mnv TÊNTẬPTIN <ENTER>
 
-  3. Muốn thoát Vim gõ:	   <ESC>   :q!	 <ENTER>  để vứt bỏ mọi thay đổi.
+  3. Muốn thoát MNV gõ:	   <ESC>   :q!	 <ENTER>  để vứt bỏ mọi thay đổi.
 	     HOẶC gõ:	   <ESC>   :wq	 <ENTER>  để ghi nhớ thay đổi.
 
   4. Để xóa bỏ ký tự nằm dưới con trỏ trong chế độ Câu lệnh gõ:  x
@@ -281,7 +281,7 @@ CHÚ Ý:  Dành cho những người ham tìm hiểu, chỉ nhấn đối tượ
 
   1. Di chuyển con trỏ tới dòng đầu tiên trong cụm ở dưới.
 
-  2. Gõ  dd  để xóa và ghi lại một dòng trong bộ nhớ đệm của Vim.
+  2. Gõ  dd  để xóa và ghi lại một dòng trong bộ nhớ đệm của MNV.
 
   3. Di chuyển con trỏ tới dòng Ở TRÊN chỗ cần dán.
 
@@ -539,10 +539,10 @@ Chú ý:  Tất cả các câu lệnh  :  cần kết thúc bởi phím <ENTER>
 
   3. Bây giờ gõ:	 :w TEST   (trong đó TEST là tên tập tin bạn đã chọn.)
 
-  4. Thao tác này ghi toàn bộ tập tin	(Hướng dẫn dùng Vim) dưới tên TEST.
+  4. Thao tác này ghi toàn bộ tập tin	(Hướng dẫn dùng MNV) dưới tên TEST.
      Để kiểm tra lại, gõ    :!dir   một lần nữa để liệt kê thư mục.
 
-Chú ý: Nếu bạn thoát khỏi Vim và quay trở lại với tên tập tin TEST, thì tập
+Chú ý: Nếu bạn thoát khỏi MNV và quay trở lại với tên tập tin TEST, thì tập
       tin sẽ là bản sao của hướng dẫn tại thời điểm bạn ghi lại.
 
   5. Bây giờ xóa bỏ tập tin (MS-DOS):    :!del TEST
@@ -606,7 +606,7 @@ CHÚ Ý:  Tập tin được đọc sẽ đặt bắt đầu từ vị trí củ
 	  :!dir		   :!ls		   -  liệt kê nội dung một thư mục.
 	  :!del TÊNTẬPTIN   :!rm TÊNTẬPTIN   -  xóa bỏ tập tin TÊNTẬPTIN.
 
-  2.  :w TÊNTẬPTIN  ghi tập tin hiện thời của Vim lên đĩa với tên TÊNTẬPTIN.
+  2.  :w TÊNTẬPTIN  ghi tập tin hiện thời của MNV lên đĩa với tên TÊNTẬPTIN.
 
   3.  :#,#w TÊNTẬPTIN  ghi các dòng từ # tới # vào tập tin TÊNTẬPTIN.
 
@@ -739,7 +739,7 @@ Chú ý: Lệnh này thay cho việc gõ  i , ký tự cuối cùng, văn bản 
 
 		      ** Sử dụng hệ thống trợ giúp có sẵn **
 
-  Vim có một hệ thống trợ giúp đầy đủ. Để bắt đầu, thử một trong ba
+  MNV có một hệ thống trợ giúp đầy đủ. Để bắt đầu, thử một trong ba
   lệnh sau:
 	- nhấn phím <HELP> (nếu bàn phím có)
 	- nhấn phím <F1> (nếu bàn phím có)
@@ -759,53 +759,53 @@ Chú ý: Lệnh này thay cho việc gõ  i , ký tự cuối cùng, văn bản 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		       Bài 1.8: TẠO MỘT SCRIPT KHỞI ĐỘNG
 
-			  ** Bật các tính năng của Vim **
+			  ** Bật các tính năng của MNV **
 
-  Vim có nhiều tính năng hơn Vi, nhưng hầu hết chúng bị tắt theo mặc định.
-  Để sử dụng các tính năng này bạn cần phải tạo một tập tin "vimrc".
+  MNV có nhiều tính năng hơn Vi, nhưng hầu hết chúng bị tắt theo mặc định.
+  Để sử dụng các tính năng này bạn cần phải tạo một tập tin "mnvrc".
 
-  1. Soạn thảo tệp tin "vimrc", phụ thuộc vào hệ thống của bạn:
-	:edit ~/.vimrc		đối với Unix
-	:edit ~/_vimrc		đối với MS-Windows
+  1. Soạn thảo tệp tin "mnvrc", phụ thuộc vào hệ thống của bạn:
+	:edit ~/.mnvrc		đối với Unix
+	:edit ~/_mnvrc		đối với MS-Windows
 
-  2. Bây giờ đọc tập tin "vimrc" ví dụ:
+  2. Bây giờ đọc tập tin "mnvrc" ví dụ:
 
-	:read $VIMRUNTIME/vimrc_example.vim
+	:read $MNVRUNTIME/mnvrc_example.mnv
 
   3. Ghi lại tập tin:
 
 	:write
 
-  Trong lần khởi động tiếp theo, Vim sẽ sử dụng việc hiện sáng cú pháp.
-  Bạn có thể thêm các thiết lập ưa thích vào tập tin "vimrc" này.
+  Trong lần khởi động tiếp theo, MNV sẽ sử dụng việc hiện sáng cú pháp.
+  Bạn có thể thêm các thiết lập ưa thích vào tập tin "mnvrc" này.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Bài học hướng dẫn sử dụng Vim (Vim Tutor) kết thúc tại đây.  Bài học đưa ra
-  cái nhìn tổng quát về trình soạn thảo Vim, chỉ đủ để bạn có thể sử dụng
+  Bài học hướng dẫn sử dụng MNV (MNV Tutor) kết thúc tại đây.  Bài học đưa ra
+  cái nhìn tổng quát về trình soạn thảo MNV, chỉ đủ để bạn có thể sử dụng
   trình soạn thảo một cách dễ dàng. Bài học còn rất xa để có thể nói là đầy
-  đủ vì Vim có rất rất nhiều câu lệnh. Tiếp theo xin hãy đọc hướng dẫn người
+  đủ vì MNV có rất rất nhiều câu lệnh. Tiếp theo xin hãy đọc hướng dẫn người
   dùng: ":help user-manual".
 
   Cuốn sách sau được khuyên dùng cho việc nghiên cứu sâu hơn:
-	Vim - Vi Improved - Tác giả: Steve Oualline
+	MNV - MNV is not Vim - Tác giả: Steve Oualline
 	Nhà xuất bản: New Riders
-  Cuốn sách đầu tiên dành hoàn toàn cho Vim. Đặc biệt có ích cho người mới.
+  Cuốn sách đầu tiên dành hoàn toàn cho MNV. Đặc biệt có ích cho người mới.
   Có rất nhiều ví dụ và tranh ảnh.
   Hãy xem: https://iccf-holland.org/click5.html
 
-  Cuốn sách tiếp theo này xuất bản sớm hơn và nói nhiều về Vi hơn là Vim,
+  Cuốn sách tiếp theo này xuất bản sớm hơn và nói nhiều về Vi hơn là MNV,
   nhưng cũng rất nên đọc:
 	Learning the Vi Editor - Tác giả: Linda Lamb
 	Nhà xuất bản: O'Reilly & Associates Inc.
   Đây là một cuốn sách hay và cho bạn biết tất cả cách thực hiện những gì muốn
-  làm với Vi. Lần xuất bản thứ sáu đã thêm thông tin về Vim.
+  làm với Vi. Lần xuất bản thứ sáu đã thêm thông tin về MNV.
 
   Bài học hướng dẫn này viết bởi Michael C. Pierce và Robert K. Ware,
   Colorado School of Mines sử dụng ý tưởng của Charles Smith,
   Colorado State University.  E-mail: bware@mines.colorado.edu.
 
-  Sửa đổi cho Vim bởi Bram Moolenaar.
+  Sửa đổi cho MNV bởi Bram Moolenaar.
 
   Dịch bởi: Phan Vĩnh Thịnh <teppi@vnlinux.org>, 2005
   Translator: Phan Vinh Thịnh <teppi@vnlinux.org>, 2005

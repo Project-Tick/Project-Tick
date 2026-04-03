@@ -1,10 +1,10 @@
-# Aap recipe for Russian Vim spell files.
+# Aap recipe for Russian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 REGIONS = RU YO
 SPELLDIR = ..
@@ -14,13 +14,13 @@ all: $SPELLDIR/ru.koi8-r.spl $SPELLDIR/ru.utf-8.spl \
         $SPELLDIR/ru.cp1251.spl ../README_ru.txt
 
 $SPELLDIR/ru.koi8-r.spl : $FILES
-        :sys env LANG=ru_RU.KOI8-R $VIM -u NONE -e -c "mkspell! $SPELLDIR/ru ru_RU ru_YO" -c q
+        :sys env LANG=ru_RU.KOI8-R $MNV -u NONE -e -c "mkspell! $SPELLDIR/ru ru_RU ru_YO" -c q
 
 $SPELLDIR/ru.utf-8.spl : $FILES
-        :sys env LANG=ru_RU.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/ru ru_RU ru_YO" -c q
+        :sys env LANG=ru_RU.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/ru ru_RU ru_YO" -c q
 
 $SPELLDIR/ru.cp1251.spl : $FILES
-        :sys env LANG=ru_RU.CP1251 $VIM -u NONE -e -c "mkspell! $SPELLDIR/ru ru_RU ru_YO" -c q
+        :sys env LANG=ru_RU.CP1251 $MNV -u NONE -e -c "mkspell! $SPELLDIR/ru ru_RU ru_YO" -c q
 
 ../README_ru.txt: README_ru_$*(REGIONS).txt
         :print ru_RU >! $target
@@ -67,7 +67,7 @@ ru_YO.aff ru_YO.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff

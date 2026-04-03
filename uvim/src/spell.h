@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -228,9 +228,9 @@ typedef struct langp_S
 
 #define LANGP_ENTRY(ga, i)	(((langp_T *)(ga).ga_data) + (i))
 
-#define VIMSUGMAGIC "VIMsug"	// string at start of Vim .sug file
-#define VIMSUGMAGICL 6
-#define VIMSUGVERSION 1
+#define MNVSUGMAGIC "MNVsug"	// string at start of MNV .sug file
+#define MNVSUGMAGICL 6
+#define MNVSUGVERSION 1
 
 /*
  * The tables used for recognizing word characters according to spelling.

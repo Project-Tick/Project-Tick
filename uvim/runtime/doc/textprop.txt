@@ -1,7 +1,7 @@
-*textprop.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*textprop.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Displaying text with properties attached.	*textprop* *text-properties*
@@ -91,7 +91,7 @@ and the text properties updated.  But this can be done asynchronously.
 Internal error *E967*
 
 If you see E967, please report the bug.  You can do this at Github:
-https://github.com/vim/vim/issues/new
+https://github.com/Project-Tick/Project-Tick/issues/new
 
 ==============================================================================
 2. Functions						*text-prop-functions*
@@ -503,7 +503,7 @@ prop_type_list([{props}])				*prop_type_list()*
 ==============================================================================
 3. When text changes				*text-prop-changes*
 
-Vim will do its best to keep the text properties on the text where it was
+MNV will do its best to keep the text properties on the text where it was
 attached.  When inserting or deleting text the properties after the change
 will move accordingly.
 
@@ -521,7 +521,7 @@ positions, even though the characters themselves change.
 
 To update text properties after the text was changed, install a callback with
 `listener_add()`.  E.g, if your plugin does spell checking, you can have the
-callback update spelling mistakes in the changed text.  Vim will move the
+callback update spelling mistakes in the changed text.  MNV will move the
 properties below the changed text, so that they still highlight the same text,
 thus you don't need to update these.
 
@@ -529,8 +529,8 @@ thus you don't need to update these.
 Text property columns are not updated or copied: ~
 
 - When setting the line with |setline()| or through an interface, such as Lua,
-  Tcl or Python.  Vim does not know what text got inserted or deleted.
+  Tcl or Python.  MNV does not know what text got inserted or deleted.
 - With a command like `:move`, which takes a line of text out of context.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

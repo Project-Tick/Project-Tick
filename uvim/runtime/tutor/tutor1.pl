@@ -1,11 +1,11 @@
 ===============================================================================
-=    W i t a j   w   t u t o r i a l u   V I M - a      -    Wersja  1.7.     =
+=    W i t a j   w   t u t o r i a l u   M N V - a      -    Wersja  1.7.     =
 ===============================================================================
 
-     Vim to potężny edytor, który posiada wiele poleceń, zbyt dużo, by
+     MNV to potężny edytor, który posiada wiele poleceń, zbyt dużo, by
      wyjaśnić je wszystkie w tym tutorialu. Ten przewodnik ma nauczyć
      Cię posługiwać się wystarczająco wieloma komendami, byś mógł łatwo
-     używać Vima jako edytora ogólnego przeznaczenia.
+     używać MNVa jako edytora ogólnego przeznaczenia.
 
      Czas potrzebny na ukończenie tutoriala to 25 do 30 minut i zależy
      od tego jak wiele czasu spędzisz na eksperymentowaniu.
@@ -13,7 +13,7 @@
 	 UWAGA:
 	 Polecenia wykonywane w czasie lekcji zmodyfikują tekst. Zrób
 	 wcześniej kopię tego pliku do ćwiczeń (jeśli zacząłeś komendą
-	 "vimtutor", to już pracujesz na kopii).
+	 "mnvtutor", to już pracujesz na kopii).
 
 	 Pamiętaj, że przewodnik ten został zaprojektowany do nauki poprzez
 	 ćwiczenia. Oznacza to, że musisz wykonywać polecenia, by nauczyć się ich
@@ -48,7 +48,7 @@ Uwaga: Klawisze kursora także powinny działać, ale używając  hjkl  będzies
        Naprawdę!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		    Lekcja 1.1.2.: WYCHODZENIE Z VIM-a
+		    Lekcja 1.1.2.: WYCHODZENIE Z MNV-a
 
  !! UWAGA: Przed wykonaniem jakiegokolwiek polecenia przeczytaj całą lekcję !!
 
@@ -59,7 +59,7 @@ Uwaga: Klawisze kursora także powinny działać, ale używając  hjkl  będzies
      wpisz:			:wq<ENTER>
 
   3. Kiedy widzisz znak zachęty powłoki wpisz komendę, żeby wrócić
-     do tutoriala. Czyli:	vimtutor<ENTER>
+     do tutoriala. Czyli:	mnvtutor<ENTER>
 
   4. Jeśli chcesz zapamiętać polecenia, wykonaj kroki 1. do 3., aby
      wyjść i wrócić do edytora.
@@ -149,15 +149,15 @@ UWAGA: Ucz się przez ćwiczenie, nie wkuwanie.
   1. Zakończ tutorial tak jak w lekcji 1.1.2.:  :q!
      lub, jeśli masz dostęp do innego terminala, wykonaj kolejne kroki tam.
 
-  2. W powłoce wydaj polecenie:  vim tutor<ENTER>
-     "vim" jest poleceniem uruchamiającym edytor Vim. 'tutor' to nazwa pliku,
+  2. W powłoce wydaj polecenie:  mnv tutor<ENTER>
+     "mnv" jest poleceniem uruchamiającym edytor MNV. 'tutor' to nazwa pliku,
      jaki chcesz edytować. Użyj pliku, który może zostać zmieniony.
 
   3. Dodaj i usuń tekst tak, jak się nauczyłeś w poprzednich lekcjach.
 
-  4. Zapisz plik ze zmianami i opuść Vima:  :wq<ENTER>
+  4. Zapisz plik ze zmianami i opuść MNVa:  :wq<ENTER>
 
-  5. Jeśli zakończyłeś vimtutor w kroku 1., uruchom go ponownie i przejdź
+  5. Jeśli zakończyłeś mnvtutor w kroku 1., uruchom go ponownie i przejdź
      do podsumowania poniżej.
 
   6. Po przeczytaniu wszystkich kroków i ich zrozumieniu: wykonaj je.
@@ -168,10 +168,10 @@ UWAGA: Ucz się przez ćwiczenie, nie wkuwanie.
   1. Poruszasz kursorem używając "strzałek" i klawiszy  hjkl .
        h (w lewo)	 j (w dół)	 k (do góry)		l (w prawo)
 
-  2. By wejść do Vima, (z powłoki) wpisz:
-			    vim NAZWA_PLIKU<ENTER>
+  2. By wejść do MNVa, (z powłoki) wpisz:
+			    mnv NAZWA_PLIKU<ENTER>
 
-  3. By wyjść z Vima, wpisz:
+  3. By wyjść z MNVa, wpisz:
 			    <ESC> :q!<ENTER>  by usunąć wszystkie zmiany.
 	     LUB:	    <ESC> :wq<ENTER>  by zmiany zachować.
 
@@ -199,7 +199,7 @@ Teraz możemy kontynuować i przejść do Lekcji 1.2.
 
   4. Wpisz   dw   by usunąć wyraz.
 
-  UWAGA: Litera  d  pojawi się na dole ekranu. Vim czeka na wpisanie  w .
+  UWAGA: Litera  d  pojawi się na dole ekranu. MNV czeka na wpisanie  w .
 	 Jeśli zobaczysz inny znak, oznacza to, że wpisałeś coś źle; wciśnij
 	 <ESC> i zacznij od początku.
 
@@ -377,7 +377,7 @@ UWAGA:  Mnożnik pomiędzy operatorem  d  i ruchem działa podobnie do ruchu bez
 
   1. Przenieś kursor do pierwszej linii ---> poniżej.
 
-  2. Wpisz  dd  aby usunąć linię i przechować ją w rejestrze Vima.
+  2. Wpisz  dd  aby usunąć linię i przechować ją w rejestrze MNVa.
 
   3. Przenieś kursor do linii c), POWYŻEJ tej, gdzie usunięta linia powinna
      się znajdować.
@@ -598,7 +598,7 @@ Uwaga: Ta funkcja jest bardzo użyteczna w debuggowaniu programu
      By zamienić wszystkie stary na nowy w linii, wpisz     :s/stary/nowy/g
      By zamienić frazy pomiędzy dwoma liniami # wpisz      :#,#s/stary/nowy/g
      By zamienić wszystkie wystąpienia w pliku, wpisz       :%s/stary/nowy/g
-     By Vim prosił Cię o potwierdzenie, dodaj 'c'	   :%s/stary/nowy/gc
+     By MNV prosił Cię o potwierdzenie, dodaj 'c'	   :%s/stary/nowy/gc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		 Lekcja 1.5.1.: JAK WYKONAĆ POLECENIA ZEWNĘTRZNE?
 
@@ -635,11 +635,11 @@ Uwaga:  Wszystkie polecenia  :  muszą być zakończone <ENTER>.
 
   3. Teraz wpisz:   :w TEST   (gdzie TEST jest nazwą pliku jaką wybrałeś.)
 
-  4. To polecenie zapamięta cały plik (Vim Tutor) pod nazwą TEST.
+  4. To polecenie zapamięta cały plik (MNV Tutor) pod nazwą TEST.
      By to sprawdzić, wpisz  :!dir  lub  :!ls  żeby znowu zobaczyć listę plików.
 
-Uwaga: Zauważ, że gdybyś teraz wyszedł z Vima, a następnie wszedł ponownie
-       poleceniem  vim TEST , plik byłby dokładną kopią tutoriala, kiedy go
+Uwaga: Zauważ, że gdybyś teraz wyszedł z MNVa, a następnie wszedł ponownie
+       poleceniem  mnv TEST , plik byłby dokładną kopią tutoriala, kiedy go
        zapisywałeś.
 
   5. Teraz usuń plik wpisując (MS-DOS):		   :!del TEST
@@ -661,7 +661,7 @@ Uwaga: Zauważ, że gdybyś teraz wyszedł z Vima, a następnie wszedł ponownie
   4. Wpisz  w TEST , gdzie TEST to nazwa pliku, który jeszcze nie istnieje.
      Upewnij się, że widzisz  :'<,'>w TEST zanim wciśniesz Enter.
 
-  5. Vim zapisze wybrane linie do pliku TEST. Użyj  :!dir  lub  :!ls , żeby to
+  5. MNV zapisze wybrane linie do pliku TEST. Użyj  :!dir  lub  :!ls , żeby to
      zobaczyć. Jeszcze go nie usuwaj! Użyjemy go w następnej lekcji.
 
 UWAGA: Wciśnięcie  v  zaczyna tryb Wizualny. Możesz poruszać kursorem, by
@@ -703,7 +703,7 @@ UWAGA: Możesz też wczytać wyjście zewnętrznego polecenia. Na przykład
 
 	  :!rm NAZWA_PLIKU  -  usuwa plik NAZWA_PLIKU.
 
-  2.  :w NAZWA_PLIKU  zapisuje obecny plik Vima na dysk z nazwą NAZWA_PLIKU.
+  2.  :w NAZWA_PLIKU  zapisuje obecny plik MNVa na dysk z nazwą NAZWA_PLIKU.
 
   3.  v ruch :w NAZWA_PLIKU  zapisuje Wizualnie wybrane linie do NAZWA_PLIKU.
 
@@ -860,7 +860,7 @@ Uwaga: Aby ignorować wielkość liter dla jednego wyszukiwania: /ignore\c<ENTER
 
 		      ** Użycie systemu pomocy on-line **
 
-  Vim posiada bardzo dobry system pomocy on-line. By zacząć, spróbuj jednej
+  MNV posiada bardzo dobry system pomocy on-line. By zacząć, spróbuj jednej
   z trzech możliwości:
 	- wciśnij klawisz <HELP> (jeśli taki masz)
 	- wciśnij klawisz <F1> (jeśli taki masz)
@@ -880,24 +880,24 @@ Uwaga: Aby ignorować wielkość liter dla jednego wyszukiwania: /ignore\c<ENTER
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		   LEKCJA 1.7.2.: TWORZENIE SKRYPTU STARTOWEGO
 
-			  ** Włącz możliwości Vima **
+			  ** Włącz możliwości MNVa **
 
-  Vim ma o wiele więcej możliwości niż Vi, ale większość z nich jest domyślnie
+  MNV ma o wiele więcej możliwości niż Vi, ale większość z nich jest domyślnie
   wyłączona. Jeśli chcesz włączyć te możliwości na starcie musisz utworzyć
-  plik "vimrc".
+  plik "mnvrc".
 
-  1. Początek edycji pliku "vimrc" zależy od Twojego systemu:
-     :edit ~/.vimrc	     dla Uniksa
-     :edit ~/_vimrc          dla MS-Windows
-  2. Teraz wczytaj przykładowy plik "vimrc":
-     :read $VIMRUNTIME/vimrc_example.vim
+  1. Początek edycji pliku "mnvrc" zależy od Twojego systemu:
+     :edit ~/.mnvrc	     dla Uniksa
+     :edit ~/_mnvrc          dla MS-Windows
+  2. Teraz wczytaj przykładowy plik "mnvrc":
+     :read $MNVRUNTIME/mnvrc_example.mnv
   3. Zapisz plik:
      :w
 
-  Następnym razem, gdy zaczniesz pracę w Vimie będzie on używać podświetlania
+  Następnym razem, gdy zaczniesz pracę w MNVie będzie on używać podświetlania
   składni. Możesz dodać wszystkie swoje ulubione ustawienia do tego pliku
-  "vimrc".
-  Aby uzyskać więcej informacji, wpisz     :help vimrc-intro
+  "mnvrc".
+  Aby uzyskać więcej informacji, wpisz     :help mnvrc-intro
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			  Lekcja 1.7.3.: UZUPEŁNIANIE
@@ -905,19 +905,19 @@ Uwaga: Aby ignorować wielkość liter dla jednego wyszukiwania: /ignore\c<ENTER
 
 	      ** Uzupełnianie linii poleceń z CTRL-D i <TAB> **
 
-  1. Upewnij się, że Vim nie jest w trybie kompatybilności:   :set nocp
+  1. Upewnij się, że MNV nie jest w trybie kompatybilności:   :set nocp
 
   2. Zerknij, jakie pliki są w bieżącym katalogu:   :!ls   lub   :!dir
 
   3. Wpisz początek polecenia:   :e
 
-  4. Wciśnij  CTRL-D  i Vim pokaże listę poleceń, jakie zaczynają się na "e".
+  4. Wciśnij  CTRL-D  i MNV pokaże listę poleceń, jakie zaczynają się na "e".
 
-  5. Wciśnij  <TAB>  i Vim uzupełni polecenie do ":edit".
+  5. Wciśnij  <TAB>  i MNV uzupełni polecenie do ":edit".
 
   6. Dodaj spację i zacznij wpisywać nazwę istniejącego pliku:   :edit FIL
 
-  7. Wciśnij <TAB>. Vim uzupełni nazwę (jeśli jest niepowtarzalna).
+  7. Wciśnij <TAB>. MNV uzupełni nazwę (jeśli jest niepowtarzalna).
 
 UWAGA: Uzupełnianie działa dla wielu poleceń. Spróbuj wcisnąć CTRL-D i <TAB>.
        Użyteczne zwłaszcza przy  :help .
@@ -933,7 +933,7 @@ UWAGA: Uzupełnianie działa dla wielu poleceń. Spróbuj wcisnąć CTRL-D i <TA
 
   4. Wpisz  :q  aby zamknąć okno pomocy.
 
-  5. Utwórz plik startowy vimrc aby zachować wybrane ustawienia.
+  5. Utwórz plik startowy mnvrc aby zachować wybrane ustawienia.
 
   6. Po poleceniu  : , wciśnij CTRL-D aby zobaczyć możliwe uzupełnienia.
      Wciśnij <TAB> aby użyć jednego z nich.
@@ -945,23 +945,23 @@ UWAGA: Uzupełnianie działa dla wielu poleceń. Spróbuj wcisnąć CTRL-D i <TA
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Tutaj się kończy tutorial Vima. Został on pomyślany tak, aby dać krótki
+  Tutaj się kończy tutorial MNVa. Został on pomyślany tak, aby dać krótki
   przegląd jego możliwości, wystarczający byś mógł go używać. Jest on
-  daleki od kompletności, ponieważ Vim ma o wiele, wiele więcej poleceń.
+  daleki od kompletności, ponieważ MNV ma o wiele, wiele więcej poleceń.
 
   Dla dalszej nauki rekomendujemy książkę:
-	Vim - Vi Improved - autor Steve Oualline
+	MNV - MNV is not Vim - autor Steve Oualline
 	Wydawca: New Riders
-  Pierwsza książka całkowicie poświęcona Vimowi. Użyteczna zwłaszcza dla
+  Pierwsza książka całkowicie poświęcona MNVowi. Użyteczna zwłaszcza dla
   początkujących. Zawiera wiele przykładów i ilustracji.
   Zobacz https://iccf-holland.org./click5.html
 
-  Starsza pozycja i bardziej o Vi niż o Vimie, ale także warta
+  Starsza pozycja i bardziej o Vi niż o MNVie, ale także warta
   polecenia:
 	Learning the Vi Editor - autor Linda Lamb
 	Wydawca: O'Reilly & Associates Inc.
   To dobra książka, by dowiedzieć się niemal wszystkiego, co chciałbyś zrobić
-  z Vi. Szósta edycja zawiera też informacje o Vimie.
+  z Vi. Szósta edycja zawiera też informacje o MNVie.
 
   Po polsku wydano:
 	Edytor vi. Leksykon kieszonkowy - autor Arnold Robbins
@@ -969,7 +969,7 @@ UWAGA: Uzupełnianie działa dla wielu poleceń. Spróbuj wcisnąć CTRL-D i <TA
 	ISBN: 83-7197-472-8
 	http://helion.pl/ksiazki/vilek.htm
   Jest to książeczka zawierająca spis poleceń vi i jego najważniejszych
-  klonów (między innymi Vima).
+  klonów (między innymi MNVa).
 
 	Edytor vi - autorzy Linda Lamb i Arnold Robbins
 	Wydawca: Helion 2001 (O'Reilly) - wg 6. ang. wydania
@@ -982,7 +982,7 @@ UWAGA: Uzupełnianie działa dla wielu poleceń. Spróbuj wcisnąć CTRL-D i <TA
   Colorado State University.
   E-mail: bware@mines.colorado.edu.
 
-  Zmodyfikowane dla Vima przez Brama Moolenaara.
+  Zmodyfikowane dla MNVa przez Brama Moolenaara.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

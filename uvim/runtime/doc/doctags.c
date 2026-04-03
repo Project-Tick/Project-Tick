@@ -1,4 +1,4 @@
-/* vim:set ts=4 sw=4:
+/* mnv:set ts=4 sw=4:
  *
  * This program makes a tags file for help text.
  *

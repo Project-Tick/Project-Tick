@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Start GUI MNV on a copy of the tutor file.
+
+# Usage: gmnvtutor [xx]
+# See mnvtutor for usage.
+
+exec $(dirname $0)/mnvtutor -g "$@"

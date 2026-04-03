@@ -1,11 +1,11 @@
-// VIM_TEST_SETUP let g:java_highlight_functions = 'style'
-// VIM_TEST_SETUP let g:java_highlight_signature = 1
-// VIM_TEST_SETUP let g:java_highlight_generics = 1
-// VIM_TEST_SETUP let g:java_highlight_java_lang = 1
+// MNV_TEST_SETUP let g:java_highlight_functions = 'style'
+// MNV_TEST_SETUP let g:java_highlight_signature = 1
+// MNV_TEST_SETUP let g:java_highlight_generics = 1
+// MNV_TEST_SETUP let g:java_highlight_java_lang = 1
 
-// VIM_TEST_SETUP hi link javaGenericsC1 Todo
-// VIM_TEST_SETUP hi link javaGenericsC2 Error
-// VIM_TEST_SETUP hi link javaWildcardBound Error
+// MNV_TEST_SETUP hi link javaGenericsC1 Todo
+// MNV_TEST_SETUP hi link javaGenericsC2 Error
+// MNV_TEST_SETUP hi link javaWildcardBound Error
 
 
 import java.math.BigInteger;

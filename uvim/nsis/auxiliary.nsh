@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# NSIS helper file for creating a self-installing exe for Vim.
+# NSIS helper file for creating a self-installing exe for MNV.
 # Contains service macros and functions. 
 # Last Change:	2025-09-03
 #
@@ -89,16 +89,16 @@
 # Saving the status of sections of the current installation in the registry
   !macro SaveSectionSelection section_id reg_value
     ${If} ${SectionIsSelected} ${section_id}
-      WriteRegDWORD HKLM "${UNINST_REG_KEY_VIM}" ${reg_value} 1
+      WriteRegDWORD HKLM "${UNINST_REG_KEY_MNV}" ${reg_value} 1
     ${Else}
-      WriteRegDWORD HKLM "${UNINST_REG_KEY_VIM}" ${reg_value} 0
+      WriteRegDWORD HKLM "${UNINST_REG_KEY_MNV}" ${reg_value} 0
     ${EndIf}
   !macroend
 
 # Reading the status of sections from the registry of the previous installation 
   !macro LoadSectionSelection section_id reg_value
     ClearErrors
-    ReadRegDWORD $3 HKLM "${UNINST_REG_KEY_VIM}" ${reg_value}
+    ReadRegDWORD $3 HKLM "${UNINST_REG_KEY_MNV}" ${reg_value}
     ${IfNot} ${Errors}
       ${If} $3 = 1
 	!insertmacro SelectSection ${section_id}
@@ -108,10 +108,10 @@
     ${EndIf}
   !macroend
 
-# Reading the settings for _vimrc from the registry of a previous installation
-  !macro LoadDefaultVimrc out_var reg_value default_value
+# Reading the settings for _mnvrc from the registry of a previous installation
+  !macro LoadDefaultMNVrc out_var reg_value default_value
     ClearErrors
-    ReadRegStr ${out_var} HKLM "${UNINST_REG_KEY_VIM}" ${reg_value}
+    ReadRegStr ${out_var} HKLM "${UNINST_REG_KEY_MNV}" ${reg_value}
     ${If} ${Errors}
     ${OrIf} ${out_var} == ""
       StrCpy ${out_var} ${default_value}

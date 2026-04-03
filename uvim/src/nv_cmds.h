@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar et al.
+ * MNV - MNV is not Vim	by Bram Moolenaar et al.
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * This file defines the Normal mode commands.
@@ -23,7 +23,7 @@
 #ifdef DO_DECLARE_NVCMD
 
 /*
- * Used when building Vim.
+ * Used when building MNV.
  */
 # define NVCMD(a, b, c, d) \
 	{a, b, c, d}
@@ -87,7 +87,7 @@ typedef void (*nv_func_T)(cmdarg_T *cap);
 
 /*
  * This table contains one entry for every Normal or Visual mode command.
- * The order doesn't matter, this will be sorted by the create_nvcmdidx.vim
+ * The order doesn't matter, this will be sorted by the create_nvcmdidx.mnv
  * script to generate the nv_cmd_idx[] lookup table.
  * It is faster when all keys from zero to '~' are present.
  */

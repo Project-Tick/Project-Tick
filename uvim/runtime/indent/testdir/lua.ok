@@ -1,4 +1,4 @@
--- vim: set ft=lua sw=2 noet:
+-- mnv: set ft=lua sw=2 noet:
 
 -- START_INDENT
 function foo(a, b, c, d)

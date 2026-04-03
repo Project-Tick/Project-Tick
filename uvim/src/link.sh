@@ -1,8 +1,8 @@
 #! /bin/sh
 #
-# link.sh -- try linking Vim with different sets of libraries, finding the
+# link.sh -- try linking MNV with different sets of libraries, finding the
 # minimal set for fastest startup.  The problem is that configure adds a few
-# libraries when they exist, but this doesn't mean they are needed for Vim.
+# libraries when they exist, but this doesn't mean they are needed for MNV.
 #
 #      Author: Bram Moolenaar
 # Last change: 2010 Nov 03
@@ -44,9 +44,9 @@ else
 # There is a loop to remove libraries that appear several times.
 #
 # Notes:
-# - Can't remove Xext; It links fine but will give an error when running gvim
+# - Can't remove Xext; It links fine but will give an error when running gmnv
 #   with Motif.
-# - Don't remove the last -lm: On HP-UX Vim links OK but crashes when the GTK
+# - Don't remove the last -lm: On HP-UX MNV links OK but crashes when the GTK
 #   GUI is started, because the "floor" symbol could not be resolved.
 #
   cat link_$PROG.cmd
@@ -72,11 +72,11 @@ else
             # Redirect this link output, it may contain error messages which
             # should be ignored.
             if sh linkit_$PROG.sh >>auto/link.log 2>&1; then
-              echo "link.sh: Vim doesn't need the $libname library!"
+              echo "link.sh: MNV doesn't need the $libname library!"
               cat link1_$PROG.sed >>auto/link.sed
               rm -f auto/pathdef.c
             else
-              echo "link.sh: Vim DOES need the $libname library."
+              echo "link.sh: MNV DOES need the $libname library."
               cont=
               cp link_$PROG.cmd linkit_$PROG.sh
             fi
@@ -149,4 +149,4 @@ rm -f link_$PROG.cmd linkit_$PROG.sh link1_$PROG.sed link2_$PROG.sed \
 #
 exit $exit_value
 
-# vim:set sw=2 et:
+# mnv:set sw=2 et:

@@ -1,10 +1,10 @@
-# Aap recipe for Hebrew Vim spell files.
+# Aap recipe for Hebrew MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = he_IL.aff he_IL.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/he.utf-8.spl $SPELLDIR/he.iso-8859-8.spl ../README_he.txt
 
 $SPELLDIR/he.utf-8.spl : $FILES
         :sys env LANG=he_IL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/he he_IL" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/he he_IL" -c q
 
 $SPELLDIR/he.iso-8859-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=iso-8859-8"
+        :sys $MNV -u NONE -e -c "set enc=iso-8859-8"
                         -c "mkspell! $SPELLDIR/he he_IL" -c q
 
 ../README_he.txt : README_he_IL.txt
@@ -44,7 +44,7 @@ he_IL.aff he_IL.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -75,4 +75,4 @@ check:
             :delete he_IL.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

@@ -1,7 +1,7 @@
-TRANSLATING VIM MESSAGES
+TRANSLATING MNV MESSAGES
 
 In this directory you will find xx.po files, where "xx" is a language code.
-Each file contains the translation of English Vim messages for one language.
+Each file contains the translation of English MNV messages for one language.
 The files are in "po" format, used by the gettext package.  Please refer to
 the gettext documentation for more information.
 
@@ -14,14 +14,14 @@ encoding.
 The GNU gettext library, starting with version 0.10.36, uses a new format for
 some encodings.  This follows the C99 standard for strings.  It means that
 when a multi-byte character includes the 0x5c byte, this is not recognized as
-a backslash.  Since this format is incompatible with Solaris, Vim uses the old
+a backslash.  Since this format is incompatible with Solaris, MNV uses the old
 format.  This is done by setting the OLD_PO_FILE_OUTPUT and OLD_PO_FILE_INPUT
 environment variables.  When you use the Makefile in this directory that will
 be done for you.  This does NOT work with gettext 0.10.36.  Don't use it, get
 0.10.37.
 
 Have a look at these helper scripts, they may be useful for you:
-https://github.com/adaext/vim-menutrans-helper
+https://github.com/adaext/mnv-menutrans-helper
 
 
 ON MS-WINDOWS
@@ -35,9 +35,9 @@ or
 
 You might have to do the commands manually.  Example:
 
-   cd c:\vim\vim91
+   cd c:\mnv\mnv91
    mkdir runtime\lang\ja\LC_MESSAGES
-   msgfmt -o runtime\lang\ja\LC_MESSAGES\vim.mo src\po\ja.po
+   msgfmt -o runtime\lang\ja\LC_MESSAGES\mnv.mo src\po\ja.po
 
 
 WHEN THERE IS A MISTAKE
@@ -45,7 +45,7 @@ WHEN THERE IS A MISTAKE
 If you find there is a mistake in one of the translations, please report this
 to the maintainer of the translation.  His/her e-mail address is in the
 comments at the start of the file.  You can also see this with the ":messages"
-command in Vim when the translation is being used.
+command in MNV when the translation is being used.
 
 
 CREATING A NEW PO FILE
@@ -57,14 +57,14 @@ language.
   POFILES and xx.ck to CHECKFILES.
 - If the encoding of the translation text differs from the default UTF-8, add a
   corresponding entry in MOCONVERTED, specifying the required encoding.
-- If you haven't done so already, run ./configure in the top vim directory
+- If you haven't done so already, run ./configure in the top mnv directory
   (i.e. go up two directories) and then come back here afterwards.
 - Execute these commands:
-  % make vim.pot
+  % make mnv.pot
   % msginit -l xx
-  % rm vim.pot
-  The first command will generate a vim.pot file which is used by msginit to
-  generate a correct xx.po file.  After that vim.pot is not needed.
+  % rm mnv.pot
+  The first command will generate a mnv.pot file which is used by msginit to
+  generate a correct xx.po file.  After that mnv.pot is not needed.
 - The remaining work is like updating, see the next section.
 
 
@@ -74,11 +74,11 @@ If you are the maintainer of a .po file, this is how you update the file.  We
 will use "xx.po" as an example here, replace "xx" with the name of your
 language.
 
-(1) Add new and changed messages from the Vim sources:
+(1) Add new and changed messages from the MNV sources:
 
 	make xx
 
-    This will extract all the strings from Vim and merge them in with the
+    This will extract all the strings from MNV and merge them in with the
     existing translations.  Requires the GNU gettext utilities.
     Your original xx.po file will be copied to xx.po.orig
 
@@ -95,9 +95,9 @@ language.
     Remove the "#, fuzzy" line after adding the translation.
 
     There is one special message:
-	msgid "Messages maintainer: The Vim Project"
+	msgid "Messages maintainer: The MNV Project"
     You should include your name and E-mail address instead, for example:
-	msgstr "Berichten übersetzt bei: John Doe <john@doe.org>"
+	msgstr "Berichten ï¿½bersetzt bei: John Doe <john@doe.org>"
 
 (3) Remove unused messages (optional)
     Remove messages that have been marked as obsolete.
@@ -110,9 +110,9 @@ language.
     Comment-out all non-translated strings.  There are two types:
     - items marked with "#, fuzzy"
     - items with an empty msgstr
-    You can do this with the cleanup.vim script:
+    You can do this with the cleanup.mnv script:
 
-	:source cleanup.vim
+	:source cleanup.mnv
 
     Background: on Solaris an empty msgstr results in an empty message; GNU
     gettext ignores empty strings and items marked with "#, fuzzy".
@@ -124,20 +124,20 @@ language.
 (5) Check:
 
     While editing the .po file:
-        :source check.vim
+        :source check.mnv
 
     From the command line:
-	vim -S check.vim xx.po
+	mnv -S check.mnv xx.po
 	make xx.mo
 
     Look out for syntax errors and fix them.
 
 (6) Local tryout:
-    Vim normally picks up the .mo files from:
-	    $VIMRUNTIME/lang/{lang}/LC_MESSAGES/vim.mo
-    To try out the messages with Vim use:
+    MNV normally picks up the .mo files from:
+	    $MNVRUNTIME/lang/{lang}/LC_MESSAGES/mnv.mo
+    To try out the messages with MNV use:
 	    make tryoutinstall
-    And run Vim with $VIMRUNTIME set to ../runtime
+    And run MNV with $MNVRUNTIME set to ../runtime
 
 
 USING GETTEXT WITHOUT ICONV
@@ -162,16 +162,16 @@ convert ja.po to EUC-JP (supposed as your system encoding):
 There are examples in the Makefile for the conversions already supported.
 
 
-TRANSLATION OF VIM THE EDITOR PLUG-INS
+TRANSLATION OF MNV THE EDITOR PLUG-INS
 
-Vim supports displaying plugin messages for various native languages.
-Translation is available both for plugins that are supplied as part of the Vim
-editor (e.g. "optwin.vim") and for third-party plugin packages.
+MNV supports displaying plugin messages for various native languages.
+Translation is available both for plugins that are supplied as part of the MNV
+editor (e.g. "optwin.mnv") and for third-party plugin packages.
 
-To translate the plugins supplied with the Vim editor, you must specify a
+To translate the plugins supplied with the MNV editor, you must specify a
 gettext() function call for the strings you want to translate.
 The translation of these strings will be retrieved by gettext() from the MO
-file "vim.mo".
+file "mnv.mo".
 
 For third-party plugins, it is necessary to specify a one-time call to the
 bindtextdomain() function in scripts containing translation strings and for

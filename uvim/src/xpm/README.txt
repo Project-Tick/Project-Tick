@@ -1,8 +1,8 @@
-This is XPM library compiled for Windows which is intended for use with Vim
+This is XPM library compiled for Windows which is intended for use with MNV
 'signs' feature.
 
 Libraries in x86 directory were compiled with MSVC6 and MinGW. Proposed
-commands to compile Vim are:
+commands to compile MNV are:
 
 If you want to build XPM library by yourself, you may want to use the
 following Win32 port:
@@ -20,9 +20,9 @@ mingw32-make -f Make_ming.mak GUI=yes ARCH=x86-64 XPM=E:\HG\xpm\x64
 Microsoft Visual C++ on x64 (tested with versions 2008 and 2010):
 nmake -f Make_mvc.mak GUI=yes CSCOPE=yes XPM=E:\HG\xpm\x64
 
-To test, open some file in Vim and execute commands below:
-:exe 'sign define vimxpm icon='.$VIMRUNTIME.'\\vim32x32.xpm'
-:exe 'sign place 1 line=1 name=vimxpm file='.expand('%:p')
+To test, open some file in MNV and execute commands below:
+:exe 'sign define mnvxpm icon='.$MNVRUNTIME.'\\mnv32x32.xpm'
+:exe 'sign place 1 line=1 name=mnvxpm file='.expand('%:p')
 
 
 See COPYRIGHT for XPM licence.

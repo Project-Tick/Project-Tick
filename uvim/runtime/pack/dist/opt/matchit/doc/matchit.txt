@@ -1,9 +1,9 @@
 *matchit.txt* Extended "%" matching  Last change: 2026 Jan 06
 
-		VIM REFERENCE MANUAL    by Benji Fisher et al
+		MNV REFERENCE MANUAL    by Benji Fisher et al
 
 
-*matchit* *matchit.vim*
+*matchit* *matchit.mnv*
 
 1. Extended matching with "%"				|matchit-intro|
 2. Activation						|matchit-activate|
@@ -39,7 +39,7 @@ a%	In Visual mode, select the matching group, as specified by
 	A [count] is ignored, and only the first character of the closing
 	pattern is selected.
 
-In Vim, as in plain vi, the percent key, |%|, jumps the cursor from a brace,
+In MNV, as in plain vi, the percent key, |%|, jumps the cursor from a brace,
 bracket, or paren to its match.  This can be configured with the 'matchpairs'
 option.  The matchit plugin extends this in several ways:
 
@@ -68,14 +68,14 @@ LANGUAGES:					*matchit-languages*
 
 Currently, the following languages are supported:  Ada, ASP with VBS, Csh,
 DTD, Entity, Essbase, Fortran, HTML, JSP (same as HTML), LaTeX, Lua, Pascal,
-SGML, Shell, Tcsh, Vim, XML.  Other languages may already have support via
-the default |filetype-plugin|s in the standard vim distribution.
+SGML, Shell, Tcsh, MNV, XML.  Other languages may already have support via
+the default |filetype-plugin|s in the standard mnv distribution.
 
 To support a new language, see |matchit-newlang| below.
 
 DETAILS:				*matchit-details* *matchit-parse*
 
-Here is an outline of what matchit.vim does each time you hit the "%" key.  If
+Here is an outline of what matchit.mnv does each time you hit the "%" key.  If
 there are |backref|s in |b:match_words| then the first step is to produce a
 version in which these back references have been eliminated; if there are no
 |backref|s then this step is skipped.  This step is called parsing.  For
@@ -137,12 +137,12 @@ setting |b:match_skip|.
 ==============================================================================
 2. Activation						*matchit-activate*
 
-To use the matchit plugin add this line to your |vimrc|: >
+To use the matchit plugin add this line to your |mnvrc|: >
 	packadd! matchit
 
-The script should start working the next time you start Vim.
+The script should start working the next time you start MNV.
 
-To use the matchit plugin after Vim has started, execute this command: >
+To use the matchit plugin after MNV has started, execute this command: >
        packadd matchit
 
 (Earlier versions of the script did nothing unless a |buffer-variable| named
@@ -150,7 +150,7 @@ To use the matchit plugin after Vim has started, execute this command: >
 that set this variable for various file types.  Now, |b:match_words| is
 defined in many of the default |filetype-plugin|s instead.)
 
-For a new language, you can add autocommands to the script or to your vimrc
+For a new language, you can add autocommands to the script or to your mnvrc
 file, but the recommended method is to add a line such as >
 	let b:match_words = '\<foo\>:\<bar\>'
 to the |filetype-plugin| for your language.  See |b:match_words| below for how
@@ -158,10 +158,10 @@ this variable is interpreted.
 
 TROUBLESHOOTING					*matchit-troubleshoot*
 
-The script should work in most installations of Vim.  It may not work if Vim
+The script should work in most installations of MNV.  It may not work if MNV
 was compiled with a minimal feature set, for example if the |+syntax| option
-was not enabled.  If your Vim has support for syntax compiled in, but you do
-not have |syntax| highlighting turned on, matchit.vim should work, but it may
+was not enabled.  If your MNV has support for syntax compiled in, but you do
+not have |syntax| highlighting turned on, matchit.mnv should work, but it may
 fail to skip matching groups in comments and strings.  If the |filetype|
 mechanism is turned off, the |b:match_words| variable will probably not be
 defined automatically.
@@ -172,7 +172,7 @@ To temporarily disable the matchit plugin, after it has been loaded,
 execute this command: >
 	:MatchDisable
 
-This will delete all the defined key mappings to the Vim default.
+This will delete all the defined key mappings to the MNV default.
 Now the "%" command will work like before loading the plugin |%|
 
 2.2 Re-enable the matchit plugin		*:MatchEnable*
@@ -185,7 +185,7 @@ This will resetup the key mappings.
 ==============================================================================
 3. Configuration					*matchit-configure*
 
-There are several variables that govern the behavior of matchit.vim.  Note
+There are several variables that govern the behavior of matchit.mnv.  Note
 that these are variables local to the buffer, not options, so use |:let| to
 define them, not |:set|.  Some of these variables have values that matter; for
 others, it only matters whether the variable has been defined.  All of these
@@ -199,17 +199,17 @@ supporting a new language.
 MatchError is the highlight group for error messages from the script.  By
 default, it is linked to WarningMsg.  If you do not want to be bothered by
 error messages, you can define this to be something invisible.  For example,
-if you use the GUI version of Vim and your command line is normally white, you
+if you use the GUI version of MNV and your command line is normally white, you
 can do >
 	:hi MatchError guifg=white guibg=white
 <
 						*b:match_ignorecase*
 If you >
 	:let b:match_ignorecase = 1
-then matchit.vim acts as if 'ignorecase' is set: for example, "end" and "END"
+then matchit.mnv acts as if 'ignorecase' is set: for example, "end" and "END"
 are equivalent.  If you >
 	:let b:match_ignorecase = 0
-then matchit.vim treats "end" and "END" differently.  (There will be no
+then matchit.mnv treats "end" and "END" differently.  (There will be no
 b:match_infercase option unless someone requests it.)
 
 						*b:match_debug*
@@ -224,7 +224,7 @@ determined by the |syntax| mechanism.  (If syntax highlighting is turned off,
 nothing is skipped.)  You can set b:match_skip to a string, which evaluates to
 a non-zero, numerical value if the match is to be skipped or zero if the match
 should not be skipped.  In addition, the following special values are
-supported by matchit.vim:
+supported by matchit.mnv:
 	s:foo becomes (current syntax item) =~ foo
 	S:foo becomes (current syntax item) !~ foo
 	r:foo becomes (line before cursor) =~ foo
@@ -250,11 +250,11 @@ Examples:
 	comment character) you can >
 		:let b:match_skip = 'r:\(^\|[^\\]\)\(\\\\\)*%'
 <
-	See the $VIMRUNTIME/ftplugin/vim.vim for an example that uses both
+	See the $MNVRUNTIME/ftplugin/mnv.mnv for an example that uses both
 	syntax and a regular expression.
 
 						*b:match_function*
-If b:match_function is defined, matchit.vim will first call this function to
+If b:match_function is defined, matchit.mnv will first call this function to
 perform matching.  This is useful for languages with an indentation-based block
 structure (such as Python) or other complex matching requirements that cannot
 be expressed with regular expression patterns.
@@ -295,11 +295,11 @@ See |matchit-newlang| below for more details on supporting new languages.
 ==============================================================================
 4. Supporting a New Language				*matchit-newlang*
 							*b:match_words*
-In order for matchit.vim to support a new language, you must define a suitable
+In order for matchit.mnv to support a new language, you must define a suitable
 pattern for |b:match_words|.  You may also want to set some of the
 |matchit-configure| variables, as described above.  If your language has a
 complicated syntax, or many keywords, you will need to know something about
-Vim's |regular-expression|s.
+MNV's |regular-expression|s.
 
 The format for |b:match_words| is similar to that of the 'matchpairs' option:
 it is a comma (,)-separated list of groups; each group is a colon(:)-separated
@@ -309,7 +309,7 @@ only one group; the effect is undefined if a group has only one pattern.
 A simple example is >
 	:let b:match_words = '\<if\>:\<endif\>,'
 		\ . '\<while\>:\<continue\>:\<break\>:\<endwhile\>'
-(In Vim regular expressions, |\<| and |\>| denote word boundaries.  Thus "if"
+(In MNV regular expressions, |\<| and |\>| denote word boundaries.  Thus "if"
 matches the end of "endif" but "\<if\>" does not.)  Then banging on the "%"
 key will bounce the cursor between "if" and the matching "endif"; and from
 "while" to any matching "continue" or "break", then to the matching "endwhile"
@@ -372,7 +372,7 @@ should work (and have the same effect as "foobar:barfoo:endfoobar"), although
 this has not been thoroughly tested.
 
 You can use |zero-width| patterns such as |\@<=| and |\zs|.  (The latter has
-not been thoroughly tested in matchit.vim.)  For example, if the keyword "if"
+not been thoroughly tested in matchit.mnv.)  For example, if the keyword "if"
 must occur at the start of the line, with optional white space, you might use
 the pattern "\(^\s*\)\@<=if" so that the cursor will end on the "i" instead of
 at the start of the line.  For another example, if HTML had only one tag then
@@ -442,4 +442,4 @@ try to implement this in a future version.  (This is not so easy to arrange as
 you might think!)
 
 ==============================================================================
-vim:tw=78:ts=8:fo=tcq2:ft=help:
+mnv:tw=78:ts=8:fo=tcq2:ft=help:

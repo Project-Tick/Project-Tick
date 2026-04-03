@@ -1,14 +1,14 @@
-*ft_mp.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*ft_mp.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 This is the documentation for the METAFONT and MetaPost filetype plugins.
 Unless otherwise specified, the commands, settings and mappings defined below
 apply equally to both filetypes.
 
-NOTE: the plugin requires |+vim9script|.
+NOTE: the plugin requires |+mnv9script|.
 
 ==============================================================================
-CONTENTS						*mp.vim* *ft-metapost*
-							*mf.vim* *ft-metafont*
+CONTENTS						*mp.mnv* *ft-metapost*
+							*mf.mnv* *ft-metafont*
 
 1. Introduction				|ft-metapost-intro|
 2. Commands				|ft-metapost-commands|
@@ -148,4 +148,4 @@ Mappings ~
 
 [{			[count] begin of blocks (if, for, begingroup) backward.
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

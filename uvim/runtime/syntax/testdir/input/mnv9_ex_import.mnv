@@ -1,0 +1,120 @@
+mnv9script
+# MNV9 :import command
+# MNV_TEST_SETUP hi link mnvImportName Todo
+
+
+import "foo.mnv"
+import true ? "foo.mnv" : "bar.mnv"
+
+import true ?
+  "foo.mnv" :
+  "bar.mnv"
+
+import true
+  ? "foo.mnv"
+  : "bar.mnv"
+
+import true ? # comment
+  # comment 
+  "foo.mnv" :
+  # comment
+  "bar.mnv"
+
+import true # comment
+  # comment 
+  ? "foo.mnv"
+  # comment
+  : "bar.mnv"
+
+import "foo.mnv" as bar
+import true ? "foo.mnv" : "bar.mnv" as baz
+
+import true ?
+  "foo.mnv" :
+  "bar.mnv"
+  as baz
+
+import true
+  ? "foo.mnv"
+  : "bar.mnv"
+  as baz
+
+import true ? # comment
+  # comment 
+  "foo.mnv" :
+  # comment
+  "bar.mnv"
+  # comment
+  as baz
+
+import true # comment
+  # comment 
+  ? "foo.mnv"
+  # comment
+  : "bar.mnv"
+  # comment
+  as baz
+
+echo "Foo" | import "foo.mnv"
+
+
+# autoload
+
+import autoload "foo.mnv"
+import autoload true ? "foo.mnv" : "bar.mnv"
+
+import autoload true ?
+  "foo.mnv" :
+  "bar.mnv"
+
+import autoload true
+  ? "foo.mnv"
+  : "bar.mnv"
+
+import autoload true ? # comment
+  # comment 
+  "foo.mnv" :
+  # comment
+  "bar.mnv"
+
+import autoload true # comment
+  # comment 
+  ? "foo.mnv"
+  # comment
+  : "bar.mnv"
+
+import autoload "foo.mnv" as bar
+import autoload true ? "foo.mnv" : "bar.mnv" as baz
+
+import autoload true ?
+  "foo.mnv" :
+  "bar.mnv"
+  as baz
+
+import autoload true
+  ? "foo.mnv"
+  : "bar.mnv"
+  as baz
+
+import autoload true ? # comment
+  # comment 
+  "foo.mnv" :
+  # comment
+  "bar.mnv"
+  # comment
+  as baz
+
+import autoload true # comment
+  # comment 
+  ? "foo.mnv"
+  # comment
+  : "bar.mnv"
+  # comment
+  as baz
+
+
+# "as" keyword in expr
+
+var as = "modules/"
+import true ? as .. "foo.mnv" : as .. "bar.mnv" as other
+

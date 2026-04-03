@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * arglist.c: functions for dealing with the argument list
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #define AL_SET	1
 #define AL_ADD	2
@@ -41,7 +41,7 @@ alist_clear(alist_T *al)
     if (check_arglist_locked() == FAIL)
 	return;
     while (--al->al_ga.ga_len >= 0)
-	vim_free(AARGLIST(al)[al->al_ga.ga_len].ae_fname);
+	mnv_free(AARGLIST(al)[al->al_ga.ga_len].ae_fname);
     ga_clear(&al->al_ga);
 }
 
@@ -65,7 +65,7 @@ alist_unlink(alist_T *al)
     if (al != &global_alist && --al->al_refcount <= 0)
     {
 	alist_clear(al);
-	vim_free(al);
+	mnv_free(al);
     }
 }
 
@@ -110,11 +110,11 @@ alist_expand(int *fnum_list, int fnum_len)
 	return;
 
     // Don't use 'suffixes' here.  This should work like the shell did the
-    // expansion.  Also, the vimrc file isn't read yet, thus the user
+    // expansion.  Also, the mnvrc file isn't read yet, thus the user
     // can't set the options.
     p_su = empty_option;
     for (i = 0; i < GARGCOUNT; ++i)
-	old_arg_files[i] = vim_strsave(GARGLIST[i].ae_fname);
+	old_arg_files[i] = mnv_strsave(GARGLIST[i].ae_fname);
     old_arg_count = GARGCOUNT;
     if (expand_wildcards(old_arg_count, old_arg_files,
 		&new_arg_file_count, &new_arg_files,
@@ -157,7 +157,7 @@ alist_set(
 		// When adding many buffers this can take a long time.  Allow
 		// interrupting here.
 		while (i < count)
-		    vim_free(files[i++]);
+		    mnv_free(files[i++]);
 		break;
 	    }
 
@@ -173,7 +173,7 @@ alist_set(
 	    alist_add(al, files[i], use_curbuf ? 2 : 1);
 	    ui_breakcheck();
 	}
-	vim_free(files);
+	mnv_free(files);
     }
     else
 	FreeWild(count, files);
@@ -261,7 +261,7 @@ do_one_arg(char_u *str)
 	else
 	{
 	    // An item ends at a space not in backticks
-	    if (!inbacktick && vim_isspace(*str))
+	    if (!inbacktick && mnv_isspace(*str))
 		break;
 	    if (*str == '`')
 		inbacktick ^= TRUE;
@@ -390,7 +390,7 @@ alist_add_list(
     }
 
     for (i = 0; i < count; ++i)
-	vim_free(files[i]);
+	mnv_free(files[i]);
 }
 
 /*
@@ -414,19 +414,19 @@ arglist_del_files(garray_T *alist_ga)
 	p = file_pat_to_reg_pat(p, NULL, NULL, FALSE);
 	if (p == NULL)
 	    break;
-	regmatch.regprog = vim_regcomp(p, magic_isset() ? RE_MAGIC : 0);
+	regmatch.regprog = mnv_regcomp(p, magic_isset() ? RE_MAGIC : 0);
 	if (regmatch.regprog == NULL)
 	{
-	    vim_free(p);
+	    mnv_free(p);
 	    break;
 	}
 
 	didone = FALSE;
 	for (match = 0; match < ARGCOUNT; ++match)
-	    if (vim_regexec(&regmatch, alist_name(&ARGLIST[match]), (colnr_T)0))
+	    if (mnv_regexec(&regmatch, alist_name(&ARGLIST[match]), (colnr_T)0))
 	    {
 		didone = TRUE;
-		vim_free(ARGLIST[match].ae_fname);
+		mnv_free(ARGLIST[match].ae_fname);
 		mch_memmove(ARGLIST + match, ARGLIST + match + 1,
 			(ARGCOUNT - match - 1) * sizeof(aentry_T));
 		--ALIST(curwin)->al_ga.ga_len;
@@ -435,8 +435,8 @@ arglist_del_files(garray_T *alist_ga)
 		--match;
 	    }
 
-	vim_regfree(regmatch.regprog);
-	vim_free(p);
+	mnv_regfree(regmatch.regprog);
+	mnv_free(p);
 	if (!didone)
 	    semsg(_(e_no_match_str_2), ((char_u **)alist_ga->ga_data)[i]);
     }
@@ -495,7 +495,7 @@ do_arglist(
 	if (what == AL_ADD)
 	{
 	    alist_add_list(exp_count, exp_files, after, will_edit);
-	    vim_free(exp_files);
+	    mnv_free(exp_files);
 	}
 	else // what == AL_SET
 	    alist_set(ALIST(curwin), exp_count, exp_files, will_edit, NULL, 0);
@@ -612,7 +612,7 @@ ex_args(exarg_T *eap)
 	for (i = 0; i < ARGCOUNT; ++i)
 	    items[i] = alist_name(&ARGLIST[i]);
 	list_in_columns(items, ARGCOUNT, curwin->w_arg_idx);
-	vim_free(items);
+	mnv_free(items);
 
 	return;
     }
@@ -629,7 +629,7 @@ ex_args(exarg_T *eap)
 	    if (GARGLIST[i].ae_fname != NULL)
 	    {
 		AARGLIST(curwin->w_alist)[gap->ga_len].ae_fname =
-		    vim_strsave(GARGLIST[i].ae_fname);
+		    mnv_strsave(GARGLIST[i].ae_fname);
 		AARGLIST(curwin->w_alist)[gap->ga_len].ae_fnum =
 		    GARGLIST[i].ae_fnum;
 		++gap->ga_len;
@@ -734,7 +734,7 @@ do_argfile(exarg_T *eap, int argn)
 	{
 	    p = fix_fname(alist_name(&ARGLIST[argn]));
 	    other = otherfile(p);
-	    vim_free(p);
+	    mnv_free(p);
 	}
 	if ((!buf_hide(curbuf) || !other)
 		&& check_changed(curbuf, CCGD_AW
@@ -813,12 +813,12 @@ ex_argdedupe(exarg_T *eap UNUSED)
 		break;  // out of memory
 	    int areNamesDuplicate =
 				  fnamecmp(firstFullname, secondFullname) == 0;
-	    vim_free(secondFullname);
+	    mnv_free(secondFullname);
 
 	    if (areNamesDuplicate)
 	    {
 		// remove one duplicate argument
-		vim_free(ARGLIST[j].ae_fname);
+		mnv_free(ARGLIST[j].ae_fname);
 		mch_memmove(ARGLIST + j, ARGLIST + j + 1,
 					(ARGCOUNT - j - 1) * sizeof(aentry_T));
 		--ARGCOUNT;
@@ -832,7 +832,7 @@ ex_argdedupe(exarg_T *eap UNUSED)
 	    }
 	}
 
-	vim_free(firstFullname);
+	mnv_free(firstFullname);
     }
 }
 
@@ -911,7 +911,7 @@ ex_argdelete(exarg_T *eap)
 	else
 	{
 	    for (i = eap->line1; i <= eap->line2; ++i)
-		vim_free(ARGLIST[i - 1].ae_fname);
+		mnv_free(ARGLIST[i - 1].ae_fname);
 	    mch_memmove(ARGLIST + eap->line1 - 1, ARGLIST + eap->line2,
 			(size_t)((ARGCOUNT - eap->line2) * sizeof(aentry_T)));
 	    ALIST(curwin)->al_ga.ga_len -= n;
@@ -1233,7 +1233,7 @@ do_arg_all(
     if (ARGCOUNT <= 0)
     {
 	// Don't give an error message.  We don't want it when the ":all"
-	// command is in the .vimrc.
+	// command is in the .mnvrc.
 	return;
     }
     setpcmark();
@@ -1316,7 +1316,7 @@ do_arg_all(
 	win_enter(aall.new_curwin, FALSE);
 
     --autocmd_no_leave;
-    vim_free(aall.opened);
+    mnv_free(aall.opened);
 }
 
 /*
@@ -1407,7 +1407,7 @@ f_argc(typval_T *argvars, typval_T *rettv)
 {
     win_T	*wp;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type == VAR_UNKNOWN)
@@ -1445,7 +1445,7 @@ f_arglistid(typval_T *argvars, typval_T *rettv)
 {
     win_T	*wp;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_opt_number_arg(argvars, 0) == FAIL
 		|| (argvars[0].v_type != VAR_UNKNOWN
 		    && check_for_opt_number_arg(argvars, 1) == FAIL)))
@@ -1481,7 +1481,7 @@ f_argv(typval_T *argvars, typval_T *rettv)
     aentry_T	*arglist = NULL;
     int		argcount = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_opt_number_arg(argvars, 0) == FAIL
 		|| (argvars[0].v_type != VAR_UNKNOWN
 		    && check_for_opt_number_arg(argvars, 1) == FAIL)))
@@ -1520,7 +1520,7 @@ f_argv(typval_T *argvars, typval_T *rettv)
     rettv->vval.v_string = NULL;
     idx = tv_get_number_chk(&argvars[0], NULL);
     if (arglist != NULL && idx >= 0 && idx < argcount)
-	rettv->vval.v_string = vim_strsave(alist_name(&arglist[idx]));
+	rettv->vval.v_string = mnv_strsave(alist_name(&arglist[idx]));
     else if (idx == -1)
 	get_arglist_as_rettv(arglist, argcount, rettv);
 }

@@ -1,0 +1,651 @@
+" ---------------------------------------------------------------------
+" getscript.mnv
+"  Maintainer: This runtime file is looking for a new maintainer.
+"  Original Author: Charles E. Campbell
+"  Date:	Jan 21, 2014
+"  Version:	37
+"  Installing:	:help glvs-install
+"  Usage:	:help glvs
+"  Last Change:	{{{1
+"   2024 Sep 08 by MNV Project: several small fixes (#15640)
+"   2024 Sep 23 by MNV Project: runtime dir selection fix (#15722)
+"                               autoloading search path fix
+"                               substitution of hardcoded commands with global variables
+"   2024 Nov 12 by MNV Project: fix problems on Windows (#16036)
+"   2025 Feb 28 by MNV Project: add support for bzip3 (#16755)
+"   2025 May 11 by MNV Project: check network connectivity (#17249)
+"   2025 Dec 21 by MNV Project: make the wget check more robust (#18987)
+"  }}}
+"
+" GetLatestMNVScripts: 642 1 :AutoInstall: getscript.mnv
+"redraw!|call inputsave()|call input("Press <cr> to continue")|call inputrestore()
+" ---------------------------------------------------------------------
+" Initialization:	{{{1
+" if you're sourcing this file, surely you can't be
+" expecting mnv to be in its vi-compatible mode!
+if exists("g:loaded_getscript")
+ finish
+endif
+let g:loaded_getscript= "v37"
+if &cp
+ echoerr "GetLatestMNVScripts is not vi-compatible; not loaded (you need to set nocp)"
+ finish
+endif
+if v:version < 901
+ echohl WarningMsg
+ echo "***warning*** this version of GetLatestMNVScripts needs mnv 9.1"
+ echohl Normal
+ finish
+endif
+let s:keepcpo = &cpo
+set cpo&mnv
+"DechoTabOn
+
+" ---------------------------
+" Global Variables: {{{1
+" ---------------------------
+" Cygwin Detection ------- {{{2
+if !exists("g:getscript_cygwin")
+ if has("win32") || has("win95") || has("win64") || has("win16")
+  if &shell =~ '\%(\<bash\>\|\<zsh\>\)\%(\.exe\)\=$'
+   let g:getscript_cygwin= 1
+  else
+   let g:getscript_cygwin= 0
+  endif
+ else
+  let g:getscript_cygwin= 0
+ endif
+endif
+
+" wget vs curl {{{2
+if !exists("g:GetLatestMNVScripts_wget")
+ if executable("wget.exe")
+  " enforce extension: windows powershell desktop version has a wget alias that hides wget.exe
+  let g:GetLatestMNVScripts_wget= "wget.exe"
+ elseif executable("wget")
+  let g:GetLatestMNVScripts_wget= "wget"
+ elseif executable("curl.exe")
+  " enforce extension: windows powershell desktop version has a curl alias that hides curl.exe
+  let g:GetLatestMNVScripts_wget= "curl.exe"
+ elseif executable("curl")
+  let g:GetLatestMNVScripts_wget= "curl"
+ else
+  let g:GetLatestMNVScripts_wget    = 'echo "GetLatestMNVScripts needs wget or curl"'
+  let g:GetLatestMNVScripts_options = ""
+ endif
+endif
+
+" options that wget and curl require:
+if !exists("g:GetLatestMNVScripts_options")
+ if g:GetLatestMNVScripts_wget =~ "wget"
+  let g:GetLatestMNVScripts_options= "-q -O"
+ elseif g:GetLatestMNVScripts_wget =~ "curl"
+  let g:GetLatestMNVScripts_options= "-s -o"
+ else
+  let g:GetLatestMNVScripts_options= ""
+ endif
+endif
+
+" by default, allow autoinstall lines to work
+if !exists("g:GetLatestMNVScripts_allowautoinstall")
+ let g:GetLatestMNVScripts_allowautoinstall= 1
+endif
+
+" set up default scriptaddr address
+if !exists("g:GetLatestMNVScripts_scriptaddr")
+ let g:GetLatestMNVScripts_scriptaddr = 'https://www.mnv.org/scripts/script.php?script_id='
+endif
+
+if !exists("g:GetLatestMNVScripts_downloadaddr")
+  let g:GetLatestMNVScripts_downloadaddr = 'https://www.mnv.org/scripts/download_script.php?src_id='
+endif
+
+" define decompression tools (on windows this allows redirection to wsl or git tools).
+" Note tar is available as builtin since Windows 11.
+if !exists("g:GetLatestMNVScripts_bunzip2")
+ let g:GetLatestMNVScripts_bunzip2= "bunzip2"
+endif
+
+if !exists("g:GetLatestMNVScripts_bunzip3")
+ let g:GetLatestMNVScripts_bunzip3= "bunzip3"
+endif
+
+if !exists("g:GetLatestMNVScripts_gunzip")
+ let g:GetLatestMNVScripts_gunzip= "gunzip"
+endif
+
+if !exists("g:GetLatestMNVScripts_unxz")
+ let g:GetLatestMNVScripts_unxz= "unxz"
+endif
+
+if !exists("g:GetLatestMNVScripts_unzip")
+ let g:GetLatestMNVScripts_unzip= "unzip"
+endif
+
+"" For debugging:
+"let g:GetLatestMNVScripts_wget    = "echo"
+"let g:GetLatestMNVScripts_options = "options"
+
+" ---------------------------------------------------------------------
+" Check If AutoInstall Capable: {{{1
+let s:autoinstall= ""
+if g:GetLatestMNVScripts_allowautoinstall
+
+ let s:is_windows = has("win32") || has("gui_win32") || has("gui_win32s") || has("win16") || has("win64") || has("win32unix") || has("win95")
+ let s:dotmnv= s:is_windows ? "mnvfiles" : ".mnv"
+
+ if !exists("g:GetLatestMNVScripts_mv")
+  if &shell =~? '\<pwsh\>\|\<powershell\>'
+   let g:GetLatestMNVScripts_mv= "move -Force"
+  elseif s:is_windows && &shell =~? '\<cmd\>'
+   " windows (but not cygwin/bash)
+   let g:GetLatestMNVScripts_mv= "move /Y"
+  else
+   " unix or cygwin bash/zsh
+   " 'mv' overrides existing files without asking
+    let g:GetLatestMNVScripts_mv= "mv"
+  endif
+ endif
+
+ if exists("g:GetLatestMNVScripts_autoinstalldir") && isdirectory(g:GetLatestMNVScripts_autoinstalldir)
+  let s:autoinstall= g:GetLatestMNVScripts_autoinstalldir"
+ elseif exists('$HOME') && isdirectory(expand("$HOME")."/".s:dotmnv)
+  let s:autoinstall= $HOME."/".s:dotmnv
+ endif
+endif
+
+" ---------------------------------------------------------------------
+"  Public Interface: {{{1
+com!        -nargs=0 GetLatestMNVScripts call getscript#GetLatestMNVScripts()
+com!        -nargs=0 GetScript           call getscript#GetLatestMNVScripts()
+silent! com -nargs=0 GLVS                call getscript#GetLatestMNVScripts()
+
+" ---------------------------------------------------------------------
+" GetLatestMNVScripts: this function gets the latest versions of {{{1
+"                      scripts based on the list in
+"   (first dir in runtimepath)/GetLatest/GetLatestMNVScripts.dat
+fun! getscript#GetLatestMNVScripts()
+
+  if executable(g:GetLatestMNVScripts_wget) != 1
+   echoerr "GetLatestMNVScripts needs ".g:GetLatestMNVScripts_wget." which apparently is not available on your system"
+   return
+  endif
+
+  " Find the .../GetLatest subdirectory under the runtimepath
+  for datadir in split(&rtp,',') + ['']
+   if isdirectory(datadir."/GetLatest")
+    let datadir= datadir . "/GetLatest"
+    break
+   endif
+   if filereadable(datadir."GetLatestMNVScripts.dat")
+    break
+   endif
+  endfor
+
+  " Sanity checks: readability and writability
+  if datadir == ""
+   echoerr 'Missing "GetLatest/" on your runtimepath - see :help glvs-dist-install'
+   return
+  endif
+  if filewritable(datadir) != 2
+   echoerr "(getLatestMNVScripts) Your ".datadir." isn't writable"
+   return
+  endif
+  let datafile= datadir."/GetLatestMNVScripts.dat"
+  if !filereadable(datafile)
+   echoerr "Your data file<".datafile."> isn't readable"
+   return
+  endif
+  if !filewritable(datafile)
+   echoerr "Your data file<".datafile."> isn't writable"
+   return
+  endif
+  " --------------------
+  " Passed sanity checks
+  " --------------------
+
+  " don't let any event handlers interfere (like winmanager's, taglist's, etc)
+  let eikeep  = &ei
+  let hlskeep = &hls
+  let acdkeep = &acd
+  set ei=all hls&mnv noacd
+
+  " Edit the datafile (ie. GetLatestMNVScripts.dat):
+  " 1. record current directory (origdir),
+  " 2. change directory to datadir,
+  " 3. split window
+  " 4. edit datafile
+  let origdir= getcwd()
+  exe "cd ".fnameescape(substitute(datadir,'\','/','ge'))
+  split
+  exe "e ".fnameescape(substitute(datafile,'\','/','ge'))
+  res 1000
+  let s:downloads = 0
+  let s:downerrors= 0
+  let s:message = []
+
+  " Check on dependencies mentioned in plugins
+  let lastline    = line("$")
+  let firstdir    = substitute(&rtp,',.*$','','')
+  let plugins     = split(globpath(firstdir,"plugin/**/*.mnv"),'\n')
+  let plugins     += split(globpath(firstdir,"ftplugin/**/*.mnv"),'\n')
+  let plugins     += split(globpath(firstdir,"AsNeeded/**/*.mnv"),'\n')
+  let plugins     += split(globpath(firstdir,"pack/*/start/*/plugin/**/*.mnv"),'\n')
+  let plugins     += split(globpath(firstdir,"pack/*/opt/*/plugin/**/*.mnv"),'\n')
+  let plugins     += split(globpath(firstdir,"pack/*/start/*/ftplugin/**/*.mnv"),'\n')
+  let plugins     += split(globpath(firstdir,"pack/*/opt/*/ftplugin/**/*.mnv"),'\n')
+  let foundscript = 0
+
+  " this loop updates the GetLatestMNVScripts.dat file
+  " with dependencies explicitly mentioned in the plugins
+  " via   GetLatestMNVScripts: ... lines
+  " It reads the plugin script at the end of the GetLatestMNVScripts.dat
+  " file, examines it, and then removes it.
+  for plugin in plugins
+
+   " read plugin in
+   " evidently a :r creates a new buffer (the "#" buffer) that is subsequently unused -- bwiping it
+   $
+   exe "silent r ".fnameescape(plugin)
+   exe "silent bwipe ".bufnr("#")
+
+   while search('^"\s\+GetLatestMNVScripts:\s\+\d\+\s\+\d\+','W') != 0
+    let depscript   = substitute(getline("."),'^"\s\+GetLatestMNVScripts:\s\+\d\+\s\+\d\+\s\+\(.*\)$','\1','e')
+    let depscriptid = substitute(getline("."),'^"\s\+GetLatestMNVScripts:\s\+\(\d\+\)\s\+.*$','\1','')
+    let llp1        = lastline+1
+
+    " found a "GetLatestMNVScripts: # #" line in the script;
+    " check if it's already in the datafile by searching backwards from llp1,
+    " the (prior to reading in the plugin script) last line plus one of the GetLatestMNVScripts.dat file,
+    " for the script-id with no wrapping allowed.
+    let curline     = line(".")
+    let noai_script = substitute(depscript,'\s*:AutoInstall:\s*','','e')
+    exe llp1
+    let srchline    = search('^\s*'.depscriptid.'\s\+\d\+\s\+.*$','bW')
+    if srchline == 0
+     " this second search is taken when, for example, a   0 0 scriptname  is to be skipped over
+     let srchline= search('\<'.noai_script.'\>','bW')
+    endif
+
+    if srchline == 0
+     " found a new script to permanently include in the datafile
+     let keep_rega   = @a
+     let @a          = substitute(getline(curline),'^"\s\+GetLatestMNVScripts:\s\+','','')
+     echomsg "Appending <".@a."> to ".datafile." for ".depscript
+     exe lastline."put a"
+     let @a          = keep_rega
+     let lastline    = llp1
+     let curline     = curline     + 1
+     let foundscript = foundscript + 1
+    endif
+
+    let curline = curline + 1
+    exe curline
+   endwhile
+
+   " llp1: last line plus one
+   let llp1= lastline + 1
+   exe "silent! ".llp1.",$d"
+  endfor
+
+  if foundscript == 0
+   setlocal nomod
+  endif
+
+  " --------------------------------------------------------------------
+  " Check on out-of-date scripts using GetLatest/GetLatestMNVScripts.dat
+  " --------------------------------------------------------------------
+  setlocal lz
+  1
+  /^-----/,$g/^\s*\d/call s:GetOneScript()
+
+  " Final report (an echomsg)
+  try
+   silent! ?^-------?
+  catch /^MNV\%((\a\+)\)\=:E114/
+   return
+  endtry
+  exe "norm! kz\<CR>"
+  redraw!
+  if !empty(s:message)
+   echohl WarningMsg
+   for mess in s:message
+    echom mess
+   endfor
+   let s:downerrors += len(s:message)
+  endif
+  let s:msg = ""
+  if s:downloads == 1
+  let s:msg = "Downloaded one updated script to <".datadir.">"
+  elseif s:downloads > 1
+   let s:msg= "Downloaded ".s:downloads." updated scripts to <".datadir.">"
+  else
+   let s:msg= empty(s:message) ? "Everything was already current" : "There were some errors"
+  endif
+  if s:downerrors > 0
+   let s:msg= s:msg." (".s:downerrors." downloading errors)"
+  endif
+  echomsg s:msg
+  " save the file
+  if &mod
+   silent! w!
+  endif
+  q!
+
+  " restore events and current directory
+  exe "cd ".fnameescape(substitute(origdir,'\','/','ge'))
+  let &ei  = eikeep
+  let &hls = hlskeep
+  let &acd = acdkeep
+  setlocal nolz
+endfun
+
+" ---------------------------------------------------------------------
+"  GetOneScript: (Get Latest MNV script) this function operates {{{1
+"    on the current line, interpreting two numbers and text as
+"    ScriptID, SourceID, and Filename.
+"    It downloads any scripts that have newer versions from mnv.sourceforge.net.
+fun! s:GetOneScript(...)
+ " set options to allow progress to be shown on screen
+  let rega= @a
+  let t_ti= &t_ti
+  let t_te= &t_te
+  let rs  = &rs
+  let ssl = &ssl
+
+  set t_ti= t_te= nors
+  " avoid issues with shellescape() on Windows
+  if s:is_windows && &shell =~? '\<cmd\>'
+    set noshellslash
+  endif
+
+  " restore valures afterwards
+  defer execute("let @a = rega | let &t_ti = t_ti | let &t_te = t_te | let &rs = rs | let &ssl = ssl")
+
+ " put current line on top-of-screen and interpret it into
+ " a      script identifier  : used to obtain webpage
+ "        source identifier : used to identify current version
+ " and an associated comment: used to report on what's being considered
+  if a:0 >= 3
+   let scriptid = a:1
+   let srcid    = a:2
+   let fname    = a:3
+   let cmmnt    = ""
+  else
+   let curline  = getline(".")
+   if curline =~ '^\s*#'
+    return
+   endif
+   let parsepat = '^\s*\(\d\+\)\s\+\(\d\+\)\s\+\(.\{-}\)\(\s*#.*\)\=$'
+   try
+    let scriptid = substitute(curline,parsepat,'\1','e')
+   catch /^MNV\%((\a\+)\)\=:E486/
+    let scriptid= 0
+   endtry
+   try
+    let srcid    = substitute(curline,parsepat,'\2','e')
+   catch /^MNV\%((\a\+)\)\=:E486/
+    let srcid= 0
+   endtry
+   try
+    let fname= substitute(curline,parsepat,'\3','e')
+   catch /^MNV\%((\a\+)\)\=:E486/
+    let fname= ""
+   endtry
+   try
+    let cmmnt= substitute(curline,parsepat,'\4','e')
+   catch /^MNV\%((\a\+)\)\=:E486/
+    let cmmnt= ""
+   endtry
+  endif
+
+  " plugin author protection from downloading his/her own scripts atop their latest work
+  " When looking for :AutoInstall: lines, skip scripts that have   0 0 scriptname
+  if scriptid == 0 || srcid == 0
+   return
+  endif
+
+  let doautoinstall= 0
+  if fname =~ ":AutoInstall:"
+   let aicmmnt= substitute(fname,'\s\+:AutoInstall:\s\+',' ','')
+   if s:autoinstall != ""
+    let doautoinstall = g:GetLatestMNVScripts_allowautoinstall
+   endif
+  else
+   let aicmmnt= fname
+  endif
+
+  exe "norm z\<CR>"
+  redraw!
+  echo 'considering <'.aicmmnt.'> scriptid='.scriptid.' srcid='.srcid
+
+  " grab a copy of the plugin's mnv.sourceforge.net webpage
+  let scriptaddr = g:GetLatestMNVScripts_scriptaddr.scriptid
+  let tmpfile    = tempname()
+  let v:errmsg   = ""
+
+  " Check if URLs are reachable
+  if !CheckMNVScriptURL(scriptid, srcid)
+   return
+  endif
+
+  " make up to three tries at downloading the description
+  let itry= 1
+  while itry <= 3
+   if has("win32") || has("win16") || has("win95")
+    new|exe "silent r!".g:GetLatestMNVScripts_wget." ".g:GetLatestMNVScripts_options." ".shellescape(tmpfile).' '.shellescape(scriptaddr)|bw!
+   else
+    exe "silent !".g:GetLatestMNVScripts_wget." ".g:GetLatestMNVScripts_options." ".shellescape(tmpfile)." ".shellescape(scriptaddr)
+   endif
+   if itry == 1
+    exe "silent vsplit ".fnameescape(tmpfile)
+   else
+    silent! e %
+   endif
+   setlocal bh=wipe
+  
+   " find the latest source-id in the plugin's webpage
+   silent! 1
+   let findpkg= search('Click on the package to download','W')
+   if findpkg > 0
+    break
+   endif
+   let itry= itry + 1
+  endwhile
+
+  " testing: did finding "Click on the package..." fail?
+  if findpkg == 0 || itry >= 4
+   silent q!
+   call delete(tmpfile)
+  " restore options
+   let &t_ti        = t_ti
+   let &t_te        = t_te
+   let &rs          = rs
+   let s:downerrors = s:downerrors + 1
+   echomsg "***warning*** couldn'".'t find "Click on the package..." in description page for <'.aicmmnt.">"
+   return
+  endif
+
+  let findsrcid= search('src_id=','W')
+  if findsrcid == 0
+   silent q!
+   call delete(tmpfile)
+  " restore options
+   let &t_ti        = t_ti
+   let &t_te        = t_te
+   let &rs          = rs
+   let s:downerrors = s:downerrors + 1
+   echomsg "***warning*** couldn'".'t find "src_id=" in description page for <'.aicmmnt.">"
+   return
+  endif
+
+  let srcidpat   = '^\s*<td class.*src_id=\(\d\+\)">\([^<]\+\)<.*$'
+  let latestsrcid= substitute(getline("."),srcidpat,'\1','')
+  let sname      = substitute(getline("."),srcidpat,'\2','') " script name actually downloaded
+  silent q!
+  call delete(tmpfile)
+
+  " convert the strings-of-numbers into numbers
+  let srcid       = srcid       + 0
+  let latestsrcid = latestsrcid + 0
+
+  " has the plugin's most-recent srcid increased, which indicates that it has been updated
+  if latestsrcid > srcid
+
+   let s:downloads= s:downloads + 1
+   if sname == bufname("%")
+    " GetLatestMNVScript has to be careful about downloading itself
+    let sname= "NEW_".sname
+   endif
+
+   " -----------------------------------------------------------------------------
+   " the plugin has been updated since we last obtained it, so download a new copy
+   " -----------------------------------------------------------------------------
+   echomsg ".downloading new <".sname.">"
+   if has("win32") || has("win16") || has("win95")
+    new|exe "silent r!".g:GetLatestMNVScripts_wget." ".g:GetLatestMNVScripts_options." ".shellescape(sname)." ".shellescape(g:GetLatestMNVScripts_downloadaddr.latestsrcid)|bw!
+   else
+    exe "silent !".g:GetLatestMNVScripts_wget." ".g:GetLatestMNVScripts_options." ".shellescape(sname)." ".shellescape(g:GetLatestMNVScripts_downloadaddr.latestsrcid)
+   endif
+
+   " --------------------------------------------------------------------------
+   " AutoInstall: only if doautoinstall has been requested by the plugin itself
+   " --------------------------------------------------------------------------
+   if doautoinstall
+    if filereadable(sname)
+     exe "silent !".g:GetLatestMNVScripts_mv." ".shellescape(sname)." ".shellescape(s:autoinstall)
+     let curdir    = fnameescape(substitute(getcwd(),'\','/','ge'))
+     let installdir= curdir."/Installed"
+     if !isdirectory(installdir)
+      call mkdir(installdir)
+     endif
+     exe "cd ".fnameescape(s:autoinstall)
+
+     " determine target directory for moves
+     let firstdir= substitute(&rtp,',.*$','','')
+     let pname   = substitute(sname,'\..*','.mnv','')
+     if filereadable(firstdir.'/AsNeeded/'.pname)
+      let tgtdir= "AsNeeded"
+     else
+      let tgtdir= "plugin"
+     endif
+
+     " decompress
+     if sname =~ '\.bz2$'
+      exe "sil !".g:GetLatestMNVScripts_bunzip2." ".shellescape(sname)
+      let sname= substitute(sname,'\.bz2$','','')
+     elseif sname =~ '\.bz3$'
+      exe "sil !".g:GetLatestMNVScripts_bunzip3." ".shellescape(sname)
+      let sname= substitute(sname,'\.bz3$','','')
+     elseif sname =~ '\.gz$'
+      exe "sil !".g:GetLatestMNVScripts_gunzip." ".shellescape(sname)
+      let sname= substitute(sname,'\.gz$','','')
+     elseif sname =~ '\.xz$'
+      exe "sil !".g:GetLatestMNVScripts_unxz." ".shellescape(sname)
+      let sname= substitute(sname,'\.xz$','','')
+     else
+     endif
+
+     " distribute archive(.zip, .tar, .vba, .vmb, ...) contents
+     if sname =~ '\.zip$'
+      exe "silent !".g:GetLatestMNVScripts_unzip." -o ".shellescape(sname)
+     elseif sname =~ '\.tar$'
+      exe "silent !tar -xvf ".shellescape(sname)
+     elseif sname =~ '\.tgz$'
+      exe "silent !tar -zxvf ".shellescape(sname)
+     elseif sname =~ '\.taz$'
+      exe "silent !tar -Zxvf ".shellescape(sname)
+     elseif sname =~ '\.tbz$'
+      exe "silent !tar -jxvf ".shellescape(sname)
+     elseif sname =~ '\.txz$'
+      exe "silent !tar -Jxvf ".shellescape(sname)
+     elseif sname =~ '\.vba$\|\.vmb$'
+      silent 1split
+      if exists("g:mnvball_home")
+       let oldmnvballhome= g:mnvball_home
+      endif
+      let g:mnvball_home= s:autoinstall
+      exe "silent e ".fnameescape(sname)
+      silent so %
+      silent q
+      if exists("oldmnvballhome")
+       let g:mnvball_home= oldmnvballhome
+      else
+       unlet g:mnvball_home
+      endif
+     endif
+
+     " ---------------------------------------------
+     " move plugin to plugin/ or AsNeeded/ directory
+     " ---------------------------------------------
+     if sname =~ '.mnv$'
+      exe "silent !".g:GetLatestMNVScripts_mv." ".shellescape(sname)." ".tgtdir
+     else
+      exe "silent !".g:GetLatestMNVScripts_mv." ".shellescape(sname)." ".installdir
+     endif
+     if tgtdir != "plugin"
+      exe "silent !".g:GetLatestMNVScripts_mv." ".shellescape("plugin/".pname)." ".tgtdir
+     endif
+
+     " helptags step
+     let docdir= substitute(&rtp,',.*','','e')."/doc"
+     exe "helptags ".fnameescape(docdir)
+     exe "cd ".fnameescape(curdir)
+    endif
+    if fname !~ ':AutoInstall:'
+     let modline=scriptid." ".latestsrcid." :AutoInstall: ".fname.cmmnt
+    else
+     let modline=scriptid." ".latestsrcid." ".fname.cmmnt
+    endif
+   else
+    let modline=scriptid." ".latestsrcid." ".fname.cmmnt
+   endif
+
+   " update the data in the <GetLatestMNVScripts.dat> file
+   call setline(line("."),modline)
+  endif
+endfun
+
+" CheckMNVScriptURL: Check Network Connection {{{1
+" Check status code of scriptaddr and downloadaddr
+" return v:true if the script is downloadable or v:false in case of errors
+fun CheckMNVScriptURL(script_id, src_id)
+  " doesn't work with powershell
+  if !executable('curl') || &shell =~? 'pwsh\|powershell'
+    return v:true
+  endif
+  let output = has("win32") ? ' -o NUL ' : ' -o /dev/null '
+
+  let temp = tempname()
+  defer delete(temp)
+  let script_url = g:GetLatestMNVScripts_scriptaddr . a:script_id
+  let download_url = g:GetLatestMNVScripts_downloadaddr . a:src_id
+
+  let script_cmd = 'curl -s -I -w "%{http_code}"' . output . shellescape(script_url) . ' >' . shellescape(temp)
+  call system(script_cmd)
+  let script_status = readfile(temp, 'b')[0]
+
+  let download_cmd = 'curl -s -I -w "%{http_code}"' . output . shellescape(download_url) . ' >' . shellescape(temp)
+  call system(download_cmd)
+  let download_status = readfile(temp, 'b')[0]
+
+  if script_status !=# '200'
+    let s:message += [ printf('Error: Failed to reach script: %s', a:script_id) ]
+    return v:false
+  endif
+
+  if download_status !=# '200'
+    let s:message += [ printf('Error: Failed to download script %s', a:script_id) ]
+    return v:false
+  endif
+  return v:true
+endfun
+
+" ---------------------------------------------------------------------
+" Restore Options: {{{1
+let &cpo= s:keepcpo
+unlet s:keepcpo
+
+" ---------------------------------------------------------------------
+"  Modelines: {{{1
+" mnv: ts=8 sts=2 fdm=marker nowrap

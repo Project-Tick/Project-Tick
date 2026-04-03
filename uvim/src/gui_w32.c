@@ -1,11 +1,11 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *				GUI support by Robert Webb
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * Windows GUI.
@@ -23,7 +23,7 @@
  * e.g., replace LONG with LONG_PTR, etc.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_DIRECTX)
 # include "gui_dwrite.h"
@@ -110,7 +110,7 @@ static void keycode_trans_strategy_init(void)
     // set default value as fallback
     keycode_trans_strategy_used = &keycode_trans_strategy_classic;
 
-    strategy = getenv("VIM_KEYCODE_TRANS_STRATEGY");
+    strategy = getenv("MNV_KEYCODE_TRANS_STRATEGY");
     if (strategy == NULL)
     {
 	return;
@@ -339,7 +339,7 @@ static WORD		s_dlgfntwidth;		// width of the dialog font
 static HMENU		s_menuBar = NULL;
 #endif
 #ifdef FEAT_TEAROFF
-static void rebuild_tearoff(vimmenu_T *menu);
+static void rebuild_tearoff(mnvmenu_T *menu);
 static HBITMAP	s_htearbitmap;	    // bitmap used to indicate tearoff
 #endif
 
@@ -483,8 +483,8 @@ extern int current_font_height;	    // this is in os_mswin.c
 static struct
 {
     UINT    key_sym;
-    char_u  vim_code0;
-    char_u  vim_code1;
+    char_u  mnv_code0;
+    char_u  mnv_code1;
 } special_keys[] =
 {
     {VK_UP,		'k', 'u'},
@@ -848,7 +848,7 @@ char_to_string(int ch, char_u *string, int slen, int had_alt)
 	    if (len > slen)	// just in case
 		len = slen;
 	    mch_memmove(string, ws, len);
-	    vim_free(ws);
+	    mnv_free(ws);
 	}
     }
 
@@ -1182,18 +1182,18 @@ _OnMouseEvent(
     int repeated_click,
     UINT keyFlags)
 {
-    int vim_modifiers = 0x0;
+    int mnv_modifiers = 0x0;
 
     s_getting_focus = FALSE;
 
     if (keyFlags & MK_SHIFT)
-	vim_modifiers |= MOUSE_SHIFT;
+	mnv_modifiers |= MOUSE_SHIFT;
     if (keyFlags & MK_CONTROL)
-	vim_modifiers |= MOUSE_CTRL;
+	mnv_modifiers |= MOUSE_CTRL;
     if (GetKeyState(VK_LMENU) & 0x8000)
-	vim_modifiers |= MOUSE_ALT;
+	mnv_modifiers |= MOUSE_ALT;
 
-    gui_send_mouse_event(button, x, y, repeated_click, vim_modifiers);
+    gui_send_mouse_event(button, x, y, repeated_click, mnv_modifiers);
 }
 
     static void
@@ -1355,14 +1355,14 @@ _OnSizeTextArea(
 
 #ifdef FEAT_MENU
 /*
- * Find the vimmenu_T with the given id
+ * Find the mnvmenu_T with the given id
  */
-    static vimmenu_T *
+    static mnvmenu_T *
 gui_mswin_find_menu(
-    vimmenu_T	*pMenu,
+    mnvmenu_T	*pMenu,
     int		id)
 {
-    vimmenu_T	*pChildMenu;
+    mnvmenu_T	*pChildMenu;
 
     while (pMenu)
     {
@@ -1389,7 +1389,7 @@ _OnMenu(
     HWND	hwndCtl UNUSED,
     UINT	codeNotify UNUSED)
 {
-    vimmenu_T	*pMenu;
+    mnvmenu_T	*pMenu;
 
     pMenu = gui_mswin_find_menu(root_menu, id);
     if (pMenu)
@@ -1447,8 +1447,8 @@ _OnFindRepl(void)
     q = utf16_to_enc(s_findrep_struct.lpstrReplaceWith, NULL);
     if (p != NULL && q != NULL)
 	gui_do_findrepl(flags, p, q, down);
-    vim_free(p);
-    vim_free(q);
+    mnv_free(p);
+    mnv_free(q);
 }
 #endif
 
@@ -1558,7 +1558,7 @@ _TextAreaWndProc(
     static void
 dyn_dwm_load(void)
 {
-    hLibDwm = vimLoadLib("dwmapi.dll");
+    hLibDwm = mnvLoadLib("dwmapi.dll");
     if (hLibDwm == NULL)
 	return;
 
@@ -1592,7 +1592,7 @@ gui_mch_set_titlebar_colors(void)
     guicolor_T captionColor = DWMWA_COLOR_DEFAULT;
     guicolor_T textColor = DWMWA_COLOR_DEFAULT;
 
-    if (vim_strchr(p_go, GO_TITLEBAR) != NULL)
+    if (mnv_strchr(p_go, GO_TITLEBAR) != NULL)
     {
 	if (gui.in_focus)
 	{
@@ -1697,7 +1697,7 @@ gui_mch_set_text_area_pos(int x, int y, int w, int h)
     SetWindowPos(s_textArea, NULL, x, y, w, h, SWP_NOZORDER | SWP_NOACTIVATE);
 
 #ifdef FEAT_TOOLBAR
-    if (vim_strchr(p_go, GO_TOOLBAR) != NULL)
+    if (mnv_strchr(p_go, GO_TOOLBAR) != NULL)
 	SendMessage(s_toolbarhwnd, WM_SIZE,
 	      (WPARAM)0, MAKELPARAM(w, gui.toolbar_height));
 #endif
@@ -1708,7 +1708,7 @@ gui_mch_set_text_area_pos(int x, int y, int w, int h)
 	RECT	rect;
 
 # ifdef FEAT_TOOLBAR
-	if (vim_strchr(p_go, GO_TOOLBAR) != NULL)
+	if (mnv_strchr(p_go, GO_TOOLBAR) != NULL)
 	    top = gui.toolbar_height;
 # endif
 	GetClientRect(s_hwnd, &rect);
@@ -1943,7 +1943,7 @@ gui_mch_get_fontname(GuiFont font UNUSED, char_u *name)
 {
     if (name == NULL)
 	return NULL;
-    return vim_strsave(name);
+    return mnv_strsave(name);
 }
 #endif
 
@@ -2030,9 +2030,9 @@ gui_mch_haskey(char_u *name)
 {
     int i;
 
-    for (i = 0; special_keys[i].vim_code1 != NUL; i++)
-	if (name[0] == special_keys[i].vim_code0
-				       && name[1] == special_keys[i].vim_code1)
+    for (i = 0; special_keys[i].mnv_code1 != NUL; i++)
+	if (name[0] == special_keys[i].mnv_code0
+				       && name[1] == special_keys[i].mnv_code1)
 	    return OK;
     return FAIL;
 }
@@ -2194,7 +2194,7 @@ process_message_usual_key_experimental(UINT vk, const MSG *pmsg)
 
     // Construct the state table with only a few modifiers, we don't
     // really care about the presence of Ctrl/Alt as those modifiers are
-    // handled by Vim separately.
+    // handled by MNV separately.
     memset(keyboard_state, 0, 256);
     if (GetKeyState(VK_SHIFT) & 0x8000)
 	keyboard_state[VK_SHIFT] = 0x80;
@@ -2343,7 +2343,7 @@ process_message(void)
 	else
 	{
 	    add_to_input_buf(str, (int)STRLEN(str));
-	    vim_free(str);  // was allocated in CVim::SendKeys()
+	    mnv_free(str);  // was allocated in CMNV::SendKeys()
 	}
 	return;
     }
@@ -2483,7 +2483,7 @@ process_message(void)
 		 * the TAB key, etc...).
 		 */
 		if (dead_key == DEAD_KEY_SET_DEFAULT
-			&& (special_keys[i].vim_code0 == 'K'
+			&& (special_keys[i].mnv_code0 == 'K'
 						|| vk == VK_TAB || vk == CAR))
 		{
 		    outputDeadKey_rePost(msg);
@@ -2501,11 +2501,11 @@ process_message(void)
 #endif
 		modifiers = get_active_modifiers_via_ptr();
 
-		if (special_keys[i].vim_code1 == NUL)
-		    key = special_keys[i].vim_code0;
+		if (special_keys[i].mnv_code1 == NUL)
+		    key = special_keys[i].mnv_code0;
 		else
-		    key = TO_SPECIAL(special_keys[i].vim_code0,
-						   special_keys[i].vim_code1);
+		    key = TO_SPECIAL(special_keys[i].mnv_code0,
+						   special_keys[i].mnv_code1);
 		key = simplify_key(key, &modifiers);
 		if (key == CSI)
 		    key = K_CSI;
@@ -2574,7 +2574,7 @@ gui_mch_update(void)
 
     if (!s_busy_processing)
 	while (PeekMessageW(&msg, NULL, 0, 0, PM_NOREMOVE)
-						  && !vim_is_input_buf_full())
+						  && !mnv_is_input_buf_full())
 	    process_message();
 }
 
@@ -2771,7 +2771,7 @@ gui_mch_set_menu_pos(
  */
     void
 gui_mch_menu_hidden(
-    vimmenu_T	*menu,
+    mnvmenu_T	*menu,
     int		hidden)
 {
     /*
@@ -2854,7 +2854,7 @@ GetTextWidthEnc(HDC hdc, char_u *str, int len)
 	return 0;
 
     n = GetTextExtentPointW(hdc, wstr, wlen, &size);
-    vim_free(wstr);
+    mnv_free(wstr);
     if (n)
 	return size.cx;
     return 0;
@@ -2883,7 +2883,7 @@ CenterWindow(
     wChild = rChild.right - rChild.left;
     hChild = rChild.bottom - rChild.top;
 
-    // If Vim is minimized put the window in the middle of the screen.
+    // If MNV is minimized put the window in the middle of the screen.
     if (hwndParent == NULL || IsMinimized(hwndParent))
 	get_work_area(&rParent);
     else
@@ -2965,7 +2965,7 @@ add_tabline_popup_menu_entry(HMENU pmenu, UINT item_id, char_u *item_text)
     infow.dwTypeData = wn;
     infow.cch = (UINT)wcslen(wn);
     InsertMenuItemW(pmenu, item_id, FALSE, &infow);
-    vim_free(wn);
+    mnv_free(wn);
 }
 
     static void
@@ -3097,7 +3097,7 @@ gui_mch_update_tabline(void)
 	    tiw.iImage = -1;
 	    tiw.pszText = wstr;
 	    SendMessage(s_tabhwnd, TCM_SETITEMW, (WPARAM)nr, (LPARAM)&tiw);
-	    vim_free(wstr);
+	    mnv_free(wstr);
 	}
     }
 
@@ -3150,7 +3150,7 @@ gui_mch_set_dark_theme(int dark)
     static void
 dyn_uxtheme_load(void)
 {
-    hUxThemeLib = vimLoadLib("uxtheme.dll");
+    hUxThemeLib = mnvLoadLib("uxtheme.dll");
     if (hUxThemeLib == NULL)
 	return;
 
@@ -3304,10 +3304,10 @@ initialise_findrep(char_u *initial_string)
 
 	    wcsncpy(s_findrep_struct.lpstrFindWhat, p, len);
 	    s_findrep_struct.lpstrFindWhat[len] = NUL;
-	    vim_free(p);
+	    mnv_free(p);
 	}
     }
-    vim_free(entry_text);
+    mnv_free(entry_text);
 }
 #endif
 
@@ -3323,7 +3323,7 @@ set_window_title(HWND hwnd, char *title)
 	if (wbuf != NULL)
 	{
 	    SetWindowTextW(hwnd, wbuf);
-	    vim_free(wbuf);
+	    mnv_free(wbuf);
 	}
     }
     else
@@ -3393,7 +3393,7 @@ gui_mch_mousehide(int hide)
 
 #ifdef FEAT_MENU
     static void
-gui_mch_show_popupmenu_at(vimmenu_T *menu, int x, int y)
+gui_mch_show_popupmenu_at(mnvmenu_T *menu, int x, int y)
 {
     // Unhide the mouse, we don't get move events here.
     gui_mch_mousehide(FALSE);
@@ -3513,7 +3513,7 @@ _OnKillFocus(
 }
 
 /*
- * Get a message when the user switches back to vim
+ * Get a message when the user switches back to mnv
  */
     static LRESULT
 _OnActivateApp(
@@ -3662,19 +3662,19 @@ is_window_onscreen(HWND hwnd)
 get_scroll_flags(void)
 {
     HWND	hwnd;
-    RECT	rcVim, rcOther, rcDest;
+    RECT	rcMNV, rcOther, rcDest;
 
     // Check if the window is (partly) off-screen.
     if (!is_window_onscreen(s_hwnd))
 	return SW_INVALIDATE;
 
     // Check if there is a window (partly) on top of us.
-    GetWindowRect(s_hwnd, &rcVim);
+    GetWindowRect(s_hwnd, &rcMNV);
     for (hwnd = s_hwnd; (hwnd = GetWindow(hwnd, GW_HWNDPREV)) != (HWND)0; )
 	if (IsWindowVisible(hwnd))
 	{
 	    GetWindowRect(hwnd, &rcOther);
-	    if (IntersectRect(&rcDest, &rcVim, &rcOther))
+	    if (IntersectRect(&rcDest, &rcMNV, &rcOther))
 		return SW_INVALIDATE;
 	}
     return 0;
@@ -3683,7 +3683,7 @@ get_scroll_flags(void)
 /*
  * On some Intel GPUs, the regions drawn just prior to ScrollWindowEx()
  * may not be scrolled out properly.
- * For gVim, when _OnScroll() is repeated, the character at the
+ * For gMNV, when _OnScroll() is repeated, the character at the
  * previous cursor position may be left drawn after scroll.
  * The problem can be avoided by calling GetPixel() to get a pixel in
  * the region before ScrollWindowEx().
@@ -3841,13 +3841,13 @@ logfont2name(LOGFONTW lf)
 	points = pixels_to_points(
 			 lf.lfHeight < 0 ? -lf.lfHeight : lf.lfHeight, TRUE);
 	if (lf.lfWeight == FW_NORMAL || lf.lfWeight == FW_BOLD)
-	    res_len = vim_snprintf_safelen(
+	    res_len = mnv_snprintf_safelen(
 		(char *)res, res_size, "%s:h%d", font_name, points);
 	else
-	    res_len = vim_snprintf_safelen(
+	    res_len = mnv_snprintf_safelen(
 		(char *)res, res_size, "%s:h%d:W%ld", font_name, points, lf.lfWeight);
 
-	res_len += vim_snprintf_safelen(
+	res_len += mnv_snprintf_safelen(
 	    (char *)res + res_len,
 	    res_size - res_len,
 	    "%s%s%s%s",
@@ -3857,14 +3857,14 @@ logfont2name(LOGFONTW lf)
 	    lf.lfStrikeOut ? ":s" : "");
 
 	if (charset_name != NULL)
-	    res_len += vim_snprintf_safelen((char *)res + res_len,
+	    res_len += mnv_snprintf_safelen((char *)res + res_len,
 		res_size - res_len, ":c%s", charset_name);
 	if (quality_name != NULL)
-	    vim_snprintf((char *)res + res_len,
+	    mnv_snprintf((char *)res + res_len,
 		res_size - res_len, ":q%s", quality_name);
     }
 
-    vim_free(font_name);
+    mnv_free(font_name);
     return (char_u *)res;
 }
 
@@ -3936,7 +3936,7 @@ gui_mch_wide_font_changed(void)
 }
 
 /*
- * Initialise vim to use the font with the given name.
+ * Initialise mnv to use the font with the given name.
  * Return FAIL if the font could not be loaded, OK otherwise.
  */
     int
@@ -3977,11 +3977,11 @@ gui_mch_init_font(char_u *font_name, int fontset UNUSED)
 	// When setting 'guifont' to "*" replace it with the actual font name.
 	if (STRCMP(font_name, "*") == 0 && STRCMP(p_guifont, "*") == 0)
 	{
-	    vim_free(p_guifont);
+	    mnv_free(p_guifont);
 	    p_guifont = p;
 	}
 	else
-	    vim_free(p);
+	    mnv_free(p);
     }
 
     gui_mch_free_font(gui.ital_font);
@@ -4080,7 +4080,7 @@ gui_mch_settitle(
     char_u  *title,
     char_u  *icon UNUSED)
 {
-    set_window_title(s_hwnd, (title == NULL ? "VIM" : (char *)title));
+    set_window_title(s_hwnd, (title == NULL ? "MNV" : (char *)title));
 }
 
 #if defined(FEAT_MOUSESHAPE)
@@ -4150,7 +4150,7 @@ convert_filterW(char_u *s)
 	return NULL;
     len = (int)STRLEN(s) + 3;
     res = enc_to_utf16(tmp, &len);
-    vim_free(tmp);
+    mnv_free(tmp);
     return res;
 }
 
@@ -4198,7 +4198,7 @@ gui_mch_browse(
 	    for (i = 0; wp[i] != NUL && i < MAXPATHL - 1; ++i)
 		fileBuf[i] = wp[i];
 	    fileBuf[i] = NUL;
-	    vim_free(wp);
+	    mnv_free(wp);
 	}
     }
 
@@ -4224,7 +4224,7 @@ gui_mch_browse(
     fileStruct.lpstrFile = fileBuf;
     fileStruct.nMaxFile = MAXPATHL;
     fileStruct.lpstrFilter = filterp;
-    fileStruct.hwndOwner = s_hwnd;		// main Vim window is owner
+    fileStruct.hwndOwner = s_hwnd;		// main MNV window is owner
     // has an initial dir been specified?
     if (initdir != NULL && *initdir != NUL)
     {
@@ -4242,10 +4242,10 @@ gui_mch_browse(
     /*
      * TODO: Allow selection of multiple files.  Needs another arg to this
      * function to ask for it, and need to use OFN_ALLOWMULTISELECT below.
-     * Also, should we use OFN_FILEMUSTEXIST when opening?  Vim can edit on
+     * Also, should we use OFN_FILEMUSTEXIST when opening?  MNV can edit on
      * files that don't exist yet, so I haven't put it in.  What about
      * OFN_PATHMUSTEXIST?
-     * Don't use OFN_OVERWRITEPROMPT, Vim has its own ":confirm" dialog.
+     * Don't use OFN_OVERWRITEPROMPT, MNV has its own ":confirm" dialog.
      */
     fileStruct.Flags = (OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY);
 # ifdef FEAT_SHORTCUT
@@ -4257,10 +4257,10 @@ gui_mch_browse(
     else
 	ret = GetOpenFileNameW(&fileStruct);
 
-    vim_free(filterp);
-    vim_free(initdirp);
-    vim_free(titlep);
-    vim_free(extp);
+    mnv_free(filterp);
+    mnv_free(initdirp);
+    mnv_free(titlep);
+    mnv_free(extp);
 
     if (!ret)
 	return NULL;
@@ -4274,8 +4274,8 @@ gui_mch_browse(
     SetFocus(s_hwnd);
 
     // Shorten the file name if possible
-    q = vim_strsave(shorten_fname1(p));
-    vim_free(p);
+    q = mnv_strsave(shorten_fname1(p));
+    mnv_free(p);
     return q;
 }
 
@@ -4354,7 +4354,7 @@ _OnDropFiles(
 	    else
 	    {
 		DragQueryFile(hDrop, i, szFile, BUFPATHLEN);
-		fnames[i] = vim_strsave((char_u *)szFile);
+		fnames[i] = mnv_strsave((char_u *)szFile);
 	    }
 	}
 
@@ -4525,8 +4525,8 @@ static UINT	s_menu_id = 100;
  */
 #define USE_SYSMENU_FONT
 
-#define VIM_NAME	"vim"
-#define VIM_CLASSW	L"Vim"
+#define MNV_NAME	"mnv"
+#define MNV_CLASSW	L"MNV"
 
 // Initial size for the dialog template.  For gui_mch_dialog() it's fixed,
 // thus there should be room for every dialog.  For tearoffs it's made bigger
@@ -4550,7 +4550,7 @@ add_dialog_element(
 static LPWORD lpwAlign(LPWORD);
 static int nCopyAnsiToWideChar(LPWORD, LPSTR, BOOL);
 #if defined(FEAT_MENU) && defined(FEAT_TEAROFF)
-static void gui_mch_tearoff(char_u *title, vimmenu_T *menu, int initX, int initY);
+static void gui_mch_tearoff(char_u *title, mnvmenu_T *menu, int initX, int initY);
 #endif
 static void get_dialog_font_metrics(void);
 
@@ -4560,7 +4560,7 @@ static int dialog_default_button = -1;
 static void initialise_toolbar(void);
 static void update_toolbar_size(void);
 static LRESULT CALLBACK toolbar_wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-static int get_toolbar_bitmap(vimmenu_T *menu);
+static int get_toolbar_bitmap(mnvmenu_T *menu);
 #else
 # define update_toolbar_size()
 #endif
@@ -4636,14 +4636,14 @@ gui_mswin_get_menu_height(
     {
 	// The height of the menu cannot be determined while the window is
 	// minimized.  Take the previous height if the menu is changed in that
-	// state, to avoid that Vim's vertical window size accidentally
+	// state, to avoid that MNV's vertical window size accidentally
 	// increases due to the unaccounted-for menu height.
 	menu_height = old_menu_height == -1 ? 0 : old_menu_height;
     }
     else
     {
 	/*
-	 * In case 'lines' is set in _vimrc/_gvimrc window width doesn't
+	 * In case 'lines' is set in _mnvrc/_gmnvrc window width doesn't
 	 * seem to have been set yet, so menu wraps in default window
 	 * width which is very narrow.  Instead just return height of a
 	 * single menu item.  Will still be wrong when the menu really
@@ -4745,7 +4745,7 @@ _OnMouseWheel(HWND hwnd UNUSED, WPARAM wParam, LPARAM lParam, int horizontal)
     if (wp == NULL || !p_scf)
 	wp = curwin;
 
-    // Translate the scroll event into an event that Vim can process so that
+    // Translate the scroll event into an event that MNV can process so that
     // the user has a chance to map the scrollwheel buttons.
     if (horizontal)
 	button = zDelta >= 0 ? MOUSE_6 : MOUSE_7;
@@ -5042,7 +5042,7 @@ _OnNotify(HWND hwnd, UINT id, NMHDR *hdr)
 		char_u		*str = NULL;
 		static void	*tt_text = NULL;
 
-		VIM_CLEAR(tt_text);
+		MNV_CLEAR(tt_text);
 
 # ifdef FEAT_GUI_TABLINE
 		if (gui_mch_showing_tabline()
@@ -5087,7 +5087,7 @@ _OnNotify(HWND hwnd, UINT id, NMHDR *hdr)
 #  endif
 		{
 		    UINT	idButton;
-		    vimmenu_T	*pMenu;
+		    mnvmenu_T	*pMenu;
 
 		    idButton = (UINT) hdr->idFrom;
 		    pMenu = gui_mswin_find_menu(root_menu, idButton);
@@ -5116,8 +5116,8 @@ _OnNotify(HWND hwnd, UINT id, NMHDR *hdr)
 		    size_t		len = STRLEN(str);
 
 		    if (len < sizeof(lpdi->szText)
-			    || ((tt_text = vim_strnsave(str, len)) == NULL))
-			vim_strncpy((char_u *)lpdi->szText, str,
+			    || ((tt_text = mnv_strnsave(str, len)) == NULL))
+			mnv_strncpy((char_u *)lpdi->szText, str,
 				sizeof(lpdi->szText) - 1);
 		    else
 			lpdi->lpszText = tt_text;
@@ -5159,7 +5159,7 @@ _OnMenuSelect(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	    == MF_HILITE
 	    && (State & MODE_CMDLINE) == 0)
     {
-	vimmenu_T   *pMenu;
+	mnvmenu_T   *pMenu;
 	static int  did_menu_tip = FALSE;
 
 	if (did_menu_tip)
@@ -5411,7 +5411,7 @@ _WndProc(
  */
 
 // parent window, if specified with -P
-HWND vim_parent_hwnd = NULL;
+HWND mnv_parent_hwnd = NULL;
 
     static BOOL CALLBACK
 FindWindowTitle(HWND hwnd, LPARAM lParam)
@@ -5425,8 +5425,8 @@ FindWindowTitle(HWND hwnd, LPARAM lParam)
 	{
 	    // Found it.  Store the window ref. and quit searching if MDI
 	    // works.
-	    vim_parent_hwnd = FindWindowEx(hwnd, NULL, "MDIClient", NULL);
-	    if (vim_parent_hwnd != NULL)
+	    mnv_parent_hwnd = FindWindowEx(hwnd, NULL, "MDIClient", NULL);
+	    if (mnv_parent_hwnd != NULL)
 		return FALSE;
 	}
     }
@@ -5441,7 +5441,7 @@ FindWindowTitle(HWND hwnd, LPARAM lParam)
 gui_mch_set_parent(char *title)
 {
     EnumWindows(FindWindowTitle, (LPARAM)title);
-    if (vim_parent_hwnd == NULL)
+    if (mnv_parent_hwnd == NULL)
     {
 	semsg(_(e_cannot_find_window_title_str), title);
 	mch_exit(2);
@@ -5454,12 +5454,12 @@ ole_error(char *arg)
 {
     char buf[IOSIZE];
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     gui.in_use = mch_is_gui_executable();
 # endif
 
     // Can't use emsg() here, we have not finished initialisation yet.
-    vim_snprintf(buf, IOSIZE,
+    mnv_snprintf(buf, IOSIZE,
 			 _(e_argument_not_supported_str_use_ole_version), arg);
     mch_errmsg(buf);
 }
@@ -5467,9 +5467,9 @@ ole_error(char *arg)
 
 #if defined(GUI_MAY_SPAWN)
     static char *
-gvim_error(void)
+gmnv_error(void)
 {
-    char *msg = _(e_gui_cannot_be_used_cannot_execute_gvim_exe);
+    char *msg = _(e_gui_cannot_be_used_cannot_execute_gmnv_exe);
 
     if (starting)
     {
@@ -5498,11 +5498,11 @@ gui_mch_do_spawn(char_u *arg)
     p = wcsrchr(name, L'\\');
     if (p == NULL)
 	goto error;
-    // Replace the executable name from vim(d).exe to gvim(d).exe.
+    // Replace the executable name from mnv(d).exe to gmnv(d).exe.
 # ifdef DEBUG
-    wcscpy(p + 1, L"gvimd.exe");
+    wcscpy(p + 1, L"gmnvd.exe");
 # else
-    wcscpy(p + 1, L"gvim.exe");
+    wcscpy(p + 1, L"gmnv.exe");
 # endif
 
 # if defined(FEAT_SESSION) && defined(EXPERIMENTAL_GUI_CMD)
@@ -5532,18 +5532,18 @@ gui_mch_do_spawn(char_u *arg)
 	char_u	*savebg;
 	int	ret;
 
-	session = vim_tempname('s', FALSE);
+	session = mnv_tempname('s', FALSE);
 	if (session == NULL)
 	    goto error;
 	savebg = p_bg;
-	p_bg = vim_strnsave((char_u *)"light", 5);	// Set 'bg' to "light".
+	p_bg = mnv_strnsave((char_u *)"light", 5);	// Set 'bg' to "light".
 	if (p_bg == NULL)
 	{
 	    p_bg = savebg;
 	    goto error;
 	}
 	ret = write_session_file(session);
-	vim_free(p_bg);
+	mnv_free(p_bg);
 	p_bg = savebg;
 	if (!ret)
 	    goto error;
@@ -5554,13 +5554,13 @@ gui_mch_do_spawn(char_u *arg)
 	cmd = ALLOC_MULT(WCHAR, len);
 	if (cmd == NULL)
 	{
-	    vim_free(wsession);
+	    mnv_free(wsession);
 	    goto error;
 	}
 	tofree1 = cmd;
 	_snwprintf(cmd, len, L" -S \"%s\" -c \"call delete('%s')\"",
 		wsession, wsession);
-	vim_free(wsession);
+	mnv_free(wsession);
     }
 # endif
 
@@ -5594,19 +5594,19 @@ error:
 # if defined(FEAT_SESSION) && defined(EXPERIMENTAL_GUI_CMD)
     if (session)
 	mch_remove(session);
-    vim_free(session);
-    vim_free(tofree1);
+    mnv_free(session);
+    mnv_free(tofree1);
 # endif
-    vim_free(newcmd);
-    vim_free(tofree2);
-    return gvim_error();
+    mnv_free(newcmd);
+    mnv_free(tofree2);
+    return gmnv_error();
 }
 #endif
 
 /*
  * Parse the GUI related command-line arguments.  Any arguments used are
  * deleted from argv, and *argc is decremented accordingly.  This is called
- * when Vim is started, whether or not the GUI has been started.
+ * when MNV is started, whether or not the GUI has been started.
  */
     void
 gui_mch_prepare(int *argc, char **argv)
@@ -5627,7 +5627,7 @@ gui_mch_prepare(int *argc, char **argv)
 	else
 	    idx = 1;
 
-	// Register Vim as an OLE Automation server
+	// Register MNV as an OLE Automation server
 	if (STRICMP(argv[idx] + 1, "register") == 0)
 	{
 #ifdef FEAT_OLE
@@ -5640,7 +5640,7 @@ gui_mch_prepare(int *argc, char **argv)
 #endif
 	}
 
-	// Unregister Vim as an OLE Automation server
+	// Unregister MNV as an OLE Automation server
 	if (STRICMP(argv[idx] + 1, "unregister") == 0)
 	{
 #ifdef FEAT_OLE
@@ -5669,7 +5669,7 @@ gui_mch_prepare(int *argc, char **argv)
     }
 
 #ifdef FEAT_OLE
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (mch_is_gui_executable())
 # endif
     {
@@ -5736,7 +5736,7 @@ load_dpi_func(void)
 
 fail:
     // Disable PerMonitorV2 APIs.
-    pGetDpiForSystem = vimGetDpiForSystem;
+    pGetDpiForSystem = mnvGetDpiForSystem;
     pGetDpiForWindow = NULL;
     pGetSystemMetricsForDpi = stubGetSystemMetricsForDpi;
     pSetThreadDpiAwarenessContext = NULL;
@@ -5750,8 +5750,8 @@ fail:
     int
 gui_mch_init(void)
 {
-    const WCHAR szVimWndClassW[] = VIM_CLASSW;
-    const WCHAR szTextAreaClassW[] = L"VimTextArea";
+    const WCHAR szMNVWndClassW[] = MNV_CLASSW;
+    const WCHAR szTextAreaClassW[] = L"MNVTextArea";
     WNDCLASSW wndclassw;
 
     // Return here if the window was already opened (happens when
@@ -5789,24 +5789,24 @@ gui_mch_init(void)
 
     // First try using the wide version, so that we can use any title.
     // Otherwise only characters in the active codepage will work.
-    if (GetClassInfoW(g_hinst, szVimWndClassW, &wndclassw) == 0)
+    if (GetClassInfoW(g_hinst, szMNVWndClassW, &wndclassw) == 0)
     {
 	wndclassw.style = CS_DBLCLKS;
 	wndclassw.lpfnWndProc = _WndProc;
 	wndclassw.cbClsExtra = 0;
 	wndclassw.cbWndExtra = 0;
 	wndclassw.hInstance = g_hinst;
-	wndclassw.hIcon = LoadIcon(wndclassw.hInstance, "IDR_VIM");
+	wndclassw.hIcon = LoadIcon(wndclassw.hInstance, "IDR_MNV");
 	wndclassw.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wndclassw.hbrBackground = s_brush;
 	wndclassw.lpszMenuName = NULL;
-	wndclassw.lpszClassName = szVimWndClassW;
+	wndclassw.lpszClassName = szMNVWndClassW;
 
 	if (RegisterClassW(&wndclassw) == 0)
 	    return FAIL;
     }
 
-    if (vim_parent_hwnd != NULL)
+    if (mnv_parent_hwnd != NULL)
     {
 #ifdef HAVE_TRY_EXCEPT
 	__try
@@ -5817,14 +5817,14 @@ gui_mch_init(void)
 	    // structure.
 	    s_hwnd = CreateWindowExW(
 		WS_EX_MDICHILD,
-		szVimWndClassW, L"Vim MSWindows GUI",
+		szMNVWndClassW, L"MNV MSWindows GUI",
 		WS_OVERLAPPEDWINDOW | WS_CHILD
 				 | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | 0xC000,
 		gui_win_x == -1 ? CW_USEDEFAULT : gui_win_x,
 		gui_win_y == -1 ? CW_USEDEFAULT : gui_win_y,
 		100,				// Any value will do
 		100,				// Any value will do
-		vim_parent_hwnd, NULL,
+		mnv_parent_hwnd, NULL,
 		g_hinst, NULL);
 #ifdef HAVE_TRY_EXCEPT
 	}
@@ -5849,7 +5849,7 @@ gui_mch_init(void)
 	// Create a window.  If win_socket_id is not zero without border and
 	// titlebar, it will be reparented below.
 	s_hwnd = CreateWindowW(
-		szVimWndClassW, L"Vim MSWindows GUI",
+		szMNVWndClassW, L"MNV MSWindows GUI",
 		(win_socket_id == 0 ? WS_OVERLAPPEDWINDOW : WS_POPUP)
 					  | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		gui_win_x == -1 ? CW_USEDEFAULT : gui_win_x,
@@ -5899,7 +5899,7 @@ gui_mch_init(void)
 
     s_textArea = CreateWindowExW(
 	0,
-	szTextAreaClassW, L"Vim text area",
+	szTextAreaClassW, L"MNV text area",
 	WS_CHILD | WS_VISIBLE, 0, 0,
 	100,				// Any value will do for now
 	100,				// Any value will do for now
@@ -5910,7 +5910,7 @@ gui_mch_init(void)
 	return FAIL;
 
 #ifdef FEAT_LIBCALL
-    // Try loading an icon from $RUNTIMEPATH/bitmaps/vim.ico.
+    // Try loading an icon from $RUNTIMEPATH/bitmaps/mnv.ico.
     {
 	HANDLE	hIcon = NULL;
 
@@ -5932,7 +5932,7 @@ gui_mch_init(void)
     // Get background/foreground colors from the system
     gui_mch_def_colors();
 
-    // Get the colors from the "Normal" group (set in syntax.c or in a vimrc
+    // Get the colors from the "Normal" group (set in syntax.c or in a mnvrc
     // file)
     set_normal_colors();
 
@@ -5992,7 +5992,7 @@ gui_mch_init(void)
 
 #ifdef FEAT_EVAL
     // set the v:windowid variable
-    set_vim_var_nr(VV_WINDOWID, HandleToLong(s_hwnd));
+    set_mnv_var_nr(VV_WINDOWID, HandleToLong(s_hwnd));
 #endif
 
 #ifdef FEAT_RENDER_OPTIONS
@@ -6075,7 +6075,7 @@ gui_mch_set_shellsize(
 			+ pGetSystemMetricsForDpi(SM_CYCAPTION, s_dpi)
 			+ gui_mswin_get_menu_height(FALSE);
 
-    // The following should take care of keeping Vim on the same monitor, no
+    // The following should take care of keeping MNV on the same monitor, no
     // matter if the secondary monitor is left or right of the primary
     // monitor.
     window_rect.right = window_rect.left + win_width;
@@ -6268,7 +6268,7 @@ _OnImeComposition(HWND hwnd, WPARAM dbcs UNUSED, LPARAM param)
     if (ret != NULL)
     {
 	add_to_input_buf_csi(ret, len);
-	vim_free(ret);
+	mnv_free(ret);
 	return 1;
     }
     return 0;
@@ -6307,7 +6307,7 @@ GetResultStr(HWND hwnd, int GCS, int *lenp)
 
     convbuf = utf16_to_enc(buf, lenp);
     pImmReleaseContext(hwnd, hIMC);
-    vim_free(buf);
+    mnv_free(buf);
     return convbuf;
 }
 #endif
@@ -6367,7 +6367,7 @@ im_set_active(int active)
     HIMC	hImc;
     static HIMC	hImcOld = (HIMC)0;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (!gui.in_use && !gui.starting)
     {
 	mbyte_im_set_active(active);
@@ -6444,7 +6444,7 @@ im_get_status(void)
     int		status = 0;
     HIMC	hImc;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (!gui.in_use && !gui.starting)
 	return mbyte_im_get_status();
 # endif
@@ -6690,7 +6690,7 @@ gui_mch_draw_string(
     {
 	int	i;
 
-	vim_free(padding);
+	mnv_free(padding);
 	pad_size = Columns;
 
 	// Don't give an out-of-memory message here, it would call us
@@ -6731,10 +6731,10 @@ gui_mch_draw_string(
 		|| enc_latin9)
 	    && (unicodebuf == NULL || len > unibuflen))
     {
-	vim_free(unicodebuf);
+	mnv_free(unicodebuf);
 	unicodebuf = LALLOC_MULT(WCHAR, len);
 
-	vim_free(unicodepdy);
+	mnv_free(unicodepdy);
 	unicodepdy = LALLOC_MULT(int, len);
 
 	unibuflen = len;
@@ -6945,10 +6945,10 @@ gui_mch_get_screen_dimensions(int *screen_w, int *screen_h)
  */
     void
 gui_mch_add_menu(
-    vimmenu_T	*menu,
+    mnvmenu_T	*menu,
     int		pos)
 {
-    vimmenu_T	*parent = menu->parent;
+    mnvmenu_T	*parent = menu->parent;
 
     menu->submenu_id = CreatePopupMenu();
     menu->id = s_menu_id++;
@@ -6974,7 +6974,7 @@ gui_mch_add_menu(
 	InsertMenuItemW((parent == NULL)
 		? s_menuBar : parent->submenu_id,
 		(UINT)pos, TRUE, &infow);
-	vim_free(wn);
+	mnv_free(wn);
     }
 
     // Fix window size if menu may have wrapped
@@ -6987,7 +6987,7 @@ gui_mch_add_menu(
 }
 
     void
-gui_mch_show_popupmenu(vimmenu_T *menu)
+gui_mch_show_popupmenu(mnvmenu_T *menu)
 {
     POINT mp;
 
@@ -6998,7 +6998,7 @@ gui_mch_show_popupmenu(vimmenu_T *menu)
     void
 gui_make_popup(char_u *path_name, int mouse_pos)
 {
-    vimmenu_T	*menu = gui_find_menu(path_name);
+    mnvmenu_T	*menu = gui_find_menu(path_name);
 
     if (menu == NULL)
 	return;
@@ -7032,7 +7032,7 @@ gui_make_popup(char_u *path_name, int mouse_pos)
     void
 gui_make_tearoff(char_u *path_name)
 {
-    vimmenu_T	*menu = gui_find_menu(path_name);
+    mnvmenu_T	*menu = gui_find_menu(path_name);
 
     // Found the menu, so tear it off.
     if (menu != NULL)
@@ -7045,10 +7045,10 @@ gui_make_tearoff(char_u *path_name)
  */
     void
 gui_mch_add_menu_item(
-    vimmenu_T	*menu,
+    mnvmenu_T	*menu,
     int		idx)
 {
-    vimmenu_T	*parent = menu->parent;
+    mnvmenu_T	*parent = menu->parent;
 
     menu->id = s_menu_id++;
     menu->submenu_id = NULL;
@@ -7096,7 +7096,7 @@ gui_mch_add_menu_item(
 		    (menu_is_separator(menu->name)
 		     ? MF_SEPARATOR : MF_STRING) | MF_BYPOSITION,
 		    (UINT)menu->id, wn);
-	    vim_free(wn);
+	    mnv_free(wn);
 	}
 # ifdef FEAT_TEAROFF
 	if (IsWindow(parent->tearoff_handle))
@@ -7109,7 +7109,7 @@ gui_mch_add_menu_item(
  * Destroy the machine specific menu widget.
  */
     void
-gui_mch_destroy_menu(vimmenu_T *menu)
+gui_mch_destroy_menu(mnvmenu_T *menu)
 {
 # ifdef FEAT_TOOLBAR
     /*
@@ -7151,7 +7151,7 @@ gui_mch_destroy_menu(vimmenu_T *menu)
 
 # ifdef FEAT_TEAROFF
     static void
-rebuild_tearoff(vimmenu_T *menu)
+rebuild_tearoff(mnvmenu_T *menu)
 {
     //hackish
     char_u	tbuf[128];
@@ -7194,7 +7194,7 @@ rebuild_tearoff(vimmenu_T *menu)
  */
     void
 gui_mch_menu_grey(
-    vimmenu_T	*menu,
+    mnvmenu_T	*menu,
     int	    grey)
 {
 # ifdef FEAT_TOOLBAR
@@ -7290,10 +7290,10 @@ dialog_callback(
 	    p = utf16_to_enc(wp, NULL);
 	    if (p != NULL)
 	    {
-		vim_strncpy(s_textfield, p, IOSIZE);
-		vim_free(p);
+		mnv_strncpy(s_textfield, p, IOSIZE);
+		mnv_free(p);
 	    }
-	    vim_free(wp);
+	    mnv_free(wp);
 	}
 
 	/*
@@ -7337,11 +7337,11 @@ dialog_callback(
 
 static const char *dlg_icons[] = // must match names in resource file
 {
-    "IDR_VIM",
-    "IDR_VIM_ERROR",
-    "IDR_VIM_ALERT",
-    "IDR_VIM_INFO",
-    "IDR_VIM_QUESTION"
+    "IDR_MNV",
+    "IDR_MNV_ERROR",
+    "IDR_MNV_ALERT",
+    "IDR_MNV_INFO",
+    "IDR_MNV_QUESTION"
 };
 
     int
@@ -7395,7 +7395,7 @@ gui_mch_dialog(
 
 # ifndef NO_CONSOLE
     // Don't output anything in silent mode ("ex -s")
-#  ifdef VIMDLL
+#  ifdef MNVDLL
     if (!(gui.in_use || gui.starting))
 #  endif
 	if (silent_mode)
@@ -7411,7 +7411,7 @@ gui_mch_dialog(
     else
 	dpi = pGetDpiForSystem();
 
-    if ((type < 0) || (type > VIM_LAST_TYPE))
+    if ((type < 0) || (type > MNV_LAST_TYPE))
 	type = 0;
 
     // allocate some memory for dialog template
@@ -7424,10 +7424,10 @@ gui_mch_dialog(
 
     /*
      * make a copy of 'buttons' to fiddle with it.  compiler grizzles because
-     * vim_strsave() doesn't take a const arg (why not?), so cast away the
+     * mnv_strsave() doesn't take a const arg (why not?), so cast away the
      * const.
      */
-    tbuffer = vim_strsave(buttons);
+    tbuffer = mnv_strsave(buttons);
     if (tbuffer == NULL)
 	return -1;
 
@@ -7529,7 +7529,7 @@ gui_mch_dialog(
 	for (pend = pstart; *pend != NUL && *pend != '\n'; )
 	{
 	    l = (*mb_ptr2len)(pend);
-	    if (l == 1 && VIM_ISWHITE(*pend)
+	    if (l == 1 && MNV_ISWHITE(*pend)
 					&& textWidth > maxDialogWidth * 3 / 4)
 		last_white = pend;
 	    textWidth += GetTextWidthEnc(hdc, pend, l);
@@ -7583,7 +7583,7 @@ gui_mch_dialog(
      * Check button names.  A long one will make the dialog wider.
      * When called early (-register error message) p_go isn't initialized.
      */
-    vertical = (p_go != NULL && vim_strchr(p_go, GO_VERTICAL) != NULL);
+    vertical = (p_go != NULL && mnv_strchr(p_go, GO_VERTICAL) != NULL);
     if (!vertical)
     {
 	// Place buttons horizontally if they fit.
@@ -7592,7 +7592,7 @@ gui_mch_dialog(
 	i = 0;
 	do
 	{
-	    pend = vim_strchr(pstart, DLG_BUTTON_SEP);
+	    pend = mnv_strchr(pstart, DLG_BUTTON_SEP);
 	    if (pend == NULL)
 		pend = pstart + STRLEN(pstart);	// Last button name.
 	    textWidth = GetTextWidthEnc(hdc, pstart, (int)(pend - pstart));
@@ -7617,7 +7617,7 @@ gui_mch_dialog(
 	pstart = tbuffer;
 	do
 	{
-	    pend = vim_strchr(pstart, DLG_BUTTON_SEP);
+	    pend = mnv_strchr(pstart, DLG_BUTTON_SEP);
 	    if (pend == NULL)
 		pend = pstart + STRLEN(pstart);	// Last button name.
 	    textWidth = GetTextWidthEnc(hdc, pstart, (int)(pend - pstart));
@@ -7672,7 +7672,7 @@ gui_mch_dialog(
 
     // copy the title of the dialog
     nchar = nCopyAnsiToWideChar(p, (title ? (LPSTR)title
-				   : (LPSTR)("Vim "VIM_VERSION_MEDIUM)), TRUE);
+				   : (LPSTR)("MNV "MNV_VERSION_MEDIUM)), TRUE);
     p += nchar;
 
     // do the font, since DS_3DLOOK doesn't work properly
@@ -7752,7 +7752,7 @@ gui_mch_dialog(
     }
     *pnumitems += numButtons;
 
-    // Vim icon
+    // MNV icon
     p = add_dialog_element(p, SS_ICON,
 	    PixelToDialogX(dlgPaddingX),
 	    PixelToDialogY(dlgPaddingY),
@@ -7810,10 +7810,10 @@ gui_mch_dialog(
 	    (DLGPROC)dialog_callback);
 
     LocalFree(LocalHandle(pdlgtemplate));
-    vim_free(tbuffer);
-    vim_free(buttonWidths);
-    vim_free(buttonPositions);
-    vim_free(ga.ga_data);
+    mnv_free(tbuffer);
+    mnv_free(buttonWidths);
+    mnv_free(buttonPositions);
+    mnv_free(ga.ga_data);
 
     // Focus back to our window (for when MDI is used).
     (void)SetFocus(s_hwnd);
@@ -7921,7 +7921,7 @@ nCopyAnsiToWideChar(
 	{
 	    wcscpy(lpWCStr, wn);
 	    nChar = (int)wcslen(wn) + 1;
-	    vim_free(wn);
+	    mnv_free(wn);
 	}
     }
     if (nChar == 0)
@@ -7945,7 +7945,7 @@ nCopyAnsiToWideChar(
  */
     static HMENU
 tearoff_lookup_menuhandle(
-    vimmenu_T *menu,
+    mnvmenu_T *menu,
     WORD menu_id)
 {
     for ( ; menu != NULL; menu = menu->next)
@@ -7962,7 +7962,7 @@ tearoff_lookup_menuhandle(
 
 /*
  * The callback function for all the modeless dialogs that make up the
- * "tearoff menus" Very simple - forward button presses (to fool Vim into
+ * "tearoff menus" Very simple - forward button presses (to fool MNV into
  * thinking its menus have been clicked), and go away when closed.
  */
     static LRESULT CALLBACK
@@ -7990,9 +7990,9 @@ tearoff_callback(
 
 	    if (GetCursorPos(&mp) && GetWindowRect(hwnd, &rect))
 	    {
-		vimmenu_T *menu;
+		mnvmenu_T *menu;
 
-		menu = (vimmenu_T*)GetWindowLongPtr(hwnd, DWLP_USER);
+		menu = (mnvmenu_T*)GetWindowLongPtr(hwnd, DWLP_USER);
 		(void)TrackPopupMenu(
 			 tearoff_lookup_menuhandle(menu, LOWORD(wParam)),
 			 TPM_LEFTALIGN | TPM_LEFTBUTTON,
@@ -8008,7 +8008,7 @@ tearoff_callback(
 	    }
 	}
 	else
-	    // Pass on messages to the main Vim window
+	    // Pass on messages to the main MNV window
 	    PostMessage(s_hwnd, WM_COMMAND, LOWORD(wParam), 0);
 	/*
 	 * Give main window the focus back: this is so after
@@ -8073,7 +8073,7 @@ get_dialog_font_metrics(void)
     static void
 gui_mch_tearoff(
     char_u	*title,
-    vimmenu_T	*menu,
+    mnvmenu_T	*menu,
     int		initX,
     int		initY)
 {
@@ -8084,9 +8084,9 @@ gui_mch_tearoff(
     DWORD	lExtendedStyle;
     WORD	dlgwidth;
     WORD	menuID;
-    vimmenu_T	*pmenu;
-    vimmenu_T	*top_menu;
-    vimmenu_T	*the_menu = menu;
+    mnvmenu_T	*pmenu;
+    mnvmenu_T	*top_menu;
+    mnvmenu_T	*the_menu = menu;
     HWND	hwnd;
     HDC		hdc;
     HFONT	font, oldFont;
@@ -8228,7 +8228,7 @@ gui_mch_tearoff(
     // copy the title of the dialog
     nchar = nCopyAnsiToWideChar(p, ((*title)
 			    ? (LPSTR)title
-			    : (LPSTR)("Vim "VIM_VERSION_MEDIUM)), TRUE);
+			    : (LPSTR)("MNV "MNV_VERSION_MEDIUM)), TRUE);
     p += nchar;
 
     // do the font, since DS_3DLOOK doesn't work properly
@@ -8324,8 +8324,8 @@ gui_mch_tearoff(
 	if (label == NULL)
 	    break;
 
-	vim_strncpy(text, menu->name, nameLen);
-	text = vim_strchr(text, TAB);	    // stop at TAB before actext
+	mnv_strncpy(text, menu->name, nameLen);
+	text = mnv_strchr(text, TAB);	    // stop at TAB before actext
 	if (text == NULL)
 	    text = label + nameLen;	    // no actext, use whole name
 	while (padding0-- > 0)
@@ -8360,7 +8360,7 @@ gui_mch_tearoff(
 		(WORD)PixelToDialogX(dlgwidth - 2 * TEAROFF_PADDING_X),
 		(WORD)12,
 		menuID, (WORD)0x0080, (char *)label);
-	vim_free(label);
+	mnv_free(label);
 	(*pnumitems)++;
     }
 
@@ -8398,7 +8398,7 @@ gui_mch_tearoff(
 /*
  * Create the toolbar, initially unpopulated.
  *  (just like the menu, there are no defaults, it's all
- *  set up through menu.vim)
+ *  set up through menu.mnv)
  */
     static void
 initialise_toolbar(void)
@@ -8427,7 +8427,7 @@ initialise_toolbar(void)
 
     s_toolbar_wndproc = SubclassWindow(s_toolbarhwnd, toolbar_wndproc);
 
-    gui_mch_show_toolbar(vim_strchr(p_go, GO_TOOLBAR) != NULL);
+    gui_mch_show_toolbar(mnv_strchr(p_go, GO_TOOLBAR) != NULL);
 
     update_toolbar_size();
 }
@@ -8470,7 +8470,7 @@ toolbar_wndproc(
 }
 
     static int
-get_toolbar_bitmap(vimmenu_T *menu)
+get_toolbar_bitmap(mnvmenu_T *menu)
 {
     int i = -1;
 
@@ -8541,7 +8541,7 @@ initialise_tabline(void)
 {
     InitCommonControls();
 
-    s_tabhwnd = CreateWindow(WC_TABCONTROL, "Vim tabline",
+    s_tabhwnd = CreateWindow(WC_TABCONTROL, "MNV tabline",
 	    WS_CHILD|TCS_FOCUSNEVER|TCS_TOOLTIPS,
 	    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 	    CW_USEDEFAULT, s_hwnd, NULL, g_hinst, NULL);
@@ -8690,7 +8690,7 @@ gui_mch_set_foreground(void)
     static void
 dyn_imm_load(void)
 {
-    hLibImm = vimLoadLib("imm32.dll");
+    hLibImm = mnvLoadLib("imm32.dll");
     if (hLibImm == NULL)
 	return;
 
@@ -8895,7 +8895,7 @@ gui_mch_destroy_sign(void *sign)
 	return;
 
     close_signicon_image((signicon_t *)sign);
-    vim_free(sign);
+    mnv_free(sign);
 }
 #endif
 
@@ -8973,7 +8973,7 @@ make_tooltip(BalloonEval *beval, char *text, POINT pt)
      */
     mouse_event(MOUSEEVENTF_MOVE, 2, 2, 0, 0);
     mouse_event(MOUSEEVENTF_MOVE, (DWORD)-1, (DWORD)-1, 0, 0);
-    vim_free(pti);
+    mnv_free(pti);
 }
 
     static void
@@ -9041,8 +9041,8 @@ gui_mch_post_balloon(BalloonEval *beval, char_u *mesg)
 {
     POINT   pt;
 
-    vim_free(beval->msg);
-    beval->msg = mesg == NULL ? NULL : vim_strsave(mesg);
+    mnv_free(beval->msg);
+    beval->msg = mesg == NULL ? NULL : mnv_strsave(mesg);
     if (beval->msg == NULL)
     {
 	delete_tooltip(beval);
@@ -9149,10 +9149,10 @@ track_user_activity(UINT uMsg)
 gui_mch_destroy_beval_area(BalloonEval *beval)
 {
 # ifdef FEAT_VARTABS
-    vim_free(beval->vts);
+    mnv_free(beval->vts);
 # endif
-    vim_free(beval->tofree);
-    vim_free(beval);
+    mnv_free(beval->tofree);
+    mnv_free(beval);
 }
 #endif // FEAT_BEVAL_GUI
 
@@ -9221,7 +9221,7 @@ test_gui_w32_sendevent_mouse(dict_T *args)
 	if (dict_get_bool(args, "cell", FALSE))
 	{
 	    // calculate the middle of the character cell
-	    // Note: Cell coordinates are 1-based from Vim script
+	    // Note: Cell coordinates are 1-based from MNV script
 	    int pY = (row - 1) * gui.char_height + gui.char_height / 2;
 	    int pX = (col - 1) * gui.char_width + gui.char_width / 2;
 	    gui_mouse_moved(pX, pY);
@@ -9316,7 +9316,7 @@ test_gui_w32_sendevent_keyboard(dict_T *args)
 
 	(void)SetForegroundWindow(s_hwnd);
 	SendInput(ARRAYSIZE(inputs), inputs, sizeof(INPUT));
-	vim_free(event);
+	mnv_free(event);
 
 	if (unwrapMods)
 	{
@@ -9345,7 +9345,7 @@ test_gui_w32_sendevent_keyboard(dict_T *args)
 	else
 	{
 	    semsg(_(e_invalid_value_for_argument_str_str), "event", event);
-	    vim_free(event);
+	    mnv_free(event);
 	}
 	return FALSE;
     }
@@ -9381,7 +9381,7 @@ test_gui_w32_sendevent_set_keycode_trans_strategy(dict_T *args)
 	else
 	{
 	    semsg(_(e_invalid_value_for_argument_str_str), "strategy", strategy);
-	    vim_free(strategy);
+	    mnv_free(strategy);
 	}
 	return FALSE;
     }

@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * match.c: functions for highlighting matches
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_SEARCH_EXTRA)
 
@@ -77,7 +77,7 @@ match_add(
 	semsg(_(e_no_such_highlight_group_name_str), grp);
 	return -1;
     }
-    if (pat != NULL && (regprog = vim_regcomp(pat, RE_MAGIC)) == NULL)
+    if (pat != NULL && (regprog = mnv_regcomp(pat, RE_MAGIC)) == NULL)
     {
 	semsg(_(e_invalid_argument_str), pat);
 	return -1;
@@ -96,7 +96,7 @@ match_add(
     }
     m->mit_id = id;
     m->mit_priority = prio;
-    m->mit_pattern = pat == NULL ? NULL : vim_strsave(pat);
+    m->mit_pattern = pat == NULL ? NULL : mnv_strsave(pat);
     m->mit_hlg_id = hlg_id;
     m->mit_match.regprog = regprog;
     m->mit_match.rmm_ic = FALSE;
@@ -210,12 +210,12 @@ match_add(
     return id;
 
 fail:
-    vim_regfree(regprog);
+    mnv_regfree(regprog);
     if (m != NULL)
     {
-	vim_free(m->mit_pattern);
-	vim_free(m->mit_pos_array);
-	vim_free(m);
+	mnv_free(m->mit_pattern);
+	mnv_free(m->mit_pos_array);
+	mnv_free(m);
     }
     return -1;
 }
@@ -253,15 +253,15 @@ match_delete(win_T *wp, int id, int perr)
 	wp->w_match_head = cur->mit_next;
     else
 	prev->mit_next = cur->mit_next;
-    vim_regfree(cur->mit_match.regprog);
-    vim_free(cur->mit_pattern);
+    mnv_regfree(cur->mit_match.regprog);
+    mnv_free(cur->mit_pattern);
     if (cur->mit_toplnum != 0)
     {
 	redraw_win_range_later(wp, cur->mit_toplnum, cur->mit_botlnum);
 	rtype = UPD_VALID;
     }
-    vim_free(cur->mit_pos_array);
-    vim_free(cur);
+    mnv_free(cur->mit_pos_array);
+    mnv_free(cur);
     redraw_win_later(wp, rtype);
     return 0;
 }
@@ -277,10 +277,10 @@ clear_matches(win_T *wp)
     while (wp->w_match_head != NULL)
     {
 	m = wp->w_match_head->mit_next;
-	vim_regfree(wp->w_match_head->mit_match.regprog);
-	vim_free(wp->w_match_head->mit_pattern);
-	vim_free(wp->w_match_head->mit_pos_array);
-	vim_free(wp->w_match_head);
+	mnv_regfree(wp->w_match_head->mit_match.regprog);
+	mnv_free(wp->w_match_head->mit_pattern);
+	mnv_free(wp->w_match_head->mit_pos_array);
+	mnv_free(wp->w_match_head);
 	wp->w_match_head = m;
     }
     redraw_win_later(wp, UPD_SOME_VALID);
@@ -446,7 +446,7 @@ next_search_hl(
 	// 3. Vi compatible searching: continue at end of previous match.
 	if (shl->lnum == 0)
 	    matchcol = 0;
-	else if (vim_strchr(p_cpo, CPO_SEARCH) == NULL
+	else if (mnv_strchr(p_cpo, CPO_SEARCH) == NULL
 		|| (shl->rm.endpos[0].lnum == 0
 		    && shl->rm.endpos[0].col <= shl->rm.startpos[0].col))
 	{
@@ -477,7 +477,7 @@ next_search_hl(
 			  && shl == &cur->mit_hl
 			  && cur->mit_match.regprog == cur->mit_hl.rm.regprog);
 
-	    nmatched = vim_regexec_multi(&shl->rm, win, shl->buf, lnum,
+	    nmatched = mnv_regexec_multi(&shl->rm, win, shl->buf, lnum,
 							 matchcol, &timed_out);
 	    // Copy the regprog, in case it got freed and recompiled.
 	    if (regprog_is_copy)
@@ -489,12 +489,12 @@ next_search_hl(
 		if (shl == search_hl)
 		{
 		    // don't free regprog in the match list, it's a copy
-		    vim_regfree(shl->rm.regprog);
+		    mnv_regfree(shl->rm.regprog);
 		    set_no_hlsearch(TRUE);
 		}
 		shl->rm.regprog = NULL;
 		shl->lnum = 0;
-		got_int = FALSE;  // avoid the "Type :quit to exit Vim" message
+		got_int = FALSE;  // avoid the "Type :quit to exit MNV" message
 		break;
 	    }
 	}
@@ -979,7 +979,7 @@ f_clearmatches(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 # ifdef FEAT_SEARCH_EXTRA
     win_T   *win;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     win = get_optional_window(argvars, 0);
@@ -1000,7 +1000,7 @@ f_getmatches(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     int		i;
     win_T	*win;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     win = get_optional_window(argvars, 0);
@@ -1075,7 +1075,7 @@ f_setmatches(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_list_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL))
 	return;
@@ -1168,8 +1168,8 @@ f_setmatches(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 		list_unref(s);
 		s = NULL;
 	    }
-	    vim_free(group);
-	    vim_free(conceal);
+	    mnv_free(group);
+	    mnv_free(conceal);
 
 	    li = li->li_next;
 	}
@@ -1196,7 +1196,7 @@ f_matchadd(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_number_arg(argvars, 2) == FAIL
@@ -1252,7 +1252,7 @@ f_matchaddpos(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_list_arg(argvars, 1) == FAIL
 		|| check_for_opt_number_arg(argvars, 2) == FAIL
@@ -1315,7 +1315,7 @@ f_matcharg(typval_T *argvars UNUSED, typval_T *rettv)
     int	    id;
     matchitem_T *m;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = (int)tv_get_number(&argvars[0]);
@@ -1345,7 +1345,7 @@ f_matchdelete(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 # ifdef FEAT_SEARCH_EXTRA
     win_T   *win;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL))
 	return;
@@ -1390,19 +1390,19 @@ ex_match(exarg_T *eap)
     if (ends_excmd2(eap->cmd, eap->arg))
 	end = eap->arg;
     else if ((STRNICMP(eap->arg, "none", 4) == 0
-		&& (VIM_ISWHITE(eap->arg[4])
+		&& (MNV_ISWHITE(eap->arg[4])
 				      || ends_excmd2(eap->arg, eap->arg + 4))))
 	end = eap->arg + 4;
     else
     {
 	p = skiptowhite(eap->arg);
 	if (!eap->skip)
-	    g = vim_strnsave(eap->arg, p - eap->arg);
+	    g = mnv_strnsave(eap->arg, p - eap->arg);
 	p = skipwhite(p);
 	if (*p == NUL)
 	{
 	    // There must be two arguments.
-	    vim_free(g);
+	    mnv_free(g);
 	    semsg(_(e_invalid_argument_str), eap->arg);
 	    return;
 	}
@@ -1411,13 +1411,13 @@ ex_match(exarg_T *eap)
 	{
 	    if (*end != NUL && !ends_excmd2(end, skipwhite(end + 1)))
 	    {
-		vim_free(g);
+		mnv_free(g);
 		eap->errmsg = ex_errmsg(e_trailing_characters_str, end);
 		return;
 	    }
 	    if (*end != *p)
 	    {
-		vim_free(g);
+		mnv_free(g);
 		semsg(_(e_invalid_argument_str), p);
 		return;
 	    }
@@ -1425,7 +1425,7 @@ ex_match(exarg_T *eap)
 	    c = *end;
 	    *end = NUL;
 	    match_add(curwin, g, p + 1, 10, id, NULL, NULL);
-	    vim_free(g);
+	    mnv_free(g);
 	    *end = c;
 	}
     }

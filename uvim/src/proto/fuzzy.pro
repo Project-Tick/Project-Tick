@@ -8,4 +8,4 @@ int fuzzy_match_str_in_line(char_u **ptr, char_u *pat, int *len, pos_T *current_
 int search_for_fuzzy_match(buf_T *buf, pos_T *pos, char_u *pattern, int dir, pos_T *start_pos, int *len, char_u **ptr, int *score);
 void fuzmatch_str_free(fuzmatch_str_T *fuzmatch, int count);
 int fuzzymatches_to_strmatches(fuzmatch_str_T *fuzmatch, char_u ***matches, int count, int funcsort);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

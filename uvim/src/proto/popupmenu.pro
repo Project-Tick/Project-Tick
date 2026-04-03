@@ -18,8 +18,8 @@ int split_message(char_u *mesg, pumitem_T **array);
 void ui_remove_balloon(void);
 void ui_post_balloon(char_u *mesg, list_T *list);
 void ui_may_remove_balloon(void);
-void pum_show_popupmenu(vimmenu_T *menu);
+void pum_show_popupmenu(mnvmenu_T *menu);
 void pum_make_popup(char_u *path_name, int use_mouse_pos);
 void pum_set_border_chars(int top, int right, int bottom, int left, int top_left, int top_right, int bottom_right, int bottom_left);
 void put_shadow_char(int row, int col);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

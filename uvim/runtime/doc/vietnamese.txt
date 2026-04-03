@@ -1,10 +1,10 @@
-*vietnamese.txt* For Vim version 9.2.  Last change: 2026 Feb 14
+*vietnamese.txt* For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Phạm Bình An
+		  MNV REFERENCE MANUAL	  by Phạm Bình An
 
 
-Vietnamese language support in Vim		*vietnamese* *Vietnamese*
+Vietnamese language support in MNV		*vietnamese* *Vietnamese*
 
 1. Introduction				  |vietnamese-intro|
 2. Vietnamese keymaps			  |vietnamese-keymap|
@@ -13,7 +13,7 @@ Vietnamese language support in Vim		*vietnamese* *Vietnamese*
 ==============================================================================
 1. Introduction
 							*vietnamese-intro*
-Vim supports Vietnamese language in the following ways:
+MNV supports Vietnamese language in the following ways:
 
 - Built-in |vietnamese-keymap|, which allows you to type Vietnamese characters
   in |Insert-mode| and |search-commands| using US keyboard layout.
@@ -23,18 +23,18 @@ Vim supports Vietnamese language in the following ways:
 2. Vietnamese keymaps
 							*vietnamese-keymap*
 To switch between languages you can use your system native keyboard switcher,
-or use one of the Vietnamese keymaps included in the Vim distribution, like
+or use one of the Vietnamese keymaps included in the MNV distribution, like
 below >
     :set keymap=vietnamese-telex_utf-8
 <
 See 'keymap' for more information.
 
 In the latter case, you can type Vietnamese even if you do not have a
-Vietnamese input method engine (IME) or you want Vim to be independent from a
+Vietnamese input method engine (IME) or you want MNV to be independent from a
 system-wide keyboard settings (when 'imdisable' is set). You can also |:map|
 a key to switch between keyboards.
 
-Vim comes with the following Vietnamese keymaps:
+MNV comes with the following Vietnamese keymaps:
 - *vietnamese-telex_utf-8*	Telex input method, |UTF-8| encoding.
 - *vietnamese-viqr_utf-8*	VIQR input method, |UTF-8| encoding.
 - *vietnamese-vni_utf-8*	VNI input method, |UTF-8| encoding.
@@ -64,7 +64,7 @@ below:
 ==============================================================================
 3. Localization
 							*vietnamese-l10n*
-Vim |messages| are also available in Vietnamese.  If you wish to see messages
+MNV |messages| are also available in Vietnamese.  If you wish to see messages
 in Vietnamese, you can run the command |:language| with an argument being the
 name of the Vietnamese locale.  For example, >
 	:language vi_VN
@@ -74,9 +74,9 @@ name of the Vietnamese locale.  For example, >
 Note that the name of the Vietnamese locale may vary depending on your system.
 See |mbyte-first| for details.
 
-|vimtutor| is also available in Vietnamese. To start Vimtutor in Vietnamese,
+|mnvtutor| is also available in Vietnamese. To start MNVtutor in Vietnamese,
 run the following command in terminal: >
-	vimtutor vi
+	mnvtutor vi
 <
 ==============================================================================
-vim:tw=78:ts=8:noet:ft=help:norl:
+mnv:tw=78:ts=8:noet:ft=help:norl:

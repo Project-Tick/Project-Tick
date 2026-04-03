@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -28,11 +28,11 @@
 #define P_NO_CMD_EXPAND	0x20	// don't perform cmdline completions
 #define P_NODEFAULT	0x40	// don't set to default value
 #define P_DEF_ALLOCED	0x80	// default value is in allocated memory, must
-				//  use vim_free() when assigning new value
+				//  use mnv_free() when assigning new value
 #define P_WAS_SET	0x100	// option has been set/reset
-#define P_NO_MKRC	0x200	// don't include in :mkvimrc output
-#define P_VI_DEF	0x400	// Use Vi default for Vim
-#define P_VIM		0x800	// Vim option, reset when 'cp' set
+#define P_NO_MKRC	0x200	// don't include in :mkmnvrc output
+#define P_VI_DEF	0x400	// Use Vi default for MNV
+#define P_MNV		0x800	// MNV option, reset when 'cp' set
 
 				// when option changed, what to display:
 #define P_RSTAT		0x1000	// redraw status lines
@@ -49,10 +49,10 @@
 
 #define P_SECURE	0x80000L // cannot change in modeline or secure mode
 #define P_GETTEXT      0x100000L // expand default value with _()
-#define P_NOGLOB       0x200000L // do not use local value for global vimrc
+#define P_NOGLOB       0x200000L // do not use local value for global mnvrc
 #define P_NFNAME       0x400000L // only normal file name chars allowed
 #define P_INSECURE     0x800000L // option was set from a modeline
-#define P_PRI_MKRC    0x1000000L // priority for :mkvimrc (setting option has
+#define P_PRI_MKRC    0x1000000L // priority for :mkmnvrc (setting option has
 				 // side effects)
 #define P_NO_ML       0x2000000L // not allowed in modeline
 #define P_CURSWANT    0x4000000L // update curswant required; not needed when
@@ -110,12 +110,12 @@ typedef enum {
 
 #ifdef USE_CRNL
 # define DFLT_FF	"dos"
-# define DFLT_FFS_VIM	"dos,unix"
+# define DFLT_FFS_MNV	"dos,unix"
 # define DFLT_FFS_VI	"dos,unix"	// also autodetect in compatible mode
 # define DFLT_TEXTAUTO	TRUE
 #else
 # define DFLT_FF	"unix"
-# define DFLT_FFS_VIM	"unix,dos"
+# define DFLT_FFS_MNV	"unix,dos"
 # ifdef __CYGWIN__
 #  define DFLT_FFS_VI	"unix,dos"	// Cygwin always needs file detection
 #  define DFLT_TEXTAUTO TRUE
@@ -165,7 +165,7 @@ typedef enum {
 #define FO_PERIOD_ABBR	'p'	// don't break a single space after a period
 
 #define DFLT_FO_VI	"vt"
-#define DFLT_FO_VIM	"tcq"
+#define DFLT_FO_MNV	"tcq"
 #define FO_ALL		"tcro/q2vlb1mMBn,aw]jp"	// for do_set()
 
 // characters for the p_cpo option:
@@ -232,8 +232,8 @@ typedef enum {
 #define CPO_SCOLON	';'	// using "," and ";" will skip over char if
 				// cursor would not move
 #define CPO_NOSYMLINKS	'~'	// don't resolve symlinks when changing directory
-// default values for Vim, Vi and POSIX
-#define CPO_VIM		"aABceFsz"
+// default values for MNV, Vi and POSIX
+#define CPO_MNV		"aABceFsz"
 #define CPO_VI		"aAbBcCdDeEfFgHiIjJkKlLmMnoOpPqrRsStuvwWxXyZz$!%*-+<>;"
 #define CPO_ALL		"aAbBcCdDeEfFgHiIjJkKlLmMnoOpPqrRsStuvwWxXyZz$!%*-+<>#{|&/\\.;~"
 
@@ -294,7 +294,7 @@ typedef enum {
 #define GO_FORG		'f'		// start GUI in foreground
 #define GO_GREY		'g'		// use grey menu items
 #define GO_HORSCROLL	'h'		// flexible horizontal scrolling
-#define GO_ICON		'i'		// use Vim icon
+#define GO_ICON		'i'		// use MNV icon
 #define GO_LEFT		'l'		// use left scrollbar
 #define GO_VLEFT	'L'		// left scrollbar with vert split
 #define GO_MENUS	'm'		// use menu bar
@@ -357,7 +357,7 @@ typedef enum {
 #define STL_ARGLISTSTAT	'a'		// argument list status as (x of y)
 #define STL_PAGENUM	'N'		// page number (when printing)
 #define STL_SHOWCMD	'S'		// 'showcmd' buffer
-#define STL_VIM_EXPR	'{'		// start of expression to substitute
+#define STL_MNV_EXPR	'{'		// start of expression to substitute
 #define STL_SEPARATE	'='		// separation between alignment
 					// sections
 #define STL_TRUNCMARK	'<'		// truncation mark if line is too long
@@ -1104,9 +1104,9 @@ EXTERN long	p_ut;		// 'updatetime'
 EXTERN char_u	*p_vsts;	// 'varsofttabstop'
 EXTERN char_u	*p_vts;		// 'vartabstop'
 #endif
-#ifdef FEAT_VIMINFO
-EXTERN char_u	*p_viminfo;	// 'viminfo'
-EXTERN char_u	*p_viminfofile;	// 'viminfofile'
+#ifdef FEAT_MNVINFO
+EXTERN char_u	*p_mnvinfo;	// 'mnvinfo'
+EXTERN char_u	*p_mnvinfofile;	// 'mnvinfofile'
 #endif
 #ifdef FEAT_SESSION
 EXTERN char_u	*p_vdir;	// 'viewdir'

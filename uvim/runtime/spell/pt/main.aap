@@ -1,11 +1,11 @@
-# Aap recipe for Portuguese Vim spell files.
-# See https://github.com/vim/vim/blob/master/runtime/spell/README.txt
+# Aap recipe for Portuguese MNV spell files.
+# See https://github.com/Project-Tick/Project-Tick/blob/master/runtime/spell/README.txt
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = pt_PT.aff pt_PT.dic
@@ -30,11 +30,11 @@ all: $SPELLDIR/pt.latin1.spl $SPELLDIR/pt.utf-8.spl \
 
 $SPELLDIR/pt.latin1.spl : $FILES
         :sys env LANG=pt_PT.ISO-8859-1 LC_ALL=pt_PT.ISO-8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/pt pt_PT pt_BR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/pt pt_PT pt_BR" -c q
 
 $SPELLDIR/pt.utf-8.spl : $FILES
         :sys env LANG=pt_PT.UTF-8 LC_ALL=pt_PT.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/pt pt_PT pt_BR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/pt pt_PT pt_BR" -c q
 
 ../README_pt.txt: README_pt_PT.txt README_pt_BR.txt
         :print pt_PT >!$target
@@ -60,8 +60,8 @@ pt_PT.aff pt_PT.dic: {buildcheck=}
         :delete {f} dictionaries.xcu
         :delete {f} LICENSES.txt
         # Remove grammar items and the duplicates this causes
-        :sys $VIM pt_PT.dic -u NONE -e -c "%s/\t.*//" -c "2,$$ sort u" -c update -c q
-        :sys $VIM pt_PT.aff -u NONE -e -c "%s/\S\+=\S\+$$//" -c update -c q
+        :sys $MNV pt_PT.dic -u NONE -e -c "%s/\t.*//" -c "2,$$ sort u" -c update -c q
+        :sys $MNV pt_PT.aff -u NONE -e -c "%s/\S\+=\S\+$$//" -c update -c q
         @if not os.path.exists('pt_PT.orig.aff'):
             :copy pt_PT.aff pt_PT.orig.aff
         @if not os.path.exists('pt_PT.orig.dic'):
@@ -80,11 +80,11 @@ pt_BR.aff pt_BR.dic: {buildcheck=}
         :delete {r}{f} META-INF
         :delete {f} README_en.TXT
         :delete {f} README_hyph_pt_BR.TXT
-        :sys $VIM README_pt_BR.TXT -u NONE -N -e -c "set ff=unix" -c update -c q
+        :sys $MNV README_pt_BR.TXT -u NONE -N -e -c "set ff=unix" -c update -c q
         :move README_pt_BR.TXT README_pt_BR.txt
 
-        :sys $VIM pt_BR.dic -u NONE -N -e -c "set ff=unix" -c update -c q
-        :sys $VIM pt_BR.aff -u NONE -N -e -c "set ff=unix" -c update -c q
+        :sys $MNV pt_BR.dic -u NONE -N -e -c "set ff=unix" -c update -c q
+        :sys $MNV pt_BR.aff -u NONE -N -e -c "set ff=unix" -c update -c q
         @if not os.path.exists('pt_BR.orig.aff'):
             :copy pt_BR.aff pt_BR.orig.aff
         @if not os.path.exists('pt_BR.orig.dic'):
@@ -94,7 +94,7 @@ pt_BR.aff pt_BR.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -165,4 +165,4 @@ check-br:
             :delete {r}{f}{q} tmp
             :delete $BR_FNAME
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

@@ -1,8 +1,8 @@
 #!/bin/bash
-# VIM_TEST_SETUP highlight link shArrayValue Identifier
-# VIM_TEST_SETUP highlight link shBracketExprDelim Structure
-# VIM_TEST_SETUP highlight link shCharClass Todo
-# VIM_TEST_SETUP highlight link shRange CursorLine
+# MNV_TEST_SETUP highlight link shArrayValue Identifier
+# MNV_TEST_SETUP highlight link shBracketExprDelim Structure
+# MNV_TEST_SETUP highlight link shCharClass Todo
+# MNV_TEST_SETUP highlight link shRange CursorLine
 
 
 

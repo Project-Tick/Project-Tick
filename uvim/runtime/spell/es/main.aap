@@ -1,10 +1,10 @@
-# Aap recipe for Spanish Vim spell files.
+# Aap recipe for Spanish MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 REGIONS    = ES MX
 ES_REGIONS = es_$*REGIONS
@@ -22,11 +22,11 @@ all: $SPELLDIR/es.latin1.spl $SPELLDIR/es.utf-8.spl ../README_es.txt
 
 $SPELLDIR/es.latin1.spl : $FILES
         :sys env LANG=es_ES.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/es $ES_REGIONS" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/es $ES_REGIONS" -c q
 
 $SPELLDIR/es.utf-8.spl : $FILES
         :sys env LANG=es_ES.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/es $ES_REGIONS" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/es $ES_REGIONS" -c q
 
 ../README_es.txt: $READMES
         :print es_ES >! $target
@@ -63,7 +63,7 @@ es_MX.aff es_MX.dic: {buildcheck=}
         :print No copyright information for es_MX wordlist >! README_es_MX.txt
         :sys $UNZIP $ZIPFILE_MX
         :delete $ZIPFILE_MX
-        :sys $VIM -u NONE -e -c "set ff=unix | wq" es_MX.dic
+        :sys $MNV -u NONE -e -c "set ff=unix | wq" es_MX.dic
         @if not os.path.exists('es_MX.orig.aff'):
             :copy es_MX.aff es_MX.orig.aff
         @if not os.path.exists('es_MX.orig.dic'):
@@ -73,7 +73,7 @@ es_MX.aff es_MX.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 diff:
         :assertpkg diff
         :sys {force} diff -a -C 1 es_ES.orig.aff es_ES.aff >es_ES.diff
@@ -89,4 +89,4 @@ check:
         :print TODO!!!!
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

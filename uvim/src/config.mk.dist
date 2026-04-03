@@ -1,5 +1,5 @@
-the first target to make vim is: reconfig
+the first target to make mnv is: reconfig
 srcdir = .
-VIMNAME = vim
+MNVNAME = mnv
 EXNAME = ex
 VIEWNAME = view

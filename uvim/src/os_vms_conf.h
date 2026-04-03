@@ -146,8 +146,8 @@
 #define FEAT_IPV6
 #define FEAT_XTERM_SAVE
 
-#define VIM_SIZEOF_INT  4
-#define VIM_SIZEOF_LONG 4
+#define MNV_SIZEOF_INT  4
+#define MNV_SIZEOF_LONG 4
 
 #if __USE_OFF64_T
 # define SIZEOF_OFF_T 8

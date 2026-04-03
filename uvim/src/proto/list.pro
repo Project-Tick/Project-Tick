@@ -42,7 +42,7 @@ int list_concat(list_T *l1, list_T *l2, typval_T *tv);
 list_T *list_slice(list_T *ol, long n1, long n2);
 int list_slice_or_index(list_T *list, int range, varnumber_T n1_arg, varnumber_T n2_arg, int exclusive, typval_T *rettv, int verbose);
 list_T *list_copy(list_T *orig, int deep, int top, int copyID);
-void vimlist_remove(list_T *l, listitem_T *item, listitem_T *item2);
+void mnvlist_remove(list_T *l, listitem_T *item, listitem_T *item2);
 char_u *list2string(typval_T *tv, int copyID, int restore_copyID);
 int list_join(garray_T *gap, list_T *l, char_u *sep, int echo_style, int restore_copyID, int copyID);
 void f_join(typval_T *argvars, typval_T *rettv);
@@ -68,4 +68,4 @@ void f_remove(typval_T *argvars, typval_T *rettv);
 void f_reverse(typval_T *argvars, typval_T *rettv);
 void f_reduce(typval_T *argvars, typval_T *rettv);
 void f_slice(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

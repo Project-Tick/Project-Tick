@@ -1,9 +1,9 @@
 #
-# Makefile to run all tests for Vim, on Amiga
+# Makefile to run all tests for MNV, on Amiga
 #
 # Requires "rm", "csh" and "diff"!
 
-VIMPROG = /vim
+MNVPROG = /mnv
 
 default: nongui
 
@@ -11,17 +11,17 @@ include Make_all.mak
 
 SCRIPTS = $(SCRIPTS_TINY_OUT)
 
-.SUFFIXES: .in .out .res .vim
+.SUFFIXES: .in .out .res .mnv
 
 nongui:	/tmp $(SCRIPTS)
 	csh -c echo ALL DONE
 
 clean:
-	csh -c \rm -rf *.out Xdir1 Xfind XfakeHOME Xdotest test.ok viminfo
+	csh -c \rm -rf *.out Xdir1 Xfind XfakeHOME Xdotest test.ok mnvinfo
 
 .in.out:
 	copy $*.ok test.ok
-	$(VIMPROG) -u util/amiga.vim -U NONE --noplugin --not-a-term -s dotest.in $*.in
+	$(MNVPROG) -u util/amiga.mnv -U NONE --noplugin --not-a-term -s dotest.in $*.in
 	diff test.out $*.ok
 	rename test.out $*.out
 	-delete X#? ALL QUIET

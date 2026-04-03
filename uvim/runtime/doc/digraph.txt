@@ -1,7 +1,7 @@
-*digraph.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*digraph.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Digraphs					*digraph* *digraphs* *Digraphs*
@@ -42,7 +42,7 @@ An alternative is using the 'keymap' option.
 			with a white space.  If you want to add such digraph,
 			you can use |digraph_set()| instead.
 
-Vim is normally compiled with the |+digraphs| feature.  If the feature is
+MNV is normally compiled with the |+digraphs| feature.  If the feature is
 disabled, the ":digraph" command will display an error message.
 
 Example of the output of ":digraphs": >
@@ -76,14 +76,14 @@ There are two methods to enter digraphs:			*i_digraph*
 The first is always available; the second only when the 'digraph' option is
 set.
 
-If a digraph with {char1}{char2} does not exist, Vim searches for a digraph
+If a digraph with {char1}{char2} does not exist, MNV searches for a digraph
 {char2}{char1}.  This helps when you don't remember which character comes
 first.
 
-Note that when you enter CTRL-K {char1}, where {char1} is a special key, Vim
+Note that when you enter CTRL-K {char1}, where {char1} is a special key, MNV
 enters the code for that special key.  This is not a digraph.
 
-Once you have entered the digraph, Vim treats the character like a normal
+Once you have entered the digraph, MNV treats the character like a normal
 character that occupies only one character in the file and on the screen.
 Example: >
 	'B' <BS> 'B'	will enter the broken '|' character (166)
@@ -96,7 +96,7 @@ default ones are listed below |digraph-table|.
 For CTRL-K, there is one general digraph: CTRL-K <Space> {char} will enter
 {char} with the highest bit set.  You can use this to enter meta-characters.
 
-The <Esc> character cannot be part of a digraph.  When hitting <Esc>, Vim
+The <Esc> character cannot be part of a digraph.  When hitting <Esc>, MNV
 stops digraph entry and ends Insert mode or Command-line mode, just like
 hitting an <Esc> out of digraph context.  Use CTRL-V 155 to enter meta-ESC
 (CSI).
@@ -106,7 +106,7 @@ If you accidentally typed an 'a' that should be an 'e', you will type 'a' <BS>
 this, you will have to type <BS> e again.  To avoid this don't set the
 'digraph' option and use CTRL-K to enter digraphs.
 
-You may have problems using Vim with characters which have a value above 128.
+You may have problems using MNV with characters which have a value above 128.
 For example: You insert ue (u-umlaut) and the editor echoes \334 in Insert
 mode.  After leaving the Insert mode everything is fine.  On some Unix systems
 this means you have to define the environment-variable LC_CTYPE.  If you are
@@ -120,10 +120,10 @@ output of >
 ==============================================================================
 3. Default digraphs					*digraphs-default*
 
-Vim comes with a set of default digraphs.  Check the output of ":digraphs" to
+MNV comes with a set of default digraphs.  Check the output of ":digraphs" to
 see them.
 
-On most systems Vim uses the same digraphs.  They work for the Unicode and
+On most systems MNV uses the same digraphs.  They work for the Unicode and
 ISO-8859-1 character sets.  These default digraphs are taken from the RFC1345
 mnemonics (with some additions).  To make it easy to remember the mnemonic,
 the second character has a standard meaning:
@@ -163,7 +163,7 @@ These are the RFC1345 digraphs for the one-byte characters.  See the output of
 
 EURO
 							*euro* *euro-digraph*
-Exception: RFC1345 doesn't specify the euro sign.  In Vim the digraph =e was
+Exception: RFC1345 doesn't specify the euro sign.  In MNV the digraph =e was
 added for this.  Note the difference between latin1, where the digraph Cu is
 used for the currency sign, and latin9 (iso-8859-15), where the digraph =e is
 used for the euro sign, while both of them are the character 164, 0xa4.  For
@@ -171,7 +171,7 @@ compatibility with zsh Eu can also be used for the euro sign.
 
 ROUBLE
 
-The rouble sign was added in 2014 as 0x20bd.  Vim supports the digraphs =R and
+The rouble sign was added in 2014 as 0x20bd.  MNV supports the digraphs =R and
 =P for this.  Note that R= and P= are other characters.
 
 QUADRUPLE PRIME
@@ -358,7 +358,7 @@ $	DO	0x24	 36	DOLLAR SIGN
 þ	th	0xfe	254	LATIN SMALL LETTER THORN (Icelandic)
 ÿ	y:	0xff	255	LATIN SMALL LETTER Y WITH DIAERESIS
 
-If you are using a |multibyte| 'encoding', Vim provides this enhanced set of
+If you are using a |multibyte| 'encoding', MNV provides this enhanced set of
 additional digraphs:
 
 							*digraph-table-mbyte*
@@ -1499,4 +1499,4 @@ char  digraph	hex	dec	official name ~
 ﬅ	ft	FB05	64261	LATIN SMALL LIGATURE LONG S T
 ﬆ	st	FB06	64262	LATIN SMALL LIGATURE ST
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

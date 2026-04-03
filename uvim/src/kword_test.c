@@ -1,28 +1,28 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
- * kword_test.c: Unittests for vim_iswordc() and vim_iswordp().
+ * kword_test.c: Unittests for mnv_iswordc() and mnv_iswordp().
  */
 
 #undef NDEBUG
 #include <assert.h>
 
 // Must include main.c because it contains much more than just main()
-#define NO_VIM_MAIN
+#define NO_MNV_MAIN
 #include "main.c"
 
 // This file has to be included because the tested functions are static
 #include "charset.c"
 
 /*
- * Test the results of vim_iswordc() and vim_iswordp() are matched.
+ * Test the results of mnv_iswordc() and mnv_iswordp() are matched.
  */
     static void
 test_isword_funcs_utf8(void)
@@ -58,15 +58,15 @@ test_isword_funcs_utf8(void)
 	    fprintf(stderr, "c != utf_ptr2char(p) (=%#04x)\n", c1);
 	    abort();
 	}
-	retc = vim_iswordc_buf(c, &buf);
-	retp = vim_iswordp_buf(p, &buf);
+	retc = mnv_iswordc_buf(c, &buf);
+	retp = mnv_iswordp_buf(p, &buf);
 	if (retc != retp)
 	{
 	    fprintf(stderr, "Failed: ");
 	    fprintf(stderr,
 		    "[c = %#04x, p = {%#02x, %#02x, %#02x}] ",
 		    c, p[0], p[1], p[2]);
-	    fprintf(stderr, "vim_iswordc(c) (=%d) != vim_iswordp(p) (=%d)\n",
+	    fprintf(stderr, "mnv_iswordc(c) (=%d) != mnv_iswordp(p) (=%d)\n",
 		    retc, retp);
 	    abort();
 	}

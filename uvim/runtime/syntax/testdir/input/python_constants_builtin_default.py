@@ -1,8 +1,8 @@
 # Built-in Constants
 # https://docs.python.org/3/library/constants.html
 
-# VIM_TEST_SETUP unlet g:python_constant_highlight
-# VIM_TEST_SETUP unlet g:python_no_builtin_highlight
+# MNV_TEST_SETUP unlet g:python_constant_highlight
+# MNV_TEST_SETUP unlet g:python_no_builtin_highlight
 test = False
 test = True
 test = None

@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * dosinst.h: Common code for dosinst.c and uninstall.c
@@ -39,9 +39,9 @@ char *searchpath(char *name);
 #include "version.h"
 
 #if defined(UNIX_LINT)
-# define vim_mkdir(x, y) mkdir((char *)(x), y)
+# define mnv_mkdir(x, y) mkdir((char *)(x), y)
 #else
-# define vim_mkdir(x, y) _mkdir((char *)(x))
+# define mnv_mkdir(x, y) _mkdir((char *)(x))
 #endif
 
 #define sleep(n) Sleep((n) * 1000)
@@ -79,7 +79,7 @@ char *searchpath(char *name);
 # define UNUSED
 #endif
 
-#define VIM_STARTMENU "Programs\\Vim " VIM_VERSION_SHORT
+#define MNV_STARTMENU "Programs\\MNV " MNV_VERSION_SHORT
 
 int	interactive;		// non-zero when running interactively
 
@@ -296,7 +296,7 @@ retry:
 	FILE *fd;
 
 	strcpy(tbuf, shell_folder_path);
-	strcat(tbuf, "\\vim write test");
+	strcat(tbuf, "\\mnv write test");
 	fd = fopen(tbuf, "w");
 	if (fd == NULL)
 	{
@@ -329,12 +329,12 @@ retry:
 
 struct
 {
-    char	*name;		// Vim exe name (without .exe)
+    char	*name;		// MNV exe name (without .exe)
     char	*batname;	// batch file name
     char	*lnkname;	// shortcut file name
     char	*exename;	// exe file name
     char	*exenamearg;	// exe file name when using exearg
-    char	*exearg;	// argument for vim.exe or gvim.exe
+    char	*exearg;	// argument for mnv.exe or gmnv.exe
     char	*oldbat;	// path to existing xxx.bat or NULL
     char	*oldexe;	// path to existing xxx.exe or NULL
     char	batpath[BUFSIZE];  // path of batch file to create; not
@@ -342,36 +342,36 @@ struct
 } targets[TARGET_COUNT] =
 {
     {"all",	"batch files", NULL, NULL, NULL, NULL, NULL, NULL, ""},
-    {"vim",	"vim.bat",	"Vim.lnk",
-			"vim.exe",    "vim.exe",  "", NULL, NULL, ""},
-    {"gvim",	"gvim.bat",	"gVim.lnk",
-			"gvim.exe",   "gvim.exe", "", NULL, NULL, ""},
-    {"evim",	"evim.bat",	"gVim Easy.lnk",
-			"evim.exe",   "gvim.exe", "-y", NULL, NULL, ""},
-    {"view",	"view.bat",	"Vim Read-only.lnk",
-			"view.exe",   "vim.exe",  "-R", NULL, NULL, ""},
-    {"gview",	"gview.bat",	"gVim Read-only.lnk",
-			"gview.exe",  "gvim.exe", "-R", NULL, NULL, ""},
-    {"vimdiff", "vimdiff.bat",	"Vim Diff.lnk",
-			"vimdiff.exe","vim.exe",  "-d", NULL, NULL, ""},
-    {"gvimdiff","gvimdiff.bat",	"gVim Diff.lnk",
-			"gvimdiff.exe","gvim.exe", "-d", NULL, NULL, ""},
-    {"vimtutor","vimtutor.bat", "Vim tutor.lnk",
-			"vimtutor.bat",  "vimtutor.bat", "", NULL, NULL, ""},
+    {"mnv",	"mnv.bat",	"MNV.lnk",
+			"mnv.exe",    "mnv.exe",  "", NULL, NULL, ""},
+    {"gmnv",	"gmnv.bat",	"gMNV.lnk",
+			"gmnv.exe",   "gmnv.exe", "", NULL, NULL, ""},
+    {"emnv",	"emnv.bat",	"gMNV Easy.lnk",
+			"emnv.exe",   "gmnv.exe", "-y", NULL, NULL, ""},
+    {"view",	"view.bat",	"MNV Read-only.lnk",
+			"view.exe",   "mnv.exe",  "-R", NULL, NULL, ""},
+    {"gview",	"gview.bat",	"gMNV Read-only.lnk",
+			"gview.exe",  "gmnv.exe", "-R", NULL, NULL, ""},
+    {"mnvdiff", "mnvdiff.bat",	"MNV Diff.lnk",
+			"mnvdiff.exe","mnv.exe",  "-d", NULL, NULL, ""},
+    {"gmnvdiff","gmnvdiff.bat",	"gMNV Diff.lnk",
+			"gmnvdiff.exe","gmnv.exe", "-d", NULL, NULL, ""},
+    {"mnvtutor","mnvtutor.bat", "MNV tutor.lnk",
+			"mnvtutor.bat",  "mnvtutor.bat", "", NULL, NULL, ""},
 };
 
-/* Uninstall key for vim.bat, etc. */
-#define VIMBAT_UNINSTKEY    "rem # uninstall key: " VIM_VERSION_NODOT " #"
+/* Uninstall key for mnv.bat, etc. */
+#define MNVBAT_UNINSTKEY    "rem # uninstall key: " MNV_VERSION_NODOT " #"
 
 #define ICON_COUNT 3
 char *(icon_names[ICON_COUNT]) =
-	{"gVim " VIM_VERSION_SHORT,
-	 "gVim Easy " VIM_VERSION_SHORT,
-	 "gVim Read only " VIM_VERSION_SHORT};
+	{"gMNV " MNV_VERSION_SHORT,
+	 "gMNV Easy " MNV_VERSION_SHORT,
+	 "gMNV Read only " MNV_VERSION_SHORT};
 char *(icon_link_names[ICON_COUNT]) =
-	{"gVim " VIM_VERSION_SHORT ".lnk",
-	 "gVim Easy " VIM_VERSION_SHORT ".lnk",
-	 "gVim Read only " VIM_VERSION_SHORT ".lnk"};
+	{"gMNV " MNV_VERSION_SHORT ".lnk",
+	 "gMNV Easy " MNV_VERSION_SHORT ".lnk",
+	 "gMNV Read only " MNV_VERSION_SHORT ".lnk"};
 
 /* This is only used for dosinst.c. */
 #if defined(DOSINST)
@@ -397,7 +397,7 @@ run_command(char *cmd)
 	// Replace the slashes with backslashes.
 	while ((p = strchr(cmd_path, '/')) != NULL)
 	    *p = '\\';
-	sprintf(cmd_buf, "%s /c start \"vimcmd\" /wait %s", cmd_path, cmd);
+	sprintf(cmd_buf, "%s /c start \"mnvcmd\" /wait %s", cmd_path, cmd);
 	free(cmd_path);
     }
     else
@@ -485,8 +485,8 @@ remove_tail(char *path)
 
 char	installdir[MAX_PATH-9];	// top of the installation dir, where the
 				// install.exe is located, E.g.:
-				// "c:\vim\vim60"
-int	runtimeidx;		// index in installdir[] where "vim60" starts
+				// "c:\mnv\mnv60"
+int	runtimeidx;		// index in installdir[] where "mnv60" starts
 char	*sysdrive;		// system drive or "c:\"
 
 /*
@@ -508,7 +508,7 @@ do_inits(char **argv)
     // change to the installdir
     mch_chdir(installdir);
 
-    // Find the system drive.  Only used for searching the Vim executable, not
+    // Find the system drive.  Only used for searching the MNV executable, not
     // very important.
     sysdrive = getenv("SYSTEMDRIVE");
     if (sysdrive == NULL || *sysdrive == NUL)

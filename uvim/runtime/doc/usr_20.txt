@@ -1,13 +1,13 @@
-*usr_20.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_20.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 		     Typing command-line commands quickly
 
 
-Vim has a few generic features that makes it easier to enter commands.  Colon
+MNV has a few generic features that makes it easier to enter commands.  Colon
 commands can be abbreviated, edited and repeated.  Completion is available for
 nearly everything.
 
@@ -24,7 +24,7 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *20.1*	Command line editing
 
-When you use a colon (:) command or search for a string with / or ?, Vim puts
+When you use a colon (:) command or search for a string with / or ?, MNV puts
 the cursor on the bottom of the screen.  There you type the command or search
 pattern.  This is called the Command line.  Also when it's used for entering a
 search command.
@@ -104,7 +104,7 @@ of what you already typed, without executing it, press CTRL-C or <Esc>.
 	Note:
 	<Esc> is the universal "get out" key.  Unfortunately, in the good old
 	Vi pressing <Esc> in a command line executed the command!  Since that
-	might be considered to be a bug, Vim uses <Esc> to cancel the command.
+	might be considered to be a bug, MNV uses <Esc> to cancel the command.
 	But with the 'cpoptions' option it can be made Vi compatible.  And
 	when using a mapping (which might be written for Vi) <Esc> also works
 	Vi compatible.  Therefore, using CTRL-C is a method that always works.
@@ -135,10 +135,10 @@ characters are optional.  Thus ":su" and ":sub" also work.
 In the user manual we will either use the full name of command, or a short
 version that is still readable.  For example, ":function" can be abbreviated
 to ":fu".  But since most people don't understand what that stands for, we
-will use ":fun".  (Vim doesn't have a ":funny" command, otherwise ":fun" would
+will use ":fun".  (MNV doesn't have a ":funny" command, otherwise ":fun" would
 be confusing too.)
 
-It is recommended that in Vim scripts you write the full command name.  That
+It is recommended that in MNV scripts you write the full command name.  That
 makes it easier to read back when you make later changes.  Except for some
 often used commands like ":w" (":write") and ":r" (":read").
    A particularly confusing one is ":end", which could stand for ":endif",
@@ -160,8 +160,8 @@ You can find the full list of long and short names here: |option-list|.
 ==============================================================================
 *20.3*	Command line completion
 
-This is one of those Vim features that, by itself, is a reason to switch from
-Vi to Vim.  Once you have used this, you can't do without.
+This is one of those MNV features that, by itself, is a reason to switch from
+Vi to MNV.  Once you have used this, you can't do without.
 
 Suppose you have a directory that contains these files:
 
@@ -178,19 +178,19 @@ It's easy to type this wrong.  A much quicker way is: >
 	:edit b<Tab>
 
 Which will result in the same command.  What happened?  The <Tab> key does
-completion of the word before the cursor.  In this case "b".  Vim looks in the
+completion of the word before the cursor.  In this case "b".  MNV looks in the
 directory and finds only one file that starts with a "b".  That must be the
-one you are looking for, thus Vim completes the file name for you.
+one you are looking for, thus MNV completes the file name for you.
 
 Now type: >
 
 	:edit i<Tab>
 
-Vim will beep, and give you: >
+MNV will beep, and give you: >
 
 	:edit info.txt
 
-The beep means that Vim has found more than one match.  It then uses the first
+The beep means that MNV has found more than one match.  It then uses the first
 match it found (alphabetically).  If you press <Tab> again, you get: >
 
 	:edit intro.txt
@@ -202,7 +202,7 @@ first typed: >
 
 	:edit i
 
-Then it starts all over again.  Thus Vim cycles through the list of matches.
+Then it starts all over again.  Thus MNV cycles through the list of matches.
 Use CTRL-P to go through the list in the other direction:
 
 	      <------------------- <Tab> -------------------------+
@@ -220,11 +220,11 @@ When you type ":set i" instead of ":edit i" and press <Tab> you get: >
 
 	:set icon
 
-Hey, why didn't you get ":set info.txt"?  That's because Vim has context
-sensitive completion.  The kind of words Vim will look for depends on the
-command before it.  Vim knows that you cannot use a file name just after a
+Hey, why didn't you get ":set info.txt"?  That's because MNV has context
+sensitive completion.  The kind of words MNV will look for depends on the
+command before it.  MNV knows that you cannot use a file name just after a
 ":set" command, but you can use an option name.
-   Again, if you repeat typing the <Tab>, Vim will cycle through all matches.
+   Again, if you repeat typing the <Tab>, MNV will cycle through all matches.
 There are quite a few, it's better to type more characters first: >
 
 	:set isk<Tab>
@@ -237,11 +237,11 @@ Now type "=" and press <Tab>: >
 
 	:set iskeyword=@,48-57,_,192-255
 
-What happens here is that Vim inserts the old value of the option.  Now you
+What happens here is that MNV inserts the old value of the option.  Now you
 can edit it.
-   What is completed with <Tab> is what Vim expects in that place.  Just try
+   What is completed with <Tab> is what MNV expects in that place.  Just try
 it out to see how it works.  In some situations you will not get what you
-want.  That's either because Vim doesn't know what you want, or because
+want.  That's either because MNV doesn't know what you want, or because
 completion was not implemented for that situation.  In that case you will get
 a <Tab> inserted (displayed as ^I).
 
@@ -259,13 +259,13 @@ results in: >
 	incsearch  isfname    isident    iskeyword  isprint
 	:set is
 
-Vim lists the matches and then comes back with the text you typed.  You can
+MNV lists the matches and then comes back with the text you typed.  You can
 now check the list for the item you wanted.  If it isn't there, you can use
 <BS> to correct the word.  If there are many matches, type a few more
 characters before pressing <Tab> to complete the rest.
    If you have watched carefully, you will have noticed that "incsearch"
 doesn't start with "is".  In this case "is" stands for the short name of
-"incsearch".  (Many options have a short and a long name.)  Vim is clever
+"incsearch".  (Many options have a short and a long name.)  MNV is clever
 enough to know that you might have wanted to expand the short name of the
 option into the long name.
 
@@ -303,7 +303,7 @@ times <Up>.  There is a quicker way: >
 
 	:se<Up>
 
-Vim will now go back to the previous command that started with "se".  You have
+MNV will now go back to the previous command that started with "se".  You have
 a good chance that this is the ":set" command you were looking for.  At least
 you should not have to press <Up> very often (unless ":set" commands is all
 you have done).
@@ -338,7 +338,7 @@ Open the command line window with this command: >
 
 	q:
 
-Vim now opens a (small) window at the bottom.  It contains the command line
+MNV now opens a (small) window at the bottom.  It contains the command line
 history, and an empty line at the end:
 
 	+-------------------------------------+
@@ -365,7 +365,7 @@ the "i" of "in" and type "cwout".  Now you have changed the line to:
 Now press <Enter> and this command will be executed.  The command line window
 will close.
    The <Enter> command will execute the line under the cursor.  It doesn't
-matter whether Vim is in Insert mode or in Normal mode.
+matter whether MNV is in Insert mode or in Normal mode.
    Changes in the command line window are lost.  They do not result in the
 history to be changed.  Except that the command you execute will be added to
 the end of the history, like with all executed commands.
@@ -383,4 +383,4 @@ there can be only one.
 
 Next chapter: |usr_21.txt|  Go away and come back
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

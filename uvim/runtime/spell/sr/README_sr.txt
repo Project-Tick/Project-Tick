@@ -24,14 +24,14 @@ Here is the content of original README file from the repository:
 	2.1 or later."
 
 
-This dictionary used to create Vim spl file is the result of merging the two
+This dictionary used to create MNV spl file is the result of merging the two
 LibreOffice dictionaries for cyrillic and latin script.
 
 The merge was accomplished by concatenating two .dic and .aff files (appending
 the latin to cyrillic).
 
 The first step was to fix both .aff files by adding a '.' at the end of every
-SFX and PFX directive and removing directives that are not supported by Vim
+SFX and PFX directive and removing directives that are not supported by MNV
 (KEY, MIDWORD).
 
 Next, update the flags in latin .dic and .aff files so that the flag sequence
@@ -46,13 +46,13 @@ You should be able to reproduce this with these steps:
   * Create a subfolder "new".
   * Put 4 files downloaded from LibreOffice dictionaries GitHub repository in
     it: sr.aff, sr-Latn.aff, sr.dic and sr-Latn.dic
-  * Open Vim and cd into "new"
-  * Execute:  :so ../convert.vim
+  * Open MNV and cd into "new"
+  * Execute:  :so ../convert.mnv
   * The resulting sr.aff and sr.dic are created in the parent spell folder
     (here).
   * Now one can generate spl file as usual using the merged dic and aff
     files:
-        env LANG=sr_RS.UTF-8 vim -u NONE -e -c "set enc=utf-8" -c "mkspell! ../sr sr" -c q
+        env LANG=sr_RS.UTF-8 mnv -u NONE -e -c "set enc=utf-8" -c "mkspell! ../sr sr" -c q
 
 
 Ivan Pešić

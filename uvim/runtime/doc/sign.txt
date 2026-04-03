@@ -1,7 +1,7 @@
-*sign.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*sign.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Gordon Prieur
+		  MNV REFERENCE MANUAL	  by Gordon Prieur
 					  and Bram Moolenaar
 
 
@@ -23,7 +23,7 @@ in the left-hand column denoting a breakpoint.  Another example might be an
 arrow representing the Program Counter (PC).  The sign features allow both
 placement of a sign, or icon, in the left-hand side of the window and
 definition of a highlight which will be applied to that line.  Displaying the
-sign as an image is most likely only feasible in gvim (although Sun
+sign as an image is most likely only feasible in gmnv (although Sun
 Microsystem's dtterm does support this it's the only terminal emulator I know
 of which does).  A text sign and the highlight should be feasible in any color
 terminal emulator.
@@ -44,7 +44,7 @@ There are two steps in using signs:
    and files.
 
 							*sign-column*
-When signs are defined for a file, Vim will automatically add a column of two
+When signs are defined for a file, MNV will automatically add a column of two
 characters to display them in.  When the last sign is unplaced the column
 disappears again.  This behavior can be changed with the 'signcolumn' option.
 
@@ -70,7 +70,7 @@ Each placed sign can be assigned to either the global group or a named group.
 When placing a sign, if a group name is not supplied, or an empty string is
 used, then the sign is placed in the global group.  Otherwise the sign is
 placed in the named group.  The sign identifier is unique within a group.  The
-sign group allows Vim plugins to use unique signs without interfering with
+sign group allows MNV plugins to use unique signs without interfering with
 other plugins using signs.
 
 To place a sign in a popup window the group name must start with "PopUp".
@@ -113,7 +113,7 @@ comment.  If you do need that, use the |:execute| command.
 
 DEFINING A SIGN.			*:sign-define* *E255* *E160* *E612*
 
-See |sign_define()| for the equivalent Vim script function.
+See |sign_define()| for the equivalent MNV script function.
 
 :sig[n] define {name} {argument}...
 		Define a new sign or set attributes for an existing sign.
@@ -166,7 +166,7 @@ See |sign_define()| for the equivalent Vim script function.
 
 DELETING A SIGN						*:sign-undefine* *E155*
 
-See |sign_undefine()| for the equivalent Vim script function.
+See |sign_undefine()| for the equivalent MNV script function.
 
 :sig[n] undefine {name}
 		Deletes a previously defined sign.  If signs with this {name}
@@ -178,7 +178,7 @@ See |sign_undefine()| for the equivalent Vim script function.
 
 LISTING SIGNS						*:sign-list* *E156*
 
-See |sign_getdefined()| for the equivalent Vim script function.
+See |sign_getdefined()| for the equivalent MNV script function.
 
 :sig[n] list	Lists all defined signs and their attributes.
 
@@ -188,7 +188,7 @@ See |sign_getdefined()| for the equivalent Vim script function.
 
 PLACING SIGNS						*:sign-place* *E158*
 
-See |sign_place()| for the equivalent Vim script function.
+See |sign_place()| for the equivalent MNV script function.
 
 :sig[n] place {id} line={lnum} name={name} file={fname}
 		Place sign defined as {name} at line {lnum} in file {fname}.
@@ -258,7 +258,7 @@ See |sign_place()| for the equivalent Vim script function.
 
 REMOVING SIGNS						*:sign-unplace* *E159*
 
-See |sign_unplace()| for the equivalent Vim script function.
+See |sign_unplace()| for the equivalent MNV script function.
 
 :sig[n] unplace {id} file={fname}
 		Remove the previously placed sign {id} from file {fname}.
@@ -335,7 +335,7 @@ See |sign_unplace()| for the equivalent Vim script function.
 
 LISTING PLACED SIGNS					*:sign-place-list*
 
-See |sign_getplaced()| for the equivalent Vim script function.
+See |sign_getplaced()| for the equivalent MNV script function.
 
 :sig[n] place file={fname}
 		List signs placed in file {fname}.
@@ -367,7 +367,7 @@ See |sign_getplaced()| for the equivalent Vim script function.
 
 JUMPING TO A SIGN					*:sign-jump* *E157*
 
-See |sign_jump()| for the equivalent Vim script function.
+See |sign_jump()| for the equivalent MNV script function.
 
 :sig[n] jump {id} file={fname}
 		Open the file {fname} or jump to the window that contains
@@ -740,8 +740,8 @@ sign_unplace({group} [, {dict}])			*sign_unplace()*
 		Returns 0 on success and -1 on failure.
 
 		Examples: >
-			" Remove sign 10 from buffer a.vim
-			call sign_unplace('', {'buffer' : "a.vim", 'id' : 10})
+			" Remove sign 10 from buffer a.mnv
+			call sign_unplace('', {'buffer' : "a.mnv", 'id' : 10})
 
 			" Remove sign 20 in group 'g1' from buffer 3
 			call sign_unplace('g1', {'buffer' : 3, 'id' : 20})
@@ -791,11 +791,11 @@ sign_unplacelist({list})				*sign_unplacelist()*
 		sign was successfully removed or -1 on failure.
 
 		Example: >
-			" Remove sign with id 10 from buffer a.vim and sign
-			" with id 20 from buffer b.vim
+			" Remove sign with id 10 from buffer a.mnv and sign
+			" with id 20 from buffer b.mnv
 			call sign_unplacelist([
-				\ {'id' : 10, 'buffer' : "a.vim"},
-				\ {'id' : 20, 'buffer' : 'b.vim'},
+				\ {'id' : 10, 'buffer' : "a.mnv"},
+				\ {'id' : 20, 'buffer' : 'b.mnv'},
 				\ ])
 <
 		Can also be used as a |method|: >
@@ -803,4 +803,4 @@ sign_unplacelist({list})				*sign_unplacelist()*
 <
 		Return type: list<number> or list<any>
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

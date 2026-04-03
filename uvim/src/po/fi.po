@@ -1,4 +1,4 @@
-# Finnish translation for Vim.
+# Finnish translation for MNV.
 # Copyright (C) 2003-2006 Free Software Foundation, Inc.
 # 2007-2018, Flammie Pirinen <flammie@iki.fi>
 #
@@ -14,7 +14,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim\n"
+"Project-Id-Version: MNV\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-17 00:43+0100\n"
 "PO-Revision-Date: 2023-05-07 16:29+0300\n"
@@ -588,8 +588,8 @@ msgstr[1] "vielä %d tiedostoa muokattavana, lopetetaanko silti?"
 msgid "unknown"
 msgstr "tuntematon"
 
-msgid "Greetings, Vim user!"
-msgstr "Tervehdys, Vimin käyttäjä."
+msgid "Greetings, MNV user!"
+msgstr "Tervehdys, MNVin käyttäjä."
 
 msgid "Already only one tab page"
 msgstr "Vain yksi välilehti jäljellä enää"
@@ -688,8 +688,8 @@ msgstr "[Liian iso tiedosto]"
 msgid "[Permission Denied]"
 msgstr "[Lupa kielletty]"
 
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: Luetaan vakiosyötteestä...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: Luetaan vakiosyötteestä...\n"
 
 msgid "Reading from stdin..."
 msgstr "Luetaan vakiosyötteestä..."
@@ -769,9 +769,9 @@ msgstr "[Vajaa viimeinen rivi]"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as well"
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as well"
 msgstr ""
-"W12: Varoitus: Tiedostoa %s on muutettu ja Vimin puskurissa on muutoksia "
+"W12: Varoitus: Tiedostoa %s on muutettu ja MNVin puskurissa on muutoksia "
 "tiedostoon"
 
 msgid "See \":help W12\" for more info."
@@ -850,8 +850,8 @@ msgstr "OK"
 msgid "Cancel"
 msgstr "Peru"
 
-msgid "Vim dialog"
-msgstr "Vim-ikkuna"
+msgid "MNV dialog"
+msgstr "MNV-ikkuna"
 
 msgid "Scrollbar Widget: Could not get geometry of thumb pixmap."
 msgstr "Vierityspalkki: Pixmapin geometria ei selviä."
@@ -889,11 +889,11 @@ msgstr "Ei"
 msgid "Input _Methods"
 msgstr "Syöte_menetelmät"
 
-msgid "VIM - Search and Replace..."
-msgstr "VIM - Etsi ja korvaa..."
+msgid "MNV - Search and Replace..."
+msgstr "MNV - Etsi ja korvaa..."
 
-msgid "VIM - Search..."
-msgstr "VIM - Etsi..."
+msgid "MNV - Search..."
+msgstr "MNV - Etsi..."
 
 msgid "Find what:"
 msgstr "Etsi:"
@@ -928,8 +928,8 @@ msgstr "Korvaa kaikki"
 msgid "_Close"
 msgstr "_Sulje"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: sessiomanageri lähetti die-pyynnön\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: sessiomanageri lähetti die-pyynnön\n"
 
 msgid "Close tab"
 msgstr "Sulje välilehti"
@@ -940,8 +940,8 @@ msgstr "Uusi välilehti"
 msgid "Open Tab..."
 msgstr "Avaa välilehti..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: Pääikkuna tuhoutui odottamatta\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: Pääikkuna tuhoutui odottamatta\n"
 
 msgid "&Filter"
 msgstr "&Suodata"
@@ -1023,8 +1023,8 @@ msgstr "&Ohita"
 msgid "no specific match"
 msgstr "ei tarkkaa täsmäystä"
 
-msgid "Vim - Font Selector"
-msgstr "Vim - fonttivalitsin"
+msgid "MNV - Font Selector"
+msgstr "MNV - fonttivalitsin"
 
 msgid "Name:"
 msgstr "Nimi:"
@@ -1209,14 +1209,14 @@ msgstr "ei voitu lisätä riviä"
 msgid "string cannot contain newlines"
 msgstr "merkkijono ei saa sisältää rivinvaihtoja"
 
-msgid "error converting Scheme values to Vim"
-msgstr "virhe Schemestä Vimiin konversiossa"
+msgid "error converting Scheme values to MNV"
+msgstr "virhe Schemestä MNViin konversiossa"
 
-msgid "Vim error: ~a"
-msgstr "Vim-virhe: ~a"
+msgid "MNV error: ~a"
+msgstr "MNV-virhe: ~a"
 
-msgid "Vim error"
-msgstr "Vim-virhe"
+msgid "MNV error"
+msgstr "MNV-virhe"
 
 msgid "buffer is invalid"
 msgstr "puskuri on virheellinen"
@@ -1227,8 +1227,8 @@ msgstr "ikkuna on virheellinen"
 msgid "linenr out of range"
 msgstr "rivinumero arvoalueen ulkopuolelta"
 
-msgid "not allowed in the Vim sandbox"
-msgstr "ei sallittu Vimin hiekkalaatikossa"
+msgid "not allowed in the MNV sandbox"
+msgstr "ei sallittu MNVin hiekkalaatikossa"
 
 msgid "invalid buffer number"
 msgstr "virheellinen puskurinumero"
@@ -1258,8 +1258,8 @@ msgstr "rivinumero arvoalueen ulkopuolella"
 msgid "unknown flag: "
 msgstr "tuntematon asetus: "
 
-msgid "unknown vimOption"
-msgstr "tuntematon vimOption"
+msgid "unknown mnvOption"
+msgstr "tuntematon mnvOption"
 
 msgid "keyboard interrupt"
 msgstr "näppäimistökeskeytys"
@@ -1442,8 +1442,8 @@ msgstr "netbeans ei toimi tässä käyttöliittymässä\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "-nb:tä ei voi käyttää, koska sitä ei käännetty mukaan\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "Tähän Vimiin ei ole käännetty diff-toimintoja mukaan."
+msgid "This MNV was not compiled with the diff feature."
+msgstr "Tähän MNViin ei ole käännetty diff-toimintoja mukaan."
 
 msgid "Attempt to open script file again: \""
 msgstr "Yritettiin avata skriptitiedostoa uudestaan: \""
@@ -1454,27 +1454,27 @@ msgstr "Ei voi avata luettavaksi: \""
 msgid "Cannot open for script output: \""
 msgstr "Ei voi avata skriptin tulostetta varten: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: Virhe: Gvimin käynnistys NetBeansistä ei onnistu\n"
+msgid "MNV: Error: Failure to start gmnv from NetBeans\n"
+msgstr "MNV: Virhe: Gmnvin käynnistys NetBeansistä ei onnistu\n"
 
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: Virhe: Tämä versio Vimistä ei toimi Cygwinin terminaalissa\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: Virhe: Tämä versio MNVistä ei toimi Cygwinin terminaalissa\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: Varoitus: Tuloste ei mene terminaalille\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: Varoitus: Tuloste ei mene terminaalille\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: Varoitus: Syöte ei tule terminaalilta\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: Varoitus: Syöte ei tule terminaalilta\n"
 
-msgid "pre-vimrc command line"
-msgstr "esi-vimrc-komentorivi"
+msgid "pre-mnvrc command line"
+msgstr "esi-mnvrc-komentorivi"
 
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"Lisätietoja: \"vim -h\"\n"
+"Lisätietoja: \"mnv -h\"\n"
 
 msgid "[file ..]       edit specified file(s)"
 msgstr "[tiedosto ..]       muokkaa tiedostoja"
@@ -1497,8 +1497,8 @@ msgstr ""
 "\n"
 "käyttö:"
 
-msgid " vim [arguments] "
-msgstr " vim [argumentit] "
+msgid " mnv [arguments] "
+msgstr " mnv [argumentit] "
 
 msgid ""
 "\n"
@@ -1529,14 +1529,14 @@ msgstr "--\t\t\tVain tiedostonimiä tämän jälkeen"
 msgid "--literal\t\tDon't expand wildcards"
 msgstr "--literal\t\tÄlä käsittele jokerimerkkejä"
 
-msgid "-register\t\tRegister this gvim for OLE"
-msgstr "-register\t\tRekisteröi gvim OLEa varten"
+msgid "-register\t\tRegister this gmnv for OLE"
+msgstr "-register\t\tRekisteröi gmnv OLEa varten"
 
-msgid "-unregister\t\tUnregister gvim for OLE"
-msgstr "-unregister\t\tPoista gvim OLE-rekisteristä"
+msgid "-unregister\t\tUnregister gmnv for OLE"
+msgstr "-unregister\t\tPoista gmnv OLE-rekisteristä"
 
-msgid "-g\t\t\tRun using GUI (like \"gvim\")"
-msgstr "-g\t\t\tAvaa GUI (kuten gvimillä)"
+msgid "-g\t\t\tRun using GUI (like \"gmnv\")"
+msgstr "-g\t\t\tAvaa GUI (kuten gmnvillä)"
 
 msgid "-f  or  --nofork\tForeground: Don't fork when starting GUI"
 msgstr "-f tai --nofork\tEdustalle: Älä haarauta GUIn käynnistyksessä"
@@ -1553,17 +1553,17 @@ msgstr "-E\t\t\tParanneltu Ex-tila"
 msgid "-s\t\t\tSilent (batch) mode (only for \"ex\")"
 msgstr "-s\t\t\tHiljainen (eräajo)tila (vain exillä)"
 
-msgid "-d\t\t\tDiff mode (like \"vimdiff\")"
-msgstr "-d\t\t\tDiff-tila (kuten vimdiffillä)"
+msgid "-d\t\t\tDiff mode (like \"mnvdiff\")"
+msgstr "-d\t\t\tDiff-tila (kuten mnvdiffillä)"
 
-msgid "-y\t\t\tEasy mode (like \"evim\", modeless)"
-msgstr "-y\t\t\tHelppokäyttötila (kuten evimissä, ilman tiloja)"
+msgid "-y\t\t\tEasy mode (like \"emnv\", modeless)"
+msgstr "-y\t\t\tHelppokäyttötila (kuten emnvissä, ilman tiloja)"
 
 msgid "-R\t\t\tReadonly mode (like \"view\")"
 msgstr "-R\t\t\tKirjoitussuojattu tila (kuten view'lla)"
 
-msgid "-Z\t\t\tRestricted mode (like \"rvim\")"
-msgstr "-Z\t\t\tRajoitettu tila (kuten rvimillä)"
+msgid "-Z\t\t\tRestricted mode (like \"rmnv\")"
+msgstr "-Z\t\t\tRajoitettu tila (kuten rmnvillä)"
 
 msgid "-m\t\t\tModifications (writing files) not allowed"
 msgstr "-m\t\t\tMuokkaukset (kirjoittaminen tiedostoon) pois käytöstä"
@@ -1624,11 +1624,11 @@ msgstr ""
 "--ttyfail\t\tLopeta jos syöttö tai tuloste ei tule terminaalista tai "
 "terminaaliin vastaavasti"
 
-msgid "-u <vimrc>\t\tUse <vimrc> instead of any .vimrc"
-msgstr "-u <vimrc>\t\tKäytä <vimrc>-tiedostoa .vimrc:iden sijasta"
+msgid "-u <mnvrc>\t\tUse <mnvrc> instead of any .mnvrc"
+msgstr "-u <mnvrc>\t\tKäytä <mnvrc>-tiedostoa .mnvrc:iden sijasta"
 
-msgid "-U <gvimrc>\t\tUse <gvimrc> instead of any .gvimrc"
-msgstr "-U <gvimrc>\t\tKäytä <gvimrc>-tiedostoa .gvimrc:iden sijasta"
+msgid "-U <gmnvrc>\t\tUse <gmnvrc> instead of any .gmnvrc"
+msgstr "-U <gmnvrc>\t\tKäytä <gmnvrc>-tiedostoa .gmnvrc:iden sijasta"
 
 msgid "--noplugin\t\tDon't load plugin scripts"
 msgstr "--noplugin\t\tÄlä lataa liitännäisiä"
@@ -1648,8 +1648,8 @@ msgstr "+\t\t\tAloita tiedoston lopusta"
 msgid "+<lnum>\t\tStart at line <lnum>"
 msgstr "+<rivi>\t\t\tAloita riviltä <rivi>"
 
-msgid "--cmd <command>\tExecute <command> before loading any vimrc file"
-msgstr "--cmd <komento>\tSuorita <komento> ennen vimrc:iden latausta"
+msgid "--cmd <command>\tExecute <command> before loading any mnvrc file"
+msgstr "--cmd <komento>\tSuorita <komento> ennen mnvrc:iden latausta"
 
 msgid "-c <command>\t\tExecute <command> after loading the first file"
 msgstr "-c <komento>\t\tSuorita <komento> ensimmäisen tiedoston latauduttua"
@@ -1669,15 +1669,15 @@ msgstr "-W <skripti>\tKirjoita komennot <skripti>-tiedostoon"
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\tMuokkaa salattua tiedostoa"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
-msgstr "-display <näyttö>\tYhdistä Vim tiettyyn X-palvelimeen"
+msgid "-display <display>\tConnect MNV to this particular X-server"
+msgstr "-display <näyttö>\tYhdistä MNV tiettyyn X-palvelimeen"
 
 msgid "-X\t\t\tDo not connect to X server"
 msgstr "-X\t\t\tÄlä yhdistä X-palvelimeen"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
 msgstr ""
-"--remote <tiedostoja>\tMuokkaa <tiedostoja> Vim-palvelimessa, jos mahdollista"
+"--remote <tiedostoja>\tMuokkaa <tiedostoja> MNV-palvelimessa, jos mahdollista"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr ""
@@ -1699,28 +1699,28 @@ msgstr ""
 "--remote-tab[-wait][-silent] <tiedostoja>  Kuten --remote, mutta avaa "
 "välilehti joka tiedostolle"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
 msgstr ""
-"--remote-send <näppäimiä>\tLähetä <näppäimiä> painalluksina Vimille ja lopeta"
+"--remote-send <näppäimiä>\tLähetä <näppäimiä> painalluksina MNVille ja lopeta"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
 msgstr ""
-"--remote-expr <ilmaus>\tKäsittele <ilmaus> Vim-palvelimella ja tulosta tulos"
+"--remote-expr <ilmaus>\tKäsittele <ilmaus> MNV-palvelimella ja tulosta tulos"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
-msgstr "--serverlist\t\tLuettele Vim-palvelinten nimet ja lopeta"
+msgid "--serverlist\t\tList available MNV server names and exit"
+msgstr "--serverlist\t\tLuettele MNV-palvelinten nimet ja lopeta"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
-msgstr "--servername <nimi>\tLähetä Vim-palvelimelle <nimi> tai luo se"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
+msgstr "--servername <nimi>\tLähetä MNV-palvelimelle <nimi> tai luo se"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
 msgstr "--startuptime <file>\tKirjoita käynnistysaikaviestit tiedostoon <file>"
 
-msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
-msgstr "-i <viminfo>\t\tKäytä <viminfo>-tiedostoa .viminfon sijaan"
+msgid "-i <mnvinfo>\t\tUse <mnvinfo> instead of .mnvinfo"
+msgstr "-i <mnvinfo>\t\tKäytä <mnvinfo>-tiedostoa .mnvinfon sijaan"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
-msgstr "--clean\t\t'nocompatible', Vimin oletukset,ei liitännäisiä tai viminfoa"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no mnvinfo"
+msgstr "--clean\t\t'nocompatible', MNVin oletukset,ei liitännäisiä tai mnvinfoa"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h tai --help\tTulosta ohje (tämä viesti) ja lopeta"
@@ -1730,29 +1730,29 @@ msgstr "--version\t\t\tTulosta versiotiedot ja lopeta"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Motif version):\n"
+"Arguments recognised by gmnv (Motif version):\n"
 msgstr ""
 "\n"
-"Gvimin (Motif-version) tuntemat argumentit:\n"
+"Gmnvin (Motif-version) tuntemat argumentit:\n"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (neXtaw version):\n"
+"Arguments recognised by gmnv (neXtaw version):\n"
 msgstr ""
 "\n"
-"Gvimin (neXtaw-version) tuntemat argumentit:\n"
+"Gmnvin (neXtaw-version) tuntemat argumentit:\n"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Athena version):\n"
+"Arguments recognised by gmnv (Athena version):\n"
 msgstr ""
 "\n"
-"Gvimin (Athena-version) tuntemat argumentit:\n"
+"Gmnvin (Athena-version) tuntemat argumentit:\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <näyttö>\tSuorita Vim <näytössä>"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <näyttö>\tSuorita MNV <näytössä>"
 
-msgid "-iconic\t\tStart Vim iconified"
+msgid "-iconic\t\tStart MNV iconified"
 msgstr "-iconic\t\tKäynnistä pienennettynä"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
@@ -1793,30 +1793,30 @@ msgstr "-xrm <resurssi>\tAseta resurssi"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (GTK+ version):\n"
+"Arguments recognised by gmnv (GTK+ version):\n"
 msgstr ""
 "\n"
-"Gvimin (GTK+-version) tuntemat argumentit:\n"
+"Gmnvin (GTK+-version) tuntemat argumentit:\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <näyttö>\tSuorita Vim näytöllä <näyttö> (myös: --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <näyttö>\tSuorita MNV näytöllä <näyttö> (myös: --display)"
 
 # X-ikkunointijärjestelmässä saman sovelluksen saman luokan ikkunat
 # tunnistetaan rooliresursseista
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr "--role <rooli>\tAseta pääikkunalle ainutlaatuinen rooli tunnisteeksi"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\tAvaa Vim annettuun GTK-olioon"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\tAvaa MNV annettuun GTK-olioon"
 
-msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
-msgstr "--echo-wid\t\tTulosta gvimin Window ID vakiotulosteeseen"
+msgid "--echo-wid\t\tMake gmnv echo the Window ID on stdout"
+msgstr "--echo-wid\t\tTulosta gmnvin Window ID vakiotulosteeseen"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
-msgstr "-P <otsikko>\tAvaa Vim isäntäohjelman sisään"
+msgid "-P <parent title>\tOpen MNV inside parent application"
+msgstr "-P <otsikko>\tAvaa MNV isäntäohjelman sisään"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\tAvaa Vim annettuun win32-olioon"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\tAvaa MNV annettuun win32-olioon"
 
 msgid "No abbreviation found"
 msgstr "Lyhennettä ei löydy"
@@ -1856,16 +1856,16 @@ msgstr "Ei voi lukea lohkoa 0 kohteesta "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"Muutoksia ei tehty, tai Vim ei päivittänyt swap-tiedostoa."
+"Muutoksia ei tehty, tai MNV ei päivittänyt swap-tiedostoa."
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " ei toimi tämän version Vimin kanssa.\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " ei toimi tämän version MNVin kanssa.\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "Käytä Vimin versiota 3.0\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "Käytä MNVin versiota 3.0\n"
 
 msgid " cannot be used on this computer.\n"
 msgstr " ei toimi tällä koneella.\n"
@@ -1927,7 +1927,7 @@ msgid "???MANY LINES MISSING"
 msgstr "???PALJON RIVEJÄ PUUTTUU"
 
 msgid "???LINE COUNT WRONG"
-msgstr "???RIVIMÄÄRÄ PIELESSÄ"
+msgstr "???RIMNVÄÄRÄ PIELESSÄ"
 
 msgid "???EMPTY BLOCK"
 msgstr "???TYHJÄ LOHKO"
@@ -2007,11 +2007,11 @@ msgstr "  ajalta: "
 msgid "             dated: "
 msgstr "            ajalta: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [Vimin 3.0-versiosta]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [MNVin 3.0-versiosta]"
 
-msgid "         [does not look like a Vim swap file]"
-msgstr "         [ei näytä Vimin swap-tiedostolta]"
+msgid "         [does not look like a MNV swap file]"
+msgstr "         [ei näytä MNVin swap-tiedostolta]"
 
 msgid "         file name: "
 msgstr "      tiedostonimi: "
@@ -2058,10 +2058,10 @@ msgstr " (VIELÄ KÄYNNISSÄ)"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [ei toimi tämän Vim-version kanssa]"
+"         [ei toimi tämän MNV-version kanssa]"
 
 msgid ""
 "\n"
@@ -2121,8 +2121,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) Tiedostonmuokkausistunto on kaatunut.\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    Jos näin on, käytä komentoa :recover tai vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    Jos näin on, käytä komentoa :recover tai mnv -r "
 
 msgid ""
 "\"\n"
@@ -2150,8 +2150,8 @@ msgstr "Swap-tiedosto \""
 msgid "\" already exists!"
 msgstr "\" on jo olemassa!"
 
-msgid "VIM - ATTENTION"
-msgstr "VIM - HUOMAUTUS"
+msgid "MNV - ATTENTION"
+msgstr "MNV - HUOMAUTUS"
 
 msgid "Swap file already exists!"
 msgstr "Swap-tiedosto on jo olemassa."
@@ -2206,7 +2206,7 @@ msgstr "Virhe suoritettaessa komentoja %s:"
 msgid "line %4ld:"
 msgstr "rivi %4ld:"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Käännöksen ylläpitäjä: Flammie Pirinen <flammie@iki.fi>"
 
 msgid "Interrupt: "
@@ -2282,11 +2282,11 @@ msgstr "Kutsutaan kuorta suorittamaan: %s"
 msgid "Warning: terminal cannot highlight"
 msgstr "Varoitus: terminaalista puuttuu korostus"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
-msgstr "Kirjoita :qa! ja <Enter> niin hylkäät muutokset ja lopetat Vimin"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
+msgstr "Kirjoita :qa! ja <Enter> niin hylkäät muutokset ja lopetat MNVin"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "Kirjoita :qa! ja <Enter> niin lopetat Vimin"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "Kirjoita :qa! ja <Enter> niin lopetat MNVin"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -2384,8 +2384,8 @@ msgstr "Asetukselle %s"
 msgid "cannot open "
 msgstr "ei voi avata "
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: Ei voi avata ikkunaa\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: Ei voi avata ikkunaa\n"
 
 msgid "Need Amigados version 2.04 or later\n"
 msgstr "Amigados 2.04 tai uudempi tarvitaan\n"
@@ -2401,8 +2401,8 @@ msgid "Cannot create "
 msgstr "Ei voi luoda "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vim sulkeutuu koodilla %d\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNV sulkeutuu koodilla %d\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "ei voi vaihtaa konsolitilaa?\n"
@@ -2442,10 +2442,10 @@ msgstr "X-näytön avaus vei %ld millisekuntia"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: X-virhe\n"
+"MNV: X-virhe\n"
 
 #, c-format
 msgid "restoring display %s"
@@ -2550,8 +2550,8 @@ msgid "At line"
 msgstr "Rivillä"
 
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: Napattiin %s\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: Napattiin %s\n"
 
 msgid "close"
 msgstr "sulkeminen"
@@ -2563,16 +2563,16 @@ msgid "shutdown"
 msgstr "sammutus"
 
 msgid ""
-"VIMRUN.EXE not found in your $PATH.\n"
+"MNVRUN.EXE not found in your $PATH.\n"
 "External commands will not pause after completion.\n"
-"See  :help win32-vimrun  for more information."
+"See  :help win32-mnvrun  for more information."
 msgstr ""
-"VIMRUN.EXEä ei löydy muuttujasta $PATH.\n"
+"MNVRUN.EXEä ei löydy muuttujasta $PATH.\n"
 "Ulkoiset komennot eivät pysähdy suorituksen lopussa.\n"
-"Lisätietoja komennolla  :help win32-vimrun."
+"Lisätietoja komennolla  :help win32-mnvrun."
 
-msgid "Vim Warning"
-msgstr "Vim-varoitus"
+msgid "MNV Warning"
+msgstr "MNV-varoitus"
 
 #, c-format
 msgid "shell returned %d"
@@ -2700,8 +2700,8 @@ msgstr "Etsitään ilmausta %s"
 msgid "not found in '%s': \"%s\""
 msgstr "'%s' ei löydy kohteesta: %s"
 
-msgid "Source Vim script"
-msgstr "Lataa vim-skripti"
+msgid "Source MNV script"
+msgstr "Lataa mnv-skripti"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -3292,8 +3292,8 @@ msgstr[1] "%ld sekuntia sitten"
 msgid "new shell started\n"
 msgstr "uusi kuori avattu\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: Virhe luettaessa syötettä, poistutaan...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: Virhe luettaessa syötettä, poistutaan...\n"
 
 msgid "No undo possible; continue anyway"
 msgstr "Ei voi kumota, jatketaan silti"
@@ -3567,17 +3567,17 @@ msgstr "GUIlla."
 msgid "  Features included (+) or not (-):\n"
 msgstr " Ominaisuudet mukana (+) ja poissa (-):\n"
 
-msgid "   system vimrc file: \""
-msgstr "   järjestelmän vimrc: \""
+msgid "   system mnvrc file: \""
+msgstr "   järjestelmän mnvrc: \""
 
-msgid "     user vimrc file: \""
-msgstr "     käyttäjän vimrc: \""
+msgid "     user mnvrc file: \""
+msgstr "     käyttäjän mnvrc: \""
 
-msgid " 2nd user vimrc file: \""
-msgstr " 2. käyttäjän vimrc: \""
+msgid " 2nd user mnvrc file: \""
+msgstr " 2. käyttäjän mnvrc: \""
 
-msgid " 3rd user vimrc file: \""
-msgstr " 3. käyttäjän vimrc: \""
+msgid " 3rd user mnvrc file: \""
+msgstr " 3. käyttäjän mnvrc: \""
 
 msgid "      user exrc file: \""
 msgstr "      käyttäjän exrc: \""
@@ -3585,17 +3585,17 @@ msgstr "      käyttäjän exrc: \""
 msgid "  2nd user exrc file: \""
 msgstr "  2. käyttäjän exrc: \""
 
-msgid "  system gvimrc file: \""
-msgstr "  järjestelmän gvimrc: \""
+msgid "  system gmnvrc file: \""
+msgstr "  järjestelmän gmnvrc: \""
 
-msgid "    user gvimrc file: \""
-msgstr "    käyttäjän gvimrc: \""
+msgid "    user gmnvrc file: \""
+msgstr "    käyttäjän gmnvrc: \""
 
-msgid "2nd user gvimrc file: \""
-msgstr "2. käyttäjän gvimrc: \""
+msgid "2nd user gmnvrc file: \""
+msgstr "2. käyttäjän gmnvrc: \""
 
-msgid "3rd user gvimrc file: \""
-msgstr "3. käyttäjän gvimrc: \""
+msgid "3rd user gmnvrc file: \""
+msgstr "3. käyttäjän gmnvrc: \""
 
 msgid "       defaults file: \""
 msgstr "       defaults-tiedosto: \""
@@ -3603,11 +3603,11 @@ msgstr "       defaults-tiedosto: \""
 msgid "    system menu file: \""
 msgstr "    järjestelmävalikko: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "  $VIMin fallback: \""
+msgid "  fall-back for $MNV: \""
+msgstr "  $MNVin fallback: \""
 
-msgid " f-b for $VIMRUNTIME: \""
-msgstr " $VIMRUNTIMEn f-b: \""
+msgid " f-b for $MNVRUNTIME: \""
+msgstr " $MNVRUNTIMEn f-b: \""
 
 msgid "Compilation: "
 msgstr "Käännös: "
@@ -3621,8 +3621,8 @@ msgstr "Linkitys: "
 msgid "  DEBUG BUILD"
 msgstr "  DEBUG-versio"
 
-msgid "VIM - Vi IMproved"
-msgstr "VIM - Vi IMproved"
+msgid "MNV - MNV is not Vim"
+msgstr "MNV - MNV is not Vim"
 
 msgid "version "
 msgstr "versio "
@@ -3630,8 +3630,8 @@ msgstr "versio "
 msgid "by Bram Moolenaar et al."
 msgstr "tekijät Bram Moolenaar et al."
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim on avointa lähdekoodia ja vapaasti jaossa"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV on avointa lähdekoodia ja vapaasti jaossa"
 
 msgid "Help poor children in Uganda!"
 msgstr "Auta Ugandan köyhiä lapsia."
@@ -3651,8 +3651,8 @@ msgstr "kirjoita :help version9<Enter> versiotietoja varten"
 msgid "Running in Vi compatible mode"
 msgstr "Suoritetaan Vi-yhteensopivuustilaa"
 
-msgid "type  :set nocp<Enter>        for Vim defaults"
-msgstr "kirjoita :set nocp<Enter>      Vimin oletuksiin"
+msgid "type  :set nocp<Enter>        for MNV defaults"
+msgstr "kirjoita :set nocp<Enter>      MNVin oletuksiin"
 
 msgid "type  :help cp-default<Enter> for info on this"
 msgstr "kirjoita :help cp-default<Enter> ohjetta oletuksista varten"
@@ -3672,14 +3672,14 @@ msgstr "                              kahta tilaa varten "
 msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "valikko Muokkaa->Yleiset asetukset->Vaihda Vi-yhteensopivuutta"
 
-msgid "                              for Vim defaults   "
-msgstr "                              Vim-oletuksia varten   "
+msgid "                              for MNV defaults   "
+msgstr "                              MNV-oletuksia varten   "
 
-msgid "Sponsor Vim development!"
-msgstr "Tue Vimin kehitystä."
+msgid "Sponsor MNV development!"
+msgstr "Tue MNVin kehitystä."
 
-msgid "Become a registered Vim user!"
-msgstr "Rekisteröidy Vim-käyttäjäksi."
+msgid "Become a registered MNV user!"
+msgstr "Rekisteröidy MNV-käyttäjäksi."
 
 msgid "type  :help sponsor<Enter>    for information "
 msgstr "kirjoita :help sponsor<Enter>  lisätietoja varten "
@@ -3743,8 +3743,8 @@ msgstr ""
 "# Bar-rivit, kopiotu sellaisenaan:\n"
 
 #, c-format
-msgid "%sviminfo: %s in line: "
-msgstr "%sviminfo: %s rivillä: "
+msgid "%smnvinfo: %s in line: "
+msgstr "%smnvinfo: %s rivillä: "
 
 msgid ""
 "\n"
@@ -3804,8 +3804,8 @@ msgstr ""
 "# Hyppylista (uusin ensiksi):\n"
 
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# Vimin %s generoima viminfo-tiedosto.\n"
+msgid "# This mnvinfo file was generated by MNV %s.\n"
+msgstr "# MNVin %s generoima mnvinfo-tiedosto.\n"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -3818,8 +3818,8 @@ msgid "# Value of 'encoding' when this file was written\n"
 msgstr "# encoding-muuttujan arvo tiedostoa kirjoitettaessa\n"
 
 #, c-format
-msgid "Reading viminfo file \"%s\"%s%s%s%s"
-msgstr "Luetaan viminfo-tiedostoa \"%s\"%s%s%s%s"
+msgid "Reading mnvinfo file \"%s\"%s%s%s%s"
+msgstr "Luetaan mnvinfo-tiedostoa \"%s\"%s%s%s%s"
 
 msgid " info"
 msgstr " info"
@@ -3834,8 +3834,8 @@ msgid " FAILED"
 msgstr " EPÄONNISTUI"
 
 #, c-format
-msgid "Writing viminfo file \"%s\""
-msgstr "Kirjoitetaan viminfo-tiedostoa %s"
+msgid "Writing mnvinfo file \"%s\""
+msgstr "Kirjoitetaan mnvinfo-tiedostoa %s"
 
 msgid "Already only one window"
 msgstr "Enää yksi ikkuna jäljellä"
@@ -3850,32 +3850,32 @@ msgstr "Komento ei toimi, Perl kirjastoa ei voinut ladata."
 msgid "E299: Perl evaluation forbidden in sandbox without the Safe module"
 msgstr "E299: Perl-suoritus kielletty hiekkalaatikossa ilman Safe-moduulia"
 
-msgid "Edit with Vim using &tabpages"
-msgstr "Muokkaa Vimillä &tabisivujen kanssa"
+msgid "Edit with MNV using &tabpages"
+msgstr "Muokkaa MNVillä &tabisivujen kanssa"
 
-msgid "Edit with single &Vim"
-msgstr "Muokkaa yhdellä &Vimillä"
+msgid "Edit with single &MNV"
+msgstr "Muokkaa yhdellä &MNVillä"
 
-msgid "Diff with Vim"
-msgstr "Diffi Vimillä"
+msgid "Diff with MNV"
+msgstr "Diffi MNVillä"
 
-msgid "Edit with &Vim"
-msgstr "Muokkaa &Vimillä"
+msgid "Edit with &MNV"
+msgstr "Muokkaa &MNVillä"
 
-msgid "Edit with existing Vim"
-msgstr "Muokkaa olemassa olevalla Vimillä"
+msgid "Edit with existing MNV"
+msgstr "Muokkaa olemassa olevalla MNVillä"
 
-msgid "Edit with existing Vim - "
-msgstr "Muokkaa olemassa olevalla Vimillä - "
+msgid "Edit with existing MNV - "
+msgstr "Muokkaa olemassa olevalla MNVillä - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "Muokkaa valittuja tiedostoja Vimillä"
+msgid "Edits the selected file(s) with MNV"
+msgstr "Muokkaa valittuja tiedostoja MNVillä"
 
-msgid "Error creating process: Check if gvim is in your path!"
-msgstr "Virhe prosessin käynnistämisessä: Varmista että gvim on polulla."
+msgid "Error creating process: Check if gmnv is in your path!"
+msgstr "Virhe prosessin käynnistämisessä: Varmista että gmnv on polulla."
 
-msgid "gvimext.dll error"
-msgstr "gvimext.dll-virhe"
+msgid "gmnvext.dll error"
+msgstr "gmnvext.dll-virhe"
 
 msgid "Interrupted"
 msgstr "Keskeytetty"
@@ -3886,9 +3886,9 @@ msgstr "E10: \\:n jälkeen pitää tulla /, ? tai &"
 msgid "E11: Invalid in command-line window; <CR> executes, CTRL-C quits"
 msgstr "E11: Virheellinen komentorivi-ikkuna, <CR> suorittaa, Ctrl C lopettaa"
 
-msgid "E12: Command not allowed from exrc/vimrc in current dir or tag search"
+msgid "E12: Command not allowed from exrc/mnvrc in current dir or tag search"
 msgstr ""
-"E12: Komentoa ei tueta exrc:ssä tai vimrc:ssä tässä hakemistossa tai tägihaussa"
+"E12: Komentoa ei tueta exrc:ssä tai mnvrc:ssä tässä hakemistossa tai tägihaussa"
 
 msgid "E13: File exists (add ! to override)"
 msgstr "E13: Tiedosto on jo olemassa (lisää ! ohittaaksesi)"
@@ -4301,16 +4301,16 @@ msgstr "E134: Rivialuetta ei voi siirtää itsensä päälle"
 msgid "E135: *Filter* Autocommands must not change current buffer"
 msgstr "E135: *Filter*-autocommand ei voi vaihtaa puskuria"
 
-msgid "E136: viminfo: Too many errors, skipping rest of file"
-msgstr "E136: viminfo: liikaa virheitä, ohitetaan lopputiedosto"
+msgid "E136: mnvinfo: Too many errors, skipping rest of file"
+msgstr "E136: mnvinfo: liikaa virheitä, ohitetaan lopputiedosto"
 
 #, c-format
-msgid "E137: Viminfo file is not writable: %s"
-msgstr "E137: Viminfo-tiedostoon ei voitu kirjoittaa: %s"
+msgid "E137: MNVinfo file is not writable: %s"
+msgstr "E137: MNVinfo-tiedostoon ei voitu kirjoittaa: %s"
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: Viminfo-tiedoston kirjoittaminen ei onnistu %s."
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: MNVinfo-tiedoston kirjoittaminen ei onnistu %s."
 
 msgid "E139: File is loaded in another buffer"
 msgstr "E139: Tiedosto on ladattu toiseen puskuriin"
@@ -4333,8 +4333,8 @@ msgstr "E143: Autocommand poisti uuden puskurin odotuksen vastaisesti %s"
 msgid "E144: Non-numeric argument to :z"
 msgstr "E144: :z:n argumentti ei ole numero"
 
-msgid "E145: Shell commands and some functionality not allowed in rvim"
-msgstr "E145: Kuoren komennot ja muut toiminnot eivät toimi rvimissä"
+msgid "E145: Shell commands and some functionality not allowed in rmnv"
+msgstr "E145: Kuoren komennot ja muut toiminnot eivät toimi rmnvissä"
 
 msgid "E146: Regular expressions can't be delimited by letters"
 msgstr "E146: Säännöllistä ilmausta ei voi rajata kirjaimilla"
@@ -4516,8 +4516,8 @@ msgstr "E193: %s ei ole funktion sisällä"
 msgid "E194: No alternate file name to substitute for '#'"
 msgstr "E194: Ei vaihtoehtoista tiedostonimeä #:lle"
 
-msgid "E195: Cannot open viminfo file for reading"
-msgstr "E195: Viminfoa ei voi avata lukemista varten"
+msgid "E195: Cannot open mnvinfo file for reading"
+msgstr "E195: MNVinfoa ei voi avata lukemista varten"
 
 msgid "E196: No digraphs in this version"
 msgstr "E196: Digraafeja ei ole tässä versiossa"
@@ -4711,8 +4711,8 @@ msgstr "E249: Ikkunan asettelu vaihtui odottamatta"
 msgid "E250: Fonts for the following charsets are missing in fontset %s:"
 msgstr "E250: Seuraavien merkistöjoukkojen fontit puuttuvat fontsetistä %s:"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
-msgstr "E251: VIMin instanssin rekisteriarvo on virheellinen.  Poistettiin."
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
+msgstr "E251: MNVin instanssin rekisteriarvo on virheellinen.  Poistettiin."
 
 #, c-format
 msgid "E252: Fontset name: %s - Font '%s' is not fixed-width"
@@ -4803,10 +4803,10 @@ msgid "E279: Sorry, ++shell is not supported on this system"
 msgstr "E279: ++shell ei toimi tällä järjestelmällä"
 
 msgid ""
-"E280: TCL FATAL ERROR: reflist corrupt!? Please report this to vim-dev@vim.org"
+"E280: TCL FATAL ERROR: reflist corrupt!? Please report this to mnv-dev@mnv.org"
 msgstr ""
 "E280: Kriittinen TCL-virhe: reflist hajalla? Ilmoita asiasta postituslistalle "
-"vim-dev@vim.org"
+"mnv-dev@mnv.org"
 
 #, c-format
 msgid "E282: Cannot read from \"%s\""
@@ -4890,8 +4890,8 @@ msgid "E306: Cannot open %s"
 msgstr "E306: Ei voi avata tiedostoa %s"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s ei ole Vimin swap-tiedosto"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s ei ole MNVin swap-tiedosto"
 
 msgid "E308: Warning: Original file may have been changed"
 msgstr "E308: Varoitus: Alkuperäistä tiedostoa saattaa olla muutettu"
@@ -4956,7 +4956,7 @@ msgstr "E322: Rivinumero arvoalueen ulkopuolelta: %ld on loppua suurempi"
 
 #, c-format
 msgid "E323: Line count wrong in block %ld"
-msgstr "E323: Rivimäärä väärin lohkossa %ld"
+msgstr "E323: Rimnväärä väärin lohkossa %ld"
 
 msgid "E324: Can't open PostScript output file"
 msgstr "E324: PostScript-tulostetiedoston avaus ei onnistu"
@@ -5936,8 +5936,8 @@ msgstr "E606: :finally ilman komentoa :try"
 msgid "E607: Multiple :finally"
 msgstr "E607: :finally monta kertaa"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: Vim-alkuisia poikkeuksia ei voi heittää :throw-komennolla"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: MNV-alkuisia poikkeuksia ei voi heittää :throw-komennolla"
 
 #, c-format
 msgid "E609: Cscope error: %s"
@@ -5956,15 +5956,15 @@ msgstr "E612: Liikaa merkkejä määritelty"
 msgid "E613: Unknown printer font: %s"
 msgstr "E613: Tuntematon tulostimen fontti: %s"
 
-msgid "E614: vim_SelFile: can't return to current directory"
-msgstr "E614: vim_SelFile: nykyiseen hakemistoon ei voi palata"
+msgid "E614: mnv_SelFile: can't return to current directory"
+msgstr "E614: mnv_SelFile: nykyiseen hakemistoon ei voi palata"
 
-msgid "E615: vim_SelFile: can't get current directory"
-msgstr "E615: vim_SelFile: nykyistä hakemistoa ei saada selville"
+msgid "E615: mnv_SelFile: can't get current directory"
+msgstr "E615: mnv_SelFile: nykyistä hakemistoa ei saada selville"
 
 #, c-format
-msgid "E616: vim_SelFile: can't get font %s"
-msgstr "E616: vim_SelFile: ei saada fonttia %s"
+msgid "E616: mnv_SelFile: can't get font %s"
+msgstr "E616: mnv_SelFile: ei saada fonttia %s"
 
 msgid "E617: Cannot be changed in the GTK GUI"
 msgstr "E617: Ei voi muuttaa GTK-GUIssa"
@@ -6091,8 +6091,8 @@ msgstr "E677: Väliaikaistiedostoon kirjoittaminen ei onnistunut"
 msgid "E678: Invalid character after %s%%[dxouU]"
 msgstr "E678: Virheellinen merkki merkinnän %s%%[dxouU] jäljessä"
 
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: Rekursiivinen silmukka syncolor.vimissä"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: Rekursiivinen silmukka syncolor.mnvissä"
 
 #, c-format
 msgid "E680: <buffer=%d>: invalid buffer number"
@@ -6406,8 +6406,8 @@ msgstr "E770: Tukematon osio oikaisulukutiedostossa"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: Vanha oikaisulukutiedosto vaatii päivittämistä"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: Oikaisulukutiedosto on uudemmalle Vimille"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: Oikaisulukutiedosto on uudemmalle MNVille"
 
 #, c-format
 msgid "E773: Symlink loop for \"%s\""
@@ -6434,8 +6434,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: Vanha .sug-tiedosto pitää päivittää: %s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: .sug-tiedosto on uudemmalle Vimille: %s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: .sug-tiedosto on uudemmalle MNVille: %s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -6623,8 +6623,8 @@ msgid "E832: Non-encrypted file has encrypted undo file: %s"
 msgstr "E832: Salaamattomalla tiedostolla on salattu kumoustiedosto: %s"
 
 #, c-format
-msgid "E833: %s is encrypted and this version of Vim does not support encryption"
-msgstr "E833: %s on salattu eikä tämä Vim tue salausta"
+msgid "E833: %s is encrypted and this version of MNV does not support encryption"
+msgstr "E833: %s on salattu eikä tämä MNV tue salausta"
 
 msgid "E834: Conflicts with value of 'listchars'"
 msgstr "E834: listcharsin arvoissa on ristiriitoja"
@@ -6632,10 +6632,10 @@ msgstr "E834: listcharsin arvoissa on ristiriitoja"
 msgid "E835: Conflicts with value of 'fillchars'"
 msgstr "E835: fillcharsin arvossa on ristiriitoja"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
+msgid "E836: This MNV cannot execute :python after using :py3"
 msgstr "E836: Python: Ei voi käyttää komentoja :py ja :py3 samassa istunnossa"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
+msgid "E837: This MNV cannot execute :py3 after using :python"
 msgstr "E837: Python: Ei voi käyttää komentoja :py ja :py3 samassa istunnossa"
 
 msgid "E838: NetBeans is not supported with this GUI"
@@ -6704,8 +6704,8 @@ msgstr "E857: Sanakirjassa pitää olla avain %s"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: Eval ei palauttanut python-oliota"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: Ei voitu muuntaa python-oliota vim-arvoksi"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: Ei voitu muuntaa python-oliota mnv-arvoksi"
 
 msgid "E860: Need 'id' and 'type' with 'both'"
 msgstr "E860: Tarvitaan id ja type parametrilla both"
@@ -6784,11 +6784,11 @@ msgstr "E878: (NFA-regexp) Ei voitu allokoida muistia polkujen läpikäyntiin."
 msgid "E879: (NFA regexp) Too many \\z("
 msgstr "E879: (NFA regexp) Liikaa merkkejä \\z("
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
-msgstr "E880: Vim ei voi käsitellä SystemExit-poikkeusta pythonilta"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
+msgstr "E880: MNV ei voi käsitellä SystemExit-poikkeusta pythonilta"
 
 msgid "E881: Line count changed unexpectedly"
-msgstr "E881: Rivimäärä vaihtui odottamatta"
+msgstr "E881: Rimnväärä vaihtui odottamatta"
 
 msgid "E882: Uniq compare function failed"
 msgstr "E882: Uniqin vertausfunktio ei onnistunut"
@@ -6807,8 +6807,8 @@ msgid "E885: Not possible to change sign %s"
 msgstr "E885: Ei voida muuttaa merkkiä %s"
 
 #, c-format
-msgid "E886: Can't rename viminfo file to %s!"
-msgstr "E886: Viminfo-tiedostoa ei voi nimetä uudelleen nimelle %s."
+msgid "E886: Can't rename mnvinfo file to %s!"
+msgstr "E886: MNVinfo-tiedostoa ei voi nimetä uudelleen nimelle %s."
 
 msgid ""
 "E887: Sorry, this command is disabled, the Python's site module could not be "
@@ -6963,8 +6963,8 @@ msgid "E928: String required"
 msgstr "E928: Merkkijono puuttuu"
 
 #, c-format
-msgid "E929: Too many viminfo temp files, like %s!"
-msgstr "E929: Liikaa viminfo-väliaikaistiedostoja, kuten %s."
+msgid "E929: Too many mnvinfo temp files, like %s!"
+msgstr "E929: Liikaa mnvinfo-väliaikaistiedostoja, kuten %s."
 
 msgid "E930: Cannot use :redir inside execute()"
 msgstr "E930: Komentoa :redir ei voi käyttää funktion execute() sisällä"
@@ -7140,8 +7140,8 @@ msgstr "E979: Blobin indeksi %ld rajojen ulkopuolella"
 msgid "E980: Lowlevel input not supported"
 msgstr "E980: Matalan tason syötettä ei tueta"
 
-msgid "E981: Command not allowed in rvim"
-msgstr "E981: Komennot eivät toimi rvimissä"
+msgid "E981: Command not allowed in rmnv"
+msgstr "E981: Komennot eivät toimi rmnvissä"
 
 msgid "E982: ConPTY is not available"
 msgstr "E982: ConPTY ei ole saatavilla"
@@ -7162,8 +7162,8 @@ msgstr "E986: Tägipinoa ei voi muokata tagfuncissa"
 msgid "E987: Invalid return value from tagfunc"
 msgstr "E987: Väärä palautusarvo tagfuncissa"
 
-msgid "E988: GUI cannot be used. Cannot execute gvim.exe."
-msgstr "E988: GUIta ei voi käyttää eli gvim.exe ei toimi."
+msgid "E988: GUI cannot be used. Cannot execute gmnv.exe."
+msgstr "E988: GUIta ei voi käyttää eli gmnv.exe ei toimi."
 
 msgid "E989: Non-default argument follows default argument"
 msgstr "E989: Oletusarvoton argumentti oletusarvollisen jälkeen"
@@ -7362,21 +7362,21 @@ msgstr "E1036: %c vaatii numeron tai liukuluvun"
 msgid "E1037: Cannot use \"%s\" with %s"
 msgstr "E1037: Ei voi käyttää juttua %s jutun %s kanssa"
 
-msgid "E1038: \"vim9script\" can only be used in a script"
-msgstr "E1038: vim9script toimii vain skriptissä"
+msgid "E1038: \"mnv9script\" can only be used in a script"
+msgstr "E1038: mnv9script toimii vain skriptissä"
 
-msgid "E1039: \"vim9script\" must be the first command in a script"
-msgstr "E1039: ”vim9script” on oltava skriptin ensimmäinen komento"
+msgid "E1039: \"mnv9script\" must be the first command in a script"
+msgstr "E1039: ”mnv9script” on oltava skriptin ensimmäinen komento"
 
-msgid "E1040: Cannot use :scriptversion after :vim9script"
-msgstr "E1040: :scriptversion ei toimi :vim9scriptin jälkeen"
+msgid "E1040: Cannot use :scriptversion after :mnv9script"
+msgstr "E1040: :scriptversion ei toimi :mnv9scriptin jälkeen"
 
 #, c-format
 msgid "E1041: Redefining script item %s"
 msgstr "E1041: Skriptin kohde %s määritelty uudelleen"
 
-msgid "E1042: Export can only be used in vim9script"
-msgstr "E1042: Export toimii vain vim9scriptissä"
+msgid "E1042: Export can only be used in mnv9script"
+msgstr "E1042: Export toimii vain mnv9scriptissä"
 
 msgid "E1043: Invalid command after :export"
 msgstr "E1043: Virheellinen komento :exportin jälkeen"
@@ -7484,8 +7484,8 @@ msgstr "E1074: Pisteen jälkeen ei voi käyttää välilyöntejä"
 msgid "E1075: Namespace not supported: %s"
 msgstr "E1075: Nimiavaruutta ei tueta: %s"
 
-msgid "E1076: This Vim is not compiled with float support"
-msgstr "E1076: Tähän Vimiin ei ole käännetty liukulukutoimintoja mukaan"
+msgid "E1076: This MNV is not compiled with float support"
+msgstr "E1076: Tähän MNViin ei ole käännetty liukulukutoimintoja mukaan"
 
 #, c-format
 msgid "E1077: Missing argument type for %s"
@@ -7499,8 +7499,8 @@ msgid "E1083: Missing backtick"
 msgstr "E1083: Takapilkku puuttuu"
 
 #, c-format
-msgid "E1084: Cannot delete Vim9 script function %s"
-msgstr "E1084: Vim9-skriptiunktiota %s ei voi poistaa"
+msgid "E1084: Cannot delete MNV9 script function %s"
+msgstr "E1084: MNV9-skriptiunktiota %s ei voi poistaa"
 
 #, c-format
 msgid "E1085: Not a callable type: %s"
@@ -7548,8 +7548,8 @@ msgid "E1099: Unknown error while executing %s"
 msgstr "E1099: Tuntematon virhe suoritettaessa koodia %s"
 
 #, c-format
-msgid "E1100: Command not supported in Vim9 script (missing :var?): %s"
-msgstr "E1100: Komentoa ei tueta Vim9-skriptissä (puuttuuko :var?): %s"
+msgid "E1100: Command not supported in MNV9 script (missing :var?): %s"
+msgstr "E1100: Komentoa ei tueta MNV9-skriptissä (puuttuuko :var?): %s"
 
 #, c-format
 msgid "E1101: Cannot declare a script variable in a function: %s"
@@ -7637,14 +7637,14 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: Pilkku ennen argumenttia puuttuu: %s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: %s ei toimi vanhantyyppisessä vim-skriptissä"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: %s ei toimi vanhantyyppisessä mnv-skriptissä"
 
 msgid "E1125: Final requires a value"
 msgstr "E1125: Final vaatii arvon"
 
-msgid "E1126: Cannot use :let in Vim9 script"
-msgstr "E1126: Komento :let ei toimi Vim9-skriptissä"
+msgid "E1126: Cannot use :let in MNV9 script"
+msgstr "E1126: Komento :let ei toimi MNV9-skriptissä"
 
 msgid "E1127: Missing name after dot"
 msgstr "E1127: Nimi puuttuu pisteen perästä"
@@ -7747,8 +7747,8 @@ msgstr "E1156: Argumenttilistan rekursiivinen muutos ei toimi"
 msgid "E1157: Missing return type"
 msgstr "E1157: Palautustyyppi puuttuu"
 
-msgid "E1158: Cannot use flatten() in Vim9 script"
-msgstr "E1158: Flatten() ei toimi vim9-skriptissä"
+msgid "E1158: Cannot use flatten() in MNV9 script"
+msgstr "E1158: Flatten() ei toimi mnv9-skriptissä"
 
 msgid "E1159: Cannot split a window when closing the buffer"
 msgstr "E1159: Ikkunaa ei voi halkaista kun puskuria suljetaan"
@@ -7774,8 +7774,8 @@ msgstr ""
 "E1163: Muuttuja %d: tyyppivirhe, odotettiin tyyppiä %s mutta saatiin %s "
 "kohteessa %s"
 
-msgid "E1164: vim9cmd must be followed by a command"
-msgstr "E1164: vim9cmd:tä pitää seurata komento"
+msgid "E1164: mnv9cmd must be followed by a command"
+msgstr "E1164: mnv9cmd:tä pitää seurata komento"
 
 #, c-format
 msgid "E1165: Cannot use a range with an assignment: %s"
@@ -7861,8 +7861,8 @@ msgstr "E1185: :redir END puuttuu"
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: Ilmaus ei johda arvoon: %s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: Ei voitu suorittaa komentoa source defaults.vim"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: Ei voitu suorittaa komentoa source defaults.mnv"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: Ei voitu avata terminaalia komentorivi-ikkunasta"
@@ -7885,8 +7885,8 @@ msgstr "E1191: Funktiokutsu ei kääntynyt: %s"
 msgid "E1192: Empty function name"
 msgstr "E1192: Tyhjä funktionimi"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
-msgstr "E1193: cryptmethod-asetus xchacha20 ei ole mukana tässä Vimissä"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
+msgstr "E1193: cryptmethod-asetus xchacha20 ei ole mukana tässä MNVissä"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: Ei voida salata otsaketta koska tila ei riitä"
@@ -8077,8 +8077,8 @@ msgstr "E1243: ASCII-koodi ei ole arvovälillä 32–127"
 msgid "E1244: Bad color string: %s"
 msgstr "E1244: Viallinen väri: %s"
 
-msgid "E1245: Cannot expand <sfile> in a Vim9 function"
-msgstr "E1245: Ei voida laajentaa kohdetta <sfile> vim9-funktiossa"
+msgid "E1245: Cannot expand <sfile> in a MNV9 function"
+msgstr "E1245: Ei voida laajentaa kohdetta <sfile> mnv9-funktiossa"
 
 #, c-format
 msgid "E1246: Cannot find variable to (un)lock: %s"
@@ -8121,9 +8121,9 @@ msgid "E1256: String or function required for argument %d"
 msgstr "E1256: Merkkijono tai funktio tarvitaan argumentiksi %d"
 
 #, c-format
-msgid "E1257: Imported script must use \"as\" or end in .vim: %s"
+msgid "E1257: Imported script must use \"as\" or end in .mnv: %s"
 msgstr ""
-"E1257: Tuodun skriptin pitää käyttää komentoa as tai loppua merkkijonoon .vim: "
+"E1257: Tuodun skriptin pitää käyttää komentoa as tai loppua merkkijonoon .mnv: "
 "%s"
 
 #, c-format
@@ -8138,8 +8138,8 @@ msgstr "E1259: Nimi puuttuu tuodun nimen perästä: %s"
 msgid "E1260: Cannot unlet an imported item: %s"
 msgstr "E1260: Tuotua alkiota ei voi vapauttaa: %s"
 
-msgid "E1261: Cannot import .vim without using \"as\""
-msgstr "E1261: Ei voida tuoda .vim-tiedostoa ilman komentoa as"
+msgid "E1261: Cannot import .mnv without using \"as\""
+msgstr "E1261: Ei voida tuoda .mnv-tiedostoa ilman komentoa as"
 
 #, c-format
 msgid "E1262: Cannot import the same script twice: %s"
@@ -8243,8 +8243,8 @@ msgstr ""
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "sisäinen virhe: imp.find_module palautti tuplen joka sisältää nullin"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "ei voi poistaa vim.Dictionary-attribuutteja"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "ei voi poistaa mnv.Dictionary-attribuutteja"
 
 msgid "cannot modify fixed dictionary"
 msgstr "ei voida muuttaa kiinnitettyä sanakirjaa"
@@ -8267,8 +8267,8 @@ msgid "list index out of range"
 msgstr "listaindeksi arvoalueen ulkopuolelta"
 
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "sisäinen virhe: ei pystytty hakea vimin listan indeksiä %d"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "sisäinen virhe: ei pystytty hakea mnvin listan indeksiä %d"
 
 msgid "slice step cannot be zero"
 msgstr "slicen askel ei voi olla nolla"
@@ -8278,8 +8278,8 @@ msgid "attempt to assign sequence of size greater than %d to extended slice"
 msgstr "yritettiin sijoittaa sekvenssiä jonka koko on enemmän kuin %d sliceen"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "sisäinen virhe: ei vim-listan indeksiä %d"
+msgid "internal error: no MNV list item %d"
+msgstr "sisäinen virhe: ei mnv-listan indeksiä %d"
 
 msgid "internal error: not enough list items"
 msgstr "sisäinen virhe: ei tarpeeksi listan kohtia"
@@ -8294,8 +8294,8 @@ msgstr "yritettiin asettaa sekvenssiä jonka koko on %d sliceen jonka koko on %d
 msgid "failed to add item to list"
 msgstr "ei voitu lisätä kohtaa listaan"
 
-msgid "cannot delete vim.List attributes"
-msgstr "ei voi poistaa vim.List-attribuutteja"
+msgid "cannot delete mnv.List attributes"
+msgstr "ei voi poistaa mnv.List-attribuutteja"
 
 msgid "cannot modify fixed list"
 msgstr "ei voida muokata kiinnitettyä listaa"
@@ -8357,16 +8357,16 @@ msgid "mark name must be a single character"
 msgstr "merkin nimen pitää olla yksi merkki"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "odotettiin vim.Buffer-oliota, ei %s"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "odotettiin mnv.Buffer-oliota, ei %s"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "ei voitu vaihtaa puskuriin %d"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "odotettiin vim.Window-oliota, saatiin %s"
+msgid "expected mnv.Window object, but got %s"
+msgstr "odotettiin mnv.Window-oliota, saatiin %s"
 
 msgid "failed to find window in the current tab page"
 msgstr "ei voitu löytää ikkunaa nykyiselle välilehtisivulle"
@@ -8375,8 +8375,8 @@ msgid "did not switch to the specified window"
 msgstr "ei vaihdettu annettuun ikkunaan"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "odotettiin vim.TabPage-oliota, saatiin %s"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "odotettiin mnv.TabPage-oliota, saatiin %s"
 
 msgid "did not switch to the specified tab page"
 msgstr "ei voitu vaihtaa annetulle välilehtisivulle"
@@ -8385,16 +8385,16 @@ msgid "failed to run the code"
 msgstr "ei voitu suorittaa koodia"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "ei voitu muuntaa oliota %s vim-sanakirjaksi"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "ei voitu muuntaa oliota %s mnv-sanakirjaksi"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "ei voitu muuntaa tyypistä %s vim-listaksi"
+msgid "unable to convert %s to a MNV list"
+msgstr "ei voitu muuntaa tyypistä %s mnv-listaksi"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "ei voitu muuntaa oliota %s vim-tietorakenteeksi"
+msgid "unable to convert %s to a MNV structure"
+msgstr "ei voitu muuntaa oliota %s mnv-tietorakenteeksi"
 
 msgid "internal error: NULL reference passed"
 msgstr "sisäinen virhe: NULL-viite annettu"
@@ -8405,26 +8405,26 @@ msgstr "sisäinen virhe: huono arvotyyppi"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.MNV_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "Ei voitu asettaa polkukoukkua: sys.path_hooks ei ole lista\n"
 "Koeta seuraavaa:\n"
-"- lisää vim.path_hook muuttujaan sys.path_hooks\n"
-"- lisää vim.VIM_SPECIAL_PATH muuttujaan sys.path\n"
+"- lisää mnv.path_hook muuttujaan sys.path_hooks\n"
+"- lisää mnv.MNV_SPECIAL_PATH muuttujaan sys.path\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.MNV_SPECIAL_PATH to sys.path"
 msgstr ""
 "Ei onnistuttu asettaman polkua: sys.path ei ole list\n"
-"Lisää vim.VIM_SPECIAL_PATH muuttujaan sys.path"
+"Lisää mnv.MNV_SPECIAL_PATH muuttujaan sys.path"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Vimin makrotiedostot (*.vim)\t.vim\n"
+"MNVin makrotiedostot (*.mnv)\t.mnv\n"
 "Kaikki tiedostot (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -8435,19 +8435,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Kaikki tiedostot (*.*)\t*.*\n"
 "C-lähdekoodit (*.c, *.h)\t*.c;*.h\n"
 "C++-lähdekoodit (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB-lähdekoodit (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim-tiedostot (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV-tiedostot (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Vim-makrot (*.vim)\t*.vim\n"
+"MNV-makrot (*.mnv)\t*.mnv\n"
 "Kaikki tiedostot (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -8457,15 +8457,15 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Kaikki tiedostot (*)\t*\n"
 "C-lähdekoodit (*.c, *.h)\t*.c;*.h\n"
 "C++-lähdekoodit (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim-tiedostot (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV-tiedostot (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
-msgid "GVim"
-msgstr "GVim"
+msgid "GMNV"
+msgstr "GMNV"
 
 msgid "Text Editor"
 msgstr "Tekstinmuokkain"
@@ -8476,8 +8476,8 @@ msgstr "Muokkaa tekstitiedostoja"
 msgid "Text;editor;"
 msgstr "Teksti;muokkain;editori;"
 
-msgid "Vim"
-msgstr "Vim"
+msgid "MNV"
+msgstr "MNV"
 
 msgid "(local to window)"
 msgstr "(paikallinen ikkunalle)"
@@ -8702,16 +8702,16 @@ msgid "characters to use for the status line, folds and filler lines"
 msgstr "merkit joita käytetään tilarivillä, taitoksissa ja täyterivillä"
 
 msgid "number of lines used for the command-line"
-msgstr "komentorivin rivimäärä"
+msgstr "komentorivin rimnväärä"
 
 msgid "width of the display"
 msgstr "näytön leveys"
 
 msgid "number of lines in the display"
-msgstr "näytön rivimäärä"
+msgstr "näytön rimnväärä"
 
 msgid "number of lines to scroll for CTRL-F and CTRL-B"
-msgstr "vieritysrivimäärä näppäilyille CTRL-F ja CTRL-B"
+msgstr "vieritysrimnväärä näppäilyille CTRL-F ja CTRL-B"
 
 msgid "don't redraw while executing macros"
 msgstr "ei uudelleenpiirtoa makroja suoritettaessa"
@@ -8880,8 +8880,8 @@ msgstr ""
 msgid "size of a terminal window"
 msgstr "terminaali-ikkunan koko"
 
-msgid "key that precedes Vim commands in a terminal window"
-msgstr "näppäin jota käytetään ennen vim-komentoja terminaali-ikkunassa"
+msgid "key that precedes MNV commands in a terminal window"
+msgstr "näppäin jota käytetään ennen mnv-komentoja terminaali-ikkunassa"
 
 msgid "max number of lines to keep for scrollback in a terminal window"
 msgstr "enimmäismäärä rivejä terminaali-ikkunan vieritysmuistissa"
@@ -8952,8 +8952,8 @@ msgstr "sarakkeiden prosenttiosuus ikkunan otsikosta"
 msgid "when not empty, string to be used for the window title"
 msgstr "kun epätyhjä, merkkijono ikkunan otsikkorivillä"
 
-msgid "string to restore the title to when exiting Vim"
-msgstr "merkkijono joksi otsikko palautetaan Vimin lopettaessa"
+msgid "string to restore the title to when exiting MNV"
+msgstr "merkkijono joksi otsikko palautetaan MNVin lopettaessa"
 
 msgid "set the text of the icon for this window"
 msgstr "aseta teksti kuvakkeelle tässä ikkunassa"
@@ -8961,8 +8961,8 @@ msgstr "aseta teksti kuvakkeelle tässä ikkunassa"
 msgid "when not empty, text for the icon of this window"
 msgstr "kun epätyhjä, teksti kuvakkeelle tässä ikkunassa"
 
-msgid "restore the screen contents when exiting Vim"
-msgstr "palauta ruudun sisältö vimin lopettaessa"
+msgid "restore the screen contents when exiting MNV"
+msgstr "palauta ruudun sisältö mnvin lopettaessa"
 
 msgid "using the mouse"
 msgstr "hiiren käyttö"
@@ -9481,8 +9481,8 @@ msgstr "kuten autowrite, mutta toimii useamman komennon kanssa"
 msgid "always write without asking for confirmation"
 msgstr "aina kirjoita kysymättä vahvistusta"
 
-msgid "automatically read a file when it was modified outside of Vim"
-msgstr "automaattisesti lue tiedosto kun sitä muokattiin vimin ulkopuolella"
+msgid "automatically read a file when it was modified outside of MNV"
+msgstr "automaattisesti lue tiedosto kun sitä muokattiin mnvin ulkopuolella"
 
 msgid "keep oldest version of a file; specifies file name extension"
 msgstr "säilytä vanhat versiot, määritä tiedoston tarkenne"
@@ -9662,7 +9662,7 @@ msgid "display the buffer right-to-left"
 msgstr "näytä puskuri oikealta vasemmalle"
 
 msgid "when to edit the command-line right-to-left"
-msgstr "milloin komentorivimuokkaus on oikealta vasemmalle"
+msgstr "milloin komentorimnvuokkaus on oikealta vasemmalle"
 
 msgid "insert characters backwards"
 msgstr "lisää merkkejä takaperin"
@@ -9722,10 +9722,10 @@ msgid "multi-byte characters"
 msgstr "monitavuiset merkit"
 
 msgid ""
-"character encoding used in Vim: \"latin1\", \"utf-8\",\n"
+"character encoding used in MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", etc."
 msgstr ""
-"Vimin merkistöt: \"latin1\", \"utf-8\",\n"
+"MNVin merkistöt: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", jne."
 
 msgid "character encoding for the current file"
@@ -9771,8 +9771,8 @@ msgstr "autocommand-tapahtumat jotka ohitetaan"
 msgid "load plugin scripts when starting up"
 msgstr "lataa liitännäisskriptit alussa"
 
-msgid "enable reading .vimrc/.exrc/.gvimrc in the current directory"
-msgstr "lue .vimrc/.exrc/.gvimrc nykyisestä hakemistosta"
+msgid "enable reading .mnvrc/.exrc/.gmnvrc in the current directory"
+msgstr "lue .mnvrc/.exrc/.gmnvrc nykyisestä hakemistosta"
 
 msgid "safer working with script files in the current directory"
 msgstr "turvallisempi tila skripteille nykyisessä hakemistossa"
@@ -9798,11 +9798,11 @@ msgstr "sanat jotka määrittävät mitä :mkview tallentaa"
 msgid "directory where to store files with :mkview"
 msgstr "hakemisto johon :mkview tallentaa tiedostoja"
 
-msgid "list that specifies what to write in the viminfo file"
-msgstr "mitä viminfoon tallennetaan"
+msgid "list that specifies what to write in the mnvinfo file"
+msgstr "mitä mnvinfoon tallennetaan"
 
-msgid "file name used for the viminfo file"
-msgstr "tiedostonimi viminfo-tiedostolle"
+msgid "file name used for the mnvinfo file"
+msgstr "tiedostonimi mnvinfo-tiedostolle"
 
 msgid "what happens with a buffer when it's no longer in a window"
 msgstr "mitä tapahtuu puskurille joka ei ole enää ikkunassa"

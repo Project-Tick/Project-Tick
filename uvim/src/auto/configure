@@ -606,7 +606,7 @@ PACKAGE_STRING=''
 PACKAGE_BUGREPORT=''
 PACKAGE_URL=''
 
-ac_unique_file="vim.h"
+ac_unique_file="mnv.h"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stddef.h>
@@ -740,13 +740,13 @@ vi_cv_path_luajit
 vi_cv_path_lua
 XDIFF_OBJS_USED
 compiledby
-dogvimdiff
-dovimdiff
+dogmnvdiff
+domnvdiff
 QUOTESED
 line_break
 VIEWNAME
 EXNAME
-VIMNAME
+MNVNAME
 OS_EXTRA_OBJ
 OS_EXTRA_SRC
 XCODE_SELECT
@@ -815,7 +815,7 @@ enable_darwin
 with_mac_arch
 with_developer_dir
 with_local_dir
-with_vim_name
+with_mnv_name
 with_ex_name
 with_view_name
 with_global_runtime
@@ -1531,7 +1531,7 @@ Optional Features:
   --disable-netbeans      Disable NetBeans integration support.
   --disable-channel       Disable process communication support.
   --enable-terminal       Enable terminal emulation support.
-  --enable-autoservername Automatically define servername at vim startup.
+  --enable-autoservername Automatically define servername at mnv startup.
   --enable-socketserver Use sockets for clientserver communication.
   --enable-multibyte      Include multibyte editing support.
   --disable-rightleft     Do not include Right-to-Left language support.
@@ -1566,7 +1566,7 @@ Optional Packages:
   --with-developer-dir=PATH    use PATH as location for Xcode developer tools
   --with-local-dir=PATH   search PATH instead of /usr/local for local libraries.
   --without-local-dir     do not search /usr/local for local libraries.
-  --with-vim-name=NAME    what to call the Vim executable
+  --with-mnv-name=NAME    what to call the MNV executable
   --with-ex-name=NAME     what to call the Ex executable
   --with-view-name=NAME   what to call the View executable
   --with-global-runtime=DIR    global runtime directory in 'runtimepath', comma-separated for multiple directories
@@ -4944,40 +4944,40 @@ OS_EXTRA_SRC=""; OS_EXTRA_OBJ=""
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking uname" >&5
 printf %s "checking uname... " >&6; }
-if test "x$vim_cv_uname_output" = "x" ; then
-  vim_cv_uname_output=`(uname) 2>/dev/null`
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_uname_output" >&5
-printf "%s\n" "$vim_cv_uname_output" >&6; }
+if test "x$mnv_cv_uname_output" = "x" ; then
+  mnv_cv_uname_output=`(uname) 2>/dev/null`
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_uname_output" >&5
+printf "%s\n" "$mnv_cv_uname_output" >&6; }
 else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_uname_output (cached)" >&5
-printf "%s\n" "$vim_cv_uname_output (cached)" >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_uname_output (cached)" >&5
+printf "%s\n" "$mnv_cv_uname_output (cached)" >&6; }
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking uname -r" >&5
 printf %s "checking uname -r... " >&6; }
-if test "x$vim_cv_uname_r_output" = "x" ; then
-  vim_cv_uname_r_output=`(uname -r) 2>/dev/null`
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_uname_r_output" >&5
-printf "%s\n" "$vim_cv_uname_r_output" >&6; }
+if test "x$mnv_cv_uname_r_output" = "x" ; then
+  mnv_cv_uname_r_output=`(uname -r) 2>/dev/null`
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_uname_r_output" >&5
+printf "%s\n" "$mnv_cv_uname_r_output" >&6; }
 else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_uname_r_output (cached)" >&5
-printf "%s\n" "$vim_cv_uname_r_output (cached)" >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_uname_r_output (cached)" >&5
+printf "%s\n" "$mnv_cv_uname_r_output (cached)" >&6; }
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking uname -m" >&5
 printf %s "checking uname -m... " >&6; }
-if test "x$vim_cv_uname_m_output" = "x" ; then
-  vim_cv_uname_m_output=`(uname -m) 2>/dev/null`
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_uname_m_output" >&5
-printf "%s\n" "$vim_cv_uname_m_output" >&6; }
+if test "x$mnv_cv_uname_m_output" = "x" ; then
+  mnv_cv_uname_m_output=`(uname -m) 2>/dev/null`
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_uname_m_output" >&5
+printf "%s\n" "$mnv_cv_uname_m_output" >&6; }
 else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_uname_m_output (cached)" >&5
-printf "%s\n" "$vim_cv_uname_m_output (cached)" >&6; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_uname_m_output (cached)" >&5
+printf "%s\n" "$mnv_cv_uname_m_output (cached)" >&6; }
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Haiku" >&5
 printf %s "checking for Haiku... " >&6; }
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     Haiku) HAIKU=yes; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; };;
     *)     HAIKU=no; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
@@ -4986,7 +4986,7 @@ esac
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for QNX" >&5
 printf %s "checking for QNX... " >&6; }
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     QNX)	OS_EXTRA_SRC=os_qnx.c; OS_EXTRA_OBJ=objects/os_qnx.o
 		test -z "$with_x" && with_x=no
 		QNX=yes; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
@@ -4997,7 +4997,7 @@ esac
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Darwin (Mac OS X)" >&5
 printf %s "checking for Darwin (Mac OS X)... " >&6; }
-if test "$vim_cv_uname_output" = Darwin; then
+if test "$mnv_cv_uname_output" = Darwin; then
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
   MACOS_X=yes
@@ -5304,17 +5304,17 @@ fi
   fi
 fi
 
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking --with-vim-name argument" >&5
-printf %s "checking --with-vim-name argument... " >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking --with-mnv-name argument" >&5
+printf %s "checking --with-mnv-name argument... " >&6; }
 
-# Check whether --with-vim-name was given.
-if test ${with_vim_name+y}
+# Check whether --with-mnv-name was given.
+if test ${with_mnv_name+y}
 then :
-  withval=$with_vim_name; VIMNAME="$withval"; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $VIMNAME" >&5
-printf "%s\n" "$VIMNAME" >&6; }
+  withval=$with_mnv_name; MNVNAME="$withval"; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $MNVNAME" >&5
+printf "%s\n" "$MNVNAME" >&6; }
 else case e in #(
-  e) VIMNAME="vim"; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Defaulting to $VIMNAME" >&5
-printf "%s\n" "Defaulting to $VIMNAME" >&6; } ;;
+  e) MNVNAME="mnv"; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Defaulting to $MNVNAME" >&5
+printf "%s\n" "Defaulting to $MNVNAME" >&6; } ;;
 esac
 fi
 
@@ -5434,7 +5434,7 @@ esac
 if test "$cf_cv_ebcdic" = "yes"; then
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for z/OS Unix" >&5
 printf %s "checking for z/OS Unix... " >&6; }
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     OS/390)	zOSUnix="yes";
 										if test "$CC" = "cc"; then
 		  ccm="$_CC_CCMODE"
@@ -5851,17 +5851,17 @@ case "$features" in
   big)   features="normal" ;;
 esac
 
-dovimdiff=""
-dogvimdiff=""
+domnvdiff=""
+dogmnvdiff=""
 case "$features" in
   tiny)		printf "%s\n" "#define FEAT_TINY 1" >>confdefs.h
  ;;
   normal)	printf "%s\n" "#define FEAT_NORMAL 1" >>confdefs.h
- dovimdiff="installvimdiff";
-			dogvimdiff="installgvimdiff" ;;
+ domnvdiff="installmnvdiff";
+			dogmnvdiff="installgmnvdiff" ;;
   huge)		printf "%s\n" "#define FEAT_HUGE 1" >>confdefs.h
- dovimdiff="installvimdiff";
-			dogvimdiff="installgvimdiff" ;;
+ domnvdiff="installmnvdiff";
+			dogmnvdiff="installgmnvdiff" ;;
   *)		{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Sorry, $features is not supported" >&5
 printf "%s\n" "Sorry, $features is not supported" >&6; } ;;
 esac
@@ -6179,7 +6179,7 @@ printf "%s\n" "yes" >&6; }
 printf "%s\n" "no" >&6; }
 
 	  # Detect moonjit:
-	  # https://groups.google.com/forum/#!topic/vim_use/O0vek60WuTk
+	  # https://groups.google.com/forum/#!topic/mnv_use/O0vek60WuTk
 	  lua_suf=/moonjit-2.3
 	  inc_path="$vi_cv_path_lua_pfx/include"
 	  for dir in "$inc_path"/moonjit-[0-9]* ; do
@@ -6322,7 +6322,7 @@ printf "%s\n" "yes" >&6; }
     fi
     if test "X$LUA_CFLAGS$LUA_LIBS" != "X" && \
        test "x$MACOS_X" = "xyes" && test "x$vi_cv_with_luajit" != "xno" && \
-       test "$vim_cv_uname_m_output" = "x86_64"; then
+       test "$mnv_cv_uname_m_output" = "x86_64"; then
             LUA_LIBS="-pagezero_size 10000 -image_base 100000000 $LUA_LIBS"
     fi
   fi
@@ -6571,8 +6571,8 @@ printf "%s\n" "not found" >&6; }
 	  fi
 	  if test "$GCC" = yes; then
 	    	    	    MZSCHEME_LIBS="${MZSCHEME_LIBS} -Wl,-rpath -Wl,${path}"
-	  elif test "$vim_cv_uname_output" = SunOS &&
-			   echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+	  elif test "$mnv_cv_uname_output" = SunOS &&
+			   echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
 	    MZSCHEME_LIBS="${MZSCHEME_LIBS} -R ${path}"
 	  fi
 	fi
@@ -7291,13 +7291,13 @@ printf "%s\n" "$vi_cv_dll_name_python" >&6; }
 printf %s "checking if -pthread should be used... " >&6; }
 	threadsafe_flag=
 	thread_lib=
-	        if test "$vim_cv_uname_output" != Darwin; then
+	        if test "$mnv_cv_uname_output" != Darwin; then
 	  test "$GCC" = yes && threadsafe_flag="-pthread"
-	  if test "$vim_cv_uname_output" = FreeBSD; then
+	  if test "$mnv_cv_uname_output" = FreeBSD; then
 	    threadsafe_flag="-D_THREAD_SAFE"
 	    thread_lib="-pthread"
 	  fi
-	  if test "$vim_cv_uname_output" = SunOS; then
+	  if test "$mnv_cv_uname_output" = SunOS; then
 	    threadsafe_flag="-pthreads"
 	  fi
 	fi
@@ -7744,13 +7744,13 @@ printf "%s\n" "$vi_cv_dll_name_python3" >&6; }
 printf %s "checking if -pthread should be used... " >&6; }
         threadsafe_flag=
         thread_lib=
-                if test "$vim_cv_uname_output" != Darwin; then
+                if test "$mnv_cv_uname_output" != Darwin; then
           test "$GCC" = yes && threadsafe_flag="-pthread"
-          if test "$vim_cv_uname_output" = FreeBSD; then
+          if test "$mnv_cv_uname_output" = FreeBSD; then
             threadsafe_flag="-D_THREAD_SAFE"
             thread_lib="-pthread"
           fi
-          if test "$vim_cv_uname_output" = SunOS; then
+          if test "$mnv_cv_uname_output" = SunOS; then
             threadsafe_flag="-pthreads"
           fi
         fi
@@ -7873,7 +7873,7 @@ else case e in #(
     #include <dlfcn.h>
     /* If this program fails, then RTLD_GLOBAL is needed.
      * RTLD_GLOBAL will be used and then it is not possible to
-     * have both python versions enabled in the same vim instance.
+     * have both python versions enabled in the same mnv instance.
      * Only the first python version used will be switched on.
      */
 
@@ -7943,7 +7943,7 @@ else case e in #(
     #include <wchar.h>
     /* If this program fails, then RTLD_GLOBAL is needed.
      * RTLD_GLOBAL will be used and then it is not possible to
-     * have both python versions enabled in the same vim instance.
+     * have both python versions enabled in the same mnv instance.
      * Only the first python version used will be switched on.
      */
 
@@ -8433,8 +8433,8 @@ printf %s "checking for Tcl library by myself... " >&6; }
 		  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $try/lib$trylib" >&5
 printf "%s\n" "$try/lib$trylib" >&6; }
 		  TCL_LIBS="-L\"$try\" -ltcl$ver -ldl -lm"
-		  if test "$vim_cv_uname_output" = SunOS &&
-					 echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+		  if test "$mnv_cv_uname_output" = SunOS &&
+					 echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
 		    TCL_LIBS="$TCL_LIBS -R $try"
 		  fi
 		  break 3
@@ -8877,7 +8877,7 @@ fi
 
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether compiling with IPv6 networking is possible" >&5
 printf %s "checking whether compiling with IPv6 networking is possible... " >&6; }
-if test ${vim_cv_ipv6_networking+y}
+if test ${mnv_cv_ipv6_networking+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -8919,19 +8919,19 @@ main (void)
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-  vim_cv_ipv6_networking="yes"
+  mnv_cv_ipv6_networking="yes"
 else case e in #(
-  e) vim_cv_ipv6_networking="no" ;;
+  e) mnv_cv_ipv6_networking="no" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_ipv6_networking" >&5
-printf "%s\n" "$vim_cv_ipv6_networking" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_ipv6_networking" >&5
+printf "%s\n" "$mnv_cv_ipv6_networking" >&6; }
 
-  if test "x$vim_cv_ipv6_networking" = "xyes"; then
+  if test "x$mnv_cv_ipv6_networking" = "xyes"; then
     printf "%s\n" "#define FEAT_IPV6 1" >>confdefs.h
 
     ac_fn_c_check_func "$LINENO" "inet_ntop" "ac_cv_func_inet_ntop"
@@ -8944,7 +8944,7 @@ fi
   else
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether compiling with IPv4 networking is possible" >&5
 printf %s "checking whether compiling with IPv4 networking is possible... " >&6; }
-if test ${vim_cv_ipv4_networking+y}
+if test ${mnv_cv_ipv4_networking+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -8984,17 +8984,17 @@ main (void)
 _ACEOF
 if ac_fn_c_try_link "$LINENO"
 then :
-  vim_cv_ipv4_networking="yes"
+  mnv_cv_ipv4_networking="yes"
 else case e in #(
-  e) vim_cv_ipv4_networking="no"; enable_netbeans="no"; enable_channel="no" ;;
+  e) mnv_cv_ipv4_networking="no"; enable_netbeans="no"; enable_channel="no" ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_ipv4_networking" >&5
-printf "%s\n" "$vim_cv_ipv4_networking" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_ipv4_networking" >&5
+printf "%s\n" "$mnv_cv_ipv4_networking" >&6; }
   fi
 fi
 if test "$enable_netbeans" = "yes"; then
@@ -9124,7 +9124,7 @@ fi
 printf "%s\n" "$enable_multibyte" >&6; }
 if test "$enable_multibyte" != "yes"; then
   as_fn_error $? "The multi-byte feature can no longer be disabled. If you have
-		a problem with this, discuss on the Vim mailing list." "$LINENO" 5
+		a problem with this, discuss on the MNV mailing list." "$LINENO" 5
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking --disable-rightleft argument" >&5
@@ -10198,8 +10198,8 @@ fi
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Corrected X libraries to $x_libraries" >&5
 printf "%s\n" "Corrected X libraries to $x_libraries" >&6; }
     X_LIBS="$X_LIBS -L$x_libraries"
-    if test "$vim_cv_uname_output" = SunOS &&
-					 echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+    if test "$mnv_cv_uname_output" = SunOS &&
+					 echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
       X_LIBS="$X_LIBS -R $x_libraries"
     fi
   fi
@@ -11105,7 +11105,7 @@ printf "%s\n" "yes" >&6; }
 
                   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for FreeBSD" >&5
 printf %s "checking for FreeBSD... " >&6; }
-      if test "$vim_cv_uname_output" = FreeBSD; then
+      if test "$mnv_cv_uname_output" = FreeBSD; then
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
 	GNOME_INCLUDEDIR="$GNOME_INCLUDEDIR -D_THREAD_SAFE"
@@ -11438,8 +11438,8 @@ printf "%s\n" "in default path" >&6; }
 	if test -n "$GUI_LIB_LOC"; then
 	  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $GUI_LIB_LOC" >&5
 printf "%s\n" "$GUI_LIB_LOC" >&6; }
-	  if test "$vim_cv_uname_output" = SunOS &&
-					 echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+	  if test "$mnv_cv_uname_output" = SunOS &&
+					 echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
 	    GUI_LIB_LOC="$GUI_LIB_LOC -R $GUI_LIB_LOC"
 	  fi
 	fi
@@ -11990,7 +11990,7 @@ fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for CYGWIN or MSYS environment" >&5
 printf %s "checking for CYGWIN or MSYS environment... " >&6; }
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     CYGWIN*|MSYS*)    CYGWIN=yes; { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
                 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for CYGWIN clipboard support" >&5
@@ -12013,7 +12013,7 @@ esac
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether toupper is broken" >&5
 printf %s "checking whether toupper is broken... " >&6; }
-if test ${vim_cv_toupper_broken+y}
+if test ${mnv_cv_toupper_broken+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -12021,9 +12021,9 @@ else case e in #(
     if test "$cross_compiling" = yes
 then :
 
-    vim_cv_toupper_broken=no
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_toupper_broken'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_toupper_broken'" >&2;}
+    mnv_cv_toupper_broken=no
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_toupper_broken'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_toupper_broken'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -12041,11 +12041,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-    vim_cv_toupper_broken=yes
+    mnv_cv_toupper_broken=yes
 
 else case e in #(
   e)
-    vim_cv_toupper_broken=no
+    mnv_cv_toupper_broken=no
    ;;
 esac
 fi
@@ -12056,10 +12056,10 @@ fi
  ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_toupper_broken" >&5
-printf "%s\n" "$vim_cv_toupper_broken" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_toupper_broken" >&5
+printf "%s\n" "$mnv_cv_toupper_broken" >&6; }
 
-if test "x$vim_cv_toupper_broken" = "xyes" ; then
+if test "x$mnv_cv_toupper_broken" = "xyes" ; then
   printf "%s\n" "#define BROKEN_TOUPPER 1" >>confdefs.h
 
 fi
@@ -13365,7 +13365,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: empty: automatic terminal library selection" >&5
 printf "%s\n" "empty: automatic terminal library selection" >&6; }
-                case "$vim_cv_uname_output" in
+                case "$mnv_cv_uname_output" in
 	OSF1|SCO_SV)	tlibs="tinfo ncurses curses termlib termcap";;
 	*)	tlibs="tinfo ncurses termlib termcap curses";;
   esac
@@ -13499,7 +13499,7 @@ fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether we talk terminfo" >&5
 printf %s "checking whether we talk terminfo... " >&6; }
-if test ${vim_cv_terminfo+y}
+if test ${mnv_cv_terminfo+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -13507,9 +13507,9 @@ else case e in #(
     if test "$cross_compiling" = yes
 then :
 
-      vim_cv_terminfo=yes
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_terminfo'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_terminfo'" >&2;}
+      mnv_cv_terminfo=yes
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_terminfo'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_terminfo'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -13538,11 +13538,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-      vim_cv_terminfo=yes
+      mnv_cv_terminfo=yes
 
 else case e in #(
   e)
-      vim_cv_terminfo=no
+      mnv_cv_terminfo=no
      ;;
 esac
 fi
@@ -13554,17 +13554,17 @@ fi
    ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_terminfo" >&5
-printf "%s\n" "$vim_cv_terminfo" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_terminfo" >&5
+printf "%s\n" "$mnv_cv_terminfo" >&6; }
 
-if test "x$vim_cv_terminfo" = "xyes" ; then
+if test "x$mnv_cv_terminfo" = "xyes" ; then
   printf "%s\n" "#define TERMINFO 1" >>confdefs.h
 
 fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking what tgetent() returns for an unknown terminal" >&5
 printf %s "checking what tgetent() returns for an unknown terminal... " >&6; }
-if test ${vim_cv_tgetent+y}
+if test ${mnv_cv_tgetent+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -13572,9 +13572,9 @@ else case e in #(
     if test "$cross_compiling" = yes
 then :
 
-      vim_cv_tgetent=zero
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_tgetent'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_tgetent'" >&2;}
+      mnv_cv_tgetent=zero
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_tgetent'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_tgetent'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -13595,11 +13595,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-      vim_cv_tgetent=zero
+      mnv_cv_tgetent=zero
 
 else case e in #(
   e)
-      vim_cv_tgetent=non-zero
+      mnv_cv_tgetent=non-zero
      ;;
 esac
 fi
@@ -13611,10 +13611,10 @@ fi
    ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_tgetent" >&5
-printf "%s\n" "$vim_cv_tgetent" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_tgetent" >&5
+printf "%s\n" "$mnv_cv_tgetent" >&6; }
 
-if test "x$vim_cv_tgetent" = "xzero" ; then
+if test "x$mnv_cv_tgetent" = "xzero" ; then
   printf "%s\n" "#define TGETENT_ZERO_ERR 0" >>confdefs.h
 
 fi
@@ -13955,7 +13955,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking getcwd implementation is broken" >&5
 printf %s "checking getcwd implementation is broken... " >&6; }
-if test ${vim_cv_getcwd_broken+y}
+if test ${mnv_cv_getcwd_broken+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -13963,9 +13963,9 @@ else case e in #(
     if test "$cross_compiling" = yes
 then :
 
-      vim_cv_getcwd_broken=no
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_getcwd_broken'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_getcwd_broken'" >&2;}
+      mnv_cv_getcwd_broken=no
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_getcwd_broken'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_getcwd_broken'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -13988,11 +13988,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-      vim_cv_getcwd_broken=no
+      mnv_cv_getcwd_broken=no
 
 else case e in #(
   e)
-      vim_cv_getcwd_broken=yes
+      mnv_cv_getcwd_broken=yes
      ;;
 esac
 fi
@@ -14004,10 +14004,10 @@ fi
    ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_getcwd_broken" >&5
-printf "%s\n" "$vim_cv_getcwd_broken" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_getcwd_broken" >&5
+printf "%s\n" "$mnv_cv_getcwd_broken" >&6; }
 
-if test "x$vim_cv_getcwd_broken" = "xyes" ; then
+if test "x$mnv_cv_getcwd_broken" = "xyes" ; then
   printf "%s\n" "#define BAD_GETCWD 1" >>confdefs.h
 
   ac_fn_c_check_func "$LINENO" "getwd" "ac_cv_func_getwd"
@@ -14875,7 +14875,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for timer_create without -lrt" >&5
 printf %s "checking for timer_create without -lrt... " >&6; }
-if test ${vim_cv_timer_create+y}
+if test ${mnv_cv_timer_create+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -14897,24 +14897,24 @@ main (void)
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"
 then :
-  vim_cv_timer_create=yes
+  mnv_cv_timer_create=yes
 else case e in #(
-  e) vim_cv_timer_create=no
+  e) mnv_cv_timer_create=no
    ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_timer_create" >&5
-printf "%s\n" "$vim_cv_timer_create" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_timer_create" >&5
+printf "%s\n" "$mnv_cv_timer_create" >&6; }
 
-if test "x$vim_cv_timer_create" = "xno" ; then
+if test "x$mnv_cv_timer_create" = "xno" ; then
   save_LIBS="$LIBS"
   LIBS="$LIBS -lrt"
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for timer_create with -lrt" >&5
 printf %s "checking for timer_create with -lrt... " >&6; }
-if test ${vim_cv_timer_create_with_lrt+y}
+if test ${mnv_cv_timer_create_with_lrt+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -14936,41 +14936,41 @@ main (void)
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"
 then :
-  vim_cv_timer_create_with_lrt=yes
+  mnv_cv_timer_create_with_lrt=yes
 else case e in #(
-  e) vim_cv_timer_create_with_lrt=no
+  e) mnv_cv_timer_create_with_lrt=no
      ;;
 esac
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_timer_create_with_lrt" >&5
-printf "%s\n" "$vim_cv_timer_create_with_lrt" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_timer_create_with_lrt" >&5
+printf "%s\n" "$mnv_cv_timer_create_with_lrt" >&6; }
   LIBS="$save_LIBS"
 else
-  vim_cv_timer_create_with_lrt=no
+  mnv_cv_timer_create_with_lrt=no
 fi
 
-if test "x$vim_cv_timer_create" = "xyes" ||
-   test "x$vim_cv_timer_create_with_lrt" = "xyes"; then
+if test "x$mnv_cv_timer_create" = "xyes" ||
+   test "x$mnv_cv_timer_create_with_lrt" = "xyes"; then
   save_LIBS="$LIBS"
-  if test "x$vim_cv_timer_create_with_lrt" = "xyes" ; then
+  if test "x$mnv_cv_timer_create_with_lrt" = "xyes" ; then
     LIBS="$LIBS -lrt"
   fi
 
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if timer_create works" >&5
 printf %s "checking if timer_create works... " >&6; }
-if test ${vim_cv_timer_create_works+y}
+if test ${mnv_cv_timer_create_works+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
   e)
     if test "$cross_compiling" = yes
 then :
-  vim_cv_timer_create_works=yes
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_timer_create_works'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_timer_create_works'" >&2;}
+  mnv_cv_timer_create_works=yes
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_timer_create_works'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_timer_create_works'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -15003,9 +15003,9 @@ main (void)
 _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
-  vim_cv_timer_create_works=yes
+  mnv_cv_timer_create_works=yes
 else case e in #(
-  e) vim_cv_timer_create_works=no ;;
+  e) mnv_cv_timer_create_works=no ;;
 esac
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
@@ -15015,10 +15015,10 @@ fi
  ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_timer_create_works" >&5
-printf "%s\n" "$vim_cv_timer_create_works" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_timer_create_works" >&5
+printf "%s\n" "$mnv_cv_timer_create_works" >&6; }
 
-  if test "x$vim_cv_timer_create_works" = "xyes" ; then
+  if test "x$mnv_cv_timer_create_works" = "xyes" ; then
     printf "%s\n" "#define HAVE_TIMER_CREATE 1" >>confdefs.h
 
   else
@@ -15028,7 +15028,7 @@ fi
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether stat() ignores a trailing slash" >&5
 printf %s "checking whether stat() ignores a trailing slash... " >&6; }
-if test ${vim_cv_stat_ignores_slash+y}
+if test ${mnv_cv_stat_ignores_slash+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -15036,9 +15036,9 @@ else case e in #(
     if test "$cross_compiling" = yes
 then :
 
-      vim_cv_stat_ignores_slash=yes
-      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_stat_ignores_slash'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_stat_ignores_slash'" >&2;}
+      mnv_cv_stat_ignores_slash=yes
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_stat_ignores_slash'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_stat_ignores_slash'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -15057,11 +15057,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-      vim_cv_stat_ignores_slash=yes
+      mnv_cv_stat_ignores_slash=yes
 
 else case e in #(
   e)
-      vim_cv_stat_ignores_slash=no
+      mnv_cv_stat_ignores_slash=no
      ;;
 esac
 fi
@@ -15073,10 +15073,10 @@ fi
    ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_stat_ignores_slash" >&5
-printf "%s\n" "$vim_cv_stat_ignores_slash" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_stat_ignores_slash" >&5
+printf "%s\n" "$mnv_cv_stat_ignores_slash" >&6; }
 
-if test "x$vim_cv_stat_ignores_slash" = "xyes" ; then
+if test "x$mnv_cv_stat_ignores_slash" = "xyes" ; then
   printf "%s\n" "#define STAT_IGNORES_SLASH 1" >>confdefs.h
 
 fi
@@ -16247,9 +16247,9 @@ printf "%s\n" "#define SIZEOF_OFF_T $ac_cv_sizeof_off_t" >>confdefs.h
 
 
 
-printf "%s\n" "#define VIM_SIZEOF_INT $ac_cv_sizeof_int" >>confdefs.h
+printf "%s\n" "#define MNV_SIZEOF_INT $ac_cv_sizeof_int" >>confdefs.h
 
-printf "%s\n" "#define VIM_SIZEOF_LONG $ac_cv_sizeof_long" >>confdefs.h
+printf "%s\n" "#define MNV_SIZEOF_LONG $ac_cv_sizeof_long" >>confdefs.h
 
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking uint32_t is 32 bits" >&5
@@ -16314,7 +16314,7 @@ int main() {
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether memmove handles overlaps" >&5
 printf %s "checking whether memmove handles overlaps... " >&6; }
-if test ${vim_cv_memmove_handles_overlap+y}
+if test ${mnv_cv_memmove_handles_overlap+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -16322,9 +16322,9 @@ else case e in #(
     if test "$cross_compiling" = yes
 then :
 
-	vim_cv_memmove_handles_overlap=yes
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_memmove_handles_overlap'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_memmove_handles_overlap'" >&2;}
+	mnv_cv_memmove_handles_overlap=yes
+	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_memmove_handles_overlap'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_memmove_handles_overlap'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -16334,11 +16334,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-	vim_cv_memmove_handles_overlap=yes
+	mnv_cv_memmove_handles_overlap=yes
 
 else case e in #(
   e)
-	vim_cv_memmove_handles_overlap=no
+	mnv_cv_memmove_handles_overlap=no
        ;;
 esac
 fi
@@ -16350,16 +16350,16 @@ fi
    ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_memmove_handles_overlap" >&5
-printf "%s\n" "$vim_cv_memmove_handles_overlap" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_memmove_handles_overlap" >&5
+printf "%s\n" "$mnv_cv_memmove_handles_overlap" >&6; }
 
-if test "x$vim_cv_memmove_handles_overlap" = "xyes" ; then
+if test "x$mnv_cv_memmove_handles_overlap" = "xyes" ; then
   printf "%s\n" "#define USEMEMMOVE 1" >>confdefs.h
 
 else
   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether bcopy handles overlaps" >&5
 printf %s "checking whether bcopy handles overlaps... " >&6; }
-if test ${vim_cv_bcopy_handles_overlap+y}
+if test ${mnv_cv_bcopy_handles_overlap+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -16367,9 +16367,9 @@ else case e in #(
       if test "$cross_compiling" = yes
 then :
 
-	vim_cv_bcopy_handles_overlap=yes
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_bcopy_handles_overlap'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_bcopy_handles_overlap'" >&2;}
+	mnv_cv_bcopy_handles_overlap=yes
+	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_bcopy_handles_overlap'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_bcopy_handles_overlap'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -16379,11 +16379,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-	vim_cv_bcopy_handles_overlap=yes
+	mnv_cv_bcopy_handles_overlap=yes
 
 else case e in #(
   e)
-	vim_cv_bcopy_handles_overlap=no
+	mnv_cv_bcopy_handles_overlap=no
        ;;
 esac
 fi
@@ -16395,16 +16395,16 @@ fi
      ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_bcopy_handles_overlap" >&5
-printf "%s\n" "$vim_cv_bcopy_handles_overlap" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_bcopy_handles_overlap" >&5
+printf "%s\n" "$mnv_cv_bcopy_handles_overlap" >&6; }
 
-  if test "x$vim_cv_bcopy_handles_overlap" = "xyes" ; then
+  if test "x$mnv_cv_bcopy_handles_overlap" = "xyes" ; then
     printf "%s\n" "#define USEBCOPY 1" >>confdefs.h
 
   else
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking whether memcpy handles overlaps" >&5
 printf %s "checking whether memcpy handles overlaps... " >&6; }
-if test ${vim_cv_memcpy_handles_overlap+y}
+if test ${mnv_cv_memcpy_handles_overlap+y}
 then :
   printf %s "(cached) " >&6
 else case e in #(
@@ -16412,9 +16412,9 @@ else case e in #(
 	if test "$cross_compiling" = yes
 then :
 
-	    vim_cv_memcpy_handles_overlap=yes
-	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'vim_cv_memcpy_handles_overlap'" >&5
-printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'vim_cv_memcpy_handles_overlap'" >&2;}
+	    mnv_cv_memcpy_handles_overlap=yes
+	    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: cross-compiling: consider setting 'mnv_cv_memcpy_handles_overlap'" >&5
+printf "%s\n" "$as_me: WARNING: cross-compiling: consider setting 'mnv_cv_memcpy_handles_overlap'" >&2;}
 
 else case e in #(
   e) cat confdefs.h - <<_ACEOF >conftest.$ac_ext
@@ -16424,11 +16424,11 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"
 then :
 
-	    vim_cv_memcpy_handles_overlap=yes
+	    mnv_cv_memcpy_handles_overlap=yes
 
 else case e in #(
   e)
-	    vim_cv_memcpy_handles_overlap=no
+	    mnv_cv_memcpy_handles_overlap=no
 	   ;;
 esac
 fi
@@ -16440,10 +16440,10 @@ fi
        ;;
 esac
 fi
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $vim_cv_memcpy_handles_overlap" >&5
-printf "%s\n" "$vim_cv_memcpy_handles_overlap" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $mnv_cv_memcpy_handles_overlap" >&5
+printf "%s\n" "$mnv_cv_memcpy_handles_overlap" >&6; }
 
-    if test "x$vim_cv_memcpy_handles_overlap" = "xyes" ; then
+    if test "x$mnv_cv_memcpy_handles_overlap" = "xyes" ; then
       printf "%s\n" "#define USEMEMCPY 1" >>confdefs.h
 
     fi
@@ -16855,7 +16855,7 @@ printf "%s\n" "broken" >&6; }
 	else
 	  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 printf "%s\n" "yes" >&6; }
-	  MSGFMT_DESKTOP="gvim.desktop vim.desktop"
+	  MSGFMT_DESKTOP="gmnv.desktop mnv.desktop"
 	fi
       else
 	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5

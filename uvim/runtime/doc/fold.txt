@@ -1,7 +1,7 @@
-*fold.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*fold.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Folding						*Folding* *folding* *folds*
@@ -149,9 +149,9 @@ to force updating folds.
 
 MINIMIZING COMPUTATIONAL COST				*fold-expr-slow*
 
-Due to its computational cost, this fold method can make Vim unresponsive,
+Due to its computational cost, this fold method can make MNV unresponsive,
 especially when the fold level of all lines have to be initially computed.
-Afterwards, after each change, Vim restricts the computation of foldlevels
+Afterwards, after each change, MNV restricts the computation of foldlevels
 to those lines whose fold level was affected by it (and reuses the known
 foldlevels of all the others).
 
@@ -165,7 +165,7 @@ If this proves difficult, the next best thing could be to cache all fold
 levels in a buffer-local variable (b:foldlevels) that is only updated on
 |b:changedtick|:
 >
-  vim9script
+  mnv9script
   def MyFoldFunc(): number
     if b:lasttick == b:changedtick
       return b:foldlevels[v:lnum - 1]
@@ -177,7 +177,7 @@ levels in a buffer-local variable (b:foldlevels) that is only updated on
   enddef
   set foldexpr=s:MyFoldFunc()
 <
-In above example further speedup was gained by using a precompiled Vim9 script
+In above example further speedup was gained by using a precompiled MNV9 script
 function without arguments (that must still use v:lnum).  See
 |expr-option-function|.
 
@@ -210,7 +210,7 @@ example, to use a context of 8 lines: >
 	:set diffopt=filler,context:8
 The default context is six lines.
 
-When 'scrollbind' is also set, Vim will attempt to keep the same folds open in
+When 'scrollbind' is also set, MNV will attempt to keep the same folds open in
 other diff windows, so that the same text is visible.
 
 
@@ -247,7 +247,7 @@ and the level given by the marker:
 The number indicates the fold level.  A zero cannot be used (a marker with
 level zero is ignored).  You can use "}}}" with a digit to indicate the level
 of the fold that ends.  The fold level of the following line will be one less
-than the indicated level.  Note that Vim doesn't look back to the level of the
+than the indicated level.  Note that MNV doesn't look back to the level of the
 matching marker (that would take too much time).  Example: >
 
 	{{{1
@@ -278,29 +278,29 @@ don't have to renumber the markers.
 
 The markers can be set with the 'foldmarker' option.  It is recommended to
 keep this at the default value of "{{{,}}}", so that files can be exchanged
-between Vim users.  Only change it when it is required for the file (e.g., it
+between MNV users.  Only change it when it is required for the file (e.g., it
 contains markers from another folding editor, or the default markers cause
 trouble for the language of the file).
 
 							*fold-create-marker*
-"zf" can be used to create a fold defined by markers.  Vim will insert the
-markers for you.  Vim will append the start and end marker, as specified with
+"zf" can be used to create a fold defined by markers.  MNV will insert the
+markers for you.  MNV will append the start and end marker, as specified with
 'foldmarker'.  The markers are appended to the end of the line.
 'commentstring' is used if it isn't empty.
 This does not work properly when:
-- The line already contains a marker with a level number.  Vim then doesn't
+- The line already contains a marker with a level number.  MNV then doesn't
   know what to do.
 - Folds nearby use a level number in their marker which gets in the way.
 - The line is inside a comment, 'commentstring' isn't empty and nested
   comments don't work.  For example with C: adding /* {{{ */ inside a comment
   will truncate the existing comment.  Either put the marker before or after
   the comment, or add the marker manually.
-Generally it's not a good idea to let Vim create markers when you already have
+Generally it's not a good idea to let MNV create markers when you already have
 markers with a level number.
 
 							*fold-delete-marker*
-"zd" can be used to delete a fold defined by markers.  Vim will delete the
-markers for you.  Vim will search for the start and end markers, as specified
+"zd" can be used to delete a fold defined by markers.  MNV will delete the
+markers for you.  MNV will search for the start and end markers, as specified
 with 'foldmarker', at the start and end of the fold.  When the text around the
 marker matches with 'commentstring', that text is deleted as well.
 This does not work properly when:
@@ -556,7 +556,7 @@ Errors are ignored.  For debugging set the 'debug' option to "throw".
 
 The default value is |foldtext()|.  This returns a reasonable text for most
 types of folding.  If you don't like it, you can specify your own 'foldtext'
-expression.  It can use these special Vim variables:
+expression.  It can use these special MNV variables:
 	v:foldstart	line number of first line in the fold
 	v:foldend	line number of last line in the fold
 	v:folddashes	a string that contains dashes to represent the
@@ -662,4 +662,4 @@ used.  Otherwise the values from the window where the buffer was edited last
 are used.
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

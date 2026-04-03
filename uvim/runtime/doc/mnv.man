@@ -1,0 +1,489 @@
+MNV(1)                      General Commands Manual                     MNV(1)
+
+NAME
+       mnv - MNV is not Vim, a programmer's text editor
+
+SYNOPSIS
+       mnv [options] [file ..]
+       mnv [options] -
+       mnv [options] -t tag
+       mnv [options] -q [errorfile]
+
+       ex
+       view
+       gmnv gview emnv eview
+       rmnv rview rgmnv rgview
+
+DESCRIPTION
+       MNV  is a text editor that is upwards compatible to Vi.  It can be used
+       to edit all kinds of plain text.  It is especially useful  for  editing
+       programs.
+
+       There  are a lot of enhancements above Vi: multi level undo, multi win‐
+       dows and buffers, syntax highlighting, command line  editing,  filename
+       completion,   on-line   help,   visual  selection,  etc..   See  ":help
+       vi_diff.txt" for a summary of the differences between MNV and Vi.
+
+       While running MNV a lot of help can be obtained from the  on-line  help
+       system, with the ":help" command.  See the ON-LINE HELP section below.
+
+       Most often MNV is started to edit a single file with the command
+
+            mnv file
+
+       More generally MNV is started with:
+
+            mnv [options] [filelist]
+
+       If the filelist is missing, the editor will start with an empty buffer.
+       Otherwise  exactly  one out of the following four may be used to choose
+       one or more files to be edited.
+
+       file ..     A list of filenames.  The first one  will  be  the  current
+                   file  and  read  into the buffer.  The cursor will be posi‐
+                   tioned on the first line of the buffer.  You can get to the
+                   other files with the ":next" command.  To edit a file  that
+                   starts with a dash, precede the filelist with "--".
+
+       -           The  file  to  edit  is read from stdin.  Commands are read
+                   from stderr, which should be a tty.
+
+       -t {tag}    The file to edit and the initial cursor position depends on
+                   a "tag", a sort of goto label.  {tag} is looked up  in  the
+                   tags file, the associated file becomes the current file and
+                   the  associated  command  is executed.  Mostly this is used
+                   for C programs, in which case {tag}  could  be  a  function
+                   name.  The effect is that the file containing that function
+                   becomes  the  current  file and the cursor is positioned on
+                   the start of the function.  See ":help tag-commands".
+
+       -q [errorfile]
+                   Start in quickFix mode.  The file [errorfile] is  read  and
+                   the  first  error is displayed.  If [errorfile] is omitted,
+                   the filename is obtained from the 'errorfile'  option  (de‐
+                   faults to "AztecC.Err" for the Amiga, "errors.err" on other
+                   systems).   Further  errors can be jumped to with the ":cn"
+                   command.  See ":help quickfix".
+
+       MNV behaves differently, depending on the name of the command (the exe‐
+       cutable may still be the same file).
+
+       mnv       The "normal" way, everything is default.
+
+       ex        Start in Ex mode.  Go to Normal mode with the ":vi"  command.
+                 Can also be done with the "-e" argument.
+
+       view      Start  in read-only mode.  You will be protected from writing
+                 the files.  Can also be done with the "-R" argument.
+
+       gmnv gview
+                 The GUI version.  Starts a new window.  Can also be done with
+                 the "-g" argument.
+
+       emnv eview
+                 The GUI version in easy mode.  Starts a new window.  Can also
+                 be done with the "-y" argument.
+
+       rmnv rview rgmnv rgview
+                 Like the above, but with restrictions.  It will not be possi‐
+                 ble to start shell commands, or suspend  MNV.   Can  also  be
+                 done with the "-Z" argument.
+
+OPTIONS
+       The  options may be given in any order, before or after filenames.  Op‐
+       tions without an argument can be combined after a single dash.
+
+       +[num]      For the first file the cursor will be  positioned  on  line
+                   "num".   If "num" is missing, the cursor will be positioned
+                   on the last line.
+
+       +/{pat}     For the first file the cursor will  be  positioned  in  the
+                   line  with  the  first  occurrence  of  {pat}.   See ":help
+                   search-pattern" for the available search patterns.
+
+       +{command}
+
+       -c {command}
+                   {command} will be executed after the first  file  has  been
+                   read.   {command}  is interpreted as an Ex command.  If the
+                   {command} contains spaces it must  be  enclosed  in  double
+                   quotes  (this depends on the shell that is used).  Example:
+                   mnv "+set si" main.c
+                   Note: You can use up to 10 "+" or "-c" commands.
+
+       -A          If MNV has been compiled with ARABIC  support  for  editing
+                   right-to-left  oriented  files and Arabic keyboard mapping,
+                   this option starts MNV in Arabic  mode,  i.e.  'arabic'  is
+                   set.  Otherwise an error message is given and MNV aborts.
+
+       -b          Binary  mode.  A few options will be set that makes it pos‐
+                   sible to edit a binary or executable file.
+
+       -C          Compatible.  Set the 'compatible' option.  This  will  make
+                   MNV  behave  mostly  like Vi, even though a .mnvrc file ex‐
+                   ists.
+
+       -d          Start in diff mode.  There should between two to eight file
+                   name arguments.  MNV will open all the files and show  dif‐
+                   ferences between them.  Works like mnvdiff(1).
+
+       -d {device}, -dev {device}
+                   Open  {device}  for  use as a terminal.  Only on the Amiga.
+                   Example: "-d con:20/30/600/150".
+
+       -D          Debugging.  Go to debugging mode when executing  the  first
+                   command from a script.
+
+       -e          Start  MNV  in Ex mode, just like the executable was called
+                   "ex".
+
+       -E          Start MNV in improved Ex mode, just like the executable was
+                   called "exim".
+
+       -f          Foreground.  For the GUI version, MNV will not fork and de‐
+                   tach from the shell it was started in.  On the  Amiga,  MNV
+                   is  not restarted to open a new window.  This option should
+                   be used when MNV is executed by a program  that  will  wait
+                   for  the  edit session to finish (e.g. mail).  On the Amiga
+                   the ":sh" and ":!" commands will not work.
+
+       -F          If MNV has been compiled with  FKMAP  support  for  editing
+                   right-to-left  oriented  files  and Farsi keyboard mapping,
+                   this option starts MNV in  Farsi  mode,  i.e.  'fkmap'  and
+                   'rightleft'  are  set.  Otherwise an error message is given
+                   and MNV aborts.
+                   Note: Farsi support has been removed in patch 8.1.0932.
+
+       -g          If MNV has been compiled with GUI support, this option  en‐
+                   ables the GUI.  If no GUI support was compiled in, an error
+                   message is given and MNV aborts.
+
+       -H          If MNV has been compiled with RIGHTLEFT support for editing
+                   right-to-left  oriented  files and Hebrew keyboard mapping,
+                   this option starts MNV in Hebrew  mode,  i.e.  'hkmap'  and
+                   'rightleft'  are  set.  Otherwise an error message is given
+                   and MNV aborts.
+
+       -i {mnvinfo}
+                   Specifies the filename to use when reading or  writing  the
+                   mnvinfo  file,  instead  of the default "~/.mnvinfo".  This
+                   can also be used to skip the use of the .mnvinfo  file,  by
+                   giving the name "NONE".
+
+       -l          Lisp mode.  Sets the 'lisp' and 'showmatch' options on.
+
+       -L          Same as -r.
+
+       -m          Modifying  files  is  disabled.  Resets the 'write' option.
+                   You can still modify the buffer, but writing a file is  not
+                   possible.
+
+       -M          Modifications  not  allowed.   The 'modifiable' and 'write'
+                   options will be unset, so that changes are not allowed  and
+                   files  can  not be written.  Note that these options can be
+                   set to enable making modifications.
+
+       -n          No swap file will be used.  Recovery after a crash will  be
+                   impossible.   Handy  if  you  want to edit a file on a very
+                   slow medium (e.g. floppy).  Can also  be  done  with  ":set
+                   uc=0".  Can be undone with ":set uc=200".
+
+       -N          No-compatible  mode.  Resets the 'compatible' option.  This
+                   will make MNV behave a bit better, but less Vi  compatible,
+                   even though a .mnvrc file does not exist.
+
+       -nb         Become an editor server for NetBeans.  See the docs for de‐
+                   tails.
+
+       -o[N]       Open N windows stacked.  When N is omitted, open one window
+                   for each file.
+
+       -O[N]       Open  N  windows side by side.  When N is omitted, open one
+                   window for each file.
+
+       -p[N]       Open N tab pages.  When N is omitted, open one tab page for
+                   each file.
+
+       -P {parent-title}
+                   Win32 GUI only: Specify the title of  the  parent  applica‐
+                   tion.   When possible, MNV will run in an MDI window inside
+                   the application. {parent-title} must appear in  the  window
+                   title of the parent application.  Make sure that it is spe‐
+                   cific  enough. Note that the implementation is still primi‐
+                   tive.  It won't work with all  applications  and  the  menu
+                   doesn't work.
+
+       -r          List  swap files, with information about using them for re‐
+                   covery.
+
+       -r {file}   Recovery mode.  The swap file is used to recover a  crashed
+                   editing  session.   The  swap  file is a file with the same
+                   filename as the text file with ".swp" appended.  See ":help
+                   recovery".
+
+       -R          Read-only mode.  The 'readonly' option will  be  set.   You
+                   can still edit the buffer, but will be prevented from acci‐
+                   dentally overwriting a file.  If you do want to overwrite a
+                   file,  add  an  exclamation  mark  to the Ex command, as in
+                   ":w!".  The -R option  also  implies  the  -n  option  (see
+                   above).   The  'readonly'  option  can  be reset with ":set
+                   noro".  See ":help 'readonly'".
+
+       -s          Silent mode.  Only when started as "Ex" or  when  the  "-e"
+                   option was given before the "-s" option.
+
+       -s {scriptin}
+                   The  script file {scriptin} is read.  The characters in the
+                   file are interpreted as if you had typed  them.   The  same
+                   can be done with the command ":source! {scriptin}".  If the
+                   end of the file is reached before the editor exits, further
+                   characters are read from the keyboard.
+
+       -S {file}   {file}  will be sourced after the first file has been read.
+                   This is equivalent to -c "source  {file}".   {file}  cannot
+                   start with '-'.  If {file} is omitted "Session.mnv" is used
+                   (only works when -S is the last argument).
+
+       -T {terminal}
+                   Tells MNV the name of the terminal you are using.  Only re‐
+                   quired  when  the  automatic way doesn't work.  Should be a
+                   terminal known to MNV (builtin) or defined in  the  termcap
+                   or terminfo file.
+
+       -u {mnvrc}  Use  the  commands in the file {mnvrc} for initializations.
+                   All the other initializations are  skipped.   Use  this  to
+                   edit  a special kind of files.  It can also be used to skip
+                   all initializations by giving the name "NONE".  See  ":help
+                   initialization" within mnv for more details.
+
+       -U {gmnvrc} Use  the  commands in the file {gmnvrc} for GUI initializa‐
+                   tions.  All the other GUI initializations are skipped.   It
+                   can  also be used to skip all GUI initializations by giving
+                   the name "NONE".  See ":help gui-init" within mnv for  more
+                   details.
+
+       -v          Start  MNV  in Vi mode, just like the executable was called
+                   "vi".  This only has effect when the executable  is  called
+                   "ex".
+
+       -V[N]       Verbose.   Give  messages about which files are sourced and
+                   for reading and writing a mnvinfo file.  The optional  num‐
+                   ber N is the value for 'verbose'.  Default is 10.
+
+       -V[N]{filename}
+                   Like -V and set 'verbosefile' to {filename}.  The result is
+                   that  messages  are  not  displayed but written to the file
+                   {filename}.  {filename} must not start with a digit.
+
+       -w{number}  Set the 'window' option to {number}.
+
+       -w {scriptout}
+                   All the characters that you type are recorded in  the  file
+                   {scriptout},  until  you  exit  MNV.  This is useful if you
+                   want to create a script file to be used with  "mnv  -s"  or
+                   ":source!".  If the {scriptout} file exists, characters are
+                   appended.
+
+       -W {scriptout}
+                   Like -w, but an existing file is overwritten.
+
+       -x          If  MNV  has been compiled with encryption support, use en‐
+                   cryption when writing files.  Will prompt for a crypt key.
+
+       -X          Don't connect to the X server.  Shortens startup time in  a
+                   terminal,  but  the  window title and clipboard will not be
+                   used.
+
+       -Y          Don't connect to the wayland compositor
+
+       -y          Start MNV in easy mode, just like the executable was called
+                   "emnv" or "eview".  Makes MNV behave like a  click-and-type
+                   editor.
+
+       -Z          Restricted  mode.   Works  like  the executable starts with
+                   "r".
+
+       --          Denotes the end of the options.  Arguments after this  will
+                   be  handled  as  a  file  name.  This can be used to edit a
+                   filename that starts with a '-'.
+
+       --clean     Do not use  any  personal  configuration  (mnvrc,  plugins,
+                   etc.).   Useful to see if a problem reproduces with a clean
+                   MNV setup.
+
+       --cmd {command}
+                   Like using "-c", but the command is  executed  just  before
+                   processing  any  mnvrc file.  You can use up to 10 of these
+                   commands, independently from "-c" commands.
+
+       --echo-wid  GTK GUI only: Echo the Window ID on stdout.
+
+       --gui-dialog-file {name}
+                   When using the GUI, instead of showing a dialog, write  the
+                   title  and  message of the dialog to file {name}.  The file
+                   is created or appended to.  Only  useful  for  testing,  to
+                   avoid  that  the  test gets stuck on a dialog that can't be
+                   seen.  Without the GUI the argument is ignored.
+
+       --help, -h, -?
+                   Give a bit of help about the command line arguments and op‐
+                   tions.  After this MNV exits.
+
+       --literal   Take file name arguments literally,  do  not  expand  wild‐
+                   cards.   This has no effect on Unix where the shell expands
+                   wildcards.
+
+       --log {filename}
+                   If MNV has been compiled with  eval  and  channel  feature,
+                   start  logging  and write entries to {filename}. This works
+                   like calling ch_logfile({filename}, 'ao') very early during
+                   startup.
+
+       --nofork    Foreground.  For the GUI version, MNV will not fork and de‐
+                   tach from the shell it was started in.
+
+       --noplugin  Skip loading plugins.  Implied by -u NONE.
+
+       --not-a-term
+                   Tells MNV that the user knows that the input and/or  output
+                   is  not connected to a terminal.  This will avoid the warn‐
+                   ing and the two second delay that would happen.
+
+       --remote    Connect to a MNV server and make it edit the files given in
+                   the rest of the arguments.  If no server is found a warning
+                   is given and the files are edited in the current MNV.
+
+       --remote-expr {expr}
+                   Connect to a MNV server, evaluate {expr} in  it  and  print
+                   the result on stdout.
+
+       --remote-send {keys}
+                   Connect to a MNV server and send {keys} to it.
+
+       --remote-silent
+                   As  --remote,  but  without  the  warning when no server is
+                   found.
+
+       --remote-wait
+                   As --remote, but MNV does not exit  until  the  files  have
+                   been edited.
+
+       --remote-wait-silent
+                   As --remote-wait, but without the warning when no server is
+                   found.
+
+       --serverlist
+                   List the names of all MNV servers that can be found.
+
+       --servername {name}
+                   Use  {name}  as the server name.  Used for the current MNV,
+                   unless used with a --remote argument, then it's the name of
+                   the server to connect to.  If the socketserver  backend  is
+                   being used, if the name starts with "/", "./", or "../", it
+                   is  taken  as either an absolute, relative or relative path
+                   to the socket.
+
+       --clientserver {backend}
+                   Use {backend} as the backend for  clientserver  functional‐
+                   ity, either "socket" or "x11" respectively.  Only available
+                   when  compiled  with  both  socketserver  and  X11 features
+                   present
+
+       --socketid {id}
+                   GTK GUI only: Use the GtkPlug mechanism to run gMNV in  an‐
+                   other window.
+
+       --startuptime {file}
+                   During startup write timing messages to the file {fname}.
+
+       --ttyfail   When  stdin  or  stdout is not a a terminal (tty) then exit
+                   right away.
+
+       --version   Print version information and exit.
+
+       --windowid {id}
+                   Win32 GUI only: Make gMNV try to use the window {id}  as  a
+                   parent, so that it runs inside that window.
+
+ON-LINE HELP
+       Type  ":help"  in MNV to get started.  Type ":help subject" to get help
+       on a specific subject.  For example: ":help ZZ" to  get  help  for  the
+       "ZZ"  command.   Use <Tab> and CTRL-D to complete subjects (":help cmd‐
+       line-completion").  Tags are present to jump from one place to  another
+       (sort of hypertext links, see ":help").  All documentation files can be
+       viewed in this way, for example ":help syntax.txt".
+
+FILES
+       /usr/local/share/mnv/mnv??/doc/*.txt
+                      The  MNV documentation files.  Use ":help doc-file-list"
+                      to get the complete list.
+                      mnv??  is short version number, like mnv91 for MNV 9.1
+
+       /usr/local/share/mnv/mnv??/doc/tags
+                      The tags file used for finding information in the  docu‐
+                      mentation files.
+
+       /usr/local/share/mnv/mnv??/syntax/syntax.mnv
+                      System wide syntax initializations.
+
+       /usr/local/share/mnv/mnv??/syntax/*.mnv
+                      Syntax files for various languages.
+
+       /usr/local/share/mnv/mnvrc
+                      System wide MNV initializations.
+
+       ~/.mnvrc, ~/.mnv/mnvrc, $XDG_CONFIG_HOME/mnv/mnvrc
+                      Your  personal  MNV  initializations (first one found is
+                      used).
+
+       /usr/local/share/mnv/gmnvrc
+                      System wide gmnv initializations.
+
+       ~/.gmnvrc, ~/.mnv/gmnvrc, $XDG_CONFIG_HOME/mnv/gmnvrc
+                      Your personal gMNV initializations (first one  found  is
+                      used).
+
+       /usr/local/share/mnv/mnv??/optwin.mnv
+                      Script  used  for  the ":options" command, a nice way to
+                      view and set options.
+
+       /usr/local/share/mnv/mnv??/menu.mnv
+                      System wide menu initializations for gMNV.
+
+       /usr/local/share/mnv/mnv??/bugreport.mnv
+                      Script to generate a bug report.  See ":help bugs".
+
+       /usr/local/share/mnv/mnv??/filetype.mnv
+                      Script to detect the type of a file by  its  name.   See
+                      ":help 'filetype'".
+
+       /usr/local/share/mnv/mnv??/scripts.mnv
+                      Script  to  detect  the  type of a file by its contents.
+                      See ":help 'filetype'".
+
+       /usr/local/share/mnv/mnv??/print/*.ps
+                      Files used for PostScript printing.
+
+       For recent info read the MNV home page:
+       <URL:http://www.mnv.org/>
+
+SEE ALSO
+       mnvtutor(1)
+
+AUTHOR
+       Most of MNV was made by Bram Moolenaar, with a lot of help from others.
+       See ":help credits" in MNV.
+       MNV is based on Stevie, worked on by: Tim Thompson,  Tony  Andrews  and
+       G.R. (Fred) Walter.  Although hardly any of the original code remains.
+
+BUGS
+       Probably.  See ":help todo" for a list of known problems.
+
+       Note  that a number of things that may be regarded as bugs by some, are
+       in fact caused by a too-faithful reproduction of Vi's  behaviour.   And
+       if  you  think  other things are bugs "because Vi does it differently",
+       you should take a closer look at the vi_diff.txt file  (or  type  :help
+       vi_diff.txt  when  in  MNV).   Also have a look at the 'compatible' and
+       'cpoptions' options.
+
+                                  2025 Jun 27                           MNV(1)

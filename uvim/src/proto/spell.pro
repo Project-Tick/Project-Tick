@@ -47,4 +47,4 @@ int valid_spelllang(char_u *val);
 int valid_spellfile(char_u *val);
 char *did_set_spell_option(void);
 char *compile_cap_prog(synblock_T *synblock);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

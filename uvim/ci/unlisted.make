@@ -1,4 +1,4 @@
-# vim: ft=make
+# mnv: ft=make
 SHELL = /bin/bash
 
 # List all files that are tracked in git but not listed in Filelist.

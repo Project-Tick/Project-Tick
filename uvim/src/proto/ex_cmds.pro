@@ -39,7 +39,7 @@ void free_old_sub(void);
 int prepare_tagpreview(int undo_sync, int use_previewpopup, use_popup_T use_popup);
 void ex_smile(exarg_T *eap);
 void ex_drop(exarg_T *eap);
-char_u *skip_vimgrep_pat(char_u *p, char_u **s, int *flags);
-char_u *skip_vimgrep_pat_ext(char_u *p, char_u **s, int *flags, char_u **nulp, int *cp);
+char_u *skip_mnvgrep_pat(char_u *p, char_u **s, int *flags);
+char_u *skip_mnvgrep_pat_ext(char_u *p, char_u **s, int *flags, char_u **nulp, int *cp);
 void ex_oldfiles(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

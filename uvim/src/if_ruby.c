@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
  * Ruby interface by Shugo Maeda
  *   with improvements by SegPhault (Ryan Paul)
  *   with improvements by Jon Maken
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 #include "protodef.h"
@@ -66,9 +66,9 @@
 # define rb_num2long	rb_num2long_stub
 # define rb_int2big	rb_int2big_stub
 
-# if RUBY_VERSION >= 30 || VIM_SIZEOF_INT < VIM_SIZEOF_LONG
+# if RUBY_VERSION >= 30 || MNV_SIZEOF_INT < MNV_SIZEOF_LONG
 // Ruby 1.9 defines a number of static functions which use rb_fix2int and
-// rb_num2int if VIM_SIZEOF_INT < VIM_SIZEOF_LONG (64bit)
+// rb_num2int if MNV_SIZEOF_INT < MNV_SIZEOF_LONG (64bit)
 #  define rb_fix2int	rb_fix2int_stub
 #  define rb_num2int	rb_num2int_stub
 # endif
@@ -191,13 +191,13 @@
 # undef FALSE
 #endif
 
-#include "vim.h"
+#include "mnv.h"
 #include "version.h"
 
 #ifdef DYNAMIC_RUBY
-# ifdef MSWIN	// must come after including vim.h, where it is defined
+# ifdef MSWIN	// must come after including mnv.h, where it is defined
 #  define RUBY_PROC FARPROC
-#  define load_dll vimLoadLib
+#  define load_dll mnvLoadLib
 #  define symbol_from_dll GetProcAddress
 #  define close_dll FreeLibrary
 #  define load_dll_error GetWin32Error
@@ -216,17 +216,17 @@ static int ruby_initialized = 0;
 static void *ruby_stack_start;
 static VALUE objtbl;
 
-static VALUE mVIM;
+static VALUE mMNV;
 static VALUE cBuffer;
-static VALUE cVimWindow;
+static VALUE cMNVWindow;
 static VALUE eDeletedBufferError;
 static VALUE eDeletedWindowError;
 
 static int ensure_ruby_initialized(void);
 static void error_print(int);
 static void ruby_io_init(void);
-static void ruby_vim_init(void);
-static int ruby_convert_to_vim_value(VALUE val, typval_T *rettv);
+static void ruby_mnv_init(void);
+static int ruby_convert_to_mnv_value(VALUE val, typval_T *rettv);
 
 #if defined(__ia64) && !defined(ruby_init_stack)
 # define ruby_init_stack(addr) ruby_init_stack((addr), rb_ia64_bsp())
@@ -293,7 +293,7 @@ static int ruby_convert_to_vim_value(VALUE val, typval_T *rettv);
 # undef rb_intern
 # define rb_intern			dll_rb_intern
 
-# if VIM_SIZEOF_INT < VIM_SIZEOF_LONG // 64 bits only
+# if MNV_SIZEOF_INT < MNV_SIZEOF_LONG // 64 bits only
 #  if RUBY_VERSION < 30
 #   define rb_num2uint			dll_rb_num2uint
 #  endif
@@ -420,7 +420,7 @@ static VALUE (*dll_rb_hash_new) (void);
 static VALUE (*dll_rb_inspect) (VALUE);
 static VALUE (*dll_rb_int2inum) (long);
 static ID (*dll_rb_intern) (const char*);
-# if RUBY_VERSION >= 30 || VIM_SIZEOF_INT < VIM_SIZEOF_LONG
+# if RUBY_VERSION >= 30 || MNV_SIZEOF_INT < MNV_SIZEOF_LONG
 static long (*dll_rb_fix2int) (VALUE);
 static long (*dll_rb_num2int) (VALUE);
 static unsigned long (*dll_rb_num2uint) (VALUE);
@@ -526,7 +526,7 @@ rb_int2big_stub(SIGNED_VALUE x)
 {
     return dll_rb_int2big(x);
 }
-#  if RUBY_VERSION >= 30 || VIM_SIZEOF_INT < VIM_SIZEOF_LONG
+#  if RUBY_VERSION >= 30 || MNV_SIZEOF_INT < MNV_SIZEOF_LONG
     long
 rb_fix2int_stub(VALUE x)
 {
@@ -685,7 +685,7 @@ static struct
     {"rb_inspect", (RUBY_PROC*)&dll_rb_inspect},
     {"rb_int2inum", (RUBY_PROC*)&dll_rb_int2inum},
     {"rb_intern", (RUBY_PROC*)&dll_rb_intern},
-# if RUBY_VERSION >= 30 || VIM_SIZEOF_INT < VIM_SIZEOF_LONG
+# if RUBY_VERSION >= 30 || MNV_SIZEOF_INT < MNV_SIZEOF_LONG
     {"rb_fix2int", (RUBY_PROC*)&dll_rb_fix2int},
     {"rb_num2int", (RUBY_PROC*)&dll_rb_num2int},
     {"rb_num2uint", (RUBY_PROC*)&dll_rb_num2uint},
@@ -828,16 +828,16 @@ ex_ruby(exarg_T *eap)
 	if (state)
 	    error_print(state);
     }
-    vim_free(script);
+    mnv_free(script);
 }
 
 /*
  *  In Ruby 1.9 or later, ruby String object has encoding.
- *  conversion buffer string of vim to ruby String object using
- *  VIM encoding option.
+ *  conversion buffer string of mnv to ruby String object using
+ *  MNV encoding option.
  */
     static VALUE
-vim_str2rb_enc_str(const char *s)
+mnv_str2rb_enc_str(const char *s)
 {
     long lval;
     char_u *sval;
@@ -846,7 +846,7 @@ vim_str2rb_enc_str(const char *s)
     if (get_option_value((char_u *)"enc", &lval, &sval, NULL, 0) == gov_string)
     {
 	enc = rb_enc_find((char *)sval);
-	vim_free(sval);
+	mnv_free(sval);
 	if (enc)
 	    return rb_enc_str_new(s, (long)strlen(s), enc);
     }
@@ -864,7 +864,7 @@ eval_enc_string_protect(const char *str, int *state)
     if (get_option_value((char_u *)"enc", &lval, &sval, NULL, 0) == gov_string)
     {
 	enc = rb_enc_find((char *)sval);
-	vim_free(sval);
+	mnv_free(sval);
 	if (enc)
 	{
 	    v = rb_sprintf("#-*- coding:%s -*-\n%s", rb_enc_name(enc), str);
@@ -892,7 +892,7 @@ ex_rubydo(exarg_T *eap)
 
 	if (i > curbuf->b_ml.ml_line_count)
 	    break;
-	line = vim_str2rb_enc_str((char *)ml_get(i));
+	line = mnv_str2rb_enc_str((char *)ml_get(i));
 	rb_lastline_set(line);
 	eval_enc_string_protect((char *) eap->arg, &state);
 	if (state)
@@ -975,7 +975,7 @@ ensure_ruby_initialized(void)
 #ifdef MSWIN
 	// suggested by Ariya Mizutani
 	int argc = 1;
-	char *argv[] = {"gvim.exe"};
+	char *argv[] = {"gmnv.exe"};
 	char **argvp = argv;
 	ruby_sysinit(&argc, &argvp);
 #endif
@@ -985,12 +985,12 @@ ensure_ruby_initialized(void)
 	}
 	{
 	    int dummy_argc = 2;
-	    char *dummy_argv[] = {"vim-ruby", "-e_=0"};
+	    char *dummy_argv[] = {"mnv-ruby", "-e_=0"};
 	    ruby_options(dummy_argc, dummy_argv);
 	}
-	ruby_script("vim-ruby");
+	ruby_script("mnv-ruby");
 	ruby_io_init();
-	ruby_vim_init();
+	ruby_mnv_init();
 	ruby_initialized = 1;
     }
 #ifdef DYNAMIC_RUBY
@@ -1057,7 +1057,7 @@ error_print(int state)
 		char *p;
 
 		epath = rb_class_path(eclass);
-		vim_snprintf(buff, BUFSIZ, "%s: %s",
+		mnv_snprintf(buff, BUFSIZ, "%s: %s",
 			 RSTRING_PTR(epath), RSTRING_PTR(einfo));
 		p = strchr(buff, '\n');
 		if (p) *p = '\0';
@@ -1076,14 +1076,14 @@ error_print(int state)
 #endif
 	    break;
 	default:
-	    vim_snprintf(buff, BUFSIZ, _(e_unknown_longjmp_status_nr), state);
+	    mnv_snprintf(buff, BUFSIZ, _(e_unknown_longjmp_status_nr), state);
 	    emsg(buff);
 	    break;
     }
 }
 
     static VALUE
-vim_message(VALUE self UNUSED, VALUE str)
+mnv_message(VALUE self UNUSED, VALUE str)
 {
     char *buff, *p;
 
@@ -1105,7 +1105,7 @@ vim_message(VALUE self UNUSED, VALUE str)
 }
 
     static VALUE
-vim_set_option(VALUE self UNUSED, VALUE str)
+mnv_set_option(VALUE self UNUSED, VALUE str)
 {
     do_set((char_u *)StringValuePtr(str), 0);
     update_screen(UPD_NOT_VALID);
@@ -1113,7 +1113,7 @@ vim_set_option(VALUE self UNUSED, VALUE str)
 }
 
     static VALUE
-vim_command(VALUE self UNUSED, VALUE str)
+mnv_command(VALUE self UNUSED, VALUE str)
 {
     do_cmdline_cmd((char_u *)StringValuePtr(str));
     return Qnil;
@@ -1121,7 +1121,7 @@ vim_command(VALUE self UNUSED, VALUE str)
 
 #ifdef FEAT_EVAL
     static VALUE
-vim_to_ruby(typval_T *tv)
+mnv_to_ruby(typval_T *tv)
 {
     VALUE result = Qnil;
 
@@ -1148,7 +1148,7 @@ vim_to_ruby(typval_T *tv)
 	if (list != NULL)
 	{
 	    FOR_ALL_LIST_ITEMS(list, curr)
-		rb_ary_push(result, vim_to_ruby(&curr->li_tv));
+		rb_ary_push(result, mnv_to_ruby(&curr->li_tv));
 	}
     }
     else if (tv->v_type == VAR_DICT)
@@ -1170,7 +1170,7 @@ vim_to_ruby(typval_T *tv)
 
 		    di = dict_lookup(hi);
 		    rb_hash_aset(result, rb_str_new2((char *)hi->hi_key),
-						     vim_to_ruby(&di->di_tv));
+						     mnv_to_ruby(&di->di_tv));
 		}
 	    }
 	}
@@ -1194,7 +1194,7 @@ vim_to_ruby(typval_T *tv)
 #endif
 
     static VALUE
-vim_evaluate(VALUE self UNUSED, VALUE str)
+mnv_evaluate(VALUE self UNUSED, VALUE str)
 {
 #ifdef FEAT_EVAL
     typval_T    *tv;
@@ -1203,7 +1203,7 @@ vim_evaluate(VALUE self UNUSED, VALUE str)
     tv = eval_expr((char_u *)StringValuePtr(str), NULL);
     if (tv == NULL)
 	return Qnil;
-    result = vim_to_ruby(tv);
+    result = mnv_to_ruby(tv);
 
     free_tv(tv);
 
@@ -1217,7 +1217,7 @@ vim_evaluate(VALUE self UNUSED, VALUE str)
 static size_t buffer_dsize(const void *buf);
 
 static const rb_data_type_t buffer_type = {
-    "vim_buffer",
+    "mnv_buffer",
     {0, 0, buffer_dsize,
 # if RUBY_VERSION >= 27
 	0, {0}
@@ -1274,7 +1274,7 @@ get_buf(VALUE obj)
 }
 
     static VALUE
-vim_blob(VALUE self UNUSED, VALUE str)
+mnv_blob(VALUE self UNUSED, VALUE str)
 {
     VALUE result = rb_str_new("0z", 2);
     char    buf[4];
@@ -1366,7 +1366,7 @@ get_buffer_line(buf_T *buf, linenr_T n)
 {
     if (n <= 0 || n > buf->b_ml.ml_line_count)
 	rb_raise(rb_eIndexError, "line number %ld out of range", (long)n);
-    return vim_str2rb_enc_str((char *)ml_get_buf(buf, n, FALSE));
+    return mnv_str2rb_enc_str((char *)ml_get_buf(buf, n, FALSE));
 }
 
     static VALUE
@@ -1512,7 +1512,7 @@ buffer_append(VALUE self, VALUE num, VALUE str)
 static size_t window_dsize(const void *buf);
 
 static const rb_data_type_t window_type = {
-    "vim_window",
+    "mnv_window",
     {0, 0, window_dsize,
 # if RUBY_VERSION >= 27
 	0, {0}
@@ -1543,9 +1543,9 @@ window_new(win_T *win)
     else
     {
 #ifdef USE_TYPEDDATA
-	VALUE obj = TypedData_Wrap_Struct(cVimWindow, &window_type, win);
+	VALUE obj = TypedData_Wrap_Struct(cMNVWindow, &window_type, win);
 #else
-	VALUE obj = Data_Wrap_Struct(cVimWindow, 0, 0, win);
+	VALUE obj = Data_Wrap_Struct(cMNVWindow, 0, 0, win);
 #endif
 	win->w_ruby_ref = (void *) obj;
 	rb_hash_aset(objtbl, rb_obj_id(obj), obj);
@@ -1735,43 +1735,43 @@ ruby_io_init(void)
 
     rb_stdout = rb_obj_alloc(rb_cObject);
     rb_stderr = rb_obj_alloc(rb_cObject);
-    rb_define_singleton_method(rb_stdout, "write", (void*)vim_message, 1);
+    rb_define_singleton_method(rb_stdout, "write", (void*)mnv_message, 1);
     rb_define_singleton_method(rb_stdout, "flush", (void*)f_nop, 0);
-    rb_define_singleton_method(rb_stderr, "write", (void*)vim_message, 1);
+    rb_define_singleton_method(rb_stderr, "write", (void*)mnv_message, 1);
     rb_define_singleton_method(rb_stderr, "flush", (void*)f_nop, 0);
     rb_define_global_function("p", f_p, -1);
 }
 
     static void
-ruby_vim_init(void)
+ruby_mnv_init(void)
 {
     objtbl = rb_hash_new();
     rb_global_variable(&objtbl);
 
-    // The Vim module used to be called "VIM", but "Vim" is better.  Make an
-    // alias "VIM" for backwards compatibility.
-    mVIM = rb_define_module("Vim");
-    rb_define_const(rb_cObject, "VIM", mVIM);
-    rb_define_const(mVIM, "VERSION_MAJOR", INT2NUM(VIM_VERSION_MAJOR));
-    rb_define_const(mVIM, "VERSION_MINOR", INT2NUM(VIM_VERSION_MINOR));
-    rb_define_const(mVIM, "VERSION_BUILD", INT2NUM(VIM_VERSION_BUILD));
-    rb_define_const(mVIM, "VERSION_PATCHLEVEL", INT2NUM(VIM_VERSION_PATCHLEVEL));
-    rb_define_const(mVIM, "VERSION_SHORT", rb_str_new2(VIM_VERSION_SHORT));
-    rb_define_const(mVIM, "VERSION_MEDIUM", rb_str_new2(VIM_VERSION_MEDIUM));
-    rb_define_const(mVIM, "VERSION_LONG", rb_str_new2(VIM_VERSION_LONG));
-    rb_define_const(mVIM, "VERSION_LONG_DATE", rb_str_new2(VIM_VERSION_LONG_DATE));
-    rb_define_module_function(mVIM, "message", vim_message, 1);
-    rb_define_module_function(mVIM, "set_option", vim_set_option, 1);
-    rb_define_module_function(mVIM, "command", vim_command, 1);
-    rb_define_module_function(mVIM, "evaluate", vim_evaluate, 1);
-    rb_define_module_function(mVIM, "blob", vim_blob, 1);
+    // The MNV module used to be called "MNV", but "MNV" is better.  Make an
+    // alias "MNV" for backwards compatibility.
+    mMNV = rb_define_module("MNV");
+    rb_define_const(rb_cObject, "MNV", mMNV);
+    rb_define_const(mMNV, "VERSION_MAJOR", INT2NUM(MNV_VERSION_MAJOR));
+    rb_define_const(mMNV, "VERSION_MINOR", INT2NUM(MNV_VERSION_MINOR));
+    rb_define_const(mMNV, "VERSION_BUILD", INT2NUM(MNV_VERSION_BUILD));
+    rb_define_const(mMNV, "VERSION_PATCHLEVEL", INT2NUM(MNV_VERSION_PATCHLEVEL));
+    rb_define_const(mMNV, "VERSION_SHORT", rb_str_new2(MNV_VERSION_SHORT));
+    rb_define_const(mMNV, "VERSION_MEDIUM", rb_str_new2(MNV_VERSION_MEDIUM));
+    rb_define_const(mMNV, "VERSION_LONG", rb_str_new2(MNV_VERSION_LONG));
+    rb_define_const(mMNV, "VERSION_LONG_DATE", rb_str_new2(MNV_VERSION_LONG_DATE));
+    rb_define_module_function(mMNV, "message", mnv_message, 1);
+    rb_define_module_function(mMNV, "set_option", mnv_set_option, 1);
+    rb_define_module_function(mMNV, "command", mnv_command, 1);
+    rb_define_module_function(mMNV, "evaluate", mnv_evaluate, 1);
+    rb_define_module_function(mMNV, "blob", mnv_blob, 1);
 
-    eDeletedBufferError = rb_define_class_under(mVIM, "DeletedBufferError",
+    eDeletedBufferError = rb_define_class_under(mMNV, "DeletedBufferError",
 						rb_eStandardError);
-    eDeletedWindowError = rb_define_class_under(mVIM, "DeletedWindowError",
+    eDeletedWindowError = rb_define_class_under(mMNV, "DeletedWindowError",
 						rb_eStandardError);
 
-    cBuffer = rb_define_class_under(mVIM, "Buffer", rb_cObject);
+    cBuffer = rb_define_class_under(mMNV, "Buffer", rb_cObject);
     rb_define_singleton_method(cBuffer, "current", (void*)buffer_s_current, 0);
     rb_define_singleton_method(cBuffer, "count", (void*)buffer_s_count, 0);
     rb_define_singleton_method(cBuffer, "[]", (void*)buffer_s_aref, 1);
@@ -1791,24 +1791,24 @@ ruby_vim_init(void)
     rb_define_method(cBuffer, "line=", (void*)set_current_line, 1);
 
 
-    cVimWindow = rb_define_class_under(mVIM, "Window", rb_cObject);
-    rb_define_singleton_method(cVimWindow, "current", (void*)window_s_current, 0);
-    rb_define_singleton_method(cVimWindow, "count", (void*)window_s_count, 0);
-    rb_define_singleton_method(cVimWindow, "[]", (void*)window_s_aref, 1);
-    rb_define_method(cVimWindow, "buffer", (void*)window_buffer, 0);
-    rb_define_method(cVimWindow, "height", (void*)window_height, 0);
-    rb_define_method(cVimWindow, "height=", (void*)window_set_height, 1);
-    rb_define_method(cVimWindow, "width", (void*)window_width, 0);
-    rb_define_method(cVimWindow, "width=", (void*)window_set_width, 1);
-    rb_define_method(cVimWindow, "cursor", (void*)window_cursor, 0);
-    rb_define_method(cVimWindow, "cursor=", (void*)window_set_cursor, 1);
+    cMNVWindow = rb_define_class_under(mMNV, "Window", rb_cObject);
+    rb_define_singleton_method(cMNVWindow, "current", (void*)window_s_current, 0);
+    rb_define_singleton_method(cMNVWindow, "count", (void*)window_s_count, 0);
+    rb_define_singleton_method(cMNVWindow, "[]", (void*)window_s_aref, 1);
+    rb_define_method(cMNVWindow, "buffer", (void*)window_buffer, 0);
+    rb_define_method(cMNVWindow, "height", (void*)window_height, 0);
+    rb_define_method(cMNVWindow, "height=", (void*)window_set_height, 1);
+    rb_define_method(cMNVWindow, "width", (void*)window_width, 0);
+    rb_define_method(cMNVWindow, "width=", (void*)window_set_width, 1);
+    rb_define_method(cMNVWindow, "cursor", (void*)window_cursor, 0);
+    rb_define_method(cMNVWindow, "cursor=", (void*)window_set_cursor, 1);
 
     rb_define_virtual_variable("$curbuf", buffer_s_current_getter, 0);
     rb_define_virtual_variable("$curwin", window_s_current_getter, 0);
 }
 
     void
-vim_ruby_init(void *stack_start)
+mnv_ruby_init(void *stack_start)
 {
     // should get machine stack start address early in main function
     ruby_stack_start = stack_start;
@@ -1821,7 +1821,7 @@ convert_hash2dict(VALUE key, VALUE val, VALUE arg)
     dictitem_T *di;
 
     di = dictitem_alloc((char_u *)RSTRING_PTR(rb_obj_as_string(key)));
-    if (di == NULL || ruby_convert_to_vim_value(val, &di->di_tv) != OK
+    if (di == NULL || ruby_convert_to_mnv_value(val, &di->di_tv) != OK
 						     || dict_add(d, di) != OK)
     {
 	d->dv_hashtab.ht_flags |= HTFLAGS_ERROR;
@@ -1831,7 +1831,7 @@ convert_hash2dict(VALUE key, VALUE val, VALUE arg)
 }
 
     static int
-ruby_convert_to_vim_value(VALUE val, typval_T *rettv)
+ruby_convert_to_mnv_value(VALUE val, typval_T *rettv)
 {
     switch (TYPE(val))
     {
@@ -1864,7 +1864,7 @@ ruby_convert_to_vim_value(VALUE val, typval_T *rettv)
 		VALUE str = (VALUE)RSTRING(val);
 
 		rettv->v_type = VAR_STRING;
-		rettv->vval.v_string = vim_strnsave((char_u *)RSTRING_PTR(str),
+		rettv->vval.v_string = mnv_strnsave((char_u *)RSTRING_PTR(str),
 							     RSTRING_LEN(str));
 	    }
 	    break;
@@ -1880,7 +1880,7 @@ ruby_convert_to_vim_value(VALUE val, typval_T *rettv)
 
 		for (i = 0; i < RARRAY_LEN(val); ++i)
 		{
-		    if (ruby_convert_to_vim_value((VALUE)RARRAY_PTR(val)[i],
+		    if (ruby_convert_to_mnv_value((VALUE)RARRAY_PTR(val)[i],
 									&v) != OK)
 		    {
 			list_unref(l);
@@ -1933,7 +1933,7 @@ do_rubyeval(char_u *str, typval_T *rettv)
 	if (state)
 	    error_print(state);
 	else
-	    retval = ruby_convert_to_vim_value(obj, rettv);
+	    retval = ruby_convert_to_mnv_value(obj, rettv);
     }
     if (retval == FAIL)
     {

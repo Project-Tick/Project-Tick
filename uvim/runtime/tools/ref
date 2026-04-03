@@ -4,7 +4,7 @@
 #
 # Usage: ref word ..
 #
-# can be used for the K command of Vim
+# can be used for the K command of MNV
 #
 spell <<EOF
 $*

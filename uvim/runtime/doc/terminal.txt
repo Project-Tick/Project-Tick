@@ -1,13 +1,13 @@
-*terminal.txt*	For Vim version 9.2.  Last change: 2026 Mar 12
+*terminal.txt*	For MNV version 9.2.  Last change: 2026 Mar 12
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Terminal window support				*terminal* *terminal-window*
 
 
-The terminal feature is optional, use this to check if your Vim has it: >
+The terminal feature is optional, use this to check if your MNV has it: >
 	echo has('terminal')
 If the result is "1" you have it.
 
@@ -25,12 +25,12 @@ If the result is "1" you have it.
       MS-Windows				|terminal-ms-windows|
 2. Terminal functions			|terminal-function-details|
 3. Terminal communication		|terminal-communication|
-      Vim to job: term_sendkeys()		|terminal-to-job|
-      Job to Vim: JSON API			|terminal-api|
+      MNV to job: term_sendkeys()		|terminal-to-job|
+      Job to MNV: JSON API			|terminal-api|
       Using the client-server feature		|terminal-client-server|
 4. Remote testing			|terminal-testing|
 5. Diffing screen dumps			|terminal-diff|
-      Writing a screen dump test for Vim	|terminal-dumptest|
+      Writing a screen dump test for MNV	|terminal-dumptest|
       Creating a screen dump			|terminal-screendump|
       Comparing screen dumps			|terminal-diffscreendump|
 6. Debugging				|terminal-debug|
@@ -53,14 +53,14 @@ The terminal feature requires the |+job| and |+channel| features.
 ==============================================================================
 1. Basic use						*terminal-use*
 
-This feature is for running a terminal emulator in a Vim window.  A job can be
+This feature is for running a terminal emulator in a MNV window.  A job can be
 started connected to the terminal emulator.  For example, to run a shell: >
      :term bash
 
 Or to run build command: >
      :term make myprogram
 
-The job runs asynchronously from Vim, the window will be updated to show
+The job runs asynchronously from MNV, the window will be updated to show
 output from the job, also while editing in another window.
 
 
@@ -110,7 +110,7 @@ CTRL-Break will also kill the job.
 If you type CTRL-C the effect depends on what the pty has been configured to
 do.  For simple commands this causes a SIGINT to be sent to the job, which
 would end it.  Other commands may ignore the SIGINT or handle the CTRL-C
-themselves (like Vim does).
+themselves (like MNV does).
 
 To change the keys you type use terminal mode mappings, see |:tmap|.
 These are defined like any mapping, but apply only when typing keys that are
@@ -155,7 +155,7 @@ terminal window has been created (this only works for a hidden terminal): >
 For a non-hidden terminal use |TerminalWinOpen|.
 
 Mouse events (click and drag) are passed to the terminal.  Mouse move events
-are only passed when Vim itself is receiving them.  For a terminal that is
+are only passed when MNV itself is receiving them.  For a terminal that is
 when 'balloonevalterm' is enabled.
 
 
@@ -165,7 +165,7 @@ See option 'termwinsize' for controlling the size of the terminal window.
 (TODO: scrolling when the terminal is larger than the window)
 
 The job running in the terminal can change the colors.  The default foreground
-and background colors are taken from Vim, the Normal highlight group.
+and background colors are taken from MNV, the Normal highlight group.
 
 For a color terminal the 'background' option is used to decide whether the
 terminal window will start with a white or black background.
@@ -203,7 +203,7 @@ Command syntax ~
 			converted to new lines |NL-used-for-Nul|.
 
 							*terminal-nospecial*
-			Vim itself only recognizes |cmdline-special|
+			MNV itself only recognizes |cmdline-special|
 			characters inside [command].  Everything else will be
 			passed untouched.  When needed to expand wildcards,
 			environment variables or other shell specials consider
@@ -216,8 +216,8 @@ Command syntax ~
 			keep the terminal open in Terminal-Normal mode.  This
 			can be changed with the ++close argument.
 
-			No Vim command can follow, any | is included in
-			[command].  Use `:execute` if you must have a Vim
+			No MNV command can follow, any | is included in
+			[command].  Use `:execute` if you must have a MNV
 			command following in the same line.
 
 							*terminal-bufname*
@@ -268,12 +268,12 @@ Command syntax ~
 					|term_setkill()| for the values.
 			++rows={height} Use {height} for the terminal window
 					height.  If the terminal uses the full
-					Vim height (no window above or below
+					MNV height (no window above or below
 					the terminal window) the command line
 					height will be reduced as needed.
 			++cols={width}  Use {width} for the terminal window
 					width.  If the terminal uses the full
-					Vim width (no window left or right of
+					MNV width (no window left or right of
 					the terminal window) this value is
 					ignored.
 			++eof={text}	When using [range]: text to send after
@@ -328,7 +328,7 @@ set, in which case the terminal window would not be closed automatically, but
 a new empty buffer would be opened in that window).
 
 When the terminal window is closed, e.g. when the shell exits and "++close"
-argument was used, and this is the last normal Vim window, then Vim will exit.
+argument was used, and this is the last normal MNV window, then MNV will exit.
 This is like using |:quit| in a normal window.  Help and preview windows are
 not counted.
 
@@ -339,7 +339,7 @@ Note that the window will open at an unexpected moment, this will interrupt
 what you are doing.
 
 							*E947* *E948*
-So long as the job is running, the buffer is considered modified and Vim
+So long as the job is running, the buffer is considered modified and MNV
 cannot be quit easily, see |abandon|.
 
 When the job has finished and no changes were made to the buffer: closing the
@@ -382,7 +382,7 @@ The terminal contents can change at any time.  This is called Terminal-Job
 mode.
 
 Use CTRL-W N (or 'termwinkey' N) to switch to Terminal-Normal mode.  Now the
-contents of the terminal window is under control of Vim, the job output is
+contents of the terminal window is under control of MNV, the job output is
 suspended.  CTRL-\ CTRL-N does the same.
 
 Terminal-Job mode is where |:tmap| mappings are applied.  Keys sent by
@@ -391,7 +391,7 @@ Terminal-Job mode is where |:tmap| mappings are applied.  Keys sent by
 It is not possible to enter Insert mode from Terminal-Job mode.
 
 						*Terminal-Normal* *E946*
-In Terminal-Normal mode you can move the cursor around with the usual Vim
+In Terminal-Normal mode you can move the cursor around with the usual MNV
 commands, Visually mark text, yank text, etc.  But you cannot change the
 contents of the buffer.  The commands that would start insert mode, such as
 'i' and 'a', return to Terminal-Job mode.  The window will be updated to show
@@ -411,12 +411,12 @@ Cursor style ~
 							*terminal-cursor-style*
 By default the cursor in the terminal window uses a not blinking block.  The
 normal xterm escape sequences can be used to change the blinking state and the
-shape.  Once focus leaves the terminal window Vim will restore the original
+shape.  Once focus leaves the terminal window MNV will restore the original
 cursor.
 
 An exception is when xterm is started with the "-bc" argument, or another way
 that causes the cursor to blink.  This actually means that the blinking flag
-is inverted.  Since Vim cannot detect this, the terminal window cursor
+is inverted.  Since MNV cannot detect this, the terminal window cursor
 blinking will also be inverted.
 
 
@@ -439,7 +439,7 @@ also be used to not restore a specific terminal by setting the command to
 Special keys ~
 							*terminal-special-keys*
 Since the terminal emulator simulates an xterm, only escape sequences that
-both Vim and xterm recognize will be available in the terminal window.  If you
+both MNV and xterm recognize will be available in the terminal window.  If you
 want to pass on other escape sequences to the job running in the terminal you
 need to set up forwarding.  Example: >
 	tmap <expr> <Esc>]b SendToTerm("\<Esc>]b")
@@ -452,7 +452,7 @@ need to set up forwarding.  Example: >
 Unix ~
 							*terminal-unix*
 On Unix a pty is used to make it possible to run all kinds of commands.  You
-can even run Vim in the terminal!  That's used for debugging, see below.
+can even run MNV in the terminal!  That's used for debugging, see below.
 
 Environment variables are used to pass information to the running job:
     TERM		the name of the terminal, from the 'term' option or
@@ -462,8 +462,8 @@ Environment variables are used to pass information to the running job:
     LINES		same as ROWS
     COLUMNS		number of columns in the terminal initially
     COLORS		number of colors, 't_Co' (256*256*256 in the GUI)
-    VIM_SERVERNAME	v:servername
-    VIM_TERMINAL	v:version
+    MNV_SERVERNAME	v:servername
+    MNV_TERMINAL	v:version
 
 
 MS-Windows ~
@@ -483,7 +483,7 @@ You can download them from the following page:
 
 Just put the files somewhere in your PATH.  You can set the 'winptydll' option
 to point to the right file, if needed.  If you have both the 32-bit and 64-bit
-version, rename to winpty32.dll and winpty64.dll to match the way Vim was
+version, rename to winpty32.dll and winpty64.dll to match the way MNV was
 build.
 							*ConPTY* *E982*
 On more recent versions of MS-Windows 10 (beginning with the "October 2018
@@ -494,12 +494,12 @@ characters.  If you encounter any such issues, install "winpty".  ConPTY
 support is considered stable with the first release of Windows 11.
 
 Environment variables are used to pass information to the running job:
-    VIM_SERVERNAME	v:servername
+    MNV_SERVERNAME	v:servername
 
-							*git-vimdumps*
-There exists a git-difftool extension called `git-vimdumps` that can be used
-to conveniently inspect screendump files and diff them.  Please see in the Vim
-Repository the file `src/testdir/commondumps.vim` on how to create and use
+							*git-mnvdumps*
+There exists a git-difftool extension called `git-mnvdumps` that can be used
+to conveniently inspect screendump files and diff them.  Please see in the MNV
+Repository the file `src/testdir/commondumps.mnv` on how to create and use
 this git extension.
 
 ==============================================================================
@@ -649,7 +649,7 @@ term_getcursor({buf})					*term_getcursor()*
 
 		"row" and "col" are one based, the first screen cell is row
 		1, column 1.  This is the cursor position of the terminal
-		itself, not of the Vim window.
+		itself, not of the MNV window.
 
 		"dict" can have these members:
 		   "visible"	one when the cursor is visible, zero when it
@@ -673,7 +673,7 @@ term_getcursor({buf})					*term_getcursor()*
 term_getjob({buf})					*term_getjob()*
 		Get the Job associated with terminal window {buf}.
 		{buf} is used as with |term_getsize()|.
-		Returns |v:null| when there is no job.  In Vim9 script, return
+		Returns |v:null| when there is no job.  In MNV9 script, return
 		|null_job| when there is no job.
 
 		Can also be used as a |method|: >
@@ -874,7 +874,7 @@ term_setapi({buf}, {expr})				*term_setapi()*
 
 
 term_setkill({buf}, {how})				*term_setkill()*
-		When exiting Vim or trying to close the terminal window in
+		When exiting MNV or trying to close the terminal window in
 		another way, {how} defines whether the job in the terminal can
 		be stopped.
 		When {how} is empty (the default), the job will not be
@@ -882,7 +882,7 @@ term_setkill({buf}, {how})				*term_setkill()*
 		Otherwise, {how} specifies what signal to send to the job.
 		See |job_stop()| for the values.
 
-		After sending the signal Vim will wait for up to a second to
+		After sending the signal MNV will wait for up to a second to
 		check that the job actually stopped.
 
 		Can also be used as a |method|: >
@@ -1016,16 +1016,16 @@ term_wait({buf} [, {time}])					*term_wait()*
 3. Terminal communication			 *terminal-communication*
 
 There are several ways to communicate with the job running in a terminal:
-- Use |term_sendkeys()| to send text and escape sequences from Vim to the job.
-- Use the JSON API to send encoded commands from the job to Vim.
+- Use |term_sendkeys()| to send text and escape sequences from MNV to the job.
+- Use the JSON API to send encoded commands from the job to MNV.
 - Use the |client-server| mechanism.  This works on machines with an X server
   and on MS-Windows.
 
 
-Vim to job: term_sendkeys() ~
+MNV to job: term_sendkeys() ~
 							*terminal-to-job*
 This allows for remote controlling the job running in the terminal.  It is a
-one-way mechanism.  The job can update the display to signal back to Vim.
+one-way mechanism.  The job can update the display to signal back to MNV.
 For example, if a shell is running in a terminal, you can do: >
 	call term_sendkeys(buf, "ls *.java\<CR>")
 
@@ -1038,10 +1038,10 @@ sequence in the other direction.  E.g.: >
 	call term_sendkeys(buf, "\<Esc>]51;["response"]\x07")
 
 
-Job to Vim: JSON API ~
+Job to MNV: JSON API ~
 							*terminal-api*
-The job can send JSON to Vim, using a special escape sequence.  The JSON
-encodes a command that Vim understands.  Example of such a message: >
+The job can send JSON to MNV, using a special escape sequence.  The JSON
+encodes a command that MNV understands.  Example of such a message: >
 	<Esc>]51;["drop", "README.md"]<07>
 
 The body is always a list, making it easy to find the end: ]<07>.
@@ -1074,10 +1074,10 @@ Currently supported commands:
 
 	drop {filename} [options]
 
-		Let Vim open a file, like the `:drop` command.  If {filename}
+		Let MNV open a file, like the `:drop` command.  If {filename}
 		is already open in a window, switch to that window.  Otherwise
 		open a new window to edit {filename}.
-		Note that both the job and Vim may change the current
+		Note that both the job and MNV may change the current
 		directory, thus it's best to use the full path.
 
 		[options] is only used when opening a new window.  If present,
@@ -1097,7 +1097,7 @@ Currently supported commands:
 		Example in JSON: >
 			["drop", "path/file.txt", {"ff": "dos"}]
 
-You can use |echoraw()| to make Vim send this escape sequence: >
+You can use |echoraw()| to make MNV send this escape sequence: >
 	call echoraw("\<ESC>]51;[\"call\", \"Tapi_TryThis\", [\"hello\", 123]]\x07")
 	call echoraw("\<Esc>]51;[\"drop\", \"README.md\"]\x07")
 Note: JSON requires double quotes around string values, hence those have to be
@@ -1106,8 +1106,8 @@ escaped.
 Rationale: Why not allow for any command or expression?  Because that might
 create a security problem.
 						*terminal-autoshelldir*
-This can be used to pass the current directory from a shell to Vim.
-Put this in your .vimrc: >
+This can be used to pass the current directory from a shell to MNV.
+Put this in your .mnvrc: >
 	def g:Tapi_lcd(_, path: string)
 	    if isdirectory(path)
 		execute 'silent lcd ' .. fnameescape(path)
@@ -1115,25 +1115,25 @@ Put this in your .vimrc: >
 	enddef
 <
 And, in a bash init file: >
-	if [[ -n "$VIM_TERMINAL" ]]; then
-	    PROMPT_COMMAND='_vim_sync_PWD'
-	    function _vim_sync_PWD() {
+	if [[ -n "$MNV_TERMINAL" ]]; then
+	    PROMPT_COMMAND='_mnv_sync_PWD'
+	    function _mnv_sync_PWD() {
 		printf '\033]51;["call", "Tapi_lcd", "%q"]\007' "$PWD"
 	    }
 	fi
 <
 Or, for zsh: >
-	if [[ -n "$VIM_TERMINAL" ]]; then
+	if [[ -n "$MNV_TERMINAL" ]]; then
 	    autoload -Uz add-zsh-hook
-	    add-zsh-hook -Uz chpwd _vim_sync_PWD
-	    function _vim_sync_PWD() {
+	    add-zsh-hook -Uz chpwd _mnv_sync_PWD
+	    function _mnv_sync_PWD() {
 		printf '\033]51;["call", "Tapi_lcd", "%q"]\007' "$PWD"
 	    }
 	fi
 <
 Or, for fish: >
-	if test -n "$VIM_TERMINAL"
-	    function _vim_sync_PWD --on-variable=PWD
+	if test -n "$MNV_TERMINAL"
+	    function _mnv_sync_PWD --on-variable=PWD
 		printf '\033]51;["call", "Tapi_lcd", "%s"]\007' "$PWD"
 	    end
 	end
@@ -1143,20 +1143,20 @@ Using the client-server feature ~
 						*terminal-client-server*
 This only works when v:servername is not empty.  If needed you can set it,
 before opening the terminal, with: >
-	call remote_startserver('vim-server')
+	call remote_startserver('mnv-server')
 
-$VIM_SERVERNAME is set in the terminal to pass on the server name.
+$MNV_SERVERNAME is set in the terminal to pass on the server name.
 
 In the job you can then do something like: >
-	vim --servername $VIM_SERVERNAME --remote +123 some_file.c
+	mnv --servername $MNV_SERVERNAME --remote +123 some_file.c
 This will open the file "some_file.c" and put the cursor on line 123.
 
 ==============================================================================
 4. Remote testing					*terminal-testing*
 
-Most Vim tests execute a script inside Vim.  For some tests this does not
+Most MNV tests execute a script inside MNV.  For some tests this does not
 work, running the test interferes with the code being tested.  To avoid this
-Vim is executed in a terminal window.  The test sends keystrokes to it and
+MNV is executed in a terminal window.  The test sends keystrokes to it and
 inspects the resulting screen state.
 
 Functions ~
@@ -1169,28 +1169,28 @@ Functions ~
 ==============================================================================
 5. Diffing screen dumps					*terminal-diff*
 
-In some cases it can be bothersome to test that Vim displays the right
+In some cases it can be bothersome to test that MNV displays the right
 characters on the screen.  E.g. with syntax highlighting.  To make this
 simpler it is possible to take a screen dump of a terminal and compare it to
 an expected screen dump.
 
-Vim uses the window size, text, color and other attributes as displayed.  The
-Vim screen size, font and other properties do not matter.  Therefore this
+MNV uses the window size, text, color and other attributes as displayed.  The
+MNV screen size, font and other properties do not matter.  Therefore this
 mechanism is portable across systems.  A conventional screenshot would reflect
 all differences, including font size and family.
 
 
-Writing a screen dump test for Vim ~
+Writing a screen dump test for MNV ~
 							*terminal-dumptest*
 For an example see the Test_syntax_c() function in
-src/testdir/test_syntax.vim.  The main parts are:
+src/testdir/test_syntax.mnv.  The main parts are:
 - Write a file you want to test with.  This is useful for testing syntax
-  highlighting.  You can also start Vim with an empty buffer.
-- Run Vim in a terminal with a specific size.  The default is 20 lines of 75
+  highlighting.  You can also start MNV with an empty buffer.
+- Run MNV in a terminal with a specific size.  The default is 20 lines of 75
   characters.  This makes sure the dump is always this size.  The function
-  RunVimInTerminal() takes care of this.  Pass it the arguments for the Vim
+  RunMNVInTerminal() takes care of this.  Pass it the arguments for the MNV
   command.
-- Send any commands to Vim using |term_sendkeys()|.  For example: >
+- Send any commands to MNV using |term_sendkeys()|.  For example: >
 	call term_sendkeys(buf, ":echo &lines &columns\<CR>")
 - Check that the screen is now in the expected state, using
   VerifyScreenDump().  This expects the reference screen dump to be in the
@@ -1198,7 +1198,7 @@ src/testdir/test_syntax.vim.  The main parts are:
   recommended to use the name of the test function and a sequence number, so
   that we know what test is using the file.
 - Repeat sending commands and checking the state.
-- Finally stop Vim by calling StopVimInTerminal().
+- Finally stop MNV by calling StopMNVInTerminal().
 
 The first time you do this you won't have a screen dump yet.  Create an empty
 file for now, e.g.: >
@@ -1208,7 +1208,7 @@ The test will then fail, giving you the command to compare the reference dump
 and the failed dump, e.g.: >
 	call term_dumpdiff("failed/Test_func.dump", "dumps/Test_func.dump")
 
-Use this command in Vim, with the current directory set to src/testdir.
+Use this command in MNV, with the current directory set to src/testdir.
 Once you are satisfied with the test, move the failed dump in place of the
 reference: >
 	:!mv failed/Test_func.dump dumps/Test_func.dump
@@ -1216,7 +1216,7 @@ reference: >
 
 Creating a screen dump ~
 							*terminal-screendump*
-To create the screen dump, run Vim (or any other program) in a terminal and
+To create the screen dump, run MNV (or any other program) in a terminal and
 make it show the desired state.  Then use the |term_dumpwrite()| function to
 create a screen dump file.  For example: >
 	:call term_dumpwrite(77, "mysyntax.dump")
@@ -1226,7 +1226,7 @@ Here "77" is the buffer number of the terminal.  Use `:ls!` to see it.
 You can view the screen dump with |term_dumpload()|: >
 	:call term_dumpload("mysyntax.dump")
 
-To verify that Vim still shows exactly the same screen, run Vim again with
+To verify that MNV still shows exactly the same screen, run MNV again with
 exactly the same way to show the desired state.  Then create a screen dump
 again, using a different file name: >
 	:call term_dumpwrite(88, "test.dump")
@@ -1270,8 +1270,8 @@ times so that you can spot the difference in the context of the text.
 					*package-termdebug* *termdebug*
 
 The Terminal debugging plugin can be used to debug a program with gdb and view
-the source code in a Vim window.  Since this is completely contained inside
-Vim this also works remotely over an ssh connection.
+the source code in a MNV window.  Since this is completely contained inside
+MNV this also works remotely over an ssh connection.
 
 When the |+terminal| feature is missing, the plugin will use the "prompt"
 buffer type, if possible.  The running program will then use a newly opened
@@ -1282,16 +1282,16 @@ Starting ~
 							*termdebug-starting*
 Load the plugin with this command: >
 	packadd termdebug
-When loading the plugin from the |.vimrc| file, add the "!" attribute: >
+When loading the plugin from the |.mnvrc| file, add the "!" attribute: >
 	packadd! termdebug
 <							*:Termdebug*
 To start debugging use `:Termdebug` or `:TermdebugCommand` followed by the
 command name, for example: >
-	:Termdebug vim
+	:Termdebug mnv
 
 This opens two windows:
 
-gdb window	A terminal window in which "gdb vim" is executed.  Here you
+gdb window	A terminal window in which "gdb mnv" is executed.  Here you
 		can directly interact with gdb.  The buffer name is "!gdb".
 
 program window	A terminal window for the executed program.  When "run" is
@@ -1327,17 +1327,17 @@ The default timeout is 3000 ms.
 If you want to give specific commands to the command being debugged, you can
 use the `:TermdebugCommand` command followed by the command name and
 additional parameters. >
-	:TermdebugCommand vim --clean -c ':set nu'
+	:TermdebugCommand mnv --clean -c ':set nu'
 
 Both the `:Termdebug` and `:TermdebugCommand` support an optional "!" bang
 argument to start the command right away, without pausing at the gdb window
 (and cursor will be in the debugged window).  For example: >
-	:TermdebugCommand! vim --clean
+	:TermdebugCommand! mnv --clean
 
 To attach gdb to an already running executable or use a core file, pass extra
 arguments.  E.g.: >
-	:Termdebug vim core
-	:Termdebug vim 98343
+	:Termdebug mnv core
+	:Termdebug mnv 98343
 
 If no argument is given, you'll end up in a gdb window, in which you need to
 specify which command to run using e.g. the gdb `file` command.
@@ -1345,17 +1345,17 @@ specify which command to run using e.g. the gdb `file` command.
 
 Example session ~
 							*termdebug-example*
-Start in the Vim "src" directory and build Vim: >
+Start in the MNV "src" directory and build MNV: >
 	% make
 Make sure that debug symbols are present, usually that means that $CFLAGS
 includes "-g".
 
-Start Vim: >
-	% ./vim
+Start MNV: >
+	% ./mnv
 
-Load the termdebug plugin and start debugging Vim: >
+Load the termdebug plugin and start debugging MNV: >
 	:packadd termdebug
-	:Termdebug vim
+	:Termdebug mnv
 You should now have three windows:
     source  - where you started, has a window toolbar with buttons
     gdb	    - you can type gdb commands here
@@ -1365,7 +1365,7 @@ You can use CTRL-W CTRL-W or the mouse to move focus between windows.
 Put focus on the gdb window and type: >
 	break ex_help
 	run
-Vim will start running in the program window.  Put focus there and type: >
+MNV will start running in the program window.  Put focus there and type: >
 	:help gui
 Gdb will run into the ex_help breakpoint.  The source window now shows the
 ex_cmds.c file.  A red "1 " marker will appear in the signcolumn where the
@@ -1381,7 +1381,7 @@ displayed:
 This way you can inspect the value of local variables.  You can also focus the
 gdb window and use a "print" command, e.g.: >
 	print *eap
-If mouse pointer movements are working, Vim will also show a balloon when the
+If mouse pointer movements are working, MNV will also show a balloon when the
 mouse rests on text that can be evaluated by gdb.
 
 Now go back to the source window and put the cursor on the first line after
@@ -1451,7 +1451,7 @@ gdb:
 		breakpoints at the cursor position
 
  *:Step*	execute the gdb "step" command
- *:Over*	execute the gdb "next" command (`:Next` is a Vim command)
+ *:Over*	execute the gdb "next" command (`:Next` is a MNV command)
  *:Until*	execute the gdb "until" command
  *:Finish*	execute the gdb "finish" command
  *:Continue*	execute the gdb "continue" command
@@ -1478,7 +1478,7 @@ source code, a new window will be created for the source code.  This also
 happens if the buffer in the source code window has been modified and can't be
 abandoned.
 
-Gdb gives each breakpoint a number.  In Vim the number shows up in the sign
+Gdb gives each breakpoint a number.  In MNV the number shows up in the sign
 column, with a red background.  You can use these gdb commands:
 - info break	list breakpoints
 - delete N	delete breakpoint N
@@ -1643,7 +1643,7 @@ the height options won't be used).
 
 Communication ~
 						*termdebug-communication*
-There is another, hidden, buffer, which is used for Vim to communicate with
+There is another, hidden, buffer, which is used for MNV to communicate with
 gdb.  The buffer name is "gdb communication".  Do not delete this buffer, it
 will break the debugger.
 
@@ -1658,13 +1658,13 @@ communication channel.
 Remote debugging ~
 							*termdebug-remote*
 One of the main issues of remote debugging is the access to the debuggee's
-source files.  The plugin can profit from system and vim's networking
+source files.  The plugin can profit from system and mnv's networking
 capabilities to workaround this.
 						*termdebug-remote-example*
 The |termdebug-example| can be replicated by running the `gdb` debugger to
-debug Vim on a remote Linux machine accessible via `ssh`.
+debug MNV on a remote Linux machine accessible via `ssh`.
 
-- Build Vim as explained in the local example.
+- Build MNV as explained in the local example.
 
 - If "socat" is not available in the remote machine 'terminal' mode will not
   work properly. Fall back to |termdebug_use_prompt|: >
@@ -1680,9 +1680,9 @@ debug Vim on a remote Linux machine accessible via `ssh`.
 - Provide a hint for translating remote paths into |netrw| paths: >
     :let g:termdebug_config['substitute_path'] = { '/': 'scp://hostname//' }
 
-- Load the termdebug plugin and start debugging Vim: >
+- Load the termdebug plugin and start debugging MNV: >
     :packadd termdebug
-    :Termdebug vim
+    :Termdebug mnv
 
 You now have the same three windows of the local example and can follow the
 very same steps.  The only difference is that the source windows displays a
@@ -1780,7 +1780,7 @@ If you do not want the arguments to be added, but you do need to set the
 The function will be called with the list of arguments so far, and a second
 argument that is the name of the pty.
 							*gdb-version*
-Only debuggers fully compatible with gdb will work.  Vim uses the GDB/MI
+Only debuggers fully compatible with gdb will work.  MNV uses the GDB/MI
 interface.  The "new-ui" command requires gdb version 7.12 or later.  If you
 get this error:
 	Undefined command: "new-ui". Try "help".~
@@ -1854,9 +1854,9 @@ enabled (see |:Winbar|).  If you don't want this then disable it with: >
 	let g:termdebug_config['winbar'] = 0
 
 
-Vim window width ~
+MNV window width ~
 							*termdebug_wide*
-To change the width of the Vim window when debugging starts and use a vertical
+To change the width of the MNV window when debugging starts and use a vertical
 split: >
 	let g:termdebug_config['wide'] = 163
 If there is no g:termdebug_config you can use: >
@@ -1871,7 +1871,7 @@ If the wide value is set and 'columns' is already a greater value, then a
 vertical split will be used without modifying 'columns'.
 
 Set the wide value to 1 to use a vertical split without ever changing
-'columns'.  This is useful when the terminal can't be resized by Vim.
+'columns'.  This is useful when the terminal can't be resized by MNV.
 
 
 Evaluate in Popup Window at Cursor ~
@@ -1907,4 +1907,4 @@ source code.  An example of its usage follows: >
     endif
 <
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

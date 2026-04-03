@@ -8,4 +8,4 @@ int get_c_indent(void);
 int in_cinkeys(int keytyped, int when, int line_is_empty);
 void do_c_expr_indent(void);
 void f_cindent(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

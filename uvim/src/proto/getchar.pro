@@ -59,4 +59,4 @@ int input_available(void);
 void may_add_last_used_map_to_redobuff(void);
 int do_cmdkey_command(int key, int flags);
 void reset_last_used_map(mapblock_T *mp);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

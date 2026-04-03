@@ -1,0 +1,13 @@
+" MNV indent file
+" Language:	less
+" Maintainer:	Alessandro Vioni <jenoma@gmail.com>
+" URL: https://github.com/genoma/mnv-less
+" Last Change:	2014 November 24
+
+if exists("b:did_indent")
+  finish
+endif
+
+runtime! indent/css.mnv
+
+" mnv:set sw=2:

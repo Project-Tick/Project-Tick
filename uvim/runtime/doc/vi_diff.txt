@@ -1,23 +1,23 @@
-*vi_diff.txt*	For Vim version 9.2.  Last change: 2026 Mar 08
+*vi_diff.txt*	For MNV version 9.2.  Last change: 2026 Mar 08
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Differences between Vim and Vi				*vi-differences*
+Differences between MNV and Vi				*vi-differences*
 
-This file lists the differences between Vim and Vi/Ex and gives an overview of
-what is in Vim that is not in Vi.
+This file lists the differences between MNV and Vi/Ex and gives an overview of
+what is in MNV that is not in Vi.
 
-Vim is mostly POSIX 1003.2-1 compliant.  The only command known to be missing
-is ":open".  There are probably a lot of small differences (either because Vim
+MNV is mostly POSIX 1003.2-1 compliant.  The only command known to be missing
+is ":open".  There are probably a lot of small differences (either because MNV
 is missing something or because Posix is beside the mark).
 
 1. Simulated command			|simulated-command|
 2. Missing options			|missing-options|
 3. Limits				|limits|
-4. The most interesting additions	|vim-additions|
-5. Other vim features			|other-features|
+4. The most interesting additions	|mnv-additions|
+5. Other mnv features			|other-features|
 6. Supported Vi features		|vi-features|
 7. Command-line arguments		|cmdline-arguments|
 8. POSIX compliance			|posix-compliance|
@@ -26,7 +26,7 @@ is missing something or because Posix is beside the mark).
 ==============================================================================
 1. Simulated command					*simulated-command*
 
-This command is in Vi, but Vim only simulates it:
+This command is in Vi, but MNV only simulates it:
 
 							*:o* *:op* *:open*
 :[range]o[pen]			Works like |:visual|: end Ex mode.
@@ -36,15 +36,15 @@ This command is in Vi, but Vim only simulates it:
 				column where "pattern" matches in the cursor
 				line.
 
-Vim does not support open mode, since it's not really useful.  For those
-situations where ":open" would start open mode Vim will leave Ex mode, which
+MNV does not support open mode, since it's not really useful.  For those
+situations where ":open" would start open mode MNV will leave Ex mode, which
 allows executing the same commands, but updates the whole screen instead of
 only one line.
 
 ==============================================================================
 2. Missing options					*missing-options*
 
-These options are in the Unix Vi, but not in Vim.  If you try to set one of
+These options are in the Unix Vi, but not in MNV.  If you try to set one of
 them you won't get an error message, but the value is not used and cannot be
 printed.
 
@@ -66,12 +66,12 @@ w1200			number	(default 23)		*'w1200'*
 w9600			number	(default 23)		*'w9600'*
 
 Vi did not allow for changing the termcap entries, you would have to exit Vi,
-edit the termcap entry and try again.  Vim has the |terminal-options|.
+edit the termcap entry and try again.  MNV has the |terminal-options|.
 
 ==============================================================================
 3. Limits						*limits*
 
-Vim has only a few limits for the files that can be edited {Vi: can not handle
+MNV has only a few limits for the files that can be edited {Vi: can not handle
 <Nul> characters and characters above 128, has limited line length, many other
 limits}.
 
@@ -109,31 +109,31 @@ The option 'maxmem' ('mm') is used to set the maximum memory used for one
 buffer (in kilobytes).  'maxmemtot' is used to set the maximum memory used for
 all buffers (in kilobytes).  The defaults depend on the system used.  For the
 Amiga, 'maxmemtot' is set depending on the amount of memory available.
-These are not hard limits, but tell Vim when to move text into a swap file.
-If you don't like Vim to swap to a file, set 'maxmem' and 'maxmemtot' to a
+These are not hard limits, but tell MNV when to move text into a swap file.
+If you don't like MNV to swap to a file, set 'maxmem' and 'maxmemtot' to a
 very large value.  The swap file will then only be used for recovery.  If you
 don't want a swap file at all, set 'updatecount' to 0, or use the "-n"
-argument when starting Vim.
+argument when starting MNV.
 
 ==============================================================================
-4. The most interesting additions			*vim-additions*
+4. The most interesting additions			*mnv-additions*
 
 Vi compatibility.					'compatible'
-	Although Vim is 99% Vi compatible, some things in Vi can be
-	considered to be a bug, or at least need improvement.  But still, Vim
+	Although MNV is 99% Vi compatible, some things in Vi can be
+	considered to be a bug, or at least need improvement.  But still, MNV
 	starts in a mode which behaves like the "real" Vi as much as possible.
-	To make Vim behave a little bit better, try resetting the 'compatible'
+	To make MNV behave a little bit better, try resetting the 'compatible'
 	option: >
 		:set nocompatible
-<	Or start Vim with the "-N" argument: >
-		vim -N
-<	Vim starts with 'nocompatible' automatically if you have a .vimrc
+<	Or start MNV with the "-N" argument: >
+		mnv -N
+<	MNV starts with 'nocompatible' automatically if you have a .mnvrc
 	file.  See |startup|.
 	The 'cpoptions' option can be used to set Vi compatibility on/off for
 	a number of specific items.
 
 Support for different systems.
-	Vim can be used on:
+	MNV can be used on:
 	- All Unix systems (it works on all systems it was tested on, although
 	  the GUI and Perl interface may not work everywhere).
 	- Amiga (500, 1000, 1200, 2000, 3000, 4000, ...).
@@ -143,7 +143,7 @@ Support for different systems.
 	- IBM OS/390
 	Note that on some systems features need to be disabled to reduce
 	resource usage.  For some outdated systems you need to use an older
-	Vim version.
+	MNV version.
 
 Multi level persistent undo.					|undo|
 	'u' goes backward in time, 'CTRL-R' goes forward again.  Set option
@@ -152,13 +152,13 @@ Multi level persistent undo.					|undo|
 	-1 for no undo at all.
 	When all changes in a buffer have been undone, the buffer is not
 	considered changed anymore.  You can exit it with :q, without <!>.
-	When undoing a few changes and then making a new change Vim will
+	When undoing a few changes and then making a new change MNV will
 	create a branch in the undo tree.  This means you can go back to any
 	state of the text, there is no risk of a change causing text to be
 	lost forever. |undo-tree|
 	The undo information is stored in a file when the 'undofile' option is
-	set.  This means you can exit Vim, start Vim on a previously edited
-	file and undo changes that were made before exiting Vim.
+	set.  This means you can exit MNV, start MNV on a previously edited
+	file and undo changes that were made before exiting MNV.
 
 Graphical User Interface (GUI).				|gui|
 	Included support for GUI: menu's, mouse, scrollbars, etc.  You can
@@ -168,22 +168,22 @@ Graphical User Interface (GUI).				|gui|
 	Amiga and Macintosh.
 
 Multiple windows and buffers.				|windows.txt|
-	Vim can split the screen into several windows, each editing a
+	MNV can split the screen into several windows, each editing a
 	different buffer or the same buffer at a different location.  Buffers
 	can still be loaded (and changed) but not displayed in a window.  This
 	is called a hidden buffer.  Many commands and options have been added
 	for this facility.
-	Vim can also use multiple tab pages, each with one or more windows.  A
+	MNV can also use multiple tab pages, each with one or more windows.  A
 	line with tab labels can be used to quickly switch between these
 	pages.
 	|tab-page|
 
 Terminal window.					|:terminal|
-	Vim can create a window in which a terminal emulator runs.  This can
+	MNV can create a window in which a terminal emulator runs.  This can
 	be used to execute an arbitrary command, a shell or a debugger.
 
 Syntax highlighting.					|:syntax|
-	Vim can highlight keywords, patterns and other things.  This is
+	MNV can highlight keywords, patterns and other things.  This is
 	defined by a number of |:syntax| commands, and can be made to
 	highlight most languages and file types.  A number of files are
 	included for highlighting the most common languages, like C, C++,
@@ -197,12 +197,12 @@ Syntax highlighting.					|:syntax|
 	column 'cursorline' 'cursorcolumn'.
 
 Text properties						|textprop.txt|
-	Vim supports highlighting text by a plugin.  Property types can be
+	MNV supports highlighting text by a plugin.  Property types can be
 	specified with |prop_type_add()| and properties can be placed with
 	|prop_add()|.
 
 Spell checking.						|spell|
-	When the 'spell' option is set Vim will highlight spelling mistakes.
+	When the 'spell' option is set MNV will highlight spelling mistakes.
 	About 50 languages are currently supported, selected with the
 	'spelllang' option.  In source code only comments and strings are
 	checked for spelling.
@@ -214,22 +214,22 @@ Folding.						|folding|
 	etc.
 
 Diff mode.						|diff|
-	Vim can show two versions of a file with the differences highlighted.
+	MNV can show two versions of a file with the differences highlighted.
 	Parts of the text that are equal are folded away.  Commands can be
 	used to move text from one version to the other.
 
 Plugins.						|add-plugin|
 	The functionality can be extended by dropping a plugin file in the
-	right directory.  That's an easy way to start using Vim scripts
+	right directory.  That's an easy way to start using MNV scripts
 	written by others.  Plugins can be for all kind of files, or
 	specifically for a filetype.
 	Packages make this even easier. |packages|
 
 Asynchronous communication and timers.			|channel| |job| |timer|
-	Vim can exchange messages with other processes in the background.
+	MNV can exchange messages with other processes in the background.
 	This makes it possible to have servers do work and send back the
-	results to Vim. |channel|
-	Vim can start a job, communicate with it and stop it. |job|
+	results to MNV. |channel|
+	MNV can start a job, communicate with it and stop it. |job|
 	Timers can fire once or repeatedly and invoke a function to do any
 	work. |timer|
 
@@ -294,7 +294,7 @@ Command-line editing and history.			|cmdline-editing|
 	used to go to the begin/end of the command-line.
 	{Vi: can only alter the last character in the line}
 	{Vi: when hitting <Esc> the command-line is executed.  This is
-	unexpected for most people; therefore it was changed in Vim.  But when
+	unexpected for most people; therefore it was changed in MNV.  But when
 	the <Esc> is part of a mapping, the command-line is executed.  If you
 	want the Vi behaviour also when typing <Esc>, use ":cmap ^V<Esc>
 	^V^M"}
@@ -367,7 +367,7 @@ Extended search patterns.				|pattern|
 	"\s" matches a white space character.
 
 Directory, remote and archive browsing.			|netrw|
-	Vim can browse the file system.  Simply edit a directory.  Move around
+	MNV can browse the file system.  Simply edit a directory.  Move around
 	in the list with the usual commands and press <Enter> to go to the
 	directory or file under the cursor.
 	This also works for remote files over ftp, http, ssh, etc.
@@ -375,7 +375,7 @@ Directory, remote and archive browsing.			|netrw|
 
 Edit-compile-edit speedup.				|quickfix|
 	The |:make| command can be used to run the compilation and jump to the
-	first error.  A file with compiler error messages is interpreted.  Vim
+	first error.  A file with compiler error messages is interpreted.  MNV
 	jumps to the first error.
 
 	Each line in the error file is scanned for the name of a file, line
@@ -390,9 +390,9 @@ Edit-compile-edit speedup.				|quickfix|
 	The 'shellpipe' option contains the string to be used to put the
 	output of the compiler into the errorfile.
 
-Finding matches in files.				|:vimgrep|
-	Vim can search for a pattern in multiple files.  This uses the
-	advanced Vim regexp pattern, works on all systems and also works to
+Finding matches in files.				|:mnvgrep|
+	MNV can search for a pattern in multiple files.  This uses the
+	advanced MNV regexp pattern, works on all systems and also works to
 	search in compressed files.
 
 Improved indenting for programs.			'cindent'
@@ -443,13 +443,13 @@ Scripts and Expressions.				|expression|
 	If this is not enough, an interface is provided to |Python|, |Ruby|,
 	|Tcl|, |Lua|, |Perl| and |MzScheme|.
 
-Viminfo.						|viminfo-file|
+MNVinfo.						|mnvinfo-file|
 	The command-line history, marks and registers can be stored in a file
 	that is read on startup.  This can be used to repeat a search command
-	or command-line command after exiting and restarting Vim.  It is also
+	or command-line command after exiting and restarting MNV.  It is also
 	possible to jump right back to where the last edit stopped with |'0|.
-	The 'viminfo' option can be set to select which items to store in the
-	.viminfo file.  This is off by default.
+	The 'mnvinfo' option can be set to select which items to store in the
+	.mnvinfo file.  This is off by default.
 
 Printing.						|printing|
 	The |:hardcopy| command sends text to the printer.  This can include
@@ -465,8 +465,8 @@ Usage of key names.					|<>| |key-notation|
 	This name can be used in mappings, to make it easy to edit them.
 
 Editing binary files.					|edit-binary|
-	Vim can edit binary files.  You can change a few characters in an
-	executable file, without corrupting it.  Vim doesn't remove NUL
+	MNV can edit binary files.  You can change a few characters in an
+	executable file, without corrupting it.  MNV doesn't remove NUL
 	characters (they are represented as <NL> internally).
 	|-b|		command-line argument to start editing a binary file
 	'binary'	Option set by |-b|.  Prevents adding an <EOL> for the
@@ -484,12 +484,12 @@ Move cursor beyond lines.
 	and figures easily.
 
 ==============================================================================
-5. Other vim features					*other-features*
+5. Other mnv features					*other-features*
 
 A random collection of nice extra features.
 
 
-When Vim is started with "-s scriptfile", the characters read from
+When MNV is started with "-s scriptfile", the characters read from
 "scriptfile" are treated as if you typed them.  If end of file is reached
 before the editor exits, further characters are read from the console.
 
@@ -499,7 +499,7 @@ after changing some commands in the script file.
 
 The "-o" option opens a window for each argument.  "-o4" opens four windows.
 
-Vi requires several termcap entries to be able to work full-screen.  Vim only
+Vi requires several termcap entries to be able to work full-screen.  MNV only
 requires the "cm" entry (cursor motion).
 
 
@@ -568,7 +568,7 @@ file was written, but this is considered to be a bug, because one does not
 expect it and the file is not written with ":rewind!".
 
 In Vi when entering a <CR> in replace mode deletes a character only when 'ai'
-is set (but does not show it until you hit <Esc>).  Vim always deletes a
+is set (but does not show it until you hit <Esc>).  MNV always deletes a
 character (and shows it immediately).
 
 Added :wnext command.  Same as ":write" followed by ":next".
@@ -603,20 +603,20 @@ otherwise the meaning of file names change.
 ":source!" command reads Vi commands from a file.
 
 ":mkexrc" command writes current modified options and mappings to a ".exrc"
-file.  ":mkvimrc" writes to a ".vimrc" file.
+file.  ":mkmnvrc" writes to a ".mnvrc" file.
 
 No check for "tail recursion" with mappings.  This allows things like
 ":map! foo ^]foo".
 
 When a mapping starts with number, vi loses the count typed before it (e.g.
 when using the mapping ":map g 4G" the command "7g" goes to line 4).  This is
-considered a vi bug.  Vim concatenates the counts (in the example it becomes
+considered a vi bug.  MNV concatenates the counts (in the example it becomes
 "74G"), as most people would expect.
 
 The :put! command inserts the contents of a register above the current line.
 
 The "p" and "P" commands of vi cannot be repeated with "." when the putted
-text is less than a line.  In Vim they can always be repeated.
+text is less than a line.  In MNV they can always be repeated.
 
 ":noremap" command can be used to enter a mapping that will not be remapped.
 This is useful to exchange the meaning of two keys.  ":cmap", ":cunmap" and
@@ -626,7 +626,7 @@ Similar commands exist for abbreviations: ":noreabbrev", ":iabbrev"
 ":cabbrev", ":iunabbrev", ":cunabbrev", ":inoreabbrev", ":cnoreabbrev".
 
 In Vi the command ":map foo bar" would remove a previous mapping
-":map bug foo".  This is considered a bug, so it is not included in Vim.
+":map bug foo".  This is considered a bug, so it is not included in MNV.
 ":unmap! foo" does remove ":map! bug foo", because unmapping would be very
 difficult otherwise (this is vi compatible).
 
@@ -669,9 +669,9 @@ cursor.  That number may be decimal, octal (starts with a '0') or hexadecimal
 
 With the :set command the prefix "inv" can be used to invert boolean options.
 
-In both Vi and Vim you can create a line break with the ":substitute" command
+In both Vi and MNV you can create a line break with the ":substitute" command
 by using a CTRL-M.  For Vi this means you cannot insert a real CTRL-M in the
-text.  With Vim you can put a real CTRL-M in the text by preceding it with a
+text.  With MNV you can put a real CTRL-M in the text by preceding it with a
 CTRL-V.
 
 
@@ -720,18 +720,18 @@ appropriate number of spaces.
 The window always reflects the contents of the buffer (Vi does not do this
 when changing text and in some other cases).
 
-If Vim is compiled with DIGRAPHS defined, digraphs are supported.  A set of
+If MNV is compiled with DIGRAPHS defined, digraphs are supported.  A set of
 normal digraphs is included.  They are shown with the ":digraph" command.
 More can be added with ":digraph {char1}{char2} {number}".  A digraph is
 entered with "CTRL-K {char1} {char2}" or "{char1} BS {char2}" (only when
 'digraph' option is set).
 
 When repeating an insert, e.g. "10atest <Esc>" vi would only handle wrapmargin
-for the first insert.  Vim does it for all.
+for the first insert.  MNV does it for all.
 
 A count to the "i" or "a" command is used for all the text.  Vi uses the count
 only for one line.  "3iabc<NL>def<Esc>" would insert "abcabcabc<NL>def" in Vi
-but "abc<NL>defabc<NL>defabc<NL>def" in Vim.
+but "abc<NL>defabc<NL>defabc<NL>def" in MNV.
 
 
 In Command-line mode:
@@ -756,13 +756,13 @@ supported or to change individual strings.
 
 The 'fileformat' option can be set to select the <EOL>: "dos" <CR><NL>, "unix"
 <NL> or "mac" <CR>.
-When the 'fileformats' option is not empty, Vim tries to detect the type of
+When the 'fileformats' option is not empty, MNV tries to detect the type of
 <EOL> automatically.  The 'fileformat' option is set accordingly.
 
 On systems that have no job control (older Unix systems and non-Unix systems)
 the CTRL-Z, ":stop" or ":suspend" command starts a new shell.
 
-If Vim is started on the Amiga without an interactive window for output, a
+If MNV is started on the Amiga without an interactive window for output, a
 window is opened (and :sh still works).  You can give a device to use for
 editing with the |-d| argument, e.g. "-d con:20/20/600/150".
 
@@ -774,7 +774,7 @@ Option 'modelines' determines how many lines are tried (default is 5).  Note
 that this is different from the Vi versions that can execute any Ex command
 in a modeline (a major security problem).  |trojan-horse|
 
-If the 'insertmode' option is set (e.g. in .exrc), Vim starts in insert mode.
+If the 'insertmode' option is set (e.g. in .exrc), MNV starts in insert mode.
 And it comes back there, when pressing <Esc>.
 
 Undo information is kept in memory.  Available memory limits the number and
@@ -785,20 +785,20 @@ If the 'backup' or 'writebackup' option is set: Before a file is overwritten,
 a backup file (.bak) is made.  If the "backup" option is set it is left
 behind.
 
-Vim creates a file ending in ".swp" to store parts of the file that have been
+MNV creates a file ending in ".swp" to store parts of the file that have been
 changed or that do not fit in memory.  This file can be used to recover from
-an aborted editing session with "vim -r file".  Using the swap file can be
-switched off by setting the 'updatecount' option to 0 or starting Vim with
+an aborted editing session with "mnv -r file".  Using the swap file can be
+switched off by setting the 'updatecount' option to 0 or starting MNV with
 the "-n" option.  Use the 'directory' option for placing the .swp file
 somewhere else.
 
-Vim is able to work correctly on filesystems with 8.3 file names, also when
+MNV is able to work correctly on filesystems with 8.3 file names, also when
 using messydos or crossdos filesystems on the Amiga, or any 8.3 mounted
 filesystem under Unix.  See 'shortname'.
 
 Error messages are shown at least one second (Vi overwrites error messages).
 
-If Vim gives the |hit-enter| prompt, you can hit any key.  Characters other
+If MNV gives the |hit-enter| prompt, you can hit any key.  Characters other
 than <CR>, <NL> and <Space> are interpreted as the (start of) a command.
 {Vi: only ":" commands are interpreted}
 
@@ -815,15 +815,15 @@ The AUX: device of the Amiga is supported.
 ==============================================================================
 6. Supported Vi features				*vi-features*
 
-Vim supports nearly all Vi commands and mostly in the same way.  That is when
+MNV supports nearly all Vi commands and mostly in the same way.  That is when
 the 'compatible' option is set and 'cpoptions' contains all flags.  What the
 effect is of resetting 'compatible' and removing flags from 'cpoptions' can be
 found at the help for the specific command.
 
-The help files used to mark features that are in Vim but not in Vi with {not
+The help files used to mark features that are in MNV but not in Vi with {not
 in Vi}.  However, since these remarks cluttered the help files we now do it
 the other way around: Below is listed what Vi already supported.  Anything
-else has been added by Vim.
+else has been added by MNV.
 
 
 The following Ex commands are supported by Vi: ~
@@ -851,7 +851,7 @@ The following Ex commands are supported by Vi: ~
 `:Next`		go to previous file in the argument list {Vi: no count}
 `:next`		go to next file in the argument list {Vi: no count}
 `:number`	print lines with line number
-`:open`		start open mode (not implemented in Vim)
+`:open`		start open mode (not implemented in MNV)
 `:pop`		jump to older entry in tag stack (only in some versions)
 `:preserve`	write all text to swap file {Vi: might also exit}
 `:previous`	same as `:Next` {Vi: only in some versions}
@@ -906,7 +906,7 @@ and etc in the description text.
 
 |CTRL-B|	scroll N screens Backwards
 |CTRL-C|	interrupt current (search) command
-|CTRL-D|	scroll Down N lines (default: half a screen); Vim scrolls
+|CTRL-D|	scroll Down N lines (default: half a screen); MNV scrolls
 		'scroll' screen lines, Vi scrolls file lines; makes a
 		difference when lines wrap
 |CTRL-E|	scroll N lines upwards (N lines Extra)
@@ -924,7 +924,7 @@ and etc in the description text.
 |CTRL-R|	in some Vi versions: same as CTRL-L
 |CTRL-T|	jump to N older Tag in tag list
 |CTRL-U|	N lines Upwards (default: half a screen) {Vi used file lines
-		while Vim scrolls 'scroll' screen lines; makes a difference
+		while MNV scrolls 'scroll' screen lines; makes a difference
 		when lines wrap}
 |CTRL-Y|	scroll N lines downwards
 |CTRL-Z|	suspend program (or start new shell)
@@ -1033,7 +1033,7 @@ and etc in the description text.
 |{|		cursor N paragraphs backward
 |		cursor to column N
 |}|		cursor N paragraphs forward
-|~|		switch case of N characters under the cursor; Vim: depends on
+|~|		switch case of N characters under the cursor; MNV: depends on
 		'tildeop' {Vi: no count, no 'tildeop'}
 |<Del>|		same as "x"
 
@@ -1094,7 +1094,7 @@ The following options are supported by Vi: ~
 'number'	  'nu'	    print the line number in front of each line
 'paragraphs'	  'para'    nroff macros that separate paragraphs
 'prompt'	  'prompt'  enable prompt in Ex mode
-'readonly'	  'ro'	    disallow writing the buffer {Vim sets 'readonly'
+'readonly'	  'ro'	    disallow writing the buffer {MNV sets 'readonly'
 				when editing a file with `:view`}
 'remap'			    allow mappings to work recursively
 'report'		    threshold for reporting nr. of lines changed
@@ -1140,184 +1140,184 @@ Five variants of Vi will be considered here:
 	Posix	Posix 1003.2
 	Vi	Vi version 3.7 (for Sun 4.1.x)
 	Vile	Vile version 7.4 (incomplete)
-	Vim	Vim version 5.2
+	MNV	MNV version 5.2
 
-Only Vim is able to accept options in between and after the file names.
+Only MNV is able to accept options in between and after the file names.
 
-+{command}	Elvis, Nvi, Posix, Vi, Vim: Same as "-c {command}".
++{command}	Elvis, Nvi, Posix, Vi, MNV: Same as "-c {command}".
 
 -		Nvi, Posix, Vi: Run Ex in batch mode.
-		Vim: Read file from stdin (use -s for batch mode).
+		MNV: Read file from stdin (use -s for batch mode).
 
---		Vim: End of options, only file names are following.
+--		MNV: End of options, only file names are following.
 
---cmd {command}	Vim: execute {command} before sourcing vimrc files.
+--cmd {command}	MNV: execute {command} before sourcing mnvrc files.
 
---echo-wid	Vim: GTK+ echoes the Window ID on stdout
+--echo-wid	MNV: GTK+ echoes the Window ID on stdout
 
---help		Vim: show help message and exit.
+--help		MNV: show help message and exit.
 
---literal	Vim: take file names literally, don't expand wildcards.
+--literal	MNV: take file names literally, don't expand wildcards.
 
---nofork	Vim: same as |-f|
+--nofork	MNV: same as |-f|
 
---noplugin[s]	Vim: Skip loading plugins.
+--noplugin[s]	MNV: Skip loading plugins.
 
---remote	Vim: edit the files in another Vim server
+--remote	MNV: edit the files in another MNV server
 
---remote-expr {expr}	Vim: evaluate {expr} in another Vim server
+--remote-expr {expr}	MNV: evaluate {expr} in another MNV server
 
---remote-send {keys}	Vim: send {keys} to a Vim server and exit
+--remote-send {keys}	MNV: send {keys} to a MNV server and exit
 
---remote-silent {file}	Vim: edit the files in another Vim server if possible
+--remote-silent {file}	MNV: edit the files in another MNV server if possible
 
---remote-wait	Vim: edit the files in another Vim server and wait for it
+--remote-wait	MNV: edit the files in another MNV server and wait for it
 
---remote-wait-silent	Vim: like --remote-wait, no complaints if not possible
+--remote-wait-silent	MNV: like --remote-wait, no complaints if not possible
 
---role {role}	Vim: GTK+ 2: set role of main window
+--role {role}	MNV: GTK+ 2: set role of main window
 
---serverlist	Vim: Output a list of Vim servers and exit
+--serverlist	MNV: Output a list of MNV servers and exit
 
---servername {name}	Vim: Specify Vim server name
+--servername {name}	MNV: Specify MNV server name
 
---socketid {id}		Vim: GTK window socket to run Vim in
+--socketid {id}		MNV: GTK window socket to run MNV in
 
---windowid {id}		Vim: Win32 window ID to run Vim in
+--windowid {id}		MNV: Win32 window ID to run MNV in
 
---version	Vim: show version message and exit.
+--version	MNV: show version message and exit.
 
 -?		Vile: print usage summary and exit.
 
 -a		Elvis: Load all specified file names into a window (use -o for
-		Vim).
+		MNV).
 
--A		Vim: Start in Arabic mode (when compiled with Arabic).
+-A		MNV: Start in Arabic mode (when compiled with Arabic).
 
 -b {blksize}	Elvis: Use {blksize} blocksize for the session file.
--b		Vim: set 'binary' mode.
+-b		MNV: set 'binary' mode.
 
--C		Vim: Compatible mode.
+-C		MNV: Compatible mode.
 
--c {command}	Elvis, Nvi, Posix, Vim: run {command} as an Ex command after
+-c {command}	Elvis, Nvi, Posix, MNV: run {command} as an Ex command after
 		loading the edit buffer.
-		Vim: allow up to 10 "-c" arguments
+		MNV: allow up to 10 "-c" arguments
 
--d {device}	Vim: Use {device} for I/O (Amiga only). {only when compiled
+-d {device}	MNV: Use {device} for I/O (Amiga only). {only when compiled
 		without the |+diff| feature}
--d		Vim: start with 'diff' set. |vimdiff|
+-d		MNV: start with 'diff' set. |mnvdiff|
 
--dev {device}	Vim: Use {device} for I/O (Amiga only).
+-dev {device}	MNV: Use {device} for I/O (Amiga only).
 
--D		Vim: debug mode.
+-D		MNV: debug mode.
 
--e		Elvis, Nvi, Vim: Start in Ex mode, as if the executable is
+-e		Elvis, Nvi, MNV: Start in Ex mode, as if the executable is
 		called "ex".
 
--E		Vim: Start in improved Ex mode |gQ|, like "exim".
+-E		MNV: Start in improved Ex mode |gQ|, like "exim".
 
--f		Vim: Run GUI in foreground (Amiga: don't open new window).
+-f		MNV: Run GUI in foreground (Amiga: don't open new window).
 -f {session}	Elvis: Use {session} as the session file.
 
--F		Vim: Start in Farsi mode (when compiled with Farsi).
+-F		MNV: Start in Farsi mode (when compiled with Farsi).
 		Nvi: Fast start, don't read the entire file when editing
 		starts.
 
 -G {gui}	Elvis: Use the {gui} as user interface.
 
--g		Vim: Start GUI.
+-g		MNV: Start GUI.
 -g N		Vile: start editing at line N
 
--h		Vim: Give help message.
+-h		MNV: Give help message.
 		Vile: edit the help file
 
--H		Vim: start Hebrew mode (when compiled with it).
+-H		MNV: start Hebrew mode (when compiled with it).
 
 -i		Elvis: Start each window in Insert mode.
--i {viminfo}	Vim: Use {viminfo} for viminfo file.
+-i {mnvinfo}	MNV: Use {mnvinfo} for mnvinfo file.
 
--L		Vim: Same as "-r" {only in some versions of Vi: "List
+-L		MNV: Same as "-r" {only in some versions of Vi: "List
 		recoverable edit sessions"}.
 
--l		Nvi, Vi, Vim: Set 'lisp' and 'showmatch' options.
+-l		Nvi, Vi, MNV: Set 'lisp' and 'showmatch' options.
 
--m		Vim: Modifications not allowed to be written, resets 'write'
+-m		MNV: Modifications not allowed to be written, resets 'write'
 		option.
 
--M		Vim: Modifications not allowed, resets 'modifiable' and the
+-M		MNV: Modifications not allowed, resets 'modifiable' and the
 		'write' option.
 
--N		Vim: No-compatible mode.
+-N		MNV: No-compatible mode.
 
--n		Vim: No swap file used.
+-n		MNV: No swap file used.
 
--nb[args]	Vim: open a NetBeans interface connection
+-nb[args]	MNV: open a NetBeans interface connection
 
--O[N]		Vim: Like -o, but use vertically split windows.
+-O[N]		MNV: Like -o, but use vertically split windows.
 
--o[N]		Vim: Open [N] windows, or one for each file.
+-o[N]		MNV: Open [N] windows, or one for each file.
 
--p[N]		Vim: Open [N] tab pages, or one for each file.
+-p[N]		MNV: Open [N] tab pages, or one for each file.
 
--P {parent-title} Win32 Vim: open Vim inside a parent application window
+-P {parent-title} Win32 MNV: open MNV inside a parent application window
 
--q {name}	Vim: Use {name} for quickfix error file.
--q{name}	Vim: Idem.
+-q {name}	MNV: Use {name} for quickfix error file.
+-q{name}	MNV: Idem.
 
--R		Elvis, Nvi, Posix, Vile, Vim: Set the 'readonly' option.
+-R		Elvis, Nvi, Posix, Vile, MNV: Set the 'readonly' option.
 
--r		Elvis, Nvi, Posix, Vi, Vim: Recovery mode.
+-r		Elvis, Nvi, Posix, Vi, MNV: Recovery mode.
 
 -S		Nvi: Set 'secure' option.
--S {script}	Vim: source script after starting up.
+-S {script}	MNV: source script after starting up.
 
--s		Nvi, Posix, Vim: Same as "-" (silent mode), when in Ex mode.
+-s		Nvi, Posix, MNV: Same as "-" (silent mode), when in Ex mode.
 		Elvis: Sets the 'safer' option.
--s {scriptin}	Vim: Read from script file {scriptin}; only when not in Ex
+-s {scriptin}	MNV: Read from script file {scriptin}; only when not in Ex
 		mode.
 -s {pattern}	Vile: search for {pattern}
 
--t {tag}	Elvis, Nvi, Posix, Vi, Vim: Edit the file containing {tag}.
--t{tag}		Vim: Idem.
+-t {tag}	Elvis, Nvi, Posix, Vi, MNV: Edit the file containing {tag}.
+-t{tag}		MNV: Idem.
 
--T {term}	Vim: Set terminal name to {term}.
+-T {term}	MNV: Set terminal name to {term}.
 
--u {vimrc}	Vim: Read initializations from {vimrc} file.
+-u {mnvrc}	MNV: Read initializations from {mnvrc} file.
 
--U {gvimrc}	Vim: Read GUI initializations from {gvimrc} file.
+-U {gmnvrc}	MNV: Read GUI initializations from {gmnvrc} file.
 
--v		Nvi, Posix, Vi, Vim: Begin in Normal mode (visual mode, in Vi
+-v		Nvi, Posix, Vi, MNV: Begin in Normal mode (visual mode, in Vi
 		terms).
 		Vile: View mode, no changes possible.
 
--V		Elvis, Vim: Verbose mode.
--V{nr}		Vim: Verbose mode with specified level.
+-V		Elvis, MNV: Verbose mode.
+-V{nr}		MNV: Verbose mode with specified level.
 
--w {size}	Elvis, Posix, Nvi, Vi, Vim: Set value of 'window' to {size}.
+-w {size}	Elvis, Posix, Nvi, Vi, MNV: Set value of 'window' to {size}.
 -w{size}	Nvi, Vi: Same as "-w {size}".
--w {name}	Vim: Write to script file {name} (must start with non-digit).
+-w {name}	MNV: Write to script file {name} (must start with non-digit).
 
--W {name}	Vim: Append to script file {name}.
+-W {name}	MNV: Append to script file {name}.
 
--x		Vi, Vim: Ask for encryption key.  See |encryption|.
+-x		Vi, MNV: Ask for encryption key.  See |encryption|.
 
--X		Vim: Don't connect to the X server.
+-X		MNV: Don't connect to the X server.
 
--y		Vim: Start in easy mode, like |evim|.
+-y		MNV: Start in easy mode, like |emnv|.
 
--Z		Vim: restricted mode
+-Z		MNV: restricted mode
 
 @{cmdfile}	Vile: use {cmdfile} as startup file.
 
 ==============================================================================
 8. POSIX compliance				*posix* *posix-compliance*
 
-In 2005 the POSIX test suite was run to check the compatibility of Vim.  Most
-of the test was executed properly.  There are the few things where Vim
+In 2005 the POSIX test suite was run to check the compatibility of MNV.  Most
+of the test was executed properly.  There are the few things where MNV
 is not POSIX compliant, even when run in Vi compatibility mode.
-							*$VIM_POSIX*
-Set the $VIM_POSIX environment variable to have 'cpoptions' include the POSIX
-flags when Vim starts up.  This makes Vim run as POSIX as it can.  That's
+							*$MNV_POSIX*
+Set the $MNV_POSIX environment variable to have 'cpoptions' include the POSIX
+flags when MNV starts up.  This makes MNV run as POSIX as it can.  That's
 a bit different from being Vi compatible.
 
 You can find the Posix specification for Vi here:
@@ -1325,10 +1325,10 @@ https://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
 And the related Ex specification:
 https://pubs.opengroup.org/onlinepubs/9699919799/utilities/ex.html
 
-This is where Vim does not behave as POSIX specifies and why:
+This is where MNV does not behave as POSIX specifies and why:
 
 							*posix-screen-size*
-	The $COLUMNS and $LINES environment variables are ignored by Vim if
+	The $COLUMNS and $LINES environment variables are ignored by MNV if
 	the size can be obtained from the terminal in a more reliable way.
 	Add the '|' flag to 'cpoptions' to have $COLUMNS and $LINES overrule
 	sizes obtained in another way.
@@ -1372,7 +1372,7 @@ These are remarks about running the POSIX test suite:
 ==============================================================================
 9. Supported Operating systems					*os-support*
 
-Vim tries to support some old operating systems, however support for older
+MNV tries to support some old operating systems, however support for older
 operating systems might be dropped if maintenance becomes a burden or can no
 longer be verified.
 
@@ -1403,4 +1403,4 @@ OS/2:				| support was dropped with v7.4.1008
 RISC OS:			| support was dropped with v7.3.0187
 NeXTSTEP:			| support was dropped with v9.2.0122
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

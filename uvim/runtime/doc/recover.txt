@@ -1,7 +1,7 @@
-*recover.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*recover.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Recovery after a crash					*crash-recovery*
@@ -11,9 +11,9 @@ next morning, and then disaster strikes: Your computer crashes.
 
 			DON'T PANIC!
 
-You can recover most of your changes from the files that Vim uses to store
+You can recover most of your changes from the files that MNV uses to store
 the contents of the file.  Mostly you can recover your work with one command:
-	vim -r filename
+	mnv -r filename
 
 1. The swap file	|swap-file|
 2. Recovery		|recovery|
@@ -21,7 +21,7 @@ the contents of the file.  Mostly you can recover your work with one command:
 ==============================================================================
 1. The swap file					*swap-file*
 
-Vim stores the things you changed in a swap file.  Using the original file
+MNV stores the things you changed in a swap file.  Using the original file
 you started from plus the swap file you can mostly recover your work.
 
 You can see the name of the current swap file being used with the command:
@@ -41,10 +41,10 @@ with the extension ".swp".
 - If this file already exists (e.g., when you are recovering from a crash) a
   warning is given and another extension is used, ".swo", ".swn", etc.
 - An existing file will never be overwritten.
-- The swap file is deleted as soon as Vim stops editing the file.
+- The swap file is deleted as soon as MNV stops editing the file.
 
 Technical: The replacement of '.' with '_' is done to avoid problems with
-	   MS-DOS compatible filesystems (e.g., crossdos, multidos).  If Vim
+	   MS-DOS compatible filesystems (e.g., crossdos, multidos).  If MNV
 	   is able to detect that the file is on an MS-DOS-like filesystem, a
 	   flag is set that has the same effect as the 'shortname' option.
 	   This flag is reset when you start editing another file.
@@ -61,7 +61,7 @@ Advantages:
   the file system where the file is (in a crash).
 Disadvantages:
 - You can get name collisions from files with the same name but in different
-  directories (although Vim tries to avoid that by comparing the path name).
+  directories (although MNV tries to avoid that by comparing the path name).
   This will result in bogus ATTENTION warning messages.
 - When you use your home directory, and somebody else tries to edit the same
   file, that user will not see your swap file and will not get the ATTENTION
@@ -72,7 +72,7 @@ on the Amiga) or in a place that is cleared when rebooting (like /tmp on Unix)
 makes no sense, you will lose the swap file in a crash.
 
 If you want to put swap files in a fixed place, put a command resembling the
-following ones in your .vimrc:
+following ones in your .mnvrc:
 	:set dir=dh2:tmp	(for Amiga)
 	:set dir=~/tmp		(for Unix)
 	:set dir=c:\\tmp	(for Win32)
@@ -107,14 +107,14 @@ changed, not when you only moved around.  The reason why it is not kept up to
 date all the time is that this would slow down normal work too much.  You can
 change the 200 character count with the 'updatecount' option.  You can set
 the time with the 'updatetime' option.  The time is given in milliseconds.
-After writing to the swap file Vim syncs the file to disk.  This takes some
+After writing to the swap file MNV syncs the file to disk.  This takes some
 time, especially on busy Unix systems.  If you don't want this you can set the
 'swapsync' option to an empty string.  The risk of losing work becomes bigger
 though.  On some non-Unix systems (MS-Windows, Amiga) the swap file won't be
 written at all.
 
 If the writing to the swap file is not wanted, it can be switched off by
-setting the 'updatecount' option to 0.  The same is done when starting Vim
+setting the 'updatecount' option to 0.  The same is done when starting MNV
 with the "-n" option.  Writing can be switched back on by setting the
 'updatecount' option to non-zero.  Swap files will be created for all buffers
 when doing this.  But when setting 'updatecount' to zero, the existing swap
@@ -129,10 +129,10 @@ command:
 			file.  The original file is no longer needed for
 			recovery.  This sets a flag in the current buffer.
 			When the '&' flag is present in 'cpoptions' the swap
-			file will not be deleted for this buffer when Vim
+			file will not be deleted for this buffer when MNV
 			exits and the buffer is still loaded |cpo-&|.
 
-A Vim swap file can be recognized by the first six characters: "b0VIM ".
+A MNV swap file can be recognized by the first six characters: "b0MNV ".
 After that comes the version number, e.g., "3.0".
 
 
@@ -141,13 +141,13 @@ Links and symbolic links ~
 On Unix it is possible to have two names for the same file.  This can be done
 with hard links and with symbolic links (symlinks).
 
-For hard links Vim does not know the other name of the file.  Therefore, the
+For hard links MNV does not know the other name of the file.  Therefore, the
 name of the swapfile will be based on the name you used to edit the file.
-There is no check for editing the same file by the other name too, because Vim
+There is no check for editing the same file by the other name too, because MNV
 cannot find the other swapfile (except for searching all of your harddisk,
 which would be very slow).
 
-For symbolic links Vim resolves the links to find the name of the actual file.
+For symbolic links MNV resolves the links to find the name of the actual file.
 The swap file name is based on that name.  Thus it doesn't matter by what name
 you edit the file, the swap file name will normally be the same.  However,
 there are exceptions:
@@ -162,8 +162,8 @@ there are exceptions:
 
 Basic file recovery is explained in the user manual: |usr_11.txt|.
 
-Another way to do recovery is to start Vim and use the ":recover" command.
-This is easy when you start Vim to edit a file and you get the "ATTENTION:
+Another way to do recovery is to start MNV and use the ":recover" command.
+This is easy when you start MNV to edit a file and you get the "ATTENTION:
 Found a swap file ..." message.  In this case the single command ":recover"
 will do the work.  You can also give the name of the file or the swap file to
 the recover command:
@@ -177,13 +177,13 @@ the recover command:
 			buffer are lost.
 
 						*E312* *E309* *E310* *E1364*
-Vim has some intelligence about what to do if the swap file is corrupt in
-some way.  If Vim has doubt about what it found, it will give an error
+MNV has some intelligence about what to do if the swap file is corrupt in
+some way.  If MNV has doubt about what it found, it will give an error
 message and insert lines with "???" in the text.  If you see an error message
 while recovering, search in the file for "???" to see what is wrong.  You may
 want to cut and paste to get the text you need.
 
-The most common remark is "???LINES MISSING".  This means that Vim cannot read
+The most common remark is "???LINES MISSING".  This means that MNV cannot read
 the text from the original file.  This can happen if the system crashed and
 parts of the original file were not written to disk.
 
@@ -227,7 +227,7 @@ You can be in one of these two situations:
    was written.  You will be prompted for the crypt key twice.  The second
    time you can simply press Enter.  That means the same key is used for the
    text file and the swap file.
-2. You entered a new encryption key, but did not save the text file.  Vim will
+2. You entered a new encryption key, but did not save the text file.  MNV will
    then use the new key for the swap file, and the text file will still be
    encrypted with the old key.  At the second prompt enter the new key.
 
@@ -235,4 +235,4 @@ Note that after recovery the key of the swap file will be used for the text
 file.  Thus if you write the text file, you need to use that new key.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

@@ -1,20 +1,20 @@
-// if_ole.idl - IDL source for the Vim OLE Automation interface
+// if_ole.idl - IDL source for the MNV OLE Automation interface
 //
 // Processed by the IDL compiler (MIDL) to generate the type library
-// (Vim.tlb).
+// (MNV.tlb).
 //
 // Command line:
-//   MIDL /proxy nul /iid iid_ole.c /h if_ole.h /tlb vim.tlb if_ole.idl
+//   MIDL /proxy nul /iid iid_ole.c /h if_ole.h /tlb mnv.tlb if_ole.idl
 
 [
 	object,
-	uuid(0F0BFAE2-4C90-11d1-82D7-0004AC368519),  // IID_IVim
-	helpstring("IVim"),
+	uuid(0F0BFAE2-4C90-11d1-82D7-0004AC368519),  // IID_IMNV
+	helpstring("IMNV"),
 	pointer_default(unique),
 	dual,
 	oleautomation
 ]
-interface IVim : IDispatch
+interface IMNV : IDispatch
 {
 	import "oaidl.idl";
 	HRESULT SendKeys([in]BSTR keys);
@@ -25,21 +25,21 @@ interface IVim : IDispatch
 
 // Component and type library definitions
 [
-	uuid(0F0BFAE0-4C90-11d1-82D7-0004AC368519),		// LIBID_Vim
-	helpstring("Vim OLE Interface 1.1 Type Library"),
+	uuid(0F0BFAE0-4C90-11d1-82D7-0004AC368519),		// LIBID_MNV
+	helpstring("MNV OLE Interface 1.1 Type Library"),
 	version(1.1)
 ]
-library Vim
+library MNV
 {
 	importlib("stdole32.tlb");
 
 	// Component
 	[
-		uuid(0F0BFAE1-4C90-11d1-82D7-0004AC368519),  // CLSID_Vim
-		helpstring("Vim OLE Interface")
+		uuid(0F0BFAE1-4C90-11d1-82D7-0004AC368519),  // CLSID_MNV
+		helpstring("MNV OLE Interface")
 	]
-	coclass Vim
+	coclass MNV
 	{
-		[default] interface IVim;
+		[default] interface IMNV;
 	};
 };

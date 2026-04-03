@@ -1,18 +1,18 @@
 ===============================================================================
-=    B e m - v i n d o  ao  t u t o r i a l  do  V I M  -  Versão 1.8 pt_BR   =
+=    B e m - v i n d o  ao  t u t o r i a l  do  M N V  -  Versão 1.8 pt_BR   =
 ===============================================================================
 
-     Vim é um poderoso editor que possui muitos comandos, tantos que seria
+     MNV é um poderoso editor que possui muitos comandos, tantos que seria
      impossível ensiná-los num tutorial como este, que é concebido para
      apresentar os comandos suficientes para permiti-lo usar facilmente o
-     Vim como um editor de textos genérico.
+     MNV como um editor de textos genérico.
 
      O tempo necessário para completar o tutorial é de cerca de 25-30 minutos,
      dependendo de quanto tempo é gasto praticando os comandos.
 
      ATENÇÃO:
      Os comandos nas lições modificam este texto. Faça uma cópia deste
-     arquivo para praticar os comandos (se usou o "vimtutor", esta já
+     arquivo para praticar os comandos (se usou o "mnvtutor", esta já
      é uma cópia).
 
      É importante lembrar que este tutorial é concebido para ensinar pela
@@ -47,7 +47,7 @@ NOTA: As teclas de cursor funcionam também. Mas usando hjkl, tão logo
       esteja acostumado, você poderá se mover muito mais rapidamente.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			   Lição 1.1.2: SAIR DO VIM
+			   Lição 1.1.2: SAIR DO MNV
 
 
  !! NOTA: Antes de executar quaisquer dos passos abaixo, leia a lição inteira !!
@@ -58,7 +58,7 @@ NOTA: As teclas de cursor funcionam também. Mas usando hjkl, tão logo
      Assim, sai do editor SEM salvar qualquer mudança feita.
 
   3. Repita o procedimento que o trouxe a este tutorial. O procedimento pode
-     ter sido a digitação de:  vimtutor <ENTER>.
+     ter sido a digitação de:  mnvtutor <ENTER>.
 
   4. Se memorizou estes passos e está confiante, execute os passos de
      1 a 3 para sair e reentrar no editor.
@@ -147,15 +147,15 @@ NOTA: Enquanto segue este tutorial, não tente memorizar, aprenda pelo uso.
   1. Saia deste tutorial como o fez na lição 1.1.2:  :q!
      Ou, se tiver acesso a outro terminal, faça o seguinte nele.
 
-  2. No prompt do shell, digite esse comando:  vim tutor <ENTER>
-     'vim' é o comando para iniciar o editor Vim e 'tutor' é o nome do
+  2. No prompt do shell, digite esse comando:  mnv tutor <ENTER>
+     'mnv' é o comando para iniciar o editor MNV e 'tutor' é o nome do
      arquivo que você quer editar.  Use um arquivo que possa ser modificado.
 
   3. Insira e apague texto tal como aprendeu nas lições anteriores.
 
-  4. Salve o arquivo com as mudanças e saia do Vim com:  :wq <ENTER>
+  4. Salve o arquivo com as mudanças e saia do MNV com:  :wq <ENTER>
 
-  5. Se tiver saído do vimtutor no passo 1, reinicie o vimtutor e vá para
+  5. Se tiver saído do mnvtutor no passo 1, reinicie o mnvtutor e vá para
      o resumo seguinte.
 
   6. Após ler os passos acima e compreendê-los, execute-os.
@@ -166,9 +166,9 @@ NOTA: Enquanto segue este tutorial, não tente memorizar, aprenda pelo uso.
   1. O cursor é movido usando tanto as teclas de seta quanto as teclas hjkl.
 	h (esquerda)	j (para baixo)	k (para cima)	l (direita)
 
-  2. Para entrar no Vim a partir de um shell digite: vim NOMEDOARQUIVO <ENTER>
+  2. Para entrar no MNV a partir de um shell digite: mnv NOMEDOARQUIVO <ENTER>
 
-  3. Para sair do Vim digite:  <ESC> :q! <ENTER> para descartar as alterações.
+  3. Para sair do MNV digite:  <ESC> :q! <ENTER> para descartar as alterações.
                    OU digite:  <ESC> :wq <ENTER> para salvar as alterações.
 
   4. Para deletar um caractere sob o cursor no modo Normal digite:  x
@@ -198,7 +198,7 @@ Agora continue com a Lição 1.2.
   4. Digite  dw  para fazer a palavra desaparecer.
 
   NOTA: A letra  d  vai aparecer na última linha da tela enquanto você a
-	digita. O Vim o está esperando digitar um  w . Se digitou
+	digita. O MNV o está esperando digitar um  w . Se digitou
 	alguma coisa errada, pressione <ESC> e comece de novo.
 
 ---> Tem a algumas oi palavras diversão que não pertencem papel a esta frase.
@@ -230,33 +230,33 @@ Agora continue com a Lição 1.2.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		   Lição 1.2.3: SOBRE OPERADORES E MOVIMENTOS 
+		   Lição 1.2.3: SOBRE OPERADORES E MOMNVENTOS 
 
-  Muitos comandos que mudam texto são feitos de um operador e de um movimento.
+  Muitos comandos que mudam texto são feitos de um operador e de um momnvento.
   O formato para um comando apagar com o operador de remoção  d  tem a
   seguinte forma:
 
-         d   movimento
+         d   momnvento
 
   Onde:
     d - é o operador apagar.
-    movimento - é o movimento sobre o qual o operador age (listado abaixo).
+    momnvento - é o momnvento sobre o qual o operador age (listado abaixo).
 
-  Uma pequena lista de teclas de movimento:
+  Uma pequena lista de teclas de momnvento:
     w - até o início da próxima palavra, excluindo seu primeiro caractere.
     e - até o fim da palavra atual, incluindo seu último caractere.
     $ - até o fim da linha, incluindo seu último caractere.
 
   Portanto, digitar  de  apaga do cursor ao fim da palavra.
 
-NOTA: Pressionar apenas a tecla de movimento em modo Normal, sem o
+NOTA: Pressionar apenas a tecla de momnvento em modo Normal, sem o
 operador, faz o cursor se mover como especificado na lista de teclas de
-movimento.
+momnvento.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	       Lição 1.2.4: USAR UM CONTADOR PARA UM MOVIMENTO
+	       Lição 1.2.4: USAR UM CONTADOR PARA UM MOMNVENTO
 
-   ** Digitar um número antes de um movimento repete-o o tanto de vezes. **
+   ** Digitar um número antes de um momnvento repete-o o tanto de vezes. **
 
 
    1. Mova o cursor para o começo da linha marcada com ---> abaixo.
@@ -269,7 +269,7 @@ movimento.
 
    5. Repita os passos 2 e 3 com diferentes números.
 
----> Esta é uma linha com algumas palavras para permiti-lo fazer movimentos.
+---> Esta é uma linha com algumas palavras para permiti-lo fazer momnventos.
 
    6. Vá para a Lição 1.2.5.
 
@@ -282,11 +282,11 @@ movimento.
    ** Digitar um número com um operador repete-o esse número de vezes. **
 
 
-   Você deve inserir um contador entre o operador de remoção e o de movimento
+   Você deve inserir um contador entre o operador de remoção e o de momnvento
    mencionados acima para apagar mais:
-       d   número   movimento
+       d   número   momnvento
 
-   1. Movimente o cursor para a primeira palavra em LETRAS MAIÚSCULAS na
+   1. Momnvente o cursor para a primeira palavra em LETRAS MAIÚSCULAS na
       linha marcada com --->.
 
    2. Digite  d2w  para deletar as duas palavras em LETRAS MAIÚSCULAS.
@@ -352,13 +352,13 @@ Notas do tradutor: Lama (mud) em inglês pode significar fofoca, difamação.
   1. Para apagar do cursor até a próxima palavra, digite:   dw
   2. Para apagar do cursor até o fim de uma linha, digite:  d$
   3. Para apagar uma linha inteira, digite:   dd
-  4. Para repetir um movimento, adicione antes um número:   2w
+  4. Para repetir um momnvento, adicione antes um número:   2w
   5. O formato para um comando no modo Normal é:
-           operador   [número]   movimento
+           operador   [número]   momnvento
    onde:
       operador  - é o que será feito, como  d  para apagar
       [número]  - quantas vezes o comando será repetido
-      movimento - movimento sobre o texto que receberá a operação, como
+      momnvento - momnvento sobre o texto que receberá a operação, como
                   w (palavra), $ (até o fim da linha), etc.
 
   6. Para ir ao início da linha, use um zero:  0
@@ -378,7 +378,7 @@ Notas do tradutor: Lama (mud) em inglês pode significar fofoca, difamação.
 
   1. Mova o cursor até a primeira linha marcada com --->.
 
-  2. Digite  dd  para apagar a linha e guardá-la num registro do Vim.
+  2. Digite  dd  para apagar a linha e guardá-la num registro do MNV.
 
   3. Mova o cursor até a linha c) ACIMA de onde a linha apagada deveria estar.
 
@@ -442,14 +442,14 @@ de Inserção.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		      Lição 1.3.4: MAIS MUDANÇAS USANDO c
 
-     ** O operador change é usado com os mesmos movimentos que o delete. **
+     ** O operador change é usado com os mesmos momnventos que o delete. **
 
 
   1. O operador change trabalha da mesma maneira que o delete. O formato é:
 
-          c    [número]    movimento
+          c    [número]    momnvento
 
-  2. Os movimentos também são os mesmos: w (palavra) e $ (fim da linha).
+  2. Os momnventos também são os mesmos: w (palavra) e $ (fim da linha).
 
   3. Mova até a primeira linha abaixo marcada com --->.
 
@@ -474,13 +474,13 @@ NOTA: Você pode usar a tecla Backspace para corrigir erros enquanto digita.
   2. Para substituir o caractere sob o cursor, digite  r  e então o caractere
      que substituirá o original.
 
-  3. O comando change possibilita mudar do cursor até onde o movimento for.
+  3. O comando change possibilita mudar do cursor até onde o momnvento for.
      Ex: Digite  ce  para mudar do cursor até o fim de uma palavra, c$ para
      mudar até o fim da linha.
 
   4. O formato para uma operação change é:
 
-         c   [número]   movimento
+         c   [número]   momnvento
 
 Agora vá para a próxima lição.
 
@@ -642,10 +642,10 @@ NOTA:  Todos os comandos  :  devem ser finalizados teclando-se <ENTER>
 
   3. Agora digite:   :w TESTE  (onde TESTE é o nome que você escolheu.)
 
-  4. Isto salva o arquivo inteiro  (o Vim Tutor) com o nome TESTE.
+  4. Isto salva o arquivo inteiro  (o MNV Tutor) com o nome TESTE.
      Para verificar isso, digite  :!ls de novo para ver seu diretório.
 
-NOTA: Se sair do Vim e entrar de novo com o nome do arquivo TESTE,
+NOTA: Se sair do MNV e entrar de novo com o nome do arquivo TESTE,
       o arquivo deve ser uma cópia exata do tutorial quando você o salvou.
 
   5. Agora remova o arquivo digitando (MS-DOS):     :!del TESTE
@@ -655,7 +655,7 @@ NOTA: Se sair do Vim e entrar de novo com o nome do arquivo TESTE,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		 Lição 1.5.3: SELECIONAR O TEXTO A SER SALVO
 
-  ** Para salvar parte de um arquivo, digite  v  movimento  :w NOMEDOARQUIVO **
+  ** Para salvar parte de um arquivo, digite  v  momnvento  :w NOMEDOARQUIVO **
 
   1. Mova o cursor para esta linha.
 
@@ -668,7 +668,7 @@ NOTA: Se sair do Vim e entrar de novo com o nome do arquivo TESTE,
   4. Digite  w TESTE , sendo TESTE um nome de arquivo que não existe ainda.
      Certifique-se de ver  :'<,'>w TESTE  antes de pressionar <ENTER>.
 
-  5. O Vim salvará as linhas selecionadas no arquivo TESTE. Use  :!dir  ou
+  5. O MNV salvará as linhas selecionadas no arquivo TESTE. Use  :!dir  ou
      !:ls para vê-lo. Não o apague ainda! Nós o usaremos na próxima lição.
 
 NOTA:  Pressionar  v  inicia o modo Visual de seleção.  Você pode mover o
@@ -709,9 +709,9 @@ NOTA: Você também pode ler a saída de um comando externo. Por exemplo,  :r !l
 	  :!dir            :!ls          -  lista conteúdo do diretório.
           :!del ARQUIVO    :!rm ARQUIVO  -  remove ARQUIVO.
 
-  2. :w ARQUIVO  salva o atual arquivo do Vim para o disco com o nome ARQUIVO.
+  2. :w ARQUIVO  salva o atual arquivo do MNV para o disco com o nome ARQUIVO.
 
-  3. v  movimento  :w ARQUIVO  salva as linhas Visualmente selecionadas em
+  3. v  momnvento  :w ARQUIVO  salva as linhas Visualmente selecionadas em
      ARQUIVO.
 
   4. :r ARQUIVO  recupera ARQUIVO do disco e o insere dentro do arquivo atual
@@ -870,9 +870,9 @@ NOTA:  Se quiser ignorar a diferença entre maiúsculas e minúsculas em apenas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			   LIÇÃO 1.7.1: OBTENDO AJUDA
 
-		 ** Use o sistema de ajuda do próprio Vim **
+		 ** Use o sistema de ajuda do próprio MNV **
 
-  O Vim possui sistema de ajuda abrangente. Para começar, tente algum
+  O MNV possui sistema de ajuda abrangente. Para começar, tente algum
   desses três:
         - pressione a tecla <HELP> (se você tiver uma)
         - pressione a tecla <F1>   (se você tiver uma)
@@ -893,46 +893,46 @@ NOTA:  Se quiser ignorar a diferença entre maiúsculas e minúsculas em apenas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		 Lição 1.7.2: CRIAR UM SCRIPT DE INICIALIZAÇÃO
 
-		       ** Habilite recursos do Vim **
+		       ** Habilite recursos do MNV **
 
-  O Vim tem muito mais recursos do que o Vi, mas na sua maioria eles são
+  O MNV tem muito mais recursos do que o Vi, mas na sua maioria eles são
   desabilitados por padrão.  Para usar mais recursos, você tem que criar um
-  arquivo "vimrc".
+  arquivo "mnvrc".
 
-  1. Comece a editar o arquivo "vimrc". Isso depende do sistema:
-         :e ~/.vimrc           para Unix
-         :e ~/_vimrc           para MS-Windows
+  1. Comece a editar o arquivo "mnvrc". Isso depende do sistema:
+         :e ~/.mnvrc           para Unix
+         :e ~/_mnvrc           para MS-Windows
 
-  2. Agora, leia o conteúdo do arquivo "vimrc" de exemplo:
-	 :r $VIMRUNTIME/vimrc_example.vim
+  2. Agora, leia o conteúdo do arquivo "mnvrc" de exemplo:
+	 :r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Salve o arquivo com:
          :w
 
-  Da próxima vez que o Vim for iniciado, ele usará realce de sintaxe. Você
-  pode adicionar suas configurações preferidas para esse arquivo "vimrc". Para
-  maiores informações, digite:  :help vimrc-intro
+  Da próxima vez que o MNV for iniciado, ele usará realce de sintaxe. Você
+  pode adicionar suas configurações preferidas para esse arquivo "mnvrc". Para
+  maiores informações, digite:  :help mnvrc-intro
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			    Lição 1.7.3: COMPLETAÇÃO
 
 	   ** Completação da linha de comando com CTRL-D e <TAB> **
 
-   1. Certifique-se de que o Vim não está no modo compatível:  :set nocp
+   1. Certifique-se de que o MNV não está no modo compatível:  :set nocp
 
    2. Veja quais arquivos existem no diretório:  :!ls  ou  :!dir
 
    3. Digite o início de um comando:  :e
 
-   4. Pressione  CTRL-D  e o Vim mostrará a lista dos comandos iniciados
+   4. Pressione  CTRL-D  e o MNV mostrará a lista dos comandos iniciados
       com "e".
 
-   5. Pressione  <TAB>  e o Vim completará o nome do comando para ":edit".
+   5. Pressione  <TAB>  e o MNV completará o nome do comando para ":edit".
 
    6. Agora, adicione um espaço e o início do nome de um arquivo existente:
       :edit ARQ
 
-   7. Pressione <TAB>.  O Vim completará o nome (se ele for único).
+   7. Pressione <TAB>.  O MNV completará o nome (se ele for único).
 
 NOTA:  A completação funciona com muitos comandos. Basta pressionar CTRL-D e
 <TAB>. Isso é especialmente útil para  :help .
@@ -949,7 +949,7 @@ NOTA:  A completação funciona com muitos comandos. Basta pressionar CTRL-D e
 
   4. Digite  :q  para fechar a janela de ajuda.
 
-  5. Crie um script de inicialização vimrc para ativar automaticamente as suas
+  5. Crie um script de inicialização mnvrc para ativar automaticamente as suas
      configurações preferidas.
 
   6. Quando pressionar um comando  : , pressione CTRL-D para ver as possibilidades 
@@ -961,34 +961,34 @@ NOTA:  A completação funciona com muitos comandos. Basta pressionar CTRL-D e
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Isto conclui o tutorial do Vim, uma breve apresentação do editor Vim,
+  Isto conclui o tutorial do MNV, uma breve apresentação do editor MNV,
   somente o bastante para que você possa usar o editor com facilidade.
-  Ele está longe de ser completo, uma vez que o Vim possui muitos, muitos mais
+  Ele está longe de ser completo, uma vez que o MNV possui muitos, muitos mais
   comandos. O próximo passo é ler o manual:  ":help user-manual".
 
-  Livro recomendado em Português sobre o Vim:
-       O editor de texto Vim - de Sérgio Luiz Araújo da Silva et al.
-       http://code.google.com/p/vimbook/
+  Livro recomendado em Português sobre o MNV:
+       O editor de texto MNV - de Sérgio Luiz Araújo da Silva et al.
+       http://code.google.com/p/mnvbook/
 
   Para futura leitura e estudo, este livro é recomendado:
-       Vim - Vi Improved - de Steve Oualline
+       MNV - MNV is not Vim - de Steve Oualline
        Editora: New Riders
-  Este é o primeiro livro completamente dedicado ao Vim. Especialmente útil
+  Este é o primeiro livro completamente dedicado ao MNV. Especialmente útil
   para iniciantes, com muitos exemplos e ilustrações.
   Veja https://iccf-holland.org/click5.html
 
-  Esse livro é mais antigo e mais sobre o Vi do que sobre o Vim, mas também é
+  Esse livro é mais antigo e mais sobre o Vi do que sobre o MNV, mas também é
   recomendado:
        Learning the Vi Editor - de Linda Lamb
        Editora: O'Reilly & Associates Inc.
   Este é um bom livro para aprender quase tudo o que você quer fazer com o Vi.
-  A sexta edição também inclui informações sobre o Vim.
+  A sexta edição também inclui informações sobre o MNV.
 
   Este tutorial foi escrito por Michael C. Pierce e Robert K. Ware,
   Colorado School of Mines, usando idéias fornecidas por Charles Smith,
   Colorado State University.  E-mail: bware@mines.colorado.edu.
 
-  Modificado para o Vim por Bram Moolenaar.
+  Modificado para o MNV por Bram Moolenaar.
 
   Versão 1.4 traduzida para o português por Marcelo Drudi Miranda, Escola
   Politécnica da Universidade de São Paulo.

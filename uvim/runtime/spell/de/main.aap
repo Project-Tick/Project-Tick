@@ -1,4 +1,4 @@
-# Aap recipe for German Vim spell files.
+# Aap recipe for German MNV spell files.
 #
 # Since there is a big discussion about whether to use the old or the new
 # spelling rules, both have been included.
@@ -9,11 +9,11 @@
 # "de_AT": Austrian spelling
 # "de_CH": Swiss spelling
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 REGIONS = DE 19 20 AT CH
 DE_REGIONS = de_$*REGIONS
@@ -35,8 +35,8 @@ FILE_CH_DIC = de_CH_frami.dic
 ZIPFILE_19 = de_OLDSPELL.zip   # unmaintained
 DICT_FILES = $FILE_20_AFF $FILE_20_DIC $FILE_AT_AFF $FILE_AT_DIC $FILE_CH_AFF $FILE_CH_DIC
 
-# frami files adjusted for Vim are found here
-YAMAGIDIR = https://raw.githubusercontent.com/Yamagi/vim-german-dictionaries/master
+# frami files adjusted for MNV are found here
+YAMAGIDIR = https://raw.githubusercontent.com/Yamagi/mnv-german-dictionaries/master
 
 READMES    = README.md
 :attr {fetch = $YAMAGIDIR/%file%} $READMES
@@ -45,11 +45,11 @@ all: $SPELLDIR/de.latin1.spl $SPELLDIR/de.utf-8.spl ../README_de.txt
 
 $SPELLDIR/de.latin1.spl : $FILES
         :sys env LANG=de_DE.ISO-8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/de $DE_REGIONS" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/de $DE_REGIONS" -c q
 
 $SPELLDIR/de.utf-8.spl : $FILES
         :sys env LANG=de_DE.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/de $DE_REGIONS" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/de $DE_REGIONS" -c q
 
 ../README_de.txt: $READMES
         :fetch $READMES
@@ -99,4 +99,4 @@ de_CH.aff de_CH.dic: {buildcheck=}
         :move $FILE_CH_DIC de_CH.dic
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

@@ -1,4 +1,4 @@
-# Aap recipe for Basque Vim spell files.
+# Aap recipe for Basque MNV spell files.
 #
 # NOTE: This takes a VERY long time: several hours on a modern PC, more than
 # a day on older systems.
@@ -20,11 +20,11 @@
 SETTING = 'set mkspellmem=7900000,30000,8000'
 
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = eu_ES.aff eu_ES.dic
@@ -33,7 +33,7 @@ all: $SPELLDIR/eu.utf-8.spl ../README_eu.txt
 
 $SPELLDIR/eu.utf-8.spl : $FILES
         :sys env LANG=eu_ES.UTF-8
-		$VIM -u NONE -e -c $SETTING -c "mkspell! $SPELLDIR/eu eu_ES" -c q
+		$MNV -u NONE -e -c $SETTING -c "mkspell! $SPELLDIR/eu eu_ES" -c q
 
 #
 # Fetching the files.
@@ -69,7 +69,7 @@ cleanunused:
         :delete {f} xuxen_5.1_hunspell.tar.gz
 
 # Generate diff files, so that others can get the files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -78,4 +78,4 @@ diff:
 
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

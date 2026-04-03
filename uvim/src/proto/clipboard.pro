@@ -44,4 +44,4 @@ void call_clip_provider_request(int reg);
 void call_clip_provider_set(int reg);
 void inc_clip_provider(void);
 void dec_clip_provider(void);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

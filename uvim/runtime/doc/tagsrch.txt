@@ -1,7 +1,7 @@
-*tagsrch.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*tagsrch.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Tags and special searches				*tags-and-searches*
@@ -130,9 +130,9 @@ CTRL-T			Jump to [count] older entry in the tag stack
 The output of ":tags" looks like this:
 
    # TO tag      FROM line  in file/text
-   1  1 main		 1  harddisk2:text/vim/test
+   1  1 main		 1  harddisk2:text/mnv/test
  > 2  2 FuncA		58  i = FuncA(10);
-   3  1 FuncC	       357  harddisk2:text/vim/src/amiga.c
+   3  1 FuncC	       357  harddisk2:text/mnv/src/amiga.c
 
 This list shows the tags that you jumped to and the cursor position before
 that jump.  The older tags are at the top, the newer at the bottom.
@@ -147,7 +147,7 @@ that this doesn't change when using ":pop" or ":tag".
 The line number and file name are remembered to be able to get back to where
 you were before the tag command.  The line number will be correct, also when
 deleting/inserting lines, unless this was done by another program (e.g.
-another instance of Vim).
+another instance of MNV).
 
 For the current file, the "file/text" column shows the text at the position.
 An indent is removed and a long line is truncated to fit in the window.
@@ -179,8 +179,8 @@ deleted.  This means that an old branch in the call graph is lost.  After the
 commands explained above the tag stack will look like this:
 
    # TO tag	FROM line  in file/text
-   1  1 main		1  harddisk2:text/vim/test
-   2  1 FuncB	       59  harddisk2:text/vim/src/main.c
+   1  1 main		1  harddisk2:text/mnv/test
+   2  1 FuncB	       59  harddisk2:text/mnv/src/main.c
 
 The |gettagstack()| function returns the tag stack of a specified window.  The
 |settagstack()| function modifies the tag stack of a window.
@@ -312,10 +312,10 @@ g CTRL-]		Like CTRL-], but use ":tjump" instead of ":tag".
 			the matching tags is independent of the tag stack.
 			See |tag-!| for [!].
 
-When there is no other message, Vim shows which matching tag has been jumped
+When there is no other message, MNV shows which matching tag has been jumped
 to, and the number of matching tags: >
 	tag 1 of 3 or more
-The " or more" is used to indicate that Vim didn't try all the tags files yet.
+The " or more" is used to indicate that MNV didn't try all the tags files yet.
 When using ":tnext" a few times, or with ":tlast", more matches may be found.
 
 When you didn't see this message because of some other message, or you just
@@ -325,7 +325,7 @@ same tag as last time): >
 <
 							*tag-skip-file*
 When a matching tag is found for which the file doesn't exist, this match is
-skipped and the next matching tag is used.  Vim reports this, to notify you of
+skipped and the next matching tag is used.  MNV reports this, to notify you of
 missing files.  When the end of the list of matches has been reached, an error
 message is given.
 
@@ -369,12 +369,12 @@ this could be a static function.
 
 In Vi jumping to a tag sets the current search pattern.  This means that the
 "n" command after jumping to a tag does not search for the same pattern that
-it did before jumping to the tag.  Vim does not do this as we consider it to
+it did before jumping to the tag.  MNV does not do this as we consider it to
 be a bug.  If you really want the old Vi behavior, set the 't' flag in
 'cpoptions'.
 
 							*tag-binary-search*
-Vim uses binary searching in the tags file to find the desired tag quickly
+MNV uses binary searching in the tags file to find the desired tag quickly
 (when enabled at compile time |+tag_binary|).  But this only works if the
 tags file was sorted on ASCII byte value.  Therefore, if no match was found,
 another try is done with a linear search.  If you only want the linear search,
@@ -444,8 +444,8 @@ current file  changed	!   option	option	      action	~
   command will fail.  If the tag is in the same file then it may succeed.
 
 							*tag-security*
-Note that Vim forbids some commands, for security reasons.  This works like
-using the 'secure' option for exrc/vimrc files in the current directory.  See
+Note that MNV forbids some commands, for security reasons.  This works like
+using the 'secure' option for exrc/mnvrc files in the current directory.  See
 |trojan-horse| and |sandbox|.
 When the {tagaddress} changes a buffer, you will get a warning message:
 	"WARNING: tag command changed a buffer!!!"
@@ -455,15 +455,15 @@ would otherwise go unnoticed.  Example: >
 	:$d|/tag-function-name/
 
 In Vi the ":tag" command sets the last search pattern when the tag is searched
-for.  In Vim this is not done, the previous search pattern is still
+for.  In MNV this is not done, the previous search pattern is still
 remembered, unless the 't' flag is present in 'cpoptions'.
 
 					*emacs-tags* *emacs_tags* *E430*
-Emacs style tag files are only supported if Vim was compiled with the
+Emacs style tag files are only supported if MNV was compiled with the
 |+emacs_tags| feature enabled.  Sorry, there is no explanation about Emacs tag
 files here, it is only supported for backwards compatibility :-).
 
-Lines in Emacs tags files can be very long.  Vim only deals with lines of up
+Lines in Emacs tags files can be very long.  MNV only deals with lines of up
 to about 510 bytes.  To see whether lines are ignored set 'verbose' to 5 or
 higher.  Non-Emacs tags file lines can be any length.
 
@@ -542,11 +542,11 @@ exuberant ctags		This is a very good one.  It works for C, C++, Java,
 			many items.  See http://ctags.sourceforge.net.
 			No new version since 2009.
 etags			Connected to Emacs.  Supports many languages.
-|:helptags|		For Vim's |help| files
+|:helptags|		For MNV's |help| files
 ptags.py		For Python, in Python.  Found in your Python source
 			directory at Tools/scripts/ptags.py.
 ptags			For Perl, in Perl.  It can be found at
-			https://metacpan.org/pod/Vim::Tag
+			https://metacpan.org/pod/MNV::Tag
 gnatxref		For Ada.  See http://www.gnuada.org/.  gnatxref is
 			part of the gnat package.
 
@@ -613,15 +613,15 @@ ctags).
 		See the documentation of ctags for the kinds it produces, with
 		ctags you can use `ctags --list-kinds` .
 
-		The only other field currently recognized by Vim is "file:"
+		The only other field currently recognized by MNV is "file:"
 		(with an empty value).  It is used for a static tag.
 
 
 The first lines in the tags file can contain lines that start with
 	!_TAG_
 These are sorted to the first lines, only rare tags that start with "!" can
-sort to before them.  Vim recognizes two items.  The first one is the line
-that indicates if the file was sorted.  When this line is found, Vim uses
+sort to before them.  MNV recognizes two items.  The first one is the line
+that indicates if the file was sorted.  When this line is found, MNV uses
 binary searching for the tags file:
 	!_TAG_FILE_SORTED<Tab>1<Tab>{anything} ~
 
@@ -631,9 +631,9 @@ ignored.  (Case is ignored when 'ignorecase' is set and 'tagcase' is
 The value '2' should be used then:
 	!_TAG_FILE_SORTED<Tab>2<Tab>{anything} ~
 
-The other tag that Vim recognizes is the encoding of the tags file:
+The other tag that MNV recognizes is the encoding of the tags file:
 	!_TAG_FILE_ENCODING<Tab>utf-8<Tab>{anything} ~
-Here "utf-8" is the encoding used for the tags.  Vim will then convert the tag
+Here "utf-8" is the encoding used for the tags.  MNV will then convert the tag
 being searched for from 'encoding' to the encoding of the tags file.  And when
 listing tags the reverse happens.  When the conversion fails the unconverted
 tag is used.
@@ -673,13 +673,13 @@ Until March 2019 (patch 8.1.1092) an outdated format was supported:
     {tagfile}:{tagname} {TAB} {tagfile} {TAB} {tagaddress}
 
 This format is for a static tag only.  It is obsolete now, replaced by
-the second format.  It is only supported by Elvis 1.x, older Vim versions and
+the second format.  It is only supported by Elvis 1.x, older MNV versions and
 a few versions of ctags.  A static tag is often used for functions that are
 local, only referenced in the file {tagfile}.  Note that for the static tag,
 the two occurrences of {tagfile} must be exactly the same.  Also see
 |tags-option| below, for how static tags are used.
 
-The support was removed, since when you can update to the new Vim version you
+The support was removed, since when you can update to the new MNV version you
 should also be able to update ctags to one that supports the second format.
 
 ==============================================================================
@@ -716,7 +716,7 @@ The commands that start with "[" start searching from the start of the current
 file.  The commands that start with "]" start at the current cursor position.
 
 The 'include' option is used to define a line that includes another file.  The
-default is "\^#\s*include", which is for C programs.  Note: Vim does not
+default is "\^#\s*include", which is for C programs.  Note: MNV does not
 recognize C syntax, if the 'include' option matches a line inside
 "#ifdef/#endif" or inside a comment, it is searched anyway.  The 'isfname'
 option is used to recognize the file name that comes after the matched
@@ -891,7 +891,7 @@ Common arguments for the commands above:
 ==============================================================================
 7. Using 'tagfunc'						*tag-function*
 
-It is possible to provide Vim with a function which will generate a list of
+It is possible to provide MNV with a function which will generate a list of
 tags used for commands like |:tag|, |:tselect|, Normal mode tag commands like
 |CTRL-]| and for the |taglist()| function.
 
@@ -949,7 +949,7 @@ It is not allowed to close a window or change window from inside 'tagfunc'.
 The following is a hypothetical example of a function used for 'tagfunc'.  It
 uses the output of |taglist()| to generate the result: a list of tags in the
 inverse order of file names.
->vim
+>mnv
 	function CompareFilenames(item1, item2)
 	  let f1 = a:item1['filename']
 	  let f2 = a:item2['filename']
@@ -967,4 +967,4 @@ inverse order of file names.
 Note: When executing |taglist()| the 'tagfunc' function won't be called
 recursively.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

@@ -18,4 +18,4 @@ int preedit_get_status(void);
 int im_is_preediting(void);
 void xim_set_status_area(void);
 int xim_get_status_area_height(void);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

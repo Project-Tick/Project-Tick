@@ -1,11 +1,11 @@
-*rileft.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*rileft.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Avner Lottem
+		  MNV REFERENCE MANUAL	  by Avner Lottem
 					  updated by Nadim Shaikli
 
 
-Right to Left display mode for Vim				*rileft*
+Right to Left display mode for MNV				*rileft*
 
 
 These functions were originally created by Avner Lottem:
@@ -28,7 +28,7 @@ right to left.
 Bidirectionality (or bidi for short) is what Unicode offers as a full
 solution to these languages.  Bidi offers the user the ability to view
 both right-to-left as well as left-to-right text properly at the same time
-within the same window.  Vim currently, due to simplicity, does not offer
+within the same window.  MNV currently, due to simplicity, does not offer
 bidi and is merely opting to present a functional means to display/enter/use
 right-to-left languages.  An older hybrid solution in which direction is
 encoded for every character (or group of characters) are not supported either
@@ -43,14 +43,14 @@ and how it would work when fixed, please create an issue on github, see
 
 Highlights
 ----------
-o  Editing left-to-right files as in the original Vim, no change.
+o  Editing left-to-right files as in the original MNV, no change.
 
 o  Viewing and editing files in right-to-left windows.  File orientation
    is per window, so it is possible to view the same file in right-to-left
    and left-to-right modes, simultaneously.  (Useful for editing mixed files
    in which both right-to-left and left-to-right text exist).
 
-o  Compatibility to the original Vim.  Almost all features work in
+o  Compatibility to the original MNV.  Almost all features work in
    right-to-left mode (see Bugs below).
 
 o  Backing from reverse insert mode to the correct place in the file
@@ -113,7 +113,7 @@ o  Does not support reverse insert and rightleft modes on the command-line.
    left to the right on the command-line.
 
 o  Somewhat slower in right-to-left mode, because right-to-left motion is
-   emulated inside Vim, not by the controlling terminal.
+   emulated inside MNV, not by the controlling terminal.
 
 o  When both 'rightleft' and 'revins' are on: 'textwidth' does not work.
    Lines do not wrap at all; you just get a single, long line.
@@ -121,4 +121,4 @@ o  When both 'rightleft' and 'revins' are on: 'textwidth' does not work.
 o  There is no full bidirectionality (bidi) support.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

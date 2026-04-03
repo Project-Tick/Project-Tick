@@ -1,8 +1,8 @@
 *ft_raku.txt*	The Raku programming language filetype
 
-                                                      *vim-raku*
+                                                      *mnv-raku*
 
-Vim-raku provides syntax highlighting, indentation, and other support for
+MNV-raku provides syntax highlighting, indentation, and other support for
 editing Raku programs.
 
 1. Using Unicode in your Raku files	|raku-unicode|
@@ -17,15 +17,15 @@ https://perl6advent.wordpress.com/2012/12/18/day-18-formulas-resistance-is-futil
 While Raku does define ASCII alternatives for some common operators (see
 https://docs.raku.org/language/unicode_ascii), using the full range of
 Unicode operators is highly desirable. Your operating system provides input
-facilities, but using the features built in to Vim may be preferable.
+facilities, but using the features built in to MNV may be preferable.
 
-The natural way to produce these symbols in Vim is to use digraph shortcuts
+The natural way to produce these symbols in MNV is to use digraph shortcuts
 (:help |digraphs-use|). Many of them are defined; type `:digraphs` to get
 the list. A convenient way to read the list of digraphs is to save them in a
 file. From the shell: >
-        vim +'redir >/tmp/vim-digraphs-listing.txt' +digraphs +'redir END' +q
+        mnv +'redir >/tmp/mnv-digraphs-listing.txt' +digraphs +'redir END' +q
 
-Some of them are available with standard Vim digraphs:
+Some of them are available with standard MNV digraphs:
 	<< «    /0 ∅    !< ≮  ~
 	>> »    Ob ∘    !> ≯  ~
 	., …    00 ∞    (C ⊂  ~
@@ -46,7 +46,7 @@ Numbers, subscripts and superscripts are available with 's' and 'S':
 	2s ₂    9S ⁹  ~
 
 But some don't come defined by default. Those are digraph definitions you can
-add in your ~/.vimrc file. >
+add in your ~/.mnvrc file. >
 	exec 'digraph \\ ' .. char2nr('∖')
 	exec 'digraph \< ' .. char2nr('≼')
 	exec 'digraph \> ' .. char2nr('≽')
@@ -123,4 +123,4 @@ based operators into their single-character Unicode equivalent. >
 	iabbrev <buffer> set() ∅
 	iabbrev <buffer> tau τ
 <
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

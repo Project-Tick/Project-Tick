@@ -1,0 +1,13 @@
+" MNV filetype plugin
+" Language:	SCSS
+" Maintainer:	Tim Pope <mnvNOSPAM@tpope.org>
+" Last Change:	2016 Aug 29
+
+if exists("b:did_ftplugin")
+  finish
+endif
+
+runtime! ftplugin/sass.mnv
+setlocal comments=s1:/*,mb:*,ex:*/,://
+
+" mnv:set sw=2:

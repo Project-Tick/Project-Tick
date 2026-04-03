@@ -1,4 +1,4 @@
-*pi_zip.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*pi_zip.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 				+====================+
 				| Zip File Interface |
@@ -7,9 +7,9 @@
 Author:  Charles E. Campbell  <NcampObell@SdrPchip.AorgM-NOSPAM>
 	  (remove NOSPAM from Campbell's email first)
 Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
-	The VIM LICENSE (see |copyright|) applies to the files in this
-	package, including zipPlugin.vim, zip.vim, and pi_zip.vim.  except use
-	"zip.vim" instead of "VIM".  Like anything else that's free, zip.vim
+	The MNV LICENSE (see |copyright|) applies to the files in this
+	package, including zipPlugin.mnv, zip.mnv, and pi_zip.mnv.  except use
+	"zip.mnv" instead of "MNV".  Like anything else that's free, zip.mnv
 	and its associated files are provided *as is* and comes with no
 	warranty of any kind, either expressed or implied.  No guarantees of
 	merchantability.  No guarantees of suitability for any purpose.  By
@@ -52,7 +52,7 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
 	g:zip_shq
 <   which by default is a single quote under Unix (') and a double quote
    under Windows (").  If you'd rather have no quotes, simply set
-   g:zip_shq to the empty string (let g:zip_shq= "") in your <.vimrc>.
+   g:zip_shq to the empty string (let g:zip_shq= "") in your <.mnvrc>.
 
 							*g:zip_unzipcmd*
    Use this option to specify the program which does the duty of "unzip".
@@ -71,7 +71,7 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
 	let g:zip_extractcmd= g:zip_unzipcmd
 <
 							*g:zip_exec*
-   For security reasons, one may prevent that Vim runs executables
+   For security reasons, one may prevent that MNV runs executables
    automatically when opening a buffer.  This option (default: "1")
    can be used to prevent executing the "unzip" command when set to
    "0": >
@@ -89,8 +89,8 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
 
    PREVENTING LOADING~
 
-   If for some reason you do not wish to use vim to examine zipped files,
-   you may put the following two variables into your <.vimrc> to prevent
+   If for some reason you do not wish to use mnv to examine zipped files,
+   you may put the following two variables into your <.mnvrc> to prevent
    the zip plugin from loading: >
 
 	let g:loaded_zipPlugin= 1
@@ -102,14 +102,14 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
 
    Apparently there are a number of archivers which generate zip files that
    don't use the .zip extension (.jar, .xpi, etc).  To handle such files,
-   place a line in your <.vimrc> file: >
+   place a line in your <.mnvrc> file: >
 
 	au BufReadCmd *.jar,*.xpi call zip#Browse(expand("<amatch>"))
 <
    One can simply extend this line to accommodate additional extensions that
    should be treated as zip files.
 
-   Alternatively, one may change *g:zipPlugin_ext* in one's .vimrc.
+   Alternatively, one may change *g:zipPlugin_ext* in one's .mnvrc.
    Currently (as of October 2025) it holds: >
 
         let g:zipPlugin_ext='*.aar,*.apk,*.celzip,*.crtx,*.docm,*.docx,
@@ -135,7 +135,7 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
        Jul 23, 2024 * fix 'x' command
        Jun 16, 2024 * handle whitespace on Windows properly (#14998)
    v33 Dec 07, 2021 * *.xlam mentioned twice in zipPlugin
-   v32 Oct 22, 2021 * to avoid an issue with a vim 8.2 patch, zipfile: has
+   v32 Oct 22, 2021 * to avoid an issue with a mnv 8.2 patch, zipfile: has
 		      been changed to zipfile:// . This often shows up
 		      as zipfile:/// with zipped files that are root-based.
    v29 Apr 02, 2017 * (Klartext) reported that an encrypted zip file could
@@ -174,7 +174,7 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
    v8 Apr 10, 2006 * Bram Moolenaar reported that he received an error message
                      due to "Pattern not found: ^.*\%0c"; this was caused by
 		     stridx finding a Name... at the beginning of the line;
-		     zip.vim tried 4,$s/^.*\%0c//, but that doesn't work.
+		     zip.mnv tried 4,$s/^.*\%0c//, but that doesn't work.
 		     Fixed.
    v7 Mar 22, 2006 * escaped some characters that can cause filename handling
                      problems.
@@ -190,4 +190,4 @@ Copyright: Copyright (C) 2005-2015 Charles E Campbell	 *zip-copyright*
    v1 Sep 15, 2005 * Initial release, had browsing, reading, and writing
 
 ==============================================================================
-vim:tw=78:ts=8:ft=help:noet:norl:fdm=marker
+mnv:tw=78:ts=8:ft=help:noet:norl:fdm=marker

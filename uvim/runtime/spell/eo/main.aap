@@ -1,10 +1,10 @@
-# Aap recipe for Esperanto Vim spell files.
+# Aap recipe for Esperanto MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = eo_l3.aff eo_l3.dic
@@ -12,17 +12,17 @@ FILES    = eo_l3.aff eo_l3.dic
 all: $SPELLDIR/eo.iso-8859-3.spl $SPELLDIR/eo.utf-8.spl ../README_eo.txt
 
 $SPELLDIR/eo.iso-8859-3.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=iso-8859-3"
+        :sys $MNV -u NONE -e -c "set enc=iso-8859-3"
                 -c "mkspell! $SPELLDIR/eo eo_l3" -c q
 
 $SPELLDIR/eo.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                 -c "mkspell! $SPELLDIR/eo eo_l3" -c q
 
 ../README_eo.txt : README_eo_l3.txt
         :copy $source $target
         # fix missing newline
-        :sys $VIM -u NONE -e -c "set ff=unix" -c wq $target
+        :sys $MNV -u NONE -e -c "set ff=unix" -c wq $target
 
 #
 # Fetching the files from OpenOffice.org.
@@ -46,7 +46,7 @@ eo_l3.aff eo_l3.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -77,4 +77,4 @@ check:
             :delete eo.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

@@ -1,7 +1,7 @@
 #
 # Makefile for AROS, AmigaOS4 and MorphOS.
 #
-BIN = vim
+BIN = mnv
 CC ?= gcc
 LD = $(CC)
 UNM ?= $(shell uname)
@@ -20,7 +20,7 @@ CFLAGS += \
 	-Wno-attributes \
 	-Wextra
 
-# Vim 'huge' build
+# MNV 'huge' build
 ifeq ($(BUILD),huge)
 CFLAGS += \
 	-DFEAT_BROWSE \
@@ -28,7 +28,7 @@ CFLAGS += \
 	-DFEAT_HUGE
 else
 
-# Vim 'normal' build
+# MNV 'normal' build
 ifeq ($(BUILD),normal)
 CFLAGS +=\
 	-DFEAT_BROWSE \
@@ -36,12 +36,12 @@ CFLAGS +=\
 	-DFEAT_NORMAL
 else
 
-# Vim 'small' build - now an alias for 'tiny'
+# MNV 'small' build - now an alias for 'tiny'
 ifeq ($(BUILD),small)
 CFLAGS += -DFEAT_TINY
 else
 
-# Vim 'tiny' build
+# MNV 'tiny' build
 ifeq ($(BUILD),tiny)
 CFLAGS += -DFEAT_TINY
 endif
@@ -182,16 +182,16 @@ SRC += \
 	usercmd.c \
 	userfunc.c \
 	version.c \
-	viminfo.c \
-	vim9class.c \
-	vim9cmds.c \
-	vim9compile.c \
-	vim9execute.c \
-	vim9expr.c \
-	vim9generics.c \
-	vim9instr.c \
-	vim9script.c \
-	vim9type.c \
+	mnvinfo.c \
+	mnv9class.c \
+	mnv9cmds.c \
+	mnv9compile.c \
+	mnv9execute.c \
+	mnv9expr.c \
+	mnv9generics.c \
+	mnv9instr.c \
+	mnv9script.c \
+	mnv9type.c \
 	window.c \
 	xdiff/xdiffi.c \
 	xdiff/xemit.c \

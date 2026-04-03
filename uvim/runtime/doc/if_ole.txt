@@ -1,10 +1,10 @@
-*if_ole.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*if_ole.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Paul Moore
+		  MNV REFERENCE MANUAL	  by Paul Moore
 
 
-The OLE Interface to Vim				*ole-interface*
+The OLE Interface to MNV				*ole-interface*
 
 1. Activation			|ole-activation|
 2. Methods			|ole-methods|
@@ -19,41 +19,41 @@ An alternative is using the client-server communication |clientserver|.
 ==============================================================================
 1. Activation						*ole-activation*
 
-Vim acts as an OLE automation server, accessible from any automation client,
-for example, Visual Basic, Python, or Perl.  The Vim application "name" (its
-"ProgID", in OLE terminology) is "Vim.Application".
+MNV acts as an OLE automation server, accessible from any automation client,
+for example, Visual Basic, Python, or Perl.  The MNV application "name" (its
+"ProgID", in OLE terminology) is "MNV.Application".
 
-Hence, in order to start a Vim instance (or connect to an already running
+Hence, in order to start a MNV instance (or connect to an already running
 instance), code similar to the following should be used:
 
 [Visual Basic] >
-	Dim Vim As Object
-	Set Vim = CreateObject("Vim.Application")
+	Dim MNV As Object
+	Set MNV = CreateObject("MNV.Application")
 
 [Python] >
 	from win32com.client.dynamic import Dispatch
-	vim = Dispatch('Vim.Application')
+	mnv = Dispatch('MNV.Application')
 
 [Perl] >
 	use Win32::OLE;
-	$vim = new Win32::OLE 'Vim.Application';
+	$mnv = new Win32::OLE 'MNV.Application';
 
 [C#] >
-	// Add a reference to Vim in your project.
+	// Add a reference to MNV in your project.
 	// Choose the COM tab.
-	// Select "Vim Ole Interface 1.1 Type Library"
-	Vim.Vim vimobj = new Vim.Vim();
+	// Select "MNV Ole Interface 1.1 Type Library"
+	MNV.MNV mnvobj = new MNV.MNV();
 
-Vim does not support acting as a "hidden" OLE server, like some other OLE
-Automation servers.  When a client starts up an instance of Vim, that instance
-is immediately visible.  Simply closing the OLE connection to the Vim instance
-is not enough to shut down the Vim instance - it is necessary to explicitly
+MNV does not support acting as a "hidden" OLE server, like some other OLE
+Automation servers.  When a client starts up an instance of MNV, that instance
+is immediately visible.  Simply closing the OLE connection to the MNV instance
+is not enough to shut down the MNV instance - it is necessary to explicitly
 execute a quit command (for example, :qa!, :wqa).
 
 ==============================================================================
 2. Methods						*ole-methods*
 
-Vim exposes four methods for use by clients.
+MNV exposes four methods for use by clients.
 
 							*ole-sendkeys*
 SendKeys(keys)		Execute a series of keys.
@@ -65,54 +65,54 @@ of a mapping.  Note: Execution of the Ex "normal" command is not supported -
 see below |ole-normal|.
 
 Examples (Visual Basic syntax) >
-	Vim.SendKeys "ihello<Esc>"
-	Vim.SendKeys "ma1GV4jy`a"
+	MNV.SendKeys "ihello<Esc>"
+	MNV.SendKeys "ma1GV4jy`a"
 
-These examples assume that Vim starts in Normal mode.  To force Normal mode,
+These examples assume that MNV starts in Normal mode.  To force Normal mode,
 start the key sequence with CTRL-\ CTRL-N as in >
 
-	Vim.SendKeys "<C-\><C-N>ihello<Esc>"
+	MNV.SendKeys "<C-\><C-N>ihello<Esc>"
 
-CTRL-\ CTRL-N returns Vim to Normal mode, when in Insert or Command-line mode.
-Note that this doesn't work halfway a Vim command
+CTRL-\ CTRL-N returns MNV to Normal mode, when in Insert or Command-line mode.
+Note that this doesn't work halfway a MNV command
 
 							*ole-eval*
 Eval(expr)		Evaluate an expression.
 
-This method takes a single parameter, which is an expression in Vim's normal
+This method takes a single parameter, which is an expression in MNV's normal
 format (see |expression|).  It returns a string, which is the result of
 evaluating the expression.  A |List| is turned into a string by joining the
 items and inserting line breaks.
 
 Examples (Visual Basic syntax) >
-	Line20 = Vim.Eval("getline(20)")
-	Twelve = Vim.Eval("6 + 6")		' Note this is a STRING
-	Font = Vim.Eval("&guifont")
+	Line20 = MNV.Eval("getline(20)")
+	Twelve = MNV.Eval("6 + 6")		' Note this is a STRING
+	Font = MNV.Eval("&guifont")
 <
 							*ole-setforeground*
-SetForeground()		Make the Vim window come to the foreground
+SetForeground()		Make the MNV window come to the foreground
 
 This method takes no arguments.  No value is returned.
 
 Example (Visual Basic syntax) >
-	Vim.SetForeground
+	MNV.SetForeground
 <
 
 							*ole-gethwnd*
-GetHwnd()		Return the handle of the Vim window.
+GetHwnd()		Return the handle of the MNV window.
 
-This method takes no arguments.  It returns the hwnd of the main Vimwindow.
+This method takes no arguments.  It returns the hwnd of the main MNVwindow.
 You can use this if you are writing something which needs to manipulate the
-Vim window, or to track it in the z-order, etc.
+MNV window, or to track it in the z-order, etc.
 
 Example (Visual Basic syntax) >
-	Vim_Hwnd = Vim.GetHwnd
+	MNV_Hwnd = MNV.GetHwnd
 <
 
 ==============================================================================
 3. The "normal" command					*ole-normal*
 
-Due to the way Vim processes OLE Automation commands, combined with the method
+Due to the way MNV processes OLE Automation commands, combined with the method
 of implementation of the Ex command :normal, it is not possible to execute the
 :normal command via OLE automation.  Any attempt to do so will fail, probably
 harmlessly, although possibly in unpredictable ways.
@@ -122,78 +122,78 @@ simply be aware of the limitation.
 ==============================================================================
 4. Registration					*ole-registration* *E243*
 
-Before Vim will act as an OLE server, it must be registered in the system
-registry.  In order to do this, Vim should be run with a single parameter of
+Before MNV will act as an OLE server, it must be registered in the system
+registry.  In order to do this, MNV should be run with a single parameter of
 "-register".
 							*-register*  >
-	gvim -register
+	gmnv -register
 
-If gvim with OLE support is run and notices that no Vim OLE server has been
+If gmnv with OLE support is run and notices that no MNV OLE server has been
 registered, it will present a dialog and offers you the choice to register by
 clicking "Yes".
 
 In some situations registering is not possible.  This happens when the
-registry is not writable.  If you run into this problem you need to run gvim
+registry is not writable.  If you run into this problem you need to run gmnv
 as "Administrator".
 
-Once vim is registered, the application path is stored in the registry.
-Before moving, deleting, or upgrading Vim, the registry entries should be
+Once mnv is registered, the application path is stored in the registry.
+Before moving, deleting, or upgrading MNV, the registry entries should be
 removed using the "-unregister" switch.
 							*-unregister*  >
-	gvim -unregister
+	gmnv -unregister
 
-The OLE mechanism will use the first registered Vim it finds.  If a Vim is
-already running, this one will be used.  If you want to have (several) Vim
+The OLE mechanism will use the first registered MNV it finds.  If a MNV is
+already running, this one will be used.  If you want to have (several) MNV
 sessions open that should not react to OLE commands, use the non-OLE version,
 and put it in a different directory.  The OLE version should then be put in a
-directory that is not in your normal path, so that typing "gvim" will start
+directory that is not in your normal path, so that typing "gmnv" will start
 the non-OLE version.
 
 							*-silent*
 To avoid the message box that pops up to report the result, prepend "-silent":
 >
-	gvim -silent -register
-	gvim -silent -unregister
+	gmnv -silent -register
+	gmnv -silent -unregister
 
 ==============================================================================
 5. MS Visual Studio integration				*MSVisualStudio*
 
-The old "VisVim" integration was removed from Vim in patch 9.0.0698.
+The old "VisMNV" integration was removed from MNV in patch 9.0.0698.
 
 
-Using Vim with Visual Studio .Net~
+Using MNV with Visual Studio .Net~
 
 .Net studio has support for external editors.  Follow these directions:
 
 In .Net Studio choose from the menu Tools->External Tools...
 Add
-     Title     - Vim
-     Command   - c:\vim\vim63\gvim.exe
+     Title     - MNV
+     Command   - c:\mnv\mnv63\gmnv.exe
      Arguments - --servername VS_NET --remote-silent "+call cursor($(CurLine), $(CurCol))" $(ItemPath)
      Init Dir  - Empty
 
 Now, when you open a file in .Net, you can choose from the .Net menu:
-Tools->Vim
+Tools->MNV
 
-That will open the file in Vim.
+That will open the file in MNV.
 You can then add this external command as an icon and place it anywhere you
 like.  You might also be able to set this as your default editor.
 
-If you refine this further, please post back to the Vim maillist so we have a
+If you refine this further, please post back to the MNV maillist so we have a
 record of it.
 
 --servername VS_NET
-This will create a new instance of vim called VS_NET.  So if you open multiple
-files from VS, they will use the same instance of Vim.  This allows you to
-have multiple copies of Vim running, but you can control which one has VS
+This will create a new instance of mnv called VS_NET.  So if you open multiple
+files from VS, they will use the same instance of MNV.  This allows you to
+have multiple copies of MNV running, but you can control which one has VS
 files in it.
 
 --remote-silent "+call cursor(10, 27)"
 	      - Places the cursor on line 10 column 27
-In Vim >
+In MNV >
    :h --remote-silent for more details
 
 [.Net remarks provided by Dave Fishburn and Brian Sturk]
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

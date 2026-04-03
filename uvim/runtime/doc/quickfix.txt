@@ -1,7 +1,7 @@
-*quickfix.txt*  For Vim version 9.2.  Last change: 2026 Feb 14
+*quickfix.txt*  For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 This subject is introduced in section |30.1| of the user manual.
@@ -23,21 +23,21 @@ disabled at compile time.
 =============================================================================
 1. Using QuickFix commands			*quickfix* *Quickfix* *E42*
 
-Vim has a special mode to speedup the edit-compile-edit cycle.  This is
+MNV has a special mode to speedup the edit-compile-edit cycle.  This is
 inspired by the quickfix option of the Manx's Aztec C compiler on the Amiga.
-The idea is to save the error messages from the compiler in a file and use Vim
+The idea is to save the error messages from the compiler in a file and use MNV
 to jump to the errors one by one.  You can examine each problem and fix it,
 without having to remember all the error messages.
 
-In Vim the quickfix commands are used more generally to find a list of
-positions in files.  For example, |:vimgrep| finds pattern matches.  You can
+In MNV the quickfix commands are used more generally to find a list of
+positions in files.  For example, |:mnvgrep| finds pattern matches.  You can
 use the positions in a script with the |getqflist()| function.  Thus you can
 do a lot more than the edit/compile/fix cycle!
 
-If you have the error messages in a file you can start Vim with: >
-	vim -q filename
+If you have the error messages in a file you can start MNV with: >
+	mnv -q filename
 
-From inside Vim an easy way to run a command and handle the output is with the
+From inside MNV an easy way to run a command and handle the output is with the
 |:make| command (see below).
 
 The 'errorformat' option should be set to match the error messages from your
@@ -45,15 +45,15 @@ compiler (see |errorformat| below).
 
 					*quickfix-stack* *quickfix-ID* *E1545*
 Each quickfix list has a unique identifier called the quickfix ID and this
-number will not change within a Vim session.  The |getqflist()| function can be
+number will not change within a MNV session.  The |getqflist()| function can be
 used to get the identifier assigned to a list.  There is also a quickfix list
 number which may change whenever more than 'chistory' lists are added to a
 quickfix stack.
 
 						*location-list* *E776*
 A location list is a window-local quickfix list.  You get one after commands
-like `:lvimgrep`, `:lgrep`, `:lhelpgrep`, `:lmake`, etc., which create a
-location list instead of a quickfix list as the corresponding `:vimgrep`,
+like `:lmnvgrep`, `:lgrep`, `:lhelpgrep`, `:lmake`, etc., which create a
+location list instead of a quickfix list as the corresponding `:mnvgrep`,
 `:grep`, `:helpgrep`, `:make` do.
 						*location-list-file-window*
 A location list is associated with a window and each window can have a
@@ -232,23 +232,23 @@ processing a quickfix or location list command, it will be aborted.
 							*:cq* *:cquit*
 :cq[uit][!]
 :{N}cq[uit][!]
-:cq[uit][!] {N}		Quit Vim with error code {N}.  {N} defaults to one.
-			Useful when Vim is called from another program:
+:cq[uit][!] {N}		Quit MNV with error code {N}.  {N} defaults to one.
+			Useful when MNV is called from another program:
 			e.g., a compiler will not compile the same file again,
 			`git commit` will abort the committing process, `fc`
 			(built-in for shells like bash and zsh) will not
 			execute the command, etc.
-			{N} can also be zero, in which case Vim exits
+			{N} can also be zero, in which case MNV exits
 			normally.
 			WARNING: All changes in files are lost!  Also when the
 			[!] is not used.  It works like ":qall!" |:qall|,
-			except that Vim returns a non-zero exit code.
+			except that MNV returns a non-zero exit code.
 
 							*:cf* *:cfi* *:cfile*
 :cf[ile][!] [errorfile]	Read the error file and jump to the first error.
-			This is done automatically when Vim is started with
+			This is done automatically when MNV is started with
 			the -q option.  You can use this command when you
-			keep Vim running while compiling.  If you give the
+			keep MNV running while compiling.  If you give the
 			name of the errorfile, the 'errorfile' option will
 			be set to [errorfile].  See |:cc| for [!].
 			If the encoding of the error file differs from the
@@ -405,7 +405,7 @@ processing a quickfix or location list command, it will be aborted.
 If you insert or delete lines, mostly the correct error location is still
 found because hidden marks are used.  Sometimes, when the mark has been
 deleted for some reason, the message "line changed" is shown to warn you that
-the error location may not be correct.  If you quit Vim and start again the
+the error location may not be correct.  If you quit MNV and start again the
 marks are lost and the error locations may not be correct anymore.
 
 Two autocommands are available for running commands before and after a
@@ -414,7 +414,7 @@ quickfix command (':make', ':grep' and so on) is executed.  See
 
 						*QuickFixCmdPost-example*
 When 'encoding' differs from the locale, the error messages may have a
-different encoding from what Vim is using.  To convert the messages you can
+different encoding from what MNV is using.  To convert the messages you can
 use this code: >
 	function QfMakeConv()
 	   let qflist = getqflist()
@@ -462,15 +462,15 @@ using the |getqflist()| and |getloclist()| functions respectively.  Examples: >
 	echo getloclist(5, {'size' : 1})
 <
 							*quickfix-context*
-Any Vim type can be associated as a context with a quickfix or location list.
+Any MNV type can be associated as a context with a quickfix or location list.
 The |setqflist()| and the |setloclist()| functions can be used to associate a
 context with a quickfix and a location list respectively.  The |getqflist()|
 and the |getloclist()| functions can be used to retrieve the context of a
-quickfix and a location list respectively.  This is useful for a Vim plugin
+quickfix and a location list respectively.  This is useful for a MNV plugin
 dealing with multiple quickfix/location lists.
 Examples: >
 
-	let somectx = {'name' : 'Vim', 'type' : 'Editor'}
+	let somectx = {'name' : 'MNV', 'type' : 'Editor'}
 	call setqflist([], 'a', {'context' : somectx})
 	echo getqflist({'context' : 1})
 
@@ -553,7 +553,7 @@ EXECUTE A COMMAND IN ALL THE BUFFERS IN QUICKFIX OR LOCATION LIST:
 FILTERING A QUICKFIX OR LOCATION LIST:
 		    *cfilter-plugin* *:Cfilter* *:Lfilter* *package-cfilter*
 If you have too many entries in a quickfix list, you can use the cfilter
-plugin to reduce the number of entries.  Load the plugin with: >vim
+plugin to reduce the number of entries.  Load the plugin with: >mnv
 
     packadd cfilter
 
@@ -563,7 +563,7 @@ Then you can use the following commands to filter a quickfix/location list: >
     :Lfilter[!] /{pat}/
 
 The |:Cfilter| command creates a new quickfix list from the entries matching
-{pat} in the current quickfix list.  {pat} is a Vim |regular-expression|
+{pat} in the current quickfix list.  {pat} is a MNV |regular-expression|
 pattern.  Both the file name and the text of the entries are matched against
 {pat}.  If the optional ! is supplied, then the entries not matching {pat} are
 used.  The pattern can be optionally enclosed using one of the following
@@ -692,7 +692,7 @@ You can use CTRL-W <Enter> to open a new window and jump to the error there.
 
 When the quickfix window has been filled, two autocommand events are
 triggered.  First the 'filetype' option is set to "qf", which triggers the
-FileType event (also see |qf.vim|).  Then the BufReadPost event is triggered,
+FileType event (also see |qf.mnv|).  Then the BufReadPost event is triggered,
 using "quickfix" for the buffer name.  This can be used to perform some action
 on the listed errors.  Example: >
 	au BufReadPost quickfix  setlocal modifiable
@@ -994,7 +994,7 @@ for compilers that write to an errorfile themselves (e.g., Manx's Amiga C).
 Using QuickFixCmdPost to fix the encoding ~
 
 It may be that 'encoding' is set to an encoding that differs from the messages
-your build program produces.  This example shows how to fix this after Vim has
+your build program produces.  This example shows how to fix this after MNV has
 read the error messages: >
 
 	function QfMakeConv()
@@ -1011,22 +1011,22 @@ read the error messages: >
 Another option is using 'makeencoding'.
 
 ==============================================================================
-5. Using :vimgrep and :grep				*grep* *lid*
+5. Using :mnvgrep and :grep				*grep* *lid*
 
-Vim has two ways to find matches for a pattern: internal and external.  The
+MNV has two ways to find matches for a pattern: internal and external.  The
 advantage of the internal grep is that it works on all systems and uses the
-powerful Vim search patterns.  An external grep program can be used when the
-Vim grep does not do what you want.
+powerful MNV search patterns.  An external grep program can be used when the
+MNV grep does not do what you want.
 
 The internal method will be slower, because files are read into memory.  The
 advantages are:
 - Line separators and encoding are automatically recognized, as if a file is
   being edited.
-- Uses Vim search patterns.  Multi-line patterns can be used.
+- Uses MNV search patterns.  Multi-line patterns can be used.
 - When plugins are enabled: compressed and remote files can be searched.
 	|gzip| |netrw|
 
-To be able to do this Vim loads each file as if it is being edited.  When
+To be able to do this MNV loads each file as if it is being edited.  When
 there is no match in the file the associated buffer is wiped out again.  The
 'hidden' option is ignored here to avoid running out of memory or file
 descriptors when searching many files.  However, when the |:hide| command
@@ -1042,16 +1042,16 @@ commands can be combined to create a NewGrep command: >
         command! -nargs=+ NewGrep execute 'silent grep! <args>' | copen 42
 
 
-5.1 Using Vim's internal grep
+5.1 Using MNV's internal grep
 
-					*:vim* *:vimgrep* *E682* *E683*
-:vim[grep][!] /{pattern}/[g][j][f] {file} ...
+					*:mnv* *:mnvgrep* *E682* *E683*
+:mnv[grep][!] /{pattern}/[g][j][f] {file} ...
 			Search for {pattern} in the files {file} ... and set
 			the error list to the matches.  Files matching
 			'wildignore' are ignored; files in 'suffixes' are
 			searched last.
 
-			{pattern} is a Vim search pattern.  Instead of
+			{pattern} is a MNV search pattern.  Instead of
 			enclosing it in / any non-ID character (see
 			'isident') can be used, so long as it does not appear
 			in {pattern}.
@@ -1065,7 +1065,7 @@ commands can be combined to create a NewGrep command: >
 			'g'  Without the 'g' flag each line is added only
 			     once.  With 'g' every match is added.
 
-			'j'  Without the 'j' flag Vim jumps to the first
+			'j'  Without the 'j' flag MNV jumps to the first
 			     match.  With 'j' only the quickfix list is
 			     updated.  With the [!] any changes in the current
 			     buffer are abandoned.
@@ -1082,51 +1082,51 @@ commands can be combined to create a NewGrep command: >
 			number, but it is reused if possible to avoid
 			consuming buffer numbers.
 
-:{count}vim[grep] ...
+:{count}mnv[grep] ...
 			When a number is put before the command this is used
 			as the maximum number of matches to find.  Use
-			":1vimgrep pattern file" to find only the first.
+			":1mnvgrep pattern file" to find only the first.
 			Useful if you only want to check if there is a match
 			and quit quickly when it's found.
 
 			Every second or so the searched file name is displayed
 			to give you an idea of the progress made.
 			Examples: >
-				:vimgrep /an error/ *.c
-				:vimgrep /\<FileName\>/ *.h include/*
-				:vimgrep /myfunc/ **/*.c
+				:mnvgrep /an error/ *.c
+				:mnvgrep /\<FileName\>/ *.h include/*
+				:mnvgrep /myfunc/ **/*.c
 <			For the use of "**" see |starstar-wildcard|.
 
-:vim[grep][!] {pattern} {file} ...
+:mnv[grep][!] {pattern} {file} ...
 			Like above, but instead of enclosing the pattern in a
 			non-ID character use a white space separated pattern.
 			The pattern must start with an ID character.
 			Example: >
-				:vimgrep Error *.c
+				:mnvgrep Error *.c
 <
-							*:lv* *:lvimgrep*
+							*:lv* *:lmnvgrep*
 :lv[imgrep][!] /{pattern}/[g][j][f] {file} ...
 :lv[imgrep][!] {pattern} {file} ...
-			Same as ":vimgrep", except the location list for the
+			Same as ":mnvgrep", except the location list for the
 			current window is used instead of the quickfix list.
 
-						*:vimgrepa* *:vimgrepadd*
-:vimgrepa[dd][!] /{pattern}/[g][j][f] {file} ...
-:vimgrepa[dd][!] {pattern} {file} ...
-			Just like ":vimgrep", but instead of making a new list
+						*:mnvgrepa* *:mnvgrepadd*
+:mnvgrepa[dd][!] /{pattern}/[g][j][f] {file} ...
+:mnvgrepa[dd][!] {pattern} {file} ...
+			Just like ":mnvgrep", but instead of making a new list
 			of errors the matches are appended to the current
 			list.
 
-						*:lvimgrepa* *:lvimgrepadd*
-:lvimgrepa[dd][!] /{pattern}/[g][j][f] {file} ...
-:lvimgrepa[dd][!] {pattern} {file} ...
-			Same as ":vimgrepadd", except the location list for
+						*:lmnvgrepa* *:lmnvgrepadd*
+:lmnvgrepa[dd][!] /{pattern}/[g][j][f] {file} ...
+:lmnvgrepa[dd][!] {pattern} {file} ...
+			Same as ":mnvgrepadd", except the location list for
 			the current window is used instead of the quickfix
 			list.
 
 5.2 External grep
 
-Vim can interface with "grep" and grep-like programs (such as the GNU
+MNV can interface with "grep" and grep-like programs (such as the GNU
 id-utils) in a similar way to its compiler integration (see |:make| above).
 
 [Unix trivia: The name for the Unix "grep" command comes from ":g/re/p", where
@@ -1136,7 +1136,7 @@ id-utils) in a similar way to its compiler integration (see |:make| above).
 :gr[ep][!] [arguments]	Just like ":make", but use 'grepprg' instead of
 			'makeprg' and 'grepformat' instead of 'errorformat'.
 			When 'grepprg' is "internal" this works like
-			|:vimgrep|.  Note that the pattern needs to be
+			|:mnvgrep|.  Note that the pattern needs to be
 			enclosed in separator characters then.
 			If the encoding of the program output differs from the
 			'encoding' option, you can use the 'makeencoding'
@@ -1194,13 +1194,13 @@ b)	You have to call grep with a full path
 c)	You want to pass other options automatically (e.g. case insensitive
 	search.)
 
-Once "grep" has executed, Vim parses the results using the 'grepformat'
+Once "grep" has executed, MNV parses the results using the 'grepformat'
 option.  This option works in the same way as the 'errorformat' option - see
 that for details.  You may need to change 'grepformat' from the default if
 your grep outputs in a non-standard format, or you are using some other
 program with a special format.
 
-Once the results are parsed, Vim loads the first file containing a match and
+Once the results are parsed, MNV loads the first file containing a match and
 jumps to the appropriate line, in the same way that it jumps to a compiler
 error in |quickfix| mode.  You can then use the |:cnext|, |:clist|, etc.
 commands to see the other matches.
@@ -1220,31 +1220,31 @@ works just as you'd expect.
 (provided you remembered to mkid first :)
 
 
-5.5 Browsing source code with :vimgrep or :grep
+5.5 Browsing source code with :mnvgrep or :grep
 
-Using the stack of error lists that Vim keeps, you can browse your files to
+Using the stack of error lists that MNV keeps, you can browse your files to
 look for functions and the functions they call.  For example, suppose that you
 have to add an argument to the read_file() function.  You enter this command: >
 
-	:vimgrep /\<read_file\>/ *.c
+	:mnvgrep /\<read_file\>/ *.c
 
 You use ":cn" to go along the list of matches and add the argument.  At one
 place you have to get the new argument from a higher level function msg(), and
 need to change that one too.  Thus you use: >
 
-	:vimgrep /\<msg\>/ *.c
+	:mnvgrep /\<msg\>/ *.c
 
 While changing the msg() functions, you find another function that needs to
-get the argument from a higher level.  You can again use ":vimgrep" to find
+get the argument from a higher level.  You can again use ":mnvgrep" to find
 these functions.  Once you are finished with one function, you can use >
 
 	:colder
 
 to go back to the previous one.
 
-This works like browsing a tree: ":vimgrep" goes one level deeper, creating a
+This works like browsing a tree: ":mnvgrep" goes one level deeper, creating a
 list of branches.  ":colder" goes back to the previous level.  You can mix
-this use of ":vimgrep" and "colder" to browse all the locations in a tree-like
+this use of ":mnvgrep" and "colder" to browse all the locations in a tree-like
 way.  If you do this consistently, you will find all locations without the
 need to write down a "todo" list.
 
@@ -1257,23 +1257,23 @@ need to write down a "todo" list.
 				current buffer.  With "!" global options are
 				set.
 				If you use ":compiler foo" in "file.foo" and
-				then ":compiler! bar" in another buffer, Vim
+				then ":compiler! bar" in another buffer, MNV
 				will keep on using "foo" in "file.foo".
 				{not available when compiled without the
 				|+eval| feature}
 
 
-The Vim plugins in the "compiler" directory will set options to use the
+The MNV plugins in the "compiler" directory will set options to use the
 selected compiler.  For `:compiler` local options are set, for `:compiler!`
 global options.
 							*current_compiler*
-To support older Vim versions, the plugins always use "current_compiler" and
+To support older MNV versions, the plugins always use "current_compiler" and
 not "b:current_compiler".  What the command actually does is the following:
 
 - Delete the "current_compiler" and "b:current_compiler" variables.
 - Define the "CompilerSet" user command.  With "!" it does ":set", without "!"
   it does ":setlocal".
-- Execute ":runtime! compiler/{name}.vim".  The plugins are expected to set
+- Execute ":runtime! compiler/{name}.mnv".  The plugins are expected to set
   options with "CompilerSet" and set the "current_compiler" variable to the
   name of the compiler.
 - Delete the "CompilerSet" user command.
@@ -1315,12 +1315,12 @@ ensure Cppcheck treats the file as C++.
 If compile_commands.json is present in the current directory, it is added as a
 `--project` parameter to the command line.  Otherwise, by default the
 directories in &path are passed as include directories.  These can be set by
-g/b:`c_cppcheck_includes` as a list of `-I` flags.  Tim Pope's vim-apathy
+g/b:`c_cppcheck_includes` as a list of `-I` flags.  Tim Pope's mnv-apathy
 plug-in [0] can expand &path.  To also append the folders in a git repo use >
 
   let &l:path = join(systemlist('git ls-tree -d --name-only -r HEAD'), ',')
 
-[0] https://github.com/tpope/vim-apathy
+[0] https://github.com/tpope/mnv-apathy
 
 DOTNET							*compiler-dotnet*
 
@@ -1368,7 +1368,7 @@ It scans the Java bytecode of all classes in the currently open buffer.
 (Therefore, `:compiler! spotbugs` is not supported.)
 
 Commonly used compiler options can be added to 'makeprg' by setting the
-"b:" or "g:spotbugs_makeprg_params" variable.  For example: >vim
+"b:" or "g:spotbugs_makeprg_params" variable.  For example: >mnv
 
 	let b:spotbugs_makeprg_params = "-longBugCodes -effort:max -low"
 
@@ -1378,7 +1378,7 @@ By default, the class files are searched in the directory where the source
 files are placed.  However, typical Java projects use distinct directories
 for source files and class files.  To make both known to SpotBugs, assign
 their paths (distinct and relative to their common root directory) to the
-following properties (using the example of a common Maven project): >vim
+following properties (using the example of a common Maven project): >mnv
 
 	let g:spotbugs_properties = {
 		\ 'sourceDirPath':	['src/main/java'],
@@ -1396,7 +1396,7 @@ information.
 
 The default pre- and post-compiler actions are provided for Ant, Maven, and
 Javac compiler plugins and can be selected by assigning the name of a compiler
-plugin (`ant`, `maven`, or `javac`) to the "compiler" key: >vim
+plugin (`ant`, `maven`, or `javac`) to the "compiler" key: >mnv
 
 	let g:spotbugs_properties = {
 		\ 'compiler':		'maven',
@@ -1406,7 +1406,7 @@ This single setting is essentially equivalent to all the settings below, with
 the exception made for the "PreCompilerAction" and "PreCompilerTestAction"
 values: their listed |Funcref|s will obtain no-op implementations whereas the
 implicit Funcrefs of the "compiler" key will obtain the requested defaults if
-available. >vim
+available. >mnv
 
 	let g:spotbugs_properties = {
 		\ 'PreCompilerAction':
@@ -1426,14 +1426,14 @@ files for the buffer (and possibly for the whole project) as soon as a Java
 syntax file is loaded; then, `spotbugs` will attempt to analyze the quality of
 the compilation unit of the buffer.
 
-Vim commands proficient in 'makeprg' [0] can be composed with default actions.
+MNV commands proficient in 'makeprg' [0] can be composed with default actions.
 Begin by considering which of the supported keys, "DefaultPreCompilerCommand",
 "DefaultPreCompilerTestCommand", or "DefaultPostCompilerCommand", you need to
 write an implementation for, observing that each of these keys corresponds to
 a particular "*Action" key.  Follow it by defining a new function that always
 declares an only parameter of type string and puts to use a command equivalent
 of |:make|, and assigning its |Funcref| to the selected key.  For example:
->vim
+>mnv
 	function! GenericPostCompilerCommand(arguments) abort
 		execute 'make ' .. a:arguments
 	endfunction
@@ -1447,7 +1447,7 @@ When "PostCompilerAction" is available, "PostCompilerActionExecutor" is also
 supported.  Its value must be a Funcref pointing to a function that always
 declares a single parameter of type string and decides whether |:execute| can
 be dispatched on its argument, containing a pending post-compiler action,
-after ascertaining the current status of |:cc| (or |:ll|): >vim
+after ascertaining the current status of |:cc| (or |:ll|): >mnv
 
 	function! GenericPostCompilerActionExecutor(action) abort
 		try
@@ -1461,7 +1461,7 @@ Complementary, some or all of the available "Pre*Action"s (or "*Pre*Command"s)
 may run `:doautocmd java_spotbugs_post User` in their implementations before
 |:make| (or its equivalent) to define a once-only |ShellCmdPost| `:autocmd`
 that will arrange for "PostCompilerActionExecutor" to be invoked; and then run
-`:doautocmd java_spotbugs_post ShellCmdPost` to consume this event: >vim
+`:doautocmd java_spotbugs_post ShellCmdPost` to consume this event: >mnv
 
 	function! GenericPreCompilerCommand(arguments) abort
 		if !exists('g:spotbugs_compilation_done')
@@ -1513,7 +1513,7 @@ keys: "PreCompilerAction", "PreCompilerTestAction", and "PostCompilerAction".
 
 The next example re-implements the default pre-compiler actions for a Maven
 project and requests other default Maven settings with the "compiler" entry:
->vim
+>mnv
 	function! MavenPreCompilerAction() abort
 		call spotbugs#DeleteClassFiles()
 		compiler maven
@@ -1546,7 +1546,7 @@ of such communication.
 Two commands, "SpotBugsRemoveBufferAutocmd" and "SpotBugsDefineBufferAutocmd",
 are provided to toggle actions for buffer-local autocommands.  For example, to
 also run actions on any |BufWritePost| and |SigUSR1| event, add these lines to
-`~/.vim/after/ftplugin/java.vim`: >vim
+`~/.mnv/after/ftplugin/java.mnv`: >mnv
 
 	if exists(':SpotBugsDefineBufferAutocmd') == 2
 		SpotBugsDefineBufferAutocmd BufWritePost SigUSR1
@@ -1558,7 +1558,7 @@ The "g:spotbugs_properties" variable is consulted by the Java filetype plugin
 (|ft-java-plugin|) to arrange for the described automation, and, therefore, it
 must be defined before |FileType| events can take place for the buffers loaded
 with Java source files.  It could, for example, be set in a project-local
-|vimrc| loaded by [1].
+|mnvrc| loaded by [1].
 
 Both "g:spotbugs_properties" and "b:spotbugs_properties" are recognized and
 must be modifiable (|:unlockvar|).  The "*Command" entries are always treated
@@ -1568,15 +1568,15 @@ The SpotBugs Java library and, by extension, its distributed shell scripts do
 not support in the `-textui` mode listed pathnames with directory filenames
 that contain blank characters [2].  To work around this limitation, consider
 making a symbolic link to such a directory from a directory that does not have
-blank characters in its name and passing this information to SpotBugs: >vim
+blank characters in its name and passing this information to SpotBugs: >mnv
 
 	let g:spotbugs_alternative_path = {
 		\ 'fromPath':	'path/to/dir_without_blanks',
 		\ 'toPath':	'path/to/dir with blanks',
 	\ }
 
-[0] https://github.com/Konfekt/vim-compilers
-[1] https://github.com/MarcWeber/vim-addon-local-vimrc
+[0] https://github.com/Konfekt/mnv-compilers
+[1] https://github.com/MarcWeber/mnv-addon-local-mnvrc
 [2] https://github.com/spotbugs/spotbugs/issues/909
 
 GNU MAKE						*compiler-make*
@@ -1588,15 +1588,15 @@ previous compiler plugin.
 
 MANX AZTEC C				*quickfix-manx* *compiler-manx*
 
-To use Vim with Manx's Aztec C compiler on the Amiga you should do the
+To use MNV with Manx's Aztec C compiler on the Amiga you should do the
 following:
 - Set the CCEDIT environment variable with the command: >
-	mset "CCEDIT=vim -q"
-- Compile with the -qf option.  If the compiler finds any errors, Vim is
+	mset "CCEDIT=mnv -q"
+- Compile with the -qf option.  If the compiler finds any errors, MNV is
   started and the cursor is positioned on the first error.  The error message
   will be displayed on the last line.  You can go to other errors with the
   commands mentioned above.  You can fix the errors and write the file(s).
-- If you exit Vim normally the compiler will re-compile the same file.  If you
+- If you exit MNV normally the compiler will re-compile the same file.  If you
   exit with the :cq command, the compiler will terminate.  Do this if you
   cannot fix the error, or if another file needs to be compiled first.
 
@@ -1606,8 +1606,8 @@ documentation does not say how to get more).  If you want to find the others,
 you will have to fix a few errors and exit the editor.  After recompiling,
 up to 25 remaining errors will be found.
 
-If Vim was started from the compiler, the :sh and some :!  commands will not
-work, because Vim is then running in the same process as the compiler and
+If MNV was started from the compiler, the :sh and some :!  commands will not
+work, because MNV is then running in the same process as the compiler and
 stdin (standard input) will not be interactive.
 
 GROFF					*quickfix-groff* *compiler-groff*
@@ -1700,7 +1700,7 @@ starting from version 2.0.  For older versions, you can get it from
 http://pyunit.sourceforge.net.
 
 When you run your tests with the help of the framework, possible errors
-are parsed by Vim and presented for you in quick-fix mode.
+are parsed by MNV and presented for you in quick-fix mode.
 
 Unfortunately, there is no standard way to run the tests.
 The alltests.py script seems to be used quite often, that's all.
@@ -1719,7 +1719,7 @@ The global default is "--tb=short --quiet"; Python warnings are suppressed.
 
 TEX COMPILER						*compiler-tex*
 
-Included in the distribution compiler for TeX ($VIMRUNTIME/compiler/tex.vim)
+Included in the distribution compiler for TeX ($MNVRUNTIME/compiler/tex.mnv)
 uses make command if possible.  If the compiler finds a file named "Makefile"
 or "makefile" in the current directory, it supposes that you want to process
 your *TeX files with make, and the makefile does the right work.  In this case
@@ -1774,12 +1774,12 @@ b/g:tsc_makeprg variable.  For example: >
 
 TYPST COMPILER						*compiler-typst*
 
-Vim includes a compiler plugin for Typst files.  This compiler is enabled
+MNV includes a compiler plugin for Typst files.  This compiler is enabled
 automatically in Typst buffers by the Typst filetype plugin |ft-typst-plugin|.
 Run |:make| to compile the current Typst file.
 
 							*g:typst_cmd*
-By default Vim will use "typst" as the command to run the Typst compiler.
+By default MNV will use "typst" as the command to run the Typst compiler.
 This can be changed by setting the |g:typst_cmd| variable: >
 	let g:typst_cmd = "/path/to/other/command"
 
@@ -1795,7 +1795,7 @@ multiple compilers.  See |efm-entries|.
 
 Each entry in 'errorformat' is a scanf-like string that describes the format.
 First, you need to know how scanf works.  Look in the documentation of your
-C compiler.  Below you find the % items that Vim understands.  Others are
+C compiler.  Below you find the % items that MNV understands.  Others are
 invalid.
 
 Special characters in 'errorformat' are comma and backslash.  See
@@ -1807,7 +1807,7 @@ replaced with SOH (0x01).
 Note: By default the difference between upper and lowercase is ignored.  If
 you want to match case, add "\C" to the pattern |/\C|.
 
-Vim will read lines of any length, but only the first 4095 bytes are used, the
+MNV will read lines of any length, but only the first 4095 bytes are used, the
 rest is ignored.  Items can only be 1023 bytes long.
 
 
@@ -1894,7 +1894,7 @@ internal directory stack.					*E379*
 	%X		"leave directory" format string; expects following %f
 
 When defining an "enter directory" or "leave directory" format, the "%D" or
-"%X" has to be given at the start of that substring.  Vim tracks the directory
+"%X" has to be given at the start of that substring.  MNV tracks the directory
 changes and prepends the current directory to each erroneous file found with a
 relative path.  See |quickfix-directory-stack| for details, tips and
 limitations.
@@ -2045,8 +2045,8 @@ or other headers that can be skipped.
 Pattern matching
 
 The scanf()-like "%*[]" notation is supported for backward-compatibility
-with previous versions of Vim.  However, it is also possible to specify
-(nearly) any Vim supported regular expression in format strings.
+with previous versions of MNV.  However, it is also possible to specify
+(nearly) any MNV supported regular expression in format strings.
 Since meta characters of the regular expression language can be part of
 ordinary matching strings or file names (and therefore internally have to
 be escaped), meta symbols have to be written with leading '%':
@@ -2091,7 +2091,7 @@ whole line is put in the error message and the entry is marked "not valid"
 These lines are skipped with the ":cn" and ":cp" commands (unless there is
 no valid line at all).  You can use ":cl!" to display all the error messages.
 
-If the error format does not contain a file name Vim cannot switch to the
+If the error format does not contain a file name MNV cannot switch to the
 correct file.  You will have to do this by hand.
 
 
@@ -2164,19 +2164,19 @@ special problem here is that it doesn't print information on leaving the
 directory and that it doesn't print the absolute path.
 
 To solve the problem with relative paths and missing "leave directory"
-messages Vim uses the following algorithm:
+messages MNV uses the following algorithm:
 
 1) Check if the given directory is a subdirectory of the current directory.
    If this is true, store it as the current directory.
 2) If it is not a subdir of the current directory, try if this is a
    subdirectory of one of the upper directories.
 3) If the directory still isn't found, it is assumed to be a subdirectory
-   of Vim's current directory.
+   of MNV's current directory.
 
 Additionally it is checked for every file, if it really exists in the
 identified directory.  If not, it is searched in all other directories of the
 directory stack (NOT the directory subtree!).  If it is still not found, it is
-assumed that it is in Vim's current directory.
+assumed that it is in MNV's current directory.
 
 There are limitations in this algorithm.  These examples assume that make just
 prints information about entering a directory in the form "Making all in dir".
@@ -2188,7 +2188,7 @@ prints information about entering a directory in the form "Making all in dir".
 
    If make processes the directory "./dir1" before the current directory and
    there is an error in the file "./file1.c", you will end up with the file
-   "./dir1/file.c" loaded by Vim.
+   "./dir1/file.c" loaded by MNV.
 
    This can only be solved with a "leave directory" message.
 
@@ -2199,7 +2199,7 @@ prints information about entering a directory in the form "Making all in dir".
 
    You get the following:
 
-   Make output			  Directory interpreted by Vim
+   Make output			  Directory interpreted by MNV
    ------------------------	  ----------------------------
    Making all in dir1		  ./dir1
    Making all in dir2		  ./dir1/dir2
@@ -2224,7 +2224,7 @@ Add
     %DEntering\ dir\ '%f',%XLeaving\ dir
 to your 'errorformat' to handle the above output.
 
-Note that Vim doesn't check if the directory name in a "leave directory"
+Note that MNV doesn't check if the directory name in a "leave directory"
 messages is the current directory.  This is why you could just use the message
 "Leaving dir".
 
@@ -2236,7 +2236,7 @@ Jikes(TM), a source-to-bytecode Java compiler published by IBM Research,
 produces simple multi-line error messages.
 
 An 'errorformat' string matching the produced messages is shown below.
-The following lines can be placed in the user's |vimrc| to overwrite Vim's
+The following lines can be placed in the user's |mnvrc| to overwrite MNV's
 recognized default formats, or see |:set+=| how to install this format
 additionally to the default. >
 
@@ -2261,9 +2261,9 @@ or: >
 Here is an alternative from Michael F. Lamb for Unix that filters the errors
 first: >
   :setl errorformat=%Z%f:%l:\ %m,%A%p^,%-G%*[^sl]%.%#
-  :setl makeprg=javac\ %:S\ 2>&1\ \\\|\ vim-javac-filter
+  :setl makeprg=javac\ %:S\ 2>&1\ \\\|\ mnv-javac-filter
 
-You need to put the following in "vim-javac-filter" somewhere in your path
+You need to put the following in "mnv-javac-filter" somewhere in your path
 (e.g., in ~/bin) and make it executable: >
    #!/bin/sed -f
    /\^$/s/\t/\ /g;/:[0-9]\+:/{h;d};/^[ \t]*\^/G;
@@ -2272,7 +2272,7 @@ In English, that sed script:
 - Changes single tabs to single spaces and
 - Moves the line with the filename, line number, error message to just after
   the pointer line.  That way, the unused error text between doesn't break
-  vim's notion of a "multi-line message" and also doesn't force us to include
+  mnv's notion of a "multi-line message" and also doesn't force us to include
   it as a "continuation of a multi-line message."
 
 						*errorformat-ant*
@@ -2303,7 +2303,7 @@ multi-lines in a single line, leading white space is removed.
 It should be easy to adopt the above LaTeX errorformat to any compiler output
 consisting of multi-line errors.
 
-The commands can be placed in a |vimrc| file or some other Vim script file,
+The commands can be placed in a |mnvrc| file or some other MNV script file,
 e.g. a script containing LaTeX related stuff which is loaded only when editing
 LaTeX sources.
 Make sure to copy all lines of the example (in the given order), afterwards
@@ -2378,10 +2378,10 @@ to directly read the *.log file that is produced by the [La]TeX compiler.
 This contains even more useful information about possible error causes.
 However, to properly parse such a complex file, an external filter should
 be used.  See the description further above how to make such a filter known
-by Vim.
+by MNV.
 
 						*errorformat-Perl*
-In $VIMRUNTIME/tools you can find the efm_perl.pl script, which filters Perl
+In $MNVRUNTIME/tools you can find the efm_perl.pl script, which filters Perl
 error messages into a format that quickfix mode will understand.  See the
 start of the file about how to use it.  (This script is deprecated, see
 |compiler-perl|.)
@@ -2406,7 +2406,7 @@ under the current directory tree.  The file path may need to be simplified to
 a common parent directory.
 
 The displayed text can be customized by setting the 'quickfixtextfunc' option
-to a Vim function.  This function will be called with a dict argument and
+to a MNV function.  This function will be called with a dict argument and
 should return a List of strings to be displayed in the quickfix or location
 list window.  The dict argument will have the following fields:
 
@@ -2452,4 +2452,4 @@ Example: >
     endfunc
 <
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

@@ -1,10 +1,10 @@
-# Aap recipe for Chichewa Vim spell files.
+# Aap recipe for Chichewa MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = ny_MW.aff ny_MW.dic
@@ -13,15 +13,15 @@ all: $SPELLDIR/ny.iso-8859-14.spl $SPELLDIR/ny.utf-8.spl \
         $SPELLDIR/ny.ascii.spl ../README_ny.txt
 
 $SPELLDIR/ny.iso-8859-14.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=iso-8859-14" 
+        :sys $MNV -u NONE -e -c "set enc=iso-8859-14" 
                 -c "mkspell! $SPELLDIR/ny ny_MW" -c q
 
 $SPELLDIR/ny.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                 -c "mkspell! $SPELLDIR/ny ny_MW" -c q
 
 $SPELLDIR/ny.ascii.spl : $FILES
-        :sys $VIM -u NONE -e -c "mkspell! -ascii $SPELLDIR/ny ny_MW" -c q
+        :sys $MNV -u NONE -e -c "mkspell! -ascii $SPELLDIR/ny ny_MW" -c q
  
 ../README_ny.txt : README_ny_MW.txt
         :copy $source $target
@@ -48,7 +48,7 @@ ny_MW.aff ny_MW.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -79,4 +79,4 @@ check:
             :delete ny_MW.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

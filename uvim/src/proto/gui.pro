@@ -31,7 +31,7 @@ void gui_redraw_block(int row1, int col1, int row2, int col2, int flags);
 int gui_wait_for_chars(long wtime, int tb_change_cnt);
 int gui_inchar(char_u *buf, int maxlen, long wtime, int tb_change_cnt);
 void gui_send_mouse_event(int button, int x, int y, int repeated_click, int_u modifiers);
-void gui_menu_cb(vimmenu_T *menu);
+void gui_menu_cb(mnvmenu_T *menu);
 void gui_init_which_components(char_u *oldval);
 int gui_use_tabline(void);
 void gui_update_tabline(void);
@@ -65,4 +65,4 @@ int gui_do_findrepl(int flags, char_u *find_text, char_u *repl_text, int down);
 void gui_handle_drop(int x, int y, int_u modifiers, char_u **fnames, int count);
 int check_for_interrupt(int key, int modifiers_arg);
 int gui_dialog_log(char_u *title, char_u *message);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

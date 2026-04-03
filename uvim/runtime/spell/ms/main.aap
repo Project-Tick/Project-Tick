@@ -1,10 +1,10 @@
-# Aap recipe for Malay Vim spell files.
+# Aap recipe for Malay MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = ms_MY.aff ms_MY.dic
@@ -14,11 +14,11 @@ all: $SPELLDIR/ms.latin1.spl $SPELLDIR/ms.utf-8.spl ../README_ms.txt
 
 $SPELLDIR/ms.latin1.spl : $FILES
         :sys env LANG=nl_NL.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/ms ms_MY" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/ms ms_MY" -c q
 
 $SPELLDIR/ms.utf-8.spl : $FILES
         :sys env LANG=nl_NL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/ms ms_MY" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/ms ms_MY" -c q
 
 ../README_ms.txt : README_ms_MY.txt
         :copy $source $target
@@ -36,8 +36,8 @@ ms_MY.aff ms_MY.dic: {buildcheck=}
         :fetch ms_MY.zip
         :sys $UNZIP ms_MY.zip
         :delete ms_MY.zip
-        :sys $VIM ms_MY.aff -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM ms_MY.dic -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV ms_MY.aff -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV ms_MY.dic -u NONE -e -c "set ff=unix" -c update -c q
         @if not os.path.exists('ms_MY.orig.aff'):
             :copy ms_MY.aff ms_MY.orig.aff
         @if not os.path.exists('ms_MY.orig.dic'):
@@ -47,7 +47,7 @@ ms_MY.aff ms_MY.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -78,4 +78,4 @@ check:
             :delete ms_MY.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

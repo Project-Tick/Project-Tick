@@ -1,12 +1,12 @@
 #
-# Makefile for the Vim documentation on Unix
+# Makefile for the MNV documentation on Unix
 #
 # If you get "don't know how to make scratch", first run make in the source
 # directory.  Or remove the include below.
 
 AWK = awk
 
-VIMPROG = ../../src/vim
+MNVPROG = ../../src/mnv
 
 # include the config.mk from the source directory.  It's only needed to set
 # AWK, used for "make html".  Comment this out if the include gives problems.
@@ -17,14 +17,14 @@ include Make_all.mak
 
 .SUFFIXES:
 .SUFFIXES: .c .o .txt .html
-.PHONY: all vimtags noerrors perlhtml clean test_urls
+.PHONY: all mnvtags noerrors perlhtml clean test_urls
 
-all: tags vim.man evim.man vimdiff.man vimtutor.man xxd.man $(CONVERTED)
+all: tags mnv.man emnv.man mnvdiff.man mnvtutor.man xxd.man $(CONVERTED)
 
-# Use Vim to generate the tags file.  Can only be used when Vim has been
+# Use MNV to generate the tags file.  Can only be used when MNV has been
 # compiled.  Supports multiple languages.
-vimtags: $(DOCS)
-	@$(VIMPROG) --clean -esX -V1 -u doctags.vim
+mnvtags: $(DOCS)
+	@$(MNVPROG) --clean -esX -V1 -u doctags.mnv
 
 # Use "doctags" to generate the tags file.  Only works for English!
 tags: doctags $(DOCS)
@@ -34,16 +34,16 @@ tags: doctags $(DOCS)
 doctags: doctags.c
 	$(CC) doctags.c -o doctags
 
-vim.man: vim.1
+mnv.man: mnv.1
 	nroff -c -man $? | sed -e s/.//g > $@
 
-evim.man: evim.1
+emnv.man: emnv.1
 	nroff -c -man $? | sed -e s/.//g > $@
 
-vimdiff.man: vimdiff.1
+mnvdiff.man: mnvdiff.1
 	nroff -c -man $? | sed -e s/.//g > $@
 
-vimtutor.man: vimtutor.1
+mnvtutor.man: mnvtutor.1
 	nroff -c -man $? | sed -e s/.//g > $@
 
 xxd.man: xxd.1
@@ -62,11 +62,11 @@ $(HTMLS): tags.ref
 	$(AWK) -f makehtml.awk $< >$@
 
 # index.html is the starting point for HTML, but for the help files it is
-# help.txt.  Therefore use vimindex.html for index.txt.
+# help.txt.  Therefore use mnvindex.html for index.txt.
 index.html: help.txt
 	$(AWK) -f makehtml.awk $? >$@
 
-vimindex.html: index.txt
+mnvindex.html: index.txt
 	$(AWK) -f makehtml.awk $? >$@
 
 tags.ref tags.html: tags
@@ -76,14 +76,14 @@ tags.ref tags.html: tags
 # There can't be two rules to produce a .html from a .txt file.
 # Just run over all .txt files each time one changes.  It's fast anyway.
 perlhtml: tags $(DOCS)
-	./vim2html.pl tags $(DOCS)
+	./mnv2html.pl tags $(DOCS)
 
 # Check URLs in the help with "curl".
 test_urls:
-	$(VIMPROG) --clean -S test_urls.vim
+	$(MNVPROG) --clean -S test_urls.mnv
 
 clean:
-	-rm -f doctags *.html tags.ref tags-* vim-stylesheet.css
+	-rm -f doctags *.html tags.ref tags-* mnv-stylesheet.css
 
 # These files are in the extra archive, skip if not present
 
@@ -154,100 +154,100 @@ vietnamese.txt:
 # For code portability, it is better to use the '$?' variable for explicit rules.
 # Especially since there is only one dependency and it should presumably always
 # be newer than the target file.
-vim-da.UTF-8.1: vim-da.1
+mnv-da.UTF-8.1: mnv-da.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimdiff-da.UTF-8.1: vimdiff-da.1
+mnvdiff-da.UTF-8.1: mnvdiff-da.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimtutor-da.UTF-8.1: vimtutor-da.1
+mnvtutor-da.UTF-8.1: mnvtutor-da.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vim-de.UTF-8.1: vim-de.1
+mnv-de.UTF-8.1: mnv-de.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vim-fr.UTF-8.1: vim-fr.1
+mnv-fr.UTF-8.1: mnv-fr.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-evim-fr.UTF-8.1: evim-fr.1
+emnv-fr.UTF-8.1: emnv-fr.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimdiff-fr.UTF-8.1: vimdiff-fr.1
+mnvdiff-fr.UTF-8.1: mnvdiff-fr.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimtutor-fr.UTF-8.1: vimtutor-fr.1
+mnvtutor-fr.UTF-8.1: mnvtutor-fr.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
 xxd-fr.UTF-8.1: xxd-fr.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vim-it.UTF-8.1: vim-it.1
+mnv-it.UTF-8.1: mnv-it.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-evim-it.UTF-8.1: evim-it.1
+emnv-it.UTF-8.1: emnv-it.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimdiff-it.UTF-8.1: vimdiff-it.1
+mnvdiff-it.UTF-8.1: mnvdiff-it.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimtutor-it.UTF-8.1: vimtutor-it.1
+mnvtutor-it.UTF-8.1: mnvtutor-it.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
 xxd-it.UTF-8.1: xxd-it.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vim-pl.UTF-8.1: vim-pl.1
+mnv-pl.UTF-8.1: mnv-pl.1
 	iconv -f latin2 -t UTF-8 $? >$@
 
-evim-pl.UTF-8.1: evim-pl.1
+emnv-pl.UTF-8.1: emnv-pl.1
 	iconv -f latin2 -t UTF-8 $? >$@
 
-vimdiff-pl.UTF-8.1: vimdiff-pl.1
+mnvdiff-pl.UTF-8.1: mnvdiff-pl.1
 	iconv -f latin2 -t UTF-8 $? >$@
 
-vimtutor-pl.UTF-8.1: vimtutor-pl.1
+mnvtutor-pl.UTF-8.1: mnvtutor-pl.1
 	iconv -f latin2 -t UTF-8 $? >$@
 
 xxd-pl.UTF-8.1: xxd-pl.1
 	iconv -f latin2 -t UTF-8 $? >$@
 
-vim-ru.UTF-8.1: vim-ru.1
+mnv-ru.UTF-8.1: mnv-ru.1
 	iconv -f KOI8-R -t UTF-8 $? >$@
 
-evim-ru.UTF-8.1: evim-ru.1
+emnv-ru.UTF-8.1: emnv-ru.1
 	iconv -f KOI8-R -t UTF-8 $? >$@
 
-vimdiff-ru.UTF-8.1: vimdiff-ru.1
+mnvdiff-ru.UTF-8.1: mnvdiff-ru.1
 	iconv -f KOI8-R -t UTF-8 $? >$@
 
-vimtutor-ru.UTF-8.1: vimtutor-ru.1
+mnvtutor-ru.UTF-8.1: mnvtutor-ru.1
 	iconv -f KOI8-R -t UTF-8 $? >$@
 
 xxd-ru.UTF-8.1: xxd-ru.1
 	iconv -f KOI8-R -t UTF-8 $? >$@
 
-vim-tr.UTF-8.1: vim-tr.1
+mnv-tr.UTF-8.1: mnv-tr.1
 	iconv -f latin5 -t UTF-8 $? >$@
 
-evim-tr.UTF-8.1: evim-tr.1
+emnv-tr.UTF-8.1: emnv-tr.1
 	iconv -f latin5 -t UTF-8 $? >$@
 
-vimdiff-tr.UTF-8.1: vimdiff-tr.1
+mnvdiff-tr.UTF-8.1: mnvdiff-tr.1
 	iconv -f latin5 -t UTF-8 $? >$@
 
-vimtutor-tr.UTF-8.1: vimtutor-tr.1
+mnvtutor-tr.UTF-8.1: mnvtutor-tr.1
 	iconv -f latin5 -t UTF-8 $? >$@
 
-vim-sv.UTF-8.1: vim-sv.1
+mnv-sv.UTF-8.1: mnv-sv.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-evim-sv.UTF-8.1: evim-sv.1
+emnv-sv.UTF-8.1: emnv-sv.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimdiff-sv.UTF-8.1: vimdiff-sv.1
+mnvdiff-sv.UTF-8.1: mnvdiff-sv.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
-vimtutor-sv.UTF-8.1: vimtutor-sv.1
+mnvtutor-sv.UTF-8.1: mnvtutor-sv.1
 	iconv -f latin1 -t UTF-8 $? >$@
 
 xxd-sv.UTF-8.1: xxd-sv.1

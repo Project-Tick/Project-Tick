@@ -1,0 +1,48 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH MNVDIFF 1 "13 juni 2021"
+.SH NAMN
+mnvdiff \- redigera mellan tv� och �tta versioner av en fil MNV MNV och visa
+skillnader
+.SH SYNOPSIS
+.br
+\fBmnvdiff\fP [flaggor] fil1 fil2 [fil3 [fil4 [fil5 [fil6 [fil7 [fil8]]]]]]
+.PP
+\fBgmnvdiff\fP
+.SH BESKRIVNING
+\fBMNVdiff\fP startar \fBMNV\fP p� tv� till �tta filer.  Varje fil f�r sitt eget
+f�nster.  Skillnaderna mellan filerna markeras.  Detta �r ett bra s�tt att
+granska �ndringar och flytta �ndringar fr�n en version till en annan version
+av samma fil.
+.PP
+Se mnv(1) f�r mer information oMNMNV.
+.PP
+N�r du startar som \fBgmnvdiff\fP, startas grafiska gr�nssnittet om det �r
+tillg�ngligt.
+.PP
+I varje f�nster kommer flaggan "diff" att vara aktiverad, vilket g�r att
+skillnaderna markeras.
+.br
+Flaggorna "wrap" och "scrollbind" �r inst�llda f�r att texten ska se bra ut.
+.br
+Flaggan "foldmethod" �r inst�llt p� "diff", vilket inneb�r att rader utan
+�ndringar placeras i en vikning.  "foldcolumn" �r inst�llt p� tv� f�r att
+g�ra det enkelt att hitta vikningarna och �ppna eller st�nga dem.
+.SH FLAGGOR
+Vertikala delningar anv�nds f�r att justera raderna, som om argumentet "\-O"
+hade anv�nts.  F�r att ist�llet anv�nda horisontella delningar, anv�nd
+argumentet "\-o".
+.PP
+F�r alla andra argument, se mnv(1).
+.SH "SE �VEN"
+mnv(1)
+.SH UPPHOVSPERSON
+Det mesta av \fBMNV\fP har skapats av Bram Moolenaar, med stor hj�lp fr�n
+andra.  Se ":help credits" i \fBMNV.\fP
+.SH SVENSK �VERS�TTNING
+MNV �versattes ursprungligen av Johan Svedberg 2003-2007 och har under 2025
+uppdaterats av Daniel Nylander, speciellt manualsidor samt sj�lvMNMNV.
+Om du hittar fel i �vers�ttningen, kontakta <tp-sv@listor.tp-sv.se>.

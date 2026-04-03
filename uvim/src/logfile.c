@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -12,7 +12,7 @@
  * async debugging.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -39,9 +39,9 @@ ch_logfile(char_u *fname, char_u *opt)
     }
 
     // The "a" flag overrules the "w" flag.
-    if (vim_strchr(opt, 'a') == NULL && vim_strchr(opt, 'w') != NULL)
+    if (mnv_strchr(opt, 'a') == NULL && mnv_strchr(opt, 'w') != NULL)
 	mode = "w";
-    ch_log_output = vim_strchr(opt, 'o') != NULL ? LOG_ALWAYS : FALSE;
+    ch_log_output = mnv_strchr(opt, 'o') != NULL ? LOG_ALWAYS : FALSE;
 
     if (*fname != NUL)
     {
@@ -51,8 +51,8 @@ ch_logfile(char_u *fname, char_u *opt)
 	    semsg(_(e_cant_open_file_str), fname);
 	    return;
 	}
-	vim_free(log_name);
-	log_name = vim_strsave(fname);
+	mnv_free(log_name);
+	log_name = mnv_strsave(fname);
     }
     log_fd = file;
 
@@ -151,7 +151,7 @@ ch_log_literal(
 {
     ch_log_lead(lead, ch, part);
     fprintf(log_fd, "'");
-    vim_ignored = (int)fwrite(buf, len, 1, log_fd);
+    mnv_ignored = (int)fwrite(buf, len, 1, log_fd);
     fprintf(log_fd, "'\n");
     fflush(log_fd);
 }
@@ -166,7 +166,7 @@ f_ch_log(typval_T *argvars, typval_T *rettv UNUSED)
     char_u	*msg;
     channel_T	*channel = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_chan_or_job_arg(argvars, 1) == FAIL))
 	return;
@@ -196,7 +196,7 @@ f_ch_logfile(typval_T *argvars, typval_T *rettv UNUSED)
     if (check_restricted() || check_secure())
 	return;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL))
 	return;

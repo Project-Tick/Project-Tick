@@ -1,13 +1,13 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
- * This file contains various definitions of structures that are used by Vim
+ * This file contains various definitions of structures that are used by MNV
  */
 
 /*
@@ -85,13 +85,13 @@ typedef struct file_buffer	buf_T;		// forward declaration
 typedef struct terminal_S	term_T;
 
 #ifdef FEAT_MENU
-typedef struct VimMenu vimmenu_T;
+typedef struct MNVMenu mnvmenu_T;
 #endif
 
 // maximum value for sc_version
 #define SCRIPT_VERSION_MAX 4
-// value for sc_version in a Vim9 script file
-#define SCRIPT_VERSION_VIM9 999999
+// value for sc_version in a MNV9 script file
+#define SCRIPT_VERSION_MNV9 999999
 
 /*
  * SCript ConteXt (SCTX): identifies a script line.
@@ -173,7 +173,7 @@ typedef struct xfilemark
 {
     fmark_T	fmark;
     char_u	*fname;		// file name, used when fnum == 0
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     time_T	time_set;
 #endif
 } xfmark_T;
@@ -742,7 +742,7 @@ typedef struct
 #define CMOD_LOCKMARKS	    0x0800	// ":lockmarks"
 #define CMOD_KEEPPATTERNS   0x1000	// ":keeppatterns"
 #define CMOD_NOSWAPFILE	    0x2000	// ":noswapfile"
-#define CMOD_VIM9CMD	    0x4000	// ":vim9cmd"
+#define CMOD_MNV9CMD	    0x4000	// ":mnv9cmd"
 #define CMOD_LEGACY	    0x8000	// ":legacy"
 
     int		cmod_split;		// flags for win_split()
@@ -1123,8 +1123,8 @@ typedef enum
  * Structure describing an exception.
  * (don't use "struct exception", it's used by the math library).
  */
-typedef struct vim_exception except_T;
-struct vim_exception
+typedef struct mnv_exception except_T;
+struct mnv_exception
 {
     except_type_T	type;		// exception type
     char		*value;		// exception value
@@ -1329,7 +1329,7 @@ typedef struct
     iconv_t	vc_fd;		// for CONV_ICONV
 #endif
     int		vc_fail;	// fail for invalid char, don't use '?'
-} vimconv_T;
+} mnvconv_T;
 
 /*
  * Structure used for the command line history.
@@ -1337,7 +1337,7 @@ typedef struct
 typedef struct hist_entry
 {
     int		hisnum;		// identifying number
-    int		viminfo;	// when TRUE hisstr comes from viminfo
+    int		mnvinfo;	// when TRUE hisstr comes from mnvinfo
     char_u	*hisstr;	// actual entry, separator char after the NUL
     size_t	hisstrlen;	// length of hisstr (excluding the NUL)
     time_t	time_set;	// when it was typed, zero if unknown
@@ -1571,9 +1571,9 @@ typedef struct {
 #define TYPECHK_TUPLE_OK	0x2	// tuple is accepted for a list
 
 typedef enum {
-    VIM_ACCESS_PRIVATE,	// read/write only inside the class
-    VIM_ACCESS_READ,	// read everywhere, write only inside the class
-    VIM_ACCESS_ALL	// read/write everywhere
+    MNV_ACCESS_PRIVATE,	// read/write only inside the class
+    MNV_ACCESS_READ,	// read everywhere, write only inside the class
+    MNV_ACCESS_ALL	// read/write everywhere
 } omacc_T;
 
 #define OCMFLAG_HAS_TYPE	0x01	// type specified explicitly
@@ -1893,7 +1893,7 @@ typedef enum {
     GETLINE_NONE,	    // do not concatenate any lines
     GETLINE_CONCAT_CONT,    // concatenate continuation lines with backslash
     GETLINE_CONCAT_CONTBAR, // concatenate continuation lines with \ and |
-    GETLINE_CONCAT_ALL	    // concatenate continuation and Vim9 # comment lines
+    GETLINE_CONCAT_ALL	    // concatenate continuation and MNV9 # comment lines
 } getline_opt_T;
 
 typedef struct svar_S svar_T;
@@ -2030,7 +2030,7 @@ struct ufunc_S
 # define FC_DEAD	    0x80	// function kept only for reference to dfunc
 # define FC_EXPORT   0x100	// "export def Func()"
 # define FC_NOARGS   0x200	// no a: variables in lambda
-# define FC_VIM9	    0x400	// defined in Vim9 script file
+# define FC_MNV9	    0x400	// defined in MNV9 script file
 # define FC_CFUNC    0x800	// defined as Lua C func
 # define FC_COPY	    0x1000	// copy of another function by
 				// copy_lambda_to_global_func()
@@ -2205,7 +2205,7 @@ typedef struct
     // variables local to that block are removed.
     scriptvar_T	*sn_vars;
 
-    // Specific for a Vim9 script.
+    // Specific for a MNV9 script.
     // "sn_all_vars" stores all script variables ever declared.  So long as the
     // variable is still valid the value is in "sn_vars->sv_dict...di_tv".
     // When the block of a declaration is left the value is moved to
@@ -2226,15 +2226,15 @@ typedef struct
 
     int		sn_version;	// :scriptversion
     int		sn_state;	// SN_STATE_ values
-    char_u	*sn_save_cpo;	// 'cpo' value when :vim9script found
-    char	sn_is_vimrc;	// .vimrc file, do not restore 'cpo'
+    char_u	*sn_save_cpo;	// 'cpo' value when :mnv9script found
+    char	sn_is_mnvrc;	// .mnvrc file, do not restore 'cpo'
     char	sn_syml_checked;// flag: this has been checked for sym link
 
-    // for a Vim9 script under "rtp/autoload/" this is "dir#scriptname#"
+    // for a MNV9 script under "rtp/autoload/" this is "dir#scriptname#"
     char_u	*sn_autoload_prefix;
 
-    // TRUE for a script used with "import autoload './dirname/script.vim'"
-    // For "../autoload/script.vim" sn_autoload_prefix is also set.
+    // TRUE for a script used with "import autoload './dirname/script.mnv'"
+    // For "../autoload/script.mnv" sn_autoload_prefix is also set.
     int		sn_import_autoload;
 
 # ifdef FEAT_PROFILE
@@ -3179,7 +3179,7 @@ struct file_buffer
     unsigned int b_fab_mrs;	// Max record size
 #endif
     int		b_fnum;		// buffer number for this file.
-    char_u	b_key[VIM_SIZEOF_INT * 2 + 1];
+    char_u	b_key[MNV_SIZEOF_INT * 2 + 1];
 				// key used for buf_hashtab, holds b_fnum as
 				// hex string
 
@@ -3218,9 +3218,9 @@ struct file_buffer
     long	b_mtime_read_ns;  // nanoseconds of last read time
     off_T	b_orig_size;	// size of original file in bytes
     int		b_orig_mode;	// mode of original file
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     time_T	b_last_used;	// time when the buffer was last used; used
-				// for viminfo
+				// for mnvinfo
 #endif
 
     pos_T	b_namedm[NMARKS]; // current named marks (mark.c)
@@ -3262,8 +3262,8 @@ struct file_buffer
     pos_T	b_op_start_orig;  // used for Insstart_orig
     pos_T	b_op_end;
 
-#ifdef FEAT_VIMINFO
-    int		b_marks_read;	// Have we read viminfo marks yet?
+#ifdef FEAT_MNVINFO
+    int		b_marks_read;	// Have we read mnvinfo marks yet?
 #endif
 
     int		b_modified_was_set;	// did ":set modified"
@@ -3908,7 +3908,7 @@ typedef struct
 typedef struct {
     int		wb_startcol;
     int		wb_endcol;
-    vimmenu_T	*wb_menu;
+    mnvmenu_T	*wb_menu;
 } winbar_item_T;
 #endif
 
@@ -4265,7 +4265,7 @@ struct window_S
 				    // NULL
     char_u	*w_prevdir;	    // previous directory
 #ifdef FEAT_MENU
-    vimmenu_T	*w_winbar;	    // The root of the WinBar menu hierarchy.
+    mnvmenu_T	*w_winbar;	    // The root of the WinBar menu hierarchy.
     winbar_item_T *w_winbar_items;  // list of items in the WinBar
     int		w_winbar_height;    // 1 if there is a window toolbar
 #endif
@@ -4500,7 +4500,7 @@ typedef struct cursor_entry
 
 #ifdef FEAT_MENU
 
-// Indices into vimmenu_T->strings[] and vimmenu_T->noremap[] for each mode
+// Indices into mnvmenu_T->strings[] and mnvmenu_T->noremap[] for each mode
 # define MENU_INDEX_INVALID	-1
 # define MENU_INDEX_NORMAL	0
 # define MENU_INDEX_VISUAL	1
@@ -4527,7 +4527,7 @@ typedef struct cursor_entry
 // Start a menu name with this to not include it on the main menu bar
 # define MNU_HIDDEN_CHAR		']'
 
-struct VimMenu
+struct MNVMenu
 {
     int		modes;		    // Which modes is this menu visible for?
     int		enabled;	    // for which modes the menu is enabled
@@ -4543,7 +4543,7 @@ struct VimMenu
     int		mnemonic;	    // mnemonic key (after '&')
     int		priority;	    // Menu order priority
 # ifdef FEAT_GUI
-    void	(*cb)(vimmenu_T *); // Call-back function
+    void	(*cb)(mnvmenu_T *); // Call-back function
 # endif
 # ifdef FEAT_TOOLBAR
     char_u	*iconfile;	    // name of file for icon or NULL
@@ -4553,9 +4553,9 @@ struct VimMenu
     char_u	*strings[MENU_MODES]; // Mapped string for each mode
     int		noremap[MENU_MODES]; // A REMAP_ flag for each mode
     char	silent[MENU_MODES]; // A silent flag for each mode
-    vimmenu_T	*children;	    // Children of sub-menu
-    vimmenu_T	*parent;	    // Parent of menu
-    vimmenu_T	*next;		    // Next item in menu
+    mnvmenu_T	*children;	    // Children of sub-menu
+    mnvmenu_T	*parent;	    // Parent of menu
+    mnvmenu_T	*next;		    // Next item in menu
 # ifdef FEAT_GUI_X11
     Widget	id;		    // Manage this to enable item
     Widget	submenu_id;	    // If this is submenu, add children here
@@ -4595,7 +4595,7 @@ struct VimMenu
 };
 #else
 // For generating prototypes when FEAT_MENU isn't defined.
-typedef int vimmenu_T;
+typedef int mnvmenu_T;
 
 #endif // FEAT_MENU
 
@@ -4763,8 +4763,8 @@ typedef struct
 
     char_u	*fname;			// first file to edit
 
-    int		evim_mode;		// started as "evim"
-    char_u	*use_vimrc;		// vimrc from -u argument
+    int		emnv_mode;		// started as "emnv"
+    char_u	*use_mnvrc;		// mnvrc from -u argument
     int		clean;			// --clean argument
 
     int		n_commands;		     // no. of commands from + or -c
@@ -4917,7 +4917,7 @@ typedef struct {
     varnumber_T vv_prevcount;
     varnumber_T vv_count;
     varnumber_T vv_count1;
-} vimvars_save_T;
+} mnvvars_save_T;
 
 // Scope for changing directory
 typedef enum {
@@ -4931,7 +4931,7 @@ typedef enum
 {
     VAR_FLAVOUR_DEFAULT,	// doesn't start with uppercase
     VAR_FLAVOUR_SESSION,	// starts with uppercase, some lower
-    VAR_FLAVOUR_VIMINFO		// all uppercase
+    VAR_FLAVOUR_MNVINFO		// all uppercase
 } var_flavour_T;
 
 // argument for mouse_find_win()
@@ -5004,7 +5004,7 @@ typedef struct
     linenr_T	y_size;		// number of lines in y_array
     char_u	y_type;		// MLINE, MCHAR or MBLOCK
     colnr_T	y_width;	// only set if y_type == MBLOCK
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     time_t	y_time_set;
 #endif
 } yankreg_T;
@@ -5068,7 +5068,7 @@ typedef struct {
     int		dbg_tick;	// debug_tick when breakpoint was set
     int		level;		// top nesting level of sourced file
 #endif
-    vimconv_T	conv;		// type of conversion
+    mnvconv_T	conv;		// type of conversion
 } source_cookie_T;
 
 

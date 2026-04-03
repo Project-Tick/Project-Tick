@@ -1,9 +1,9 @@
 ================================================================================
-=     V I M   T u t o r ' a   h o ş   g e l d i n i z !    --    Sürüm 1.7     =
+=     M N V   T u t o r ' a   h o ş   g e l d i n i z !    --    Sürüm 1.7     =
 ================================================================================
 
-  Vim, böyle bir eğitmen ile açıklanması gereken çok fazla komut barındıran,
-  oldukça kuvvetli bir metin düzenleyicidir. Bu eğitmen Vim'i çok amaçlı bir
+  MNV, böyle bir eğitmen ile açıklanması gereken çok fazla komut barındıran,
+  oldukça kuvvetli bir metin düzenleyicidir. Bu eğitmen MNV'i çok amaçlı bir
   düzenleyici olarak kolaylıkla kullanabileceğiniz yeterli sayıda komutu
   açıklamak için tasarlanmıştır.
 
@@ -12,7 +12,7 @@
 
   DİKKAT:
   Derslerdeki komutlar bu metni değiştirecektir. Üzerinde çalışmak için
-  bu dosyanın bir kopyasını alın (eğer "vimtutor" uygulamasını
+  bu dosyanın bir kopyasını alın (eğer "mnvtutor" uygulamasını
   çalıştırdıysanız zaten bir kopyasını almış oldunuz).
 
   Bu eğitmenin kullanarak öğretmek için tasarlandığını unutmamak önemlidir.
@@ -58,7 +58,7 @@
   2. :q! yazın ve <ENTER>'a basın'.
      Bu düzenleyiciden çıkar ve yaptığınız değişiklikleri KAYDETMEZ.
 
-  3. vimtutor yazarak yeniden bu belgeyi açın.
+  3. mnvtutor yazarak yeniden bu belgeyi açın.
 
   4. Eğer bu adımları ezberlediyseniz ve kendinizden eminseniz, 1'den 3'e
      kadar olan adımları yeniden uygulayın.
@@ -136,23 +136,23 @@
 	Ders 1.1.6: DOSYA DÜZENLEME
 
 
-  ** :wq yazmak açık olan dosyayı kaydeder ve Vim'den çıkar.
+  ** :wq yazmak açık olan dosyayı kaydeder ve MNV'den çıkar.
 
   !! NOT: Aşağıdaki adımları uygulamadan önce tüm bu bölümü iyice okuyun!
 
   1. Bu eğitmeni Ders 1.1.2'de yaptığınız gibi :q! yazarak kapatın. Veya başka
      bir uçbirime erişiminiz varsa orada yapın.
 
-  2. Komut istemi ekranında şu komutu girin: vim tutor <ENTER>. 'vim', Vim
+  2. Komut istemi ekranında şu komutu girin: mnv tutor <ENTER>. 'mnv', MNV
      düzenleyicisini açmak için kullanacağınız komut olup 'tutor' da
      düzenlemek istediğiniz dosyanın adıdır. Değiştirilebilen bir dosya
      kullanın.
 
   3. Daha önceki derslerde öğrendiğiniz gibi metin girip/ekleyip silin.
 
-  4. :wq <ENTER> yazarak değişiklikleri kaydedin ve Vim'den çıkın.
+  4. :wq <ENTER> yazarak değişiklikleri kaydedin ve MNV'den çıkın.
 
-  5. Eğer vimtutor'dan birinci adımda çıktıysanız yeniden açın ve aşağıdaki
+  5. Eğer mnvtutor'dan birinci adımda çıktıysanız yeniden açın ve aşağıdaki
      özet bölüme gelin.
 
   6. Yukarıdaki adımları okuduktan ve anladıktan sonra YAPIN.
@@ -165,13 +165,13 @@
 
      h (sol) / j (aşağı) / k (yukarı) / l (sağ)
 
-  2. Vim'i komut isteminden başlatmak için:
+  2. MNV'i komut isteminden başlatmak için:
 
-     vim <ENTER>
+     mnv <ENTER>
      veya
-     vim DOSYA_ADI <ENTER> kullanın.
+     mnv DOSYA_ADI <ENTER> kullanın.
 
-  3. Vim'den çıkmak için önce <ESC>'ye basıp sonra:
+  3. MNV'den çıkmak için önce <ESC>'ye basıp sonra:
 
      :q! <ENTER> (değişiklikleri kaydetmeden çıkar)
      :wq <ENTER> (değişiklikleri kaydedip çıkar) komutlarını kullanın.
@@ -202,7 +202,7 @@
 
   4. Sözcüğü silmek için dw yazın.
 
-  NOT: d harfi siz yazdıkça ekranın son satırında görülecektir. Vim sizin w
+  NOT: d harfi siz yazdıkça ekranın son satırında görülecektir. MNV sizin w
        yazmanızı bekleyecektir. Eğer d'den başka bir şey görürseniz yanlış
        yazmışsınız demektir, <ESC> düğmesine basın ve baştan başlayın.
 
@@ -387,7 +387,7 @@
 
   1. İmleci aşağıda ---> ile imlenmiş tümceciğe götürün.
 
-  2. Satırı silip Vim'in arabelleğine yerleştirmek için dd yazın.
+  2. Satırı silip MNV'in arabelleğine yerleştirmek için dd yazın.
 
   3. İmleci, silinmiş satırı nereye yerleştirmek istiyorsanız, o satırın
      ÜZERİNE götürün.
@@ -640,12 +640,12 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 
   3. Şimdi :w DENEME yazın (DENEME sizin seçtiğiniz dosya adıdır).
 
-  4. Bu tüm dosyayı (Vim Tutor) DENEME isminde başka bir dosyaya yazar.
+  4. Bu tüm dosyayı (MNV Tutor) DENEME isminde başka bir dosyaya yazar.
      Bunu doğrulamak için, :!ls veya :!dir yazın ve yeniden bulunduğunuz
      dizini listeleyin.
 
-  NOT: Eğer Vim'den çıkıp kaydettiğiniz DENEME dosyasını açarsanız, bunun
-       kaydettiğiniz vimtutor'un gerçek bir kopyası olduğunu görürsünüz.
+  NOT: Eğer MNV'den çıkıp kaydettiğiniz DENEME dosyasını açarsanız, bunun
+       kaydettiğiniz mnvtutor'un gerçek bir kopyası olduğunu görürsünüz.
 
   5. Şimdi dosyayı şu komutları vererek silin:
 	    Windows:                       :!del DENEME
@@ -667,7 +667,7 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
   4. w DENEME yazın; DENEME burada henüz var olmayan bir dosyadır. <ENTER>
      düğmesine basmadan önce :'<'>w DENEME gördüğünüzden emin olun.
 
-  5. Vim seçilen satırları DENEME dosyasına yazacaktır. :!ls veya :!dir ile
+  5. MNV seçilen satırları DENEME dosyasına yazacaktır. :!ls veya :!dir ile
      bakarak dosyayı görün. Henüz silmeyin; bir sonraki derste kullanacağız.
 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -701,7 +701,7 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 	 :!dir		:!ls		- bir dizini listeler.
 	 :!del DOSYA	:!rm DOSYA	- DOSYA'yı siler.
 
-  2. :w DOSYA_ADI o anki Vim dosyasını diske DOSYA_ADI ile kaydeder.
+  2. :w DOSYA_ADI o anki MNV dosyasını diske DOSYA_ADI ile kaydeder.
 
   3. v hareket :w DOSYA_ADI seçilmiş satır aralığını DOSYA_ADI ile kaydeder.
 
@@ -854,7 +854,7 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 
   ** Çevrimiçi yardım sistemini kullanın **
 
-  Vim geniş bir çevrimiçi yardım sistemine sahiptir. Başlamak için şu üçünü
+  MNV geniş bir çevrimiçi yardım sistemine sahiptir. Başlamak için şu üçünü
   deneyebilirsiniz:
 
     - (eğer varsa) <HELP> düğmesine basın
@@ -878,26 +878,26 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 	Ders 1.7.2: BİR BAŞLANGIÇ BETİĞİ OLUŞTURUN
 
 
-  ** Vim'in özelliklerine bakın **
+  ** MNV'in özelliklerine bakın **
 
-  Vim Vi'dan çok daha fazla özelliğe sahiptir fakat birçoğu öntanımlı olarak
-  kapalıdır. Daha fazla özellik kullanabilmek için bir "vimrc" dosyası
+  MNV Vi'dan çok daha fazla özelliğe sahiptir fakat birçoğu öntanımlı olarak
+  kapalıdır. Daha fazla özellik kullanabilmek için bir "mnvrc" dosyası
   oluşturmalısınız.
 
-  1. "vimrc" dosyasını düzenlemeye başlayın. İşletim sistemlerine göre:
+  1. "mnvrc" dosyasını düzenlemeye başlayın. İşletim sistemlerine göre:
 
-    :e ~/.vimrc		Unix için
-    :e ~/_vimrc		Windows için
+    :e ~/.mnvrc		Unix için
+    :e ~/_mnvrc		Windows için
 
-  2. Şimdi örnek "vimrc" dosyası içeriğini okuyun:
+  2. Şimdi örnek "mnvrc" dosyası içeriğini okuyun:
 
-    :r $VIMRUNTIME/vimrc_example.vim
+    :r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Dosyayı :w ile kaydedin.
 
-  Vim'i bir sonraki çalıştırılmasında sözdizim vurgulaması kullanacaktır.
-  Tüm tercih ettiğiniz ayarları bu "vimrc" dosyasına ekleyebilirsiniz.
-  Daha fazla bilgi için :help vimrc-intro yazın.
+  MNV'i bir sonraki çalıştırılmasında sözdizim vurgulaması kullanacaktır.
+  Tüm tercih ettiğiniz ayarları bu "mnvrc" dosyasına ekleyebilirsiniz.
+  Daha fazla bilgi için :help mnvrc-intro yazın.
 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	Ders 1.7.3: TAMAMLAMA
@@ -905,23 +905,23 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 
   ** <CTRL> D ve <TAB> ile komut istemi ekranında tamamlama **
 
-  1. :set nocp komutunu kullanarak Vim'in uyumlu kipte olmadığından
+  1. :set nocp komutunu kullanarak MNV'in uyumlu kipte olmadığından
      emin olun.
 
   2. Bulunduğunuz dizindeki dosyalara :!ls veya :!dir ile bakın.
 
   3. Bir komutun baş kısmını yazın, örneğin :e.
 
-  4. <CTRL> D'ye bastığınızda Vim size e ile başlayan komutları
+  4. <CTRL> D'ye bastığınızda MNV size e ile başlayan komutları
      gösterecektir.
 
-  5. d <TAB> kullandığınızda Vim komutu kendinden :edit olarak
+  5. d <TAB> kullandığınızda MNV komutu kendinden :edit olarak
      tamamlayacaktır.
 
   6. Şimdi bir boşluk ekleyin ve var olan bir dosyanın baş harflerini yazın.
      Örneğin :edit DOS.
   
-  7. <TAB> düğmesine basın. Eğer yalnızca bu dosyadan bir tane varsa Vim
+  7. <TAB> düğmesine basın. Eğer yalnızca bu dosyadan bir tane varsa MNV
      sizin için dosya adının geri kalanını tamamlayacaktır.
 
   NOT: Tamamlama birçok komut için çalışır. Yalnızca <CTRL> D ve <TAB>
@@ -940,7 +940,7 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 
   4. :q kullanarak yardım penceresini kapatabilirsiniz.
 
-  5. Bir vimrc başlangıç betiği oluşturarak yeğlenen ayarlarınızı
+  5. Bir mnvrc başlangıç betiği oluşturarak yeğlenen ayarlarınızı
      saklayabilirsiniz.
 
   6. Bir : komutu girerken <CTRL> D'ye basarak olanaklı tamamlama
@@ -948,35 +948,35 @@ Not: Arama dosyanın sonuna ulaştığında dosyanın başından sürecektir. Bu
 
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Böylece Vim Eğitmeni tamamlanmış oldu. Eğitmendeki amaç Vim düzenleyicisi
+  Böylece MNV Eğitmeni tamamlanmış oldu. Eğitmendeki amaç MNV düzenleyicisi
   hakkında kısa bir bilgi vermek ve onu kolayca kullanmanızı sağlamaktı.
-  Vim'in tamamını öğretmek çok zordur zira Vim birçok komuta sahiptir.
+  MNV'in tamamını öğretmek çok zordur zira MNV birçok komuta sahiptir.
   Bundan sonra ":help user-manual" komutu ile kullanıcı kılavuzunu
   okumalısınız.
 
   Daha fazla okuma ve çalışma için şu kitabı öneriyoruz:
 
-	Vim - Vi Improved - by Steve Oualline
+	MNV - MNV is not Vim - by Steve Oualline
 	Publisher: New Riders
 
-  Tümüyle Vim için hazırlanmış ilk kitaptır. Özellikle ilk kullanıcılar için
+  Tümüyle MNV için hazırlanmış ilk kitaptır. Özellikle ilk kullanıcılar için
   çok uygundur.
   Kitapta birçok örnek ve resim bulunmaktadır.
   https://iccf-holland.org/click5.html adresine bakabilirsiniz.
 
-  Bu kitap daha eskidir ve Vim'den daha çok Vi içindir ancak tavsiye edilir:
+  Bu kitap daha eskidir ve MNV'den daha çok Vi içindir ancak tavsiye edilir:
 
 	Learning the Vi Editor - by Linda Lamb
 	Publisher: O'Reilly & Associates Inc.
 
   Vi hakkında bilmek isteyeceğiniz neredeyse her şeyin bulunduğu bir kitap.
-  6. Basım aynı zamanda Vim hakkında da bilgi içermektedir.
+  6. Basım aynı zamanda MNV hakkında da bilgi içermektedir.
 
   Bu eğitmen Michael C. Pierce ve Robert K. Ware tarafından yazıldı,
   Charles Smith tarafından sağlanan fikirlerle Colorado School Of Mines,
   Colorado State University.  E-posta: bware@mines.colorado.edu
 
-  Vim için değiştiren: Bram Moolenaar
+  MNV için değiştiren: Bram Moolenaar
 
   Türkçe çeviri:
   Serkan "heartsmagic" Çalış (2005), adresimeyaz (at) yahoo (dot) com

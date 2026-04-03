@@ -1,4 +1,4 @@
-The spell files included here are in Vim's special format.  You can't edit
+The spell files included here are in MNV's special format.  You can't edit
 them.  See ":help spell" for more information.
 
 
@@ -18,12 +18,12 @@ ftp://ftp.gnu.org/gnu/aspell/dict/.  Most go under the GPL or LGPL copyright.
 GENERATING .SPL FILES
 
 This involves downloading the files from the github server, applying a
-patch and running Vim to generate the .spl file.  To do this all in one go use
+patch and running MNV to generate the .spl file.  To do this all in one go use
 the Aap program (www.a-a-p.org).  It's simple to install, it only requires
 Python (http://www.a-a-p.org/download.html)
 
 Before generating spell files, verify your system has the required locale
-support.  Source the check_locales.vim script to find out.  If something is
+support.  Source the check_locales.mnv script to find out.  If something is
 missing, see LOCALE below.
 
 
@@ -40,10 +40,10 @@ You can also do it manually:
 4. If the language has multiple regions do the above for each region.  E.g.,
    for English there are five regions: US, CA, AU, NZ and GB.
 
-5. Run Vim and execute ":mkspell".  Make sure you do this with the correct
+5. Run MNV and execute ":mkspell".  Make sure you do this with the correct
    locale, that influences the upper/lower case letters and word characters.
    On Unix it's something like:
-   	env LANG=en_US.UTF-8 vim
+   	env LANG=en_US.UTF-8 mnv
 	mkspell! en en_US en_AU en_CA en_GB en_NZ
 
 6. Repeat step 5 for other locales.  For English you could generate a spell
@@ -63,7 +63,7 @@ It is important to keep the version of the .dic and .aff files that you
 started with.  When LibreOffice brings out new versions of these files you can
 find out what changed and take over these changes in your patch.  When there
 are very many changes you can do it the other way around: re-apply the changes
-for Vim to the new versions of the .dic and .aff files.
+for MNV to the new versions of the .dic and .aff files.
 
 This procedure should work well:
 
@@ -76,7 +76,7 @@ This procedure should work well:
    change too much, the OpenOffice people are not stupid.  However, you may
    want to remove obvious mistakes.  And remove single-letter words that
    aren't really words, they mess up the suggestions (English has this
-   problem).  You can use the "fixdup.vim" Vim script to find duplicate words.
+   problem).  You can use the "fixdup.mnv" MNV script to find duplicate words.
 
 3. Include needed parts from the aspell phonetic dictionary to the aff files. For
    example add the relevant SAL lines to the .aff file (this is needed to make good
@@ -84,7 +84,7 @@ This procedure should work well:
    https://ftp.gnu.org/gnu/aspell/dict/0index.html
 
 4. Make the diff file.  "aap diff" will do this for you.  If a diff would be
-   too big you might consider writing a Vim script to do systematic changes.
+   too big you might consider writing a MNV script to do systematic changes.
    Do check that someone else can reproduce building the spell file.  Send the
    result to Bram for inclusion in the distribution.  Bram will generate the
    .spl file and upload it to the ftp server (if he can't generate it you will
@@ -102,15 +102,15 @@ This procedure should work well:
 LOCALE
 
 For proper spell file generation the required locale must be installed.
-Otherwise Vim doesn't know what are letters and upper-lower case differences.
+Otherwise MNV doesn't know what are letters and upper-lower case differences.
 Modern systems use UTF-8, but we also generate spell files for 8-bit locales
 for users with older systems.
 
 On Ubuntu the default is to only support locales for your own language.  To
 add others you need to do this:
-	sudo vim /var/lib/locales/supported.d/local
+	sudo mnv /var/lib/locales/supported.d/local
 	    Add needed lines from /usr/share/i18n/SUPPORTED
 	sudo dpkg-reconfigure locales
 
-When using the check_locales.vim script, you need to exit Vim and restart it
+When using the check_locales.mnv script, you need to exit MNV and restart it
 to pickup the newly installed locales.

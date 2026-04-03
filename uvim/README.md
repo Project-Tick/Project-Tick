@@ -1,25 +1,25 @@
-# [![Vim The editor](https://github.com/vim/vim/raw/master/runtime/vimlogo.gif)](https://www.vim.org)
+# [![MNV The editor](https://github.com/Project-Tick/Project-Tick/raw/master/runtime/mnvlogo.gif)](https://www.mnv.org)
 
-[![Github Build status](https://github.com/vim/vim/workflows/GitHub%20CI/badge.svg)](https://github.com/vim/vim/actions?query=workflow%3A%22GitHub+CI%22)
-[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/o2qht2kjm02sgghk?svg=true)](https://ci.appveyor.com/project/chrisbra/vim)
-[![Cirrus Build Status](https://api.cirrus-ci.com/github/vim/vim.svg)](https://cirrus-ci.com/github/vim/vim)
-[![Coverage Status](https://codecov.io/gh/vim/vim/coverage.svg?branch=master)](https://codecov.io/gh/vim/vim?branch=master)
-[![Coverity Scan](https://scan.coverity.com/projects/241/badge.svg)](https://scan.coverity.com/projects/vim)
-[![Debian CI](https://badges.debian.net/badges/debian/testing/vim/version.svg)](https://buildd.debian.org/vim)
-[![Packages](https://repology.org/badge/tiny-repos/vim.svg)](https://repology.org/metapackage/vim)
-[![Fossies codespell report](https://fossies.org/linux/test/vim-master.tar.gz/codespell.svg)](https://fossies.org/linux/test/vim-master.tar.gz/codespell.html)
+[![Github Build status](https://github.com/Project-Tick/Project-Tick/workflows/GitHub%20CI/badge.svg)](https://github.com/Project-Tick/Project-Tick/actions?query=workflow%3A%22GitHub+CI%22)
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/o2qht2kjm02sgghk?svg=true)](https://ci.appveyor.com/project/chrisbra/mnv)
+[![Cirrus Build Status](https://api.cirrus-ci.com/github/mnv/mnv.svg)](https://cirrus-ci.com/github/mnv/mnv)
+[![Coverage Status](https://codecov.io/gh/mnv/mnv/coverage.svg?branch=master)](https://codecov.io/gh/mnv/mnv?branch=master)
+[![Coverity Scan](https://scan.coverity.com/projects/241/badge.svg)](https://scan.coverity.com/projects/mnv)
+[![Debian CI](https://badges.debian.net/badges/debian/testing/mnv/version.svg)](https://buildd.debian.org/mnv)
+[![Packages](https://repology.org/badge/tiny-repos/mnv.svg)](https://repology.org/metapackage/mnv)
+[![Fossies codespell report](https://fossies.org/linux/test/mnv-master.tar.gz/codespell.svg)](https://fossies.org/linux/test/mnv-master.tar.gz/codespell.html)
 
 If you find a bug or want to discuss the best way to add a new feature, please
-[open an issue](https://github.com/vim/vim/issues/new/choose).
+[open an issue](https://github.com/Project-Tick/Project-Tick/issues/new/choose).
 If you have a question or want to discuss the best way to do something with
-Vim, you can join [`#vim`](https://web.libera.chat/#vim),
-[reddit.com/r/vim](https://reddit.com/r/vim),
+MNV, you can join [`#mnv`](https://web.libera.chat/#mnv),
+[reddit.com/r/mnv](https://reddit.com/r/mnv),
 use [StackExchange](https://vi.stackexchange.com/),
-or one of the [Maillists](https://www.vim.org/community.php).
+or one of the [Maillists](https://www.mnv.org/community.php).
 
-## What is Vim?
+## What is MNV?
 
-Vim is a greatly improved version of the good old UNIX editor
+MNV is a greatly improved version of the good old UNIX editor
 [Vi](https://en.wikipedia.org/wiki/Vi_(text_editor)).  Many new
 features have been added: multi-level undo, syntax highlighting, command line
 history, on-line help, spell checking, filename completion, block operations,
@@ -34,41 +34,41 @@ All commands are given with normal keyboard characters, so those who can type
 with ten fingers can work very fast.  Additionally, function keys can be
 mapped to commands by the user, and the mouse can be used.
 
-Vim also aims to provide a (mostly) POSIX-compatible vi implementation, when
-compiled with a minimal feature set (typically called vim.tiny), which is used
+MNV also aims to provide a (mostly) POSIX-compatible vi implementation, when
+compiled with a minimal feature set (typically called mnv.tiny), which is used
 by many Linux distributions as the default vi editor.
 
-Vim runs under MS-Windows (7, 8, 10, 11), macOS, Haiku, VMS and almost all
+MNV runs under MS-Windows (7, 8, 10, 11), macOS, Haiku, VMS and almost all
 flavours of UNIX.  Porting to other systems should not be very difficult.
-Older versions of Vim run on MS-DOS, MS-Windows 95/98/Me/NT/2000/XP/Vista,
+Older versions of MNV run on MS-DOS, MS-Windows 95/98/Me/NT/2000/XP/Vista,
 Amiga DOS, Atari MiNT, BeOS, RISC OS and OS/2.  These are no longer maintained.
 
-For Vim9 script see [README_VIM9](README_VIM9.md).
+For MNV9 script see [README_MNV9](README_MNV9.md).
 
 ## Distribution
 
-You can often use your favorite package manager to install Vim.  On Mac and
-Linux a small version of Vim is pre-installed, you still need to install Vim
+You can often use your favorite package manager to install MNV.  On Mac and
+Linux a small version of MNV is pre-installed, you still need to install MNV
 if you want more features.
 
 There are separate distributions for Unix, PC, Amiga and some other systems.
 This `README.md` file comes with the runtime archive.  It includes the
 documentation, syntax files and other files that are used at runtime.  To run
-Vim you must get either one of the binary archives or a source archive.
+MNV you must get either one of the binary archives or a source archive.
 Which one you need depends on the system you want to run it on and whether you
-want or must compile it yourself.  Check https://www.vim.org/download.php for
+want or must compile it yourself.  Check https://www.mnv.org/download.php for
 an overview of currently available distributions.
 
-Some popular places to get the latest Vim:
-* Check out the git repository from [GitHub](https://github.com/vim/vim).
-* Get the source code as an [archive](https://github.com/vim/vim/tags).
+Some popular places to get the latest MNV:
+* Check out the git repository from [GitHub](https://github.com/Project-Tick/Project-Tick).
+* Get the source code as an [archive](https://github.com/Project-Tick/Project-Tick/tags).
 * Get a Windows executable from the
-[vim-win32-installer](https://github.com/vim/vim-win32-installer/releases) repository.
+[mnv-win32-installer](https://github.com/Project-Tick/Project-Tick-win32-installer/releases) repository.
 
 ## Compiling
 
-If you obtained a binary distribution you don't need to compile Vim.  If you
-obtained a source distribution, all the stuff for compiling Vim is in the
+If you obtained a binary distribution you don't need to compile MNV.  If you
+obtained a source distribution, all the stuff for compiling MNV is in the
 [`src`](./src/) directory.  See [`src/INSTALL`](./src/INSTALL) for instructions.
 
 ## Installation
@@ -90,70 +90,70 @@ There are other `README_*.txt` files, depending on the distribution you used.
 
 ## Documentation
 
-The Vim tutor is a one hour training course for beginners.  Often it can be
-started as `vimtutor`.  See `:help tutor` for more information.
+The MNV tutor is a one hour training course for beginners.  Often it can be
+started as `mnvtutor`.  See `:help tutor` for more information.
 
-The best is to use `:help` in Vim.  If you don't have an executable yet, read
+The best is to use `:help` in MNV.  If you don't have an executable yet, read
 [`runtime/doc/help.txt`](./runtime/doc/help.txt).
 It contains pointers to the other documentation files.
 The User Manual reads like a book and is recommended to learn to use
-Vim.  See `:help user-manual`.
+MNV.  See `:help user-manual`.
 
 ## Copying
 
-Vim is Charityware.  You can use and copy it as much as you like, but you are
+MNV is Charityware.  You can use and copy it as much as you like, but you are
 encouraged to make a donation to help orphans in Uganda.  Please read the file
 [`runtime/doc/uganda.txt`](./runtime/doc/uganda.txt)
-for details (do `:help uganda` inside Vim).
+for details (do `:help uganda` inside MNV).
 
 Summary of the license: There are no restrictions on using or distributing an
-unmodified copy of Vim.  Parts of Vim may also be distributed, but the license
+unmodified copy of MNV.  Parts of MNV may also be distributed, but the license
 text must always be included.  For modified versions, a few restrictions apply.
-The license is GPL compatible, you may compile Vim with GPL libraries and
+The license is GPL compatible, you may compile MNV with GPL libraries and
 distribute it.
 
 ## Sponsoring
 
 Fixing bugs and adding new features takes a lot of time and effort.  To show
 your appreciation for the work and motivate developers to continue working on
-Vim please send a donation.
+MNV please send a donation.
 
 The money you donated will be mainly used to help children in Uganda.  See
 [`runtime/doc/uganda.txt`](./runtime/doc/uganda.txt).  But at the same time
-donations increase the development team motivation to keep working on Vim!
+donations increase the development team motivation to keep working on MNV!
 
-For the most recent information about sponsoring look on the Vim web site:
-	https://www.vim.org/sponsor/
+For the most recent information about sponsoring look on the MNV web site:
+	https://www.mnv.org/sponsor/
 
 ## Contributing
 
-If you would like to help make Vim better, see the
+If you would like to help make MNV better, see the
 [CONTRIBUTING.md](./CONTRIBUTING.md) file.
 
 ## Information
 
-If you are on macOS, you can use [MacVim](https://macvim.org).
+If you are on macOS, you can use [MacMNV](https://macmnv.org).
 
-The latest news about Vim can be found on the Vim home page:
-	https://www.vim.org/
+The latest news about MNV can be found on the MNV home page:
+	https://www.mnv.org/
 
-If you have problems, have a look at the Vim documentation or tips:
-	https://www.vim.org/docs.php
-	https://vim.fandom.com/wiki/Vim_Tips_Wiki
+If you have problems, have a look at the MNV documentation or tips:
+	https://www.mnv.org/docs.php
+	https://mnv.fandom.com/wiki/MNV_Tips_Wiki
 
 If you still have problems or any other questions, use one of the mailing
-lists to discuss them with Vim users and developers:
-	https://www.vim.org/maillist.php
+lists to discuss them with MNV users and developers:
+	https://www.mnv.org/maillist.php
 
-If nothing else works, report bugs directly to the vim-dev mailing list:
-	`<vim-dev@vim.org>`
+If nothing else works, report bugs directly to the mnv-dev mailing list:
+	`<mnv-dev@mnv.org>`
 
 ## Main author
 
-Most of Vim was created by Bram Moolenaar `<Bram@vim.org>`
+Most of MNV was created by Bram Moolenaar `<Bram@mnv.org>`
 [Bram-Moolenaar](https://vimhelp.org/version9.txt.html#Bram-Moolenaar)
 
-Send any other comments, patches, flowers and suggestions to the vim-dev mailing list:
-	`<vim-dev@vim.org>`
+Send any other comments, patches, flowers and suggestions to the mnv-dev mailing list:
+	`<mnv-dev@mnv.org>`
 
-This is `README.md` for version 9.2 of Vim: Vi IMproved.
+This is `README.md` for version 9.2 of MNV: MNV is not Vim.

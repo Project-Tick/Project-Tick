@@ -1,13 +1,13 @@
-# CREATING A VIM TUTORIAL WITH VIM-TUTOR-MODE
+# CREATING A MNV TUTORIAL WITH MNV-TUTOR-MODE
 
 This tutorial will guide you through the steps required to create a tutorial
-file for vim-tutor-mode. It is also meant as a demo of vim-tutor-mode
+file for mnv-tutor-mode. It is also meant as a demo of mnv-tutor-mode
 capabilities.
 
 Table of contents:
 
 - [Setting up](*setting-up*)
-- [vim-tutor-mode's markup](*markup*)
+- [mnv-tutor-mode's markup](*markup*)
     - [emphasis](*emphasis*)
     - [headers](*headers*)
     - [links](*links*)
@@ -23,9 +23,9 @@ need to do this now):
     :e new-tutorial.tutor
 ~~~
 
-## VIM-TUTOR-MODE's MARKDOWN *markup*
+## MNV-TUTOR-MODE's MARKDOWN *markup*
 
-vim-tutor-mode uses a subset of markdown's syntax to format the tutorials. The
+mnv-tutor-mode uses a subset of markdown's syntax to format the tutorials. The
 subset supported should be enough for most tutorials and the maintainers will
 try to keep it as small as possible (if regular markdown allows for several
 ways to do the same thing, tutor markdown will only provide the one the
@@ -85,7 +85,7 @@ exercise:
 ### Links *links*
 
 It is good practice to include links in your tutorials to reference materials,
-like vim's own help or external documents. You can also link to other parts of
+like mnv's own help or external documents. You can also link to other parts of
 the document.
 
 Links have the syntax
@@ -129,12 +129,12 @@ You can also have links to other tutorials. For this, you'll write the anchor in
 
 7. Create a link to this tutorial:
 
-A link to the vim-tutor-mode tutorial
-A link to [the vim-tutor-mode tutorial](@tutor:tutor)
+A link to the mnv-tutor-mode tutorial
+A link to [the mnv-tutor-mode tutorial](@tutor:tutor)
 
 ### Codeblocks *codeblocks*
 
-vim-tutor-mode tutorials can include viml sections
+mnv-tutor-mode tutorials can include mnvl sections
 
     ~~~ cmd
     echom "hello"
@@ -145,23 +145,23 @@ is displayed as
 echom "hello"
 ~~~
 
-8. Copy the viml section below
+8. Copy the mnvl section below
 
 
 
 
 
-~~~ viml
+~~~ mnvl
 echom 'the value of &number is'.string(&number)
 ~~~
 
-You can inline viml code using "\`" and "\`{vim}":
+You can inline mnvl code using "\`" and "\`{mnv}":
 
-    \`call myFunction()\`{vim}
+    \`call myFunction()\`{mnv}
 
 is displayed as
 
-    `call myFunction()`{vim}
+    `call myFunction()`{mnv}
 
 [normal](Normal-mode) commands can also be embedded in tutorials.
 
@@ -203,12 +203,12 @@ Commands to run in the system shell can be highlighted by indenting a line
 starting with "$".
 
 ~~~ sh
-    $ vim --version
+    $ mnv --version
 ~~~
 
 ## INTERACTIVE ELEMENTS *interactive*
 
-As visible in this very document, vim-tutor-mode includes some interactive
+As visible in this very document, mnv-tutor-mode includes some interactive
 elements to provide feedback to the user about his progress. If the text in
 these elements satisfies some set condition, a ✓ sign will appear in the gutter
 to the left. Otherwise, a ✗ sign is displayed.

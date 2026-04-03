@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *			Visual Workshop integration by Gordon Prieur
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_BEVAL) || defined(FEAT_PROP_POPUP)
 /*
@@ -96,7 +96,7 @@ find_word_under_cursor(
 	    len = epos->col - spos->col;
 	    if (*p_sel != 'e')
 		len += mb_ptr2len(lbuf + epos->col);
-	    lbuf = vim_strnsave(lbuf + spos->col, len);
+	    lbuf = mnv_strnsave(lbuf + spos->col, len);
 	    lnum = spos->lnum;
 	    col = spos->col;
 	    scol = col;
@@ -110,7 +110,7 @@ find_word_under_cursor(
 	    --emsg_off;
 	    if (len == 0)
 		return FAIL;
-	    lbuf = vim_strnsave(lbuf, len);
+	    lbuf = mnv_strnsave(lbuf, len);
 	}
     }
     else
@@ -162,12 +162,12 @@ get_beval_info(
 		winp, lnump, textp, colp, NULL) == OK)
     {
 # ifdef FEAT_VARTABS
-	vim_free(beval->vts);
+	mnv_free(beval->vts);
 	beval->vts = tabstop_copy((*winp)->w_buffer->b_p_vts_array);
 	if ((*winp)->w_buffer->b_p_vts_array != NULL && beval->vts == NULL)
 	{
 	    if (getword)
-		vim_free(*textp);
+		mnv_free(*textp);
 	    return FAIL;
 	}
 # endif
@@ -245,13 +245,13 @@ bexpr_eval(
     for (cw = firstwin; cw != wp; cw = cw->w_next)
 	++winnr;
 
-    set_vim_var_nr(VV_BEVAL_BUFNR, (long)wp->w_buffer->b_fnum);
-    set_vim_var_nr(VV_BEVAL_WINNR, winnr);
-    set_vim_var_nr(VV_BEVAL_WINID, wp->w_id);
-    set_vim_var_nr(VV_BEVAL_LNUM, (long)lnum);
-    set_vim_var_nr(VV_BEVAL_COL, (long)(col + 1));
-    set_vim_var_string(VV_BEVAL_TEXT, text, -1);
-    vim_free(text);
+    set_mnv_var_nr(VV_BEVAL_BUFNR, (long)wp->w_buffer->b_fnum);
+    set_mnv_var_nr(VV_BEVAL_WINNR, winnr);
+    set_mnv_var_nr(VV_BEVAL_WINID, wp->w_id);
+    set_mnv_var_nr(VV_BEVAL_LNUM, (long)lnum);
+    set_mnv_var_nr(VV_BEVAL_COL, (long)(col + 1));
+    set_mnv_var_string(VV_BEVAL_TEXT, text, -1);
+    mnv_free(text);
 
     use_sandbox = was_set_insecurely(wp, (char_u *)"balloonexpr",
 			    *wp->w_buffer->b_p_bexpr == NUL ? 0 : OPT_LOCAL);
@@ -269,7 +269,7 @@ bexpr_eval(
     else
 	current_sctx = curbuf->b_p_script_ctx[BV_BEXPR];
 
-    vim_free(result);
+    mnv_free(result);
     result = eval_to_string(bexpr, TRUE, TRUE);
 
     // Remove one trailing newline, it is added when the result was a
@@ -287,7 +287,7 @@ bexpr_eval(
     --textlock;
     current_sctx = save_sctx;
 
-    set_vim_var_string(VV_BEVAL_TEXT, NULL, -1);
+    set_mnv_var_string(VV_BEVAL_TEXT, NULL, -1);
     if (result != NULL && result[0] != NUL)
 	post_balloon(beval, result, NULL);
 

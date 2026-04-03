@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *	  Haiku port	by Siarzhuk Zharski
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -13,31 +13,31 @@
 
 #define USE_TERM_CONSOLE
 
-#define USR_VIM_DIR "$BE_USER_SETTINGS/vim"
+#define USR_MNV_DIR "$BE_USER_SETTINGS/mnv"
 
-#define USR_EXRC_FILE	USR_VIM_DIR "/exrc"
-#define USR_EXRC_FILE2	USR_VIM_DIR "/vim/exrc"
-#define USR_VIMRC_FILE	USR_VIM_DIR "/vimrc"
-#define USR_VIMRC_FILE2	USR_VIM_DIR "/vim/vimrc"
-#define USR_GVIMRC_FILE	USR_VIM_DIR "/gvimrc"
-#define USR_GVIMRC_FILE2	USR_VIM_DIR "/vim/gvimrc"
-#define VIMINFO_FILE	USR_VIM_DIR "/viminfo"
+#define USR_EXRC_FILE	USR_MNV_DIR "/exrc"
+#define USR_EXRC_FILE2	USR_MNV_DIR "/mnv/exrc"
+#define USR_MNVRC_FILE	USR_MNV_DIR "/mnvrc"
+#define USR_MNVRC_FILE2	USR_MNV_DIR "/mnv/mnvrc"
+#define USR_GMNVRC_FILE	USR_MNV_DIR "/gmnvrc"
+#define USR_GMNVRC_FILE2	USR_MNV_DIR "/mnv/gmnvrc"
+#define MNVINFO_FILE	USR_MNV_DIR "/mnvinfo"
 
 #ifdef RUNTIME_GLOBAL
 # ifdef RUNTIME_GLOBAL_AFTER
-#  define DFLT_RUNTIMEPATH	USR_VIM_DIR "," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER "," USR_VIM_DIR "/after"
-#  define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER ",$XDG_CONFIG_HOME/vim/after"
-#  define XDG_RUNTIMEPATH_FB	"~/config/settings/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER ",~/config/settings/vim/after"
-#  define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL_AFTER
+#  define DFLT_RUNTIMEPATH	USR_MNV_DIR "," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER "," USR_MNV_DIR "/after"
+#  define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER ",$XDG_CONFIG_HOME/mnv/after"
+#  define XDG_RUNTIMEPATH_FB	"~/config/settings/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER ",~/config/settings/mnv/after"
+#  define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL_AFTER
 # else
-#  define DFLT_RUNTIMEPATH	USR_VIM_DIR "," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after," USR_VIM_DIR "/after"
-#  define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after,$XDG_CONFIG_HOME/vim/after"
-#  define XDG_RUNTIMEPATH_FB	"~/config/settings/vim," RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after,~/config/settings/vim/after"
-#  define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$VIMRUNTIME," RUNTIME_GLOBAL "/after"
+#  define DFLT_RUNTIMEPATH	USR_MNV_DIR "," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after," USR_MNV_DIR "/after"
+#  define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after,$XDG_CONFIG_HOME/mnv/after"
+#  define XDG_RUNTIMEPATH_FB	"~/config/settings/mnv," RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after,~/config/settings/mnv/after"
+#  define CLEAN_RUNTIMEPATH	RUNTIME_GLOBAL ",$MNVRUNTIME," RUNTIME_GLOBAL "/after"
 # endif
 #else
-# define DFLT_RUNTIMEPATH	USR_VIM_DIR ",$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after," USR_VIM_DIR "/after"
-# define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$XDG_CONFIG_HOME/vim/after"
-# define XDG_RUNTIMEPATH_FB	"~/config/settings/vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/config/settings/vim/after"
-# define CLEAN_RUNTIMEPATH	"$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after"
+# define DFLT_RUNTIMEPATH	USR_MNV_DIR ",$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after," USR_MNV_DIR "/after"
+# define XDG_RUNTIMEPATH	"$XDG_CONFIG_HOME/mnv,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,$XDG_CONFIG_HOME/mnv/after"
+# define XDG_RUNTIMEPATH_FB	"~/config/settings/mnv,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,~/config/settings/mnv/after"
+# define CLEAN_RUNTIMEPATH	"$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after"
 #endif

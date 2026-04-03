@@ -1,0 +1,544 @@
+.TH MNV 1 "11 Nisan 2006"
+.SH AD
+mnv \- MNV is not Vim, bir programc�n�n metin d�zenleyicisi
+.SH �ZET
+.br
+.B mnv
+[se�enekler] [dosya ..]
+.br
+.B mnv
+[se�enekler] \-
+.br
+.B mnv
+[se�enekler] \-t etiket
+.br
+.B mnv
+[se�enekler] \-q [hatadosyas�]
+.PP
+.br
+.B ex
+.br
+.B view
+.br
+.B gmnv
+.B gview
+.B emnv
+.B eview
+.br
+.B rmnv
+.B rview
+.B rgmnv
+.B rgview
+.SH TANIM
+.B MNV,
+Vi ile yukar�ya do�ru uyumlu olan bir metin d�zenleyicisidir.
+Her t�r d�z metni d�zenlemede kullan�labilir.
+�zellikle programlar� d�zenlemede yararl�d�r.
+.PP
+Vi �zerine yap�lm�� bir�ok geli�tirme ve iyile�tirmeyi i�erir:
+�ok d�zeyli geri alma, �oklu pencereler ve arabellekler, s�zdizim vurgulama,
+komut sat�r� d�zenleme, dosya ad� tamamlama, �evrimi�i yard�m, g�rsel se�im vb.
+.B MNV
+ve Vi aras�ndaki de�i�ikliklerin bir �zeti i�in ":help vi_diff.txt"
+dosyas�na bir g�z at�n.
+.PP
+.B MNV'i
+�al��t�r�rken gerekli olan yard�m�n �o�u �evrimi�i yard�m sisteminden elde
+edilebilir. Bunun i�in ":help" komutunu kullanabilirsiniz.
+A�a��da �EVR�M��� YARDIM b�l�m�ne bak�n.
+.PP
+Genelde
+.B MNV
+tek bir dosyay� d�zenlemek i�in �u komutla �al��t�r�l�r:
+.PP
+	mnv dosya
+.PP
+Biraz daha a�acak olursak:
+.PP
+	mnv [se�enekler] [dosyalistesi]
+.PP
+E�er dosya listesi sa�lanmam��sa d�zenleyici bo� bir arabellek a�ar.
+Bunun d���nda a�a��daki d�rt se�enekten bir tanesi de bir veya birden �ok
+dosyay� d�zenlemek i�in kullan�labilir.
+.TP 12
+dosya ..
+Dosya adlar�n�n bir listesi.
+Bunlardan ilki ekrana getirilip arabelle�e y�klenir.
+�mle� arabelle�in ilk sat�r�nda konumland�r�l�r.
+Di�er dosyalara ":next" komutu ile ge�ebilirsiniz.
+Ad� tire ile ba�layan bir dosyay� d�zenlemek i�in dosya listesinin ba��na
+"\-\-" koyun.
+.TP
+\-
+D�zenlenecek dosya stdin'den okunur.  Komutlar bir tty olmas� gereken
+stderr'den okunur.
+.TP
+\-t {etiket}
+D�zenlenecek dosya ve bu dosyan�n ba�lang�� imle� konumu bir "etiket"e
+dayan�r, bir t�r b�rakt���n�z konumu belirten bir ayra� gibi.
+Etiket dosyas�nda {etiket} aran�r, ili�kin dosya �u anki dosya olur ve
+ili�kin komut �al��t�r�l�r.
+Bu genelde C programlar� i�in kullan�l�r, {etiket} bu durumda bir i�lev
+olabilir.
+Bunun sonucunda bu i�levi i�eren dosya o anki dosya olur ve imle� bu
+i�levin ba�lang�c�na konumland�r�l�r.
+Ek bilgi i�in: ":help tag\-commands".
+.TP
+\-q [hatadosyas�]
+H�zl� d�zelt kipinde ba�lat
+[hatadosyas�] okunur ve ilk hata g�r�nt�lenir.
+E�er [hatadosyas�] sa�lanmazsa dosya ad� 'errorfile' se�ene�inden al�n�r
+(�ntan�ml� olarak Amiga i�in "AztecC.Err", di�er sistemlerde "errors.err").
+Sonraki hatalara ":cn" komutu ile ge�ilebilir.
+Ek bilgi i�in: ":help quickfix".
+.PP
+.B MNV
+girilen komutun ad�na g�re de�i�ik bi�imde davran�r (�al��t�r�labilir h�l�
+ayn� dosya olarak kalabilir).
+.TP 10
+mnv
+"Normal" kip, standart �al��ma bi�imi.
+.TP
+ex
+Ex kipinde ba�lat.
+"\-e" de�i�keni ile de ba�lat�labilir.
+Normal kipe ":vi" komutu ile ge�ilebilir.
+.TP
+view
+Saltokunur kipte ba�lat.  Bu kipte dosya yaz�m�na izin verilmez.
+"\-R" de�i�keni ile de ba�lat�labilir.
+.TP
+gmnv gview
+Grafik arabirim s�r�m�.
+Yeni bir pencere a�ar.
+"\-g" de�i�keni ile de ba�lat�labilir.
+.TP
+emnv eview
+Kolay kipte ba�lat�lan grafik arabirim s�r�m�.
+Yeni bir pencere a�ar.
+"\-y" de�i�keni ile de ba�lat�labilir.
+.TP
+rmnv rview rgmnv rgview
+Yukar�daki ile ayn�, ancak s�n�rlamalar i�erir.  Kabuk komutlar�
+�al��t�r�lamaz veya
+.B MNV
+ask�ya al�namaz.
+"\-Z" de�i�keni ile de ba�lat�labilir.
+.SH SE�ENEKLER
+Se�enekler bir s�ra g�zetmeksizin dosya adlar�ndan �nce veya sonra
+kullan�labilir. 
+Herhangi bir de�i�ken i�ermeyen se�enekler bir tirenin ard�nda s�ralanabilir.
+.TP 12
++[num]
+�lk dosya i�in imle� "num" sat�r�nda konumland�r�lacakt�r.
+E�er "num" eksikse imle� en son sat�rda ba�lar.
+.TP
++/{dizge}
+�lk dosya i�in imle� {dizgi}'nin ilk e�le�mesinin oldu�u sat�rda
+konumland�r�lacakt�r.
+Kullan�labilir arama dizgileri i�in ":help search\-pattern" yaz�n.
+.TP
++{komut}
+.TP
+\-c {komut}
+�lk dosya okunduktan sonra {komut} �al��t�r�l�r.
+{komut} bir Ex komutu olarak i�letilir.
+E�er {komut} bo�luk i�eriyorsa �ift t�rnak i�erisine al�nmal�d�r (bu
+kullan�lan kabu�a ba�l�d�r).
+�rnek: mnv "+set si" main.c
+.br
+Not: 10 taneye kadar "+" veya "\-c" komutu kullanabilirsiniz.
+.TP
+\-S {dosya}
+�lk dosya okunduktan sonra {dosya} kaynak al�n�r.
+\-c "source {dosya}" bu komutun e�de�eridir.
+{dosya}, '\-' ile ba�layamaz.
+E�er {dosya} sa�lanmazsa "Session.mnv" kullan�l�r (yaln�zca \-S son
+de�i�ken olarak kullan�ld���nda i�e yarar).
+.TP
+\-\-cmd {komut}
+"\-c" komutu gibi, ancak komut herhangi bir mnvrc dosyas�n� i�letmeden
+�nce �al��t�r�l�r.
+"\-c" komutundan ba��ms�z olarak bu komutlardan 10 taneye kadar
+�al��t�rabilirsiniz.
+.TP
+\-A
+E�er
+.B MNV
+sa�dan sola yaz�lan dosyalar� ve Arap�a klavye dizilimini kullanabilmesi i�in
+ARAP�A deste�i ile derlenmi�e bu se�enek
+.B MNV'i
+Arap�a kipinde ba�lat�r ('arabic' se�ene�i a��l�r).  Aksi durumda
+.B MNV
+hata verip ��kar.
+.TP
+\-b
+�kili kip.
+Bir �al��t�r�labiliri veya ikili dosyay� d�zenlemeye olanacak sa�layacak
+birka� se�enek ayarlan�r.
+.TP
+\-C
+Uyumlu kip. 'compatible' se�ene�ini ayarlar.
+Bu kipte
+.B MNV
+bir .mnvrc dosyas� var olsa bile genelde Vi gibi davran�r.
+.TP
+\-d
+Kar��la�t�rma kipinde ba�lat.
+Bir, iki, �� veya d�rt adet dosya ad� de�i�keni olmal�d�r.
+.B MNV
+b�t�n dosyalar� yan yana a�ar ve aralar�ndaki de�i�iklikleri g�sterir.
+mnvdiff(1) gibi �al���r.
+.TP
+\-d {ayg�t}
+{ayg�t}'� bir u�birim olarak kullanmak i�in a�ar.
+Yaln�zca Amiga'da �al���r.
+�rnek:
+"\-d con:20/30/600/150".
+.TP
+\-D
+Hata ay�klama kipi.  Bir beti�in ilk komutunu �al��t�r�rken hata ay�klama
+kipine ge�er.
+.TP
+\-e
+.B MNV'i
+Ex kipinde ba�lat�r, "ex" �al��t�r�labiliri ile ayn� i�levi g�r�r.
+.TP
+\-E
+.B MNV'i
+geli�tirilmi� Ex kipinde ba�lat�r, "exim" �al��t�r�labiliri ile ayn�
+i�levi g�r�r.
+.TP
+\-f
+�nplan.  Grafik arabirim s�r�m� i�in
+.B MNV
+ba�lad��� kabuktan ayr�lmayacak ve kendisini �atallamayacakt�r.
+Amiga'da,
+.B MNV
+yeni bir pencere a�mak i�in yeniden ba�lat�lmaz.
+Bu se�enek
+.B MNV
+d�zenleme oturumunun bitmesini bekleyecek bir program taraf�ndan
+ba�lat�ld���nda kullan�lmal�d�r (�rn. mail).
+Amiga'da ":sh" ve ":!" komutlar� �al��mayacakt�r.
+.TP
+\-\-nofork
+�nplan.  Grafik arabirim s�r�m� i�in
+.B MNV
+ba�lad��� kabuktan ayr�lmayacak ve kendisini �atallamayacakt�r.
+.TP
+\-F
+E�er
+.B MNV
+sa�dan sola yaz�lan dosyalar� ve Fars�a klavye dizilimini kullanabilmesi i�in
+FKMAP deste�i ile derlenmi�se, bu se�enek
+.B MNV'i
+Fars�a kipinde ba�lat�r ('fkmap' ve 'rightleft' se�enekleri a��l�r).
+Aksi durumda
+.B MNV
+hata verip ��kar.
+.TP
+\-g
+E�er
+.B MNV
+grafik arabirim deste�i ile derlenmi�se bu se�enek grafik arabirimi �al��t�r�r.
+E�er grafik arabirim deste�i eklenmemi�se
+.B MNV
+hata verir ve ��kar.
+.TP
+\-h
+Komut sat�r� de�i�kenleri ve se�enekleri �zerine biraz yard�m sa�lar.
+Bu komuttan sonra
+.B MNV
+��kar.
+.TP
+\-H
+E�er
+.B MNV
+sa�dan sola yaz�lan dosyalar� ve �branca klavye dizilimini kullanabilmesi i�in
+RIGHTLEFT deste�i ile derlenmi�se, bu se�enek 
+.B MNV'i
+�branca kipinde ba�lat�r ('hkmap' ve 'rightleft' se�enekleri a��l�r).
+Aksi durumda
+.B MNV
+hata verir ve ��kar.
+.TP
+\-i {mnvinfo}
+�ntan�ml� "~/.mnvinfo" dosyas� yerine kullan�lacak olan mnvinfo dosyas�n�
+belirtmek i�in kullan�l�r.
+Bu komut ayn� zamanda mnvinfo kullan�m�n� atlamak i�in de kullan�labilir.
+Bunun i�in dosya ad� yerine "NONE" vermeniz yeterlidir.
+.TP
+\-L
+\-r ile ayn�.
+.TP
+\-l
+Lisp kipi.
+Bu de�i�ken 'lisp' ve 'showmatch' se�eneklerini a�ar.
+.TP
+\-m
+Dosya yazma se�ene�i kapal�d�r.
+\'write' se�ene�ini s�f�rlar.
+Arabelle�i h�l� de�i�tirebilirsiniz, ancak dosyay� yazmak olanakl� de�ildir.
+.TP
+\-M
+De�i�ikliklere izin verilmez. 'modifiable' ve 'write' se�enekleri kapat�l�r,
+b�ylece de�i�iklik yap�lamaz ve dosyalar yaz�lamaz.
+Bu se�enekleri yeniden a��p de�i�iklik yapmay� etkinle�tirebilirsiniz.
+.TP
+\-N
+Uyumsuz kip. 'no-compatible' se�ene�ini s�f�rlar.
+Bu se�enekle birlikte
+.B MNV
+biraz daha d�zg�nce �al���r, ancak bir .mnvrc dosyas� olmamas�na ra�men
+Vi ile daha az uyumludur.
+.TP
+\-n
+Bir takas dosyas� kullan�lmaz.
+��kme sonras� kurtarma olanakl� olmayacakt�r.
+E�er �ok yava� bir ortamda dosya �al���yorsan�z (�rn. disket) yararl� olabilir.
+":set uc=0" ile de yap�labilir.
+Geri almak i�in ":set uc=200" yap�n.
+.TP
+\-nb
+NetBeans i�in bir d�zenleyici sunucusu olur.  Ayr�nt�lar i�in belgelere bak�n.
+.TP
+\-o[N]
+N say�da pencereyi �st �ste a�ar.
+N verilmezse, her dosya i�in bir pencere a�ar.
+.TP
+\-O[N]
+N say�da pencereyi yan yana a�ar.
+N verilmezse, her dosya i�in bir pencere a�ar.
+.TP
+\-p[N]
+N say�da sekme a�ar.
+N verilmezse, her dosya i�in bir sekme a�ar.
+.TP
+\-R
+Saltokunur kip.
+\'readonly' se�ene�i a��l�r.
+Arabelle�i h�l� de�i�tirebilirsiniz, ancak yanl��l�kla dosyan�n �zerine
+yazmaktan sizi korur.
+Dosyan�n �zerine yazmak istemiyorsan�z, Ex komutuna bir �nlem imi ekleyin,
+�rn. ":w!".
+\-R se�ene�i ayn� zamanda \-n se�ene�ini de uygular (yukar�da bak�n).
+\'readonly' se�ene�i ":set noro" ile s�f�rlanabilir.
+Ek bilgi i�in: ":help 'readonly'".
+.TP
+\-r
+Takas dosyalar�n� i�erdikleri kurtarma bilgilerini g�sterecek bi�imde listeler.
+.TP
+\-r {dosya}
+Kurtarma kipi.
+��km�� bir d�zenleme oturumunu takas dosyas�n� kullanarak kurtar�r.
+Takas dosyas� dosya ile ayn� ada iye olup sonuna ".swp" eklenmi�tir.
+Ek bilgi i�in: ":help recovery".
+.TP
+\-s
+Sessiz kip. Yaln�zca "Ex" olarak ba�lat�ld���nda veya "\-e" se�ene�i
+"\-s" se�ene�inden �nce verildi�inde �al���r.
+.TP
+\-s {betikgir}
+{betikgir} betik dosyas� okunur.
+Dosyadaki karakterler onlar� siz girmi�siniz gibi kabul edilir.
+Ayn�s� ":source! {betikgir}" komutu ile de ger�ekle�tirilebilir.
+E�er dosyan�n sonuna d�zenleyici ��kmadan �nce gelinirse, sonraki karakterler
+klavyeden okunur.
+.TP
+\-T {u�birim}
+.B MNV'e
+kulland���n�z u�birimin ad�n� s�yler.
+Yaln�zca kendili�inden okunamazsa gereklidir.
+.B MNV'in
+tan�d��� bir u�birim olmal�d�r veya termcap veya terminfo dosyas�nda
+tan�ml� olmal�d�r.
+.TP
+\-u {mnvrc}
+�lklendirme i�in {mnvrc} dosyas�ndaki komutlar� kullan.
+Di�er t�m ilklendirmeler atlan�r.
+Bunu �zel t�rde dosyalar� d�zenlemek i�in kullan�n.
+Dosya ad� olarak "NONE" verilirse t�m �zelle�tirmeler atlan�r.
+Ek bilgi i�in mnv i�inde ":help initialization" b�l�m�ne bak�n.
+.TP
+\-U {gmnvrc}
+Grafik arabirim ilklendirmesi i�in {gmnvrc} dosyas�ndaki komutlara bak�n.
+Di�er t�m grafik arabirim ilklendirmeleri atlan�r.
+Dosya ad� olarak "NONE" verilirse t�m �zelle�tirmeler atlan�r.
+Ek bilgi i�in mnv i�inde ":help gui\-init" b�l�m�ne bak�n.
+.TP
+\-V[N]
+S�zl� anlat�m.  Hangi dosyalar�n kaynak al�nd���n� ve mnvinfo dosyas�ndan
+nelerin okundu�unu yazd�r�r.  'verbose' i�in iste�e ba�l� N se�ene�i 
+kullan�labilir. �ntan�ml� say� 10'dur.
+.TP
+\-v
+.B MNV'i
+"vi" yazarak ba�lat�rm�� gibi Vi kipinde ba�lat�r.  Bu yaln�zca
+�al��t�r�labilir "ex" oldu�unda bir i�e yarar.
+.TP
+\-w {betik��k}
+Girdi�iniz t�m karakterler siz
+.B MNV'den
+��kana de�in {betik��k} dosyas�nda saklan�r.
+Bu "mnv \-s" veya ":source" komutu ile kullan�lacak bir betik yaratmaya yarar.
+E�er {betik��k} dosyas� varsa karakterler dosyaya eklenir.
+.TP
+\-W {betik��k}
+\-w gibi, ancak var olan bir dosyan�n �zerine yazar.
+.TP
+\-x
+Dosya yazarken �ifreleme kullan�r.  Bir �ifre girmeniz istenecektir.
+.TP
+\-X
+X sunucusuna ba�lanmaz.MNMNV'in u�birimde ba�lama s�resini azalt�r ancak pencere ba�l���
+ve pano kullan�lamaz.
+.TP
+\-y
+.B MNV'i
+"emnv" veya "eview" yazarak ba�lat�rm�� gibi kolay kipte ba�lat�r.
+.B MNV'i
+di�er t�kla ve yaz d�zenleyicileri gibi �al��t�r�r.
+.TP
+\-Z
+K�s�tl� kip.  Program "r" yazarak ba�lat�lm�� gibi davran�r.
+.TP
+\-\-
+Se�eneklerin bitti�ini belirtir.
+Bundan sonraki de�i�kenler art�k bir dosya ad� olarak i�letilir.
+Ayn� zamanda '\-' ile ba�layan bir dosyay� tan�tmak i�in de kullan�labilir.
+.TP
+\-\-echo\-wid
+Yaln�zca GTK grafik arabirimi: Pencere numaras�n� stdout'a yank�la.
+.TP
+\-\-help
+Yard�m iletisini yazd�r�r ve ��kar, "\-h" gibi.
+.TP
+\-\-literal
+Dosya ad� de�i�kenlerini ger�ek anlamda i�let, joker karakterlerini
+geni�letme.  Bunun kabu�un karakterleri kendili�inden geni�letti�i Unix'te
+bir etkisi bulunmamaktad�r.
+.TP
+\-\-noplugin
+Eklentileri y�kleme.  "\-u NONE" da ayn� i�levi g�r�r.
+.TP
+\-\-remote
+Bir MNV sunucusuna ba�lan ve geri kalan de�i�kenlerde belirtilen dosyalar�
+d�zenle. E�er bir sunucu bulunamazsa bir uyar� verilir ve dosyalar �u anki
+MNV'de d�zenlenir.
+.TP
+\-\-remote\-expr {ifade}
+Bir MNV sunucusuna ba�lan ve {ifade}'yi de�erlendirip sonucu stdout'a yazd�r.
+.TP
+\-\-remote\-send {anahtarlar}
+Bir MNV sunucusuna ba�lan ve ona {anahtarlar} g�nder.
+.TP
+\-\-remote\-silent
+\-\-remote gibi, ancak bir sunucu bulunamazsa uyar� vermez.
+.TP
+\-\-remote\-wait
+\-\-remote gibi, ancak MNV dosyalar d�zenlenene kadar ��kmaz.
+.TP
+\-\-remote\-wait\-silent
+\-\-remote\-wait gibi, ancak bir sunucu bulunamazsa uyar� vermez.
+.TP
+\-\-serverlist
+Bulunabilecek b�t�MNMNV sunucular�n� listeler.
+.TP
+\-\-servername {ad}
+{ad}'� bir sunucu ad� olarak kullan�r.  Bir \-\-remote de�i�keni ve
+ba�lanaca�� sunucunun ad� ile kullan�lmad���MNVrece �u anki MNV i�in
+kullan�l�r.
+.TP
+\-\-socketid {id}
+Yaln�zca GTK grafik arabirimi: GtkPlug mekanizmas�n� kullanarak gmnv'i ba�ka
+bir pencerede �al��t�r.
+.TP
+\-\-version
+S�r�m bilgisini yazd�r�r ve ��kar.
+.SH �EVR�M��� YARDIM
+.B MNV
+i�inde ":help" yazarak ba�lay�n.
+Belirli bir konu �zerine yard�m almak i�in ":help subject" yaz�n.
+�rne�in: "ZZ" komutu �zerine bilgi almak i�in ":help ZZ" yaz�n.
+<Tab> ve CTRL-D kullanarak konular� tamamlay�n (":help cmdline\-completion").
+Bir konumdan di�erini atlamak i�in etiketler mevcuttur (bir t�r k�pr� gibi),
+ek bilgi i�in ":help").
+T�m belgelendirmeyi bu bi�imde okuyabilirsiniz, �rne�in: ":help syntax.txt".
+":help syntax.txt".
+.SH DOSYALAR
+.TP 15
+/usr/local/lib/mnv/doc/*.txt
+.B MNV
+belgelendirme dosyalar�.
+T�m listeyi g�rmek i�in ":help doc\-file\-list" yaz�n.
+.TP
+/usr/local/lib/mnv/doc/tags
+Belgelendirme i�inde veri bulmak i�in kullan�lan etiketler dosyas�.
+.TP
+/usr/local/lib/mnv/syntax/syntax.mnv
+Sistem geneli s�zdizim ilklendirmeleri.
+.TP
+/usr/local/lib/mnv/syntax/*.mnv
+Programlama dilleri i�in s�zdizim dosyalar�.
+.TP
+/usr/local/lib/mnv/mnvrc
+Sistem geneli
+.B MNV
+ilklendirmeleri.
+.TP
+~/.mnvrc
+Sizin ki�isel
+.B MNV
+ilklendirmeleriniz.
+.TP
+/usr/local/lib/mnv/gmnvrc
+Sistem geneli gmnv ilklendirmeleri.
+.TP
+~/.gmnvrc
+Sizin ki�isel gmnv ilklendirmeleriniz.
+.TP
+/usr/local/lib/mnv/optwin.mnv
+":options" komutu i�in kullan�lan betik, g�rsel se�enek ayarlar�.
+.TP
+/usr/local/lib/mnv/menu.mnv
+gmnv i�in sistem geneli men� ilklendirmeleri.
+.TP
+/usr/local/lib/mnv/bugreport.mnv
+Hata raporu olu�turmak i�in kullan�lan betik. Ek bilgi i�in: ":help bugs".
+.TP
+/usr/local/lib/mnv/filetype.mnv
+Dosya t�r�n� ad�ndan tan�yan betik. Ek bilgi i�in: ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/scripts.mnv
+Dosya t�r�n� i�eri�inden tan�yan betik. Ek bilgi i�in: ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/print/*.ps
+PostScript yazd�rmas� i�in kullan�lan dosyalar.
+.PP
+En g�ncel bilgiler i�in V�M ana sayfas�n� ziyaret edin:
+.br
+<URL:http://www.mnv.org/>
+.SH AYRICA BAKINIZ
+mnvtutor(1)
+.SH YAZAR
+.B MNV'in
+b�y�k �o�unlu�u Bram Moolenaar taraf�ndan ba�kalar�n�n kayda de�er
+yard�mlar�yla yaz�lm��t�r.
+Ek bilgi i�in
+.B MNV
+i�inde ":help credits" yaz�n.
+.br
+.B MNV
+Stevie tabanl�d�r, yazarlar�: Tim Thompson,
+Tony Andrews ve G.R. (Fred) Walter.
+Orijinal koddan geriye pek bir �ey kalmad���n� s�ylemek yanl�� olmaz.
+.SH HATALAR
+Bilinen hatalar�n bir listesi i�in ":help todo" yaz�n.
+.PP
+Unutmay�n ki, ba�kalar� taraf�ndan hata olarak de�erlendirilebilecek konular�n
+bir �o�u Vi'nin davran��lar�na sad�k kal�nmas� nedeniyle vard�r. Yine de
+baz� �eylerin "Vi bunu de�i�ik bi�imde yap�yor" diye hata olabilece�ini
+d���n�yorsan�z, "vi_diff.txt" dosyas�n� dikkatleMNVuyun (veya MNV i�inde
+:help vi_diff.txt yaz�n.
+Ek olarak 'compatible' ve 'cpoptions' se�eneklerine de bakabilirsiniz.

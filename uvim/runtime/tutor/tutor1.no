@@ -1,18 +1,18 @@
 ===============================================================================
-= V e l k o m m e n   t i l   i n n f ø r i n g e n   i   V i m  --  Ver. 1.7 =
+= V e l k o m m e n   t i l   i n n f ø r i n g e n   i   M N V  --  Ver. 1.7 =
 ===============================================================================
 
-     Vim er en meget kraftig editor med mange kommandoer, alt for mange til å
+     MNV er en meget kraftig editor med mange kommandoer, alt for mange til å
      kunne gå gjennom alle i en innføring som denne. Den er beregnet på å
      sette deg inn i bruken av nok kommandoer så du vil være i stand til lett
-     å kunne bruke Vim som en editor til alle formål.
+     å kunne bruke MNV som en editor til alle formål.
 
      Tiden som kreves for å gå gjennom denne innføringen tar ca. 25-30
      minutter, avhengig av hvor mye tid du bruker til eksperimentering.
 
      MERK:
      Kommandoene i leksjonene vil modifisere teksten. Lag en kopi av denne
-     filen som du kan øve deg på (hvis du kjørte «vimtutor»-kommandoen, er
+     filen som du kan øve deg på (hvis du kjørte «mnvtutor»-kommandoen, er
      dette allerede en kopi).
 
      Det er viktig å huske at denne innføringen er beregnet på læring gjennom
@@ -45,7 +45,7 @@ Merk: Piltastene skal også virke. Men ved å bruke hjkl vil du være i stand ti
       å bevege markøren mye raskere når du er blitt vant til det. Helt sant!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			  Leksjon 1.1.2: AVSLUTTE VIM
+			  Leksjon 1.1.2: AVSLUTTE MNV
 
 
   !! MERK: Før du utfører noen av punktene nedenfor, les hele leksjonen!!
@@ -56,7 +56,7 @@ Merk: Piltastene skal også virke. Men ved å bruke hjkl vil du være i stand ti
      Dette avslutter editoren og FORKASTER alle forandringer som du har gjort.
 
   3. Når du ser kommandolinjen i skallet, skriv kommandoen som startet denne
-     innføringen. Den er:   vimtutor <ENTER>
+     innføringen. Den er:   mnvtutor <ENTER>
 
   4. Hvis du er sikker på at du husker dette, utfør punktene 1 til 3 for å
      avslutte og starte editoren på nytt.
@@ -146,13 +146,13 @@ MERK: Når du går gjennom innføringen, ikke bare prøv å huske kommandoene, m
 
   1. Avslutt denne innføringen som du gjorde i leksjon 1.1.2:  :q!
 
-  2. Skriv denne kommandoen på kommandolinja:  vim tutor <ENTER>
-     «vim» er kommandoen for å starte Vim-editoren, «tutor» er navnet på fila
+  2. Skriv denne kommandoen på kommandolinja:  mnv tutor <ENTER>
+     «mnv» er kommandoen for å starte MNV-editoren, «tutor» er navnet på fila
      som du vil redigere. Bruk en fil som kan forandres.
 
   3. Sett inn og slett tekst som du lærte i de foregående leksjonene.
 
-  4. Lagre filen med forandringene og avslutt Vim med:	:wq <ENTER>
+  4. Lagre filen med forandringene og avslutt MNV med:	:wq <ENTER>
 
   5. Start innføringen på nytt og flytt ned til oppsummeringen som følger.
 
@@ -166,9 +166,9 @@ MERK: Når du går gjennom innføringen, ikke bare prøv å huske kommandoene, m
   1. Markøren beveges ved hjelp av piltastene eller hjkl-tastene.
 	 h (venstre)	 j (ned)     k (opp)	 l (høyre)
 
-  2. For å starte Vim fra skall-kommandolinjen, skriv:	vim FILNAVN <ENTER>
+  2. For å starte MNV fra skall-kommandolinjen, skriv:	mnv FILNAVN <ENTER>
 
-  3. For å avslutte Vim, skriv:  <ESC> :q! <ENTER>  for å forkaste endringer.
+  3. For å avslutte MNV, skriv:  <ESC> :q! <ENTER>  for å forkaste endringer.
 		   ELLER skriv:  <ESC> :wq <ENTER>  for å lagre forandringene.
 
   4. For å slette tegnet under markøren, trykk:  x
@@ -197,7 +197,7 @@ MERK: Når du trykker <ESC> går du til normalmodus eller du avbryter en uønske
   4. Trykk  dw	og ordet vil forsvinne.
 
 MERK: Bokstaven  d  vil komme til syne på den nederste linjen på skjermen når
-      du skriver den. Vim venter på at du skal skrive w . Hvis du ser et annet
+      du skriver den. MNV venter på at du skal skrive w . Hvis du ser et annet
       tegn enn	d  har du skrevet noe feil; trykk <ESC> og start på nytt.
 
 ---> Det er agurk tre ord eple som ikke hører pære hjemme i denne setningen.
@@ -374,7 +374,7 @@ MERK: Et antall mellom operatoren  d  og bevegelsen virker på samme måte som �
 
   1. Flytt markøren til den første linjen med ---> nedenfor.
 
-  2. Trykk  dd	for å slette linjen og lagre den i et Vim-register.
+  2. Trykk  dd	for å slette linjen og lagre den i et MNV-register.
 
   3. Flytt markøren til c)-linjen, OVER posisjonen linjen skal settes inn.
 
@@ -636,7 +636,7 @@ MERK: Alle «:»-kommandoer må avsluttes med <ENTER>. Fra dette punktet er det
      sjekke dette, skriv  :!dir  eller	:!ls  igjen for å se innholdet av
      katalogen.
 
-Merk: Hvis du nå hadde avsluttet Vim og startet på nytt igjen med «vim TEST»,
+Merk: Hvis du nå hadde avsluttet MNV og startet på nytt igjen med «mnv TEST»,
       ville filen vært en eksakt kopi av innføringen da du lagret den.
 
   5. Fjern filen ved å skrive  :!rm TEST  hvis du er på et Unix-lignende
@@ -658,7 +658,7 @@ Merk: Hvis du nå hadde avsluttet Vim og startet på nytt igjen med «vim TEST»
   4. Trykk  w TEST  , der TEST er et filnavn som ikke finnes enda. Kontroller
      at du ser	:'<,'>w TEST  før du trykker Enter.
 
-  5. Vim vil skrive de valgte linjene til filen TEST. Bruk  :!dir  eller  :!ls
+  5. MNV vil skrive de valgte linjene til filen TEST. Bruk  :!dir  eller  :!ls
      for å se den. Ikke slett den enda! Vi vil bruke den i neste leksjon.
 
 MERK: Ved å trykke  v  startes visuelt valg. Du kan flytte markøren rundt for
@@ -699,7 +699,7 @@ MERK: Du kan også lese utdataene av en ekstern kommando. For eksempel,	:r !ls
 	  :!dir		   :!ls		  - List filene i katalogen.
 	  :!del FILNAVN    :!rm FILNAVN   - Slett filen FILNAVN.
 
-  2.  :w FILNAVN  skriver den nåværende Vim-filen disken med navnet FILNAVN .
+  2.  :w FILNAVN  skriver den nåværende MNV-filen disken med navnet FILNAVN .
 
   3.  v  bevegelse  :w FILNAVN	lagrer de visuelt valgte linjene til filen
      FILNAVN.
@@ -855,7 +855,7 @@ Merk: Hvis du vil ignorere store/små bokstaver for kun en søkekommando, bruk
 
 		   ** Bruk det innebygde hjelpesystemet. **
 
-  Vim har et omfattende innebygget hjelpesystem. For å starte det, prøv en av
+  MNV har et omfattende innebygget hjelpesystem. For å starte det, prøv en av
   disse måtene:
     - Trykk Hjelp-tasten (hvis du har en)
     - Trykk F1-tasten (hvis du har en)
@@ -865,7 +865,7 @@ Merk: Hvis du vil ignorere store/små bokstaver for kun en søkekommando, bruk
   Skriv  CTRL-W CTRL-W	for å hoppe fra et vindu til et annet
   Skriv  :q <ENTER>	for å lukke hjelpevinduet.
 
-  Du kan få hjelp for omtrent alle temaer om Vim ved å skrive et parameter til
+  Du kan få hjelp for omtrent alle temaer om MNV ved å skrive et parameter til
   «:help»-kommandoen. Prøv disse (ikke glem å trykke <ENTER>):
 
     :help w
@@ -876,45 +876,45 @@ Merk: Hvis du vil ignorere store/små bokstaver for kun en søkekommando, bruk
 		     Leksjon 1.7.2: LAG ET OPPSTARTSSKRIPT
 
 
-			** Slå på funksjoner i Vim **
+			** Slå på funksjoner i MNV **
 
-  Vim har mange flere funksjoner enn Vi, men flesteparten av dem er slått av
+  MNV har mange flere funksjoner enn Vi, men flesteparten av dem er slått av
   som standard. For å begynne å bruke flere funksjoner må du lage en
-  «vimrc»-fil.
+  «mnvrc»-fil.
 
-  1. Start redigeringen av «vimrc»-filen. Dette avhenger av systemet ditt:
-	:e ~/.vimrc	  for Unix
-	:e ~/_vimrc	  for MS Windows
+  1. Start redigeringen av «mnvrc»-filen. Dette avhenger av systemet ditt:
+	:e ~/.mnvrc	  for Unix
+	:e ~/_mnvrc	  for MS Windows
 
-  2. Les inn eksempelfilen for «vimrc»:
-	:r $VIMRUNTIME/vimrc_example.vim
+  2. Les inn eksempelfilen for «mnvrc»:
+	:r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Lagre filen med:
 	:w
 
-  Neste gang du starter Vim vil den bruke syntaks-utheving. Du kan legge til
-  alle dine foretrukne oppsett i denne «vimrc»-filen.
-  For mer informasjon, skriv  :help vimrc-intro
+  Neste gang du starter MNV vil den bruke syntaks-utheving. Du kan legge til
+  alle dine foretrukne oppsett i denne «mnvrc»-filen.
+  For mer informasjon, skriv  :help mnvrc-intro
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			   Leksjon 1.7.3: FULLFØRING
 
 
 	      ** Kommandolinjefullføring med CTRL-D og <TAB> **
 
-  1. Vær sikker på at Vim ikke er i Vi-kompatibel modus:  :set nocp
+  1. Vær sikker på at MNV ikke er i Vi-kompatibel modus:  :set nocp
 
   2. Se hvilke filer som er i katalogen:  :!ls	eller  :!dir
 
   3. Skriv starten på en kommando:  :e
 
-  4. Trykk  CTRL-D  og Vim vil vise en liste over kommandoer som starter med
+  4. Trykk  CTRL-D  og MNV vil vise en liste over kommandoer som starter med
      «e».
 
-  5. Trykk  <TAB>  og Vim vil fullføre kommandonavnet til «:edit».
+  5. Trykk  <TAB>  og MNV vil fullføre kommandonavnet til «:edit».
 
   6. Legg til et mellomrom og starten på et eksisterende filnavn:  :edit FIL
 
-  7. Trykk <TAB>. Vim vil fullføre navnet (hvis det er unikt).
+  7. Trykk <TAB>. MNV vil fullføre navnet (hvis det er unikt).
 
 MERK: Fullføring fungerer for mange kommandoer. Prøv ved å trykke CTRL-D og
       <TAB>. Det er spesielt nyttig for bruk sammen med  :help .
@@ -930,7 +930,7 @@ MERK: Fullføring fungerer for mange kommandoer. Prøv ved å trykke CTRL-D og
 
   4. Trykk  :q	for å lukke hjelpevinduet.
 
-  5. Opprett et vimrc-oppstartsskript for å lagre favorittvalgene dine.
+  5. Opprett et mnvrc-oppstartsskript for å lagre favorittvalgene dine.
 
   6. Når du skriver en «:»-kommando, trykk CTRL-D for å se mulige
      fullføringer. Trykk <TAB> for å bruke en fullføring.
@@ -943,31 +943,31 @@ MERK: Fullføring fungerer for mange kommandoer. Prøv ved å trykke CTRL-D og
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Her slutter innføringen i Vim. Den var ment som en rask oversikt over
+  Her slutter innføringen i MNV. Den var ment som en rask oversikt over
   editoren, akkurat nok til å la deg sette i gang med enkel bruk. Den er på
-  langt nær komplett, da Vim har mange flere kommandoer. Les bruksanvisningen
+  langt nær komplett, da MNV har mange flere kommandoer. Les bruksanvisningen
   ved å skrive	:help user-manual  .
 
   For videre lesing og studier, kan denne boken anbefales:
-      «Vim - Vi Improved» av Steve Oualline
+      «MNV - MNV is not Vim» av Steve Oualline
       Utgiver: New Riders
-  Den første boken som er fullt og helt dedisert til Vim. Spesielt nyttig for
+  Den første boken som er fullt og helt dedisert til MNV. Spesielt nyttig for
   nybegynnere. Inneholder mange eksempler og illustrasjoner.
   Se https://iccf-holland.org/click5.html
 
-  Denne boken er eldre og handler mer om Vi enn Vim, men anbefales også:
+  Denne boken er eldre og handler mer om Vi enn MNV, men anbefales også:
       «Learning the Vi Editor» av Linda Lamb
       Utgiver: O'Reilly & Associates Inc.
   Det er en god bok for å få vite omtrent hva som helst om Vi.
-  Den sjette utgaven inneholder også informasjon om Vim.
+  Den sjette utgaven inneholder også informasjon om MNV.
 
   Denne innføringen er skrevet av Michael C. Pierce og Robert K. Ware,
   Colorado School of Mines med idéer av Charles Smith, Colorado State
   University. E-mail: bware@mines.colorado.edu .
 
-  Modifisert for Vim av Bram Moolenaar.
-  Oversatt av Øyvind A. Holm. E-mail: vimtutor _AT_ sunbase.org
+  Modifisert for MNV av Bram Moolenaar.
+  Oversatt av Øyvind A. Holm. E-mail: mnvtutor _AT_ sunbase.org
   Id: tutor.no 406 2007-03-18 22:48:36Z sunny
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-vim: set ts=8 :
+mnv: set ts=8 :

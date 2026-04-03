@@ -7,7 +7,7 @@
  *  - Yasuhiro Matsumoto
  *
  * Copyright (C) 2013 MURAOKA Taro <koron.kaoriya@gmail.com>
- * THIS FILE IS DISTRIBUTED UNDER THE VIM LICENSE.
+ * THIS FILE IS DISTRIBUTED UNDER THE MNV LICENSE.
  */
 
 #define WIN32_LEAN_AND_MEAN
@@ -65,7 +65,7 @@
 #endif
 
 #ifdef DYNAMIC_DIRECTX
-extern "C" HINSTANCE vimLoadLib(const char *name);
+extern "C" HINSTANCE mnvLoadLib(const char *name);
 
 typedef int (WINAPI *PGETUSERDEFAULTLOCALENAME)(LPWSTR, int);
 typedef HRESULT (WINAPI *PD2D1CREATEFACTORY)(D2D1_FACTORY_TYPE,
@@ -1278,8 +1278,8 @@ DWrite_Init(void)
 {
 #ifdef DYNAMIC_DIRECTX
     // Load libraries.
-    hD2D1DLL = vimLoadLib("d2d1.dll");
-    hDWriteDLL = vimLoadLib("dwrite.dll");
+    hD2D1DLL = mnvLoadLib("d2d1.dll");
+    hDWriteDLL = mnvLoadLib("dwrite.dll");
     if (hD2D1DLL == NULL || hDWriteDLL == NULL)
     {
 	DWrite_Final();

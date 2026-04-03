@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -33,10 +33,10 @@
 #define LTOREQ_POS(a, b) (LT_POS(a, b) || EQUAL_POS(a, b))
 
 /*
- * VIM_ISWHITE() differs from isspace() because it doesn't include <CR> and
+ * MNV_ISWHITE() differs from isspace() because it doesn't include <CR> and
  * <LF> and the like.
  */
-#define VIM_ISWHITE(x)		((x) == ' ' || (x) == '\t')
+#define MNV_ISWHITE(x)		((x) == ' ' || (x) == '\t')
 #define IS_WHITE_OR_NUL(x)	((x) == ' ' || (x) == '\t' || (x) == NUL)
 #define IS_WHITE_NL_OR_NUL(x)	((x) == ' ' || (x) == '\t' || (x) == '\n' || (x) == NUL)
 
@@ -102,23 +102,23 @@
  * MB_ISLOWER() and MB_ISUPPER() are to be used on multi-byte characters.  But
  * don't use them for negative values!
  */
-#define MB_ISLOWER(c)	vim_islower(c)
-#define MB_ISUPPER(c)	vim_isupper(c)
-#define MB_TOLOWER(c)	vim_tolower(c)
-#define MB_TOUPPER(c)	vim_toupper(c)
+#define MB_ISLOWER(c)	mnv_islower(c)
+#define MB_ISUPPER(c)	mnv_isupper(c)
+#define MB_TOLOWER(c)	mnv_tolower(c)
+#define MB_TOUPPER(c)	mnv_toupper(c)
 #define MB_CASEFOLD(c)	(enc_utf8 ? utf_fold(c) : MB_TOLOWER(c))
 
 // Use our own isdigit() replacement, because on MS-Windows isdigit() returns
 // non-zero for superscript 1.  Also avoids that isdigit() crashes for numbers
 // below 0 and above 255.
-#define VIM_ISDIGIT(c) ((unsigned)(c) - '0' < 10)
+#define MNV_ISDIGIT(c) ((unsigned)(c) - '0' < 10)
 
 // Like isalpha() but reject non-ASCII characters.  Can't be used with a
 // special key (negative value).
 #define ASCII_ISLOWER(c) ((unsigned)(c) - 'a' < 26)
 #define ASCII_ISUPPER(c) ((unsigned)(c) - 'A' < 26)
 #define ASCII_ISALPHA(c) (ASCII_ISUPPER(c) || ASCII_ISLOWER(c))
-#define ASCII_ISALNUM(c) (ASCII_ISALPHA(c) || VIM_ISDIGIT(c))
+#define ASCII_ISALNUM(c) (ASCII_ISALPHA(c) || MNV_ISDIGIT(c))
 
 // Returns empty string if it is NULL.
 #define EMPTY_IF_NULL(x) ((x) ? (x) : (char_u *)"")
@@ -151,10 +151,10 @@
 #endif
 
 /*
- * VIM_ISBREAK() is used very often if 'linebreak' is set, use a macro to make
+ * MNV_ISBREAK() is used very often if 'linebreak' is set, use a macro to make
  * it work fast.  Only works for single byte characters!
  */
-#define VIM_ISBREAK(c) ((c) < 256 && breakat_flags[(char_u)(c)])
+#define MNV_ISBREAK(c) ((c) < 256 && breakat_flags[(char_u)(c)])
 
 /*
  * On VMS file names are different and require a translation.
@@ -181,10 +181,10 @@
 # endif
 
 # ifdef MSWIN	// has its own mch_stat() function
-#  define mch_stat(n, p)	vim_stat((n), (p))
+#  define mch_stat(n, p)	mnv_stat((n), (p))
 # else
 #  ifdef STAT_IGNORES_SLASH
-#   define mch_stat(n, p)	vim_stat((n), (p))
+#   define mch_stat(n, p)	mnv_stat((n), (p))
 #  else
 #   define mch_stat(n, p)	stat((n), (p))
 #  endif
@@ -195,7 +195,7 @@
 # define mch_lstat(n, p)	lstat((n), (p))
 #else
 # ifdef MSWIN
-#  define mch_lstat(n, p)	vim_lstat((n), (p))
+#  define mch_lstat(n, p)	mnv_lstat((n), (p))
 # else
 #  define mch_lstat(n, p)	mch_stat((n), (p))
 # endif
@@ -356,20 +356,20 @@
 #endif
 
 /*
- * Like vim_free(), and also set the pointer to NULL.
+ * Like mnv_free(), and also set the pointer to NULL.
  */
-#define VIM_CLEAR(p) \
+#define MNV_CLEAR(p) \
     do { \
-	vim_free(p); \
+	mnv_free(p); \
 	(p) = NULL; \
     } while (0)
 
 /*
  * Free a string and set it's pointer to NULL and length to 0
  */
-#define VIM_CLEAR_STRING(s) \
+#define MNV_CLEAR_STRING(s) \
     do { \
-	VIM_CLEAR(s.string); \
+	MNV_CLEAR(s.string); \
 	s.length = 0; \
     } while (0)
 

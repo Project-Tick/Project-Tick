@@ -4,7 +4,7 @@ NR == 1 { nf=split(FILENAME,f,".")
 	print "<HTML>";
 	print "<HEAD><TITLE>" f[1] "</TITLE></HEAD>";
 	print "<BODY BGCOLOR=\"#ffffff\">";
-	print "<H1>Vim Documentation: " f[1] "</H1>";
+	print "<H1>MNV Documentation: " f[1] "</H1>";
 	print "<A NAME=\"top\"></A>";
 	print "<HR>";
 	print "<PRE>";

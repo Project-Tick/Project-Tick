@@ -2,7 +2,7 @@ READ THIS FIRST
 ===============
 
 ccfilter is a C program to filter the output of a few compilers to a common
-QuickFix format.  It is provided with Vim to make quickfix useful for more
+QuickFix format.  It is provided with MNV to make quickfix useful for more
 compilers.
 
 ccfilter WILL FAIL with long lines (more than 2047 bytes).

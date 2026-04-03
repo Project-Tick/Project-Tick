@@ -1,4 +1,4 @@
-# Makefile for the Vim message translations for Cygwin
+# Makefile for the MNV message translations for Cygwin
 # by Tony Mechelynck <antoine.mechelynck@skynet.be>
 # after Make_ming.mak by
 # Eduardo F. Amatria <eferna1@platea.pntic.mec.es>
@@ -8,15 +8,15 @@
 # Use at your own risk but with care, it could even kill your canary.
 #
 
-ifndef VIMRUNTIME
-VIMRUNTIME = ../../runtime
+ifndef MNVRUNTIME
+MNVRUNTIME = ../../runtime
 endif
 
 # get LANGUAGES, MOFILES and MOCONVERTED
 include Make_all.mak
 
-PACKAGE = vim
-VIMPROG = ../vim
+PACKAGE = mnv
+MNVPROG = ../mnv
 
 # Uncomment one of the lines below or modify it to put the path to your
 # gettext binaries
@@ -55,27 +55,27 @@ all: $(MOFILES) $(MOCONVERTED)
 PO_INPUTLIST = \
 	$(wildcard ../*.c) \
 	../if_perl.xs \
-	../GvimExt/gvimext.cpp \
+	../GmnvExt/gmnvext.cpp \
 	../errors.h \
 	../globals.h \
 	../if_py_both.h \
-	../vim.h \
-	gvim.desktop.in \
-	vim.desktop.in
+	../mnv.h \
+	gmnv.desktop.in \
+	mnv.desktop.in
 
-first_time: $(PO_INPUTLIST) $(PO_VIM_INPUTLIST)
-	$(VIMPROG) -u NONE --not-a-term -S tojavascript.vim $(LANGUAGE).pot $(PO_VIM_INPUTLIST)
+first_time: $(PO_INPUTLIST) $(PO_MNV_INPUTLIST)
+	$(MNVPROG) -u NONE --not-a-term -S tojavascript.mnv $(LANGUAGE).pot $(PO_MNV_INPUTLIST)
 	$(XGETTEXT) --default-domain=$(LANGUAGE) \
-		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_VIM_JSLIST)
-	$(VIMPROG) -u NONE --not-a-term -S fixfilenames.vim $(LANGUAGE).pot $(PO_VIM_INPUTLIST)
+		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_MNV_JSLIST)
+	$(MNVPROG) -u NONE --not-a-term -S fixfilenames.mnv $(LANGUAGE).pot $(PO_MNV_INPUTLIST)
 	$(RM) *.js
 
-$(PACKAGE).pot: $(PO_INPUTLIST) $(PO_VIM_INPUTLIST)
-	$(VIMPROG) -u NONE --not-a-term -S tojavascript.vim $(PACKAGE).pot $(PO_VIM_INPUTLIST)
+$(PACKAGE).pot: $(PO_INPUTLIST) $(PO_MNV_INPUTLIST)
+	$(MNVPROG) -u NONE --not-a-term -S tojavascript.mnv $(PACKAGE).pot $(PO_MNV_INPUTLIST)
 	$(XGETTEXT) --default-domain=$(PACKAGE) \
-		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_VIM_JSLIST)
+		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_MNV_JSLIST)
 	$(MV) $(PACKAGE).po $(PACKAGE).pot
-	$(VIMPROG) -u NONE --not-a-term -S fixfilenames.vim $(PACKAGE).pot $(PO_VIM_INPUTLIST)
+	$(MNVPROG) -u NONE --not-a-term -S fixfilenames.mnv $(PACKAGE).pot $(PO_MNV_INPUTLIST)
 	$(RM) *.js
 
 # Don't add a dependency here, we only want to update the .po files manually
@@ -88,8 +88,8 @@ $(LANGUAGES):
 
 install: $(MOFILES) $(MOCONVERTED)
 	for TARGET in $(LANGUAGES); do \
-		$(MKD) $(VIMRUNTIME)/lang/$$TARGET/LC_MESSAGES ; \
-		$(CP) $$TARGET.mo $(VIMRUNTIME)/lang/$$TARGET/LC_MESSAGES/$(PACKAGE).mo ; \
+		$(MKD) $(MNVRUNTIME)/lang/$$TARGET/LC_MESSAGES ; \
+		$(CP) $$TARGET.mo $(MNVRUNTIME)/lang/$$TARGET/LC_MESSAGES/$(PACKAGE).mo ; \
 	done
 
 install-all: install

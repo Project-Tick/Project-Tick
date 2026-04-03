@@ -1,12 +1,12 @@
-![Vim Logo](https://github.com/vim/vim/blob/master/runtime/vimlogo.gif)
+![MNV Logo](https://github.com/Project-Tick/Project-Tick/blob/master/runtime/mnvlogo.gif)
 
-# Vim source code #
+# MNV source code #
 
 Here are a few hints for finding your way around the source code.  This
 doesn't make it less complex than it is, but it gets you started.
 
 You might also want to read
-[`:help development`](http://vimdoc.sourceforge.net/htmldoc/develop.html#development).
+[`:help development`](http://mnvdoc.sourceforge.net/htmldoc/develop.html#development).
 
 
 ## Jumping around ##
@@ -35,14 +35,14 @@ clientserver.c	| client server functionality
 clipboard.c	| handling the clipboard
 cmdexpand.c	| command-line completion
 cmdhist.c	| command-line history
-debugger.c	| Vim script debugger
-diff.c		| diff mode (vimdiff)
+debugger.c	| MNV script debugger
+diff.c		| diff mode (mnvdiff)
 drawline.c	| drawing a window line
 drawscreen.c	| drawing the windows
 eval.c		| expression evaluation
 evalbuffer.c	| buffer related built-in functions
 evalfunc.c	| built-in functions
-evalvars.c	| vim variables
+evalvars.c	| mnv variables
 evalwindow.c	| window related built-in functions
 fileio.c	| reading and writing files
 filepath.c	| dealing with file names and paths
@@ -51,7 +51,7 @@ fold.c		| folding
 fuzzy.c	    | fuzzy matching
 getchar.c	| getting characters and key mapping
 gc.c	    | garbage collection
-help.c		| vim help related functions
+help.c		| mnv help related functions
 highlight.c	| syntax highlighting
 indent.c	| text indentation
 insexpand.c	| Insert mode completion
@@ -71,7 +71,7 @@ option.c	| options
 optionstr.c	| handling string options
 popupmenu.c	| popup menu
 popupwin.c	| popup window
-profiler.c	| Vim script profiler
+profiler.c	| MNV script profiler
 quickfix.c	| quickfix commands (":make", ":cn")
 regexp.c	| pattern matching
 register.c	| handling registers
@@ -92,18 +92,18 @@ textformat.c	| text formatting
 textobject.c	| text objects
 textprop.c	| text properties
 time.c		| time and timer functions
-typval.c	| Vim script type/value functions
+typval.c	| MNV script type/value functions
 undo.c		| undo and redo
 usercmd.c	| user defined commands
 userfunc.c	| user defined functions
-viminfo.c	| viminfo handling
+mnvinfo.c	| mnvinfo handling
 window.c	| handling split windows
 
 
 ## Debugging ##
 
 If you have a reasonable recent version of gdb, you can use the `:Termdebug`
-command to debug Vim.  See  `:help :Termdebug`.
+command to debug MNV.  See  `:help :Termdebug`.
 
 When something is time critical or stepping through code is a hassle, use the
 channel logging to create a time-stamped log file.  Add lines to the code like
@@ -111,7 +111,7 @@ this:
 
 	ch_log(NULL, "Value is now %02x", value);
 
-After compiling and starting Vim, do:
+After compiling and starting MNV, do:
 
 	:call ch_logfile('debuglog', 'w')
 
@@ -127,10 +127,10 @@ The current mode is stored in `State`.  The values it can have are `NORMAL`,
 The current window is `curwin`.  The current buffer is `curbuf`.  These point
 to structures with the cursor position in the window, option values, the file
 name, etc.  These are defined in
-[`structs.h`](https://github.com/vim/vim/blob/master/src/structs.h).
+[`structs.h`](https://github.com/Project-Tick/Project-Tick/blob/master/src/structs.h).
 
 All the global variables are declared in
-[`globals.h`](https://github.com/vim/vim/blob/master/src/globals.h).
+[`globals.h`](https://github.com/Project-Tick/Project-Tick/blob/master/src/globals.h).
 
 
 ## The main loop ##
@@ -139,16 +139,16 @@ This is conveniently called `main_loop()`.  It updates a few things and then
 calls `normal_cmd()` to process a command.  This returns when the command is
 finished.
 
-The basic idea is that Vim waits for the user to type a character and
+The basic idea is that MNV waits for the user to type a character and
 processes it until another character is needed.  Thus there are several places
-where Vim waits for a character to be typed.  The `vgetc()` function is used
+where MNV waits for a character to be typed.  The `vgetc()` function is used
 for this.  It also handles mapping.
 
 Updating the screen is mostly postponed until a command or a sequence of
 commands has finished.  The work is done by `update_screen()`, which calls
 `win_update()` for every window, which calls `win_line()` for every line.
 See the start of
-[`screen.c`](https://github.com/vim/vim/blob/master/src/screen.c)
+[`screen.c`](https://github.com/Project-Tick/Project-Tick/blob/master/src/screen.c)
 for more explanations.
 
 
@@ -181,7 +181,7 @@ handles the optional count and an extra character for some commands.  These
 are passed in a `cmdarg_t` to the function that handles the command.
 
 There is a table `nv_cmds` in
-[`normal.c`](https://github.com/vim/vim/blob/master/src/normal.c)
+[`normal.c`](https://github.com/Project-Tick/Project-Tick/blob/master/src/normal.c)
 which lists the first character of every command.  The second entry of each
 item is the name of the function that handles the command.
 
@@ -196,7 +196,7 @@ It returns when leaving Insert mode.
 ## Options ##
 
 There is a list with all option names in
-[`option.c`](https://github.com/vim/vim/blob/master/src/option.c),
+[`option.c`](https://github.com/Project-Tick/Project-Tick/blob/master/src/option.c),
 called `options[]`.
 
 
@@ -206,7 +206,7 @@ Most of the GUI code is implemented like it was a clever terminal.  Typing a
 character, moving a scrollbar, clicking the mouse, etc. are all translated
 into events which are written in the input buffer.  These are read by the
 main code, just like reading from a terminal.  The code for this is scattered
-through [`gui.c`](https://github.com/vim/vim/blob/master/src/gui.c).
+through [`gui.c`](https://github.com/Project-Tick/Project-Tick/blob/master/src/gui.c).
 For example, `gui_send_mouse_event()` for a mouse click and `gui_menu_cb()` for
 a menu action.  Key hits are handled by the system-specific GUI code, which
 calls `add_to_input_buf()` to send the key code.
@@ -219,19 +219,19 @@ system-specific GUI code will be called to do the work.
 
 ## Debugging the GUI ##
 
-Remember to prevent that gvim forks and the debugger thinks Vim has exited,
+Remember to prevent that gmnv forks and the debugger thinks MNV has exited,
 add the `-f` argument.  In gdb: `run -f -g`.
 
 When stepping through display updating code, the focus event is triggered
-when going from the debugger to Vim and back.  To avoid this, recompile with
+when going from the debugger to MNV and back.  To avoid this, recompile with
 some code in `gui_focus_change()` disabled.
 
 
 ## Contributing ##
 
-If you would like to help making Vim better, see the
-[`CONTRIBUTING.md`](https://github.com/vim/vim/blob/master/CONTRIBUTING.md)
+If you would like to help making MNV better, see the
+[`CONTRIBUTING.md`](https://github.com/Project-Tick/Project-Tick/blob/master/CONTRIBUTING.md)
 file.
 
 
-This is `README.md` for version 9.2 of the Vim source code.
+This is `README.md` for version 9.2 of the MNV source code.

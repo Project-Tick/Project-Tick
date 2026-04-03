@@ -1,0 +1,17 @@
+" MNV :defer command
+" MNV_TEST_SETUP hi link mnvUserFunc Todo
+
+
+function Foo()
+  defer delete("tmpfile")
+  defer Delete("tmpfile")
+endfunction
+
+def Bar()
+  defer delete("tmpfile")
+  defer Delete("tmpfile")
+  defer () => {
+    echo "..."
+  }()
+enddef
+

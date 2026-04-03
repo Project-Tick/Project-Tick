@@ -1,23 +1,23 @@
-*osc52.txt*   For Vim version 9.1.  Last change:  2025 Dec 18
+*osc52.txt*   For MNV version 9.1.  Last change:  2025 Dec 18
 
 
-			  VIM REFERENCE MANUAL
+			  MNV REFERENCE MANUAL
 
 Use the OSC 52 terminal command for clipboard support
 ==============================================================================
 
 1. OVERVIEW					        *osc52-overview*
 
-The osc52.vim plugin provides support for the OSC 52 terminal command, which
+The osc52.mnv plugin provides support for the OSC 52 terminal command, which
 allows an application to access the clipboard by communicating with the
 terminal.  This is useful in situations such as if you are in a SSH session.
 
                                                         *osc52-support*
-In order for this plugin to work, the terminal Vim is running in must
+In order for this plugin to work, the terminal MNV is running in must
 recognize and handle the OSC 52 escape sequence.  You can easily check this
 online.  Additionally, while yanking is guaranteed to work, some terminals
 don't implement the paste functionality.  If the terminal doesn't support
-pasting, then Vim will just block waiting for the data which will never come.
+pasting, then MNV will just block waiting for the data which will never come.
 In this case just press Ctrl-C to cancel the operation.
 
                                                         *osc52-selections*
@@ -32,23 +32,23 @@ then it is up to the terminal to handle what selection to use.
 
 2. HOW TO USE THE PLUGIN                                *osc52-how-to-use*
 
-The osc52.vim package relies on Vim's clipboard provider functionality, see
-|clipboard-providers|.  To enable it, add the following to your |vimrc|: >vim
+The osc52.mnv package relies on MNV's clipboard provider functionality, see
+|clipboard-providers|.  To enable it, add the following to your |mnvrc|: >mnv
         packadd osc52
         set clipmethod+=osc52
 <
-This appends "osc52" to |clipmethod|, causing Vim to try it only after any
-earlier clipboard methods.  This allows Vim to use the system clipboard
+This appends "osc52" to |clipmethod|, causing MNV to try it only after any
+earlier clipboard methods.  This allows MNV to use the system clipboard
 directly when available, and automatically fall back to OSC 52 method when it
 is not (for example, when running over SSH).
 
 Note: that this fallback behavior applies only on platforms that use
-|clipmethod| for accessing the clipboard.  On macOS and Windows, Vim does not
+|clipmethod| for accessing the clipboard.  On macOS and Windows, MNV does not
 use |clipmethod|, so this behaviour won't happen.  Instead if OSC 52 support is
 detected and "osc52" is the only value in |clipmethod|, then it will always be
 used.
 
-You can check whether the osc52.vim provider is active by inspecting
+You can check whether the osc52.mnv provider is active by inspecting
 |v:clipmethod|.  If it contains "osc52", the plugin is enabled.
 
 Note: terminal multiplexers such as tmux may interfere with automatic OSC 52
@@ -63,9 +63,9 @@ setting |g:osc52_force_avail| to true.
                                                         *g:osc52_disable_paste*
 If your terminal does not support pasting via OSC 52, or has it disabled, then
 it is a good idea to set g:osc52_disable_paste to TRUE.  This will register
-only the "copy" method for the osc52.vim clipboard provider, so Vim will not
+only the "copy" method for the osc52.mnv clipboard provider, so MNV will not
 attempt an OSC 52 paste query and avoids the blocking wait described in
 |osc52-support|.
 
 ==============================================================================
-vim:tw=78:ts=8:fo=tcq2:ft=help:
+mnv:tw=78:ts=8:fo=tcq2:ft=help:

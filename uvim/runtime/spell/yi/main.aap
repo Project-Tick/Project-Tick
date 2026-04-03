@@ -1,10 +1,10 @@
-# Aap recipe for Yiddish Vim spell files.
+# Aap recipe for Yiddish MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR    = ..
 FILES       = yi.dic yi.aff
@@ -16,15 +16,15 @@ all: $SPELLDIR/yi.utf-8.spl $SPELLDIR/yi-tr.utf-8.spl \
         $SPELLDIR/yi.latin1.spl ../README_yi.txt
 
 $SPELLDIR/yi.utf-8.spl : $FILES
-    :sys $VIM -u NONE -e -c "set enc=utf-8"
+    :sys $MNV -u NONE -e -c "set enc=utf-8"
             -c "mkspell! $SPELLDIR/yi yi" -c q
 
 $SPELLDIR/yi-tr.utf-8.spl : $FILES_TR
-    :sys $VIM -u NONE -e -c "set enc=utf-8"
+    :sys $MNV -u NONE -e -c "set enc=utf-8"
             -c "mkspell! $SPELLDIR/yi-tr yi_tr" -c q
 
 $SPELLDIR/yi.latin1.spl : $FILES_TR
-    :sys $VIM -u NONE -e -c "set enc=latin1"
+    :sys $MNV -u NONE -e -c "set enc=latin1"
             -c "mkspell! $SPELLDIR/yi yi_tr" -c q
 
 ../README_yi.txt : README.txt
@@ -62,4 +62,4 @@ diff {virtual}:
     :sys {force} diff -a -C 2 $WORDFILE_TR yi_tr.dic > yi_tr.diff
     :sys {force} diff -a -N -C 1 /dev/null yi_tr.aff >> yi_tr.diff
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

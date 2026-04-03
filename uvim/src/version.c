@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
- * Vim originated from Stevie version 3.6 (Fish disk 217) by GRWalter (Fred)
+ * MNV originated from Stevie version 3.6 (Fish disk 217) by GRWalter (Fred)
  * It has been changed beyond recognition since then.
  *
  * Differences between version 8.2 and 9.1 can be found with ":help version9".
@@ -25,12 +25,12 @@
 
 #include "version.h"
 
-char		*Version = VIM_VERSION_SHORT;
-static char	*mediumVersion = VIM_VERSION_MEDIUM;
+char		*Version = MNV_VERSION_SHORT;
+static char	*mediumVersion = MNV_VERSION_MEDIUM;
 
 #if defined(HAVE_DATE_TIME)
 # if defined(VMS) && defined(VAXC)
-char	longVersion[sizeof(VIM_VERSION_LONG_DATE) + sizeof(__DATE__)
+char	longVersion[sizeof(MNV_VERSION_LONG_DATE) + sizeof(__DATE__)
 						      + sizeof(__TIME__) + 3];
 
     void
@@ -40,7 +40,7 @@ init_longVersion(void)
      * Construct the long version string.  Necessary because
      * VAX C can't concatenate strings in the preprocessor.
      */
-    strcpy(longVersion, VIM_VERSION_LONG_DATE);
+    strcpy(longVersion, MNV_VERSION_LONG_DATE);
 #  ifdef BUILD_DATE
     strcat(longVersion, BUILD_DATE);
 #  else
@@ -67,20 +67,20 @@ init_longVersion(void)
 #  endif
     char *msg = _("%s (%s, compiled %s)");
     size_t len = strlen(msg)
-	+ STRLEN_LITERAL(VIM_VERSION_LONG_ONLY)
-	+ STRLEN_LITERAL(VIM_VERSION_DATE_ONLY)
+	+ STRLEN_LITERAL(MNV_VERSION_LONG_ONLY)
+	+ STRLEN_LITERAL(MNV_VERSION_DATE_ONLY)
 	+ strlen(date_time);
 
     longVersion = alloc(len);
     if (longVersion == NULL)
-	longVersion = VIM_VERSION_LONG;
+	longVersion = MNV_VERSION_LONG;
     else
-	vim_snprintf(longVersion, len, msg,
-		VIM_VERSION_LONG_ONLY, VIM_VERSION_DATE_ONLY, date_time);
+	mnv_snprintf(longVersion, len, msg,
+		MNV_VERSION_LONG_ONLY, MNV_VERSION_DATE_ONLY, date_time);
 }
 # endif
 #else
-char	*longVersion = VIM_VERSION_LONG;
+char	*longVersion = MNV_VERSION_LONG;
 
     void
 init_longVersion(void)
@@ -637,11 +637,11 @@ static char *(features[]) =
 	"-vartabs",
 #endif
 	"+vertsplit",
-	"+vim9script",
-#ifdef FEAT_VIMINFO
-	"+viminfo",
+	"+mnv9script",
+#ifdef FEAT_MNVINFO
+	"+mnvinfo",
 #else
-	"-viminfo",
+	"-mnvinfo",
 #endif
 	"+virtualedit",
 	"+visual",
@@ -734,6 +734,8 @@ static char *(features[]) =
 
 static int included_patches[] =
 {   /* Add new patch number below this line */
+/**/
+    281,
 /**/
     280,
 /**/
@@ -1302,7 +1304,7 @@ static int included_patches[] =
  * Place to put a short description when adding a feature with a patch.
  * Keep it short, e.g.,: "relative numbers", "persistent undo".
  * Also add a comment marker to separate the lines.
- * See the official Vim patches for the diff format: It must use a context of
+ * See the official MNV patches for the diff format: It must use a context of
  * one line only.  Create it by hand or use "diff -C2" and edit the patch.
  */
 static char *(extra_patches[]) =
@@ -1367,7 +1369,7 @@ ex_version(exarg_T *eap)
     static void
 version_msg_wrap(char_u *s, int wrap)
 {
-    int		len = vim_strsize(s) + (wrap ? 2 : 0);
+    int		len = mnv_strsize(s) + (wrap ? 2 : 0);
 
     if (!got_int && len < cmdline_width && msg_col + len >= cmdline_width
 								&& *s != '\n')
@@ -1419,7 +1421,7 @@ list_in_columns(char_u **items, int size, int current)
     // width.
     for (i = 0; size < 0 ? items[i] != NULL : i < size; ++i)
     {
-	int l = vim_strsize(items[i]) + (i == current ? 2 : 0);
+	int l = mnv_strsize(items[i]) + (i == current ? 2 : 0);
 
 	if (l > width)
 	    width = l;
@@ -1503,7 +1505,7 @@ list_version(void)
     msg(longVersion);
 #ifdef MSWIN
 # ifdef FEAT_GUI_MSWIN
-#  ifdef VIMDLL
+#  ifdef MNVDLL
 #   ifdef _WIN64
 #    if defined(_M_ARM64) || defined(_M_ARM64EC)
      msg_puts(_("\nMS-Windows ARM64 GUI/console version"));
@@ -1664,35 +1666,35 @@ list_version(void)
     if (msg_col > 0)
 	msg_putchar('\n');
 
-#ifdef SYS_VIMRC_FILE
-    version_msg(_("   system vimrc file: \""));
-    version_msg(SYS_VIMRC_FILE);
+#ifdef SYS_MNVRC_FILE
+    version_msg(_("   system mnvrc file: \""));
+    version_msg(SYS_MNVRC_FILE);
     version_msg("\"\n");
 #endif
-#ifdef USR_VIMRC_FILE
-    version_msg(_("     user vimrc file: \""));
-    version_msg(USR_VIMRC_FILE);
+#ifdef USR_MNVRC_FILE
+    version_msg(_("     user mnvrc file: \""));
+    version_msg(USR_MNVRC_FILE);
     version_msg("\"\n");
 #endif
-#ifdef USR_VIMRC_FILE2
-    version_msg(_(" 2nd user vimrc file: \""));
-    version_msg(USR_VIMRC_FILE2);
+#ifdef USR_MNVRC_FILE2
+    version_msg(_(" 2nd user mnvrc file: \""));
+    version_msg(USR_MNVRC_FILE2);
     version_msg("\"\n");
 #endif
-#if defined(USR_VIMRC_FILE3) && defined(XDG_VIMRC_FILE)
-    version_msg(_(" 3rd user vimrc file: \""));
-    version_msg(USR_VIMRC_FILE3);
+#if defined(USR_MNVRC_FILE3) && defined(XDG_MNVRC_FILE)
+    version_msg(_(" 3rd user mnvrc file: \""));
+    version_msg(USR_MNVRC_FILE3);
     version_msg("\"\n");
-    version_msg(_(" 4th user vimrc file: \""));
-    version_msg((char *)(XDG_VIMRC_FILE));
+    version_msg(_(" 4th user mnvrc file: \""));
+    version_msg((char *)(XDG_MNVRC_FILE));
     version_msg("\"\n");
-#elif defined(USR_VIMRC_FILE3)
-    version_msg(_(" 3rd user vimrc file: \""));
-    version_msg(USR_VIMRC_FILE3);
+#elif defined(USR_MNVRC_FILE3)
+    version_msg(_(" 3rd user mnvrc file: \""));
+    version_msg(USR_MNVRC_FILE3);
     version_msg("\"\n");
-#elif defined(XDG_VIMRC_FILE)
-    version_msg(_(" 3rd user vimrc file: \""));
-    version_msg((char *)(XDG_VIMRC_FILE));
+#elif defined(XDG_MNVRC_FILE)
+    version_msg(_(" 3rd user mnvrc file: \""));
+    version_msg((char *)(XDG_MNVRC_FILE));
     version_msg("\"\n");
 #endif
 #ifdef USR_EXRC_FILE
@@ -1706,27 +1708,27 @@ list_version(void)
     version_msg("\"\n");
 #endif
 #ifdef FEAT_GUI
-# ifdef SYS_GVIMRC_FILE
-    version_msg(_("  system gvimrc file: \""));
-    version_msg(SYS_GVIMRC_FILE);
+# ifdef SYS_GMNVRC_FILE
+    version_msg(_("  system gmnvrc file: \""));
+    version_msg(SYS_GMNVRC_FILE);
     version_msg("\"\n");
 # endif
-    version_msg(_("    user gvimrc file: \""));
-    version_msg(USR_GVIMRC_FILE);
+    version_msg(_("    user gmnvrc file: \""));
+    version_msg(USR_GMNVRC_FILE);
     version_msg("\"\n");
-# ifdef USR_GVIMRC_FILE2
-    version_msg(_("2nd user gvimrc file: \""));
-    version_msg(USR_GVIMRC_FILE2);
+# ifdef USR_GMNVRC_FILE2
+    version_msg(_("2nd user gmnvrc file: \""));
+    version_msg(USR_GMNVRC_FILE2);
     version_msg("\"\n");
 # endif
-# ifdef USR_GVIMRC_FILE3
-    version_msg(_("3rd user gvimrc file: \""));
-    version_msg(USR_GVIMRC_FILE3);
+# ifdef USR_GMNVRC_FILE3
+    version_msg(_("3rd user gmnvrc file: \""));
+    version_msg(USR_GMNVRC_FILE3);
     version_msg("\"\n");
 # endif
 #endif
     version_msg(_("       defaults file: \""));
-    version_msg(VIM_DEFAULTS_FILE);
+    version_msg(MNV_DEFAULTS_FILE);
     version_msg("\"\n");
 #ifdef FEAT_GUI
 # ifdef SYS_MENU_FILE
@@ -1736,16 +1738,16 @@ list_version(void)
 # endif
 #endif
 #ifdef HAVE_PATHDEF
-    if (*default_vim_dir != NUL)
+    if (*default_mnv_dir != NUL)
     {
-	version_msg(_("  fall-back for $VIM: \""));
-	version_msg((char *)default_vim_dir);
+	version_msg(_("  fall-back for $MNV: \""));
+	version_msg((char *)default_mnv_dir);
 	version_msg("\"\n");
     }
-    if (*default_vimruntime_dir != NUL)
+    if (*default_mnvruntime_dir != NUL)
     {
-	version_msg(_(" f-b for $VIMRUNTIME: \""));
-	version_msg((char *)default_vimruntime_dir);
+	version_msg(_(" f-b for $MNVRUNTIME: \""));
+	version_msg((char *)default_mnvruntime_dir);
 	version_msg("\"\n");
     }
     version_msg(_("Compilation: "));
@@ -1780,13 +1782,13 @@ maybe_intro_message(void)
     if (BUFEMPTY()
 	    && curbuf->b_fname == NULL
 	    && firstwin->w_next == NULL
-	    && vim_strchr(p_shm, SHM_INTRO) == NULL)
+	    && mnv_strchr(p_shm, SHM_INTRO) == NULL)
 	intro_message(FALSE);
 }
 
 /*
- * Give an introductory message about Vim.
- * Only used when starting Vim on an empty file, without a file name.
+ * Give an introductory message about MNV.
+ * Only used when starting MNV on an empty file, without a file name.
  * Or with the ":intro" command (for Sven :-).
  */
     static void
@@ -1800,14 +1802,14 @@ intro_message(
     char	*p;
     static char	*(lines[]) =
     {
-	N_("VIM - Vi IMproved"),
+	N_("MNV - MNV is not Vim"),
 	"",
 	N_("version "),
-	N_("by Bram Moolenaar et al."),
+	N_("by Project Tick"),
 #ifdef MODIFIED_BY
 	" ",
 #endif
-	N_("Vim is open source and freely distributable"),
+	N_("MNV is open source and freely distributable"),
 	"",
 	N_("Help poor children in Uganda!"),
 	N_("type  :help Kuwasha<Enter>    for information "),
@@ -1818,7 +1820,7 @@ intro_message(
 	NULL,
 	"",
 	N_("Running in Vi compatible mode"),
-	N_("type  :set nocp<Enter>        for Vim defaults"),
+	N_("type  :set nocp<Enter>        for MNV defaults"),
 	N_("type  :help cp-default<Enter> for info on this"),
     };
 #ifdef FEAT_GUI
@@ -1843,7 +1845,7 @@ intro_message(
 	NULL,
 	NULL,
 	N_("menu  Edit->Global Settings->Toggle Vi Compatible"),
-	N_("                              for Vim defaults   "),
+	N_("                              for MNV defaults   "),
     };
 #endif
 
@@ -1882,7 +1884,7 @@ intro_message(
 	    if (sponsor != 0)
 	    {
 		if (strstr(p, "children") != NULL)
-		    p = N_("Sponsor Vim development!");
+		    p = N_("Sponsor MNV development!");
 		else if (strstr(p, "Kuwasha") != NULL)
 		    p = N_("type  :help sponsor<Enter>    for information ");
 		else if (strstr(p, "Orphans") != NULL)
@@ -1917,15 +1919,15 @@ do_intro_line(
 
     if (*mesg == ' ')
     {
-	vim_strncpy(modby, (char_u *)_("Modified by "), MODBY_LEN - 1);
+	mnv_strncpy(modby, (char_u *)_("Modified by "), MODBY_LEN - 1);
 	l = (int)STRLEN(modby);
-	vim_strncpy(modby + l, (char_u *)MODIFIED_BY, MODBY_LEN - l - 1);
+	mnv_strncpy(modby + l, (char_u *)MODIFIED_BY, MODBY_LEN - l - 1);
 	mesg = modby;
     }
 #endif
 
     // Center the message horizontally.
-    col = vim_strsize(mesg);
+    col = mnv_strsize(mesg);
     if (add_version)
     {
 	STRCPY(vers, mediumVersion);

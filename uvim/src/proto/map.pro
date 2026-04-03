@@ -11,8 +11,8 @@ char_u *set_context_in_map_cmd(expand_T *xp, char_u *cmd, char_u *arg, int force
 int ExpandMappings(char_u *pat, regmatch_T *regmatch, int *numMatches, char_u ***matches);
 int check_abbr(int c, char_u *ptr, int col, int mincol);
 char_u *eval_map_expr(mapblock_T *mp, int c);
-char_u *vim_strsave_escape_csi(char_u *p);
-void vim_unescape_csi(char_u *p);
+char_u *mnv_strsave_escape_csi(char_u *p);
+void mnv_unescape_csi(char_u *p);
 int makemap(FILE *fd, buf_T *buf);
 int put_escstr(FILE *fd, char_u *strstart, int what);
 void check_map_keycodes(void);
@@ -32,4 +32,4 @@ void ex_map(exarg_T *eap);
 void ex_unmap(exarg_T *eap);
 void ex_mapclear(exarg_T *eap);
 void ex_abclear(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

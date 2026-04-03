@@ -1,7 +1,7 @@
-*spell.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*spell.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Spell checking						*spell*
@@ -13,8 +13,8 @@ Spell checking						*spell*
 
 {not available when the |+syntax| feature has been disabled at compile time}
 
-Note: There also is a vimspell plugin.  If you have it you can do ":help
-vimspell" to find about it.  But you will probably want to get rid of the
+Note: There also is a mnvspell plugin.  If you have it you can do ":help
+mnvspell" to find about it.  But you will probably want to get rid of the
 plugin and use the 'spell' option instead, it works better.
 
 ==============================================================================
@@ -32,7 +32,7 @@ The words that are not recognized are highlighted with one of these:
 	SpellRare	rare word				|hl-SpellRare|
 	SpellLocal	wrong spelling for selected region	|hl-SpellLocal|
 
-Vim only checks words for spelling, there is no grammar check.
+MNV only checks words for spelling, there is no grammar check.
 
 If the 'mousemodel' option is set to "popup" and the cursor is on a badly
 spelled word or it is "popup_setpos" and the mouse pointer is on a badly
@@ -167,7 +167,7 @@ More details about the 'spellfile' format below |spell-wordlist-format|.
 
 							*internal-wordlist*
 The internal word list is used for all buffers where 'spell' is set.  It is
-not stored, it is lost when you exit Vim.  It is also cleared when 'encoding'
+not stored, it is lost when you exit MNV.  It is also cleared when 'encoding'
 is set.
 
 
@@ -230,7 +230,7 @@ The 'spelloptions' option has a few more flags that influence the way spell
 checking works.  For example, "camel" splits CamelCased words so that each
 part of the word is spell-checked separately.
 
-Vim counts the number of times a good word is encountered.  This is used to
+MNV counts the number of times a good word is encountered.  This is used to
 sort the suggestions: words that have been seen before get a small bonus,
 words that have been seen often get a bigger bonus.  The COMMON item in the
 affix file can be used to define common words, so that this mechanism also
@@ -241,7 +241,7 @@ works in a new or short file |spell-COMMON|.
 
 PERFORMANCE
 
-Vim does on-the-fly spell checking.  To make this work fast the word list is
+MNV does on-the-fly spell checking.  To make this work fast the word list is
 loaded in memory.  Thus this uses a lot of memory (1 Mbyte or more).  There
 might also be a noticeable delay when the word list is loaded, which happens
 when 'spell' is set and when 'spelllang' is set while 'spell' was already set.
@@ -290,7 +290,7 @@ Specific exception: For Russian these special regions are used:
 
 							*spell-yiddish*
 Yiddish requires using "utf-8" encoding, because of the special characters
-used.  If you are using latin1 Vim will use transliterated (romanized) Yiddish
+used.  If you are using latin1 MNV will use transliterated (romanized) Yiddish
 instead.  If you want to use transliterated Yiddish with utf-8 use "yi-tr".
 In a table:
 	'encoding'	'spelllang'
@@ -308,7 +308,7 @@ present.
 
 SPELL FILES						*spell-load*
 
-Vim searches for spell files in the "spell" subdirectory of the directories in
+MNV searches for spell files in the "spell" subdirectory of the directories in
 'runtimepath'.  The name is: LL.EEE.spl, where:
 	LL	the language name
 	EEE	the value of 'encoding'
@@ -325,14 +325,14 @@ this succeeds then additionally files with the name LL.EEE.add.spl are loaded.
 All the ones that are found are used.
 
 If no spell file is found the |SpellFileMissing| autocommand event is
-triggered.  This may trigger the |spellfile.vim| plugin to offer you
+triggered.  This may trigger the |spellfile.mnv| plugin to offer you
 downloading the spell file.
 
 Additionally, the files related to the names in 'spellfile' are loaded.  These
 are the files that |zg| and |zw| add good and wrong words to.
 
 Exceptions:
-- Vim uses "latin1" when 'encoding' is "iso-8859-15".  The euro sign doesn't
+- MNV uses "latin1" when 'encoding' is "iso-8859-15".  The euro sign doesn't
   matter for spelling.
 - When no spell file for 'encoding' is found "ascii" is tried.  This only
   works for languages where nearly all words are ASCII, such as English.  It
@@ -341,26 +341,26 @@ Exceptions:
   spell file is used.
 
 For example, with these values:
-	'runtimepath' is "~/.vim,/usr/share/vim82,~/.vim/after"
+	'runtimepath' is "~/.mnv,/usr/share/mnv82,~/.mnv/after"
 	'encoding'    is "iso-8859-2"
 	'spelllang'   is "pl"
 
-Vim will look for:
-1. ~/.vim/spell/pl.iso-8859-2.spl
-2. /usr/share/vim82/spell/pl.iso-8859-2.spl
-3. ~/.vim/spell/pl.iso-8859-2.add.spl
-4. /usr/share/vim82/spell/pl.iso-8859-2.add.spl
-5. ~/.vim/after/spell/pl.iso-8859-2.add.spl
+MNV will look for:
+1. ~/.mnv/spell/pl.iso-8859-2.spl
+2. /usr/share/mnv82/spell/pl.iso-8859-2.spl
+3. ~/.mnv/spell/pl.iso-8859-2.add.spl
+4. /usr/share/mnv82/spell/pl.iso-8859-2.add.spl
+5. ~/.mnv/after/spell/pl.iso-8859-2.add.spl
 
 This assumes 1. is not found and 2. is found.
 
-If 'encoding' is "latin1" Vim will look for:
-1. ~/.vim/spell/pl.latin1.spl
-2. /usr/share/vim82/spell/pl.latin1.spl
-3. ~/.vim/after/spell/pl.latin1.spl
-4. ~/.vim/spell/pl.ascii.spl
-5. /usr/share/vim82/spell/pl.ascii.spl
-6. ~/.vim/after/spell/pl.ascii.spl
+If 'encoding' is "latin1" MNV will look for:
+1. ~/.mnv/spell/pl.latin1.spl
+2. /usr/share/mnv82/spell/pl.latin1.spl
+3. ~/.mnv/after/spell/pl.latin1.spl
+4. ~/.mnv/spell/pl.ascii.spl
+5. /usr/share/mnv82/spell/pl.ascii.spl
+6. ~/.mnv/after/spell/pl.ascii.spl
 
 This assumes none of them are found (Polish doesn't make sense when leaving
 out the non-ASCII characters).
@@ -380,8 +380,8 @@ If there is a file with exactly the same name as the ".spl" file but ending in
 before suggestions are made to reduce memory use.
 
 				    *E758* *E759* *E778* *E779* *E780* *E782*
-When loading a spell file Vim checks that it is properly formatted.  If you
-get an error the file may be truncated, modified or intended for another Vim
+When loading a spell file MNV checks that it is properly formatted.  If you
+get an error the file may be truncated, modified or intended for another MNV
 version.
 
 
@@ -391,7 +391,7 @@ The |zw| command turns existing entries in 'spellfile' into comment lines.
 This avoids having to write a new file every time, but results in the file
 only getting longer, never shorter.  To clean up the comment lines in all
 ".add" spell files do this: >
-	:runtime spell/cleanadd.vim
+	:runtime spell/cleanadd.mnv
 
 This deletes all comment lines, except the ones that start with "##".  Use
 "##" lines to add comments that you want to keep.
@@ -406,7 +406,7 @@ The default is one second.
 
 WORDS
 
-Vim uses a fixed method to recognize a word.  This is independent of
+MNV uses a fixed method to recognize a word.  This is independent of
 'iskeyword', so that it also works in help files and for languages that
 include characters like '-' in 'iskeyword'.  The word characters do depend on
 'encoding'.
@@ -430,14 +430,14 @@ It can also be used to recognize "the the" and highlight it.
 The number of spaces is irrelevant.  In most cases a line break may also
 appear.  However, this makes it difficult to find out where to start checking
 for spelling mistakes.  When you make a change to one line and only that line
-is redrawn Vim won't look in the previous line, thus when "et" is at the end
+is redrawn MNV won't look in the previous line, thus when "et" is at the end
 of the previous line "al." will be flagged as an error.  And when you type
 "the<CR>the" the highlighting doesn't appear until the first line is redrawn.
 Use |CTRL-L| to redraw right away.  "[s" will also stop at a word combination
 with a line break.
 
-When encountering a line break Vim skips characters such as '*', '>' and '"',
-so that comments in C, shell and Vim code can be spell checked.
+When encountering a line break MNV skips characters such as '*', '>' and '"',
+so that comments in C, shell and MNV code can be spell checked.
 
 
 SYNTAX HIGHLIGHTING					*spell-syntax*
@@ -455,9 +455,9 @@ program, and add @NoSpell for items that shouldn't be checked.
 Also see |:syn-spell| for text that is not in a syntax item.
 
 
-VIM SCRIPTS
+MNV SCRIPTS
 
-If you want to write a Vim script that does something with spelling, you may
+If you want to write a MNV script that does something with spelling, you may
 find these functions useful:
 
     spellbadword()	find badly spelled word at the cursor
@@ -467,14 +467,14 @@ find these functions useful:
 
 SETTING 'spellcapcheck' AUTOMATICALLY			*set-spc-auto*
 
-After the 'spelllang' option has been set successfully, Vim will source the
-files "spell/LANG.vim" in 'runtimepath'.  "LANG" is the value of 'spelllang'
+After the 'spelllang' option has been set successfully, MNV will source the
+files "spell/LANG.mnv" in 'runtimepath'.  "LANG" is the value of 'spelllang'
 up to the first comma, dot or underscore.  This can be used to set options
 specifically for the language, especially 'spellcapcheck'.
 
 The distribution includes a few of these files.  Use this command to see what
 they do: >
-	:next $VIMRUNTIME/spell/*.vim
+	:next $MNVRUNTIME/spell/*.mnv
 
 Note that the default scripts don't set 'spellcapcheck' if it was changed from
 the default value.  This assumes the user prefers another value then.
@@ -503,10 +503,10 @@ preferred method for scoring the suggestions.
 ==============================================================================
 3. Generating a spell file				*spell-mkspell*
 
-Vim uses a binary file format for spelling.  This greatly speeds up loading
+MNV uses a binary file format for spelling.  This greatly speeds up loading
 the word list and keeps it small.
 						    *.aff* *.dic* *Myspell*
-You can create a Vim spell file from the .aff and .dic files that Myspell
+You can create a MNV spell file from the .aff and .dic files that Myspell
 uses.  Myspell is used by OpenOffice.org and Mozilla.  The OpenOffice .oxt
 files are zip files which contain the .aff and .dic files.  You should be able
 to find them here:
@@ -516,16 +516,16 @@ The older, OpenOffice 2 files may be used if this doesn't work:
 You can also use a plain word list.  The results are the same, the choice
 depends on what word lists you can find.
 
-Make sure your current locale is set properly, otherwise Vim doesn't know what
+Make sure your current locale is set properly, otherwise MNV doesn't know what
 characters are upper/lower case letters.  If the locale isn't available (e.g.,
 when using an MS-Windows codepage on Unix) add tables to the .aff file
 |spell-affix-chars|.  If the .aff file doesn't define a table then the word
 table of the currently active spelling is used.  If spelling is not active
-then Vim will try to guess.
+then MNV will try to guess.
 
 							*:mksp* *:mkspell*
 :mksp[ell][!] [-ascii] {outname} {inname} ...
-			Generate a Vim spell file from word lists.  Example: >
+			Generate a MNV spell file from word lists.  Example: >
 		:mkspell /tmp/nl nl_NL.words
 <								*E751*
 			When {outname} ends in ".spl" it is used as the output
@@ -547,8 +547,8 @@ then Vim will try to guess.
 			list.
 
 			Multiple {inname} arguments can be given to combine
-			regions into one Vim spell file.  Example: >
-		:mkspell ~/.vim/spell/en /tmp/en_US /tmp/en_CA /tmp/en_AU
+			regions into one MNV spell file.  Example: >
+		:mkspell ~/.mnv/spell/en /tmp/en_US /tmp/en_CA /tmp/en_AU
 <			This combines the English word lists for US, CA and AU
 			into one en.spl file.
 			Up to eight regions can be combined. *E754* *E755*
@@ -576,13 +576,13 @@ then Vim will try to guess.
 			and producing an output file in the same directory
 			that has ".{enc}.spl" appended.
 
-Vim will report the number of duplicate words.  This might be a mistake in the
+MNV will report the number of duplicate words.  This might be a mistake in the
 list of words.  But sometimes it is used to have different prefixes and
 suffixes for the same basic word to avoid them combining (e.g. Czech uses
-this).  If you want Vim to report all duplicate words set the 'verbose'
+this).  If you want MNV to report all duplicate words set the 'verbose'
 option.
 
-Since you might want to change a Myspell word list for use with Vim the
+Since you might want to change a Myspell word list for use with MNV the
 following procedure is recommended:
 
 1. Obtain the xx_YY.aff and xx_YY.dic files from Myspell.
@@ -590,7 +590,7 @@ following procedure is recommended:
 3. Change the xx_YY.aff and xx_YY.dic files to remove bad words, add missing
    words, define word characters with FOL/LOW/UPP, etc.  The distributed
    "*.diff" files can be used.
-4. Start Vim with the right locale and use |:mkspell| to generate the Vim
+4. Start MNV with the right locale and use |:mkspell| to generate the MNV
    spell file.
 5. Try out the spell file with ":set spell spelllang=xx" if you wrote it in
    a spell directory in 'runtimepath', or ":set spelllang=xx.enc.spl" if you
@@ -598,8 +598,8 @@ following procedure is recommended:
 
 When the Myspell files are updated you can merge the differences:
 1. Obtain the new Myspell files as xx_YY.new.aff and xx_UU.new.dic.
-2. Use Vimdiff to see what changed: >
-	vimdiff xx_YY.orig.dic xx_YY.new.dic
+2. Use MNVdiff to see what changed: >
+	mnvdiff xx_YY.orig.dic xx_YY.new.dic
 3. Take over the changes you like in xx_YY.dic.
    You may also need to change xx_YY.aff.
 4. Rename xx_YY.new.dic to xx_YY.orig.dic and xx_YY.new.aff to xx_YY.orig.aff.
@@ -607,21 +607,21 @@ When the Myspell files are updated you can merge the differences:
 
 SPELL FILE VERSIONS					*E770* *E771* *E772*
 
-Spell checking is a relatively new feature in Vim, thus it's possible that the
-.spl file format will be changed to support more languages.  Vim will check
+Spell checking is a relatively new feature in MNV, thus it's possible that the
+.spl file format will be changed to support more languages.  MNV will check
 the validity of the spell file and report anything wrong.
 
 	E771: Old spell file, needs to be updated ~
-This spell file is older than your Vim.  You need to update the .spl file.
+This spell file is older than your MNV.  You need to update the .spl file.
 
-	E772: Spell file is for newer version of Vim ~
-This means the spell file was made for a later version of Vim.  You need to
-update Vim.
+	E772: Spell file is for newer version of MNV ~
+This means the spell file was made for a later version of MNV.  You need to
+update MNV.
 
 	E770: Unsupported section in spell file ~
-This means the spell file was made for a later version of Vim and contains a
+This means the spell file was made for a later version of MNV and contains a
 section that is required for the spell file to work.  In this case it's
-probably a good idea to upgrade your Vim.
+probably a good idea to upgrade your MNV.
 
 
 SPELL FILE DUMP
@@ -633,7 +633,7 @@ used spelling files, use this command:
 :spelld[ump]		Open a new window and fill it with all currently valid
 			words.  Compound words are not included.
 			Note: For some languages the result may be enormous,
-			causing Vim to run out of memory.
+			causing MNV to run out of memory.
 
 :spelld[ump]!		Like ":spelldump" and include the word count.  This is
 			the number of times the word was found while
@@ -652,28 +652,28 @@ Comment lines with the name of the .spl file are used as a header above the
 words that were generated from that .spl file.
 
 
-SPELL FILE MISSING		*spell-SpellFileMissing* *spellfile.vim*
+SPELL FILE MISSING		*spell-SpellFileMissing* *spellfile.mnv*
 
 If the spell file for the language you are using is not available, you will
-get an error message.  But if the "spellfile.vim" plugin is active it will
+get an error message.  But if the "spellfile.mnv" plugin is active it will
 offer you to download the spell file.  Just follow the instructions, it will
 ask you where to write the file (there must be a writable directory in
 'runtimepath' for this).
 
-The plugin has a default place where to look for spell files, on the Vim ftp
+The plugin has a default place where to look for spell files, on the MNV ftp
 server.  The protocol used is TLS (`https://`) for security.  If you want to
 use another location or another protocol, set the g:spellfile_URL variable to
 the directory that holds the spell files.  You can use `http://` or `ftp://`,
 but you are taking a security risk then.  The |netrw| plugin is used for
 getting the file, look there for the specific syntax of the URL.  Example: >
-	let g:spellfile_URL = 'https://ftp.nluug.nl/vim/runtime/spell'
+	let g:spellfile_URL = 'https://ftp.nluug.nl/mnv/runtime/spell'
 You may need to escape special characters.
 
 The plugin will only ask about downloading a language once.  If you want to
-try again anyway restart Vim, or set g:spellfile_URL to another value (e.g.,
+try again anyway restart MNV, or set g:spellfile_URL to another value (e.g.,
 prepend a space).
 
-To avoid using the "spellfile.vim" plugin do this in your vimrc file: >
+To avoid using the "spellfile.mnv" plugin do this in your mnvrc file: >
 
 	let loaded_spellfile_plugin = 1
 
@@ -690,7 +690,7 @@ exceptions:
 - The name "ascii" may also be used for some languages where the words use
   only ASCII letters for most of the words.
 
-The default "spellfile.vim" plugin uses this autocommand, if you define your
+The default "spellfile.mnv" plugin uses this autocommand, if you define your
 autocommand afterwards you may want to use ":au! SpellFileMissing" to overrule
 it.  If you define your autocommand before the plugin is loaded it will notice
 this and not do anything.
@@ -730,7 +730,7 @@ Additionally the following items are recognized:
 
 	/encoding=utf-8 ~
 - A line starting with "/encoding=", before any word, specifies the encoding
-  of the file.  After the second '=' comes an encoding name.  This tells Vim
+  of the file.  After the second '=' comes an encoding name.  This tells MNV
   to setup conversion from the specified encoding to 'encoding'.  Thus you can
   use one word list for several target encodings.
 
@@ -759,7 +759,7 @@ Example:
 	/regions=uscagb				regions "us", "ca" and "gb"
 	example					word for all regions
 	blah/12					word for regions "us" and "ca"
-	vim/!					bad word
+	mnv/!					bad word
 	Campbell/?3				rare word in region 3 "gb"
 	's mornings/=				keep-case word
 
@@ -782,7 +782,7 @@ done, thus this file loads fast.  The binary spell file format is described in
 the source code (src/spell.c).  But only developers need to know about it.
 
 The preprocessing also allows us to take the Myspell language files and modify
-them before the Vim word list is made.  The tools for this can be found in the
+them before the MNV word list is made.  The tools for this can be found in the
 "src/spell" directory.
 
 The format for the affix and word list files is based on what Myspell uses
@@ -791,7 +791,7 @@ here:
 	http://lingucomponent.openoffice.org/affix.readme
 Note that affixes are case sensitive, this isn't obvious from the description.
 
-Vim supports quite a few extras.  They are described below |spell-affix-vim|.
+MNV supports quite a few extras.  They are described below |spell-affix-mnv|.
 Attempts have been made to keep this compatible with other spell checkers, so
 that the same files can often be used.  One other project that offers more
 than Myspell is Hunspell ( http://hunspell.sf.net ).
@@ -815,7 +815,7 @@ A short example, with line numbers:
 	12	/the S affix may add a 's' ~
 	13	bedel/S ~
 
-The first line contains the number of words.  Vim ignores it, but you do get
+The first line contains the number of words.  MNV ignores it, but you do get
 an error message if it's not there.  *E760*
 
 What follows is one word per line.  White space at the end of the line is
@@ -830,7 +830,7 @@ that putting a comment after a word is NOT allowed:
 After the word there is an optional slash and flags.  Most of these flags are
 letters that indicate the affixes that can be used with this word.  These are
 specified with SFX and PFX lines in the .aff file, see |spell-SFX| and
-|spell-PFX|.  Vim allows using other flag types with the FLAG item in the
+|spell-PFX|.  MNV allows using other flag types with the FLAG item in the
 affix file |spell-FLAG|.
 
 When the word only has lower-case letters it will also match with the word
@@ -863,7 +863,7 @@ affix file, see |spell-SLASH|.  Note that without this SLASH item the word
 will be "TCP,IP".
 
 
-AFFIX FILE FORMAT			*spell-aff-format* *spell-affix-vim*
+AFFIX FILE FORMAT			*spell-aff-format* *spell-affix-mnv*
 
 							*spell-affix-comment*
 Comment lines in the .aff file start with a '#':
@@ -891,7 +891,7 @@ done with a SET line:
 	SET utf-8 ~
 
 The encoding can be different from the value of the 'encoding' option at the
-time ":mkspell" is used.  Vim will then convert everything to 'encoding' and
+time ":mkspell" is used.  MNV will then convert everything to 'encoding' and
 generate a spell file for 'encoding'.  If some of the used characters to not
 fit in 'encoding' you will get an error message.
 							*spell-affix-mbyte*
@@ -954,11 +954,11 @@ An exception is made for the German sharp s ß.  The upper-case version is
 "SS".  In the FOL/LOW/UPP lines it should be included, so that it's recognized
 as a word character, but use the ß character in all three.
 
-ASCII characters should be omitted, Vim always handles these in the same way.
+ASCII characters should be omitted, MNV always handles these in the same way.
 When the encoding is UTF-8 no word characters need to be specified.
 
 							*E763*
-Vim allows you to use spell checking for several languages in the same file.
+MNV allows you to use spell checking for several languages in the same file.
 You can list them in the 'spelllang' option.  As a consequence all spell files
 for the same encoding must use the same word characters, otherwise they can't
 be combined without errors.
@@ -1066,7 +1066,7 @@ The basic format for the following lines is:
 		- Literal characters.
 		- A set of characters in []. [abc] matches a, b and c.
 		  A dash is allowed for a range [a-c], but this is
-		  Vim-specific.
+		  MNV-specific.
 		- A set of characters that starts with a ^, meaning the
 		  complement of the specified characters. [^abc] matches any
 		  character but a, b and c.
@@ -1078,7 +1078,7 @@ The basic format for the following lines is:
 For PFX the fields are the same, but the {strip}, {add} and {condition} apply
 to the start of the word.
 
-Note: Myspell ignores any extra text after the relevant info.  Vim requires
+Note: Myspell ignores any extra text after the relevant info.  MNV requires
 this text to start with a "#" so that mistakes don't go unnoticed.  Example:
 
 	SFX F 0 in   [^i]n      # Spion > Spionin  ~
@@ -1088,7 +1088,7 @@ However, to avoid lots of errors in affix files written for Myspell, you can
 add the IGNOREEXTRA flag.
 
 Apparently Myspell allows an affix name to appear more than once.  Since this
-might also be a mistake, Vim checks for an extra "S".  The affix files for
+might also be a mistake, MNV checks for an extra "S".  The affix files for
 Myspell that use this feature apparently have this flag.  Example:
 
 	SFX a Y 1 S ~
@@ -1142,7 +1142,7 @@ Specifically, the affix flags can be used for:
 
 IGNOREEXTRA						*spell-IGNOREEXTRA*
 
-Normally Vim gives an error for an extra field that does not start with '#'.
+Normally MNV gives an error for an extra field that does not start with '#'.
 This avoids errors going unnoticed.  However, some files created for Myspell
 or Hunspell may contain many entries with an extra field.  Use the IGNOREEXTRA
 flag to avoid lots of errors.
@@ -1446,7 +1446,7 @@ looks like all words are compounded.  To specify this use the NOBREAK item in
 the affix file, without arguments:
 	NOBREAK ~
 
-Vim will try to figure out where one word ends and a next starts.  When there
+MNV will try to figure out where one word ends and a next starts.  When there
 are spelling mistakes this may not be quite right.
 
 
@@ -1486,10 +1486,10 @@ used to make spelling suggestions.  The items define the "from" text and the
 	REP k ch ~
 	REP ch k ~
 
-The first line specifies the number of REP lines following.  Vim ignores the
+The first line specifies the number of REP lines following.  MNV ignores the
 number, but it must be there (for compatibility with Myspell).
 
-Don't include simple one-character replacements or swaps.  Vim will try these
+Don't include simple one-character replacements or swaps.  MNV will try these
 anyway.  You can include whole words if you want to, but you might want to use
 the "file:" item in 'spellsuggest' instead.
 
@@ -1508,7 +1508,7 @@ to prefer suggestions with these letters substituted.  Example:
 	MAP eéëêè ~
 	MAP uüùúû ~
 
-The first line specifies the number of MAP lines following.  Vim ignores the
+The first line specifies the number of MAP lines following.  MNV ignores the
 number, but the line must be there.
 
 Each letter must appear in only one of the MAP items.  It's a bit more
@@ -1583,7 +1583,7 @@ You can use the |soundfold()| function to try out the results.  Or set the
 
 UNSUPPORTED ITEMS				*spell-affix-not-supported*
 
-These items appear in the affix file of other spell checkers.  In Vim they are
+These items appear in the affix file of other spell checkers.  In MNV they are
 ignored, not supported or defined in another way.
 
 ACCENT		(Hunspell)				*spell-ACCENT*
@@ -1658,7 +1658,7 @@ KEY		(Hunspell)				*spell-KEY*
 LANG		(Hunspell)				*spell-LANG*
 		This specifies language-specific behavior.  This actually
 		moves part of the language knowledge into the program,
-		therefore Vim does not support it.  Each language property
+		therefore MNV does not support it.  Each language property
 		must be specified separately.
 
 LEMMA_PRESENT	(Hunspell)				*spell-LEMMA_PRESENT*
@@ -1671,19 +1671,19 @@ PSEUDOROOT	(Hunspell)				*spell-PSEUDOROOT*
 		Use NEEDAFFIX instead. |spell-NEEDAFFIX|
 
 SUGSWITHDOTS	(Hunspell)				*spell-SUGSWITHDOTS*
-		Adds dots to suggestions.  Vim doesn't need this.
+		Adds dots to suggestions.  MNV doesn't need this.
 
 SYLLABLENUM	(Hunspell)				*spell-SYLLABLENUM*
 		Not supported.
 
 TRY		(Myspell, Hunspell, others)		*spell-TRY*
-		Vim does not use the TRY item, it is ignored.  For making
+		MNV does not use the TRY item, it is ignored.  For making
 		suggestions the actual characters in the words are used, that
 		is much more efficient.
 
 WORDCHARS	(Hunspell)				*spell-WORDCHARS*
-		Used to recognize words.  Vim doesn't need it, because there
+		Used to recognize words.  MNV doesn't need it, because there
 		is no need to separate words before checking them (using a
 		trie instead of a hashtable).
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

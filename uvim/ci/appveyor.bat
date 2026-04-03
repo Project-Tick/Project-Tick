@@ -1,5 +1,5 @@
 @echo off
-:: Batch file for building/testing Vim on AppVeyor
+:: Batch file for building/testing MNV on AppVeyor
 set target=%1
 set "GETTEXT_PATH=c:\gettext64\bin"
 
@@ -56,8 +56,8 @@ if not exist %GETTEXT64_DIR% (
     Add-Type -AssemblyName 'System.IO.Compression.FileSystem'; ^
     [System.IO.Compression.ZipFile]::ExtractToDirectory^('downloads\gettext64.zip', ^
     '%GETTEXT64_DIR%'^)
-    copy /y %GETTEXT64_DIR%\bin\libintl-8.dll C:\projects\vim\src\ || exit 1
-    copy /y %GETTEXT64_DIR%\bin\libiconv-2.dll C:\projects\vim\src\ || exit 1
+    copy /y %GETTEXT64_DIR%\bin\libintl-8.dll C:\projects\mnv\src\ || exit 1
+    copy /y %GETTEXT64_DIR%\bin\libiconv-2.dll C:\projects\mnv\src\ || exit 1
 )
 
 @echo off
@@ -72,7 +72,7 @@ echo "Building MSVC 64bit console Version"
 nmake -f Make_mvc.mak CPU=AMD64 ^
     OLE=no GUI=no IME=yes ICONV=yes DEBUG=no ^
     FEATURES=%FEATURE% CI_CFLAGS=/we4267
-if not exist vim.exe (
+if not exist mnv.exe (
     echo Build failure.
     exit 1
 )
@@ -91,14 +91,14 @@ if "%FEATURE%" == "HUGE" (
         OLE=no GUI=yes IME=yes ICONV=yes DEBUG=no ^
         FEATURES=%FEATURE% CI_CFLAGS=/we4267
 )
-if not exist gvim.exe (
+if not exist gmnv.exe (
     echo Build failure.
     exit 1
 )
-.\gvim -u NONE -c "redir @a | ver |0put a | wq" ver_msvc.txt || exit 1
+.\gmnv -u NONE -c "redir @a | ver |0put a | wq" ver_msvc.txt || exit 1
 
 echo "version output MSVC console"
-.\vim --version || exit 1
+.\mnv --version || exit 1
 echo "version output MSVC GUI"
 type ver_msvc.txt || exit 1
 
@@ -108,12 +108,12 @@ goto :eof
 :test
 @echo on
 cd src/testdir
-:: Testing with MSVC gvim
+:: Testing with MSVC gmnv
 path %PYTHON3_DIR%;%GETTEXT_PATH%;%PATH%
-nmake -f Make_mvc.mak VIMPROG=..\gvim
+nmake -f Make_mvc.mak MNVPROG=..\gmnv
 nmake -f Make_mvc.mak clean
 :: Testing with MSVC console version
-nmake -f Make_mvc.mak VIMPROG=..\vim
+nmake -f Make_mvc.mak MNVPROG=..\mnv
 
 @echo off
 goto :eof

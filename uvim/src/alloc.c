@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * alloc.c: functions for memory management
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /**********************************************************************
  * Various routines dealing with allocation and deallocation of memory.
@@ -79,7 +79,7 @@ mem_pre_free(void **pp)
  * called on exit via atexit()
  */
     void
-vim_mem_profile_dump(void)
+mnv_mem_profile_dump(void)
 {
     int i, j;
 
@@ -176,7 +176,7 @@ alloc_clear(size_t size)
 
     p = lalloc(size, TRUE);
     if (p != NULL)
-	(void)vim_memset(p, 0, size);
+	(void)mnv_memset(p, 0, size);
     return p;
 }
 
@@ -203,7 +203,7 @@ lalloc_clear(size_t size, int message)
 
     p = lalloc(size, message);
     if (p != NULL)
-	(void)vim_memset(p, 0, size);
+	(void)mnv_memset(p, 0, size);
     return p;
 }
 
@@ -356,7 +356,7 @@ do_outofmem_msg(size_t size)
  * Free everything that we allocated.
  * Can be used to detect memory leaks, e.g., with ccmalloc.
  * NOTE: This is tricky!  Things are freed that functions depend on.  Don't be
- * surprised if Vim crashes...
+ * surprised if MNV crashes...
  * Some things can't be freed, esp. things local to a library function.
  */
     void
@@ -364,7 +364,7 @@ free_all_mem(void)
 {
     buf_T	*buf, *nextbuf;
 
-    // When we cause a crash here it is caught and Vim tries to exit cleanly.
+    // When we cause a crash here it is caught and MNV tries to exit cleanly.
     // Don't try freeing everything again.
     if (entered_free_all_mem)
 	return;
@@ -458,10 +458,10 @@ free_all_mem(void)
     // Free some global vars.
     free_username();
 # ifdef FEAT_CLIPBOARD
-    vim_regfree(clip_exclude_prog);
+    mnv_regfree(clip_exclude_prog);
 # endif
-    vim_free(last_cmdline);
-    vim_free(new_last_cmdline);
+    mnv_free(last_cmdline);
+    mnv_free(new_last_cmdline);
     set_keep_msg(NULL, 0);
 
     // Clear cmdline history.
@@ -515,7 +515,7 @@ free_all_mem(void)
     ResetRedobuff();
 
 # if defined(FEAT_CLIENTSERVER) && defined(FEAT_X11)
-    vim_free(serverDelayedStartName);
+    mnv_free(serverDelayedStartName);
 # endif
 
     // highlight info
@@ -570,12 +570,12 @@ free_all_mem(void)
     gui_mch_free_all();
 # endif
 # ifdef FEAT_TCL
-    vim_tcl_finalize();
+    mnv_tcl_finalize();
 # endif
     clear_hl_tables();
 
-    vim_free(IObuff);
-    vim_free(NameBuff);
+    mnv_free(IObuff);
+    mnv_free(NameBuff);
 # ifdef FEAT_QUICKFIX
     check_quickfix_busy();
 # endif
@@ -591,7 +591,7 @@ free_all_mem(void)
  * Returns NULL when out of memory.
  */
     char_u *
-vim_memsave(char_u *p, size_t len)
+mnv_memsave(char_u *p, size_t len)
 {
     char_u *ret = alloc(len);
 
@@ -605,10 +605,10 @@ vim_memsave(char_u *p, size_t len)
  * Also skip free() when exiting for sure, this helps when we caught a deadly
  * signal that was caused by a crash in free().
  * If you want to set NULL after calling this function, you should use
- * VIM_CLEAR() instead.
+ * MNV_CLEAR() instead.
  */
     void
-vim_free(void *x)
+mnv_free(void *x)
 {
     if (x != NULL && !really_exiting)
     {
@@ -629,7 +629,7 @@ vim_free(void *x)
     void
 ga_clear(garray_T *gap)
 {
-    vim_free(gap->ga_data);
+    mnv_free(gap->ga_data);
     ga_init(gap);
 }
 
@@ -643,7 +643,7 @@ ga_clear_strings(garray_T *gap)
 
     if (gap->ga_data != NULL)
 	for (i = 0; i < gap->ga_len; ++i)
-	    vim_free(((char_u **)(gap->ga_data))[i]);
+	    mnv_free(((char_u **)(gap->ga_data))[i]);
     ga_clear(gap);
 }
 
@@ -669,7 +669,7 @@ ga_copy_strings(garray_T *from, garray_T *to)
 	    copy = NULL;
 	else
 	{
-	    copy = vim_strsave(orig);
+	    copy = mnv_strsave(orig);
 	    if (copy == NULL)
 	    {
 		to->ga_len = i;
@@ -747,11 +747,11 @@ ga_grow_inner(garray_T *gap, int n)
 	n = gap->ga_len / 2;
 
     new_len = (size_t)gap->ga_itemsize * (gap->ga_len + n);
-    pp = vim_realloc(gap->ga_data, new_len);
+    pp = mnv_realloc(gap->ga_data, new_len);
     if (pp == NULL)
 	return FAIL;
     old_len = (size_t)gap->ga_itemsize * gap->ga_maxlen;
-    vim_memset(pp + old_len, 0, new_len - old_len);
+    mnv_memset(pp + old_len, 0, new_len - old_len);
     gap->ga_maxlen = gap->ga_len + n;
     gap->ga_data = pp;
     return OK;
@@ -803,14 +803,14 @@ ga_concat_strings(garray_T *gap, char *sep)
     int
 ga_copy_string(garray_T *gap, char_u *p)
 {
-    char_u *cp = vim_strsave(p);
+    char_u *cp = mnv_strsave(p);
 
     if (cp == NULL)
 	return FAIL;
 
     if (ga_grow(gap, 1) == FAIL)
     {
-	vim_free(cp);
+	mnv_free(cp);
 	return FAIL;
     }
     ((char_u **)(gap->ga_data))[gap->ga_len++] = cp;

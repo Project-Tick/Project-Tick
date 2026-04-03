@@ -1,0 +1,21 @@
+mnv9script
+# MNV :new command and class constructors
+# TODO: move to mnv9_constructor and create new mnv_ex_new and mnv9_ex_new
+#       tests
+
+
+class Test
+  def new()
+  enddef
+  def newOther()
+  enddef
+  def newyetanother()
+  enddef
+endclass
+
+Test.new()
+Test.newOther()
+Test.newyetanother()
+new
+quit
+

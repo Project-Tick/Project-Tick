@@ -1,26 +1,26 @@
-# Generator of Vim script Syntax File
+# Generator of MNV script Syntax File
 
-This directory contains a Vim script generator, that will parse the Vim source file and
-generate a vim.vim syntax file.
+This directory contains a MNV script generator, that will parse the MNV source file and
+generate a mnv.mnv syntax file.
 
-Files in this directory were copied from https://github.com/vim-jp/syntax-vim-ex/
-and included here on Feb, 13th, 2024 for the Vim Project.
+Files in this directory were copied from https://github.com/mnv-jp/syntax-mnv-ex/
+and included here on Feb, 13th, 2024 for the MNV Project.
 
 - Maintainer: Hirohito Higashi
-- License: Vim License
+- License: MNV License
 
 ## How to generate
 
     $ make
 
-This will generate `../vim.vim`
+This will generate `../mnv.mnv`
 
 ## Files
 
 Name                 |Description
 ---------------------|------------------------------------------------------
-`Makefile`           |Makefile to generate ../vim.vim
+`Makefile`           |Makefile to generate ../mnv.mnv
 `README.md`          |This file
-`gen_syntax_vim.vim` |Script to generate vim.vim
-`update_date.vim`    |Script to update "Last Change:"
-`vim.vim.base`       |Template for vim.vim
+`gen_syntax_mnv.mnv` |Script to generate mnv.mnv
+`update_date.mnv`    |Script to update "Last Change:"
+`mnv.mnv.base`       |Template for mnv.mnv

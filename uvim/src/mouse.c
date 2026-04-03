@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * mouse.c: mouse handling functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * Horiziontal and vertical steps used when scrolling.
@@ -67,14 +67,14 @@ get_mouse_class(char_u *p)
     if (c == ' ' || c == '\t')
 	return 0;
 
-    if (vim_iswordc(c))
+    if (mnv_iswordc(c))
 	return 2;
 
     // There are a few special cases where we want certain combinations of
     // characters to be considered as a single word.  These are things like
     // "->", "/ *", "*=", "+=", "&=", "<=", ">=", "!=" etc.  Otherwise, each
     // character is in its own class.
-    if (c != NUL && vim_strchr((char_u *)"-+*/%<>&|^!=", c) != NULL)
+    if (c != NUL && mnv_strchr((char_u *)"-+*/%<>&|^!=", c) != NULL)
 	return 1;
     return c;
 }
@@ -1036,13 +1036,13 @@ do_mouse(
 		// not a word character, try finding a match and select a (),
 		// {}, [], #if/#endif, etc. block.
 		end_visual = curwin->w_cursor;
-		while (gc = gchar_pos(&end_visual), VIM_ISWHITE(gc))
+		while (gc = gchar_pos(&end_visual), MNV_ISWHITE(gc))
 		    inc(&end_visual);
 		if (oap != NULL)
 		    oap->motion_type = MCHAR;
 		if (oap != NULL
 			&& VIsual_mode == 'v'
-			&& !vim_iswordc(gchar_pos(&end_visual))
+			&& !mnv_iswordc(gchar_pos(&end_visual))
 			&& EQUAL_POS(curwin->w_cursor, VIsual)
 			&& (pos = findmatch(oap, NUL)) != NULL)
 		{
@@ -1600,7 +1600,7 @@ mouse_has(int c)
     for (p = p_mouse; *p; ++p)
 	switch (*p)
 	{
-	    case 'a': if (vim_strchr((char_u *)MOUSE_A, c) != NULL)
+	    case 'a': if (mnv_strchr((char_u *)MOUSE_A, c) != NULL)
 			  return TRUE;
 		      break;
 	    case MOUSE_HELP: if (c != MOUSE_RETURN && curbuf->b_help)
@@ -2193,7 +2193,7 @@ do_mousescroll_horiz(long_u leftcol)
     // longest visible line.
     if (
 #ifdef FEAT_GUI
-	    (!gui.in_use || vim_strchr(p_go, GO_HORSCROLL) == NULL) &&
+	    (!gui.in_use || mnv_strchr(p_go, GO_HORSCROLL) == NULL) &&
 #endif
 		    !virtual_active()
 	    && (long)leftcol > scroll_line_len(curwin->w_cursor.lnum))

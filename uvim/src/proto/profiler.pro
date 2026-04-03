@@ -32,4 +32,4 @@ void profile_dump(void);
 void script_line_start(void);
 void script_line_exec(void);
 void script_line_end(void);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

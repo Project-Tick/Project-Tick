@@ -1,10 +1,10 @@
 ===============================================================================
-=     B e n v i d o   a o   t u t o r   d o   V I M      -    Versión 1.7     =
+=     B e n v i d o   a o   t u t o r   d o   M N V      -    Versión 1.7     =
 ===============================================================================
 =                        C A P Í T U L O   D O U S                            =
 ===============================================================================
 
-     Hic Sunt Dracones: se este é o súa primeira exposición ao vim, e
+     Hic Sunt Dracones: se este é o súa primeira exposición ao mnv, e
      prefire iniciarse no capítulo introducturio, pode saír premendo
      :q <ENTER> .
 
@@ -205,7 +205,7 @@ REFERENCIAS:  Marcas                :h marks
  11. Moverse a una liña cunha marca con  ' .
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Isto conclúe o capítulo dows do Vim Tutor. Este é traballo en progreso.  
+  Isto conclúe o capítulo dows do MNV Tutor. Este é traballo en progreso.  
   Este capítulo foi escrito por Paul D. Parker.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

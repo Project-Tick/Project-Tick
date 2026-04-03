@@ -1,10 +1,10 @@
 #
-# Ukrainian translation for Vim
+# Ukrainian translation for MNV
 #
 # Generated from uk.po, DO NOT EDIT
 #
 # Copyright (C) 2001-2026 Bohdan Vlasyuk <bohdan@vstu.edu.ua>
-# Bohdan donated this work to be distributed with Vim under the Vim license.
+# Bohdan donated this work to be distributed with MNV under the MNV license.
 #
 # Thanks to:
 #   Dmytro Kovalov <dmytro.kovalov@nssmb.com> for useful suggestions
@@ -12,15 +12,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim Ukrainian\n"
-"Report-Msgid-Bugs-To: vim-dev@vim.org\n"
+"Project-Id-Version: MNV Ukrainian\n"
+"Report-Msgid-Bugs-To: mnv-dev@mnv.org\n"
 "POT-Creation-Date: 2026-01-05 17:56+0200\n"
 "PO-Revision-Date: 2023-12-24 17:01+0200\n"
 "Last-Translator: Анатолій Сахнік <sakhnik@gmail.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CP1251\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3;     plural=n%10==1 && n%100!=11 ? 0 :            "
 "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
@@ -659,8 +659,8 @@ msgstr[2] "Ще є %d не редагованих файлів. Все одно вийти?"
 msgid "unknown"
 msgstr "невідомо"
 
-msgid "Greetings, Vim user!"
-msgstr "Вітання, користувачу Vim!"
+msgid "Greetings, MNV user!"
+msgstr "Вітання, користувачу MNV!"
 
 # msgstr "E444: "
 msgid "Already only one tab page"
@@ -764,8 +764,8 @@ msgid "[Permission Denied]"
 msgstr "[Відмовлено]"
 
 # msgstr "E201: "
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: Читається з stdin...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: Читається з stdin...\n"
 
 msgid "Reading from stdin..."
 msgstr "Читається з stdin..."
@@ -849,9 +849,9 @@ msgstr "[Неповний останній рядок]"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as "
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as "
 "well"
-msgstr "W12: Застереження: Файл «%s» змінився, але й буфер у Vim також"
+msgstr "W12: Застереження: Файл «%s» змінився, але й буфер у MNV також"
 
 msgid "See \":help W12\" for more info."
 msgstr "Див. «:help W12» для уточнення."
@@ -961,11 +961,11 @@ msgstr "Скасувати"
 msgid "Input _Methods"
 msgstr "Методи введення"
 
-msgid "VIM - Search and Replace..."
-msgstr "VIM - Знайти й замінити..."
+msgid "MNV - Search and Replace..."
+msgstr "MNV - Знайти й замінити..."
 
-msgid "VIM - Search..."
-msgstr "VIM - Пошук..."
+msgid "MNV - Search..."
+msgstr "MNV - Пошук..."
 
 msgid "Find what:"
 msgstr "Знайти:"
@@ -1000,8 +1000,8 @@ msgstr "Замінити усі"
 msgid "_Close"
 msgstr "Закрити"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: Отримав запит «die» від менеджера сесій\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: Отримав запит «die» від менеджера сесій\n"
 
 msgid "Close tab"
 msgstr "Закрити вкладку"
@@ -1012,8 +1012,8 @@ msgstr "Нова вкладка"
 msgid "Open Tab..."
 msgstr "Відкрити вкладку..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: Несподівано знищилося головне вікно\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: Несподівано знищилося головне вікно\n"
 
 msgid "&Filter"
 msgstr "&F:Фільтрувати"
@@ -1039,8 +1039,8 @@ msgstr "&O:Гаразд"
 msgid "Selection"
 msgstr "Виділення"
 
-msgid "Vim dialog"
-msgstr "Діалог Vim"
+msgid "MNV dialog"
+msgstr "Діалог MNV"
 
 msgid "Find &Next"
 msgstr "&N:Знайти далі"
@@ -1099,8 +1099,8 @@ msgid "no specific match"
 msgstr "немає конкретного збігу"
 
 # msgstr "E234: "
-msgid "Vim - Font Selector"
-msgstr "Vim - Вибір шрифту"
+msgid "MNV - Font Selector"
+msgstr "MNV - Вибір шрифту"
 
 msgid "Name:"
 msgstr "Назва:"
@@ -1288,14 +1288,14 @@ msgstr "не вдалося вставити рядок"
 msgid "string cannot contain newlines"
 msgstr "більше ніж один рядок"
 
-msgid "error converting Scheme values to Vim"
-msgstr "не вдалося перетворити значення Scheme у Vim"
+msgid "error converting Scheme values to MNV"
+msgstr "не вдалося перетворити значення Scheme у MNV"
 
-msgid "Vim error: ~a"
-msgstr "Помилка Vim: ~a"
+msgid "MNV error: ~a"
+msgstr "Помилка MNV: ~a"
 
-msgid "Vim error"
-msgstr "Помилка Vim"
+msgid "MNV error"
+msgstr "Помилка MNV"
 
 msgid "buffer is invalid"
 msgstr "буфер непридатний"
@@ -1306,8 +1306,8 @@ msgstr "вікно непридатне"
 msgid "linenr out of range"
 msgstr "номер рядка за межами файлу"
 
-msgid "not allowed in the Vim sandbox"
-msgstr "не дозволено у пісочниці Vim"
+msgid "not allowed in the MNV sandbox"
+msgstr "не дозволено у пісочниці MNV"
 
 msgid "invalid buffer number"
 msgstr "неправильна назва буфера"
@@ -1545,8 +1545,8 @@ msgstr "NetBeans не підтримується з цим GUI\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "Не можна використати '-nb': не дозволено під час компіляції\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "Ця версія Vim не була скомпільована з підтримкою порівняння."
+msgid "This MNV was not compiled with the diff feature."
+msgstr "Ця версія MNV не була скомпільована з підтримкою порівняння."
 
 msgid "Attempt to open script file again: \""
 msgstr "Спроба повторно відкрити скрипт: \""
@@ -1557,17 +1557,17 @@ msgstr "Не вдалося прочитати: \""
 msgid "Cannot open for script output: \""
 msgstr "Не вдалося відкрити як вихідний файл: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: Помилка: Не вдалося запустити gvim для NetBeans\n"
+msgid "MNV: Error: Failure to start gvim from NetBeans\n"
+msgstr "MNV: Помилка: Не вдалося запустити gvim для NetBeans\n"
 
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: Помилка: Ця версія Vim не працює у терміналі Cygwin\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: Помилка: Ця версія MNV не працює у терміналі Cygwin\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: Застереження: Вивід не у термінал\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: Застереження: Вивід не у термінал\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: Застереження: Уведення не з терміналу\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: Застереження: Уведення не з терміналу\n"
 
 msgid "pre-vimrc command line"
 msgstr "команди перед vimrc"
@@ -1575,10 +1575,10 @@ msgstr "команди перед vimrc"
 # msgstr "E282: "
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"Дізнайтеся більше: «vim -h»\n"
+"Дізнайтеся більше: «mnv -h»\n"
 
 msgid "[file ..]       edit specified file(s)"
 msgstr "[файл ..]       редагувати вказані файли"
@@ -1601,8 +1601,8 @@ msgstr ""
 "\n"
 "Вжиток:"
 
-msgid " vim [arguments] "
-msgstr " vim [аргументи] "
+msgid " mnv [arguments] "
+msgstr " mnv [аргументи] "
 
 msgid ""
 "\n"
@@ -1783,8 +1783,8 @@ msgstr "-w <скрипт>\t\tЗаписати усі набрані команди у файл <скрипт>"
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\tРедагувати зашифровані файли"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
-msgstr "-display <дисплей>\tПід'єднати Vim до заданого дисплею сервера X"
+msgid "-display <display>\tConnect MNV to this particular X-server"
+msgstr "-display <дисплей>\tПід'єднати MNV до заданого дисплею сервера X"
 
 msgid "-X\t\t\tDo not connect to X server"
 msgstr "-X\t\t\tНе з'єднуватися з X сервером"
@@ -1795,8 +1795,8 @@ msgstr "-Y\t\t\tНе з'єднуватися з композитором Wayland"
 msgid "--clientserver <socket|x11> Backend for clientserver communication"
 msgstr "--clientserver <socket|x11> Механізм клієнт-серверної взаємодії"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
-msgstr "--remote <файли>\tРедагувати <файли> на сервері Vim, якщо це можливо"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
+msgstr "--remote <файли>\tРедагувати <файли> на сервері MNV, якщо це можливо"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr ""
@@ -1819,19 +1819,19 @@ msgstr ""
 "--remote-tab[-wait][-silent] <файли>  Так само, як --remote, але по вкладці "
 "на файл"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
 msgstr "--remote-send <символи> Відіслати <символи> серверу і завершити роботу"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
 msgstr ""
-"--remote-expr <вираз> Виконати <вираз> у сервері Vim і надрукувати результат"
+"--remote-expr <вираз> Виконати <вираз> у сервері MNV і надрукувати результат"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
+msgid "--serverlist\t\tList available MNV server names and exit"
 msgstr ""
-"--serverlist\t\tПоказати список наявних серверів Vim і завершити роботу"
+"--serverlist\t\tПоказати список наявних серверів MNV і завершити роботу"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
-msgstr "--servername <назва>\tНадіслати до/стати Vim сервером з <назвою>"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
+msgstr "--servername <назва>\tНадіслати до/стати MNV сервером з <назвою>"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
 msgstr ""
@@ -1844,8 +1844,8 @@ msgstr "--log <файл>\t\tПочати запис у <файл> журналу якнайраніше"
 msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
 msgstr "-i <viminfo>\t\tВикористати <viminfo> замість .viminfo"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
-msgstr "--clean\t\t'nocompatible', Vim початково, без розширень, без viminfo"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no viminfo"
+msgstr "--clean\t\t'nocompatible', MNV початково, без розширень, без viminfo"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h  чи  --help\tНадрукувати це повідомлення і вийти"
@@ -1860,11 +1860,11 @@ msgstr ""
 "\n"
 "Аргументи для gvim (версія Motif)\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <дисплей>\tВиконати Vim на заданому <дисплеї>"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <дисплей>\tВиконати MNV на заданому <дисплеї>"
 
-msgid "-iconic\t\tStart Vim iconified"
-msgstr "-iconic\t\tЗапустити Vim і згорнути його вікно"
+msgid "-iconic\t\tStart MNV iconified"
+msgstr "-iconic\t\tЗапустити MNV і згорнути його вікно"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
 msgstr "-background <колір>\tВикористати <колір> для фону (також: -bg)"
@@ -1907,24 +1907,24 @@ msgstr ""
 "\n"
 "Аргументи gvim (версія GTK+)\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <дисплей>\tВиконати Vim на <дисплеї> (також: --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <дисплей>\tВиконати MNV на <дисплеї> (також: --display)"
 
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr ""
 "--role <роль>\tВстановити унікальну роль для ідентифікації головного вікна"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\tВідкрити Vim в іншому елементі інтерфейсу GTK"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\tВідкрити MNV в іншому елементі інтерфейсу GTK"
 
 msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
 msgstr "--echo-wid\t\tХай gvim надрукує ідентифікатор вікна на stdout"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
-msgstr "-P <заголовок батька>\tВідкрити Vim всередині батьківського вікна"
+msgid "-P <parent title>\tOpen MNV inside parent application"
+msgstr "-P <заголовок батька>\tВідкрити MNV всередині батьківського вікна"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\tВідкрити Vim всередині іншого елемента win32"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\tВідкрити MNV всередині іншого елемента win32"
 
 msgid "Seen modifyOtherKeys: true\n"
 msgstr "Трапилося modifyOtherKeys: true\n"
@@ -1994,16 +1994,16 @@ msgstr "Не вдалося прочитати блок 0 з "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"Напевно, змін не було, або Vim не поновив файл обміну."
+"Напевно, змін не було, або MNV не поновив файл обміну."
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " не можна використати з цією версією Vim.\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " не можна використати з цією версією MNV.\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "Знайдіть Vim 3.0\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "Знайдіть MNV 3.0\n"
 
 msgid " cannot be used on this computer.\n"
 msgstr " не можна використати на цьому комп'ютері.\n"
@@ -2150,10 +2150,10 @@ msgstr "   дата: "
 msgid "             dated: "
 msgstr "             дата: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [від Vim 3.0]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [від MNV 3.0]"
 
-msgid "         [does not look like a Vim swap file]"
+msgid "         [does not look like a MNV swap file]"
 msgstr "        [не схоже на файл обміну]"
 
 msgid "         file name: "
@@ -2201,10 +2201,10 @@ msgstr " (ЩЕ ВИКОНУЄТЬСЯ)"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [не придатний для цієї версії Vim]"
+"         [не придатний для цієї версії MNV]"
 
 msgid ""
 "\n"
@@ -2268,8 +2268,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) Сеанс редагування цього файлу зазнав краху.\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    Якщо це справді трапилося, спробуйте «:recover» або «vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    Якщо це справді трапилося, спробуйте «:recover» або «mnv -r "
 
 msgid ""
 "\"\n"
@@ -2297,8 +2297,8 @@ msgstr "Файл обміну «"
 msgid "\" already exists!"
 msgstr "» вже існує!"
 
-msgid "VIM - ATTENTION"
-msgstr "VIM — УВАГА"
+msgid "MNV - ATTENTION"
+msgstr "MNV — УВАГА"
 
 msgid "Swap file already exists!"
 msgstr "Файл обміну вже існує!"
@@ -2356,7 +2356,7 @@ msgstr "Виявлено помилку під час виконання %s:"
 msgid "line %4ld:"
 msgstr "рядок %4ld:"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Українізація: Анатолій Сахнік <sakhnik@gmail.com>"
 
 msgid "Interrupt: "
@@ -2438,12 +2438,12 @@ msgstr "Викликається оболонка щоб виконати: «%s»"
 msgid "Warning: terminal cannot highlight"
 msgstr "Застереження: Термінал не підтримує кольори"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
 msgstr ""
-"Уведіть  :qa!  і натисніть <Enter>, щоб відкинути всі зміни і вийти з Vim"
+"Уведіть  :qa!  і натисніть <Enter>, щоб відкинути всі зміни і вийти з MNV"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "Уведіть  :qa  і натисніть <Enter> щоб вийти з Vim"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "Уведіть  :qa  і натисніть <Enter> щоб вийти з MNV"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -2545,8 +2545,8 @@ msgstr ""
 msgid "cannot open "
 msgstr "не вдалося відкрити "
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: Не вдалося відкрити вікно!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: Не вдалося відкрити вікно!\n"
 
 msgid "Need Amigados version 2.04 or later\n"
 msgstr "Потрібна Amigados 2.04 або пізніша\n"
@@ -2562,8 +2562,8 @@ msgid "Cannot create "
 msgstr "Не вдалося створити "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vim завершує роботу з %d\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNV завершує роботу з %d\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "не можу змінити режим консолі ?!\n"
@@ -2608,10 +2608,10 @@ msgstr "На відкриття дисплею X пішло %ld мілісекунд"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: Помилка X\n"
+"MNV: Помилка X\n"
 
 #, c-format
 msgid "restoring X11 display %s"
@@ -2722,8 +2722,8 @@ msgid "At line"
 msgstr "Рядок:"
 
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: Виявлено подію %s\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: Виявлено подію %s\n"
 
 msgid "close"
 msgstr "close"
@@ -2743,8 +2743,8 @@ msgstr ""
 "Зовнішні команди не будуть призупинені після виконання.\n"
 "Гляньте  :help win32-vimrun щоб отримати подробиці."
 
-msgid "Vim Warning"
-msgstr "Застереження Vim"
+msgid "MNV Warning"
+msgstr "Застереження MNV"
 
 #, c-format
 msgid "shell returned %d"
@@ -2880,8 +2880,8 @@ msgstr "Пошук «%s»"
 msgid "not found in '%s': \"%s\""
 msgstr "не знайдено в '%s': «%s»"
 
-msgid "Source Vim script"
-msgstr "Прочитати скрипт Vim"
+msgid "Source MNV script"
+msgstr "Прочитати скрипт MNV"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -3455,8 +3455,8 @@ msgstr[2] "%ld секунд тому"
 msgid "new shell started\n"
 msgstr "запущено нову оболонку\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: Помилка читання вводу, робота завершується...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: Помилка читання вводу, робота завершується...\n"
 
 msgid "No undo possible; continue anyway"
 msgstr "Скасування буде неможливе, все одно продовжити"
@@ -3776,8 +3776,8 @@ msgstr "       файл defaults: \""
 msgid "    system menu file: \""
 msgstr "    системне меню: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "  заміна для $VIM: \""
+msgid "  fall-back for $MNV: \""
+msgstr "  заміна для $MNV: \""
 
 msgid " f-b for $VIMRUNTIME: \""
 msgstr " заміна для $VIMRUNTIME: \""
@@ -3794,8 +3794,8 @@ msgstr "Скомпоновано: "
 msgid "  DEBUG BUILD"
 msgstr "  ВЕРСІЯ ДЛЯ НАЛАГОДЖЕННЯ"
 
-msgid "VIM - Vi IMproved"
-msgstr "VIM - Покращений Vi"
+msgid "MNV - Vi IMproved"
+msgstr "MNV - Покращений Vi"
 
 msgid "version "
 msgstr "версія "
@@ -3803,8 +3803,8 @@ msgstr "версія "
 msgid "by Bram Moolenaar et al."
 msgstr "автор: Bram Moolenaar та ін."
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim — це відкрита й вільно розповсюджувана програма"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV — це відкрита й вільно розповсюджувана програма"
 
 msgid "Help poor children in Uganda!"
 msgstr "Допоможіть сиротам з Уганди!"
@@ -3813,7 +3813,7 @@ msgid "type  :help Kuwasha<Enter>    for information "
 msgstr "      :help Kuwasha<Enter>    для інформації "
 
 msgid "type  :q<Enter>               to exit         "
-msgstr ":q<Enter>                 вихід з Vim              "
+msgstr ":q<Enter>                 вихід з MNV              "
 
 msgid "type  :help<Enter>  or  <F1>  for on-line help"
 msgstr ":help<Enter> або <F1>     перегляд допомоги        "
@@ -3824,7 +3824,7 @@ msgstr ":help version9<Enter>     інформація про версію    "
 msgid "Running in Vi compatible mode"
 msgstr "Ви працюєте в режимі сумісному з Vi"
 
-msgid "type  :set nocp<Enter>        for Vim defaults"
+msgid "type  :set nocp<Enter>        for MNV defaults"
 msgstr ":set nocp<Enter>          режим несумісний з Vi    "
 
 msgid "type  :help cp-default<Enter> for info on this"
@@ -3845,11 +3845,11 @@ msgstr "                          для двох режимів         "
 msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "меню  Edit->Global Settings->Toggle Vi Compatible  "
 
-msgid "                              for Vim defaults   "
+msgid "                              for MNV defaults   "
 msgstr "              щоб починати в режимі сумісності з Vi"
 
-msgid "Sponsor Vim development!"
-msgstr "Підтримайте розробку редактора Vim!"
+msgid "Sponsor MNV development!"
+msgstr "Підтримайте розробку редактора MNV!"
 
 msgid "type  :help sponsor<Enter>    for information "
 msgstr ":help sponsor<Enter>      подальша інформація      "
@@ -3973,8 +3973,8 @@ msgstr ""
 "# Список переходів (від найновіших):\n"
 
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# Цей файл автоматично створений Vim %s.\n"
+msgid "# This viminfo file was generated by MNV %s.\n"
+msgstr "# Цей файл автоматично створений MNV %s.\n"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -4028,26 +4028,26 @@ msgid "Sorry, this command is disabled: the Perl library could not be loaded."
 msgstr ""
 "Вибачте, ця команда вимкнена, бібліотека Perl не може бути завантажена."
 
-msgid "Edit with Vim using &tabpages"
-msgstr "Редагувати у Vim використовуючи [&t]вкладки"
+msgid "Edit with MNV using &tabpages"
+msgstr "Редагувати у MNV використовуючи [&t]вкладки"
 
-msgid "Edit with single &Vim"
-msgstr "Редагувати у одному &Vim"
+msgid "Edit with single &MNV"
+msgstr "Редагувати у одному &MNV"
 
-msgid "Diff with Vim"
-msgstr "Порівняти з допомогою Vim"
+msgid "Diff with MNV"
+msgstr "Порівняти з допомогою MNV"
 
-msgid "Edit with &Vim"
-msgstr "Редагувати за допомогою &Vim"
+msgid "Edit with &MNV"
+msgstr "Редагувати за допомогою &MNV"
 
-msgid "Edit with existing Vim"
-msgstr "Редагувати у вже запущеному Vim"
+msgid "Edit with existing MNV"
+msgstr "Редагувати у вже запущеному MNV"
 
-msgid "Edit with existing Vim - "
-msgstr "Редагувати у вже запущеному Vim - "
+msgid "Edit with existing MNV - "
+msgstr "Редагувати у вже запущеному MNV - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "Редагує вибрані файли з допомогою Vim"
+msgid "Edits the selected file(s) with MNV"
+msgstr "Редагує вибрані файли з допомогою MNV"
 
 msgid "Error creating process: Check if gvim is in your path!"
 msgstr "Помилка створення процесу, перевірте чи є gvim у шляху пошуку!"
@@ -4923,8 +4923,8 @@ msgstr "E249: Розміщення вікна несподівано змінилася"
 msgid "E250: Fonts for the following charsets are missing in fontset %s:"
 msgstr "E250: Шрифти для цих символів відсутні у наборі %s:"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
-msgstr "E251: Реквізит реєстру зразку VIM сформований неправильно.  Знищено!"
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
+msgstr "E251: Реквізит реєстру зразку MNV сформований неправильно.  Знищено!"
 
 # msgstr "E252: "
 #, c-format
@@ -5098,8 +5098,8 @@ msgid "E306: Cannot open %s"
 msgstr "E306: Не вдалося відкрити %s"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s не схоже на файл обміну Vim"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s не схоже на файл обміну MNV"
 
 msgid "E308: Warning: Original file may have been changed"
 msgstr "E308: Застереження: Можливо, початковий файл було змінено"
@@ -6188,8 +6188,8 @@ msgstr "E606: :finally без :try"
 msgid "E607: Multiple :finally"
 msgstr "E607: Не одне :finally"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: Не можна викидати (:throw) винятки з префіксом 'Vim'"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: Не можна викидати (:throw) винятки з префіксом 'MNV'"
 
 #, c-format
 msgid "E609: Cscope error: %s"
@@ -6412,8 +6412,8 @@ msgstr "E677: Не вдалося записати тимчасовий файл"
 msgid "E678: Invalid character after %s%%[dxouU]"
 msgstr "E678: Недозволений символ після %s%%[dxouU]"
 
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: Рекурсивний цикл читання syncolor.vim"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: Рекурсивний цикл читання syncolor.mnv"
 
 #, c-format
 msgid "E680: <buffer=%d>: invalid buffer number"
@@ -6748,8 +6748,8 @@ msgstr "E770: Недозволена секція у файлі орфографії"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: Файл орфографії старий, треба поновити"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: Файл орфографії призначений для більш нової версії Vim"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: Файл орфографії призначений для більш нової версії MNV"
 
 #, c-format
 msgid "E773: Symlink loop for \"%s\""
@@ -6776,8 +6776,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: Застарілий файл .sug, треба поновити: %s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: Файл .sug для більш нової версії Vim: %s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: Файл .sug для більш нової версії MNV: %s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -6975,8 +6975,8 @@ msgstr "E832: Не зашифрований файл має зашифрований файл історії: %s"
 
 #, c-format
 msgid ""
-"E833: %s is encrypted and this version of Vim does not support encryption"
-msgstr "E833: %s зашифровано, а ця версія Vim не підтримує шифрування"
+"E833: %s is encrypted and this version of MNV does not support encryption"
+msgstr "E833: %s зашифровано, а ця версія MNV не підтримує шифрування"
 
 msgid "E834: Conflicts with value of 'listchars'"
 msgstr "E834: Конфліктує із значенням 'listchars'"
@@ -6984,10 +6984,10 @@ msgstr "E834: Конфліктує із значенням 'listchars'"
 msgid "E835: Conflicts with value of 'fillchars'"
 msgstr "E835: Конфліктує із значенням 'fillchars'"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
+msgid "E836: This MNV cannot execute :python after using :py3"
 msgstr "E836: Python: Не можна використати :py і :py3 в одному сеансі"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
+msgid "E837: This MNV cannot execute :py3 after using :python"
 msgstr "E837: Python: Не можна використати :py і :py3 в одному сеансі"
 
 msgid "E838: NetBeans is not supported with this GUI"
@@ -7058,8 +7058,8 @@ msgstr "E857: Потрібен ключ словника «%s»"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: Eval не повернув дійсний об’єкт python"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: Не вдалося перетворити об’єкт python у значення vim"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: Не вдалося перетворити об’єкт python у значення mnv"
 
 msgid "E860: Need 'id' and 'type' or 'types' with 'both'"
 msgstr "E860: Потрібні 'id' і 'type' або 'types' із 'both'"
@@ -7138,8 +7138,8 @@ msgstr "E878: (NFA regexp) Не вдалося отримати пам’ять для обходу гілок!"
 msgid "E879: (NFA regexp) Too many \\z("
 msgstr "E879: (NFA regexp) Забагато \\z("
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
-msgstr "E880: Не можна обробити виняткову систуацію SystemExit у vim"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
+msgstr "E880: Не можна обробити виняткову систуацію SystemExit у mnv"
 
 msgid "E881: Line count changed unexpectedly"
 msgstr "E881: Кількість рядків несподівано змінилася"
@@ -8032,8 +8032,8 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: Пропущено кому перед аргументом: %s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: «%s» неможливо застосувати у традиційному скрипті Vim"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: «%s» неможливо застосувати у традиційному скрипті MNV"
 
 msgid "E1125: Final requires a value"
 msgstr "E1125: Final потребує значення"
@@ -8254,8 +8254,8 @@ msgstr "E1185: Бракує :redir END"
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: Результатом виразу не є значення: %s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: Не вдалося підчитати defaults.vim"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: Не вдалося підчитати defaults.mnv"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: Неможливо відкрити термінал з вікна командного рядка"
@@ -8278,8 +8278,8 @@ msgstr "E1191: Виклик функції, яку не вдалося скомпілювати: %s"
 msgid "E1192: Empty function name"
 msgstr "E1192: Порожня назва функції"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
-msgstr "E1193: Метод шифрування xchacha20 не вбудовано у цей Vim"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
+msgstr "E1193: Метод шифрування xchacha20 не вбудовано у цей MNV"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: Неможливо зашифрувати заголовок, бракує місця"
@@ -8521,9 +8521,9 @@ msgid "E1256: String or function required for argument %d"
 msgstr "E1256: Потрібен текстовий рядок або функція в аргументі %d"
 
 #, c-format
-msgid "E1257: Imported script must use \"as\" or end in .vim: %s"
+msgid "E1257: Imported script must use \"as\" or end in .mnv: %s"
 msgstr ""
-"E1257: Імпортований скрипт повинен використати «as» або мати .vim "
+"E1257: Імпортований скрипт повинен використати «as» або мати .mnv "
 "наприкінці: %s"
 
 # msgstr "E250: "
@@ -8539,8 +8539,8 @@ msgstr "E1259: Бракує назви після імпортованої назви: %s"
 msgid "E1260: Cannot unlet an imported item: %s"
 msgstr "E1260: Неможливо unlet імпортованого елемента: %s"
 
-msgid "E1261: Cannot import .vim without using \"as\""
-msgstr "E1261: Неможливо імпортувати .vim без «as»"
+msgid "E1261: Cannot import .mnv without using \"as\""
+msgstr "E1261: Неможливо імпортувати .mnv без «as»"
 
 #, c-format
 msgid "E1262: Cannot import the same script twice: %s"
@@ -9355,8 +9355,8 @@ msgstr "E1545: Стек списку виправлень недоступний"
 msgid "E1546: Cannot switch to a closing buffer"
 msgstr "E1546: Неможливо перейти до буфера, що закривається"
 
-msgid "E1547: This version of Vim does support :redrawtabpanel"
-msgstr "E1547: Ця версія Vim не підтримує :redrawtabpanel"
+msgid "E1547: This version of MNV does support :redrawtabpanel"
+msgstr "E1547: Ця версія MNV не підтримує :redrawtabpanel"
 
 msgid "E1548: Wayland connection is unavailable"
 msgstr "E1548: З’єднання із Wayland недоступне"
@@ -9565,8 +9565,8 @@ msgstr "очікувався 3-кортеж як результат imp.find_module(), але отримано %d"
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "внутрішня помилка: imp.find_module повернула кортеж з NULL"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "не вдалося знищити атрибути vim.Dictionary"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "не вдалося знищити атрибути mnv.Dictionary"
 
 msgid "cannot modify fixed dictionary"
 msgstr "не можна змінити фіксований словник"
@@ -9590,8 +9590,8 @@ msgid "list index out of range"
 msgstr "індекс списку за межами"
 
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "внутрішня помилка: не вдалося отримати елемент списку vim %d"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "внутрішня помилка: не вдалося отримати елемент списку mnv %d"
 
 msgid "slice step cannot be zero"
 msgstr "крок зрізу не може бути нуль"
@@ -9602,8 +9602,8 @@ msgstr ""
 "спроба призначити послідовність розміру більше, ніж %d, у розширений зріз"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "внутрішня помилка: немає елемента списку vim %d"
+msgid "internal error: no MNV list item %d"
+msgstr "внутрішня помилка: немає елемента списку mnv %d"
 
 msgid "internal error: not enough list items"
 msgstr "внутрішня помилка: бракує елементів у списку"
@@ -9619,8 +9619,8 @@ msgstr ""
 msgid "failed to add item to list"
 msgstr "не вдалося додати елемент до списку"
 
-msgid "cannot delete vim.List attributes"
-msgstr "не вдалося знищити атрибути vim.List"
+msgid "cannot delete mnv.List attributes"
+msgstr "не вдалося знищити атрибути mnv.List"
 
 msgid "cannot modify fixed list"
 msgstr "не можна змінити фіксований список"
@@ -9631,8 +9631,8 @@ msgstr "конструктор кортежу не приймає іменовані аргументи"
 msgid "tuple index out of range"
 msgstr "індекс кортежу за межами"
 
-msgid "cannot delete vim.Tuple attributes"
-msgstr "не вдалося знищити атрибути vim.Tuple"
+msgid "cannot delete mnv.Tuple attributes"
+msgstr "не вдалося знищити атрибути mnv.Tuple"
 
 msgid "cannot modify fixed tuple"
 msgstr "не можна змінити фіксований кортеж"
@@ -9696,16 +9696,16 @@ msgid "mark name must be a single character"
 msgstr "назвою мітки має бути один символ"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "очікувався об’єкт vim.Buffer, але отримано %s"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "очікувався об’єкт mnv.Buffer, але отримано %s"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "не вдалося перемкнутися до буфера %d"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "очікувався об’єкт vim.Window, але отримано %s"
+msgid "expected mnv.Window object, but got %s"
+msgstr "очікувався об’єкт mnv.Window, але отримано %s"
 
 msgid "failed to find window in the current tab page"
 msgstr "не вдалося знайти вікно у поточній вкладці"
@@ -9714,8 +9714,8 @@ msgid "did not switch to the specified window"
 msgstr "не перемкнувся до вказаного вікна"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "очікувався об’єкт vim.TabPage, але отримано %s"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "очікувався об’єкт mnv.TabPage, але отримано %s"
 
 msgid "did not switch to the specified tab page"
 msgstr "не перемкнувся до вказаної вкладки"
@@ -9724,16 +9724,16 @@ msgid "failed to run the code"
 msgstr "не вдалося виконати код"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "не вдалося перетворити %s у словник vim"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "не вдалося перетворити %s у словник mnv"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "не вдалося перетворити %s у список vim"
+msgid "unable to convert %s to a MNV list"
+msgstr "не вдалося перетворити %s у список mnv"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "не вдалося перетворити %s у структуру vim"
+msgid "unable to convert %s to a MNV structure"
+msgstr "не вдалося перетворити %s у структуру mnv"
 
 msgid "internal error: NULL reference passed"
 msgstr "внутрішня помилка: передано посилання NULL"
@@ -9744,26 +9744,26 @@ msgstr "внутрішня помилка: неправильний тип значення"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.VIM_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "Не вдалося встановити обробник шляху: sys.path_hooks не список\n"
 "Вам слід вчинити так:\n"
-"- додайте vim.path_hook до sys.path_hooks\n"
-"- додайте vim.VIM_SPECIAL_PATH до sys.path\n"
+"- додайте mnv.path_hook до sys.path_hooks\n"
+"- додайте mnv.VIM_SPECIAL_PATH до sys.path\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.VIM_SPECIAL_PATH to sys.path"
 msgstr ""
 "Не вдалося встановити шлях: sys.path не список\n"
-"Вас слід додати vim.VIM_SPECIAL_PATH до sys.path"
+"Вас слід додати mnv.VIM_SPECIAL_PATH до sys.path"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Макроси Vim (*.vim)\t*.vim\n"
+"Макроси MNV (*.mnv)\t*.mnv\n"
 "Всі файли (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -9774,19 +9774,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 msgstr ""
 "Всі файли (*.*)\t*.*\n"
 "Першокод C (*.c, *.h)\t*.c;*.h\n"
 "Першокод C++ (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "Код VB (*.bas, *.frm)\t*.bas;*.frm\n"
-"Файли Vim (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"Файли MNV (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Макроси Vim (*.vim)\t*.vim\n"
+"Макроси MNV (*.mnv)\t*.mnv\n"
 "Всі файли (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -9796,12 +9796,12 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 msgstr ""
 "Всі файли (*)\t*\n"
 "Першокод C (*.c, *.h)\t*.c;*.h\n"
 "Першокод C++ (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Файли Vim (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"Файли MNV (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 
 msgid "GVim"
 msgstr "GVim"
@@ -9815,8 +9815,8 @@ msgstr "Редагувати текстові файли"
 msgid "Text;editor;"
 msgstr "текст;редактор;"
 
-msgid "Vim"
-msgstr "Vim"
+msgid "MNV"
+msgstr "MNV"
 
 # msgstr "E444: "
 msgid "(local to window)"
@@ -10249,8 +10249,8 @@ msgstr "курсор цього вікна рухається разом із іншими пов’язаними вікнами"
 msgid "size of a terminal window"
 msgstr "розмір термінального вікна"
 
-msgid "key that precedes Vim commands in a terminal window"
-msgstr "клавіша перед командами Vim у термінальному вікні"
+msgid "key that precedes MNV commands in a terminal window"
+msgstr "клавіша перед командами MNV у термінальному вікні"
 
 msgid "max number of lines to keep for scrollback in a terminal window"
 msgstr ""
@@ -10329,8 +10329,8 @@ msgstr "відсоток 'columns' для заголовку вікна"
 msgid "when not empty, string to be used for the window title"
 msgstr "коли не порожня, текстовий рядок для заголовку вікна"
 
-msgid "string to restore the title to when exiting Vim"
-msgstr "текстовий рядок щоб відновити заголовок при виході з Vim"
+msgid "string to restore the title to when exiting MNV"
+msgstr "текстовий рядок щоб відновити заголовок при виході з MNV"
 
 msgid "set the text of the icon for this window"
 msgstr "встановити текст образка для цього вікна"
@@ -10338,8 +10338,8 @@ msgstr "встановити текст образка для цього вікна"
 msgid "when not empty, text for the icon of this window"
 msgstr "коли не порожня, текст для образка цього вікна"
 
-msgid "restore the screen contents when exiting Vim"
-msgstr "відновити вміст екрану при виході з Vim"
+msgid "restore the screen contents when exiting MNV"
+msgstr "відновити вміст екрану при виході з MNV"
 
 msgid "timeout used for terminal OSC responses"
 msgstr "час очікування для відповіді на OSC в терміналі"
@@ -10945,8 +10945,8 @@ msgstr "як 'autowrite', але працює з більшою кількістю команд"
 msgid "always write without asking for confirmation"
 msgstr "завжди записувати без підтвердження"
 
-msgid "automatically read a file when it was modified outside of Vim"
-msgstr "автоматично перечитувати файл, коли його було модифіковано поза Vim"
+msgid "automatically read a file when it was modified outside of MNV"
+msgstr "автоматично перечитувати файл, коли його було модифіковано поза MNV"
 
 msgid "keep oldest version of a file; specifies file name extension"
 msgstr "зберігати найстарішу версію файлу; задає розширення назви файлу"
@@ -11201,10 +11201,10 @@ msgid "multi-byte characters"
 msgstr "багатобайтні символи"
 
 msgid ""
-"character encoding used in Vim: \"latin1\", \"utf-8\",\n"
+"character encoding used in MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", etc."
 msgstr ""
-"кодування символів у Vim: «latin1», «utf-8»,\n"
+"кодування символів у MNV: «latin1», «utf-8»,\n"
 "«euc-jp», «big5» і т.д."
 
 msgid "character encoding for the current file"

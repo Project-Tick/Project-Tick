@@ -1,5 +1,5 @@
 /* main.c */
-int vim_main2(void);
+int mnv_main2(void);
 void common_init_1(void);
 void common_init_2(mparm_T *paramp);
 int is_not_a_term(void);
@@ -15,6 +15,6 @@ int work_pending(void);
 void main_loop(int cmdwin, int noexmode);
 void getout_preserve_modified(int exitval);
 void getout(int exitval);
-int process_env(char_u *env, int is_viminit);
+int process_env(char_u *env, int is_mnvinit);
 void mainerr_arg_missing(char_u *str);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

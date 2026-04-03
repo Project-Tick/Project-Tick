@@ -1,0 +1,11 @@
+mnv9script
+
+exec 'source ' .. (((cwdpath: string) => cwdpath
+  ->strpart(0, cwdpath->strridx('/mnv')))(getcwd()))
+  .. '/mnv/src/testdir/commondumps.mnv'
+g:Init('\<src\>', 0)
+
+# Match ":language" of runtest.mnv.
+language messages C
+
+# mnv:fdm=syntax:sw=2:ts=8:noet:nosta:

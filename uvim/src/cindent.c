@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -15,7 +15,7 @@
  * Below "XXX" means that this function may unlock the current line.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 // values for the "lookfor" state
 #define LOOKFOR_INITIAL		0
@@ -54,13 +54,13 @@ cin_is_cinword(char_u *line)
     {
 	len = copy_option_part(&cinw, cinw_buf, cinw_len, ",");
 	if (STRNCMP(line, cinw_buf, len) == 0
-		&& (!vim_iswordc(line[len]) || !vim_iswordc(line[len - 1])))
+		&& (!mnv_iswordc(line[len]) || !mnv_iswordc(line[len - 1])))
 	{
 	    retval = TRUE;
 	    break;
 	}
     }
-    vim_free(cinw_buf);
+    mnv_free(cinw_buf);
     return retval;
 }
 
@@ -84,7 +84,7 @@ skip_string(char_u *p)
 	    if (p[1] == '\\' && p[2] != NUL)    // '\n' or '\000'
 	    {
 		++i;
-		while (vim_isdigit(p[i - 1]))   // '\000'
+		while (mnv_isdigit(p[i - 1]))   // '\000'
 		    ++i;
 	    }
 	    if (p[i - 1] != NUL && p[i] == '\'')    // check for trailing '
@@ -109,7 +109,7 @@ skip_string(char_u *p)
 	{
 	    // Raw string: R"[delim](...)[delim]"
 	    char_u *delim = p + 2;
-	    char_u *paren = vim_strchr(delim, '(');
+	    char_u *paren = mnv_strchr(delim, '(');
 
 	    if (paren != NULL)
 	    {
@@ -380,10 +380,10 @@ cin_has_js_key(char_u *text)
 	quote = *s;
 	++s;
     }
-    if (!vim_isIDc(*s))	    // need at least one ID character
+    if (!mnv_isIDc(*s))	    // need at least one ID character
 	return FALSE;
 
-    while (vim_isIDc(*s))
+    while (mnv_isIDc(*s))
 	++s;
     if (*s == quote)
 	++s;
@@ -401,10 +401,10 @@ cin_has_js_key(char_u *text)
     static int
 cin_islabel_skip(char_u **s)
 {
-    if (!vim_isIDc(**s))	    // need at least one ID character
+    if (!mnv_isIDc(**s))	    // need at least one ID character
 	return FALSE;
 
-    while (vim_isIDc(**s))
+    while (mnv_isIDc(**s))
     {
 	if (has_mbyte)
 	    (*s) += (*mb_ptr2len)(*s);
@@ -451,7 +451,7 @@ cin_isscopedecl(char_u *p)
 	}
     }
 
-    vim_free(cinsd_buf);
+    mnv_free(cinsd_buf);
     return found;
 }
 
@@ -511,7 +511,7 @@ cin_iselse(
 {
     if (*p == '}')	    // accept "} else"
 	p = cin_skipcomment(p + 1);
-    return (STRNCMP(p, "else", 4) == 0 && !vim_isIDc(p[4]));
+    return (STRNCMP(p, "else", 4) == 0 && !mnv_isIDc(p[4]));
 }
 
 /*
@@ -573,7 +573,7 @@ cin_starts_with(char_u *s, char *word)
 {
     int l = (int)STRLEN(word);
 
-    return (STRNCMP(s, word, l) == 0 && !vim_isIDc(s[l]));
+    return (STRNCMP(s, word, l) == 0 && !mnv_isIDc(s[l]));
 }
 
 /*
@@ -748,8 +748,8 @@ cin_is_compound_init(char_u *s)
     {
 	if (*p == '=')
 	    p = r = cin_skipcomment(p + 1);
-	else if (!STRNCMP(p, "return", 6) && !vim_isIDc(p[6])
-		&& (p == s || (p > s && !vim_isIDc(p[-1]))))
+	else if (!STRNCMP(p, "return", 6) && !mnv_isIDc(p[6])
+		&& (p == s || (p > s && !mnv_isIDc(p[-1]))))
 	    p = r = cin_skipcomment(p + 6);
 	else
 	    p = cin_skip_comment_and_string(p + 1);
@@ -841,15 +841,15 @@ cin_is_cpp_namespace(char_u *s)
 
     // skip over "inline" and "export" in any order
     while ((STRNCMP(s, "inline", 6) == 0 || STRNCMP(s, "export", 6) == 0)
-					&& (s[6] == NUL || !vim_iswordc(s[6])))
+					&& (s[6] == NUL || !mnv_iswordc(s[6])))
 	s = cin_skipcomment(skipwhite(s + 6));
 
-    if (STRNCMP(s, "namespace", 9) == 0 && (s[9] == NUL || !vim_iswordc(s[9])))
+    if (STRNCMP(s, "namespace", 9) == 0 && (s[9] == NUL || !mnv_iswordc(s[9])))
     {
 	p = cin_skipcomment(skipwhite(s + 9));
 	while (*p != NUL)
 	{
-	    if (VIM_ISWHITE(*p))
+	    if (MNV_ISWHITE(*p))
 	    {
 		has_name = TRUE; // found end of a name
 		p = cin_skipcomment(skipwhite(p));
@@ -858,14 +858,14 @@ cin_is_cpp_namespace(char_u *s)
 	    {
 		break;
 	    }
-	    else if (vim_iswordc(*p))
+	    else if (mnv_iswordc(*p))
 	    {
 		has_name_start = TRUE;
 		if (has_name)
 		    return FALSE; // word character after skipping past name
 		++p;
 	    }
-	    else if (p[0] == ':' && p[1] == ':' && vim_iswordc(p[2]))
+	    else if (p[0] == ':' && p[1] == ':' && mnv_iswordc(p[2]))
 	    {
 		if (!has_name_start || has_name)
 		    return FALSE;
@@ -892,12 +892,12 @@ cin_is_cpp_extern_c(char_u *s)
     int		has_string_literal = FALSE;
 
     s = cin_skipcomment(s);
-    if (STRNCMP(s, "extern", 6) == 0 && (s[6] == NUL || !vim_iswordc(s[6])))
+    if (STRNCMP(s, "extern", 6) == 0 && (s[6] == NUL || !mnv_iswordc(s[6])))
     {
 	p = cin_skipcomment(skipwhite(s + 6));
 	while (*p != NUL)
 	{
-	    if (VIM_ISWHITE(*p))
+	    if (MNV_ISWHITE(*p))
 	    {
 		p = cin_skipcomment(skipwhite(p));
 	    }
@@ -1048,15 +1048,15 @@ cin_first_id_amount(void)
 	    || (len == 6 && STRNCMP(p, "signed", 6) == 0))
     {
 	s = skipwhite(p + len);
-	if ((STRNCMP(s, "int", 3) == 0 && VIM_ISWHITE(s[3]))
-		|| (STRNCMP(s, "long", 4) == 0 && VIM_ISWHITE(s[4]))
-		|| (STRNCMP(s, "short", 5) == 0 && VIM_ISWHITE(s[5]))
-		|| (STRNCMP(s, "char", 4) == 0 && VIM_ISWHITE(s[4])))
+	if ((STRNCMP(s, "int", 3) == 0 && MNV_ISWHITE(s[3]))
+		|| (STRNCMP(s, "long", 4) == 0 && MNV_ISWHITE(s[4]))
+		|| (STRNCMP(s, "short", 5) == 0 && MNV_ISWHITE(s[5]))
+		|| (STRNCMP(s, "char", 4) == 0 && MNV_ISWHITE(s[4])))
 	    p = s;
     }
-    for (len = 0; vim_isIDc(p[len]); ++len)
+    for (len = 0; mnv_isIDc(p[len]); ++len)
 	;
-    if (len == 0 || !VIM_ISWHITE(p[len]) || cin_nocode(p))
+    if (len == 0 || !MNV_ISWHITE(p[len]) || cin_nocode(p))
 	return 0;
 
     p = skipwhite(p + len);
@@ -1091,7 +1091,7 @@ cin_get_equal_amount(linenr_T lnum)
     }
 
     line = s = ml_get(lnum);
-    while (*s != NUL && vim_strchr((char_u *)"=;{}\"'", *s) == NULL)
+    while (*s != NUL && mnv_strchr((char_u *)"=;{}\"'", *s) == NULL)
     {
 	if (cin_iscomment(s))	// ignore comments
 	    s = cin_skipcomment(s);
@@ -1361,13 +1361,13 @@ done:
     static int
 cin_isif(char_u *p)
 {
-    return (STRNCMP(p, "if", 2) == 0 && !vim_isIDc(p[2]));
+    return (STRNCMP(p, "if", 2) == 0 && !mnv_isIDc(p[2]));
 }
 
     static int
 cin_isdo(char_u *p)
 {
-    return (STRNCMP(p, "do", 2) == 0 && !vim_isIDc(p[2]));
+    return (STRNCMP(p, "do", 2) == 0 && !mnv_isIDc(p[2]));
 }
 
 /*
@@ -1418,7 +1418,7 @@ cin_is_if_for_while_before_offset(char_u *line, int *poffset)
 
     if (offset-- < 2)
 	return 0;
-    while (offset > 2 && VIM_ISWHITE(line[offset]))
+    while (offset > 2 && MNV_ISWHITE(line[offset]))
 	--offset;
 
     offset -= 1;
@@ -1441,7 +1441,7 @@ cin_is_if_for_while_before_offset(char_u *line, int *poffset)
     return 0;
 
 probablyFound:
-    if (!offset || !vim_isIDc(line[offset - 1]))
+    if (!offset || !mnv_isIDc(line[offset - 1]))
     {
 	*poffset = offset;
 	return 1;
@@ -1509,7 +1509,7 @@ cin_iswhileofdo_end(int terminated)
     static int
 cin_isbreak(char_u *p)
 {
-    return (STRNCMP(p, "break", 5) == 0 && !vim_isIDc(p[5]));
+    return (STRNCMP(p, "break", 5) == 0 && !mnv_isIDc(p[5]));
 }
 
 /*
@@ -1627,8 +1627,8 @@ cin_is_cpp_baseclass(
 	    else
 		s = cin_skipcomment(s + 1);
 	}
-	else if ((STRNCMP(s, "class", 5) == 0 && !vim_isIDc(s[5]))
-		|| (STRNCMP(s, "struct", 6) == 0 && !vim_isIDc(s[6])))
+	else if ((STRNCMP(s, "class", 5) == 0 && !mnv_isIDc(s[5]))
+		|| (STRNCMP(s, "struct", 6) == 0 && !mnv_isIDc(s[6])))
 	{
 	    class_or_struct = TRUE;
 	    lookfor_ctor_init = FALSE;
@@ -1656,7 +1656,7 @@ cin_is_cpp_baseclass(
 		// Avoid seeing '() :' after '?' as constructor init.
 		return FALSE;
 	    }
-	    else if (!vim_isIDc(s[0]))
+	    else if (!mnv_isIDc(s[0]))
 	    {
 		// if it is not an identifier, we are wrong
 		class_or_struct = FALSE;
@@ -1800,7 +1800,7 @@ parse_cino(buf_T *buf)
     char_u	*p;
     char_u	*l;
     char_u	*digits;
-    vimlong_T	n;
+    mnvlong_T	n;
     int		divider;
     int		fraction = 0;
     int		sw;
@@ -1955,7 +1955,7 @@ parse_cino(buf_T *buf)
 	if (*p == '.')	    // ".5s" means a fraction
 	{
 	    fraction = atol((char *)++p);
-	    while (VIM_ISDIGIT(*p))
+	    while (MNV_ISDIGIT(*p))
 	    {
 		++p;
 		if (divider)
@@ -1972,7 +1972,7 @@ parse_cino(buf_T *buf)
 	    {
 		n *= sw;
 		if (divider)
-		    n += ((vimlong_T)sw * fraction + divider / 2) / divider;
+		    n += ((mnvlong_T)sw * fraction + divider / 2) / divider;
 	    }
 	    ++p;
 	}
@@ -2182,7 +2182,7 @@ get_c_indent(void)
     // Get a copy of the current contents of the line.
     // This is required, because only the most recent line obtained with
     // ml_get is valid!
-    linecopy = vim_strsave(ml_get(cur_curpos.lnum));
+    linecopy = mnv_strsave(ml_get(cur_curpos.lnum));
     if (linecopy == NULL)
 	return 0;
 
@@ -2305,7 +2305,7 @@ get_c_indent(void)
 		    what = *p++;
 		else if (*p == COM_LEFT || *p == COM_RIGHT)
 		    align = *p++;
-		else if (VIM_ISDIGIT(*p) || *p == '-')
+		else if (MNV_ISDIGIT(*p) || *p == '-')
 		    off = getdigits(&p);
 		else
 		    ++p;
@@ -2359,8 +2359,8 @@ get_c_indent(void)
 		    if (start_off != 0)
 			amount += start_off;
 		    else if (start_align == COM_RIGHT)
-			amount += vim_strsize(lead_start)
-						   - vim_strsize(lead_middle);
+			amount += mnv_strsize(lead_start)
+						   - mnv_strsize(lead_middle);
 		    break;
 		}
 
@@ -2374,8 +2374,8 @@ get_c_indent(void)
 		    if (off != 0)
 			amount += off;
 		    else if (align == COM_RIGHT)
-			amount += vim_strsize(lead_start)
-						   - vim_strsize(lead_middle);
+			amount += mnv_strsize(lead_start)
+						   - mnv_strsize(lead_middle);
 		    done = TRUE;
 		    break;
 		}
@@ -2602,7 +2602,7 @@ get_c_indent(void)
 		    else
 		    {
 			col = our_paren_pos.col + 1;
-			while (VIM_ISWHITE(l[col]))
+			while (MNV_ISWHITE(l[col]))
 			    col++;
 			if (l[col] != NUL)	// In case of trailing space
 			    our_paren_pos.col = col;
@@ -3769,8 +3769,8 @@ term_again:
     // contains { or }: "void f(condition) {\n if (1)"
     if (cur_curpos.lnum < curbuf->b_ml.ml_line_count
 	    && !cin_nocode(theline)
-	    && vim_strchr(theline, '{') == NULL
-	    && vim_strchr(theline, '}') == NULL
+	    && mnv_strchr(theline, '{') == NULL
+	    && mnv_strchr(theline, '}') == NULL
 	    && !cin_ends_in(theline, (char_u *)":")
 	    && !cin_ends_in(theline, (char_u *)",")
 	    && cin_isfuncdecl(NULL, cur_curpos.lnum + 1,
@@ -3981,7 +3981,7 @@ laterend:
     // put the cursor back where it belongs
     curwin->w_cursor = cur_curpos;
 
-    vim_free(linecopy);
+    mnv_free(linecopy);
 
     return amount;
 }
@@ -4121,7 +4121,7 @@ in_cinkeys(
 		// make up some named keys <o>, <O>, <e>, <0>, <>>, <<>, <*>,
 		// <:> and <!> so that people can re-indent on o, O, e, 0, <,
 		// >, *, : and ! keys if they really really want to.
-		if (vim_strchr((char_u *)"<>!*oOe0:", look[1]) != NULL
+		if (mnv_strchr((char_u *)"<>!*oOe0:", look[1]) != NULL
 						       && keytyped == look[1])
 		    return TRUE;
 
@@ -4145,7 +4145,7 @@ in_cinkeys(
 	    }
 	    else
 		icase = FALSE;
-	    p = vim_strchr(look, ',');
+	    p = mnv_strchr(look, ',');
 	    if (p == NULL)
 		p = look + STRLEN(look);
 	    if ((try_match || try_match_word)
@@ -4167,13 +4167,13 @@ in_cinkeys(
 			for (s = line + curwin->w_cursor.col; s > line; s = n)
 			{
 			    n = mb_prevptr(line, s);
-			    if (!vim_iswordp(n))
+			    if (!mnv_iswordp(n))
 				break;
 			}
 		    }
 		    else
 			for (s = line + curwin->w_cursor.col; s > line; --s)
-			    if (!vim_iswordc(s[-1]))
+			    if (!mnv_iswordc(s[-1]))
 				break;
 		    if (s + (p - look) <= line + curwin->w_cursor.col
 			    && (icase
@@ -4189,7 +4189,7 @@ in_cinkeys(
 		{
 		    line = ml_get_cursor();
 		    if ((curwin->w_cursor.col == (colnr_T)(p - look)
-				|| !vim_iswordc(line[-(p - look) - 1]))
+				|| !mnv_iswordc(line[-(p - look) - 1]))
 			    && (icase
 				? MB_STRNICMP(line - (p - look), look, p - look)
 				: STRNCMP(line - (p - look), look, p - look))
@@ -4249,7 +4249,7 @@ f_cindent(typval_T *argvars UNUSED, typval_T *rettv)
     pos_T	pos;
     linenr_T	lnum;
 
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
     pos = curwin->w_cursor;

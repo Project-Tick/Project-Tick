@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# japanese.nsi: Japanese language strings for gvim NSIS installer.
+# japanese.nsi: Japanese language strings for gmnv NSIS installer.
 #
 # Locale ID    : 1041
 # Locale Name  : ja
@@ -38,15 +38,15 @@ LicenseLangString page_lic_file 0 "..\lang\LICENSE.nsis.txt"
 # Translated README.txt file, which is opened after installation          {{{1
 ##############################################################################
 
-LangString vim_readme_file 0 "README.txt"
-#LangString vim_readme_file ${LANG_JAPANESE} "README.jax.txt"
+LangString mnv_readme_file 0 "README.txt"
+#LangString mnv_readme_file ${LANG_JAPANESE} "README.jax.txt"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_JAPANESE} \
-#    "Destination Folder (Must end with $\"vim$\")"
+#    "Destination Folder (Must end with $\"mnv$\")"
 
 LangString str_show_readme          ${LANG_JAPANESE} \
     "インストール完了後に README を表示する"
@@ -69,79 +69,79 @@ LangString str_type_full            ${LANG_JAPANESE} \
 LangString str_section_old_ver      ${LANG_JAPANESE} \
     "既存のバージョンをアンインストール"
 LangString str_desc_old_ver         ${LANG_JAPANESE} \
-    "すでにインストールされている Vim をシステムから削除します。"
+    "すでにインストールされている MNV をシステムから削除します。"
 
 LangString str_section_exe          ${LANG_JAPANESE} \
-    "Vim GUI とランタイムファイル"
+    "MNV GUI とランタイムファイル"
 LangString str_desc_exe             ${LANG_JAPANESE} \
-    "Vim GUI 実行ファイルとラインタイムファイル。このコンポーネントは必須です。"
+    "MNV GUI 実行ファイルとラインタイムファイル。このコンポーネントは必須です。"
 
 LangString str_section_console      ${LANG_JAPANESE} \
-    "Vim コンソールプログラム"
+    "MNV コンソールプログラム"
 LangString str_desc_console         ${LANG_JAPANESE} \
-    "コンソール版の Vim (vim.exe)。"
+    "コンソール版の MNV (mnv.exe)。"
 
 LangString str_section_batch        ${LANG_JAPANESE} \
     ".bat ファイルを作成"
 LangString str_desc_batch           ${LANG_JAPANESE} \
-    "コマンドラインから Vim と関連コマンドを実行できるように、.bat ファイルを Windows ディレクトリに作成します。"
+    "コマンドラインから MNV と関連コマンドを実行できるように、.bat ファイルを Windows ディレクトリに作成します。"
 
 LangString str_group_icons          ${LANG_JAPANESE} \
-    "Vim のアイコンを作成"
+    "MNV のアイコンを作成"
 LangString str_desc_icons           ${LANG_JAPANESE} \
-    "Vim を簡単に実行できるように、いくつかの場所にアイコンを作成します。"
+    "MNV を簡単に実行できるように、いくつかの場所にアイコンを作成します。"
 
 LangString str_section_desktop      ${LANG_JAPANESE} \
     "デスクトップ上"
 LangString str_desc_desktop         ${LANG_JAPANESE} \
-    "gVim 実行ファイルのアイコンをデスクトップ上に作成します。"
+    "gMNV 実行ファイルのアイコンをデスクトップ上に作成します。"
 
 LangString str_section_start_menu   ${LANG_JAPANESE} \
     "スタートメニューのプログラムフォルダー上"
 LangString str_desc_start_menu      ${LANG_JAPANESE} \
-    "Vim のアイコンをスタートメニューのプログラムフォルダー上に作成します。"
+    "MNV のアイコンをスタートメニューのプログラムフォルダー上に作成します。"
 
 #LangString str_section_quick_launch ${LANG_JAPANESE} \
 #    "In the Quick Launch Bar"
 #LangString str_desc_quick_launch    ${LANG_JAPANESE} \
-#    "Add Vim shortcut in the quick launch bar."
+#    "Add MNV shortcut in the quick launch bar."
 
 LangString str_section_edit_with    ${LANG_JAPANESE} \
-    "Vim のコンテキストメニューを追加"
+    "MNV のコンテキストメニューを追加"
 LangString str_desc_edit_with       ${LANG_JAPANESE} \
-    "$\"Vimで編集する$\" をコンテキストメニューに追加します。"
+    "$\"MNVで編集する$\" をコンテキストメニューに追加します。"
 
 #LangString str_section_edit_with32  ${LANG_JAPANESE} \
 #    "32-bit Version"
 #LangString str_desc_edit_with32     ${LANG_JAPANESE} \
-#    "Add Vim to the $\"Open With...$\" context menu list \
+#    "Add MNV to the $\"Open With...$\" context menu list \
 #     for 32-bit applications."
 
 #LangString str_section_edit_with64  ${LANG_JAPANESE} \
 #    "64-bit Version"
 #LangString str_desc_edit_with64     ${LANG_JAPANESE} \
-#    "Add Vim to the $\"Open With...$\" context menu list \
+#    "Add MNV to the $\"Open With...$\" context menu list \
 #     for 64-bit applications."
 
-LangString str_section_vim_rc       ${LANG_JAPANESE} \
+LangString str_section_mnv_rc       ${LANG_JAPANESE} \
     "既定のコンフィグを作成"
-LangString str_desc_vim_rc          ${LANG_JAPANESE} \
-    "もし無ければ、既定のコンフィグファイル (_vimrc) を作成します。"
+LangString str_desc_mnv_rc          ${LANG_JAPANESE} \
+    "もし無ければ、既定のコンフィグファイル (_mnvrc) を作成します。"
 
 LangString str_group_plugin         ${LANG_JAPANESE} \
     "プラグインディレクトリを作成"
 LangString str_desc_plugin          ${LANG_JAPANESE} \
-    "プラグインディレクトリを作成します。そこにプラグインファイルを置くことで Vim を拡張することができます。"
+    "プラグインディレクトリを作成します。そこにプラグインファイルを置くことで MNV を拡張することができます。"
 
 LangString str_section_plugin_home  ${LANG_JAPANESE} \
     "個人用"
 LangString str_desc_plugin_home     ${LANG_JAPANESE} \
     "プラグインディレクトリをホームディレクトリに作成します。"
 
-LangString str_section_plugin_vim   ${LANG_JAPANESE} \
+LangString str_section_plugin_mnv   ${LANG_JAPANESE} \
     "共用"
-LangString str_desc_plugin_vim      ${LANG_JAPANESE} \
-    "プラグインディレクトリを Vim のインストールディレクトリに作成します。システムの全員で共有されます。"
+LangString str_desc_plugin_mnv      ${LANG_JAPANESE} \
+    "プラグインディレクトリを MNV のインストールディレクトリに作成します。システムの全員で共有されます。"
 
 LangString str_section_nls          ${LANG_JAPANESE} \
     "多言語サポート"
@@ -149,14 +149,14 @@ LangString str_desc_nls             ${LANG_JAPANESE} \
     "多言語サポート用のファイルをインストールします。"
 
 LangString str_unsection_register   ${LANG_JAPANESE} \
-    "Vim を登録解除"
+    "MNV を登録解除"
 LangString str_desc_unregister      ${LANG_JAPANESE} \
-    "Vim をシステムから登録解除します。"
+    "MNV をシステムから登録解除します。"
 
 LangString str_unsection_exe        ${LANG_JAPANESE} \
-    "Vim の実行ファイル/ランタイムファイルを削除"
+    "MNV の実行ファイル/ランタイムファイルを削除"
 LangString str_desc_rm_exe          ${LANG_JAPANESE} \
-    "全ての Vim の実行ファイルとランタイムファイルを削除します。"
+    "全ての MNV の実行ファイルとランタイムファイルを削除します。"
 
 LangString str_ungroup_plugin       ${LANG_JAPANESE} \
     "プラグインディレクトリを削除"
@@ -168,15 +168,15 @@ LangString str_unsection_plugin_home ${LANG_JAPANESE} \
 LangString str_desc_rm_plugin_home  ${LANG_JAPANESE} \
     "プラグインディレクトリをホームディレクトリから削除します。"
 
-LangString str_unsection_plugin_vim ${LANG_JAPANESE} \
+LangString str_unsection_plugin_mnv ${LANG_JAPANESE} \
     "共用"
-LangString str_desc_rm_plugin_vim   ${LANG_JAPANESE} \
-    "プラグインディレクトリを Vim のインストールディレクトリから削除します。"
+LangString str_desc_rm_plugin_mnv   ${LANG_JAPANESE} \
+    "プラグインディレクトリを MNV のインストールディレクトリから削除します。"
 
 LangString str_unsection_rootdir    ${LANG_JAPANESE} \
-    "Vim のトップディレクトリを削除"
+    "MNV のトップディレクトリを削除"
 LangString str_desc_rm_rootdir      ${LANG_JAPANESE} \
-    "Vim のトップディレクトリを削除します。あなたの Vim の設定ファイルも含まれていることに注意してください！"
+    "MNV のトップディレクトリを削除します。あなたの MNV の設定ファイルも含まれていることに注意してください！"
 
 
 ##############################################################################
@@ -184,30 +184,30 @@ LangString str_desc_rm_rootdir      ${LANG_JAPANESE} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_JAPANESE} \
-#    "Found $vim_old_ver_count Vim versions on your system.$\r$\n\
-#     This installer can only handle ${VIM_MAX_OLD_VER} versions \
+#    "Found $mnv_old_ver_count MNV versions on your system.$\r$\n\
+#     This installer can only handle ${MNV_MAX_OLD_VER} versions \
 #     at most.$\r$\n\
 #     Please remove some versions and start again."
 
 #LangString str_msg_invalid_root  ${LANG_JAPANESE} \
-#    "Invalid install path: $vim_install_root!$\r$\n\
-#     It should end with $\"vim$\"."
+#    "Invalid install path: $mnv_install_root!$\r$\n\
+#     It should end with $\"mnv$\"."
 
 #LangString str_msg_bin_mismatch  ${LANG_JAPANESE} \
 #    "Binary path mismatch!$\r$\n$\r$\n\
-#     Expect the binary path to be $\"$vim_bin_path$\",$\r$\n\
+#     Expect the binary path to be $\"$mnv_bin_path$\",$\r$\n\
 #     but system indicates the binary path is $\"$INSTDIR$\"."
 
-#LangString str_msg_vim_running   ${LANG_JAPANESE} \
-#    "Vim is still running on your system.$\r$\n\
-#     Please close all instances of Vim before you continue."
+#LangString str_msg_mnv_running   ${LANG_JAPANESE} \
+#    "MNV is still running on your system.$\r$\n\
+#     Please close all instances of MNV before you continue."
 
 #LangString str_msg_register_ole  ${LANG_JAPANESE} \
-#    "Attempting to register Vim with OLE. \
+#    "Attempting to register MNV with OLE. \
 #     There is no message indicates whether this works or not."
 
 #LangString str_msg_unreg_ole     ${LANG_JAPANESE} \
-#    "Attempting to unregister Vim with OLE. \
+#    "Attempting to unregister MNV with OLE. \
 #     There is no message indicates whether this works or not."
 
 #LangString str_msg_rm_start      ${LANG_JAPANESE} \
@@ -242,7 +242,7 @@ LangString str_msg_rm_exe_fail   ${LANG_JAPANESE} \
      手動で削除する必要があります。"
 
 #LangString str_msg_rm_root_fail  ${LANG_JAPANESE} \
-#    "WARNING: Cannot remove $\"$vim_install_root$\", it is not empty!"
+#    "WARNING: Cannot remove $\"$mnv_install_root$\", it is not empty!"
 
 LangString str_msg_uninstalling  ${LANG_JAPANESE} \
     "古いバージョンをアンインストールしています..."
@@ -258,23 +258,23 @@ LangString str_msg_unregistering ${LANG_JAPANESE} \
 # Dialog Box                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_JAPANESE} \
-    "_vimrc の設定を選んでください"
-LangString str_vimrc_page_subtitle ${LANG_JAPANESE} \
+LangString str_mnvrc_page_title    ${LANG_JAPANESE} \
+    "_mnvrc の設定を選んでください"
+LangString str_mnvrc_page_subtitle ${LANG_JAPANESE} \
     "拡張やキーボード、マウスの設定を選んでください。"
 
 LangString str_msg_compat_title    ${LANG_JAPANESE} \
-    " Vi / Vim の動作 "
+    " Vi / MNV の動作 "
 LangString str_msg_compat_desc     ${LANG_JAPANESE} \
     "互換性と拡張(&C)"
 LangString str_msg_compat_vi       ${LANG_JAPANESE} \
     "Vi 互換"
-LangString str_msg_compat_vim      ${LANG_JAPANESE} \
-    "Vim 独自"
+LangString str_msg_compat_mnv      ${LANG_JAPANESE} \
+    "MNV 独自"
 LangString str_msg_compat_defaults ${LANG_JAPANESE} \
-    "Vim 独自と多少の拡張 (defaults.vim を読み込み)"
+    "MNV 独自と多少の拡張 (defaults.mnv を読み込み)"
 LangString str_msg_compat_all      ${LANG_JAPANESE} \
-    "Vim 独自と全ての拡張 (vimrc_example.vim を読み込み) (既定)"
+    "MNV 独自と全ての拡張 (mnvrc_example.mnv を読み込み) (既定)"
 
 LangString str_msg_keymap_title   ${LANG_JAPANESE} \
     " マッピング "

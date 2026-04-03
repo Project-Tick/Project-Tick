@@ -1,7 +1,7 @@
 Tests for syntax highlighting plugins
 =====================================
 
-Summary: Files in the "input" directory are edited by Vim with syntax
+Summary: Files in the "input" directory are edited by MNV with syntax
 highlighting enabled.  Screendumps are generated and compared with the
 expected screendumps in the "dumps" directory.  This will uncover any
 character attributes that differ.
@@ -34,7 +34,7 @@ Make sure to include some interesting constructs with plenty of complicated
 highlighting.  Optionally, pre-configure the testing environment by including
 setup commands at the top of the input file.  The format for these lines is:
 
-	VIM_TEST_SETUP {command}
+	MNV_TEST_SETUP {command}
 
 where {command} is any valid Ex command, which extends to the end of the line.
 The first 20 lines of the input file are ALWAYS scanned for setup commands and
@@ -44,22 +44,22 @@ errors in the input file but this is not required.
 
 Continuing the Java example:
 
-	// VIM_TEST_SETUP let g:java_space_errors = 1
-	// VIM_TEST_SETUP let g:java_minlines = 5
+	// MNV_TEST_SETUP let g:java_space_errors = 1
+	// MNV_TEST_SETUP let g:java_minlines = 5
 	class Test { }
 
-As an alternative, setup commands can be included in an external Vim script
+As an alternative, setup commands can be included in an external MNV script
 file in the "input/setup" directory.  This script file must have the same base
 name as the input file.
 
 So, the equivalent example configuration using this method would be to create
-an "input/setup/java.vim" script file with the following lines:
+an "input/setup/java.mnv" script file with the following lines:
 
 	let g:java_space_errors = 1
 	let g:java_minlines = 5
 
 Both inline setup commands and setup scripts may be used at the same time, the
-script file will be sourced before any VIM_TEST_SETUP commands are executed.
+script file will be sourced before any MNV_TEST_SETUP commands are executed.
 
 Every line of a source file must not be longer than 1425 (19 x 75) characters.
 
@@ -83,12 +83,12 @@ available syntax tests for Java:
 command arguments when you press certain keys, e.g. Tab or Ctrl-i.)
 
 As an alternative, you can specify a subset of test filenames for running as
-a regular expression and assign it to a VIM_SYNTAX_TEST_FILTER environment
+a regular expression and assign it to a MNV_SYNTAX_TEST_FILTER environment
 variable; e.g. to run all tests whose base names contain "fold", use any of:
 
-	make test -e 'VIM_SYNTAX_TEST_FILTER = fold.*\..\+'
-	make test VIM_SYNTAX_TEST_FILTER='fold.*\..\+'
-	VIM_SYNTAX_TEST_FILTER='fold.*\..\+' make test
+	make test -e 'MNV_SYNTAX_TEST_FILTER = fold.*\..\+'
+	make test MNV_SYNTAX_TEST_FILTER='fold.*\..\+'
+	MNV_SYNTAX_TEST_FILTER='fold.*\..\+' make test
 
 Consider quoting the variable value to avoid any interpretation by the shell.
 
@@ -121,7 +121,7 @@ is covered by the test.  You can follow these steps:
 
 1. Edit the syntax plugin somewhere in your personal setup.  Use a file
    somewhere to try out the changes.
-2. Go to the directory where you have the Vim code checked out and replace the
+2. Go to the directory where you have the MNV code checked out and replace the
    syntax plugin.  Run the tests: "make test".  Usually the tests will still
    pass, but if you fixed syntax highlighting that was already visible in the
    input file, carefully check that the changes in the screendump are
@@ -134,7 +134,7 @@ is covered by the test.  You can follow these steps:
 2. Edit the input file for your language to add the items you have improved.
    (TODO: how to add another screendump?).
    Run the tests and you should get failures.  (You may opt for faster failure
-   by assigning a small number, e.g. "1", to a VIM_SYNTAX_TEST_WAIT_TIME
+   by assigning a small number, e.g. "1", to a MNV_SYNTAX_TEST_WAIT_TIME
    environment variable and gambling away an "uncertain" possibility of
    success.)  Like with the previous step, carefully check that the new
    screendumps in the "failed" directory are good.  Update the syntax plugin
@@ -142,8 +142,8 @@ is covered by the test.  You can follow these steps:
    effect of the syntax plugin improvements.  Then move the screendumps from
    the "failed" to the "dumps" directory.  Now "make test" should succeed.
 3. Prepare a pull request with the modified files:
-	- syntax plugin:    syntax/{name}.vim
-	- Vim setup file:   syntax/testdir/input/setup/{name}.vim (if any)
+	- syntax plugin:    syntax/{name}.mnv
+	- MNV setup file:   syntax/testdir/input/setup/{name}.mnv (if any)
 	- test input file:  syntax/testdir/input/{name}.{ext}
 	- test dump files:  syntax/testdir/dumps/{name}_*.dump
    Since no input file is ever executed when you run the tests, review and
@@ -159,10 +159,10 @@ Viewing generated screendumps (local)
 -------------------------------------
 
 You may also wish to look at the whole batch of failed screendumps after
-running "make test".  Source the "viewdumps.vim" script for this task:
+running "make test".  Source the "viewdumps.mnv" script for this task:
 
-	[VIMRUNTIME=../..] \
-	../../src/vim --clean -S testdir/viewdumps.vim \
+	[MNVRUNTIME=../..] \
+	../../src/mnv --clean -S testdir/viewdumps.mnv \
 				[testdir/dumps/java_*.dump ...]
 
 By default, all screendumps found in the "failed" directory will be added to
@@ -195,7 +195,7 @@ directory by creating a symlink:
 
 You can now examine the extracted screendumps:
 
-	./src/vim --clean -S runtime/syntax/testdir/viewdumps.vim \
+	./src/mnv --clean -S runtime/syntax/testdir/viewdumps.mnv \
 				/tmp/runtime/syntax/testdir/failed/*.dump
 
 
@@ -203,7 +203,7 @@ Viewing generated screendumps (submitted for a pull request)
 ------------------------------------------------------------
 
 Note: There is also a "git difftool" extension described in
-      src/testdir/commondumps.vim
+      src/testdir/commondumps.mnv
 
 First, you need to check out the topic branch with the proposed changes and
 write down a difference list between the HEAD commit (index) and its parent
@@ -237,7 +237,7 @@ you can now examine the screendumps from the "failed" directory (note that new
 screendumps will be shown with no difference between their versions):
 
 	cd ..
-	../../../src/vim --clean -S viewdumps.vim
+	../../../src/mnv --clean -S viewdumps.mnv
 
 
 TODO: test syncing by jumping around

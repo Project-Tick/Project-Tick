@@ -1,7 +1,7 @@
-*windows.txt*	For Vim version 9.2.  Last change: 2026 Mar 01
+*windows.txt*	For MNV version 9.2.  Last change: 2026 Mar 01
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Editing with multiple windows and buffers.		*windows* *buffers*
@@ -14,7 +14,7 @@ The basics are explained in chapter 7 and 8 of the user manual |usr_07.txt|
 |usr_08.txt|.
 
 1.  Introduction				|windows-intro|
-2.  Starting Vim				|windows-starting|
+2.  Starting MNV				|windows-starting|
 3.  Opening and closing a window		|opening-window|
 4.  Moving cursor to other windows		|window-move-cursor|
 5.  Moving windows around			|window-moving|
@@ -56,7 +56,7 @@ hidden:   The buffer is not displayed.  If there is a file for this buffer, it
 							*inactive-buffer*
 inactive: The buffer is not displayed and does not contain anything.  Options
 	  for the buffer are remembered if the file was once loaded.  It can
-	  contain marks from the |viminfo| file.  But the buffer doesn't
+	  contain marks from the |mnvinfo| file.  But the buffer doesn't
 	  contain text.
 
 In a table:
@@ -68,19 +68,19 @@ hidden		  no		 yes		  'h'
 inactive	  no		 no		  ' '
 
 							*buffer-reuse*
-Each buffer has a unique number and the number will not change within a Vim
+Each buffer has a unique number and the number will not change within a MNV
 session.  The |bufnr()| and |bufname()| functions can be used to convert
 between a buffer name and the buffer number.  There is one exception: if a new
 empty buffer is created and it is not modified, the buffer will be re-used
 when loading another file into that buffer.  This also means the buffer number
 will not change.
 
-The main Vim window can hold several split windows.  There are also tab pages
+The main MNV window can hold several split windows.  There are also tab pages
 |tab-page|, each of which can hold multiple windows.
 
 					*window-ID* *winid* *windowid*
 Each window has a unique identifier called the window ID.  This identifier
-will not change within a Vim session.  The |win_getid()| and |win_id2tabwin()|
+will not change within a MNV session.  The |win_getid()| and |win_id2tabwin()|
 functions can be used to convert between the window/tab number and the
 identifier.  There is also the window number, which may change whenever
 windows are opened or closed, see |winnr()|.
@@ -91,16 +91,16 @@ to a window in any tab.
 
 
 ==============================================================================
-2. Starting Vim						*windows-starting*
+2. Starting MNV						*windows-starting*
 
-By default, Vim starts with one window, just like Vi.
+By default, MNV starts with one window, just like Vi.
 
-The "-o" and "-O" arguments to Vim can be used to open a window for each file
+The "-o" and "-O" arguments to MNV can be used to open a window for each file
 in the argument list.  The "-o" argument will split the windows horizontally;
 the "-O" argument will split the windows vertically.  If both "-o" and "-O"
 are given, the last one encountered will be used to determine the split
 orientation.  For example, this will open three windows, split horizontally: >
-	vim -o file1 file2 file3
+	mnv -o file1 file2 file3
 
 "-oN", where N is a decimal number, opens N windows split horizontally.  If
 there are more file names than windows, only N windows are opened and some
@@ -245,7 +245,7 @@ CTRL-W ^	Split the current window in two and edit the alternate file.
 
 						*CTRL-W_:*
 CTRL-W :	Does the same as typing |:| - enter a command line.  Useful in a
-		terminal window, where all Vim commands must be preceded with
+		terminal window, where all MNV commands must be preceded with
 		CTRL-W or 'termwinkey'.
 
 Note that the 'splitbelow' and 'splitright' options influence where a new
@@ -287,24 +287,24 @@ and 'winminwidth' are relevant.
 						*:topleft* *E442*
 :to[pleft] {cmd}
 		Execute {cmd}.  If it contains a command that splits a window,
-		it will appear at the top and occupy the full width of the Vim
+		it will appear at the top and occupy the full width of the MNV
 		window.  When the split is vertical the window appears at the
-		far left and occupies the full height of the Vim window.
+		far left and occupies the full height of the MNV window.
 		Doesn't work for |:execute| and |:normal|.
 
 						*:bo* *:botright*
 :bo[tright] {cmd}
 		Execute {cmd}.  If it contains a command that splits a window,
 		it will appear at the bottom and occupy the full width of the
-		Vim window.  When the split is vertical the window appears at
-		the far right and occupies the full height of the Vim window.
+		MNV window.  When the split is vertical the window appears at
+		the far right and occupies the full height of the MNV window.
 		Doesn't work for |:execute| and |:normal|.
 
 These command modifiers can be combined to make a vertically split window
 occupy the full height.  Example: >
 	:vertical topleft split tags
 Opens a vertically split, full-height window on the "tags" file at the far
-left of the Vim window.
+left of the MNV window.
 
 
 Closing a window
@@ -318,7 +318,7 @@ CTRL-W CTRL-Q						*CTRL-W_CTRL-Q*
 		given quit the {count} window.
 							*edit-window*
 		When quitting the last edit window (not counting help or
-		preview windows), exit Vim.
+		preview windows), exit MNV.
 
 		When 'hidden' is set, and there is only one window for the
 		current buffer, it becomes hidden.  When 'hidden' is not set,
@@ -338,7 +338,7 @@ CTRL-W CTRL-Q						*CTRL-W_CTRL-Q*
 		    :+2quit " quit the second next window
 <
 		When closing a help window, and this is not the only window,
-		Vim will try to restore the previous window layout, see
+		MNV will try to restore the previous window layout, see
 		|:helpclose|.
 
 :q[uit]!
@@ -348,7 +348,7 @@ CTRL-W CTRL-Q						*CTRL-W_CTRL-Q*
 
 		If this was the last window for a buffer, any changes to that
 		buffer are lost.  When quitting the last window (not counting
-		help windows), exit Vim.  The contents of the buffer are lost,
+		help windows), exit MNV.  The contents of the buffer are lost,
 		even when 'hidden' is set.
 
 :clo[se][!]
@@ -598,7 +598,7 @@ CTRL-W |	Set current window width to N (default: widest possible).
 
 You can also resize a window by dragging a status line up or down with the
 mouse.  Or by dragging a vertical separator line left or right.  This only
-works if the version of Vim that is being used supports the mouse and the
+works if the version of MNV that is being used supports the mouse and the
 'mouse' option has been set to enable it.
 
 The option 'winheight' ('wh') is used to set the minimal window height of the
@@ -659,7 +659,7 @@ times than |WinResized|, it may slow down editing a bit.
 
 The information provided by |WinScrolled| is a dictionary for each window that
 has changes, using the window ID as the key, and a total count of the changes
-with the key "all".  Example value for |v:event| (|Vim9| syntax): >
+with the key "all".  Example value for |v:event| (|MNV9| syntax): >
 	{
 	   all:  {width: 0, height:  2, leftcol: 0, skipcol: 0, topline: 1, topfill: 0},
 	   1003: {width: 0, height: -1, leftcol: 0, skipcol: 0, topline: 0, topfill: 0},
@@ -804,7 +804,7 @@ can also get to them with the buffer list commands, like ":bnext".
 		  width will be closed if possible.
 		The |argument-list| is set, like with the |:next| command.
 		The purpose of this command is that it can be used from a
-		program that wants Vim to edit another file, e.g., a debugger.
+		program that wants MNV to edit another file, e.g., a debugger.
 		When using the |:tab| modifier each argument is opened in a
 		tab page.  The last window is used if it's empty.
 		Also see |++opt| and |+cmd|.
@@ -1130,8 +1130,8 @@ values:
 	delete		Delete the buffer.
 
 							*hidden-quit*
-When you try to quit Vim while there is a hidden, modified buffer, you will
-get an error message and Vim will make that buffer the current buffer.  You
+When you try to quit MNV while there is a hidden, modified buffer, you will
+get an error message and MNV will make that buffer the current buffer.  You
 can then decide to write this buffer (":wq") or quit without writing (":q!").
 Be careful: there may be more hidden, modified buffers!
 
@@ -1199,7 +1199,7 @@ list of buffers. |unlisted-buffer|
 
 		When using |:filter| the pattern is matched against the
 		displayed buffer name, e.g.: >
-			filter /\.vim/ ls
+			filter /\.mnv/ ls
 <
 						*:bad* *:badd*
 :bad[d]	[+lnum] {fname}
@@ -1476,4 +1476,4 @@ unlisted	The buffer is not in the buffer list.  It is not used for
 			:setlocal nobuflisted
 <
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

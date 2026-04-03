@@ -1,9 +1,9 @@
-*ft_ada.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*ft_ada.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
 		    ADA FILE TYPE PLUG-INS REFERENCE MANUAL~
 
-ADA								      *ada.vim*
+ADA								      *ada.mnv*
 
 1.  Syntax Highlighting			    |ft-ada-syntax|
 2.  File type Plug-in			    |ft-ada-plugin|
@@ -40,7 +40,7 @@ another compilation unit is coloured the same way as C's "#include" is coloured.
 If you have "Conditional" or "Repeat" groups coloured differently, then "end
 if" and "end loop" will be coloured as part of those respective groups.
 
-You can set these to different colours using vim's "highlight" command (e.g.,
+You can set these to different colours using mnv's "highlight" command (e.g.,
 to change how loops are displayed, enter the command ":hi Repeat" followed by
 the colour specification; on simple terminals the colour specification
 ctermfg=White often shows well).
@@ -56,7 +56,7 @@ To disable them use ":unlet".  Example: >
 <
 You can just use ":" and type these into the command line to set these
 temporarily before loading an Ada file.  You can make these option settings
-permanent by adding the "let" command(s), without a colon, to your "~/.vimrc"
+permanent by adding the "let" command(s), without a colon, to your "~/.mnvrc"
 file.
 
 Even on a slow (90Mhz) PC this mode works quickly, but if you find the
@@ -99,7 +99,7 @@ GNAT XREF uses the compiler internal information (ali-files) to produce the
 tags file. This has the advantage to be 100% correct and the option of deep
 nested analysis. However the code must compile, the generator is quite
 slow and the created tags file contains only the basic Ctags information for
-each entry - not enough for some of the more advanced Vim code browser
+each entry - not enough for some of the more advanced MNV code browser
 plug-ins.
 
 NOTE: "gnat xref -v" is very tricky to use as it has almost no diagnostic
@@ -114,7 +114,7 @@ NOTE: "gnat xref -v" is very tricky to use as it has almost no diagnostic
     then "gnat xref -v *.ad?"
 4)  Project manager support is completely broken - don't even try "gnat xref
     -Padacl.gpr".
-5)  Vim is faster when the tags file is sorted - use "sort --unique
+5)  MNV is faster when the tags file is sorted - use "sort --unique
     --ignore-case --output=tags tags" .
 6)  Remember to insert "!_TAG_FILE_SORTED 2 %sort ui" as first line to mark
     the file assorted.
@@ -127,7 +127,7 @@ Universal/Exuberant Ctags use their own multi-language code parser.  The
 parser is quite fast, produces a lot of extra information and can run on files
 which currently do not compile.
 
-There are also lots of other Vim-tools which use Universal/Exuberant Ctags.
+There are also lots of other MNV-tools which use Universal/Exuberant Ctags.
 Universal Ctags is preferred, Exuberant Ctags is no longer being developed.
 
 You will need to install Universal Ctags which is available from
@@ -159,7 +159,7 @@ immediately shows the result. You can set the project file to be used by
 setting: >
 		call g:gnat.Set_Project_File ('my_project.gpr')
 <
-Setting a project file will also create a Vim session (|views-sessions|) so -
+Setting a project file will also create a MNV session (|views-sessions|) so -
 like with the GPS - opened files, window positions etc. will be remembered
 separately for all projects.
 
@@ -482,31 +482,31 @@ gnat#New ()
 You can optionally install the following extra plug-ins. They work well with
 Ada and enhance the ability of the Ada mode:
 
-backup.vim
-	http://www.vim.org/scripts/script.php?script_id=1537
+backup.mnv
+	http://www.mnv.org/scripts/script.php?script_id=1537
 	Keeps as many backups as you like so you don't have to.
 
-rainbow_parenthsis.vim
-	http://www.vim.org/scripts/script.php?script_id=1561
+rainbow_parenthsis.mnv
+	http://www.mnv.org/scripts/script.php?script_id=1561
 	Very helpful since Ada uses only '(' and ')'.
 
-nerd_comments.vim
-	http://www.vim.org/scripts/script.php?script_id=1218
+nerd_comments.mnv
+	http://www.mnv.org/scripts/script.php?script_id=1218
 	Excellent commenting and uncommenting support for almost any
 	programming language.
 
-matchit.vim
-	http://www.vim.org/scripts/script.php?script_id=39
+matchit.mnv
+	http://www.mnv.org/scripts/script.php?script_id=39
 	'%' jumping for any language. The normal '%' jump only works for '{}'
 	style languages. The Ada mode will set the needed search patterns.
 
-taglist.vim
-	http://www.vim.org/scripts/script.php?script_id=273
+taglist.mnv
+	http://www.mnv.org/scripts/script.php?script_id=273
 	Source code explorer sidebar. There is a patch for Ada available.
 
-The GNU Ada Project distribution (http://gnuada.sourceforge.net) of Vim
+The GNU Ada Project distribution (http://gnuada.sourceforge.net) of MNV
 contains all of the above.
 
 ==============================================================================
-vim: textwidth=78 nowrap tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
-vim: filetype=help
+mnv: textwidth=78 nowrap tabstop=8 shiftwidth=4 softtabstop=4 noexpandtab
+mnv: filetype=help

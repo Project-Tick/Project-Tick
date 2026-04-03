@@ -1,8 +1,8 @@
-README.txt para a versão 9.1 do Vim: Vi IMproved.
+README.txt para a versão 9.1 do MNV: MNV is not Vim.
 
-O QUE É VIM?
+O QUE É MNV?
 
-Vim é uma versão muito melhorada do bom e velho editor UNIX Vi. Muitos novos
+MNV é uma versão muito melhorada do bom e velho editor UNIX Vi. Muitos novos
 recursos foram adicionados: desfazer multinível, destaque de sintaxe, histórico
 de linha de comando, ajuda on-line, verificação ortográfica, completar
 nome de arquivo, operações de bloco, linguagem de script, etc. Há também uma
@@ -16,36 +16,36 @@ então aqueles que podem digitar com dez dedos podem trabalhar muito rápido.
 Além disso, as teclas de função podem ser mapeadas para comandos pelo usuário,
 e o mouse pode ser usado.
 
-O Vim funciona em MS-Windows (7, 8, 10, 11), macOS, Haiku, VMS e quase todos
+O MNV funciona em MS-Windows (7, 8, 10, 11), macOS, Haiku, VMS e quase todos
 os sabores do UNIX. A portabilidade para outros sistemas não deve ser difícil.
-Versões mais antigas do Vim rodam em MS-DOS, MS-Windows 95/98/Me/NT/2000/XP/Vista,
+Versões mais antigas do MNV rodam em MS-DOS, MS-Windows 95/98/Me/NT/2000/XP/Vista,
 Amiga DOS, Atari MiNT, BeOS, RISC OS e OS/2. Eles não são mais mantidos.
 
 DISTRIBUIÇÃO
 
 Você pode frequentemente usar seu gerenciador de pacotes favorito para
-instalar o Vim. No Mac e Linux, uma pequena versão do Vim é pré-instalada,
-você ainda precisa instalar o Vim se quiser mais recursos.
+instalar o MNV. No Mac e Linux, uma pequena versão do MNV é pré-instalada,
+você ainda precisa instalar o MNV se quiser mais recursos.
 
 Existem distribuições separadas para Unix, PC, Amiga e alguns outros sistemas.
 Este arquivo README.txt vem com o arquivo de tempo de execução. Ele inclui a
 documentação, arquivos de sintaxe e outros arquivos que são usados ​​em
-tempo de execução. Para executar o Vim, você deve obter um dos arquivos
+tempo de execução. Para executar o MNV, você deve obter um dos arquivos
 binários ou um arquivo fonte. Qual deles você precisa depende do sistema em
 que deseja executá-lo e se você deseja ou deve compilá-lo você mesmo.
-Verifique "https://www.vim.org/download.php" para uma visão geral das
+Verifique "https://www.mnv.org/download.php" para uma visão geral das
 distribuições disponíveis atualmente.
 
-Alguns lugares populares para obter o Vim mais recente:
-* Confira o repositório git do github: https://github.com/vim/vim.
-* Obtenha o código-fonte como um arquivo: https://github.com/vim/vim/tags.
-* Obtenha um executável do Windows do repositório vim-win32-installer:
-https://github.com/vim/vim-win32-installer/releases.
+Alguns lugares populares para obter o MNV mais recente:
+* Confira o repositório git do github: https://github.com/Project-Tick/Project-Tick.
+* Obtenha o código-fonte como um arquivo: https://github.com/Project-Tick/Project-Tick/tags.
+* Obtenha um executável do Windows do repositório mnv-win32-installer:
+https://github.com/Project-Tick/Project-Tick-win32-installer/releases.
 
 COMPILAR
 
-Se você obteve uma distribuição binária, não precisa compilar o Vim. Se você
-obteve uma distribuição de origem, todo o material para compilar o Vim está no
+Se você obteve uma distribuição binária, não precisa compilar o MNV. Se você
+obteve uma distribuição de origem, todo o material para compilar o MNV está no
 diretório "src". Veja src/INSTALL para instruções.
 
 INSTALAÇÃO
@@ -65,67 +65,67 @@ Existem outros arquivos README_*.txt, dependendo da distribuição que você uso
 
 DOCUMENTAÇÃO
 
-O tutor do Vim é um curso de treinamento de uma hora para iniciantes.
-Frequentemente, ele pode ser iniciado como "vimtutor". Veja ":help tutor"
+O tutor do MNV é um curso de treinamento de uma hora para iniciantes.
+Frequentemente, ele pode ser iniciado como "mnvtutor". Veja ":help tutor"
 para mais informações.
 
-O melhor é usar ":help" no Vim. Se você ainda não tem um executável, leia
+O melhor é usar ":help" no MNV. Se você ainda não tem um executável, leia
 "runtime/doc/help.txt". Ele contém direcionamentos para os outros arquivos
 de documentação. O Manual do Usuário é lido como um livro e é recomendado
-para aprender a usar o Vim. Veja ":help user-manual".
+para aprender a usar o MNV. Veja ":help user-manual".
 
 CÓPIA
 
-O Vim é um Charityware. Você pode usá-lo e copiá-lo o quanto quiser, mas
+O MNV é um Charityware. Você pode usá-lo e copiá-lo o quanto quiser, mas
 encorajamos que faça uma doação para ajudar órfãos em Uganda. Leia o arquivo
-"runtime/doc/uganda.txt" para detalhes (execute ":help uganda" dentro do Vim).
+"runtime/doc/uganda.txt" para detalhes (execute ":help uganda" dentro do MNV).
 
 Resumo da licença: Não há restrições quanto ao uso ou distribuição de uma
-cópia não modificada do Vim. Partes do Vim também podem ser distribuídas, mas
+cópia não modificada do MNV. Partes do MNV também podem ser distribuídas, mas
 o texto da licença deve sempre ser incluído. Para versões modificadas, algumas
-restrições se aplicam. A licença é compatível com GPL, você pode compilar o Vim
+restrições se aplicam. A licença é compatível com GPL, você pode compilar o MNV
 com bibliotecas GPL e distribuí-lo.
 
 PATROCÍNIO
 
 Corrigir bugs e adicionar novos recursos exige muito tempo e esforço.
 Para mostrar seu apreço pelo trabalho e motivar os desenvolvedores a continuar
-trabalhando no Vim, envie uma doação.
+trabalhando no MNV, envie uma doação.
 
 O dinheiro que você doou será usado principalmente para ajudar crianças em
 Uganda. Veja "runtime/doc/uganda.txt". Mas, ao mesmo tempo, as doações aumentam
-a motivação da equipe de desenvolvimento para continuar trabalhando no Vim!
+a motivação da equipe de desenvolmnvento para continuar trabalhando no MNV!
 
-Para as informações mais recentes sobre patrocínio, consulte o site do Vim:
-  https://www.vim.org/sponsor/
+Para as informações mais recentes sobre patrocínio, consulte o site do MNV:
+  https://www.mnv.org/sponsor/
 
 CONTRIBUIÇÕES
 
-Se você gostaria de ajudar a tornar o Vim melhor, veja o arquivo CONTRIBUTING.md.
+Se você gostaria de ajudar a tornar o MNV melhor, veja o arquivo CONTRIBUTING.md.
 
 INFORMAÇÕES
 
-Se você estiver no macOS, pode usar o MacVim: https://macvim.org
+Se você estiver no macOS, pode usar o MacMNV: https://macmnv.org
 
-As últimas notícias sobre o Vim podem ser encontradas na página inicial do Vim:
-  https://www.vim.org/
+As últimas notícias sobre o MNV podem ser encontradas na página inicial do MNV:
+  https://www.mnv.org/
 
-Se você tiver problemas, dê uma olhada na documentação ou dicas do Vim:
-  https://www.vim.org/docs.php
-  https://vim.fandom.com/wiki/Vim_Tips_Wiki
+Se você tiver problemas, dê uma olhada na documentação ou dicas do MNV:
+  https://www.mnv.org/docs.php
+  https://mnv.fandom.com/wiki/MNV_Tips_Wiki
 
 Se você ainda tiver problemas ou quaisquer outras perguntas, use uma das listas
-de discussão para discuti-las com usuários e desenvolvedores do Vim:
-  https://www.vim.org/maillist.php
+de discussão para discuti-las com usuários e desenvolvedores do MNV:
+  https://www.mnv.org/maillist.php
 
 Se nada mais funcionar, relate os bugs diretamente para a lista de discussão
-vim-dev:
-  <vim-dev@vim.org>
+mnv-dev:
+  <mnv-dev@mnv.org>
 
 AUTOR PRINCIPAL
 
-A maior parte do Vim foi criada por Bram Moolenaar <Bram@vim.org>,
+A maior parte do MNV foi criada por Bram Moolenaar <Bram@mnv.org>,
 ":help Bram-Moolenaar"
 
 Envie quaisquer outros comentários, patches, flores e sugestões para
-a lista de discussão vim-dev: <vim-dev@vim.org>
+a lista de discussão mnv-dev: <mnv-dev@mnv.org>

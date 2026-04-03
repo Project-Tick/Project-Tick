@@ -1,5 +1,5 @@
 /* ======================================================================= */
-/*  Project : VIM							   */
+/*  Project : MNV							   */
 /*  Module  : ccfilter				    Version: 02.01.01	   */
 /*  File    : ccfilter.c						   */
 /*  Purpose : Filter gmake/cc output into a standardized form		   */
@@ -71,7 +71,7 @@ char	*COMPILER_Names[][2] =
 
 const char USAGE[] =
 "ccfilter  v2.1              (c)1994-1997 by Pablo Ariel Kohan\n"
-"Filter Out compiler's output, and converts it to fit VIM\n\n"
+"Filter Out compiler's output, and converts it to fit MNV\n\n"
 "Usage:\n"
 "  ccfilter [<options>]\n"
 "Where: <options> is one or more of:\n"

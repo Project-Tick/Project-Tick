@@ -1,14 +1,14 @@
-Tutor är en praktisk handledning för nya användare av Vim-redigeraren.
+Tutor är en praktisk handledning för nya användare av MNV-redigeraren.
 
 De flesta nya användare kan gå igenom den på mindre än en timme. Resultatet
-är att du kan utföra enkla redigeringsuppgifter med Vim-redigeraren.
+är att du kan utföra enkla redigeringsuppgifter med MNV-redigeraren.
 
 Tutor är en fil som innehåller handledningslektionerna. Du kan helt enkelt
-köra ”vim tutor1” och sedan följa instruktionerna i lektionerna.
+köra ”mnv tutor1” och sedan följa instruktionerna i lektionerna.
 Lektionerna uppmanar dig att ändra filen, så GÖR INTE DETTA PÅ DIN
 ORIGINALKOPIA.
 
-På UNIX-liknande system kan du också använda programmet ”vimtutor”.
+På UNIX-liknande system kan du också använda programmet ”mnvtutor”.
 Det skapar först en provkopia av handledaren.
 
 Jag har funderat på att lägga till mer avancerade lektioner, men har inte hittat
@@ -20,7 +20,7 @@ Bob Ware, Colorado School of Mines, Golden, Co 80401, USA
 bware@mines.colorado.edu bware@slate.mines.colorado.edu bware@mines.bitnet
 
 Allt ovanstående om kapitel ett i handledningen gäller även kapitel
-två i handledningen. Förutom att du måste använda kommandot ”vim tutor2” för att öppna
+två i handledningen. Förutom att du måste använda kommandot ”mnv tutor2” för att öppna
 kapitel två.
 
 Kapitel två i handledningen är skrivet av Paul D. Parker.
@@ -31,6 +31,6 @@ Filerna tutor1.xx för kapitel ett och tutor2.xx för kapitel två i handledning
 är översatta filer (där xx är språkkoden).
 Kodningen av tutor1.xx och tutor2.xx måste vara utf-8.
 
-Översättning av Daniel Nylander <vim@danielnylander.se>.
+Översättning av Daniel Nylander <mnv@danielnylander.se>.
 
-[Denna fil har modifierats för Vim av Bram Moolenaar et al.
+[Denna fil har modifierats för MNV av Bram Moolenaar et al.

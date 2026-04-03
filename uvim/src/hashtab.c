@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
- * hashtab.c: Handling of a hashtable with Vim-specific properties.
+ * hashtab.c: Handling of a hashtable with MNV-specific properties.
  *
  * Each item in a hashtable has a NUL terminated string key.  A key can appear
  * only once in the table.
@@ -27,7 +27,7 @@
  * memory).
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if 0
 # define HT_DEBUG	// extra checks for table consistency  and statistics
@@ -92,7 +92,7 @@ check_hashtab_frozen(hashtab_T *ht, char *command)
 hash_clear(hashtab_T *ht)
 {
     if (ht->ht_array != ht->ht_smallarray)
-	vim_free(ht->ht_array);
+	mnv_free(ht->ht_array);
 }
 
 #if defined(FEAT_SPELL) || defined(FEAT_TERMINAL)
@@ -112,7 +112,7 @@ hash_clear_all(hashtab_T *ht, int off)
     {
 	if (!HASHITEM_EMPTY(hi))
 	{
-	    vim_free(hi->hi_key - off);
+	    mnv_free(hi->hi_key - off);
 	    --todo;
 	}
     }
@@ -477,7 +477,7 @@ hash_may_resize(
 	}
 
     if (ht->ht_array != ht->ht_smallarray)
-	vim_free(ht->ht_array);
+	mnv_free(ht->ht_array);
     ht->ht_array = newarray;
     ht->ht_mask = newmask;
     ht->ht_filled = ht->ht_used;
@@ -490,7 +490,7 @@ hash_may_resize(
 /*
  * Get the hash number for a key.
  * If you think you know a better hash function: Compile with HT_DEBUG set and
- * run a script that uses hashtables a lot.  Vim will then print statistics
+ * run a script that uses hashtables a lot.  MNV will then print statistics
  * when exiting.  Try that with the current hash algorithm and yours.  The
  * lower the percentage the better.
  */

@@ -1,11 +1,11 @@
-*ft_context.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*ft_context.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 This is the documentation for the ConTeXt filetype plugin.
 
-NOTE: the plugin requires |+vim9script|.
+NOTE: the plugin requires |+mnv9script|.
 
 ==============================================================================
-CONTENTS						*context.vim* *ft-context*
+CONTENTS						*context.mnv* *ft-context*
 
 1. Introduction				|ft-context-intro|
 2. Commands				|ft-context-commands|
@@ -19,7 +19,7 @@ Introduction ~
 ConTeXt, similarly to LaTeX, is a macro-based typesetting system built on TeX:
 >
 	https://wiki.contextgarden.net
-	https://wiki.contextgarden.net/Input_and_compilation/Text_editors/Vim
+	https://wiki.contextgarden.net/Input_and_compilation/Text_editors/MNV
 <
 The ConTeXt plugin provides syntax highlighting, completion and support for
 typesetting ConTeXt documents. The recommended way to typeset a document is to
@@ -27,10 +27,10 @@ use |:ConTeXt|, which invokes the `mtxrun` script that is found in $PATH.
 
 For more fine grained control over the command and its environment,
 `context.Typeset()` can be used directly (or `context#Typeset()` from legacy
-Vim script). For instance, if a version of ConTeXt is installed in
+MNV script). For instance, if a version of ConTeXt is installed in
 `~/context`, you may define a function to use it similar to the following:
 >
-	import autoload 'context.vim'
+	import autoload 'context.mnv'
 
 	var os = "linux"    # Update to match your system
 	var arch = "arm64"  # Update to match your system
@@ -44,7 +44,7 @@ Vim script). For instance, if a version of ConTeXt is installed in
 
 	nnoremap <silent><buffer><leader>t <scriptcmd>MyConTeXt()<cr>
 <
-This code should go in `~/.vim/after/ftplugin/context.vim`.
+This code should go in `~/.mnv/after/ftplugin/context.mnv`.
 
 `context.Typeset()` accepts a third optional argument to specify a custom
 typesetting command. That must be a function that takes a path and returns the
@@ -66,25 +66,25 @@ relative path to the root file. For instance:
 >
 	% !TEX root = ../MyRoot.tex
 <
-Vim searches for the magic line in the first ten lines of the current buffer:
+MNV searches for the magic line in the first ten lines of the current buffer:
 if it is found, the document specified by that line is typeset rather than the
 one in the current buffer. The root document does not have to be opened in
-Vim.
+MNV.
 
 To extend completion and syntax highlighting, you may generate supporting
 files using ConTeXt and add them to your configuration. If your configuration
-resides in `~/.vim`, you may use these commands:
+resides in `~/.mnv`, you may use these commands:
 >
-	mkdir -p ~/.vim/syntax/shared
-	cd ~/.vim/syntax/shared
-	mtxrun --script interface --vim
+	mkdir -p ~/.mnv/syntax/shared
+	cd ~/.mnv/syntax/shared
+	mtxrun --script interface --mnv
 <
 The last command will create the following syntax files:
 
-- `context-data-context.vim`;
-- `context-data-interfaces.vim`;
-- `context-data-metafun.vim`;
-- `context-data-tex.vim`.
+- `context-data-context.mnv`;
+- `context-data-interfaces.mnv`;
+- `context-data-metafun.mnv`;
+- `context-data-tex.mnv`.
 
 If present, such files will be automatically loaded to enhance syntax
 highlighting. The same command can be used to update those syntax files.
@@ -162,4 +162,4 @@ a$			"around inline math block" (text object selection).
 [{			[count] begin of blocks (\start..., \setup...,
 			\define...) backward.
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

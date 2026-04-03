@@ -1,36 +1,36 @@
-*testing.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*testing.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Testing Vim and Vim script			*testing-support*
+Testing MNV and MNV script			*testing-support*
 
 Expression evaluation is explained in |eval.txt|.  This file goes into details
-about writing tests in Vim script.  This can be used for testing Vim itself
+about writing tests in MNV script.  This can be used for testing MNV itself
 and for testing plugins.
 
-1. Testing Vim				|testing|
+1. Testing MNV				|testing|
 2. Test functions			|test-functions-details|
 3. Assert functions			|assert-functions-details|
 
 ==============================================================================
-1. Testing Vim						*testing*
+1. Testing MNV						*testing*
 
-Vim can be tested after building it, usually with "make test".
+MNV can be tested after building it, usually with "make test".
 The tests are located in the directory "src/testdir".
 
 There are two types of tests added over time:
 	test20.in		oldest, only for tiny builds
-	test_something.vim	new style tests
+	test_something.mnv	new style tests
 
 						*new-style-testing*
 New tests should be added as new style tests.  The test scripts are named
-test_<feature>.vim (replace <feature> with the feature under test).  These use
+test_<feature>.mnv (replace <feature> with the feature under test).  These use
 functions such as |assert_equal()| to keep the test commands and the expected
 result in one place.
 						*old-style-testing*
-These tests are used only for testing Vim without the |+eval| feature.
+These tests are used only for testing MNV without the |+eval| feature.
 
 Find more information in the file src/testdir/README.txt.
 
@@ -50,7 +50,7 @@ test_alloc_fail({id}, {countdown}, {repeat})		*test_alloc_fail()*
 
 
 test_autochdir()					*test_autochdir()*
-		Set a flag to enable the effect of 'autochdir' before Vim
+		Set a flag to enable the effect of 'autochdir' before MNV
 		startup has finished.
 
 		Return type: |Number|
@@ -95,7 +95,7 @@ test_getvalue({name})					*test_getvalue()*
 
 						*test_gui_event()*
 test_gui_event({event}, {args})
-		Generate a GUI {event} with arguments {args} for testing Vim
+		Generate a GUI {event} with arguments {args} for testing MNV
 		functionality.  This function works only when the GUI is
 		running.
 
@@ -154,7 +154,7 @@ test_gui_event({event}, {args})
 				    6	scroll wheel left
 				    7	scroll wheel right
 		    row:	mouse click row number.  The first row of the
-				Vim window is 1 and the last row is 'lines'.
+				MNV window is 1 and the last row is 'lines'.
 		    col:	mouse click column number.  The maximum value
 				of {col} is 'columns'.
 		    multiclick:	set to 1 to inject a multiclick mouse event.
@@ -222,7 +222,7 @@ test_gui_event({event}, {args})
 		Can also be used as a |method|: >
 			GetEvent()->test_gui_event({args})
 <
-		Return type: |vim9-boolean|
+		Return type: |mnv9-boolean|
 
 test_ignore_error({expr})			 *test_ignore_error()*
 		Ignore any error containing {expr}.  A normal message is given
@@ -241,7 +241,7 @@ test_ignore_error({expr})			 *test_ignore_error()*
 
 test_mswin_event({event}, {args})		*test_mswin_event()*
 		Generate a low-level MS-Windows {event} with arguments {args}
-		for testing Vim functionality.  It works for MS-Windows GUI
+		for testing MNV functionality.  It works for MS-Windows GUI
 		and for the console.
 
 		{event} is a String and the supported values are:
@@ -263,7 +263,7 @@ test_mswin_event({event}, {args})		*test_mswin_event()*
 				    6	scroll wheel left
 				    7	scroll wheel right
 		    row:	mouse click row number.  The first row of the
-				Vim window is 1 and the last row is 'lines'.
+				MNV window is 1 and the last row is 'lines'.
 		    col:	mouse click column number.  The maximum value
 				of {col} is 'columns'.
 				Note: row and col are always interpreted as
@@ -301,7 +301,7 @@ test_mswin_event({event}, {args})		*test_mswin_event()*
 				mouse modifiers.
 		    execute:	Optional.  Similar to |feedkeys()| mode x.
 				When this is included and set to true
-				(non-zero) then Vim will process any buffered
+				(non-zero) then MNV will process any buffered
 				unprocessed key events.  All other {args}
 				items are optional when this is set and true.
 
@@ -320,7 +320,7 @@ test_mswin_event({event}, {args})		*test_mswin_event()*
 		Can also be used as a |method|: >
 			GetEvent()->test_mswin_event({args})
 <
-		Return type: |vim9-boolean|
+		Return type: |mnv9-boolean|
 
 test_null_blob()					*test_null_blob()*
 		Return a |Blob| that is null.  Only useful for testing.
@@ -384,8 +384,8 @@ test_option_not_set({name})				*test_option_not_set()*
 		Return type: |Number|
 
 test_override({name}, {val})				*test_override()*
-		Overrides certain parts of Vim's internal processing to be
-		able to run tests.  Only to be used for testing Vim!
+		Overrides certain parts of MNV's internal processing to be
+		able to run tests.  Only to be used for testing MNV!
 		The override is enabled when {val} is non-zero and removed
 		when {val} is zero.
 		Current supported values for {name} are:
@@ -461,10 +461,10 @@ test_setmouse({row}, {col})				*test_setmouse()*
 
 
 test_settime({expr})					*test_settime()*
-		Set the time Vim uses internally.  Currently only used for
-		timestamps in the history, as they are used in viminfo, and
+		Set the time MNV uses internally.  Currently only used for
+		timestamps in the history, as they are used in mnvinfo, and
 		for undo.
-		Using a value of 1 makes Vim not sleep after a warning or
+		Using a value of 1 makes MNV not sleep after a warning or
 		error message.
 		{expr} must evaluate to a number.  When the value is zero the
 		normal behavior is restored.
@@ -521,7 +521,7 @@ assert_equal({expected}, {actual} [, {msg}])
 		Example: >
 			call assert_equal('foo', 'bar', 'baz')
 <		Will add the following to |v:errors|:
-			test.vim line 12: baz: Expected 'foo' but got 'bar' ~
+			test.mnv line 12: baz: Expected 'foo' but got 'bar' ~
 
 		Can also be used as a |method|, the base is passed as the
 		second argument: >
@@ -646,7 +646,7 @@ assert_match({pattern}, {actual} [, {msg}])
 		Example: >
 			call assert_match('^f.*o$', 'foobar')
 <		Will result in a string to be added to |v:errors|:
-			test.vim line 12: Pattern '^f.*o$' does not match 'foobar' ~
+			test.mnv line 12: Pattern '^f.*o$' does not match 'foobar' ~
 
 		Can also be used as a |method|: >
 			getFile()->assert_match('foo.*')
@@ -710,4 +710,4 @@ assert_true({actual} [, {msg}])				*assert_true()*
 		Return type: |Number|
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

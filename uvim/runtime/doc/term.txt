@@ -1,12 +1,12 @@
-*term.txt*	For Vim version 9.2.  Last change: 2026 Mar 04
+*term.txt*	For MNV version 9.2.  Last change: 2026 Mar 04
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Terminal information					*terminal-info*
 
-Vim uses information about the terminal you are using to fill the screen and
+MNV uses information about the terminal you are using to fill the screen and
 recognize what keys you hit.  If this information is not correct, the screen
 may be messed up or keys may not be recognized.  The actions which have to be
 performed on the screen are accomplished by outputting a string of
@@ -24,31 +24,31 @@ NOTE: Most of this is not used when running the |GUI|.
 ==============================================================================
 1. Startup						*startup-terminal*
 
-When Vim is started a default terminal type is assumed.  For the Amiga this is
+When MNV is started a default terminal type is assumed.  For the Amiga this is
 a standard CLI window, for MS-Windows the pc terminal, for Unix an ansi
 terminal.  A few other terminal types are always available, see below
 |builtin-terms|.
 
-You can give the terminal name with the '-T' Vim argument.  If it is not given
-Vim will try to get the name from the TERM environment variable.
+You can give the terminal name with the '-T' MNV argument.  If it is not given
+MNV will try to get the name from the TERM environment variable.
 
 				*termcap* *terminfo* *E557* *E558* *E559*
 On Unix the terminfo database or termcap file is used.  This is referred to as
 "termcap" in all the documentation.  At compile time, when running configure,
 the choice whether to use terminfo or termcap is done automatically.  When
-running Vim the output of ":version" will show |+terminfo| if terminfo is
+running MNV the output of ":version" will show |+terminfo| if terminfo is
 used.  Also see |xterm-screens|.
 
-On non-Unix systems a termcap is only available if Vim was compiled with
+On non-Unix systems a termcap is only available if MNV was compiled with
 TERMCAP defined.
 
 					*builtin-terms* *builtin_terms*
 A number of builtin terminals are available.  Since patch 9.0.0280 there is no
-difference between Vim versions.  You can see a list of available builtin
+difference between MNV versions.  You can see a list of available builtin
 terminals in the error message you get for `:set term=xxx` (when not running
 the GUI).  Also see |++builtin_terms|.
 
-If the termcap code is included Vim will try to get the strings for the
+If the termcap code is included MNV will try to get the strings for the
 terminal you are using from the termcap file and the builtin termcaps.  Both
 are always used, if an entry for the terminal you are using is present.  Which
 one is used first depends on the 'ttybuiltin' option:
@@ -66,7 +66,7 @@ tgetent".
 Settings depending on terminal			*term-dependent-settings*
 
 If you want to set options or mappings, depending on the terminal name, you
-can do this best in your .vimrc.  Example: >
+can do this best in your .mnvrc.  Example: >
 
    if &term == "xterm"
      ... xterm maps and settings ...
@@ -79,48 +79,48 @@ For normal editing the terminal will be put into "raw" mode.  The strings
 defined with 't_ti', 't_TI' and 't_ks' will be sent to the terminal.  Normally
 this puts the terminal in a state where the termcap codes are valid and
 activates the cursor and function keys.
-When Vim exits the terminal will be put back into the mode it was before Vim
+When MNV exits the terminal will be put back into the mode it was before MNV
 started.  The strings defined with 't_te', 't_TE' and 't_ke' will be sent to
 the terminal.  On the Amiga, with commands that execute an external command
 (e.g., "!!"), the terminal will be put into Normal mode for a moment.  This
 means that you can stop the output to the screen by hitting a printing key.
 Output resumes when you hit <BS>.
 
-Note: When 't_ti' is not empty, Vim assumes that it causes switching to the
+Note: When 't_ti' is not empty, MNV assumes that it causes switching to the
 alternate screen.  This may slightly change what happens when executing a
-shell command or exiting Vim.  To avoid this use 't_TI' and 't_TE' (but make
+shell command or exiting MNV.  To avoid this use 't_TI' and 't_TE' (but make
 sure to add to them, not overwrite).
 
-Vim will try to detect what keyboard protocol the terminal is using with the
+MNV will try to detect what keyboard protocol the terminal is using with the
 't_RK' termcap entry.  This is sent after 't_TI', but only when there is no
 work to do (no typeahead and no pending commands).  That is to avoid the
-response to end up in a shell command or arrive after Vim exits.
+response to end up in a shell command or arrive after MNV exits.
 
 						*xterm-bracketed-paste*
 When the 't_BE' option is set then 't_BE' will be sent to the
 terminal when entering "raw" mode and 't_BD' when leaving "raw" mode.  The
 terminal is then expected to put 't_PS' before pasted text and 't_PE' after
-pasted text.  This way Vim can separate text that is pasted from characters
+pasted text.  This way MNV can separate text that is pasted from characters
 that are typed.  The pasted text is handled like when the middle mouse button
 is used, it is inserted literally and not interpreted as commands.
 
 Please note: while bracketed paste is trying to prevent nasty side-effects
 from pasting (like the CTRL-C or <ESC> key), it's not a guaranteed security
 measure because different terminals may implement this mode slightly
-differently.  You should still be careful with what you paste into Vim.
+differently.  You should still be careful with what you paste into MNV.
 
 When the cursor is in the first column, the pasted text will be inserted
 before it.  Otherwise the pasted text is appended after the cursor position.
-This means one cannot paste after the first column.  Unfortunately Vim does
+This means one cannot paste after the first column.  Unfortunately MNV does
 not have a way to tell where the mouse pointer was.
 
-Note that in some situations Vim will not recognize the bracketed paste and
-you will get the raw text.  In other situations Vim will only get the first
+Note that in some situations MNV will not recognize the bracketed paste and
+you will get the raw text.  In other situations MNV will only get the first
 pasted character and drop the rest, e.g. when using the "r" command.  If you
 have a problem with this, disable bracketed paste by putting this in your
-.vimrc: >
+.mnvrc: >
 	set t_BE=
-If this is done while Vim is running the 't_BD' will be sent to the terminal
+If this is done while MNV is running the 't_BD' will be sent to the terminal
 to disable bracketed paste.
 
 If |t_PS| or |t_PE| is not set, then |t_BE| will not be used.  This is to make
@@ -145,7 +145,7 @@ The terminfo entries "BE", "BD", "PS" and "PE" were added in ncurses version
 not have to manually configure your terminal.
 
 							*tmux-integration*
-If you experience issues when running Vim inside tmux, here are a few hints.
+If you experience issues when running MNV inside tmux, here are a few hints.
 You can comment-out parts if something doesn't work (it may depend on the
 terminal that tmux is running in): >
 
@@ -178,7 +178,7 @@ terminal that tmux is running in): >
     endif
 <
 							*cs7-problem*
-Note: If the terminal settings are changed after running Vim, you might have
+Note: If the terminal settings are changed after running MNV, you might have
 an illegal combination of settings.  This has been reported on Solaris 2.5
 with "stty cs8 parenb", which is restored as "stty cs7 parenb".  Use
 "stty cs8 -parenb -istrip" instead, this is restored correctly.
@@ -199,12 +199,12 @@ Some termcap entries have the entry ":ku=\E[A:".  But the Amiga really sends
 aren't.  You will have to change the termcap entry, or change the key code
 with the :set command to fix this.
 
-Many cursor key codes start with an <Esc>.  Vim must find out if this is a
+Many cursor key codes start with an <Esc>.  MNV must find out if this is a
 single hit of the <Esc> key or the start of a cursor key sequence.  It waits
 for a next character to arrive.  If it does not arrive within one second a
 single <Esc> is assumed.  On very slow systems this may fail, causing cursor
 keys not to work sometimes.  If you discover this problem reset the 'timeout'
-option.  Vim will wait for the next character to arrive after an <Esc>.  If
+option.  MNV will wait for the next character to arrive after an <Esc>.  If
 you want to enter a single <Esc> you must type it twice.  Resetting the
 'esckeys' option avoids this problem in Insert mode, but you lose the
 possibility to use cursor and function keys in Insert mode.
@@ -221,20 +221,20 @@ CTRL-H is never recognized as cursor-left.
 Other terminals (e.g., vt100 and xterm) have cursor keys that send <Esc>OA,
 <Esc>OB, etc.  Unfortunately these are valid commands in insert mode: Stop
 insert, Open a new line above the new one, start inserting 'A', 'B', etc.
-Instead of performing these commands Vim will erroneously recognize this typed
-key sequence as a cursor key movement.  To avoid this and make Vim do what you
+Instead of performing these commands MNV will erroneously recognize this typed
+key sequence as a cursor key movement.  To avoid this and make MNV do what you
 want in either case you could use these settings: >
 	:set notimeout		" don't timeout on mappings
 	:set ttimeout		" do timeout on terminal key codes
 	:set timeoutlen=100	" timeout after 100 msec
 This requires the key-codes to be sent within 100 msec in order to recognize
 them as a cursor key.  When you type you normally are not that fast, so they
-are recognized as individual typed commands, even though Vim receives the same
+are recognized as individual typed commands, even though MNV receives the same
 sequence of bytes.
 
 				*vt100-function-keys* *xterm-function-keys*
 An xterm can send function keys F1 to F4 in two modes: vt100 compatible or
-not.  Because Vim may not know what the xterm is sending, both types of keys
+not.  Because MNV may not know what the xterm is sending, both types of keys
 are recognized.  The same happens for the <Home> and <End> keys.
 			normal			vt100 ~
 	<F1>	t_k1	<Esc>[11~	<xF1>	<Esc>OP	    *<xF1>-xterm*
@@ -244,13 +244,13 @@ are recognized.  The same happens for the <Home> and <End> keys.
 	<Home>	t_kh	<Esc>[7~	<xHome>	<Esc>OH	    *<xHome>-xterm*
 	<End>	t_@7	<Esc>[4~	<xEnd>	<Esc>OF	    *<xEnd>-xterm*
 
-When Vim starts, <xF1> is mapped to <F1>, <xF2> to <F2> etc.  This means that
+When MNV starts, <xF1> is mapped to <F1>, <xF2> to <F2> etc.  This means that
 by default both codes do the same thing.  If you make a mapping for <xF2>,
 because your terminal does have two keys, the default mapping is overwritten,
 thus you can use the <F2> and <xF2> keys for something different.
 
 							*xterm-shifted-keys*
-Newer versions of xterm support shifted function keys and special keys.  Vim
+Newer versions of xterm support shifted function keys and special keys.  MNV
 recognizes most of them.  Use ":set termcap" to check which are supported and
 what the codes are.  Mostly these are not in a termcap, they are only
 supported by the builtin_xterm termcap.
@@ -275,7 +275,7 @@ stands for either "1" if a modifier follows, or nothing.
 Several terminal emulators (alacritty, gnome, konsole, etc.) send special
 codes for keys with modifiers, but these do not have an entry in the
 termcap/terminfo database.  You can make them work by adding a few lines in
-your vimrc.  For example, to make the Control modifier work with arrow keys
+your mnvrc.  For example, to make the Control modifier work with arrow keys
 for the gnome terminal: >
 	if &term =~ 'gnome'
 	   execute "set <xUp>=\<Esc>[@;*A"
@@ -302,18 +302,18 @@ Xterm can be run in a mode where it uses 8-bit escape sequences.  The CSI code
 is used instead of <Esc>[.  The advantage is that an <Esc> can quickly be
 recognized in Insert mode, because it can't be confused with the start of a
 special key.
-For the builtin termcap entries, Vim checks if the 'term' option contains
+For the builtin termcap entries, MNV checks if the 'term' option contains
 "8bit" anywhere.  It then uses 8-bit characters for the termcap entries, the
 mouse and a few other things.  You would normally set $TERM in your shell to
-"xterm-8bit" and Vim picks this up and adjusts to the 8-bit setting
+"xterm-8bit" and MNV picks this up and adjusts to the 8-bit setting
 automatically.
-When Vim receives a response to the |t_RV| (request version) sequence and it
+When MNV receives a response to the |t_RV| (request version) sequence and it
 starts with CSI, it assumes that the terminal is in 8-bit mode and will
 convert all key sequences to their 8-bit variants.
 
 						*xterm-terminfo-entries*
 For some time the terminfo entries were insufficient to describe all the
-features that Vim can use.  The builtin xterm termcap entries did have these,
+features that MNV can use.  The builtin xterm termcap entries did have these,
 with the result that several terminals that were similar enough to xterm took
 advantage of these by prefixing "xterm-" to the terminal name in $TERM.
 
@@ -338,7 +338,7 @@ using the "xterm" workaround.  These are the relevant entries (so far):
 The "XM" entry includes "1006" to enable SGR style mouse reporting.  This
 supports columns above 223.  It also includes "1004" which enables focus
 reporting.
-Note: As of 2023, the "1004" is currently not used by Vim itself, instead
+Note: As of 2023, the "1004" is currently not used by MNV itself, instead
 it is recommended to set focus reporting independently of mouse tracking by
 the |t_fe| and |t_fd| entries, as ncurses also starts to use with the latest
 versions (and will then also end up in terminfo/termcap).
@@ -347,12 +347,12 @@ versions (and will then also end up in terminfo/termcap).
 The Kitty terminal is a special case.  Mainly because it works differently
 from most other terminals, but also because, instead of trying to fit in and
 make it behave like other terminals by default, it dictates how applications
-need to work when using Kitty.  This makes it very difficult for Vim to work
+need to work when using Kitty.  This makes it very difficult for MNV to work
 in a Kitty terminal.  Some exceptions have been hard coded, but it is not at
 all nice to have to make exceptions for one specific terminal.
 
 One of the problems is that the value for $TERM is set to "xterm-kitty".  For
-Vim this is an indication that the terminal is xterm-compatible and the
+MNV this is an indication that the terminal is xterm-compatible and the
 builtin xterm termcap entries should be used.  Many other terminals depend on
 this.  However, Kitty is not fully xterm compatible.  The author suggested to
 ignore the "xterm-" prefix and use the terminfo entry anyway, so that is what
@@ -445,11 +445,11 @@ OUTPUT CODES						*terminal-output-codes*
 	t_xo	if non-empty, terminal uses xon/xoff handshaking, mapping
 		CTRL-S will not be possible then, since it is used for flow
 		control (used by vt420 terminal).  Setting this flag has only
-		an effect when starting Vim.
+		an effect when starting MNV.
 	t_ZH	italics mode					*t_ZH* *'t_ZH'*
 	t_ZR	italics end					*t_ZR* *'t_ZR'*
 
-Added by Vim (there are no standard codes for these):
+Added by MNV (there are no standard codes for these):
 	t_AU	set underline color (ANSI)			*t_AU* *'t_AU'*
 	t_Ce	undercurl and underline end			*t_Ce* *'t_Ce'*
 	t_Cs	undercurl (curly underline) mode		*t_Cs* *'t_Cs'*
@@ -539,13 +539,13 @@ following default values on startup:
 
 							*mouse-reporting*
 Many terminals can report mouse clicks and some can report mouse movement and
-dragging.  Vim needs to know what codes are being used for this.
+dragging.  MNV needs to know what codes are being used for this.
 
-The "XM" terminfo/termcap entry is used for this.  Vim also has the 'ttymouse'
+The "XM" terminfo/termcap entry is used for this.  MNV also has the 'ttymouse'
 option to specify the mouse protocol being used.  See the option for the
 possible values.
 
-If Vim can read the "XM" terminfo/termcap entry then it will be used for
+If MNV can read the "XM" terminfo/termcap entry then it will be used for
 enabling and disabling the mouse reporting.  If it is missing, then the value
 from 'ttymouse' is used to decide how to do this.
 
@@ -650,8 +650,8 @@ Note: Use the <> form if possible
 				|xterm-bracketed-paste|
 	t_PE	<PasteEnd>	end of bracketed paste		*t_PE* *'t_PE'*
 				|xterm-bracketed-paste|
-		<FocusGained>	Vim window got focus (internal only)
-		<FocusLost>	Vim window lost focus (internal only)
+		<FocusGained>	MNV window got focus (internal only)
+		<FocusLost>	MNV window lost focus (internal only)
 
 Note about t_so and t_mr: When the termcap entry "so" is not present the
 entry for "mr" is used.  And vice versa.  The same is done for "se" and "me".
@@ -662,13 +662,13 @@ look the same.
 							*keypad-comma*
 The keypad keys, when they are not mapped, behave like the equivalent normal
 key.  There is one exception: if you have a comma on the keypad instead of a
-decimal point, Vim will use a dot anyway.  Use these mappings to fix that: >
+decimal point, MNV will use a dot anyway.  Use these mappings to fix that: >
 	:noremap <kPoint> ,
 	:noremap! <kPoint> ,
 <							*xterm-codes*
 There is a special trick to obtain the key codes which currently only works
 for xterm.  When |t_RV| is defined and a response is received which indicates
-an xterm with patchlevel 141 or higher, Vim uses special escape sequences to
+an xterm with patchlevel 141 or higher, MNV uses special escape sequences to
 request the key codes directly from the xterm.  The responses are used to
 adjust the various t_ codes.  This avoids the problem that the xterm can
 produce different codes, depending on the mode it is in (8-bit, VT102,
@@ -680,11 +680,11 @@ early as possible: >
 	set noxtermcodes
 
 Note: Requesting the key codes is only done on startup.  If the xterm options
-are changed after Vim has started, the escape sequences may not be recognized
+are changed after MNV has started, the escape sequences may not be recognized
 anymore.
 
 							*xterm-true-color*
-Vim supports using true colors in the terminal (taken from |highlight-guifg|
+MNV supports using true colors in the terminal (taken from |highlight-guifg|
 and |highlight-guibg|), given that the terminal supports this.  To make this
 work the 'termguicolors' option needs to be set.
 See https://github.com/termstandard/colors for a list of terminals that
@@ -726,29 +726,29 @@ there should be a tick at allow-window-ops.
 							*xterm-focus-event*
 Some terminals including xterm support the focus event tracking feature.
 If this feature is enabled by the 't_fe' sequence, special key sequences are
-sent from the terminal to Vim every time the terminal gains or loses focus.
-Vim fires focus events (|FocusGained|/|FocusLost|) by handling them accordingly.
+sent from the terminal to MNV every time the terminal gains or loses focus.
+MNV fires focus events (|FocusGained|/|FocusLost|) by handling them accordingly.
 Focus event tracking is disabled by a 't_fd' sequence when exiting "raw" mode.
-If you would like to disable this feature, add the following to your .vimrc: >
+If you would like to disable this feature, add the following to your .mnvrc: >
 	set t_fd=
 	set t_fe=
-If your terminal does support this but Vim does not recognize the terminal,
+If your terminal does support this but MNV does not recognize the terminal,
 you may have to set the options yourself: >
 	let &t_fe = "\<Esc>[?1004h"
 	let &t_fd = "\<Esc>[?1004l"
 	execute "set <FocusGained>=\<Esc>[I"
         execute "set <FocusLost>=\<Esc>[O"
-If this causes garbage to show when Vim starts up then it doesn't work.
+If this causes garbage to show when MNV starts up then it doesn't work.
 
 							*termcap-colors*
-Note about colors: The 't_Co' option tells Vim the number of colors available.
+Note about colors: The 't_Co' option tells MNV the number of colors available.
 When it is non-zero, the 't_AB' and 't_AF' options are used to set the color.
 If one of these is not available, 't_Sb' and 't_Sf' are used.  't_me' is used
 to reset to the default colors.  Also see 'termguicolors'.
 When the GUI is running 't_Co' is set to 16777216.
 
 				*termcap-cursor-shape* *termcap-cursor-color*
-When Vim enters Insert mode the 't_SI' escape sequence is sent.  When Vim
+When MNV enters Insert mode the 't_SI' escape sequence is sent.  When MNV
 enters Replace mode the 't_SR' escape sequence is sent if it is set, otherwise
 't_SI' is sent.  When leaving Insert mode or Replace mode 't_EI' is used.
 Note: When 't_EI' is not set then 't_SI' and 't_SR' will not be sent.  And
@@ -763,8 +763,8 @@ Example for an xterm, this changes the color of the cursor: >
 	let &t_SR = "\<Esc>]12;red\x7"
 	let &t_EI = "\<Esc>]12;blue\x7"
     endif
-NOTE: When Vim exits the shape for Normal mode will remain.  The shape from
-before Vim started will not be restored.
+NOTE: When MNV exits the shape for Normal mode will remain.  The shape from
+before MNV started will not be restored.
 
 For Windows Terminal you can use something like this: >
     " Note: This should be set after `set termguicolors` or `set t_Co=256`.
@@ -784,7 +784,7 @@ For Windows Terminal you can use something like this: >
 The 't_ts' and 't_fs' options are used to set the window title if the terminal
 allows title setting via sending strings.  They are sent before and after the
 title string, respectively.  Similar 't_IS' and 't_IE'  are used to set the
-icon text.  These are Vim-internal extensions of the Unix termcap, so they
+icon text.  These are MNV-internal extensions of the Unix termcap, so they
 cannot be obtained from an external termcap.  However, the builtin termcap
 contains suitable entries for xterm and iris-ansi, so you don't need to set
 them here.
@@ -802,7 +802,7 @@ builtin_xterm or define t_cs yourself.  For example: >
 	:set t_cs=^V^[[%i%d;%dr
 Where ^V is CTRL-V and ^[ is <Esc>.
 
-The vertical scroll region t_CV is not a standard termcap code.  Vim uses it
+The vertical scroll region t_CV is not a standard termcap code.  MNV uses it
 internally in the GUI.  But it can also be defined for a terminal, if you can
 find one that supports it.  The two arguments are the left and right column of
 the region which to restrict the scrolling to.  Just like t_cs defines the top
@@ -818,7 +818,7 @@ string when cursor positioning is relative to the start of the scrolling
 region.  It should be set to an empty string otherwise.
 
 Note for xterm users: The shifted cursor keys normally don't work.  You can
-	make them work with the xmodmap command and some mappings in Vim.
+	make them work with the xmodmap command and some mappings in MNV.
 
 	Give these commands in the xterm: >
 		xmodmap -e "keysym Up = Up F13"
@@ -826,7 +826,7 @@ Note for xterm users: The shifted cursor keys normally don't work.  You can
 		xmodmap -e "keysym Left = Left F18"
 		xmodmap -e "keysym Right = Right F19"
 <
-	And use these mappings in Vim: >
+	And use these mappings in MNV: >
 		:map <t_F3> <S-Up>
 		:map! <t_F3> <S-Up>
 		:map <t_F6> <S-Down>
@@ -845,10 +845,10 @@ closes the window.  On other systems you can probably use them.)
 ==============================================================================
 3. Window size						*window-size*
 
-[This is about the size of the whole window Vim is using, not a window that is
+[This is about the size of the whole window MNV is using, not a window that is
 created with the ":split" command.]
 
-If you are running Vim on an Amiga and the terminal name is "amiga" or
+If you are running MNV on an Amiga and the terminal name is "amiga" or
 "builtin_amiga", the amiga-specific window resizing will be enabled.  On Unix
 systems three methods are tried to get the window size:
 
@@ -866,7 +866,7 @@ One command can be used to set the screen size:
 :mod[e] [mode]
 
 Without argument this only detects the screen size and redraws the screen.
-[mode] was used on MS-DOS, but it doesn't work anymore.  In |Vim9| this
+[mode] was used on MS-DOS, but it doesn't work anymore.  In |MNV9| this
 command is not supported.
 
 ==============================================================================
@@ -881,8 +881,8 @@ number.
 If you have a slow terminal you may want to reset the 'showcmd' option.
 The command characters will not be shown in the status line.  If the terminal
 scrolls very slowly, set the 'scrolljump' to 5 or so.  If the cursor is moved
-off the screen (e.g., with "j") Vim will scroll 5 lines at a time.  Another
-possibility is to reduce the number of lines that Vim uses with the command
+off the screen (e.g., with "j") MNV will scroll 5 lines at a time.  Another
+possibility is to reduce the number of lines that MNV uses with the command
 "z{height}<CR>".
 
 If the characters from the terminal are arriving with more than 1 second
@@ -896,7 +896,7 @@ reset.  Check that with: >
 	verbose set ttyfast?
 
 If your terminal scrolls very slowly, but redrawing is not slow, set the
-'ttyscroll' option to a small number, e.g., 3.  This will make Vim redraw the
+'ttyscroll' option to a small number, e.g., 3.  This will make MNV redraw the
 screen instead of scrolling, when there are more than 3 lines to be scrolled.
 
 If you are using a color terminal that is slow, use this command: >
@@ -904,8 +904,8 @@ If you are using a color terminal that is slow, use this command: >
 This avoids that spaces are sent when they have different attributes.  On most
 terminals you can't see this anyway.
 
-If you are using Vim over a slow serial line, you might want to try running
-Vim inside the "screen" program.  Screen will optimize the terminal I/O quite
+If you are using MNV over a slow serial line, you might want to try running
+MNV inside the "screen" program.  Screen will optimize the terminal I/O quite
 a bit.
 
 If you are testing termcap options, but you cannot see what is happening, you
@@ -922,7 +922,7 @@ with a mouse wheel see |scroll-mouse-wheel|.
 
 Don't forget to enable the mouse with this command: >
 	:set mouse=a
-Otherwise Vim won't recognize the mouse in all modes (See 'mouse').
+Otherwise MNV won't recognize the mouse in all modes (See 'mouse').
 
 Currently the mouse is supported for Unix in an xterm window, in a *BSD
 console with |sysmouse|, in a Linux console (with GPM |gpm-mouse|), and
@@ -930,7 +930,7 @@ in a Windows console.
 Mouse clicks can be used to position the cursor, select an area and paste.
 
 These characters in the 'mouse' option tell in which situations the mouse will
-be used by Vim:
+be used by MNV:
 		n	Normal mode
 		v	Visual mode
 		i	Insert mode
@@ -957,13 +957,13 @@ Select mode depends on whether "mouse" is included in the 'selectmode'
 option.
 							*terminal-mouse*
 In an xterm, with the currently active mode included in the 'mouse' option,
-normal mouse clicks are used by Vim, mouse clicks with the shift or ctrl key
+normal mouse clicks are used by MNV, mouse clicks with the shift or ctrl key
 pressed go to the xterm.  With the currently active mode not included in
 'mouse' all mouse clicks go to the xterm.
 
 For terminals where it is not possible to have the mouse events be used by the
 terminal itself by using a modifier, a workaround is to not use mouse events
-for Vim in command-line mode: >
+for MNV in command-line mode: >
 	:set mouse=nvi
 Then to select text with the terminal, use ":" to go to command-line mode,
 select and copy the text to the system, then press Esc.
@@ -989,7 +989,7 @@ Shortcut: If the insert position is on the screen at the same time as the
 Visual text, you can do 2, 3 and 4 all in one: Click the middle mouse button
 at the insert position.
 
-Note: When the |-X| command line argument is used, Vim will not connect to the
+Note: When the |-X| command line argument is used, MNV will not connect to the
 X server and copy/paste to the X clipboard (selection) will not work.  Use the
 shift key with the mouse buttons to let the xterm do the selection.
 
@@ -999,13 +999,13 @@ When the X-server clipboard is available, the command server described in
 
 							*xterm-copy-paste*
 NOTE: In some (older) xterms, it's not possible to move the cursor past column
-95 or 223.  This is an xterm problem, not Vim's.  Get a newer xterm
+95 or 223.  This is an xterm problem, not MNV's.  Get a newer xterm
 |color-xterm|.  Also see 'ttymouse'.
 
 Copy/paste in xterm with (current mode NOT included in 'mouse'):
 1. Press left mouse button on first letter of text, move mouse pointer to last
    letter of the text and release the button.
-2. Use normal Vim commands to put the cursor at the insert position.
+2. Use normal MNV commands to put the cursor at the insert position.
 3. Press "a" to start Insert mode.
 4. Click the middle mouse button.
 5. Press ESC to end Insert mode.
@@ -1014,7 +1014,7 @@ pressed while using the mouse.)
 
 Note: if you lose the 8th bit when pasting (special characters are translated
 into other characters), you may have to do "stty cs8 -istrip -parenb" in your
-shell before starting Vim.
+shell before starting MNV.
 
 Thus in an xterm the shift and ctrl keys cannot be used with the mouse.  Mouse
 commands requiring the CTRL modifier can be simulated by typing the "g" key
@@ -1083,7 +1083,7 @@ event	      position	   selection	  change  action	~
 Clicking the left mouse button causes the cursor to be positioned.  If the
 click is in another window that window is made the active window.  When
 editing the command-line the cursor can only be positioned on the
-command-line.  When in Insert mode Vim remains in Insert mode.  If 'scrolloff'
+command-line.  When in Insert mode MNV remains in Insert mode.  If 'scrolloff'
 is set, and the cursor is positioned within 'scrolloff' lines from the window
 border, the text is scrolled.
 
@@ -1121,7 +1121,7 @@ that has a match selects until that match (like using "v%").  If the match is
 an #if/#else/#endif block, the selection becomes linewise.
 For MS-Windows and xterm the time for double clicking can be set with the
 'mousetime' option.  For the other systems this time is defined outside of
-Vim.
+MNV.
 An example, for using a double click to jump to the tag under the cursor: >
 	:map <2-LeftMouse> :exe "tag " .. expand("<cword>")<CR>
 
@@ -1137,7 +1137,7 @@ The GPM mouse is only supported when the |+mouse_gpm| feature was enabled at
 compile time.  The GPM mouse driver (Linux console) does not support quadruple
 clicks.
 
-In Insert mode, when a selection is started, Vim goes into Normal mode
+In Insert mode, when a selection is started, MNV goes into Normal mode
 temporarily.  When Visual or Select mode ends, it returns to Insert mode.
 This is like using CTRL-O in Insert mode.  Select mode is used when the
 'selectmode' option contains "mouse".
@@ -1211,4 +1211,4 @@ To swap the meaning of the left and right mouse buttons: >
 	:noremap!	<RightDrag>	<LeftDrag>
 	:noremap!	<RightRelease>	<LeftRelease>
 <
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

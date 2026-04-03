@@ -1,4 +1,4 @@
-# Makefile for VIM on Win32 (Cygwin and MinGW)
+# Makefile for MNV on Win32 (Cygwin and MinGW)
 #
 # This file contains common part for Cygwin and MinGW and it is included
 # from Make_cyg.mak and Make_ming.mak.
@@ -11,10 +11,10 @@
 # Tested on Win32 NT 4 and Win95.
 #
 # To make everything, just 'make -f Make_ming.mak'.
-# To make just e.g. gvim.exe, 'make -f Make_ming.mak gvim.exe'.
+# To make just e.g. gmnv.exe, 'make -f Make_ming.mak gmnv.exe'.
 # After a run, you can 'make -f Make_ming.mak clean' to clean up.
 #
-# NOTE: Sometimes 'GNU Make' will stop after building vimrun.exe -- I think
+# NOTE: Sometimes 'GNU Make' will stop after building mnvrun.exe -- I think
 # it's just run out of memory or something.  Run again, and it will continue
 # with 'xxd'.
 #
@@ -55,13 +55,13 @@ COVERAGE=no
 # Set to SIZE for size, SPEED for speed, MAXSPEED for maximum optimization.
 OPTIMIZE=MAXSPEED
 
-# Set to yes to make gvim, no for vim.
+# Set to yes to make gmnv, no for mnv.
 GUI=yes
 
 # Set to yes to enable the DLL support (EXPERIMENTAL).
-# Creates vim{32,64}.dll, and stub gvim.exe and vim.exe.
+# Creates mnv{32,64}.dll, and stub gmnv.exe and mnv.exe.
 # "GUI" should be also set to "yes".
-#VIMDLL=yes
+#MNVDLL=yes
 
 # Set to no if you do not want to use DirectWrite (DirectX).
 # MinGW-w64 is needed, and ARCH should be set to i686 or x86-64.
@@ -774,9 +774,9 @@ CFLAGS += --coverage
 LFLAGS += --coverage
 endif
 
-# If the ASAN=yes argument is supplied, then compile Vim with the address
+# If the ASAN=yes argument is supplied, then compile MNV with the address
 # sanitizer (asan).  Only supported by MingW64 clang compiler.
-# May make Vim twice as slow.  Errors are reported on stderr.
+# May make MNV twice as slow.  Errors are reported on stderr.
 # More at: https://code.google.com/p/address-sanitizer/
 # Useful environment variable:
 #     set ASAN_OPTIONS=print_stacktrace=1 log_path=asan
@@ -897,25 +897,25 @@ OBJ = \
 	$(OUTDIR)/usercmd.o \
 	$(OUTDIR)/userfunc.o \
 	$(OUTDIR)/version.o \
-	$(OUTDIR)/vim9class.o \
-	$(OUTDIR)/vim9cmds.o \
-	$(OUTDIR)/vim9compile.o \
-	$(OUTDIR)/vim9execute.o \
-	$(OUTDIR)/vim9expr.o \
-	$(OUTDIR)/vim9generics.o \
-	$(OUTDIR)/vim9instr.o \
-	$(OUTDIR)/vim9script.o \
-	$(OUTDIR)/vim9type.o \
-	$(OUTDIR)/viminfo.o \
+	$(OUTDIR)/mnv9class.o \
+	$(OUTDIR)/mnv9cmds.o \
+	$(OUTDIR)/mnv9compile.o \
+	$(OUTDIR)/mnv9execute.o \
+	$(OUTDIR)/mnv9expr.o \
+	$(OUTDIR)/mnv9generics.o \
+	$(OUTDIR)/mnv9instr.o \
+	$(OUTDIR)/mnv9script.o \
+	$(OUTDIR)/mnv9type.o \
+	$(OUTDIR)/mnvinfo.o \
 	$(OUTDIR)/winclip.o \
 	$(OUTDIR)/window.o
 
-ifeq ($(VIMDLL),yes)
-OBJ += $(OUTDIR)/os_w32dll.o $(OUTDIR)/vimresd.o
-EXEOBJC = $(OUTDIR)/os_w32exec.o $(OUTDIR)/vimresc.o
-EXEOBJG = $(OUTDIR)/os_w32exeg.o $(OUTDIR)/vimresg.o
+ifeq ($(MNVDLL),yes)
+OBJ += $(OUTDIR)/os_w32dll.o $(OUTDIR)/mnvresd.o
+EXEOBJC = $(OUTDIR)/os_w32exec.o $(OUTDIR)/mnvresc.o
+EXEOBJG = $(OUTDIR)/os_w32exeg.o $(OUTDIR)/mnvresg.o
 else
-OBJ += $(OUTDIR)/os_w32exe.o $(OUTDIR)/vimres.o
+OBJ += $(OUTDIR)/os_w32exe.o $(OUTDIR)/mnvres.o
 endif
 
 ifdef PERL
@@ -1023,15 +1023,15 @@ endif
 
 LFLAGS += -municode
 
-ifeq ($(VIMDLL),yes)
-VIMEXE := vim$(DEBUG_SUFFIX).exe
-GVIMEXE := gvim$(DEBUG_SUFFIX).exe
+ifeq ($(MNVDLL),yes)
+MNVEXE := mnv$(DEBUG_SUFFIX).exe
+GMNVEXE := gmnv$(DEBUG_SUFFIX).exe
  ifeq ($(ARCH),x86-64)
-VIMDLLBASE := vim64$(DEBUG_SUFFIX)
+MNVDLLBASE := mnv64$(DEBUG_SUFFIX)
  else
-VIMDLLBASE := vim32$(DEBUG_SUFFIX)
+MNVDLLBASE := mnv32$(DEBUG_SUFFIX)
  endif
-TARGET = $(VIMDLLBASE).dll
+TARGET = $(MNVDLLBASE).dll
 LFLAGS += -shared
 EXELFLAGS += -municode
  ifneq ($(DEBUG),yes)
@@ -1043,12 +1043,12 @@ EXELFLAGS += --coverage
 EXELFLAGS += -nostdlib
 EXECFLAGS = -DUSE_OWNSTARTUP
  endif
-DEFINES += $(DEF_GUI) -DVIMDLL
+DEFINES += $(DEF_GUI) -DMNVDLL
 OBJ += $(GUIOBJ) $(CUIOBJ)
 OUTDIR = dobj$(DEBUG_SUFFIX)$(MZSCHEME_SUFFIX)$(ARCH)
-MAIN_TARGET = $(GVIMEXE) $(VIMEXE) $(VIMDLLBASE).dll
+MAIN_TARGET = $(GMNVEXE) $(MNVEXE) $(MNVDLLBASE).dll
 else ifeq ($(GUI),yes)
-TARGET := gvim$(DEBUG_SUFFIX).exe
+TARGET := gmnv$(DEBUG_SUFFIX).exe
 DEFINES += $(DEF_GUI)
 OBJ += $(GUIOBJ)
 LFLAGS += -mwindows
@@ -1056,7 +1056,7 @@ OUTDIR = gobj$(DEBUG_SUFFIX)$(MZSCHEME_SUFFIX)$(ARCH)
 MAIN_TARGET = $(TARGET)
 else
 OBJ += $(CUIOBJ)
-TARGET := vim$(DEBUG_SUFFIX).exe
+TARGET := mnv$(DEBUG_SUFFIX).exe
 OUTDIR = obj$(DEBUG_SUFFIX)$(MZSCHEME_SUFFIX)$(ARCH)
 MAIN_TARGET = $(TARGET)
 endif
@@ -1139,7 +1139,7 @@ ifeq (yes, $(USE_GC_SECTIONS))
 CFLAGS += -ffunction-sections -fno-asynchronous-unwind-tables
 CXXFLAGS += -fasynchronous-unwind-tables
 LFLAGS += -Wl,--gc-sections
- ifeq (yes, $(VIMDLL))
+ ifeq (yes, $(MNVDLL))
 EXELFLAGS += -Wl,--gc-sections
  endif
 endif
@@ -1155,10 +1155,10 @@ endif
 # To increase the stack size to 16MB, uncomment the following line:
 #LFLAGS += -Wl,-stack -Wl,0x1000000
 
-all: $(MAIN_TARGET) vimrun.exe xxd/xxd.exe tee/tee.exe install.exe uninstall.exe GvimExt/gvimext.dll
+all: $(MAIN_TARGET) mnvrun.exe xxd/xxd.exe tee/tee.exe install.exe uninstall.exe GmnvExt/gmnvext.dll
 
-vimrun.exe: vimrun.c
-	$(CC) $(CFLAGS) -o vimrun.exe vimrun.c $(LIB)
+mnvrun.exe: mnvrun.c
+	$(CC) $(CFLAGS) -o mnvrun.exe mnvrun.c $(LIB)
 
 install.exe: dosinst.c dosinst.h version.h
 	$(CC) $(CFLAGS) -o install.exe dosinst.c $(LIB) -lole32 -luuid
@@ -1172,7 +1172,7 @@ $(EXEOBJG): | $(OUTDIR)
 
 $(EXEOBJC): | $(OUTDIR)
 
-ifeq ($(VIMDLL),yes)
+ifeq ($(MNVDLL),yes)
  ifneq ($(findstring -nostdlib,$(EXELFLAGS)),)
   # -Wl,--entry needs to be specified when -nostdlib is used.
   ifeq ($(ARCH),x86-64)
@@ -1187,23 +1187,23 @@ EXEENTRYG = -Wl,--entry=_wWinMainCRTStartup@0
 $(TARGET): $(OBJ)
 	$(LINK) $(CFLAGS) $(LFLAGS) -o $@ $(OBJ) $(LIB) -lole32 -luuid -lgdi32 $(LUA_LIB) $(MZSCHEME_LIBDIR) $(MZSCHEME_LIB) $(PYTHONLIB) $(PYTHON3LIB) $(RUBYLIB) $(SODIUMLIB)
 
-$(GVIMEXE): $(EXEOBJG) $(VIMDLLBASE).dll
-	$(CC) -L. $(EXELFLAGS) -mwindows -o $@ $(EXEOBJG) -l$(VIMDLLBASE) $(EXEENTRYG)
+$(GMNVEXE): $(EXEOBJG) $(MNVDLLBASE).dll
+	$(CC) -L. $(EXELFLAGS) -mwindows -o $@ $(EXEOBJG) -l$(MNVDLLBASE) $(EXEENTRYG)
 
-$(VIMEXE): $(EXEOBJC) $(VIMDLLBASE).dll
-	$(CC) -L. $(EXELFLAGS) -o $@ $(EXEOBJC) -l$(VIMDLLBASE) $(EXEENTRYC)
+$(MNVEXE): $(EXEOBJC) $(MNVDLLBASE).dll
+	$(CC) -L. $(EXELFLAGS) -o $@ $(EXEOBJC) -l$(MNVDLLBASE) $(EXEENTRYC)
 else
 $(TARGET): $(OBJ)
 	$(LINK) $(CFLAGS) $(LFLAGS) -o $@ $(OBJ) $(LIB) -lole32 -luuid $(LUA_LIB) $(MZSCHEME_LIBDIR) $(MZSCHEME_LIB) $(PYTHONLIB) $(PYTHON3LIB) $(RUBYLIB) $(SODIUMLIB)
 endif
 
 upx: exes
-	upx gvim.exe
-	upx vim.exe
+	upx gmnv.exe
+	upx mnv.exe
 
 mpress: exes
-	mpress gvim.exe
-	mpress vim.exe
+	mpress gmnv.exe
+	mpress mnv.exe
 
 xxd/xxd.exe: xxd/xxd.c
 	$(MAKE) -C xxd -f Make_ming.mak CC='$(CC)'
@@ -1211,8 +1211,8 @@ xxd/xxd.exe: xxd/xxd.c
 tee/tee.exe: tee/tee.c
 	$(MAKE) -C tee -f Make_ming.mak CC='$(CC)'
 
-GvimExt/gvimext.dll: GvimExt/gvimext.cpp GvimExt/gvimext.rc GvimExt/gvimext.h
-	$(MAKE) -C GvimExt -f Make_ming.mak CROSS=$(CROSS) CROSS_COMPILE=$(CROSS_COMPILE) CXX=$(CXX) STATIC_STDCPLUS=$(STATIC_STDCPLUS)
+GmnvExt/gmnvext.dll: GmnvExt/gmnvext.cpp GmnvExt/gmnvext.rc GmnvExt/gmnvext.h
+	$(MAKE) -C GmnvExt -f Make_ming.mak CROSS=$(CROSS) CROSS_COMPILE=$(CROSS_COMPILE) CXX=$(CXX) STATIC_STDCPLUS=$(STATIC_STDCPLUS)
 
 tags: notags
 	$(CTAGS) $(TAGS_FILES)
@@ -1227,7 +1227,7 @@ clean:
 	-$(DEL) $(OUTDIR)$(DIRSLASH)*.res
 	-$(DEL) $(OUTDIR)$(DIRSLASH)pathdef.c
 	-rmdir $(OUTDIR)
-	-$(DEL) $(MAIN_TARGET) vimrun.exe install.exe uninstall.exe
+	-$(DEL) $(MAIN_TARGET) mnvrun.exe install.exe uninstall.exe
 	-$(DEL) *.gcno *.gcda
 	-$(DEL) *.map
 ifdef PERL
@@ -1237,29 +1237,29 @@ endif
 ifdef MZSCHEME
 	-$(DEL) mzscheme_base.c
 endif
-	$(MAKE) -C GvimExt -f Make_ming.mak clean
+	$(MAKE) -C GmnvExt -f Make_ming.mak clean
 	$(MAKE) -C xxd -f Make_ming.mak clean
 	$(MAKE) -C tee -f Make_ming.mak clean
 
-# Run Vim script to generate the Ex command lookup table.
+# Run MNV script to generate the Ex command lookup table.
 # This only needs to be run when a command name has been added or changed.
-# If this fails because you don't have Vim yet, first build and install Vim
+# If this fails because you don't have MNV yet, first build and install MNV
 # without changes.
 cmdidxs: ex_cmds.h
-	vim --clean -N -X --not-a-term -u create_cmdidxs.vim -c quit
+	mnv --clean -N -X --not-a-term -u create_cmdidxs.mnv -c quit
 
-# Run Vim script to generate the normal/visual mode command lookup table.
+# Run MNV script to generate the normal/visual mode command lookup table.
 # This only needs to be run when a new normal/visual mode command has been
-# added.  If this fails because you don't have Vim yet:
+# added.  If this fails because you don't have MNV yet:
 #   - change nv_cmds[] in nv_cmds.h to add the new normal/visual mode command.
 #   - run "make nvcmdidxs" to generate nv_cmdidxs.h
 nvcmdidxs: nv_cmds.h
 	$(CC) $(CFLAGS) -o create_nvcmdidxs.exe create_nvcmdidxs.c $(LIB)
-	vim --clean -N -X --not-a-term -u create_nvcmdidxs.vim -c quit
+	mnv --clean -N -X --not-a-term -u create_nvcmdidxs.mnv -c quit
 	-$(DEL) create_nvcmdidxs.exe
 
 ###########################################################################
-INCL =	vim.h alloc.h ascii.h ex_cmds.h feature.h errors.h globals.h \
+INCL =	mnv.h alloc.h ascii.h ex_cmds.h feature.h errors.h globals.h \
 	keymap.h macros.h option.h optiondefs.h os_dos.h os_win32.h \
 	proto.h regexp.h spell.h structs.h termdefs.h beval.h \
 	$(NBDEBUG_INCL)
@@ -1280,26 +1280,26 @@ $(OUTDIR)/if_python3.o:	if_python3.c if_py_both.h $(INCL)
 $(OUTDIR)/%.o : %.c $(INCL)
 	$(CC) -c $(CFLAGS) $< -o $@
 
-ifeq ($(VIMDLL),yes)
-$(OUTDIR)/vimresc.o:	vim.rc vim.manifest version.h gui_w32_rc.h vim.ico
+ifeq ($(MNVDLL),yes)
+$(OUTDIR)/mnvresc.o:	mnv.rc mnv.manifest version.h gui_w32_rc.h mnv.ico
 	$(WINDRES) $(WINDRES_FLAGS) $(DEFINES) -UFEAT_GUI_MSWIN \
-	    --input-format=rc --output-format=coff -i vim.rc -o $@
+	    --input-format=rc --output-format=coff -i mnv.rc -o $@
 
-$(OUTDIR)/vimresg.o:	vim.rc vim.manifest version.h gui_w32_rc.h vim.ico
+$(OUTDIR)/mnvresg.o:	mnv.rc mnv.manifest version.h gui_w32_rc.h mnv.ico
 	$(WINDRES) $(WINDRES_FLAGS) $(DEFINES) \
-	    --input-format=rc --output-format=coff -i vim.rc -o $@
+	    --input-format=rc --output-format=coff -i mnv.rc -o $@
 
-$(OUTDIR)/vimresd.o:	vim.rc version.h gui_w32_rc.h \
-			tools.bmp tearoff.bmp vim.ico vim_error.ico \
-			vim_alert.ico vim_info.ico vim_quest.ico
-	$(WINDRES) $(WINDRES_FLAGS) $(DEFINES) -DRCDLL -DVIMDLLBASE=\\\"$(VIMDLLBASE)\\\" \
-	    --input-format=rc --output-format=coff -i vim.rc -o $@
+$(OUTDIR)/mnvresd.o:	mnv.rc version.h gui_w32_rc.h \
+			tools.bmp tearoff.bmp mnv.ico mnv_error.ico \
+			mnv_alert.ico mnv_info.ico mnv_quest.ico
+	$(WINDRES) $(WINDRES_FLAGS) $(DEFINES) -DRCDLL -DMNVDLLBASE=\\\"$(MNVDLLBASE)\\\" \
+	    --input-format=rc --output-format=coff -i mnv.rc -o $@
 else
-$(OUTDIR)/vimres.o:	vim.rc vim.manifest version.h gui_w32_rc.h \
-			tools.bmp tearoff.bmp vim.ico vim_error.ico \
-			vim_alert.ico vim_info.ico vim_quest.ico
+$(OUTDIR)/mnvres.o:	mnv.rc mnv.manifest version.h gui_w32_rc.h \
+			tools.bmp tearoff.bmp mnv.ico mnv_error.ico \
+			mnv_alert.ico mnv_info.ico mnv_quest.ico
 	$(WINDRES) $(WINDRES_FLAGS) $(DEFINES) \
-	    --input-format=rc --output-format=coff -i vim.rc -o $@
+	    --input-format=rc --output-format=coff -i mnv.rc -o $@
 endif
 
 $(OUTDIR):
@@ -1327,25 +1327,25 @@ $(OUTDIR)/netbeans.o: netbeans.c $(INCL) version.h
 
 $(OUTDIR)/version.o: version.c $(INCL) version.h
 
-$(OUTDIR)/vim9class.o: vim9class.c $(INCL) vim9.h
+$(OUTDIR)/mnv9class.o: mnv9class.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9cmds.o: vim9cmds.c $(INCL) vim9.h
+$(OUTDIR)/mnv9cmds.o: mnv9cmds.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9compile.o: vim9compile.c $(INCL) vim9.h
+$(OUTDIR)/mnv9compile.o: mnv9compile.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9execute.o: vim9execute.c $(INCL) vim9.h
+$(OUTDIR)/mnv9execute.o: mnv9execute.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9expr.o: vim9expr.c $(INCL) vim9.h
+$(OUTDIR)/mnv9expr.o: mnv9expr.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9generics.o: vim9generics.c $(INCL) vim9.h
+$(OUTDIR)/mnv9generics.o: mnv9generics.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9instr.o: vim9instr.c $(INCL) vim9.h
+$(OUTDIR)/mnv9instr.o: mnv9instr.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9script.o: vim9script.c $(INCL) vim9.h
+$(OUTDIR)/mnv9script.o: mnv9script.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9type.o: vim9type.c $(INCL) vim9.h
+$(OUTDIR)/mnv9type.o: mnv9type.c $(INCL) mnv9.h
 
-$(OUTDIR)/viminfo.o: viminfo.c $(INCL) version.h
+$(OUTDIR)/mnvinfo.o: mnvinfo.c $(INCL) version.h
 
 $(OUTDIR)/gui_dwrite.o:	gui_dwrite.cpp gui_dwrite.h
 	$(CC) -c $(CFLAGS) $(CXXFLAGS) gui_dwrite.cpp -o $@
@@ -1423,8 +1423,8 @@ $(OUTDIR)/pathdef.o:	$(PATHDEF_SRC) $(INCL)
 
 
 CCCTERM = $(CC) -c $(CFLAGS) -Ilibvterm/include -DINLINE="" \
-	  -DVSNPRINTF=vim_vsnprintf \
-	  -DSNPRINTF=vim_snprintf \
+	  -DVSNPRINTF=mnv_vsnprintf \
+	  -DSNPRINTF=mnv_snprintf \
 	  -DIS_COMBINING_FUNCTION=utf_iscomposing_uint \
 	  -DWCWIDTH_FUNCTION=utf_uint2cells \
 	  -DGET_SPECIAL_PTY_TYPE_FUNCTION=get_special_pty_type
@@ -1441,9 +1441,9 @@ $(PATHDEF_SRC): Make_cyg_ming.mak Make_cyg.mak Make_ming.mak | $(OUTDIR)
 ifneq (sh.exe, $(SHELL))
 	@echo creating $(PATHDEF_SRC)
 	@echo '/* pathdef.c */' > $(PATHDEF_SRC)
-	@echo '#include "vim.h"' >> $(PATHDEF_SRC)
-	@echo 'char_u *default_vim_dir = (char_u *)"$(VIMRCLOC)";' >> $(PATHDEF_SRC)
-	@echo 'char_u *default_vimruntime_dir = (char_u *)"$(VIMRUNTIMEDIR)";' >> $(PATHDEF_SRC)
+	@echo '#include "mnv.h"' >> $(PATHDEF_SRC)
+	@echo 'char_u *default_mnv_dir = (char_u *)"$(MNVRCLOC)";' >> $(PATHDEF_SRC)
+	@echo 'char_u *default_mnvruntime_dir = (char_u *)"$(MNVRUNTIMEDIR)";' >> $(PATHDEF_SRC)
 	@echo 'char_u *all_cflags = (char_u *)"$(CC) $(CFLAGS)";' >> $(PATHDEF_SRC)
 	@echo 'char_u *all_lflags = (char_u *)"$(LINK) $(CFLAGS) $(LFLAGS) -o $(TARGET) $(LIB) -lole32 -luuid $(LUA_LIB) $(MZSCHEME_LIBDIR) $(MZSCHEME_LIB) $(PYTHONLIB) $(PYTHON3LIB) $(RUBYLIB)";' >> $(PATHDEF_SRC)
 	@echo 'char_u *compiled_user = (char_u *)"$(USERNAME)";' >> $(PATHDEF_SRC)
@@ -1451,13 +1451,13 @@ ifneq (sh.exe, $(SHELL))
 else
 	@echo creating $(PATHDEF_SRC)
 	@echo /* pathdef.c */ > $(PATHDEF_SRC)
-	@echo #include "vim.h" >> $(PATHDEF_SRC)
-	@echo char_u *default_vim_dir = (char_u *)"$(VIMRCLOC)"; >> $(PATHDEF_SRC)
-	@echo char_u *default_vimruntime_dir = (char_u *)"$(VIMRUNTIMEDIR)"; >> $(PATHDEF_SRC)
+	@echo #include "mnv.h" >> $(PATHDEF_SRC)
+	@echo char_u *default_mnv_dir = (char_u *)"$(MNVRCLOC)"; >> $(PATHDEF_SRC)
+	@echo char_u *default_mnvruntime_dir = (char_u *)"$(MNVRUNTIMEDIR)"; >> $(PATHDEF_SRC)
 	@echo char_u *all_cflags = (char_u *)"$(CC) $(CFLAGS)"; >> $(PATHDEF_SRC)
 	@echo char_u *all_lflags = (char_u *)"$(CC) $(CFLAGS) $(LFLAGS) -o $(TARGET) $(LIB) -lole32 -luuid $(LUA_LIB) $(MZSCHEME_LIBDIR) $(MZSCHEME_LIB) $(PYTHONLIB) $(PYTHON3LIB) $(RUBYLIB)"; >> $(PATHDEF_SRC)
 	@echo char_u *compiled_user = (char_u *)"$(USERNAME)"; >> $(PATHDEF_SRC)
 	@echo char_u *compiled_sys = (char_u *)"$(USERDOMAIN)"; >> $(PATHDEF_SRC)
 endif
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=0:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=0:

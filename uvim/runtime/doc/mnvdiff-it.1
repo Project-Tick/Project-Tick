@@ -1,0 +1,46 @@
+.TH MNVDIFF 1 "13 giugno 2021"
+.SH NOME
+mnvdiff \- modifica da due, fino a otto versioni di un file con MNV, visualizzando le differenze
+.SH SINTASSI
+.br
+.B mnvdiff
+[opzioni] file1 file2 [file3 [file4 [file5 [file6 [file7 [file8]]]]]]
+.PP
+.B gmnvdiff
+.SH DESCRIZIONE
+.B MNVdiff
+inizia
+.B MNV
+per due e fino a otto file.
+Ogni file ha una sua finestra.
+Le differenze fra file sono evidenziate.
+� una maniera elegante per controllare modifiche e applicare modifiche
+a qualche altra versione dello stesso file.
+.PP
+Vedere mnv(1) per dettagli su MNV in s�.
+.PP
+Se iniziato con
+.B gmnvdiff
+la GUI sar� utilizzata, se disponibile.
+.PP
+In ogni finestra l'opzione 'diff' � impostata, in modo da evidenziare le
+differenze fra le versioni
+.br
+Le opzioni 'wrap' e 'scrollbind' sono impostate per favorire la visibilit� del testo.
+.br
+L'opzione 'foldmethod' � impostata al valore "diff", che mette i gruppi di
+linee uguali fra i diversi file in una piegatura. 'foldcolumn' � impostato
+a due per poter facilmente visualizzare le piegature, aprirle e chiuderle.
+.SH OPZIONI
+Lo schermo � diviso verticalmente, come quando si usa l'opzione "\-O".
+Per dividerlo orizzontalmente, usare invece l'opzione "\-o".
+.PP
+Per tutti gli altri argomenti, vedere mnv(1).
+.SH VEDERE ANCHE
+mnv(1)
+.SH AUTORE
+Buona parte di
+.B MNV
+� stato scritto da Bram Moolenaar, con molto aiuto da parte di altri.
+Vedere ":help credits" in
+.B MNV.

@@ -1,23 +1,23 @@
-*if_lua.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*if_lua.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Luis Carvalho
+		  MNV REFERENCE MANUAL	  by Luis Carvalho
 
 
-The Lua Interface to Vim				*lua* *Lua*
+The Lua Interface to MNV				*lua* *Lua*
 
 1. Commands			|lua-commands|
-2. The vim module		|lua-vim|
+2. The mnv module		|lua-mnv|
 3. List userdata		|lua-list|
 4. Dict userdata		|lua-dict|
 5. Blob userdata		|lua-blob|
 6. Funcref userdata		|lua-funcref|
 7. Buffer userdata		|lua-buffer|
 8. Window userdata		|lua-window|
-9. luaeval() Vim function	|lua-luaeval|
+9. luaeval() MNV function	|lua-luaeval|
 10. Dynamic loading		|lua-dynamic|
 
-{only available when Vim was compiled with the |+lua| feature}
+{only available when MNV was compiled with the |+lua| feature}
 
 ==============================================================================
 1. Commands						*lua-commands*
@@ -28,8 +28,8 @@ The Lua Interface to Vim				*lua* *Lua*
 
 Examples:
 >
-	:lua print("Hello, Vim!")
-	:lua local curbuf = vim.buffer() curbuf[7] = "line #7"
+	:lua print("Hello, MNV!")
+	:lua local curbuf = mnv.buffer() curbuf[7] = "line #7"
 <
 
 :[range]lua << [trim] [{endmarker}]
@@ -45,14 +45,14 @@ If [endmarker] is omitted from after the "<<", a dot '.' must be used after
 |:let-heredoc| for more information.
 
 This form of the |:lua| command is mainly useful for including Lua code
-in Vim scripts.
+in MNV scripts.
 
 Example:
 >
 	function! CurrentLineInfo()
 	lua << EOF
-	local linenr = vim.window().line
-	local curline = vim.buffer()[linenr]
+	local linenr = mnv.window().line
+	local curline = mnv.buffer()[linenr]
 	print(string.format("Current line [%d] has %d chars",
 		linenr, #curline))
 	EOF
@@ -99,24 +99,24 @@ All these commands execute a Lua chunk from either the command line (:lua and
 :luado) or a file (:luafile) with the given line [range].  Similarly to the
 Lua interpreter, each chunk has its own scope and so only global variables are
 shared between command calls.  All Lua default libraries are available.  In
-addition, Lua "print" function has its output redirected to the Vim message
+addition, Lua "print" function has its output redirected to the MNV message
 area, with arguments separated by a white space instead of a tab.
 
-Lua uses the "vim" module (see |lua-vim|) to issue commands to Vim
+Lua uses the "mnv" module (see |lua-mnv|) to issue commands to MNV
 and manage buffers (|lua-buffer|) and windows (|lua-window|).  However,
 procedures that alter buffer content, open new buffers, and change cursor
 position are restricted when the command is executed in the |sandbox|.
 
 
 ==============================================================================
-2. The vim module					*lua-vim*
+2. The mnv module					*lua-mnv*
 
-Lua interfaces Vim through the "vim" module.  The first and last line of the
-input range are stored in "vim.firstline" and "vim.lastline" respectively.
+Lua interfaces MNV through the "mnv" module.  The first and last line of the
+input range are stored in "mnv.firstline" and "mnv.lastline" respectively.
 The module also includes routines for buffer, window, and current line
-queries, Vim evaluation and command execution, and others.
+queries, MNV evaluation and command execution, and others.
 
-	vim.list([arg])		Returns an empty list or, if "arg" is a Lua
+	mnv.list([arg])		Returns an empty list or, if "arg" is a Lua
 				table with numeric keys 1, ..., n (a
 				"sequence"), returns a list l such that l[i] =
 				arg[i] for i = 1, ..., n (see |List|).
@@ -124,10 +124,10 @@ queries, Vim evaluation and command execution, and others.
 				the list.  See also |lua-eval| for conversion
 				rules.  Example: >
 				    :lua t = {math.pi, false, say = 'hi'}
-				    :echo luaeval('vim.list(t)')
+				    :echo luaeval('mnv.list(t)')
 				    :" [3.141593, v:false], 'say' is ignored
 <
-	vim.dict([arg])		Returns an empty dictionary or, if "arg" is a
+	mnv.dict([arg])		Returns an empty dictionary or, if "arg" is a
 				Lua table, returns a dict d such that d[k] =
 				arg[k] for all string keys k in "arg" (see
 				|Dictionary|).  Number keys are converted to
@@ -135,23 +135,23 @@ queries, Vim evaluation and command execution, and others.
 				used to initialize the dictionary.  See also
 				|lua-eval| for conversion rules.  Example: >
 				    :lua t = {math.pi, false, say = 'hi'}
-				    :echo luaeval('vim.dict(t)')
+				    :echo luaeval('mnv.dict(t)')
 				    :" {'1': 3.141593, '2': v:false,
 				    :" 'say': 'hi'}
 <
-	vim.blob([arg])		Returns an empty blob or, if "arg" is a Lua
+	mnv.blob([arg])		Returns an empty blob or, if "arg" is a Lua
 				string, returns a blob b such that b is
 				equivalent to "arg" as a byte string.
 				Examples: >
 				    :lua s = "12ab\x00\x80\xfe\xff"
-				    :echo luaeval('vim.blob(s)')
+				    :echo luaeval('mnv.blob(s)')
 				    :" 0z31326162.0080FEFF
 <
-	vim.funcref({name})	Returns a Funcref to function {name} (see
-				|Funcref|).  It is equivalent to Vim's
+	mnv.funcref({name})	Returns a Funcref to function {name} (see
+				|Funcref|).  It is equivalent to MNV's
 				function().
 
-	vim.buffer([arg])	If "arg" is a number, returns buffer with
+	mnv.buffer([arg])	If "arg" is a number, returns buffer with
 				number "arg" in the buffer list or, if "arg"
 				is a string, returns buffer whose full or
 				short name is "arg".  In both cases, returns
@@ -160,108 +160,108 @@ queries, Vim evaluation and command execution, and others.
 				'true' returns the first buffer in the buffer
 				list or else the current buffer.
 
-	vim.window([arg])	If "arg" is a number, returns window with
+	mnv.window([arg])	If "arg" is a number, returns window with
 				number "arg" or 'nil' (nil value, not string)
 				if not found.  Otherwise, if "toboolean(arg)"
 				is 'true' returns the first window or else the
 				current window.
 
-	vim.type({arg})		Returns the type of {arg}.  It is equivalent
+	mnv.type({arg})		Returns the type of {arg}.  It is equivalent
 				to Lua's "type" function, but returns "list",
 				"dict", "funcref", "buffer", or "window" if
 				{arg} is a list, dictionary, funcref, buffer,
 				or window, respectively.  Examples: >
-					:lua l = vim.list()
-					:lua print(type(l), vim.type(l))
+					:lua l = mnv.list()
+					:lua print(type(l), mnv.type(l))
 					:" list
 <
-	vim.command({cmds})	Executes one or more lines of Ex-mode commands
+	mnv.command({cmds})	Executes one or more lines of Ex-mode commands
 				in {cmds}.
 				Examples: >
-					:lua vim.command"set tw=60"
-					:lua vim.command"normal ddp"
+					:lua mnv.command"set tw=60"
+					:lua mnv.command"normal ddp"
 					lua << trim END
-					  vim.command([[
+					  mnv.command([[
 					      new Myfile.js
 					      call search('start')
 					  ]])
 					END
 <
-	vim.eval({expr})	Evaluates expression {expr} (see |expression|),
+	mnv.eval({expr})	Evaluates expression {expr} (see |expression|),
 				converts the result to Lua, and returns it.
-				Vim strings and numbers are directly converted
-				to Lua strings and numbers respectively.  Vim
+				MNV strings and numbers are directly converted
+				to Lua strings and numbers respectively.  MNV
 				lists and dictionaries are converted to Lua
 				userdata (see |lua-list| and |lua-dict|).
 				Examples: >
-					:lua tw = vim.eval"&tw"
-					:lua print(vim.eval"{'a': 'one'}".a)
+					:lua tw = mnv.eval"&tw"
+					:lua print(mnv.eval"{'a': 'one'}".a)
 <
-	vim.line()		Returns the current line (without the trailing
+	mnv.line()		Returns the current line (without the trailing
 				<EOL>), a Lua string.
 
-	vim.beep()		Beeps.
+	mnv.beep()		Beeps.
 
-	vim.open({fname})	Opens a new buffer for file {fname} and
+	mnv.open({fname})	Opens a new buffer for file {fname} and
 				returns it.  Note that the buffer is not set
 				as current.
 
-	vim.call({name} [, {args}])
-				Proxy to call Vim function named {name} with
+	mnv.call({name} [, {args}])
+				Proxy to call MNV function named {name} with
 				arguments {args}.  Example: >
-					:lua print(vim.call('has', 'timers'))
+					:lua print(mnv.call('has', 'timers'))
 <
-	vim.fn			Proxy to call Vim functions.  Proxy methods
+	mnv.fn			Proxy to call MNV functions.  Proxy methods
 				are created on demand.  Example: >
-					:lua print(vim.fn.has('timers'))
+					:lua print(mnv.fn.has('timers'))
 <
-	vim.lua_version		The Lua version Vim was compiled with, in the
+	mnv.lua_version		The Lua version MNV was compiled with, in the
 				form {major}.{minor}.{patch}, e.g. "5.1.4".
 
-	vim.version()		Returns a Lua table with the Vim version.
+	mnv.version()		Returns a Lua table with the MNV version.
 				The table will have the following keys:
-					major - major Vim version.
-					minor - minor Vim version.
+					major - major MNV version.
+					minor - minor MNV version.
 					patch - latest patch included.
 
-                                                        *lua-vim-variables*
-The Vim editor global dictionaries |g:| |w:| |b:| |t:| |v:| can be accessed
-from Lua conveniently and idiomatically by referencing the `vim.*` Lua tables
-described below.  In this way you can easily read and modify global Vim script
+                                                        *lua-mnv-variables*
+The MNV editor global dictionaries |g:| |w:| |b:| |t:| |v:| can be accessed
+from Lua conveniently and idiomatically by referencing the `mnv.*` Lua tables
+described below.  In this way you can easily read and modify global MNV script
 variables from Lua.
 
 Example: >
 
-    vim.g.foo = 5     -- Set the g:foo Vim script variable.
-    print(vim.g.foo)  -- Get and print the g:foo Vim script variable.
-    vim.g.foo = nil   -- Delete (:unlet) the Vim script variable.
+    mnv.g.foo = 5     -- Set the g:foo MNV script variable.
+    print(mnv.g.foo)  -- Get and print the g:foo MNV script variable.
+    mnv.g.foo = nil   -- Delete (:unlet) the MNV script variable.
 
-vim.g                                                   *vim.g*
+mnv.g                                                   *mnv.g*
         Global (|g:|) editor variables.
         Key with no value returns `nil`.
 
-vim.b                                                   *vim.b*
+mnv.b                                                   *mnv.b*
         Buffer-scoped (|b:|) variables for the current buffer.
         Invalid or unset key returns `nil`.
 
-vim.w                                                   *vim.w*
+mnv.w                                                   *mnv.w*
         Window-scoped (|w:|) variables for the current window.
         Invalid or unset key returns `nil`.
 
-vim.t                                                   *vim.t*
+mnv.t                                                   *mnv.t*
         Tabpage-scoped (|t:|) variables for the current tabpage.
         Invalid or unset key returns `nil`.
 
-vim.v                                                   *vim.v*
+mnv.v                                                   *mnv.v*
         |v:| variables.
         Invalid or unset key returns `nil`.
 
 ==============================================================================
 3. List userdata					*lua-list*
 
-List userdata represent vim lists, and the interface tries to follow closely
-Vim's syntax for lists.  Since lists are objects, changes in list references
-in Lua are reflected in Vim and vice-versa.  A list "l" has the following
+List userdata represent mnv lists, and the interface tries to follow closely
+MNV's syntax for lists.  Since lists are objects, changes in list references
+in Lua are reflected in MNV and vice-versa.  A list "l" has the following
 properties and methods:
 
 NOTE: In patch 8.2.1066 array indexes were changed from zero-based to
@@ -271,7 +271,7 @@ one-based.  You can check with: >
 Properties
 ----------
 	o "#l" is the number of items in list "l", equivalent to "len(l)"
-	    in Vim.
+	    in MNV.
 	o "l[k]" returns the k-th item in "l"; "l" is one-indexed, as in Lua.
 	    To modify the k-th item, simply do "l[k] = newitem"; in
 	    particular, "l[k] = nil" removes the k-th item from "l".  Item can
@@ -295,8 +295,8 @@ Methods
 Examples:
 >
 	:let l = [1, 'item']
-	:lua l = vim.eval('l') -- same 'l'
-	:lua l:add(vim.list())
+	:lua l = mnv.eval('l') -- same 'l'
+	:lua l:add(mnv.list())
 	:lua l[1] = math.pi
 	:echo l[0] " 3.141593
 	:lua l[1] = nil -- remove first item
@@ -311,24 +311,24 @@ Examples:
 ==============================================================================
 4. Dict userdata					*lua-dict*
 
-Similarly to list userdata, dict userdata represent vim dictionaries; since
-dictionaries are also objects, references are kept between Lua and Vim.  A
+Similarly to list userdata, dict userdata represent mnv dictionaries; since
+dictionaries are also objects, references are kept between Lua and MNV.  A
 dict "d" has the following properties:
 
 Properties
 ----------
 	o "#d" is the number of items in dict "d", equivalent to "len(d)"
-	    in Vim.
+	    in MNV.
 	o "d.key" or "d['key']" returns the value at entry "key" in "d".
 	    To modify the entry at this key, simply do "d.key = newvalue"; in
 	    particular, "d.key = nil" removes the entry from "d".
 	o "d()" returns an iterator for "d" and is equivalent to "items(d)" in
-	    Vim.
+	    MNV.
 
 Examples:
 >
 	:let d = {'n':10}
-	:lua d = vim.eval('d') -- same 'd'
+	:lua d = mnv.eval('d') -- same 'd'
 	:lua print(d, d.n, #d)
 	:let d.self = d
 	:lua for k, v in d() do print(d, k, v) end
@@ -340,12 +340,12 @@ Examples:
 ==============================================================================
 5. Blob userdata					*lua-blob*
 
-Blob userdata represent vim blobs.  A blob "b" has the following properties:
+Blob userdata represent mnv blobs.  A blob "b" has the following properties:
 
 Properties
 ----------
-	o "#b" is the length of blob "b", equivalent to "len(b)" in Vim.
-	o "b[k]" returns the k-th item in "b"; "b" is zero-indexed, as in Vim.
+	o "#b" is the length of blob "b", equivalent to "len(b)" in MNV.
+	o "b[k]" returns the k-th item in "b"; "b" is zero-indexed, as in MNV.
 	    To modify the k-th item, simply do "b[k] = number"; in particular,
 	    "b[#b] = number" can append a byte to tail.
 
@@ -356,7 +356,7 @@ Methods
 Examples:
 >
 	:let b = 0z001122
-	:lua b = vim.eval('b') -- same 'b'
+	:lua b = mnv.eval('b') -- same 'b'
 	:lua print(b, b[0], #b)
 	:lua b[1] = 32
 	:lua b[#b] = 0x33 -- append a byte to tail
@@ -367,7 +367,7 @@ Examples:
 ==============================================================================
 6. Funcref userdata					*lua-funcref*
 
-Funcref userdata represent funcref variables in Vim.  Funcrefs that were
+Funcref userdata represent funcref variables in MNV.  Funcrefs that were
 defined with a "dict" attribute need to be obtained as a dictionary key
 in order to have "self" properly assigned to the dictionary (see examples
 below.) A funcref "f" has the following properties:
@@ -383,24 +383,24 @@ Examples:
 	:  return a:x
 	:  endfunction
 	:let R = function('I')
-	:lua i1 = vim.funcref('I')
-	:lua i2 = vim.eval('R')
+	:lua i1 = mnv.funcref('I')
+	:lua i2 = mnv.eval('R')
 	:lua print(#i1, #i2) -- both 'I'
 	:lua print(i1, i2, #i2(i1) == #i1(i2))
 	:function Mylen() dict
 	:  return len(self.data)
 	:  endfunction
 	:let mydict = {'data': [0, 1, 2, 3]}
-	:lua d = vim.eval('mydict'); d.len = vim.funcref('Mylen')
+	:lua d = mnv.eval('mydict'); d.len = mnv.funcref('Mylen')
 	:echo mydict.len()
 	:lua l = d.len -- assign d as 'self'
 	:lua print(l())
 <
-Lua functions and closures are automatically converted to a Vim |Funcref| and
-can be accessed in Vim scripts.  Example:
+Lua functions and closures are automatically converted to a MNV |Funcref| and
+can be accessed in MNV scripts.  Example:
 >
 	lua <<EOF
-	vim.fn.timer_start(1000, function(timer)
+	mnv.fn.timer_start(1000, function(timer)
 	    print('timer callback')
 	end)
 	EOF
@@ -408,7 +408,7 @@ can be accessed in Vim scripts.  Example:
 ==============================================================================
 7. Buffer userdata					*lua-buffer*
 
-Buffer userdata represent vim buffers.  A buffer userdata "b" has the
+Buffer userdata represent mnv buffers.  A buffer userdata "b" has the
 following properties and methods:
 
 Properties
@@ -432,27 +432,27 @@ Methods
 	o "b:previous()" returns the buffer previous to "b" in the buffer
 	    list.
 	o "b:isvalid()" returns 'true' (boolean) if buffer "b" corresponds to
-	    a "real" (not freed from memory) Vim buffer.
+	    a "real" (not freed from memory) MNV buffer.
 
 Examples:
 >
-	:lua b = vim.buffer() -- current buffer
+	:lua b = mnv.buffer() -- current buffer
 	:lua print(b.name, b.number)
 	:lua b[1] = "first line"
 	:lua b:insert("FIRST!", 0)
 	:lua b[1] = nil -- delete top line
 	:lua for i=1,3 do b:insert(math.random()) end
-	:3,4lua for i=vim.lastline,vim.firstline,-1 do b[i] = nil end
-	:lua vim.open"myfile"() -- open buffer and set it as current
+	:3,4lua for i=mnv.lastline,mnv.firstline,-1 do b[i] = nil end
+	:lua mnv.open"myfile"() -- open buffer and set it as current
 
 	function! ListBuffers()
 	lua << EOF
-	local b = vim.buffer(true) -- first buffer in list
+	local b = mnv.buffer(true) -- first buffer in list
 	while b ~= nil do
 		print(b.number, b.name, #b)
 		b = b:next()
 	end
-	vim.beep()
+	mnv.beep()
 	EOF
 	endfunction
 <
@@ -460,7 +460,7 @@ Examples:
 ==============================================================================
 8. Window userdata					*lua-window*
 
-Window objects represent vim windows.  A window userdata "w" has the following
+Window objects represent mnv windows.  A window userdata "w" has the following
 properties and methods:
 
 Properties
@@ -477,22 +477,22 @@ Methods
 	o "w:next()" returns the window next to "w".
 	o "w:previous()" returns the window previous to "w".
 	o "w:isvalid()" returns 'true' (boolean) if window "w" corresponds to
-	    a "real" (not freed from memory) Vim window.
+	    a "real" (not freed from memory) MNV window.
 
 Examples:
 >
-	:lua w = vim.window() -- current window
+	:lua w = mnv.window() -- current window
 	:lua print(w.buffer.name, w.line, w.col)
 	:lua w.width = w.width + math.random(10)
 	:lua w.height = 2 * math.random() * w.height
-	:lua n,w = 0,vim.window(true) while w~=nil do n,w = n + 1,w:next() end
+	:lua n,w = 0,mnv.window(true) while w~=nil do n,w = n + 1,w:next() end
 	:lua print("There are " .. n .. " windows")
 <
 
 ==============================================================================
-9. luaeval() Vim function				*lua-luaeval* *lua-eval*
+9. luaeval() MNV function				*lua-luaeval* *lua-eval*
 
-The (dual) equivalent of "vim.eval" for passing Lua values to Vim is
+The (dual) equivalent of "mnv.eval" for passing Lua values to MNV is
 "luaeval".  "luaeval" takes an expression string and an optional argument and
 returns the result of the expression.  It is semantically equivalent in Lua
 to:
@@ -504,7 +504,7 @@ to:
 	end
 <
 Note that "_A" receives the argument to "luaeval".  Lua numbers, strings, and
-list, dict, blob, and funcref userdata are converted to their Vim respective
+list, dict, blob, and funcref userdata are converted to their MNV respective
 types, while Lua booleans are converted to numbers.  An error is thrown if
 conversion of any of the remaining Lua types, including userdata other than
 lists, dicts, blobs, and funcrefs, is attempted.
@@ -512,7 +512,7 @@ lists, dicts, blobs, and funcrefs, is attempted.
 Examples: >
 
 	:echo luaeval('math.pi')
-	:lua a = vim.list():add('newlist')
+	:lua a = mnv.list():add('newlist')
 	:let a = luaeval('a')
 	:echo a[0] " 'newlist'
 	:function Rand(x,y) " random uniform between x and y
@@ -527,9 +527,9 @@ Examples: >
 On MS-Windows and Unix the Lua library can be loaded dynamically.  The
 |:version| output then includes |+lua/dyn|.
 
-This means that Vim will search for the Lua DLL or shared library file only
+This means that MNV will search for the Lua DLL or shared library file only
 when needed.  When you don't use the Lua interface you don't need it, thus
-you can use Vim without this file.
+you can use MNV without this file.
 
 
 MS-Windows ~
@@ -537,15 +537,15 @@ MS-Windows ~
 To use the Lua interface the Lua DLL must be in your search path.  In a
 console window type "path" to see what directories are used.  The 'luadll'
 option can be also used to specify the Lua DLL.  The version of the DLL must
-match the Lua version Vim was compiled with.
+match the Lua version MNV was compiled with.
 
 
 Unix ~
 
 The 'luadll' option can be used to specify the Lua shared library file instead
 of DYNAMIC_LUA_DLL file what was specified at compile time.  The version of
-the shared library must match the Lua version Vim was compiled with.
+the shared library must match the Lua version MNV was compiled with.
 
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

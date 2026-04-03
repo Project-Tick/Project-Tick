@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 /*
  * feature.h: Defines for optional code and preferences
  *
- * Edit this file to include/exclude parts of Vim, before compiling.
+ * Edit this file to include/exclude parts of MNV, before compiling.
  * The only other file that may be edited is Makefile, it contains machine
  * specific options.
  *
@@ -323,15 +323,15 @@
 #endif
 
 /*
- * +viminfo		reading/writing the viminfo file. Takes about 8Kbyte
+ * +mnvinfo		reading/writing the mnvinfo file. Takes about 8Kbyte
  *			of code.
- * VIMINFO_FILE		Location of user .viminfo file (should start with $).
- * VIMINFO_FILE2	Location of alternate user .viminfo file.
+ * MNVINFO_FILE		Location of user .mnvinfo file (should start with $).
+ * MNVINFO_FILE2	Location of alternate user .mnvinfo file.
  */
 #ifdef FEAT_NORMAL
-# define FEAT_VIMINFO
-// #define VIMINFO_FILE	"$HOME/foo/.viminfo"
-// #define VIMINFO_FILE2 "~/bar/.viminfo"
+# define FEAT_MNVINFO
+// #define MNVINFO_FILE	"$HOME/foo/.mnvinfo"
+// #define MNVINFO_FILE2 "~/bar/.mnvinfo"
 #endif
 
 /*
@@ -544,7 +544,7 @@
  * there is no terminal version, and on Windows we can't figure out how to
  * fork one off with :gui.
  */
-#if defined(FEAT_GUI_MSWIN) && !defined(VIMDLL)
+#if defined(FEAT_GUI_MSWIN) && !defined(MNVDLL)
 # define ALWAYS_USE_GUI
 #endif
 
@@ -618,7 +618,7 @@
 
 /*
  * +xterm_save		The t_ti and t_te entries for the builtin xterm will
- *			be set to save the screen when starting Vim and
+ *			be set to save the screen when starting MNV and
  *			restoring it when exiting.
  */
 // #define FEAT_XTERM_SAVE
@@ -644,9 +644,9 @@
 // #define MEM_PROFILE
 
 /*
- * VIMRC_FILE		Name of the .vimrc file in current dir.
+ * MNVRC_FILE		Name of the .mnvrc file in current dir.
  */
-// #define VIMRC_FILE	".vimrc"
+// #define MNVRC_FILE	".mnvrc"
 
 /*
  * EXRC_FILE		Name of the .exrc file in current dir.
@@ -654,33 +654,33 @@
 // #define EXRC_FILE	".exrc"
 
 /*
- * GVIMRC_FILE		Name of the .gvimrc file in current dir.
+ * GMNVRC_FILE		Name of the .gmnvrc file in current dir.
  */
-// #define GVIMRC_FILE	".gvimrc"
+// #define GMNVRC_FILE	".gmnvrc"
 
 /*
  * SESSION_FILE		Name of the default ":mksession" file.
  */
-#define SESSION_FILE	"Session.vim"
+#define SESSION_FILE	"Session.mnv"
 
 /*
- * USR_VIMRC_FILE	Name of the user .vimrc file.
- * USR_VIMRC_FILE2	Name of alternate user .vimrc file.
- * USR_VIMRC_FILE3	Name of alternate user .vimrc file.
+ * USR_MNVRC_FILE	Name of the user .mnvrc file.
+ * USR_MNVRC_FILE2	Name of alternate user .mnvrc file.
+ * USR_MNVRC_FILE3	Name of alternate user .mnvrc file.
  */
-// #define USR_VIMRC_FILE	"~/foo/.vimrc"
-// #define USR_VIMRC_FILE2	"~/bar/.vimrc"
-// #define USR_VIMRC_FILE3	"$VIM/.vimrc"
+// #define USR_MNVRC_FILE	"~/foo/.mnvrc"
+// #define USR_MNVRC_FILE2	"~/bar/.mnvrc"
+// #define USR_MNVRC_FILE3	"$MNV/.mnvrc"
 
 /*
- * VIM_DEFAULTS_FILE	Name of the defaults.vim script file
+ * MNV_DEFAULTS_FILE	Name of the defaults.mnv script file
  */
-// #define VIM_DEFAULTS_FILE	"$VIMRUNTIME/defaults.vim"
+// #define MNV_DEFAULTS_FILE	"$MNVRUNTIME/defaults.mnv"
 
 /*
- * EVIM_FILE		Name of the evim.vim script file
+ * EMNV_FILE		Name of the emnv.mnv script file
  */
-// #define EVIM_FILE		"$VIMRUNTIME/evim.vim"
+// #define EMNV_FILE		"$MNVRUNTIME/emnv.mnv"
 
 /*
  * USR_EXRC_FILE	Name of the user .exrc file.
@@ -690,27 +690,27 @@
 // #define USR_EXRC_FILE2	"~/bar/.exrc"
 
 /*
- * USR_GVIMRC_FILE	Name of the user .gvimrc file.
- * USR_GVIMRC_FILE2	Name of the alternate user .gvimrc file.
+ * USR_GMNVRC_FILE	Name of the user .gmnvrc file.
+ * USR_GMNVRC_FILE2	Name of the alternate user .gmnvrc file.
  */
-// #define USR_GVIMRC_FILE	"~/foo/.gvimrc"
-// #define USR_GVIMRC_FILE2	"~/bar/.gvimrc"
-// #define USR_GVIMRC_FILE3	"$VIM/.gvimrc"
+// #define USR_GMNVRC_FILE	"~/foo/.gmnvrc"
+// #define USR_GMNVRC_FILE2	"~/bar/.gmnvrc"
+// #define USR_GMNVRC_FILE3	"$MNV/.gmnvrc"
 
 /*
- * SYS_VIMRC_FILE	Name of the system-wide .vimrc file.
+ * SYS_MNVRC_FILE	Name of the system-wide .mnvrc file.
  */
-// #define SYS_VIMRC_FILE	"/etc/vimrc"
+// #define SYS_MNVRC_FILE	"/etc/mnvrc"
 
 /*
- * SYS_GVIMRC_FILE	Name of the system-wide .gvimrc file.
+ * SYS_GMNVRC_FILE	Name of the system-wide .gmnvrc file.
  */
-// #define SYS_GVIMRC_FILE	"/etc/gvimrc"
+// #define SYS_GMNVRC_FILE	"/etc/gmnvrc"
 
 /*
  * DFLT_HELPFILE	Name of the help file.
  */
-// # define DFLT_HELPFILE	"$VIMRUNTIME/doc/help.txt.gz"
+// # define DFLT_HELPFILE	"$MNVRUNTIME/doc/help.txt.gz"
 
 /*
  * File names for:
@@ -722,40 +722,40 @@
  * INDOFF_FILE		used for loading indent files
  */
 #ifndef FILETYPE_FILE
-# define FILETYPE_FILE		"filetype.vim"
+# define FILETYPE_FILE		"filetype.mnv"
 #endif
 #ifndef FTPLUGIN_FILE
-# define FTPLUGIN_FILE		"ftplugin.vim"
+# define FTPLUGIN_FILE		"ftplugin.mnv"
 #endif
 #ifndef INDENT_FILE
-# define INDENT_FILE		"indent.vim"
+# define INDENT_FILE		"indent.mnv"
 #endif
 #ifndef FTOFF_FILE
-# define FTOFF_FILE		"ftoff.vim"
+# define FTOFF_FILE		"ftoff.mnv"
 #endif
 #ifndef FTPLUGOF_FILE
-# define FTPLUGOF_FILE		"ftplugof.vim"
+# define FTPLUGOF_FILE		"ftplugof.mnv"
 #endif
 #ifndef INDOFF_FILE
-# define INDOFF_FILE		"indoff.vim"
+# define INDOFF_FILE		"indoff.mnv"
 #endif
 
 /*
- * SYS_MENU_FILE	Name of the default menu.vim file.
+ * SYS_MENU_FILE	Name of the default menu.mnv file.
  */
-// # define SYS_MENU_FILE	"$VIMRUNTIME/menu.vim"
+// # define SYS_MENU_FILE	"$MNVRUNTIME/menu.mnv"
 
 /*
- * SYS_OPTWIN_FILE	Name of the default optwin.vim file.
+ * SYS_OPTWIN_FILE	Name of the default optwin.mnv file.
  */
 #ifndef SYS_OPTWIN_FILE
-# define SYS_OPTWIN_FILE	"$VIMRUNTIME/optwin.vim"
+# define SYS_OPTWIN_FILE	"$MNVRUNTIME/optwin.mnv"
 #endif
 
 /*
  * SYNTAX_FNAME		Name of a syntax file, where %s is the syntax name.
  */
-// #define SYNTAX_FNAME	"/foo/%s.vim"
+// #define SYNTAX_FNAME	"/foo/%s.mnv"
 
 /*
  * RUNTIME_DIRNAME	Generic name for the directory of the runtime files.
@@ -765,26 +765,26 @@
 #endif
 
 /*
- * RUNTIME_GLOBAL	Comma-separated list of directory names for global Vim
+ * RUNTIME_GLOBAL	Comma-separated list of directory names for global MNV
  *			runtime directories.
  *			Don't define this if the preprocessor can't handle
  *			string concatenation.
  *			Also set by "--with-global-runtime" configure argument.
  */
-// #define RUNTIME_GLOBAL "/etc/vim"
+// #define RUNTIME_GLOBAL "/etc/mnv"
 
 /*
- * RUNTIME_GLOBAL_AFTER	Comma-separated list of directory names for global Vim
+ * RUNTIME_GLOBAL_AFTER	Comma-separated list of directory names for global MNV
  *			runtime after directories.
  *			Don't define this if the preprocessor can't handle
  *			string concatenation.
  *			Also set by "--with-global-runtime" configure argument.
  */
-// #define RUNTIME_GLOBAL_AFTER "/etc/vim/after"
+// #define RUNTIME_GLOBAL_AFTER "/etc/mnv/after"
 
 /*
- * MODIFIED_BY		Name of who modified Vim.  Required when distributing
- *			a modified version of Vim.
+ * MODIFIED_BY		Name of who modified MNV.  Required when distributing
+ *			a modified version of MNV.
  *			Also from the "--with-modified-by" configure argument.
  */
 // #define MODIFIED_BY "John Doe"
@@ -821,7 +821,7 @@
  * XSMP - X11 Session Management Protocol
  * It may be preferred to disable this if the GUI supports it (e.g.,
  * GNOME/KDE) and implement save-yourself etc. through that, but it may also
- * be cleaner to have all SM-aware vims do the same thing (libSM does not
+ * be cleaner to have all SM-aware mnvs do the same thing (libSM does not
  * depend upon X11).
  * If your GUI wants to support SM itself, change this ifdef.
  * I'm assuming that any X11 implementation will cope with this for now.
@@ -994,7 +994,7 @@
  */
 #ifdef FEAT_NORMAL
 // Win32 console can change cursor shape
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
 #  define MCH_CURSOR_SHAPE
 # endif
 # if defined(FEAT_GUI_MSWIN) || defined(FEAT_GUI_MOTIF) \
@@ -1145,7 +1145,7 @@
  */
 #if defined(FEAT_HUGE) && defined(FEAT_TIMERS) && \
 	(defined(UNIX) || defined(VMS) || \
-	 (defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))))
+	 (defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))))
 # define FEAT_BEVAL_TERM
 #endif
 
@@ -1191,7 +1191,7 @@
 /*
  * +vtp: Win32 virtual console.
  */
-#if (!defined(FEAT_GUI) || defined(VIMDLL)) && defined(MSWIN)
+#if (!defined(FEAT_GUI) || defined(MNVDLL)) && defined(MSWIN)
 # define FEAT_VTP
 #endif
 

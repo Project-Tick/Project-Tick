@@ -1,7 +1,7 @@
-README_extra.txt for version 9.2 of Vim: Vi IMproved.
+README_extra.txt for version 9.2 of MNV: MNV is not Vim.
 
-These extra files of Vim are for special purposes.  This README explains what
-the files are for.  For general information about Vim, see the "README.txt"
+These extra files of MNV are for special purposes.  This README explains what
+the files are for.  For general information about MNV, see the "README.txt"
 file.
 
 
@@ -29,10 +29,10 @@ src/Make_mvc.mak	MS Visual C++ makefile for the Win32 GUI.
 
 src/if_ole.*		OLE automation interface, for MS Windows.
 
-src/GvimExt/*		DLL for the "Edit with Vim" context menu entry
+src/GmnvExt/*		DLL for the "Edit with MNV" context menu entry
 
 nsis/*			NSIS script to build the self-installing MS-Windows exe
 
 runtime/doc/*.man	Preprocessed manual pages.
 
-runtime/macros/file_select.vim	Vim script to browse directories (Unix only).
+runtime/macros/file_select.mnv	MNV script to browse directories (Unix only).

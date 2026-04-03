@@ -1,10 +1,10 @@
-This directory contains a file with text strings for gVim installer.
-It also contains files with translations of the text strings for gVim installer
+This directory contains a file with text strings for gMNV installer.
+It also contains files with translations of the text strings for gMNV installer
 into different languages.
 
 For translators.
 
-If you want to prepare a translation for the gVim installer, use the file
+If you want to prepare a translation for the gMNV installer, use the file
 "english.nsi" as a master file.  See the other translation files in this
 directory.
 Note that in the definition of the MUI_LANGUAGE macro, the name of the language
@@ -14,13 +14,13 @@ language.
 Also, when translating strings, pay attention to some restrictions on the
 allowable length of strings.  For example:
  component description field - 117 characters;
- description above the drop-down lists on the .vimrc page - 53 characters;
- drop-down lists on the .vimrc page - 55 characters.
+ description above the drop-down lists on the .mnvrc page - 53 characters;
+ drop-down lists on the .mnvrc page - 55 characters.
 Characters in this case mean characters of the English alphabet.
 
 Once the message translation file is ready, it must be included in the
-"gvim.nsi" file.
-Find the line "# Include support for other languages:" in the file "gvim.nsi"
+"gmnv.nsi" file.
+Find the line "# Include support for other languages:" in the file "gmnv.nsi"
 and specify the name of the file with your translation below the line
 !if ${HAVE_MULTI_LANG}, similar to the entries already there. File names are
 specified in alphabetical order.
@@ -32,7 +32,7 @@ for the license file
 LicenseLangString page_lic_file 0 "..\lang\LICENSE.nsis.txt"
 
 for the readme.txt file
-LangString vim_readme_file 0 "README.txt"
+LangString mnv_readme_file 0 "README.txt"
 
 Once you have the translations of these files, then set the values for these
 variables similarly to what is done in the other translation files.
@@ -44,18 +44,18 @@ language code according to ISO639.
 There are two ways to test the installer in different languages:
 
 1. Find and uncomment the "!define MUI_LANGDLL_ALWAYSSHOW" line in the
-   "gvim.nsi" file and rebuild the installer.
+   "gmnv.nsi" file and rebuild the installer.
    Now every time you run it, you will see a dialog box with the possibility to
    select the language of the installer.
 
-2. If the Vim editor is already installed in your system, delete the
+2. If the MNV editor is already installed in your system, delete the
    "Installer Language" parameter in the Windows registry under
-   "HKEY_CURRENT_USER\Software\Vim".
-   Or you can create a file "NoLangInstallerVim.reg" with the following content:
+   "HKEY_CURRENT_USER\Software\MNV".
+   Or you can create a file "NoLangInstallerMNV.reg" with the following content:
 
 	Windows Registry Editor Version 5.00
 
-	[HKEY_CURRENT_USER\Software\Vim]
+	[HKEY_CURRENT_USER\Software\MNV]
 	"Installer Language"=-
 
    and apply it by double-clicking on it.

@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  * X-Windows communication by Flemming Madsen
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  *
- * Client for sending commands to an '+xcmdsrv' enabled vim.
- * This is mostly a de-Vimified version of if_xcmdsrv.c in vim.
+ * Client for sending commands to an '+xcmdsrv' enabled mnv.
+ * This is mostly a de-MNVified version of if_xcmdsrv.c in mnv.
  * See that file for a protocol specification.
  *
  * You can make a test program with a Makefile like:
@@ -30,7 +30,7 @@
 #include <X11/Xatom.h>
 
 /* Client API */
-char * sendToVim(Display *dpy, char *name, char *cmd, int asKeys, int *code);
+char * sendToMNV(Display *dpy, char *name, char *cmd, int asKeys, int *code);
 
 #ifdef MAIN
 /* A sample program */
@@ -41,7 +41,7 @@ main(int argc, char **argv)
 
     if (argc == 4)
     {
-	if ((res = sendToVim(XOpenDisplay(NULL), argv[2], argv[3],
+	if ((res = sendToMNV(XOpenDisplay(NULL), argv[2], argv[3],
 			     argv[1][0] != 'e', &code)) != NULL)
 	{
 	    if (code)
@@ -86,15 +86,15 @@ static int	got_x_error = FALSE;
 
 
 /*
- * sendToVim --
- *	Send to an instance of Vim via the X display.
+ * sendToMNV --
+ *	Send to an instance of MNV via the X display.
  *
  * Results:
  *	A string with the result or NULL. Caller must free if non-NULL
  */
 
     char *
-sendToVim(
+sendToMNV(
     Display	*dpy,			/* Where to send. */
     char	*name,			/* Where to send. */
     char	*cmd,			/* What to send. */
@@ -258,7 +258,7 @@ SendInit(Display *dpy)
 
     commProperty = XInternAtom(dpy, "Comm", False);
     /* Change this back to "InterpRegistry" to talk to tk processes */
-    registryProperty = XInternAtom(dpy, "VimRegistry", False);
+    registryProperty = XInternAtom(dpy, "MNVRegistry", False);
 
     if (commWindow == None)
     {

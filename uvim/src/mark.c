@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * mark.c: functions for setting marks and jumping to them
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * This file contains routines to maintain and manipulate marks.
@@ -20,9 +20,9 @@
 /*
  * If a named file mark's lnum is non-zero, it is valid.
  * If a named file mark's fnum is non-zero, it is for an existing buffer,
- * otherwise it is from .viminfo and namedfm[n].fname is the file name.
+ * otherwise it is from .mnvinfo and namedfm[n].fname is the file name.
  * There are marks 'A - 'Z (set by user) and '0 to '9 (set when writing
- * viminfo).
+ * mnvinfo).
  */
 static xfmark_T namedfm[NMARKS + EXTRA_MARKS];		// marks with file nr
 
@@ -112,17 +112,17 @@ setmark_pos(int c, pos_T *pos, int fnum)
 	buf->b_namedm[i] = *pos;
 	return OK;
     }
-    if (ASCII_ISUPPER(c) || VIM_ISDIGIT(c))
+    if (ASCII_ISUPPER(c) || MNV_ISDIGIT(c))
     {
-	if (VIM_ISDIGIT(c))
+	if (MNV_ISDIGIT(c))
 	    i = c - '0' + NMARKS;
 	else
 	    i = c - 'A';
 	namedfm[i].fmark.mark = *pos;
 	namedfm[i].fmark.fnum = fnum;
-	VIM_CLEAR(namedfm[i].fname);
-#ifdef FEAT_VIMINFO
-	namedfm[i].time_set = vim_time();
+	MNV_CLEAR(namedfm[i].fname);
+#ifdef FEAT_MNVINFO
+	namedfm[i].time_set = mnv_time();
 #endif
 	return OK;
     }
@@ -141,7 +141,7 @@ mark_forget_file(win_T *wp, int fnum)
     for (i = wp->w_jumplistlen - 1; i >= 0; --i)
 	if (wp->w_jumplist[i].fmark.fnum == fnum)
 	{
-	    vim_free(wp->w_jumplist[i].fname);
+	    mnv_free(wp->w_jumplist[i].fname);
 	    if (wp->w_jumplistidx > i)
 		--wp->w_jumplistidx;
 	    --wp->w_jumplistlen;
@@ -192,7 +192,7 @@ setpcmark(void)
     if (++curwin->w_jumplistlen > JUMPLISTSIZE)
     {
 	curwin->w_jumplistlen = JUMPLISTSIZE;
-	vim_free(curwin->w_jumplist[0].fname);
+	mnv_free(curwin->w_jumplist[0].fname);
 	for (i = 1; i < JUMPLISTSIZE; ++i)
 	    curwin->w_jumplist[i - 1] = curwin->w_jumplist[i];
     }
@@ -202,8 +202,8 @@ setpcmark(void)
     fm->fmark.mark = curwin->w_pcmark;
     fm->fmark.fnum = curbuf->b_fnum;
     fm->fname = NULL;
-#ifdef FEAT_VIMINFO
-    fm->time_set = vim_time();
+#ifdef FEAT_MNVINFO
+    fm->time_set = mnv_time();
 #endif
 }
 
@@ -246,7 +246,7 @@ movemark(int count)
 	/*
 	 * if first CTRL-O or CTRL-I command after a jump, add cursor position
 	 * to list.  Careful: If there are duplicates (CTRL-O immediately after
-	 * starting Vim on a file), another entry may have been removed.
+	 * starting MNV on a file), another entry may have been removed.
 	 */
 	if (curwin->w_jumplistidx == curwin->w_jumplistlen)
 	{
@@ -430,9 +430,9 @@ getmark_buf_fnum(
     {
 	posp = &(buf->b_namedm[c - 'a']);
     }
-    else if (ASCII_ISUPPER(c) || VIM_ISDIGIT(c))	// named file mark
+    else if (ASCII_ISUPPER(c) || MNV_ISDIGIT(c))	// named file mark
     {
-	if (VIM_ISDIGIT(c))
+	if (MNV_ISDIGIT(c))
 	    c = c - '0' + NMARKS;
 	else
 	    c -= 'A';
@@ -519,7 +519,7 @@ getnextmark(
 
 /*
  * For an xtended filemark: set the fnum from the fname.
- * This is used for marks obtained from the .viminfo file.  It's postponed
+ * This is used for marks obtained from the .mnvinfo file.  It's postponed
  * until the mark is used to avoid a long startup delay.
  */
     static void
@@ -543,10 +543,10 @@ fname2fnum(xfmark_T *fm)
 	size_t len;
 
 	len = expand_env((char_u *)"~/", NameBuff, MAXPATHL);
-	vim_strncpy(NameBuff + len, fm->fname + 2, MAXPATHL - len - 1);
+	mnv_strncpy(NameBuff + len, fm->fname + 2, MAXPATHL - len - 1);
     }
     else
-	vim_strncpy(NameBuff, fm->fname, MAXPATHL - 1);
+	mnv_strncpy(NameBuff, fm->fname, MAXPATHL - 1);
 
     // Try to shorten the file name.
     mch_dirname(IObuff, IOSIZE);
@@ -559,7 +559,7 @@ fname2fnum(xfmark_T *fm)
 /*
  * Check all file marks for a name that matches the file name in buf.
  * May replace the name with an fnum.
- * Used for marks that come from the .viminfo file.
+ * Used for marks that come from the .mnvinfo file.
  */
     void
 fmarks_check_names(buf_T *buf)
@@ -584,7 +584,7 @@ fmarks_check_names(buf_T *buf)
 	    fmarks_check_one(&wp->w_jumplist[i], name, buf);
     }
 
-    vim_free(name);
+    mnv_free(name);
 }
 
     static void
@@ -595,7 +595,7 @@ fmarks_check_one(xfmark_T *fm, char_u *name, buf_T *buf)
 	    && fnamecmp(name, fm->fname) == 0)
     {
 	fm->fmark.fnum = buf->b_fnum;
-	VIM_CLEAR(fm->fname);
+	MNV_CLEAR(fm->fname);
     }
 }
 
@@ -642,7 +642,7 @@ clrallmarks(buf_T *buf)
 	{
 	    namedfm[i].fmark.mark.lnum = 0;
 	    namedfm[i].fname = NULL;
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 	    namedfm[i].time_set = 0;
 #endif
 	}
@@ -683,9 +683,9 @@ mark_line(pos_T *mp, int lead_len)
     int		len;
 
     if (mp->lnum == 0 || mp->lnum > curbuf->b_ml.ml_line_count)
-	return vim_strsave((char_u *)"-invalid-");
+	return mnv_strsave((char_u *)"-invalid-");
     // Allow for up to 5 bytes per character.
-    s = vim_strnsave(skipwhite(ml_get(mp->lnum)), Columns * 5);
+    s = mnv_strnsave(skipwhite(ml_get(mp->lnum)), Columns * 5);
     if (s == NULL)
 	return NULL;
     // Truncate the line to fit it in the window.
@@ -729,7 +729,7 @@ ex_marks(exarg_T *eap)
 		    arg, &namedfm[i].fmark.mark, name,
 		    namedfm[i].fmark.fnum == curbuf->b_fnum);
 	    if (namedfm[i].fmark.fnum != 0)
-		vim_free(name);
+		mnv_free(name);
 	}
     }
     show_one_mark('"', arg, &curbuf->b_last_cursor, NULL, TRUE);
@@ -777,7 +777,7 @@ show_one_mark(
     }
     // don't output anything if 'q' typed at --more-- prompt
     else if (!got_int
-	    && (arg == NULL || vim_strchr(arg, c) != NULL)
+	    && (arg == NULL || mnv_strchr(arg, c) != NULL)
 	    && p->lnum != 0)
     {
 	if (name == NULL && current)
@@ -811,7 +811,7 @@ show_one_mark(
 	    out_flush();		    // show one line at a time
 	}
 	if (mustfree)
-	    vim_free(name);
+	    mnv_free(name);
     }
 }
 
@@ -841,7 +841,7 @@ ex_delmarks(exarg_T *eap)
 	for (p = eap->arg; *p != NUL; ++p)
 	{
 	    lower = ASCII_ISLOWER(*p);
-	    digit = VIM_ISDIGIT(*p);
+	    digit = MNV_ISDIGIT(*p);
 	    if (lower || digit || ASCII_ISUPPER(*p))
 	    {
 		if (p[1] == '-')
@@ -850,7 +850,7 @@ ex_delmarks(exarg_T *eap)
 		    from = *p;
 		    to = p[2];
 		    if (!(lower ? ASCII_ISLOWER(p[2])
-				: (digit ? VIM_ISDIGIT(p[2])
+				: (digit ? MNV_ISDIGIT(p[2])
 				    : ASCII_ISUPPER(p[2])))
 			    || to < from)
 		    {
@@ -875,9 +875,9 @@ ex_delmarks(exarg_T *eap)
 			    n = i - 'A';
 			namedfm[n].fmark.mark.lnum = 0;
 			namedfm[n].fmark.fnum = 0;
-			VIM_CLEAR(namedfm[n].fname);
-#ifdef FEAT_VIMINFO
-			namedfm[n].time_set = digit ? 0 : vim_time();
+			MNV_CLEAR(namedfm[n].fname);
+#ifdef FEAT_MNVINFO
+			namedfm[n].time_set = digit ? 0 : mnv_time();
 #endif
 		    }
 		}
@@ -922,18 +922,18 @@ ex_jumps(exarg_T *eap UNUSED)
 	    // Make sure to output the current indicator, even when on an wiped
 	    // out buffer.  ":filter" may still skip it.
 	    if (name == NULL && i == curwin->w_jumplistidx)
-		name = vim_strsave((char_u *)"-invalid-");
+		name = mnv_strsave((char_u *)"-invalid-");
 	    // apply :filter /pat/ or file name not available
 	    if (name == NULL || message_filtered(name))
 	    {
-		vim_free(name);
+		mnv_free(name);
 		continue;
 	    }
 
 	    msg_putchar('\n');
 	    if (got_int)
 	    {
-		vim_free(name);
+		mnv_free(name);
 		break;
 	    }
 	    sprintf((char *)IObuff, "%c %2d %5ld %4d ",
@@ -946,7 +946,7 @@ ex_jumps(exarg_T *eap UNUSED)
 	    msg_outtrans_attr(name,
 			    curwin->w_jumplist[i].fmark.fnum == curbuf->b_fnum
 							? HL_ATTR(HLF_D) : 0);
-	    vim_free(name);
+	    mnv_free(name);
 	    ui_breakcheck();
 	}
 	out_flush();
@@ -993,7 +993,7 @@ ex_changes(exarg_T *eap UNUSED)
 	    if (name == NULL)
 		break;
 	    msg_outtrans_attr(name, HL_ATTR(HLF_D));
-	    vim_free(name);
+	    mnv_free(name);
 	    ui_breakcheck();
 	}
 	out_flush();
@@ -1380,7 +1380,7 @@ cleanup_jumplist(win_T *wp, int loadfiles)
 	    mustfree = TRUE;
 
 	if (mustfree)
-	    vim_free(wp->w_jumplist[from].fname);
+	    mnv_free(wp->w_jumplist[from].fname);
 	else
 	    wp->w_jumplist[to++] = wp->w_jumplist[from];
     }
@@ -1401,7 +1401,7 @@ copy_jumplist(win_T *from, win_T *to)
     {
 	to->w_jumplist[i] = from->w_jumplist[i];
 	if (from->w_jumplist[i].fname != NULL)
-	    to->w_jumplist[i].fname = vim_strsave(from->w_jumplist[i].fname);
+	    to->w_jumplist[i].fname = mnv_strsave(from->w_jumplist[i].fname);
     }
     to->w_jumplistlen = from->w_jumplistlen;
     to->w_jumplistidx = from->w_jumplistidx;
@@ -1416,7 +1416,7 @@ free_jumplist(win_T *wp)
     int		i;
 
     for (i = 0; i < wp->w_jumplistlen; ++i)
-	vim_free(wp->w_jumplist[i].fname);
+	mnv_free(wp->w_jumplist[i].fname);
 }
 
     void
@@ -1434,11 +1434,11 @@ free_all_marks(void)
 
     for (i = 0; i < NMARKS + EXTRA_MARKS; i++)
 	if (namedfm[i].fmark.mark.lnum != 0)
-	    vim_free(namedfm[i].fname);
+	    mnv_free(namedfm[i].fname);
 }
 #endif
 
-#if defined(FEAT_VIMINFO)
+#if defined(FEAT_MNVINFO)
 /*
  * Return a pointer to the named file marks.
  */
@@ -1544,7 +1544,7 @@ get_global_marks(list_T *l)
 	    add_mark(l, mname, &namedfm[i].fmark.mark,
 		    namedfm[i].fmark.fnum, name);
 	    if (namedfm[i].fmark.fnum != 0)
-		vim_free(name);
+		mnv_free(name);
 	}
     }
 }
@@ -1560,7 +1560,7 @@ f_getmarklist(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type == VAR_UNKNOWN)

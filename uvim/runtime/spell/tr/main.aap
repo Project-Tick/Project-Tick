@@ -1,10 +1,10 @@
-# Aap recipe for Turkish Vim spell files.
+# Aap recipe for Turkish MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = tr_TR.aff tr_TR.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/tr.utf-8.spl
 
 $SPELLDIR/tr.utf-8.spl : $FILES
         :sys env LANG=tr_TR.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/tr tr_TR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/tr tr_TR" -c q
 
 # Fetching LibreOffice spell files
-FILE = https://github.com/bitigchi/bitigchi.github.io/raw/master/vim-tr-spell/tr_TR.zip
+FILE = https://github.com/bitigchi/bitigchi.github.io/raw/master/mnv-tr-spell/tr_TR.zip
 :attr {fetch = $FILE} tr_TR.zip
 
 # The files don't depend on the .zip file so that we can delete it.

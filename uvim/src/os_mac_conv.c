@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * os_mac_conv.c: Code specifically for Mac string conversions.
@@ -15,7 +15,7 @@
 
 #define NO_X11_INCLUDES
 
-#include "vim.h"
+#include "mnv.h"
 
 #include <CoreServices/CoreServices.h>
 
@@ -114,7 +114,7 @@ mac_string_convert(
 	CFRelease(cfstr);
 	if (fail_on_error)
 	{
-	    vim_free(retval);
+	    mnv_free(retval);
 	    return NULL;
 	}
 
@@ -249,7 +249,7 @@ enc2macroman(
     if (r.length != CFStringGetBytes(cfstr, r,
 		kCFStringEncodingMacRoman,
 		0, // no lossy conversion
-		0, // not external representation (since vim
+		0, // not external representation (since mnv
 		   // handles this internally)
 		to, maxtolen, &l))
     {
@@ -327,7 +327,7 @@ mac_utf16_to_enc(
     size_t *actualLen)
 {
     // Following code borrows somewhat from os_mswin.c
-    vimconv_T	conv;
+    mnvconv_T	conv;
     size_t      utf8_len;
     char_u      *utf8_str;
     char_u      *result = NULL;
@@ -341,7 +341,7 @@ mac_utf16_to_enc(
 	// We might be called before we have p_enc set up.
 	conv.vc_type = CONV_NONE;
 
-	// If encoding (p_enc) is any unicode, it is actually in utf-8 (vim
+	// If encoding (p_enc) is any unicode, it is actually in utf-8 (mnv
 	// internal unicode is always utf-8) so don't convert in such cases
 
 	if ((enc_canon_props(p_enc) & ENC_UNICODE) == 0)
@@ -357,7 +357,7 @@ mac_utf16_to_enc(
 	    int len = utf8_len;
 	    result = string_convert(&conv, utf8_str, &len);
 	    utf8_len = len;
-	    vim_free(utf8_str);
+	    mnv_free(utf8_str);
 	}
 
 	convert_setup(&conv, NULL, NULL);
@@ -383,7 +383,7 @@ mac_enc_to_utf16(
     size_t *actualLen)
 {
     // Following code borrows somewhat from os_mswin.c
-    vimconv_T	conv;
+    mnvconv_T	conv;
     size_t      utf8_len;
     char_u      *utf8_str;
     UniChar     *result = NULL;
@@ -420,7 +420,7 @@ mac_enc_to_utf16(
 	result = mac_utf8_to_utf16(utf8_str, utf8_len, actualLen);
 
 	if (should_free_utf8)
-	    vim_free(utf8_str);
+	    mnv_free(utf8_str);
 	return result;
     }
     while (0);
@@ -448,7 +448,7 @@ mac_enc_to_cfstring(
     if (utf16_str)
     {
 	result = CFStringCreateWithCharacters(NULL, utf16_str, utf16_len/sizeof(UniChar));
-	vim_free(utf16_str);
+	mnv_free(utf16_str);
     }
 
     return (void *)result;
@@ -474,7 +474,7 @@ mac_precompose_path(
 	    if (TECConvertText(gPathConverter, decompPath,
 			decompLen, &decompLen, result,
 			decompLen, &actualLen) != noErr)
-		VIM_CLEAR(result);
+		MNV_CLEAR(result);
 	}
     }
 
@@ -508,7 +508,7 @@ mac_utf16_to_utf8(
 	    utf8_len += inputRead;
 	}
 	else
-	    VIM_CLEAR(result);
+	    MNV_CLEAR(result);
     }
     else
     {
@@ -558,7 +558,7 @@ mac_utf8_to_utf16(
 }
 
 /*
- * Sets LANG environment variable in Vim from Mac locale
+ * Sets LANG environment variable in MNV from Mac locale
  */
     void
 mac_lang_init(void)
@@ -568,7 +568,7 @@ mac_lang_init(void)
 
     char	buf[50];
 
-    // $LANG is not set, either because it was unset or Vim was started
+    // $LANG is not set, either because it was unset or MNV was started
     // from the Dock.  Query the system locale.
     if (LocaleRefGetPartString(NULL,
 		kLocaleLanguageMask | kLocaleLanguageVariantMask |
@@ -577,7 +577,7 @@ mac_lang_init(void)
     {
 	if (strcasestr(buf, "utf-8") == NULL)
 	    strcat(buf, ".UTF-8");
-	vim_setenv((char_u *)"LANG", (char_u *)buf);
+	mnv_setenv((char_u *)"LANG", (char_u *)buf);
 #ifdef HAVE_LOCALE_H
 	setlocale(LC_ALL, "");
 #endif

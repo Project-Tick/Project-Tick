@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -16,7 +16,7 @@
  * - Let 'diffexpr' do the work, using files.
  */
 
-#include "vim.h"
+#include "mnv.h"
 #include "xdiff/xdiff.h"
 
 #if defined(FEAT_DIFF)
@@ -130,7 +130,7 @@ static int parse_diffanchors(int check_only, buf_T *buf, linenr_T *anchors, int 
 clear_diffblock(diff_T *dp)
 {
     ga_clear(&dp->df_changes);
-    vim_free(dp);
+    mnv_free(dp);
 }
 
 /*
@@ -657,7 +657,7 @@ diff_check_unchanged(tabpage_T *tp, diff_T *dp)
 	    // Copy the line, the next ml_get() will invalidate it.
 	    if (dir == BACKWARD)
 		off_org = dp->df_count[i_org] - 1;
-	    line_org = vim_strsave(ml_get_buf(tp->tp_diffbuf[i_org],
+	    line_org = mnv_strsave(ml_get_buf(tp->tp_diffbuf[i_org],
 					dp->df_lnum[i_org] + off_org, FALSE));
 	    if (line_org == NULL)
 		return;
@@ -674,7 +674,7 @@ diff_check_unchanged(tabpage_T *tp, diff_T *dp)
 				   dp->df_lnum[i_new] + off_new, FALSE)) != 0)
 		    break;
 	    }
-	    vim_free(line_org);
+	    mnv_free(line_org);
 
 	    // Stop when a line isn't equal in all diff buffers.
 	    if (i_new != DB_COUNT)
@@ -775,7 +775,7 @@ diff_redraw(
 clear_diffin(diffin_T *din)
 {
     if (din->din_fname == NULL)
-	VIM_CLEAR(din->din_mmfile.ptr);
+	MNV_CLEAR(din->din_mmfile.ptr);
     else
 	mch_remove(din->din_fname);
 }
@@ -912,7 +912,7 @@ diff_write(buf_T *buf, diffin_T *din, linenr_T start, linenr_T end)
     // Always use 'fileformat' set to "unix".
     save_ml_flags = buf->b_ml.ml_flags;
     save_ff = buf->b_p_ff;
-    buf->b_p_ff = vim_strsave((char_u *)FF_UNIX);
+    buf->b_p_ff = mnv_strsave((char_u *)FF_UNIX);
     save_cmod_flags = cmdmod.cmod_flags;
     // Writing the buffer is an implementation detail of performing the diff,
     // so it shouldn't update the '[ and '] marks.
@@ -965,9 +965,9 @@ diff_try_update(
     else
     {
 	// We need three temp file names.
-	dio->dio_orig.din_fname = vim_tempname('o', TRUE);
-	dio->dio_new.din_fname = vim_tempname('n', TRUE);
-	dio->dio_diff.dout_fname = vim_tempname('d', TRUE);
+	dio->dio_orig.din_fname = mnv_tempname('o', TRUE);
+	dio->dio_new.din_fname = mnv_tempname('n', TRUE);
+	dio->dio_diff.dout_fname = mnv_tempname('d', TRUE);
 	if (dio->dio_orig.din_fname == NULL
 		|| dio->dio_new.din_fname == NULL
 		|| dio->dio_diff.dout_fname == NULL)
@@ -1096,9 +1096,9 @@ diff_try_update(
     }
 
 theend:
-    vim_free(dio->dio_orig.din_fname);
-    vim_free(dio->dio_new.din_fname);
-    vim_free(dio->dio_diff.dout_fname);
+    mnv_free(dio->dio_orig.din_fname);
+    mnv_free(dio->dio_new.din_fname);
+    mnv_free(dio->dio_diff.dout_fname);
 }
 
 /*
@@ -1240,7 +1240,7 @@ check_external_diff(diffio_T *diffio)
 		    {
 			// For normal diff there must be a line that contains
 			// "1c1".  For unified diff "@@ -1 +1 @@".
-			if (vim_fgets(linebuf, LBUFLEN, fd))
+			if (mnv_fgets(linebuf, LBUFLEN, fd))
 			    break;
 			if (STRNCMP(linebuf, "1c1", 3) == 0
 				|| STRNCMP(linebuf, "@@ -1 +1 @@", 11) == 0)
@@ -1383,12 +1383,12 @@ diff_file(diffio_T *dio)
 
     // We don't want $DIFF_OPTIONS to get in the way.
     if (getenv("DIFF_OPTIONS"))
-	vim_setenv((char_u *)"DIFF_OPTIONS", (char_u *)"");
+	mnv_setenv((char_u *)"DIFF_OPTIONS", (char_u *)"");
 
     // Build the diff command and execute it.  Always use -a, binary
     // differences are of no use.  Ignore errors, diff returns
     // non-zero when differences have been found.
-    vim_snprintf((char *)cmd, len, "diff %s%s%s%s%s%s%s%s %s",
+    mnv_snprintf((char *)cmd, len, "diff %s%s%s%s%s%s%s%s %s",
 	    diff_a_works == FALSE ? "" : "-a ",
 # if defined(MSWIN)
 	    diff_bin_works == TRUE ? "--binary " : "",
@@ -1405,7 +1405,7 @@ diff_file(diffio_T *dio)
     block_autocmds();	// avoid ShellCmdPost stuff
     (void)call_shell(cmd, SHELL_FILTER|SHELL_SILENT|SHELL_DOOUT);
     unblock_autocmds();
-    vim_free(cmd);
+    mnv_free(cmd);
     return OK;
 }
 
@@ -1448,8 +1448,8 @@ ex_diffpatch(exarg_T *eap)
 # endif
 
     // We need two temp file names.
-    tmp_orig = vim_tempname('o', FALSE);
-    tmp_new = vim_tempname('n', FALSE);
+    tmp_orig = mnv_tempname('o', FALSE);
+    tmp_new = mnv_tempname('n', FALSE);
     if (tmp_orig == NULL || tmp_new == NULL)
 	goto theend;
 
@@ -1463,7 +1463,7 @@ ex_diffpatch(exarg_T *eap)
     // Get the absolute path of the patchfile, changing directory below.
     fullname = FullName_save(eap->arg, FALSE);
 # endif
-    esc_name = vim_strsave_shellescape(
+    esc_name = mnv_strsave_shellescape(
 # ifdef UNIX
 		    fullname != NULL ? fullname :
 # endif
@@ -1486,11 +1486,11 @@ ex_diffpatch(exarg_T *eap)
     else
     {
 #  ifdef TEMPDIRNAMES
-	if (vim_tempdir != NULL)
-	    vim_ignored = mch_chdir((char *)vim_tempdir);
+	if (mnv_tempdir != NULL)
+	    mnv_ignored = mch_chdir((char *)mnv_tempdir);
 	else
 #  endif
-	    vim_ignored = mch_chdir("/tmp");
+	    mnv_ignored = mch_chdir("/tmp");
 	shorten_fnames(TRUE);
     }
 # endif
@@ -1511,7 +1511,7 @@ ex_diffpatch(exarg_T *eap)
 
 	// Build the patch command and execute it.  Ignore errors.  Switch to
 	// cooked mode to allow the user to respond to prompts.
-	vim_snprintf((char *)buf, buflen, "patch -o %s %s < %s",
+	mnv_snprintf((char *)buf, buflen, "patch -o %s %s < %s",
 						  tmp_new, tmp_orig, esc_name);
 	block_autocmds();	// Avoid ShellCmdPost stuff
 	(void)call_shell(buf, SHELL_FILTER | SHELL_COOKED);
@@ -1545,7 +1545,7 @@ ex_diffpatch(exarg_T *eap)
     {
 	if (curbuf->b_fname != NULL)
 	{
-	    newname = vim_strnsave(curbuf->b_fname,
+	    newname = mnv_strnsave(curbuf->b_fname,
 						  STRLEN(curbuf->b_fname) + 4);
 	    if (newname != NULL)
 		STRCAT(newname, ".new");
@@ -1589,18 +1589,18 @@ ex_diffpatch(exarg_T *eap)
 theend:
     if (tmp_orig != NULL)
 	mch_remove(tmp_orig);
-    vim_free(tmp_orig);
+    mnv_free(tmp_orig);
     if (tmp_new != NULL)
 	mch_remove(tmp_new);
-    vim_free(tmp_new);
-    vim_free(newname);
-    vim_free(buf);
+    mnv_free(tmp_new);
+    mnv_free(newname);
+    mnv_free(buf);
 # ifdef UNIX
-    vim_free(fullname);
+    mnv_free(fullname);
 # endif
-    vim_free(esc_name);
+    mnv_free(esc_name);
 # ifdef FEAT_BROWSE
-    vim_free(browseFile);
+    mnv_free(browseFile);
     cmdmod.cmod_flags = save_cmod_flags;
 # endif
 }
@@ -1712,7 +1712,7 @@ diff_win_options(
     {
 	if (wp->w_p_diff_saved)
 	    free_string_option(wp->w_p_fdm_save);
-	wp->w_p_fdm_save = vim_strsave(wp->w_p_fdm);
+	wp->w_p_fdm_save = mnv_strsave(wp->w_p_fdm);
     }
     set_string_option_direct_in_win(wp, (char_u *)"fdm", -1, (char_u *)"diff",
 						       OPT_LOCAL|OPT_FREE, 0);
@@ -1729,7 +1729,7 @@ diff_win_options(
     // make sure topline is not halfway a fold
     changed_window_setting_win(wp);
 # endif
-    if (vim_strchr(p_sbo, 'h') == NULL)
+    if (mnv_strchr(p_sbo, 'h') == NULL)
 	do_cmdline_cmd((char_u *)"set sbo+=hor");
     // Save the current values, to be restored in ex_diffoff().
     wp->w_p_diff_saved = TRUE;
@@ -1777,7 +1777,7 @@ ex_diffoff(exarg_T *eap)
 		}
 # ifdef FEAT_FOLDING
 		free_string_option(wp->w_p_fdm);
-		wp->w_p_fdm = vim_strsave(
+		wp->w_p_fdm = mnv_strsave(
 		    *wp->w_p_fdm_save ? wp->w_p_fdm_save : (char_u*)"manual");
 
 		if (wp->w_p_fdc == diff_foldcolumn)
@@ -1820,7 +1820,7 @@ ex_diffoff(exarg_T *eap)
     }
 
     // Remove "hor" from 'scrollopt' if there are no diff windows left.
-    if (!diffwin && vim_strchr(p_sbo, 'h') != NULL)
+    if (!diffwin && mnv_strchr(p_sbo, 'h') != NULL)
 	do_cmdline_cmd((char_u *)"set sbo-=hor");
 }
 
@@ -1895,7 +1895,7 @@ diff_read(
 	    }
 	    else
 	    {
-		if (vim_fgets(linebuf, LBUFLEN, fd))
+		if (mnv_fgets(linebuf, LBUFLEN, fd))
 		    break;		// end of file
 		line = linebuf;
 	    }
@@ -1917,9 +1917,9 @@ diff_read(
 		else if ((STRNCMP(line, "@@ ", 3) == 0))
 		    diffstyle = DIFF_UNIFIED;
 		else if ((STRNCMP(line, "--- ", 4) == 0)
-			&& (vim_fgets(linebuf, LBUFLEN, fd) == 0)
+			&& (mnv_fgets(linebuf, LBUFLEN, fd) == 0)
 			&& (STRNCMP(line, "+++ ", 4) == 0)
-			&& (vim_fgets(linebuf, LBUFLEN, fd) == 0)
+			&& (mnv_fgets(linebuf, LBUFLEN, fd) == 0)
 			&& (STRNCMP(line, "@@ ", 3) == 0))
 		    diffstyle = DIFF_UNIFIED;
 		else
@@ -2082,7 +2082,7 @@ diff_read(
 
 done:
     if (!dio->dio_internal)
-	vim_free(hunk);
+	mnv_free(hunk);
 
     if (fd != NULL)
 	fclose(fd);
@@ -2417,7 +2417,7 @@ run_linematch_algorithm(diff_T *dp)
 	linematch_nbuffers(diffbufs, diff_length, ndiffs, &decisions, iwhite);
 
     for (size_t i = 0; i < ndiffs; i++)
-	free(diffbufs_mm[i].din_mmfile.ptr); // TODO should this be vim_free ?
+	free(diffbufs_mm[i].din_mmfile.ptr); // TODO should this be mnv_free ?
 
     apply_linematch_results(dp, decisions_length, decisions);
 
@@ -2582,13 +2582,13 @@ diff_equal_entry(diff_T *dp, int idx1, int idx2)
 	return FALSE;
     for (i = 0; i < dp->df_count[idx1]; ++i)
     {
-	line = vim_strsave(ml_get_buf(curtab->tp_diffbuf[idx1],
+	line = mnv_strsave(ml_get_buf(curtab->tp_diffbuf[idx1],
 					       dp->df_lnum[idx1] + i, FALSE));
 	if (line == NULL)
 	    return FALSE;
 	cmp = diff_cmp(line, ml_get_buf(curtab->tp_diffbuf[idx2],
 					       dp->df_lnum[idx2] + i, FALSE));
-	vim_free(line);
+	mnv_free(line);
 	if (cmp != 0)
 	    return FALSE;
     }
@@ -2653,9 +2653,9 @@ diff_cmp(char_u *s1, char_u *s2)
     while (*p1 != NUL && *p2 != NUL)
     {
 	if (((diff_flags & DIFF_IWHITE)
-		    && VIM_ISWHITE(*p1) && VIM_ISWHITE(*p2))
+		    && MNV_ISWHITE(*p1) && MNV_ISWHITE(*p2))
 		|| ((diff_flags & DIFF_IWHITEALL)
-		    && (VIM_ISWHITE(*p1) || VIM_ISWHITE(*p2))))
+		    && (MNV_ISWHITE(*p1) || MNV_ISWHITE(*p2))))
 	{
 	    p1 = skipwhite(p1);
 	    p2 = skipwhite(p2);
@@ -2904,7 +2904,7 @@ diffopt_changed(void)
 	    p += 6;
 	    diff_flags_new |= DIFF_ANCHOR;
 	}
-	else if (STRNCMP(p, "context:", 8) == 0 && VIM_ISDIGIT(p[8]))
+	else if (STRNCMP(p, "context:", 8) == 0 && MNV_ISDIGIT(p[8]))
 	{
 	    p += 8;
 	    diff_context_new = getdigits(&p);
@@ -2944,7 +2944,7 @@ diffopt_changed(void)
 	    p += 8;
 	    diff_flags_new |= DIFF_VERTICAL;
 	}
-	else if (STRNCMP(p, "foldcolumn:", 11) == 0 && VIM_ISDIGIT(p[11]))
+	else if (STRNCMP(p, "foldcolumn:", 11) == 0 && MNV_ISDIGIT(p[11]))
 	{
 	    p += 11;
 	    diff_foldcolumn_new = getdigits(&p);
@@ -3032,7 +3032,7 @@ diffopt_changed(void)
 	    else
 		return FAIL;
 	}
-	else if (STRNCMP(p, "linematch:", 10) == 0 && VIM_ISDIGIT(p[10]))
+	else if (STRNCMP(p, "linematch:", 10) == 0 && MNV_ISDIGIT(p[10]))
 	{
 	    p += 10;
 	    linematch_lines_new = getdigits(&p);
@@ -3215,7 +3215,7 @@ diff_find_change_simple(
     else
     {
 	// Make a copy of the line, the next ml_get() will invalidate it.
-	line_org = vim_strsave(ml_get_buf(wp->w_buffer, lnum, FALSE));
+	line_org = mnv_strsave(ml_get_buf(wp->w_buffer, lnum, FALSE));
 	if (line_org == NULL)
 	    return FALSE;
     }
@@ -3240,11 +3240,11 @@ diff_find_change_simple(
 	    while (line_org[si_org] != NUL)
 	    {
 		if (((diff_flags & DIFF_IWHITE)
-			    && VIM_ISWHITE(line_org[si_org])
-					      && VIM_ISWHITE(line_new[si_new]))
+			    && MNV_ISWHITE(line_org[si_org])
+					      && MNV_ISWHITE(line_new[si_new]))
 			|| ((diff_flags & DIFF_IWHITEALL)
-			    && (VIM_ISWHITE(line_org[si_org])
-					    || VIM_ISWHITE(line_new[si_new]))))
+			    && (MNV_ISWHITE(line_org[si_org])
+					    || MNV_ISWHITE(line_new[si_new]))))
 		{
 		    si_org = (int)(skipwhite(line_org + si_org) - line_org);
 		    si_new = (int)(skipwhite(line_new + si_new) - line_new);
@@ -3277,17 +3277,17 @@ diff_find_change_simple(
 						&& ei_org >= 0 && ei_new >= 0)
 		{
 		    if (((diff_flags & DIFF_IWHITE)
-				&& VIM_ISWHITE(line_org[ei_org])
-					      && VIM_ISWHITE(line_new[ei_new]))
+				&& MNV_ISWHITE(line_org[ei_org])
+					      && MNV_ISWHITE(line_new[ei_new]))
 			    || ((diff_flags & DIFF_IWHITEALL)
-				&& (VIM_ISWHITE(line_org[ei_org])
-					    || VIM_ISWHITE(line_new[ei_new]))))
+				&& (MNV_ISWHITE(line_org[ei_org])
+					    || MNV_ISWHITE(line_new[ei_new]))))
 		    {
 			while (ei_org >= *startp
-					     && VIM_ISWHITE(line_org[ei_org]))
+					     && MNV_ISWHITE(line_org[ei_org]))
 			    --ei_org;
 			while (ei_new >= si_new
-					     && VIM_ISWHITE(line_new[ei_new]))
+					     && MNV_ISWHITE(line_new[ei_new]))
 			    --ei_new;
 		    }
 		    else
@@ -3307,7 +3307,7 @@ diff_find_change_simple(
 	    }
 	}
 
-    vim_free(line_org);
+    mnv_free(line_org);
     return added;
 }
 
@@ -3619,7 +3619,7 @@ diff_find_change_inline_diff(
 		    // For multibyte chars, only treat alphanumeric chars
 		    // (class 2) as "word", as other classes such as emojis and
 		    // CJK ideographs do not usually benefit from word diff as
-		    // Vim doesn't have a good way to segment them.
+		    // MNV doesn't have a good way to segment them.
 		    new_in_keyword = (mb_get_class_buf(s, curtab->tp_diffbuf[file1_idx]) == 2);
 		}
 		if (in_keyword && !new_in_keyword)
@@ -3628,7 +3628,7 @@ diff_find_change_inline_diff(
 		    numlines++;
 		}
 
-		if (VIM_ISWHITE(*s))
+		if (MNV_ISWHITE(*s))
 		{
 		    if (diff_flags & DIFF_IWHITEALL)
 		    {
@@ -3666,7 +3666,7 @@ diff_find_change_inline_diff(
 		{
 		    char_len = mb_ptr2len(s);
 
-		    if (VIM_ISWHITE(*s) && (diff_flags & DIFF_IWHITE))
+		    if (MNV_ISWHITE(*s) && (diff_flags & DIFF_IWHITE))
 			// Treat the entire white space span as a single char.
 			char_len = skipwhite(s) - s;
 
@@ -4032,7 +4032,7 @@ nv_diffgetput(int put, long count)
 # ifdef FEAT_JOB_CHANNEL
     if (bt_prompt(curbuf))
     {
-	vim_beep(BO_OPER);
+	mnv_beep(BO_OPER);
 	return;
     }
 # endif
@@ -4040,7 +4040,7 @@ nv_diffgetput(int put, long count)
 	ea.arg = (char_u *)"";
     else
     {
-	vim_snprintf((char *)buf, 30, "%ld", count);
+	mnv_snprintf((char *)buf, 30, "%ld", count);
 	ea.arg = buf;
     }
     if (put)
@@ -4137,9 +4137,9 @@ ex_diffgetput(exarg_T *eap)
     {
 	// Buffer number or pattern given.  Ignore trailing white space.
 	p = eap->arg + STRLEN(eap->arg);
-	while (p > eap->arg && VIM_ISWHITE(p[-1]))
+	while (p > eap->arg && MNV_ISWHITE(p[-1]))
 	    --p;
-	for (i = 0; vim_isdigit(eap->arg[i]) && eap->arg + i < p; ++i)
+	for (i = 0; mnv_isdigit(eap->arg[i]) && eap->arg + i < p; ++i)
 	    ;
 	if (eap->arg + i == p)	    // digits only
 	    i = atol((char *)eap->arg);
@@ -4306,12 +4306,12 @@ ex_diffgetput(exarg_T *eap)
 		nr = dp->df_lnum[idx_from] + start_skip + i;
 		if (nr > curtab->tp_diffbuf[idx_from]->b_ml.ml_line_count)
 		    break;
-		p = vim_strsave(ml_get_buf(curtab->tp_diffbuf[idx_from],
+		p = mnv_strsave(ml_get_buf(curtab->tp_diffbuf[idx_from],
 								  nr, FALSE));
 		if (p != NULL)
 		{
 		    ml_append(lnum + i - 1, p, 0, FALSE);
-		    vim_free(p);
+		    mnv_free(p);
 		    ++added;
 		    if (buf_empty && curbuf->b_ml.ml_line_count == 2)
 		    {
@@ -4789,7 +4789,7 @@ xdiff_out_indices(
 
     if (ga_grow(&dout->dout_ga, 1) == FAIL)
     {
-	vim_free(p);
+	mnv_free(p);
 	return -1;
     }
 
@@ -4831,7 +4831,7 @@ xdiff_out_unified(
 f_diff_filler(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 {
 # ifdef FEAT_DIFF
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->vval.v_number = diff_check_fill(curwin, tv_get_lnum(argvars));
@@ -4859,7 +4859,7 @@ f_diff_hlID(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 
     CLEAR_FIELD(diffline);
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_lnum_arg(argvars,0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL))
 	return;
@@ -5036,7 +5036,7 @@ list_to_diffin(list_T *l, diffin_T *din, int icase)
 	ga_concat(&ga, str);
 	ga_append(&ga, NL);
 	if (icase)
-	    vim_free(str);
+	    mnv_free(str);
     }
 
     din->din_mmfile.ptr = (char *)ga.ga_data;
@@ -5148,7 +5148,7 @@ f_diff(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 	ga_append(&dio.dio_diff.dout_ga, NUL);
 	rettv->v_type = VAR_STRING;
 	rettv->vval.v_string =
-			vim_strsave((char_u *)dio.dio_diff.dout_ga.ga_data);
+			mnv_strsave((char_u *)dio.dio_diff.dout_ga.ga_data);
     }
 
 done:

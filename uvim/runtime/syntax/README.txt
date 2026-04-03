@@ -1,17 +1,17 @@
-This directory contains Vim scripts for syntax highlighting.
+This directory contains MNV scripts for syntax highlighting.
 
-These scripts are not for a language, but are used by Vim itself:
+These scripts are not for a language, but are used by MNV itself:
 
-syntax.vim	Used for the ":syntax on" command.  Uses synload.vim.
+syntax.mnv	Used for the ":syntax on" command.  Uses synload.mnv.
 
-manual.vim	Used for the ":syntax manual" command.  Uses synload.vim.
+manual.mnv	Used for the ":syntax manual" command.  Uses synload.mnv.
 
-synload.vim	Contains autocommands to load a language file when a certain
+synload.mnv	Contains autocommands to load a language file when a certain
 		file name (extension) is used.  And sets up the Syntax menu
 		for the GUI.
 
-nosyntax.vim	Used for the ":syntax off" command.  Undo the loading of
-		synload.vim.
+nosyntax.mnv	Used for the ":syntax off" command.  Undo the loading of
+		synload.mnv.
 
 The "shared" directory contains generated files and what is used by more than
 one syntax.
@@ -19,25 +19,25 @@ one syntax.
 
 A few special files:
 
-2html.vim	Converts any highlighted file to HTML (GUI only).
-colortest.vim	Check for color names and actual color on screen.
-hitest.vim	View the current highlight settings.
-whitespace.vim  View Tabs and Spaces.
+2html.mnv	Converts any highlighted file to HTML (GUI only).
+colortest.mnv	Check for color names and actual color on screen.
+hitest.mnv	View the current highlight settings.
+whitespace.mnv  View Tabs and Spaces.
 
 
 If you want to write a syntax file, read the docs at ":help usr_44.txt".
 
 If you make a new syntax file which would be useful for others, please send it
-to the vim-dev mailing list <vim-dev@vim.org>.  Include instructions for
+to the mnv-dev mailing list <mnv-dev@mnv.org>.  Include instructions for
 detecting the file type for this language, by file name extension or by
 checking a few lines in the file. And please write the file in a portable way,
 see ":help 44.12".
 
 If you have remarks about an existing file, send them to the maintainer of
-that file.  Only when you get no response send a message to the vim-dev
-mailing list: <vim-dev@vim.org>.
+that file.  Only when you get no response send a message to the mnv-dev
+mailing list: <mnv-dev@mnv.org>.
 
 If you are the maintainer of a syntax file and make improvements, send the new
-version to the vim-dev mailing list: <vim-dev@vim.org>
+version to the mnv-dev mailing list: <mnv-dev@mnv.org>
 
-For further info see ":help syntax" in Vim.
+For further info see ":help syntax" in MNV.

@@ -18,7 +18,7 @@
  * The last three are enabled when compiled as debug mode and individually
  * disabled by commenting them out.
  * The log files can get quite big!
- * To disable all of this when compiling Vim for debugging, undefine DEBUG in
+ * To disable all of this when compiling MNV for debugging, undefine DEBUG in
  * regexp.c
  */
 #ifdef DEBUG
@@ -285,7 +285,7 @@ static int failure_chance(nfa_state_T *state, int depth);
     static int
 nfa_regcomp_start(
     char_u	*expr,
-    int		re_flags)	    // see vim_regcomp()
+    int		re_flags)	    // see mnv_regcomp()
 {
     size_t	postfix_size;
     int		nstate_max;
@@ -527,7 +527,7 @@ realloc_post_list(void)
     post_start = new_start;
     post_ptr = new_start + (post_ptr - old_start);
     post_end = post_start + new_max;
-    vim_free(old_start);
+    mnv_free(old_start);
     return OK;
 }
 
@@ -1392,7 +1392,7 @@ nfa_regatom(void)
 	case Magic('L'):
 	case Magic('u'):
 	case Magic('U'):
-	    p = vim_strchr(classchars, no_Magic(c));
+	    p = mnv_strchr(classchars, no_Magic(c));
 	    if (p == NULL)
 	    {
 		if (extra == NFA_ADD_NL)
@@ -1560,7 +1560,7 @@ nfa_regatom(void)
 		case 'u':   // %uabcd hex 4
 		case 'U':   // %U1234abcd hex 8
 		    {
-			vimlong_T nr;
+			mnvlong_T nr;
 
 			switch (c)
 			{
@@ -1657,7 +1657,7 @@ nfa_regatom(void)
 			    cur = TRUE;
 			    c = getchr();
 			}
-			while (VIM_ISDIGIT(c))
+			while (MNV_ISDIGIT(c))
 			{
 			    long_u tmp;
 
@@ -1927,16 +1927,16 @@ collection:
 		    }
 
 		    // Now handle simple and escaped characters.
-		    // Only "\]", "\^", "\]" and "\\" are special in Vi.  Vim
+		    // Only "\]", "\^", "\]" and "\\" are special in Vi.  MNV
 		    // accepts "\t", "\e", etc., but only when the 'l' flag in
 		    // 'cpoptions' is not included.
 		    // Posix doesn't recognize backslash at all.
 		    if (*regparse == '\\'
 			    && !reg_cpo_bsl
 			    && regparse + 1 <= endp
-			    && (vim_strchr(REGEXP_INRANGE, regparse[1]) != NULL
+			    && (mnv_strchr(REGEXP_INRANGE, regparse[1]) != NULL
 				|| (!reg_cpo_lit
-				    && vim_strchr(REGEXP_ABBR, regparse[1])
+				    && mnv_strchr(REGEXP_ABBR, regparse[1])
 								      != NULL)
 			    )
 			)
@@ -3404,7 +3404,7 @@ post2nfa(int *postfix, int *end, int nfa_calc_size)
 		    if (stackp < stack)			\
 		    {					\
 			st_error(postfix, end, p);	\
-			vim_free(stack);		\
+			mnv_free(stack);		\
 			return NULL;			\
 		    }
 
@@ -3881,13 +3881,13 @@ post2nfa(int *postfix, int *end, int nfa_calc_size)
     e = POP();
     if (stackp != stack)
     {
-	vim_free(stack);
+	mnv_free(stack);
 	EMSG_RET_NULL(_(e_nfa_regexp_while_converting_from_postfix_to_nfa_too_many_stats_left_on_stack));
     }
 
     if (istate >= nstate)
     {
-	vim_free(stack);
+	mnv_free(stack);
 	EMSG_RET_NULL(_(e_nfa_regexp_not_enough_space_to_store_whole_nfa));
     }
 
@@ -3900,7 +3900,7 @@ post2nfa(int *postfix, int *end, int nfa_calc_size)
     ret = e.start;
 
 theend:
-    vim_free(stack);
+    mnv_free(stack);
     return ret;
 
 #undef POP1
@@ -4129,10 +4129,10 @@ clear_sub(regsub_T *sub)
 {
     if (REG_MULTI)
 	// Use 0xff to set lnum to -1
-	vim_memset(sub->list.multi, 0xff,
+	mnv_memset(sub->list.multi, 0xff,
 				  sizeof(struct multipos) * rex.nfa_nsubexpr);
     else
-	vim_memset(sub->list.line, 0,
+	mnv_memset(sub->list.line, 0,
 				   sizeof(struct linepos) * rex.nfa_nsubexpr);
     sub->in_use = 0;
 }
@@ -4717,7 +4717,7 @@ skip_add:
 		    subs = &temp_subs;
 		}
 
-		newt = vim_realloc(l->t, newsize);
+		newt = mnv_realloc(l->t, newsize);
 		if (newt == NULL)
 		{
 		    // out of memory
@@ -5059,7 +5059,7 @@ addstate_here(
 	    mch_memmove(&(newl[listidx + count]),
 		    &(l->t[listidx + 1]),
 		    sizeof(nfa_thread_T) * (l->n - count - listidx - 1));
-	    vim_free(l->t);
+	    mnv_free(l->t);
 	    l->t = newl;
 	}
 	else
@@ -5105,7 +5105,7 @@ check_char_class(int class, int c)
 		return OK;
 	    break;
 	case NFA_CLASS_DIGIT:
-	    if (VIM_ISDIGIT(c))
+	    if (MNV_ISDIGIT(c))
 		return OK;
 	    break;
 	case NFA_CLASS_GRAPH:
@@ -5117,7 +5117,7 @@ check_char_class(int class, int c)
 		return OK;
 	    break;
 	case NFA_CLASS_PRINT:
-	    if (vim_isprintc(c))
+	    if (mnv_isprintc(c))
 		return OK;
 	    break;
 	case NFA_CLASS_PUNCT:
@@ -5133,7 +5133,7 @@ check_char_class(int class, int c)
 		return OK;
 	    break;
 	case NFA_CLASS_XDIGIT:
-	    if (vim_isxdigit(c))
+	    if (mnv_isxdigit(c))
 		return OK;
 	    break;
 	case NFA_CLASS_TAB:
@@ -5153,7 +5153,7 @@ check_char_class(int class, int c)
 		return OK;
 	    break;
 	case NFA_CLASS_IDENT:
-	    if (vim_isIDc(c))
+	    if (mnv_isIDc(c))
 		return OK;
 	    break;
 	case NFA_CLASS_KEYWORD:
@@ -5161,7 +5161,7 @@ check_char_class(int class, int c)
 		return OK;
 	    break;
 	case NFA_CLASS_FNAME:
-	    if (vim_isfilec(c))
+	    if (mnv_isfilec(c))
 		return OK;
 	    break;
 
@@ -5430,7 +5430,7 @@ recursive_regmatch(
 	// values and clear them.
 	if (*listids == NULL || *listids_len < prog->nstate)
 	{
-	    vim_free(*listids);
+	    mnv_free(*listids);
 	    *listids = ALLOC_MULT(int, prog->nstate);
 	    if (*listids == NULL)
 	    {
@@ -5658,7 +5658,7 @@ skip_to_start(int c, colnr_T *colp)
 
     // Used often, do some work to avoid call overhead.
     if (!rex.reg_ic && !has_mbyte)
-	s = vim_strbyte(rex.line + *colp, c);
+	s = mnv_strbyte(rex.line + *colp, c);
     else
 	s = cstrchr(rex.line + *colp, c);
     if (s == NULL)
@@ -6305,9 +6305,9 @@ nfa_regmatch(
 		    else if (reg_prev_class() == this_class)
 			result = FALSE;
 		}
-		else if (!vim_iswordc_buf(curc, rex.reg_buf)
+		else if (!mnv_iswordc_buf(curc, rex.reg_buf)
 			   || (rex.input > rex.line
-			       && vim_iswordc_buf(rex.input[-1], rex.reg_buf)))
+			       && mnv_iswordc_buf(rex.input[-1], rex.reg_buf)))
 		    result = FALSE;
 		if (result)
 		{
@@ -6331,9 +6331,9 @@ nfa_regmatch(
 					|| prev_class == 0 || prev_class == 1)
 			result = FALSE;
 		}
-		else if (!vim_iswordc_buf(rex.input[-1], rex.reg_buf)
+		else if (!mnv_iswordc_buf(rex.input[-1], rex.reg_buf)
 			|| (rex.input[0] != NUL
-					&& vim_iswordc_buf(curc, rex.reg_buf)))
+					&& mnv_iswordc_buf(curc, rex.reg_buf)))
 		    result = FALSE;
 		if (result)
 		{
@@ -6633,53 +6633,53 @@ nfa_regmatch(
 	     * Character classes like \a for alpha, \d for digit etc.
 	     */
 	    case NFA_IDENT:	//  \i
-		result = vim_isIDc(curc);
+		result = mnv_isIDc(curc);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_SIDENT:	//  \I
-		result = !VIM_ISDIGIT(curc) && vim_isIDc(curc);
+		result = !MNV_ISDIGIT(curc) && mnv_isIDc(curc);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_KWORD:	//  \k
-		result = vim_iswordp_buf(rex.input, rex.reg_buf);
+		result = mnv_iswordp_buf(rex.input, rex.reg_buf);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_SKWORD:	//  \K
-		result = !VIM_ISDIGIT(curc)
-				     && vim_iswordp_buf(rex.input, rex.reg_buf);
+		result = !MNV_ISDIGIT(curc)
+				     && mnv_iswordp_buf(rex.input, rex.reg_buf);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_FNAME:	//  \f
-		result = vim_isfilec(curc);
+		result = mnv_isfilec(curc);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_SFNAME:	//  \F
-		result = !VIM_ISDIGIT(curc) && vim_isfilec(curc);
+		result = !MNV_ISDIGIT(curc) && mnv_isfilec(curc);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_PRINT:	//  \p
-		result = vim_isprintc(PTR2CHAR(rex.input));
+		result = mnv_isprintc(PTR2CHAR(rex.input));
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_SPRINT:	//  \P
-		result = !VIM_ISDIGIT(curc) && vim_isprintc(PTR2CHAR(rex.input));
+		result = !MNV_ISDIGIT(curc) && mnv_isprintc(PTR2CHAR(rex.input));
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_WHITE:	//  \s
-		result = VIM_ISWHITE(curc);
+		result = MNV_ISWHITE(curc);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
 	    case NFA_NWHITE:	//  \S
-		result = curc != NUL && !VIM_ISWHITE(curc);
+		result = curc != NUL && !MNV_ISWHITE(curc);
 		ADD_STATE_IF_MATCH(t->state);
 		break;
 
@@ -7288,9 +7288,9 @@ nextchar:
 
 theend:
     // Free memory
-    vim_free(list[0].t);
-    vim_free(list[1].t);
-    vim_free(listids);
+    mnv_free(list[0].t);
+    mnv_free(list[1].t);
+    mnv_free(listids);
 #undef ADD_STATE_IF_MATCH
 #ifdef NFA_REGEXP_DEBUG_LOG
     fclose(debug);
@@ -7419,7 +7419,7 @@ nfa_regtry(
 			&& mpos->start_lnum == mpos->end_lnum
 			&& mpos->end_col >= mpos->start_col)
 		    re_extmatch_out->matches[i] =
-			vim_strnsave(reg_getline(mpos->start_lnum)
+			mnv_strnsave(reg_getline(mpos->start_lnum)
 							    + mpos->start_col,
 					     mpos->end_col - mpos->start_col);
 	    }
@@ -7429,7 +7429,7 @@ nfa_regtry(
 
 		if (lpos->start != NULL && lpos->end != NULL)
 		    re_extmatch_out->matches[i] =
-			    vim_strnsave(lpos->start, lpos->end - lpos->start);
+			    mnv_strnsave(lpos->start, lpos->end - lpos->start);
 	    }
 	}
     }
@@ -7674,19 +7674,19 @@ nfa_regcomp(char_u *expr, int re_flags)
     // Remember whether this pattern has any \z specials in it.
     prog->reghasz = re_has_z;
 #endif
-    prog->pattern = vim_strsave(expr);
+    prog->pattern = mnv_strsave(expr);
 #ifdef DEBUG
     nfa_regengine.expr = NULL;
 #endif
 
 out:
-    VIM_CLEAR(post_start);
+    MNV_CLEAR(post_start);
     post_ptr = post_end = NULL;
     state_ptr = NULL;
     return (regprog_T *)prog;
 
 fail:
-    VIM_CLEAR(prog);
+    MNV_CLEAR(prog);
 #ifdef ENABLE_LOG
     nfa_postfix_dump(expr, FAIL);
 #endif
@@ -7705,9 +7705,9 @@ nfa_regfree(regprog_T *prog)
     if (prog == NULL)
 	return;
 
-    vim_free(((nfa_regprog_T *)prog)->match_text);
-    vim_free(((nfa_regprog_T *)prog)->pattern);
-    vim_free(prog);
+    mnv_free(((nfa_regprog_T *)prog)->match_text);
+    mnv_free(((nfa_regprog_T *)prog)->pattern);
+    mnv_free(prog);
 }
 
 /*
@@ -7740,7 +7740,7 @@ nfa_regexec_nl(
 
 /*
  * Match a regexp against multiple lines.
- * "rmp->regprog" is a compiled regexp as returned by vim_regcomp().
+ * "rmp->regprog" is a compiled regexp as returned by mnv_regcomp().
  * Uses curbuf for line count and 'iskeyword'.
  *
  * Return <= 0 if there is no match.  Return number of lines contained in the
@@ -7759,7 +7759,7 @@ nfa_regexec_nl(
  * +-------------------------+
  *
  * then nfa_regexec_multi() returns 3. while the original
- * vim_regexec_multi() returns 0 and a second call at line 2 will return 2.
+ * mnv_regexec_multi() returns 0 and a second call at line 2 will return 2.
  *
  * FIXME if this behavior is not compatible.
  */

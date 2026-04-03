@@ -2,11 +2,11 @@
 --- hu_HU.aff	Wed Apr 12 12:43:39 2006
 ***************
 *** 58,60 ****
-  NAME Magyar Ispell helyesírási szótár
+  NAME Magyar Ispell helyesï¿½rï¿½si szï¿½tï¿½r
 ! LANG hu_HU
   HOME http://magyarispell.sourceforge.net
 --- 58,60 ----
-  NAME Magyar Ispell helyesírási szótár
+  NAME Magyar Ispell helyesï¿½rï¿½si szï¿½tï¿½r
 ! #LANG hu_HU
   HOME http://magyarispell.sourceforge.net
 ***************
@@ -14,15 +14,15 @@
   COMPOUNDMIN 2
 ! COMPOUNDFLAG Y
 ! COMPOUNDWORD 2 y
-! COMPOUNDSYLLABLE 6 aáeéiíoóöõuúüû
+! COMPOUNDSYLLABLE 6 aï¿½eï¿½iï¿½oï¿½ï¿½ï¿½uï¿½ï¿½ï¿½
 ! SYLLABLENUM klmc
 ! COMPOUNDFIRST v
 ! COMPOUNDLAST x
 ! FORBIDDENWORD w
 ! ONLYROOT u
-! ACCENT áéíóöõúüû aeiooouuu
+! ACCENT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ aeiooouuu
 ! CHECKNUM
-! WORDCHARS -.§%°0123456789
+! WORDCHARS -.ï¿½%ï¿½0123456789
 ! HU_KOTOHANGZO Z
   
 --- 64,115 ----
@@ -31,9 +31,9 @@
 ! COMPOUNDWORDMAX 2
 ! COMPOUNDROOT y
 ! 
-! #COMPOUNDSYLLABLE 6 aáeéiíoóöõuúüû
+! #COMPOUNDSYLLABLE 6 aï¿½eï¿½iï¿½oï¿½ï¿½ï¿½uï¿½ï¿½ï¿½
 ! COMPOUNDSYLMAX 6
-! SYLLABLE a/á/e/é/i/í/o/ó/ö/õ/u/ú/ü/û
+! SYLLABLE a/ï¿½/e/ï¿½/i/ï¿½/o/ï¿½/ï¿½/ï¿½/u/ï¿½/ï¿½/ï¿½
 ! # Strange that every vowel is counted as a syllable, that's how the hunspell
 ! # code works.
 ! 
@@ -54,21 +54,21 @@
 ! #ONLYROOT u
 ! NEEDAFFIX u
 ! 
-! #ACCENT áéíóöõúüû aeiooouuu
+! #ACCENT ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ aeiooouuu
 ! MAP 5
-! MAP aáä
-! MAP eé
-! MAP ií
-! MAP oóöõ
-! MAP uúüû
+! MAP aï¿½ï¿½
+! MAP eï¿½
+! MAP iï¿½
+! MAP oï¿½ï¿½ï¿½
+! MAP uï¿½ï¿½ï¿½
 ! 
 ! #CHECKNUM
-! # Vim always handles numbers in the same way.
+! # MNV always handles numbers in the same way.
 ! 
-! #WORDCHARS -.§%°0123456789
-! FOL ±¢³µ¶¨¹º»¼¾¿±²³´µ¶·¸¹º»¼½¾¿àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþßÿ-§%°
-! LOW ±¢³µ¶¨¹º»¼¾¿±²³´µ¶·¸¹º»¼½¾¿àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþßÿ-§%°
-! UPP ¡¢£¥¦¨©ª«¬®¯±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßÿ-§%°
+! #WORDCHARS -.ï¿½%ï¿½0123456789
+! FOL ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½%ï¿½
+! LOW ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½%ï¿½
+! UPP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½%ï¿½
 ! MIDWORD .
 ! 
 ! # Undocumented
@@ -82,26 +82,26 @@
 *** 81,96 ****
   
 ! REP 89
-! REP í i
-! REP i í
-! REP ó o
-! REP o ó
-! REP o õ
-! REP ú u
-! REP u ú
-! REP u û
-! REP û ü
-! REP ü û
+! REP ï¿½ i
+! REP i ï¿½
+! REP ï¿½ o
+! REP o ï¿½
+! REP o ï¿½
+! REP ï¿½ u
+! REP u ï¿½
+! REP u ï¿½
+! REP ï¿½ ï¿½
+! REP ï¿½ ï¿½
   REP j ly
   REP ly j
-- REP a ä # Handel->Händel
-  REP S © # Skoda->©koda
+- REP a ï¿½ # Handel->Hï¿½ndel
+  REP S ï¿½ # Skoda->ï¿½koda
 --- 119,123 ----
   
 ! REP 78
   REP j ly
   REP ly j
-  REP S © # Skoda->©koda
+  REP S ï¿½ # Skoda->ï¿½koda
 ***************
 *** 173,241 ****
   
@@ -110,67 +110,67 @@
 - # not implemented yet
 - 
 - CHR HTML 35
-- CHR HTML &curren; ¤
-- CHR HTML &deg; °
-- CHR HTML &acute; ´
-- CHR HTML &cedil; ¸
-- CHR HTML &Aacute; Á
-- CHR HTML &Acirc; Â
-- CHR HTML &Auml; Ä
-- CHR HTML &Ccedil; Ç
-- CHR HTML &Eacute; É
-- CHR HTML &Euml; Ë
-- CHR HTML &Iacute; Í
-- CHR HTML &Icirc; Î
-- CHR HTML &Oacute; Ó
-- CHR HTML &Ocirc; Ô
-- CHR HTML &Ouml; Ö
-- CHR HTML &times; ×
-- CHR HTML &Uacute; Ú
-- CHR HTML &Uuml; Ü
-- CHR HTML &Yacute; Ý
-- CHR HTML &szlig; ß
-- CHR HTML &aacute; á
-- CHR HTML &acirc; â
-- CHR HTML &auml; ä
-- CHR HTML &ccedil; ç
-- CHR HTML &eacute; é
-- CHR HTML &euml; ë
-- CHR HTML &iacute; í
-- CHR HTML &icirc; î
-- CHR HTML &oacute; ó
-- CHR HTML &ocirc; ô
-- CHR HTML &ouml; ö
-- CHR HTML &divide; ÷
-- CHR HTML &uacute; ú
-- CHR HTML &uuml; ü
-- CHR HTML &yacute; ý
+- CHR HTML &curren; ï¿½
+- CHR HTML &deg; ï¿½
+- CHR HTML &acute; ï¿½
+- CHR HTML &cedil; ï¿½
+- CHR HTML &Aacute; ï¿½
+- CHR HTML &Acirc; ï¿½
+- CHR HTML &Auml; ï¿½
+- CHR HTML &Ccedil; ï¿½
+- CHR HTML &Eacute; ï¿½
+- CHR HTML &Euml; ï¿½
+- CHR HTML &Iacute; ï¿½
+- CHR HTML &Icirc; ï¿½
+- CHR HTML &Oacute; ï¿½
+- CHR HTML &Ocirc; ï¿½
+- CHR HTML &Ouml; ï¿½
+- CHR HTML &times; ï¿½
+- CHR HTML &Uacute; ï¿½
+- CHR HTML &Uuml; ï¿½
+- CHR HTML &Yacute; ï¿½
+- CHR HTML &szlig; ï¿½
+- CHR HTML &aacute; ï¿½
+- CHR HTML &acirc; ï¿½
+- CHR HTML &auml; ï¿½
+- CHR HTML &ccedil; ï¿½
+- CHR HTML &eacute; ï¿½
+- CHR HTML &euml; ï¿½
+- CHR HTML &iacute; ï¿½
+- CHR HTML &icirc; ï¿½
+- CHR HTML &oacute; ï¿½
+- CHR HTML &ocirc; ï¿½
+- CHR HTML &ouml; ï¿½
+- CHR HTML &divide; ï¿½
+- CHR HTML &uacute; ï¿½
+- CHR HTML &uuml; ï¿½
+- CHR HTML &yacute; ï¿½
 - 
 - # character conversion table
-- # (Prószéky-code -> latin-2)
+- # (Prï¿½szï¿½ky-code -> latin-2)
 - # not implemented yet
 - 
 - CHR 123 20
-- CHR 123 a1 á
-- CHR 123 e1 é
-- CHR 123 e2 ë
-- CHR 123 i1 í
-- CHR 123 o1 ó
-- CHR 123 o2 ö
-- CHR 123 o3 õ
-- CHR 123 u1 ú
-- CHR 123 u2 ü
-- CHR 123 u3 û
-- CHR 123 A1 Á
-- CHR 123 E1 É
-- CHR 123 E2 Ë
-- CHR 123 I1 Í
-- CHR 123 O1 Ó
-- CHR 123 O2 Ö
-- CHR 123 O3 Õ
-- CHR 123 U1 Ú
-- CHR 123 U2 Ü
-- CHR 123 U3 Û
+- CHR 123 a1 ï¿½
+- CHR 123 e1 ï¿½
+- CHR 123 e2 ï¿½
+- CHR 123 i1 ï¿½
+- CHR 123 o1 ï¿½
+- CHR 123 o2 ï¿½
+- CHR 123 o3 ï¿½
+- CHR 123 u1 ï¿½
+- CHR 123 u2 ï¿½
+- CHR 123 u3 ï¿½
+- CHR 123 A1 ï¿½
+- CHR 123 E1 ï¿½
+- CHR 123 E2 ï¿½
+- CHR 123 I1 ï¿½
+- CHR 123 O1 ï¿½
+- CHR 123 O2 ï¿½
+- CHR 123 O3 ï¿½
+- CHR 123 U1 ï¿½
+- CHR 123 U2 ï¿½
+- CHR 123 U3 ï¿½
 - 
   SFX z Y 6
 --- 200,201 ----

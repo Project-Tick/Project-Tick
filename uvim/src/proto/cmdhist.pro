@@ -16,4 +16,4 @@ void f_histget(typval_T *argvars, typval_T *rettv);
 void f_histnr(typval_T *argvars, typval_T *rettv);
 void remove_key_from_history(void);
 void ex_history(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

@@ -63,7 +63,7 @@ void do_sleep(long msec, int hide_cursor);
 void ex_may_print(exarg_T *eap);
 void ex_redraw(exarg_T *eap);
 void redraw_cmd(int clear);
-int vim_mkdir_emsg(char_u *name, int prot);
+int mnv_mkdir_emsg(char_u *name, int prot);
 FILE *open_exfile(char_u *fname, int forceit, char *mode);
 void update_topline_cursor(void);
 int save_current_state(save_state_T *sst);
@@ -79,4 +79,4 @@ void set_no_hlsearch(int flag);
 int is_loclist_cmd(int cmdidx);
 int get_pressedreturn(void);
 void set_pressedreturn(int val);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

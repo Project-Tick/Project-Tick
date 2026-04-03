@@ -1,13 +1,13 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read a list of people who contributed.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read a list of people who contributed.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static void cmd_with_count(char *cmd, char_u *bufp, size_t bufsize, long Prenum);
 static void win_init(win_T *newp, win_T *oldp, int flags);
@@ -345,7 +345,7 @@ do_window(
 newwindow:
 		if (Prenum)
 		    // window height
-		    vim_snprintf((char *)cbuf, sizeof(cbuf) - 5, "%ld", Prenum);
+		    mnv_snprintf((char *)cbuf, sizeof(cbuf) - 5, "%ld", Prenum);
 		else
 		    cbuf[0] = NUL;
 #if defined(FEAT_QUICKFIX)
@@ -697,7 +697,7 @@ wingotofile:
 			check_cursor_lnum();
 			beginline(BL_SOL | BL_FIX);
 		    }
-		    vim_free(ptr);
+		    mnv_free(ptr);
 		}
 		break;
 
@@ -715,7 +715,7 @@ wingotofile:
 		    break;
 
 		// Make a copy, if the line was changed it will be freed.
-		ptr = vim_strnsave(ptr, len);
+		ptr = mnv_strnsave(ptr, len);
 		if (ptr == NULL)
 		    break;
 
@@ -723,7 +723,7 @@ wingotofile:
 			Prenum == 0 ? TRUE : FALSE, type,
 			Prenum1, ACTION_SPLIT, (linenr_T)1, (linenr_T)MAXLNUM,
 			FALSE, FALSE);
-		vim_free(ptr);
+		mnv_free(ptr);
 		curwin->w_set_curswant = TRUE;
 		break;
 #endif
@@ -914,7 +914,7 @@ cmd_with_count(
     long	Prenum)
 {
     if (Prenum > 0)
-	vim_snprintf((char *)bufp, bufsize, "%s %ld", cmd, Prenum);
+	mnv_snprintf((char *)bufp, bufsize, "%s %ld", cmd, Prenum);
     else
 	STRCPY(bufp, cmd);
 }
@@ -1574,7 +1574,7 @@ win_init(win_T *newp, win_T *oldp, int flags UNUSED)
 
     // Not sure if this is needed, but be safe
     remove_highlight_overrides(newp->w_hl);
-    VIM_CLEAR(newp->w_hl);
+    MNV_CLEAR(newp->w_hl);
 
     copy_jumplist(oldp, newp);
 #ifdef FEAT_QUICKFIX
@@ -1588,9 +1588,9 @@ win_init(win_T *newp, win_T *oldp, int flags UNUSED)
 	copy_loclist_stack(oldp, newp);
 #endif
     newp->w_localdir = (oldp->w_localdir == NULL)
-				    ? NULL : vim_strsave(oldp->w_localdir);
+				    ? NULL : mnv_strsave(oldp->w_localdir);
     newp->w_prevdir = (oldp->w_prevdir == NULL)
-				    ? NULL : vim_strsave(oldp->w_prevdir);
+				    ? NULL : mnv_strsave(oldp->w_prevdir);
 
     if (*p_spk != 'c')
     {
@@ -1607,9 +1607,9 @@ win_init(win_T *newp, win_T *oldp, int flags UNUSED)
 	taggy_T	*tag = &newp->w_tagstack[i];
 	*tag = oldp->w_tagstack[i];
 	if (tag->tagname != NULL)
-	    tag->tagname = vim_strsave(tag->tagname);
+	    tag->tagname = mnv_strsave(tag->tagname);
 	if (tag->user_data != NULL)
-	    tag->user_data = vim_strsave(tag->user_data);
+	    tag->user_data = mnv_strsave(tag->user_data);
     }
     newp->w_tagstackidx = oldp->w_tagstackidx;
     newp->w_tagstacklen = oldp->w_tagstacklen;
@@ -2872,7 +2872,7 @@ win_close(win_T *win, int free_buf)
 	    && last_window())
     {
 	// Autocommands have closed all windows, quit now.  Restore
-	// curwin->w_buffer, otherwise writing viminfo may fail.
+	// curwin->w_buffer, otherwise writing mnvinfo may fail.
 	if (curwin->w_buffer == NULL)
 	    curwin->w_buffer = curbuf;
 	getout(0);
@@ -3053,7 +3053,7 @@ trigger_winclosed(win_T *win)
     if (recursive)
 	return;
     recursive = TRUE;
-    vim_snprintf((char *)winid, sizeof(winid), "%d", win->w_id);
+    mnv_snprintf((char *)winid, sizeof(winid), "%d", win->w_id);
     apply_autocmds(EVENT_WINCLOSED, winid, winid, FALSE, win->w_buffer);
     recursive = FALSE;
 }
@@ -3278,7 +3278,7 @@ check_window_scroll_resize(
 	    if (d == NULL)
 		break;
 	    char winid[NUMBUFLEN];
-	    vim_snprintf(winid, sizeof(winid), "%d", wp->w_id);
+	    mnv_snprintf(winid, sizeof(winid), "%d", wp->w_id);
 	    if (dict_add_dict(v_event, winid, d) == FAIL)
 	    {
 		dict_unref(d);
@@ -3393,7 +3393,7 @@ may_trigger_win_scrolled_resized(void)
 	    dict_set_items_ro(v_event);
 #endif
 	    char_u winid[NUMBUFLEN];
-	    vim_snprintf((char *)winid, sizeof(winid), "%d",
+	    mnv_snprintf((char *)winid, sizeof(winid), "%d",
 							 first_size_win->w_id);
 	    apply_autocmds(EVENT_WINRESIZED, winid, winid, FALSE,
 						     first_size_win->w_buffer);
@@ -3419,7 +3419,7 @@ may_trigger_win_scrolled_resized(void)
 	dict_unref(scroll_dict);
 #endif
 	char_u winid[NUMBUFLEN];
-	vim_snprintf((char *)winid, sizeof(winid), "%d",
+	mnv_snprintf((char *)winid, sizeof(winid), "%d",
 						       first_scroll_win->w_id);
 	apply_autocmds(EVENT_WINSCROLLED, winid, winid, FALSE,
 						   first_scroll_win->w_buffer);
@@ -3559,7 +3559,7 @@ win_free_mem(
     // Remove the window and its frame from the tree of frames.
     frp = win->w_frame;
     wp = winframe_remove(win, dirp, tp, NULL);
-    vim_free(frp);
+    mnv_free(frp);
     win_free(win, tp);
 
     // When deleting the current window in the tab, select a new current
@@ -3760,7 +3760,7 @@ frame_flatten(frame_T *frp)
     frp2 = frp->fr_parent;
     if (topframe->fr_child == frp)
 	topframe->fr_child = frp2;
-    vim_free(frp);
+    mnv_free(frp);
 
     frp = frp2->fr_parent;
     if (frp != NULL && frp->fr_layout == frp2->fr_layout)
@@ -3785,7 +3785,7 @@ frame_flatten(frame_T *frp)
 	}
 	if (topframe->fr_child == frp2)
 	    topframe->fr_child = frp;
-	vim_free(frp2);
+	mnv_free(frp2);
     }
 }
 
@@ -4646,7 +4646,7 @@ win_init_popup_win(win_T *wp, buf_T *buf)
     win_init_empty(wp); // set cursor and topline to safe values
 
     // Make sure w_localdir is NULL to avoid a chdir() in win_enter_ext().
-    VIM_CLEAR(wp->w_localdir);
+    MNV_CLEAR(wp->w_localdir);
 }
 
 /*
@@ -4744,7 +4744,7 @@ alloc_tabpage(void)
     tp->tp_vars = dict_alloc_id(aid_newtabpage_tvars);
     if (tp->tp_vars == NULL)
     {
-	vim_free(tp);
+	mnv_free(tp);
 	return NULL;
     }
     init_var_dict(tp->tp_vars, &tp->tp_winvar, VAR_SCOPE);
@@ -4785,8 +4785,8 @@ free_tabpage(tabpage_T *tp)
     if (tp == lastused_tabpage)
 	lastused_tabpage = NULL;
 
-    vim_free(tp->tp_localdir);
-    vim_free(tp->tp_prevdir);
+    mnv_free(tp->tp_localdir);
+    mnv_free(tp->tp_prevdir);
 
 #ifdef FEAT_PYTHON
     python_tabpage_free(tp);
@@ -4796,7 +4796,7 @@ free_tabpage(tabpage_T *tp)
     python3_tabpage_free(tp);
 #endif
 
-    vim_free(tp);
+    mnv_free(tp);
 }
 
 /*
@@ -4837,13 +4837,13 @@ win_new_tabpage(int after)
     // Remember the current windows in this Tab page.
     if (leave_tabpage(curbuf, TRUE) == FAIL)
     {
-	vim_free(newtp);
+	mnv_free(newtp);
 	return FAIL;
     }
     curtab = newtp;
 
     newtp->tp_localdir = (tp->tp_localdir == NULL)
-				    ? NULL : vim_strsave(tp->tp_localdir);
+				    ? NULL : mnv_strsave(tp->tp_localdir);
 
     // Create a new empty window.
     if (win_alloc_firstwin(tp->tp_curwin) == OK)
@@ -5171,7 +5171,7 @@ enter_tabpage(
     reset_dragwin();
 
     // The tabpage line may have appeared or disappeared, may need to resize
-    // the frames for that.  When the Vim window was resized need to update
+    // the frames for that.  When the MNV window was resized need to update
     // frame sizes too.
     if (curtab->tp_old_Rows != ROWS_AVAIL || (old_off != firstwin->w_winrow
 #ifdef FEAT_GUI_TABLINE
@@ -5695,7 +5695,7 @@ win_fix_current_dir(void)
 	    char_u	cwd[MAXPATHL];
 
 	    if (mch_dirname(cwd, MAXPATHL) == OK)
-		globaldir = vim_strsave(cwd);
+		globaldir = mnv_strsave(cwd);
 	}
 	if (curwin->w_localdir != NULL)
 	    dirname = curwin->w_localdir;
@@ -5712,8 +5712,8 @@ win_fix_current_dir(void)
     {
 	// Window doesn't have a local directory and we are not in the global
 	// directory: Change to the global directory.
-	vim_ignored = mch_chdir((char *)globaldir);
-	VIM_CLEAR(globaldir);
+	mnv_ignored = mch_chdir((char *)globaldir);
+	MNV_CLEAR(globaldir);
 	last_chdir_reason = NULL;
 	shorten_fnames(TRUE);
     }
@@ -5924,7 +5924,7 @@ win_alloc(win_T *after, int hidden)
 
     if (win_alloc_lines(new_wp) == FAIL)
     {
-	vim_free(new_wp);
+	mnv_free(new_wp);
 	return NULL;
     }
 
@@ -5936,7 +5936,7 @@ win_alloc(win_T *after, int hidden)
     if (new_wp->w_vars == NULL)
     {
 	win_free_lsize(new_wp);
-	vim_free(new_wp);
+	mnv_free(new_wp);
 	return NULL;
     }
     init_var_dict(new_wp->w_vars, &new_wp->w_winvar, VAR_SCOPE);
@@ -6043,13 +6043,13 @@ win_free(
 #endif
 
     remove_highlight_overrides(wp->w_hl);
-    vim_free(wp->w_hl);
+    mnv_free(wp->w_hl);
 
     clear_winopt(&wp->w_onebuf_opt);
     clear_winopt(&wp->w_allbuf_opt);
 
-    vim_free(wp->w_lcs_chars.multispace);
-    vim_free(wp->w_lcs_chars.leadmultispace);
+    mnv_free(wp->w_lcs_chars.multispace);
+    mnv_free(wp->w_lcs_chars.leadmultispace);
 
 #ifdef FEAT_EVAL
     vars_clear(&wp->w_vars->dv_hashtab);	// free all w: variables
@@ -6070,8 +6070,8 @@ win_free(
 
     for (i = 0; i < wp->w_tagstacklen; ++i)
 	tagstack_clear_entry(&wp->w_tagstack[i]);
-    vim_free(wp->w_localdir);
-    vim_free(wp->w_prevdir);
+    mnv_free(wp->w_localdir);
+    mnv_free(wp->w_prevdir);
 
     // Remove the window from the b_wininfo lists, it may happen that the
     // freed memory is re-used for another window.
@@ -6125,16 +6125,16 @@ win_free(
     free_callback(&wp->w_close_cb);
     free_callback(&wp->w_filter_cb);
     for (i = 0; i < 4; ++i)
-	VIM_CLEAR(wp->w_border_highlight[i]);
-    vim_free(wp->w_scrollbar_highlight);
-    vim_free(wp->w_thumb_highlight);
-    vim_free(wp->w_popup_title);
+	MNV_CLEAR(wp->w_border_highlight[i]);
+    mnv_free(wp->w_scrollbar_highlight);
+    mnv_free(wp->w_thumb_highlight);
+    mnv_free(wp->w_popup_title);
     list_unref(wp->w_popup_mask);
-    vim_free(wp->w_popup_mask_cells);
+    mnv_free(wp->w_popup_mask_cells);
 #endif
 
 #ifdef FEAT_SYN_HL
-    vim_free(wp->w_p_cc_cols);
+    mnv_free(wp->w_p_cc_cols);
 #endif
 
     if (win_valid_any_tab(wp))
@@ -6145,7 +6145,7 @@ win_free(
 	au_pending_free_win = wp;
     }
     else
-	vim_free(wp);
+	mnv_free(wp);
 
     unblock_autocmds();
 }
@@ -6183,7 +6183,7 @@ win_free_popup(win_T *win)
     if (timer_valid(win->w_popup_timer))
 	stop_timer(win->w_popup_timer);
 # endif
-    vim_free(win->w_frame);
+    mnv_free(win->w_frame);
     win_free(win, NULL);
 }
 #endif
@@ -6300,7 +6300,7 @@ win_free_lsize(win_T *wp)
 {
     // TODO: why would wp be NULL here?
     if (wp != NULL)
-	VIM_CLEAR(wp->w_lines);
+	MNV_CLEAR(wp->w_lines);
 }
 
 /*
@@ -7915,7 +7915,7 @@ statuslineopt_changed(
     while (*p != NUL)
     {
 	// Note: Keep this in sync with p_stlo_values
-	if (STRNCMP(p, "maxheight:", 10) == 0 && VIM_ISDIGIT(p[10]))
+	if (STRNCMP(p, "maxheight:", 10) == 0 && MNV_ISDIGIT(p[10]))
 	{
 	    p += 10;
 	    l_stlo_mh = getdigits(&p);
@@ -8250,7 +8250,7 @@ clear_snapshot_rec(frame_T *fr)
 	return;
     clear_snapshot_rec(fr->fr_next);
     clear_snapshot_rec(fr->fr_child);
-    vim_free(fr);
+    mnv_free(fr);
 }
 
 /*
@@ -8513,7 +8513,7 @@ check_colorcolumn(
 	    // -N and +N: add to 'textwidth'
 	    col = (*s == '-') ? -1 : 1;
 	    ++s;
-	    if (!VIM_ISDIGIT(*s))
+	    if (!MNV_ISDIGIT(*s))
 		return e_invalid_argument;
 	    col = col * getdigits(&s);
 	    if (tw == 0)
@@ -8522,7 +8522,7 @@ check_colorcolumn(
 	    if (col < 0)
 		goto skip;
 	}
-	else if (VIM_ISDIGIT(*s))
+	else if (MNV_ISDIGIT(*s))
 	    col = getdigits(&s);
 	else
 	    return e_invalid_argument;
@@ -8539,7 +8539,7 @@ skip:
     if (wp == NULL)
 	return NULL;  // only parse "cc"
 
-    vim_free(wp->w_p_cc_cols);
+    mnv_free(wp->w_p_cc_cols);
     if (count == 0)
 	wp->w_p_cc_cols = NULL;
     else

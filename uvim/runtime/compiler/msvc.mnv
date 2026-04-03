@@ -1,0 +1,15 @@
+" MNV compiler file
+" Compiler:	Microsoft Visual C
+" Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+" Last Change:	2023 Aug 10
+"		2024 Apr 03 by The MNV Project (removed :CompilerSet definition)
+" Former Maintainer:	Bram Moolenaar <Bram@mnv.org>
+
+if exists("current_compiler")
+  finish
+endif
+let current_compiler = "msvc"
+
+" The errorformat for MSVC is the default.
+CompilerSet errorformat&
+CompilerSet makeprg=nmake

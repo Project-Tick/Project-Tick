@@ -13,4 +13,4 @@ int mch_expandpath(garray_T *gap, char_u *path, int flags);
 void *vms_fixfilename(void *instring);
 void vms_remove_version(void *fname);
 int RealWaitForChar(int fd, long msec, int *check_for_gpm, int *interrupted);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

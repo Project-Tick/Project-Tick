@@ -1,4 +1,4 @@
-// vim: set ft=rust ts=8 sw=4 sts=4 et :
+// mnv: set ft=rust ts=8 sw=4 sts=4 et :
 // START_INDENT
 use std::fs::File;
 use std::io::prelude::*;

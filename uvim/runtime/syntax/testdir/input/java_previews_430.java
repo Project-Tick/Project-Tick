@@ -1,4 +1,4 @@
-// VIM_TEST_SETUP let g:java_syntax_previews = [430]
+// MNV_TEST_SETUP let g:java_syntax_previews = [430]
 
 
 

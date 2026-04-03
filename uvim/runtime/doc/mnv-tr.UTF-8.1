@@ -1,0 +1,544 @@
+.TH MNV 1 "11 Nisan 2006"
+.SH AD
+mnv \- MNV is not Vim, bir programcının metin düzenleyicisi
+.SH ÖZET
+.br
+.B mnv
+[seçenekler] [dosya ..]
+.br
+.B mnv
+[seçenekler] \-
+.br
+.B mnv
+[seçenekler] \-t etiket
+.br
+.B mnv
+[seçenekler] \-q [hatadosyası]
+.PP
+.br
+.B ex
+.br
+.B view
+.br
+.B gmnv
+.B gview
+.B emnv
+.B eview
+.br
+.B rmnv
+.B rview
+.B rgmnv
+.B rgview
+.SH TANIM
+.B MNV,
+Vi ile yukarıya doğru uyumlu olan bir metin düzenleyicisidir.
+Her tür düz metni düzenlemede kullanılabilir.
+Özellikle programları düzenlemede yararlıdır.
+.PP
+Vi üzerine yapılmış birçok geliştirme ve iyileştirmeyi içerir:
+Çok düzeyli geri alma, çoklu pencereler ve arabellekler, sözdizim vurgulama,
+komut satırı düzenleme, dosya adı tamamlama, çevrimiçi yardım, görsel seçim vb.
+.B MNV
+ve Vi arasındaki değişikliklerin bir özeti için ":help vi_diff.txt"
+dosyasına bir göz atın.
+.PP
+.B MNV'i
+çalıştırırken gerekli olan yardımın çoğu çevrimiçi yardım sisteminden elde
+edilebilir. Bunun için ":help" komutunu kullanabilirsiniz.
+Aşağıda ÇEVRİMİÇİ YARDIM bölümüne bakın.
+.PP
+Genelde
+.B MNV
+tek bir dosyayı düzenlemek için şu komutla çalıştırılır:
+.PP
+	mnv dosya
+.PP
+Biraz daha açacak olursak:
+.PP
+	mnv [seçenekler] [dosyalistesi]
+.PP
+Eğer dosya listesi sağlanmamışsa düzenleyici boş bir arabellek açar.
+Bunun dışında aşağıdaki dört seçenekten bir tanesi de bir veya birden çok
+dosyayı düzenlemek için kullanılabilir.
+.TP 12
+dosya ..
+Dosya adlarının bir listesi.
+Bunlardan ilki ekrana getirilip arabelleğe yüklenir.
+İmleç arabelleğin ilk satırında konumlandırılır.
+Diğer dosyalara ":next" komutu ile geçebilirsiniz.
+Adı tire ile başlayan bir dosyayı düzenlemek için dosya listesinin başına
+"\-\-" koyun.
+.TP
+\-
+Düzenlenecek dosya stdin'den okunur.  Komutlar bir tty olması gereken
+stderr'den okunur.
+.TP
+\-t {etiket}
+Düzenlenecek dosya ve bu dosyanın başlangıç imleç konumu bir "etiket"e
+dayanır, bir tür bıraktığınız konumu belirten bir ayraç gibi.
+Etiket dosyasında {etiket} aranır, ilişkin dosya şu anki dosya olur ve
+ilişkin komut çalıştırılır.
+Bu genelde C programları için kullanılır, {etiket} bu durumda bir işlev
+olabilir.
+Bunun sonucunda bu işlevi içeren dosya o anki dosya olur ve imleç bu
+işlevin başlangıcına konumlandırılır.
+Ek bilgi için: ":help tag\-commands".
+.TP
+\-q [hatadosyası]
+Hızlı düzelt kipinde başlat
+[hatadosyası] okunur ve ilk hata görüntülenir.
+Eğer [hatadosyası] sağlanmazsa dosya adı 'errorfile' seçeneğinden alınır
+(öntanımlı olarak Amiga için "AztecC.Err", diğer sistemlerde "errors.err").
+Sonraki hatalara ":cn" komutu ile geçilebilir.
+Ek bilgi için: ":help quickfix".
+.PP
+.B MNV
+girilen komutun adına göre değişik biçimde davranır (çalıştırılabilir hâlâ
+aynı dosya olarak kalabilir).
+.TP 10
+mnv
+"Normal" kip, standart çalışma biçimi.
+.TP
+ex
+Ex kipinde başlat.
+"\-e" değişkeni ile de başlatılabilir.
+Normal kipe ":vi" komutu ile geçilebilir.
+.TP
+view
+Saltokunur kipte başlat.  Bu kipte dosya yazımına izin verilmez.
+"\-R" değişkeni ile de başlatılabilir.
+.TP
+gmnv gview
+Grafik arabirim sürümü.
+Yeni bir pencere açar.
+"\-g" değişkeni ile de başlatılabilir.
+.TP
+emnv eview
+Kolay kipte başlatılan grafik arabirim sürümü.
+Yeni bir pencere açar.
+"\-y" değişkeni ile de başlatılabilir.
+.TP
+rmnv rview rgmnv rgview
+Yukarıdaki ile aynı, ancak sınırlamalar içerir.  Kabuk komutları
+çalıştırılamaz veya
+.B MNV
+askıya alınamaz.
+"\-Z" değişkeni ile de başlatılabilir.
+.SH SEÇENEKLER
+Seçenekler bir sıra gözetmeksizin dosya adlarından önce veya sonra
+kullanılabilir. 
+Herhangi bir değişken içermeyen seçenekler bir tirenin ardında sıralanabilir.
+.TP 12
++[num]
+İlk dosya için imleç "num" satırında konumlandırılacaktır.
+Eğer "num" eksikse imleç en son satırda başlar.
+.TP
++/{dizge}
+İlk dosya için imleç {dizgi}'nin ilk eşleşmesinin olduğu satırda
+konumlandırılacaktır.
+Kullanılabilir arama dizgileri için ":help search\-pattern" yazın.
+.TP
++{komut}
+.TP
+\-c {komut}
+İlk dosya okunduktan sonra {komut} çalıştırılır.
+{komut} bir Ex komutu olarak işletilir.
+Eğer {komut} boşluk içeriyorsa çift tırnak içerisine alınmalıdır (bu
+kullanılan kabuğa bağlıdır).
+Örnek: mnv "+set si" main.c
+.br
+Not: 10 taneye kadar "+" veya "\-c" komutu kullanabilirsiniz.
+.TP
+\-S {dosya}
+İlk dosya okunduktan sonra {dosya} kaynak alınır.
+\-c "source {dosya}" bu komutun eşdeğeridir.
+{dosya}, '\-' ile başlayamaz.
+Eğer {dosya} sağlanmazsa "Session.mnv" kullanılır (yalnızca \-S son
+değişken olarak kullanıldığında işe yarar).
+.TP
+\-\-cmd {komut}
+"\-c" komutu gibi, ancak komut herhangi bir mnvrc dosyasını işletmeden
+önce çalıştırılır.
+"\-c" komutundan bağımsız olarak bu komutlardan 10 taneye kadar
+çalıştırabilirsiniz.
+.TP
+\-A
+Eğer
+.B MNV
+sağdan sola yazılan dosyaları ve Arapça klavye dizilimini kullanabilmesi için
+ARAPÇA desteği ile derlenmişe bu seçenek
+.B MNV'i
+Arapça kipinde başlatır ('arabic' seçeneği açılır).  Aksi durumda
+.B MNV
+hata verip çıkar.
+.TP
+\-b
+İkili kip.
+Bir çalıştırılabiliri veya ikili dosyayı düzenlemeye olanacak sağlayacak
+birkaç seçenek ayarlanır.
+.TP
+\-C
+Uyumlu kip. 'compatible' seçeneğini ayarlar.
+Bu kipte
+.B MNV
+bir .mnvrc dosyası var olsa bile genelde Vi gibi davranır.
+.TP
+\-d
+Karşılaştırma kipinde başlat.
+Bir, iki, üç veya dört adet dosya adı değişkeni olmalıdır.
+.B MNV
+bütün dosyaları yan yana açar ve aralarındaki değişiklikleri gösterir.
+mnvdiff(1) gibi çalışır.
+.TP
+\-d {aygıt}
+{aygıt}'ı bir uçbirim olarak kullanmak için açar.
+Yalnızca Amiga'da çalışır.
+Örnek:
+"\-d con:20/30/600/150".
+.TP
+\-D
+Hata ayıklama kipi.  Bir betiğin ilk komutunu çalıştırırken hata ayıklama
+kipine geçer.
+.TP
+\-e
+.B MNV'i
+Ex kipinde başlatır, "ex" çalıştırılabiliri ile aynı işlevi görür.
+.TP
+\-E
+.B MNV'i
+geliştirilmiş Ex kipinde başlatır, "exim" çalıştırılabiliri ile aynı
+işlevi görür.
+.TP
+\-f
+Önplan.  Grafik arabirim sürümü için
+.B MNV
+başladığı kabuktan ayrılmayacak ve kendisini çatallamayacaktır.
+Amiga'da,
+.B MNV
+yeni bir pencere açmak için yeniden başlatılmaz.
+Bu seçenek
+.B MNV
+düzenleme oturumunun bitmesini bekleyecek bir program tarafından
+başlatıldığında kullanılmalıdır (örn. mail).
+Amiga'da ":sh" ve ":!" komutları çalışmayacaktır.
+.TP
+\-\-nofork
+Önplan.  Grafik arabirim sürümü için
+.B MNV
+başladığı kabuktan ayrılmayacak ve kendisini çatallamayacaktır.
+.TP
+\-F
+Eğer
+.B MNV
+sağdan sola yazılan dosyaları ve Farsça klavye dizilimini kullanabilmesi için
+FKMAP desteği ile derlenmişse, bu seçenek
+.B MNV'i
+Farsça kipinde başlatır ('fkmap' ve 'rightleft' seçenekleri açılır).
+Aksi durumda
+.B MNV
+hata verip çıkar.
+.TP
+\-g
+Eğer
+.B MNV
+grafik arabirim desteği ile derlenmişse bu seçenek grafik arabirimi çalıştırır.
+Eğer grafik arabirim desteği eklenmemişse
+.B MNV
+hata verir ve çıkar.
+.TP
+\-h
+Komut satırı değişkenleri ve seçenekleri üzerine biraz yardım sağlar.
+Bu komuttan sonra
+.B MNV
+çıkar.
+.TP
+\-H
+Eğer
+.B MNV
+sağdan sola yazılan dosyaları ve İbranca klavye dizilimini kullanabilmesi için
+RIGHTLEFT desteği ile derlenmişse, bu seçenek 
+.B MNV'i
+İbranca kipinde başlatır ('hkmap' ve 'rightleft' seçenekleri açılır).
+Aksi durumda
+.B MNV
+hata verir ve çıkar.
+.TP
+\-i {mnvinfo}
+Öntanımlı "~/.mnvinfo" dosyası yerine kullanılacak olan mnvinfo dosyasını
+belirtmek için kullanılır.
+Bu komut aynı zamanda mnvinfo kullanımını atlamak için de kullanılabilir.
+Bunun için dosya adı yerine "NONE" vermeniz yeterlidir.
+.TP
+\-L
+\-r ile aynı.
+.TP
+\-l
+Lisp kipi.
+Bu değişken 'lisp' ve 'showmatch' seçeneklerini açar.
+.TP
+\-m
+Dosya yazma seçeneği kapalıdır.
+\'write' seçeneğini sıfırlar.
+Arabelleği hâlâ değiştirebilirsiniz, ancak dosyayı yazmak olanaklı değildir.
+.TP
+\-M
+Değişikliklere izin verilmez. 'modifiable' ve 'write' seçenekleri kapatılır,
+böylece değişiklik yapılamaz ve dosyalar yazılamaz.
+Bu seçenekleri yeniden açıp değişiklik yapmayı etkinleştirebilirsiniz.
+.TP
+\-N
+Uyumsuz kip. 'no-compatible' seçeneğini sıfırlar.
+Bu seçenekle birlikte
+.B MNV
+biraz daha düzgünce çalışır, ancak bir .mnvrc dosyası olmamasına rağmen
+Vi ile daha az uyumludur.
+.TP
+\-n
+Bir takas dosyası kullanılmaz.
+Çökme sonrası kurtarma olanaklı olmayacaktır.
+Eğer çok yavaş bir ortamda dosya çalışıyorsanız (örn. disket) yararlı olabilir.
+":set uc=0" ile de yapılabilir.
+Geri almak için ":set uc=200" yapın.
+.TP
+\-nb
+NetBeans için bir düzenleyici sunucusu olur.  Ayrıntılar için belgelere bakın.
+.TP
+\-o[N]
+N sayıda pencereyi üst üste açar.
+N verilmezse, her dosya için bir pencere açar.
+.TP
+\-O[N]
+N sayıda pencereyi yan yana açar.
+N verilmezse, her dosya için bir pencere açar.
+.TP
+\-p[N]
+N sayıda sekme açar.
+N verilmezse, her dosya için bir sekme açar.
+.TP
+\-R
+Saltokunur kip.
+\'readonly' seçeneği açılır.
+Arabelleği hâlâ değiştirebilirsiniz, ancak yanlışlıkla dosyanın üzerine
+yazmaktan sizi korur.
+Dosyanın üzerine yazmak istemiyorsanız, Ex komutuna bir ünlem imi ekleyin,
+örn. ":w!".
+\-R seçeneği aynı zamanda \-n seçeneğini de uygular (yukarıda bakın).
+\'readonly' seçeneği ":set noro" ile sıfırlanabilir.
+Ek bilgi için: ":help 'readonly'".
+.TP
+\-r
+Takas dosyalarını içerdikleri kurtarma bilgilerini gösterecek biçimde listeler.
+.TP
+\-r {dosya}
+Kurtarma kipi.
+Çökmüş bir düzenleme oturumunu takas dosyasını kullanarak kurtarır.
+Takas dosyası dosya ile aynı ada iye olup sonuna ".swp" eklenmiştir.
+Ek bilgi için: ":help recovery".
+.TP
+\-s
+Sessiz kip. Yalnızca "Ex" olarak başlatıldığında veya "\-e" seçeneği
+"\-s" seçeneğinden önce verildiğinde çalışır.
+.TP
+\-s {betikgir}
+{betikgir} betik dosyası okunur.
+Dosyadaki karakterler onları siz girmişsiniz gibi kabul edilir.
+Aynısı ":source! {betikgir}" komutu ile de gerçekleştirilebilir.
+Eğer dosyanın sonuna düzenleyici çıkmadan önce gelinirse, sonraki karakterler
+klavyeden okunur.
+.TP
+\-T {uçbirim}
+.B MNV'e
+kullandığınız uçbirimin adını söyler.
+Yalnızca kendiliğinden okunamazsa gereklidir.
+.B MNV'in
+tanıdığı bir uçbirim olmalıdır veya termcap veya terminfo dosyasında
+tanımlı olmalıdır.
+.TP
+\-u {mnvrc}
+İlklendirme için {mnvrc} dosyasındaki komutları kullan.
+Diğer tüm ilklendirmeler atlanır.
+Bunu özel türde dosyaları düzenlemek için kullanın.
+Dosya adı olarak "NONE" verilirse tüm özelleştirmeler atlanır.
+Ek bilgi için mnv içinde ":help initialization" bölümüne bakın.
+.TP
+\-U {gmnvrc}
+Grafik arabirim ilklendirmesi için {gmnvrc} dosyasındaki komutlara bakın.
+Diğer tüm grafik arabirim ilklendirmeleri atlanır.
+Dosya adı olarak "NONE" verilirse tüm özelleştirmeler atlanır.
+Ek bilgi için mnv içinde ":help gui\-init" bölümüne bakın.
+.TP
+\-V[N]
+Sözlü anlatım.  Hangi dosyaların kaynak alındığını ve mnvinfo dosyasından
+nelerin okunduğunu yazdırır.  'verbose' için isteğe bağlı N seçeneği 
+kullanılabilir. Öntanımlı sayı 10'dur.
+.TP
+\-v
+.B MNV'i
+"vi" yazarak başlatırmış gibi Vi kipinde başlatır.  Bu yalnızca
+çalıştırılabilir "ex" olduğunda bir işe yarar.
+.TP
+\-w {betikçık}
+Girdiğiniz tüm karakterler siz
+.B MNV'den
+çıkana değin {betikçık} dosyasında saklanır.
+Bu "mnv \-s" veya ":source" komutu ile kullanılacak bir betik yaratmaya yarar.
+Eğer {betikçık} dosyası varsa karakterler dosyaya eklenir.
+.TP
+\-W {betikçık}
+\-w gibi, ancak var olan bir dosyanın üzerine yazar.
+.TP
+\-x
+Dosya yazarken şifreleme kullanır.  Bir şifre girmeniz istenecektir.
+.TP
+\-X
+X sunucusuna bağlanmaz.  MNV'in uçbirimde başlama süresini azaltır ancak pencere başlığı
+ve pano kullanılamaz.
+.TP
+\-y
+.B MNV'i
+"emnv" veya "eview" yazarak başlatırmış gibi kolay kipte başlatır.
+.B MNV'i
+diğer tıkla ve yaz düzenleyicileri gibi çalıştırır.
+.TP
+\-Z
+Kısıtlı kip.  Program "r" yazarak başlatılmış gibi davranır.
+.TP
+\-\-
+Seçeneklerin bittiğini belirtir.
+Bundan sonraki değişkenler artık bir dosya adı olarak işletilir.
+Aynı zamanda '\-' ile başlayan bir dosyayı tanıtmak için de kullanılabilir.
+.TP
+\-\-echo\-wid
+Yalnızca GTK grafik arabirimi: Pencere numarasını stdout'a yankıla.
+.TP
+\-\-help
+Yardım iletisini yazdırır ve çıkar, "\-h" gibi.
+.TP
+\-\-literal
+Dosya adı değişkenlerini gerçek anlamda işlet, joker karakterlerini
+genişletme.  Bunun kabuğun karakterleri kendiliğinden genişlettiği Unix'te
+bir etkisi bulunmamaktadır.
+.TP
+\-\-noplugin
+Eklentileri yükleme.  "\-u NONE" da aynı işlevi görür.
+.TP
+\-\-remote
+Bir MNV sunucusuna bağlan ve geri kalan değişkenlerde belirtilen dosyaları
+düzenle. Eğer bir sunucu bulunamazsa bir uyarı verilir ve dosyalar şu anki
+MNV'de düzenlenir.
+.TP
+\-\-remote\-expr {ifade}
+Bir MNV sunucusuna bağlan ve {ifade}'yi değerlendirip sonucu stdout'a yazdır.
+.TP
+\-\-remote\-send {anahtarlar}
+Bir MNV sunucusuna bağlan ve ona {anahtarlar} gönder.
+.TP
+\-\-remote\-silent
+\-\-remote gibi, ancak bir sunucu bulunamazsa uyarı vermez.
+.TP
+\-\-remote\-wait
+\-\-remote gibi, ancak MNV dosyalar düzenlenene kadar çıkmaz.
+.TP
+\-\-remote\-wait\-silent
+\-\-remote\-wait gibi, ancak bir sunucu bulunamazsa uyarı vermez.
+.TP
+\-\-serverlist
+Bulunabilecek bütün MNV sunucularını listeler.
+.TP
+\-\-servername {ad}
+{ad}'ı bir sunucu adı olarak kullanır.  Bir \-\-remote değişkeni ve
+bağlanacağı sunucunun adı ile kullanılmadığı sürece şu anki MNV için
+kullanılır.
+.TP
+\-\-socketid {id}
+Yalnızca GTK grafik arabirimi: GtkPlug mekanizmasını kullanarak gmnv'i başka
+bir pencerede çalıştır.
+.TP
+\-\-version
+Sürüm bilgisini yazdırır ve çıkar.
+.SH ÇEVRİMİÇİ YARDIM
+.B MNV
+içinde ":help" yazarak başlayın.
+Belirli bir konu üzerine yardım almak için ":help subject" yazın.
+Örneğin: "ZZ" komutu üzerine bilgi almak için ":help ZZ" yazın.
+<Tab> ve CTRL-D kullanarak konuları tamamlayın (":help cmdline\-completion").
+Bir konumdan diğerini atlamak için etiketler mevcuttur (bir tür köprü gibi),
+ek bilgi için ":help").
+Tüm belgelendirmeyi bu biçimde okuyabilirsiniz, örneğin: ":help syntax.txt".
+":help syntax.txt".
+.SH DOSYALAR
+.TP 15
+/usr/local/lib/mnv/doc/*.txt
+.B MNV
+belgelendirme dosyaları.
+Tüm listeyi görmek için ":help doc\-file\-list" yazın.
+.TP
+/usr/local/lib/mnv/doc/tags
+Belgelendirme içinde veri bulmak için kullanılan etiketler dosyası.
+.TP
+/usr/local/lib/mnv/syntax/syntax.mnv
+Sistem geneli sözdizim ilklendirmeleri.
+.TP
+/usr/local/lib/mnv/syntax/*.mnv
+Programlama dilleri için sözdizim dosyaları.
+.TP
+/usr/local/lib/mnv/mnvrc
+Sistem geneli
+.B MNV
+ilklendirmeleri.
+.TP
+~/.mnvrc
+Sizin kişisel
+.B MNV
+ilklendirmeleriniz.
+.TP
+/usr/local/lib/mnv/gmnvrc
+Sistem geneli gmnv ilklendirmeleri.
+.TP
+~/.gmnvrc
+Sizin kişisel gmnv ilklendirmeleriniz.
+.TP
+/usr/local/lib/mnv/optwin.mnv
+":options" komutu için kullanılan betik, görsel seçenek ayarları.
+.TP
+/usr/local/lib/mnv/menu.mnv
+gmnv için sistem geneli menü ilklendirmeleri.
+.TP
+/usr/local/lib/mnv/bugreport.mnv
+Hata raporu oluşturmak için kullanılan betik. Ek bilgi için: ":help bugs".
+.TP
+/usr/local/lib/mnv/filetype.mnv
+Dosya türünü adından tanıyan betik. Ek bilgi için: ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/scripts.mnv
+Dosya türünü içeriğinden tanıyan betik. Ek bilgi için: ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/print/*.ps
+PostScript yazdırması için kullanılan dosyalar.
+.PP
+En güncel bilgiler için VİM ana sayfasını ziyaret edin:
+.br
+<URL:http://www.mnv.org/>
+.SH AYRICA BAKINIZ
+mnvtutor(1)
+.SH YAZAR
+.B MNV'in
+büyük çoğunluğu Bram Moolenaar tarafından başkalarının kayda değer
+yardımlarıyla yazılmıştır.
+Ek bilgi için
+.B MNV
+içinde ":help credits" yazın.
+.br
+.B MNV
+Stevie tabanlıdır, yazarları: Tim Thompson,
+Tony Andrews ve G.R. (Fred) Walter.
+Orijinal koddan geriye pek bir şey kalmadığını söylemek yanlış olmaz.
+.SH HATALAR
+Bilinen hataların bir listesi için ":help todo" yazın.
+.PP
+Unutmayın ki, başkaları tarafından hata olarak değerlendirilebilecek konuların
+bir çoğu Vi'nin davranışlarına sadık kalınması nedeniyle vardır. Yine de
+bazı şeylerin "Vi bunu değişik biçimde yapıyor" diye hata olabileceğini
+düşünüyorsanız, "vi_diff.txt" dosyasını dikkatle okuyun (veya MNV içinde
+:help vi_diff.txt yazın.
+Ek olarak 'compatible' ve 'cpoptions' seçeneklerine de bakabilirsiniz.

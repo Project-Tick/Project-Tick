@@ -74,4 +74,4 @@ char_u *buf_get_fname(buf_T *buf);
 void set_buflisted(int on);
 int buf_contents_changed(buf_T *buf);
 void wipe_buffer(buf_T *buf, int aucmd);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

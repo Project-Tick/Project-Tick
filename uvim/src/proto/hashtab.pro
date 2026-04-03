@@ -13,4 +13,4 @@ void hash_lock(hashtab_T *ht);
 void hash_lock_size(hashtab_T *ht, int size);
 void hash_unlock(hashtab_T *ht);
 hash_T hash_hash(char_u *key);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

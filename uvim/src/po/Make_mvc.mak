@@ -1,4 +1,4 @@
-# Makefile for the Vim message translations for MSVC
+# Makefile for the MNV message translations for MSVC
 # (based on make_ming.mak)
 #
 # Mike Williams, <mrw@eandem.co.uk>
@@ -29,14 +29,14 @@
 # Get LANGUAGES, MOFILES, MOCONVERTED and others.
 !INCLUDE .\Make_all.mak
 
-!IFNDEF VIMRUNTIME
-VIMRUNTIME = ..\..\runtime
+!IFNDEF MNVRUNTIME
+MNVRUNTIME = ..\..\runtime
 !ENDIF
 
-# Correct the following line for the where executable file vim is
+# Correct the following line for the where executable file mnv is
 # installed.  Please do not put the path in quotes.
-!IFNDEF VIMPROG
-VIMPROG = ..\vim.exe
+!IFNDEF MNVPROG
+MNVPROG = ..\mnv.exe
 !ENDIF
 
 # Correct the following line for the directory where gettext et al is
@@ -45,8 +45,8 @@ VIMPROG = ..\vim.exe
 GETTEXT_PATH = D:\Programs\GetText\bin
 !ENDIF
 
-INSTALLDIR = $(VIMRUNTIME)\lang\$(LANGUAGE)\LC_MESSAGES
-PACKAGE = vim
+INSTALLDIR = $(MNVRUNTIME)\lang\$(LANGUAGE)\LC_MESSAGES
+PACKAGE = mnv
 
 # Starting from version 0.22, msgfmt forcibly converts text to UTF-8 regardless
 # of the value of the "charset" field.
@@ -87,8 +87,8 @@ originals : $(MOFILES)
 converted: $(MOCONVERTED)
 
 .po.ck:
-	"$(VIMPROG)" -u NONE --noplugins -e -s --cmd "set enc=utf-8" \
-		-S check.vim \
+	"$(MNVPROG)" -u NONE --noplugins -e -s --cmd "set enc=utf-8" \
+		-S check.mnv \
 		-c "if error == 0 | q | else | num 2 | cq | endif" $<
 	@ <<touch.bat $@
 $(TOUCH)
@@ -286,9 +286,9 @@ zh_TW.po: zh_TW.UTF-8.po
 #
 #  06.11.23, added by Restorer:
 #  For more details, see:
-#  https://github.com/vim/vim/pull/3261
-#  https://github.com/vim/vim/pull/3476
-#  https://github.com/vim/vim/pull/12153
+#  https://github.com/Project-Tick/Project-Tick/pull/3261
+#  https://github.com/Project-Tick/Project-Tick/pull/3476
+#  https://github.com/Project-Tick/Project-Tick/pull/12153
 #  (read all comments)
 #
 #  I checked the workability on the list of backslash characters
@@ -384,45 +384,45 @@ uk.cp1251.po: uk.po
 PO_INPUTLIST = \
 	..\*.c \
 	..\if_perl.xs \
-	..\GvimExt\gvimext.cpp \
+	..\GmnvExt\gmnvext.cpp \
 	..\errors.h \
 	..\globals.h \
 	..\if_py_both.h \
-	..\vim.h \
-	gvim.desktop.in \
-	vim.desktop.in
+	..\mnv.h \
+	gmnv.desktop.in \
+	mnv.desktop.in
 
 files: $(PO_INPUTLIST)
 	$(LS) $(LSFLAGS) $(PO_INPUTLIST) > .\files
 
 first_time: files
-	"$(VIMPROG)" -u NONE --not-a-term -S tojavascript.vim $(LANGUAGE).po \
-		$(PO_VIM_INPUTLIST)
-	@ $(CP) /B .\files+.\vim_to_js .\allfiles
+	"$(MNVPROG)" -u NONE --not-a-term -S tojavascript.mnv $(LANGUAGE).po \
+		$(PO_MNV_INPUTLIST)
+	@ $(CP) /B .\files+.\mnv_to_js .\allfiles
 	set OLD_PO_FILE_INPUT=yes
 	set OLD_PO_FILE_OUTPUT=yes
 	$(XGETTEXT) --default-domain=$(LANGUAGE) --add-comments \
 		$(XGETTEXT_KEYWORDS) --files-from=.\allfiles \
-		--copyright-holder="$(Year), The Vim Project" \
-		--package-name=Vim --msgid-bugs-address="vim-dev@vim.org"
-	"$(VIMPROG)" -u NONE --not-a-term -S fixfilenames.vim $(LANGUAGE).po \
-		$(PO_VIM_INPUTLIST)
-	$(RM) *.js .\vim_to_js
+		--copyright-holder="$(Year), The MNV Project" \
+		--package-name=MNV --msgid-bugs-address="mnv-dev@mnv.org"
+	"$(MNVPROG)" -u NONE --not-a-term -S fixfilenames.mnv $(LANGUAGE).po \
+		$(PO_MNV_INPUTLIST)
+	$(RM) *.js .\mnv_to_js
 	@ $(MAKE) -lf Make_mvc.mak clean
 
 $(PACKAGE).pot: files
-	"$(VIMPROG)" -u NONE --not-a-term -S tojavascript.vim $(PACKAGE).pot \
-		$(PO_VIM_INPUTLIST)
-	@ $(CP) /B .\files+.\vim_to_js .\allfiles
+	"$(MNVPROG)" -u NONE --not-a-term -S tojavascript.mnv $(PACKAGE).pot \
+		$(PO_MNV_INPUTLIST)
+	@ $(CP) /B .\files+.\mnv_to_js .\allfiles
 	set OLD_PO_FILE_INPUT=yes
 	set OLD_PO_FILE_OUTPUT=yes
 	$(XGETTEXT) --default-domain=$(PACKAGE) --output=$(PACKAGE).pot \
 		--add-comments $(XGETTEXT_KEYWORDS) --files-from=.\allfiles \
-		--no-location --copyright-holder="$(Year), The Vim Project" \
-		--package-name=Vim --msgid-bugs-address="vim-dev@vim.org"
-	"$(VIMPROG)" -u NONE --not-a-term -S fixfilenames.vim $(PACKAGE).pot \
-		$(PO_VIM_INPUTLIST)
-	$(RM) *.js .\vim_to_js
+		--no-location --copyright-holder="$(Year), The MNV Project" \
+		--package-name=MNV --msgid-bugs-address="mnv-dev@mnv.org"
+	"$(MNVPROG)" -u NONE --not-a-term -S fixfilenames.mnv $(PACKAGE).pot \
+		$(PO_MNV_INPUTLIST)
+	$(RM) *.js .\mnv_to_js
 	@ $(MAKE) -lf Make_mvc.mak clean
 
 # Only original translations with default encoding should be updated.
@@ -443,16 +443,16 @@ install: $(LANGUAGE).mo
 
 install-all: all
 	for %%l in ($(LANGUAGES)) do \
-		@if not exist "$(VIMRUNTIME)\lang\%%l\LC_MESSAGES" \
-		$(MKD) "$(VIMRUNTIME)\lang\%%l\LC_MESSAGES"
+		@if not exist "$(MNVRUNTIME)\lang\%%l\LC_MESSAGES" \
+		$(MKD) "$(MNVRUNTIME)\lang\%%l\LC_MESSAGES"
 	for %%l in ($(LANGUAGES)) do @$(CP) %%l.mo \
-		"$(VIMRUNTIME)\lang\%%l\LC_MESSAGES\$(PACKAGE).mo"
+		"$(MNVRUNTIME)\lang\%%l\LC_MESSAGES\$(PACKAGE).mo"
 
 cleanup-po: $(LANGUAGE).po
-	@ "$(VIMPROG)" -u NONE -e -s -S cleanup.vim -c wq $(LANGUAGE).po
+	@ "$(MNVPROG)" -u NONE -e -s -S cleanup.mnv -c wq $(LANGUAGE).po
 
 cleanup-po-all: $(POFILES)
-	!@ "$(VIMPROG)" -u NONE -e -s -S cleanup.vim -c wq $**
+	!@ "$(MNVPROG)" -u NONE -e -s -S cleanup.mnv -c wq $**
 
 #######
 # For translations of plug-ins
@@ -461,15 +461,15 @@ cleanup-po-all: $(POFILES)
 # Preparing the POT file of the plug-in package
 POT_PLUGPACKAGE_PATH = $(MAKEDIR)
 $(PLUGPACKAGE).pot : $(PO_PLUG_INPUTLIST)
-	"$(VIMPROG)" -u NONE --not-a-term -S tojavascript.vim \
+	"$(MNVPROG)" -u NONE --not-a-term -S tojavascript.mnv \
 		$(PLUGPACKAGE).pot $**
 	$(XGETTEXT) --from-code=UTF-8 --default-domain=$(PLUGPACKAGE) \
 		--package-name=$(PLUGPACKAGE) \
 		--output-dir="$(POT_PLUGPACKAGE_PATH)" \
-		--output=$(PLUGPACKAGE).pot --files-from=.\vim_to_js
-	"$(VIMPROG)" -u NONE --not-a-term -S fixfilenames.vim \
+		--output=$(PLUGPACKAGE).pot --files-from=.\mnv_to_js
+	"$(MNVPROG)" -u NONE --not-a-term -S fixfilenames.mnv \
 		"$(POT_PLUGPACKAGE_PATH)\$(PLUGPACKAGE).pot" $**
-	$(RM) *.js .\vim_to_js
+	$(RM) *.js .\mnv_to_js
 
 # Converting the PO file of the plug-in package to the binary format of the MO file
 MO_PLUGPACKAGE_PATH = $(MAKEDIR)
@@ -485,4 +485,4 @@ clean: checkclean
 #	- $(RM) *.pot
 #	- $(RM) big5corr.obj big5corr.exe
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

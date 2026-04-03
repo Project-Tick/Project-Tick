@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * Highlighting stuff.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #define SG_TERM		1	// term has been set
 #define SG_CTERM	2	// cterm has been set
@@ -247,7 +247,7 @@ static void hl_do_font(int idx, char_u *arg, int do_normal, int do_menu, int do_
 /*
  * The default highlight groups.  These are compiled-in for fast startup and
  * they still work when the runtime files can't be found.
- * When making changes here, also change runtime/colors/default.vim!
+ * When making changes here, also change runtime/colors/default.mnv!
  * The #ifdefs are needed to reduce the amount of static data.  Helps to make
  * the 16 bit DOS (museum) version compile.
  */
@@ -546,13 +546,13 @@ init_highlight(
     {
 	// The value of g:colors_name could be freed when sourcing the script,
 	// making "p" invalid, so copy it.
-	char_u *copy_p = vim_strsave(p);
+	char_u *copy_p = mnv_strsave(p);
 	int    r;
 
 	if (copy_p != NULL)
 	{
 	    r = load_colors(copy_p);
-	    vim_free(copy_p);
+	    mnv_free(copy_p);
 	    if (r == OK)
 		return;
 	}
@@ -602,11 +602,11 @@ init_highlight(
 	static int	recursive = 0;
 
 	if (recursive >= 5)
-	    emsg(_(e_recursive_loop_loading_syncolor_vim));
+	    emsg(_(e_recursive_loop_loading_syncolor_mnv));
 	else
 	{
 	    ++recursive;
-	    (void)source_runtime((char_u *)"syntax/syncolor.vim", DIP_ALL);
+	    (void)source_runtime((char_u *)"syntax/syncolor.mnv", DIP_ALL);
 	    --recursive;
 	}
     }
@@ -623,8 +623,8 @@ load_default_colors_lists(void)
 {
     // Lacking a default color list isn't the end of the world but it is likely
     // an inconvenience so users should know when it is missing.
-    if (source_runtime((char_u *)"colors/lists/default.vim", DIP_ALL) != OK)
-	msg("failed to load colors/lists/default.vim");
+    if (source_runtime((char_u *)"colors/lists/default.mnv", DIP_ALL) != OK)
+	msg("failed to load colors/lists/default.mnv");
 }
 #endif
 
@@ -654,9 +654,9 @@ load_colors(char_u *name)
 #endif
 	apply_autocmds(EVENT_COLORSCHEMEPRE, name,
 					       curbuf->b_fname, FALSE, curbuf);
-	sprintf((char *)buf, "colors/%s.vim", name);
+	sprintf((char *)buf, "colors/%s.mnv", name);
 	retval = source_runtime(buf, DIP_START + DIP_OPT);
-	vim_free(buf);
+	mnv_free(buf);
 	if (retval == OK)
 	    apply_autocmds(EVENT_COLORSCHEME, name, curbuf->b_fname,
 								FALSE, curbuf);
@@ -1005,8 +1005,8 @@ highlight_set_font(
     else if (!gui.shell_created)
     {
 	// GUI not started yet, always accept the name.
-	vim_free(HL_TABLE()[idx].sg_font_name);
-	HL_TABLE()[idx].sg_font_name = vim_strsave(arg);
+	mnv_free(HL_TABLE()[idx].sg_font_name);
+	HL_TABLE()[idx].sg_font_name = mnv_strsave(arg);
 	did_change = TRUE;
     }
     else
@@ -1051,8 +1051,8 @@ highlight_set_font(
 	// are known.
 	if (did_change)
 	{
-	    vim_free(HL_TABLE()[idx].sg_font_name);
-	    HL_TABLE()[idx].sg_font_name = vim_strsave(arg);
+	    mnv_free(HL_TABLE()[idx].sg_font_name);
+	    HL_TABLE()[idx].sg_font_name = mnv_strsave(arg);
 	}
     }
 
@@ -1192,7 +1192,7 @@ highlight_set_cterm_font(
     if (!init)
 	HL_TABLE()[idx].sg_set |= SG_CTERM;
 
-    if (VIM_ISDIGIT(*arg))
+    if (MNV_ISDIGIT(*arg))
 	font = atoi((char *)arg);
     else if (STRICMP(arg, "NONE") == 0)
 	font = -1;
@@ -1239,7 +1239,7 @@ highlight_set_cterm_color(
 	HL_TABLE()[idx].sg_cterm_bold = FALSE;
     }
 
-    if (VIM_ISDIGIT(*arg))
+    if (MNV_ISDIGIT(*arg))
 	color = atoi((char *)arg);
     else if (STRICMP(arg, "fg") == 0)
     {
@@ -1353,9 +1353,9 @@ highlight_set_guifg(
 # endif
 	if (*namep == NULL || STRCMP(*namep, arg) != 0)
 	{
-	    vim_free(*namep);
+	    mnv_free(*namep);
 	    if (STRCMP(arg, "NONE") != 0)
-		*namep = vim_strsave(arg);
+		*namep = mnv_strsave(arg);
 	    else
 		*namep = NULL;
 	    did_change = TRUE;
@@ -1436,9 +1436,9 @@ highlight_set_guibg(
 # endif
 	if (*namep == NULL || STRCMP(*namep, arg) != 0)
 	{
-	    vim_free(*namep);
+	    mnv_free(*namep);
 	    if (STRCMP(arg, "NONE") != 0)
-		*namep = vim_strsave(arg);
+		*namep = mnv_strsave(arg);
 	    else
 		*namep = NULL;
 	    did_change = TRUE;
@@ -1510,9 +1510,9 @@ highlight_set_guisp(int idx, char_u *arg, int init)
 # endif
 	if (*namep == NULL || STRCMP(*namep, arg) != 0)
 	{
-	    vim_free(*namep);
+	    mnv_free(*namep);
 	    if (STRCMP(arg, "NONE") != 0)
-		*namep = vim_strsave(arg);
+		*namep = mnv_strsave(arg);
 	    else
 		*namep = NULL;
 	    did_change = TRUE;
@@ -1553,12 +1553,12 @@ highlight_set_startstop_termcode(int idx, char_u *key, char_u *arg, int init)
 	    for (len = 0; arg[off + len] &&
 		    arg[off + len] != ','; ++len)
 		;
-	    tname = vim_strnsave(arg + off, len);
+	    tname = mnv_strnsave(arg + off, len);
 	    if (tname == NULL)		// out of memory
 		return FALSE;
 	    // lookup the escape sequence for the item
 	    p = get_term_code(tname);
-	    vim_free(tname);
+	    mnv_free(tname);
 	    if (p == NULL)	    // ignore non-existing things
 		p = (char_u *)"";
 
@@ -1593,15 +1593,15 @@ highlight_set_startstop_termcode(int idx, char_u *key, char_u *arg, int init)
     if (STRCMP(buf, "NONE") == 0)	// resetting the value
 	p = NULL;
     else
-	p = vim_strsave(buf);
+	p = mnv_strsave(buf);
     if (key[2] == 'A')
     {
-	vim_free(HL_TABLE()[idx].sg_start);
+	mnv_free(HL_TABLE()[idx].sg_start);
 	HL_TABLE()[idx].sg_start = p;
     }
     else
     {
-	vim_free(HL_TABLE()[idx].sg_stop);
+	mnv_free(HL_TABLE()[idx].sg_stop);
 	HL_TABLE()[idx].sg_stop = p;
     }
     return TRUE;
@@ -1795,10 +1795,10 @@ do_highlight(
 
 	    // Isolate the key ("term", "ctermfg", "ctermbg", "font", "guifg"
 	    // or "guibg").
-	    while (*linep && !VIM_ISWHITE(*linep) && *linep != '=')
+	    while (*linep && !MNV_ISWHITE(*linep) && *linep != '=')
 		++linep;
-	    vim_free(key);
-	    key = vim_strnsave_up(key_start, linep - key_start);
+	    mnv_free(key);
+	    key = mnv_strnsave_up(key_start, linep - key_start);
 	    if (key == NULL)
 	    {
 		error = TRUE;
@@ -1831,7 +1831,7 @@ do_highlight(
 	    if (*linep == '\'')		// guifg='color name'
 	    {
 		arg_start = ++linep;
-		linep = vim_strchr(linep, '\'');
+		linep = mnv_strchr(linep, '\'');
 		if (linep == NULL)
 		{
 		    semsg(_(e_invalid_argument_str), key_start);
@@ -1850,8 +1850,8 @@ do_highlight(
 		error = TRUE;
 		break;
 	    }
-	    vim_free(arg);
-	    arg = vim_strnsave(arg_start, linep - arg_start);
+	    mnv_free(arg);
+	    arg = mnv_strnsave(arg_start, linep - arg_start);
 	    if (arg == NULL)
 	    {
 		error = TRUE;
@@ -2019,8 +2019,8 @@ do_highlight(
 #endif
     }
 
-    vim_free(key);
-    vim_free(arg);
+    mnv_free(key);
+    mnv_free(arg);
 
     // Only call highlight_changed() once, after a sequence of highlight
     // commands, and only if an attribute actually changed.
@@ -2049,8 +2049,8 @@ free_highlight(void)
     for (i = 0; i < highlight_ga.ga_len; ++i)
     {
 	highlight_clear(i);
-	vim_free(HL_TABLE()[i].sg_name);
-	vim_free(HL_TABLE()[i].sg_name_u - HLNAME_KEY_OFF);
+	mnv_free(HL_TABLE()[i].sg_name);
+	mnv_free(HL_TABLE()[i].sg_name_u - HLNAME_KEY_OFF);
     }
     ga_clear(&highlight_ga);
     hash_clear(&highlight_ht);
@@ -2059,7 +2059,7 @@ free_highlight(void)
 #endif
 
 /*
- * Reset the cterm colors to what they were before Vim was started, if
+ * Reset the cterm colors to what they were before MNV was started, if
  * possible.  Otherwise reset them to zero.
  */
     void
@@ -2071,7 +2071,7 @@ restore_cterm_colors(void)
     // background/foreground colors.
     mch_set_normal_colors();
 #else
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (!gui.in_use)
     {
 	mch_set_normal_colors();
@@ -2121,8 +2121,8 @@ highlight_clear(int idx)
     HL_TABLE()[idx].sg_cleared = TRUE;
 
     HL_TABLE()[idx].sg_term = 0;
-    VIM_CLEAR(HL_TABLE()[idx].sg_start);
-    VIM_CLEAR(HL_TABLE()[idx].sg_stop);
+    MNV_CLEAR(HL_TABLE()[idx].sg_start);
+    MNV_CLEAR(HL_TABLE()[idx].sg_stop);
     HL_TABLE()[idx].sg_term_attr = 0;
     HL_TABLE()[idx].sg_cterm = 0;
     HL_TABLE()[idx].sg_cterm_bold = FALSE;
@@ -2132,9 +2132,9 @@ highlight_clear(int idx)
     HL_TABLE()[idx].sg_cterm_font = 0;
 #if defined(FEAT_GUI) || defined(FEAT_EVAL)
     HL_TABLE()[idx].sg_gui = 0;
-    VIM_CLEAR(HL_TABLE()[idx].sg_gui_fg_name);
-    VIM_CLEAR(HL_TABLE()[idx].sg_gui_bg_name);
-    VIM_CLEAR(HL_TABLE()[idx].sg_gui_sp_name);
+    MNV_CLEAR(HL_TABLE()[idx].sg_gui_fg_name);
+    MNV_CLEAR(HL_TABLE()[idx].sg_gui_bg_name);
+    MNV_CLEAR(HL_TABLE()[idx].sg_gui_sp_name);
 #endif
 #if defined(FEAT_GUI) || defined(FEAT_TERMGUICOLORS)
     HL_TABLE()[idx].sg_gui_fg = INVALCOLOR;
@@ -2148,7 +2148,7 @@ highlight_clear(int idx)
     gui_mch_free_fontset(HL_TABLE()[idx].sg_fontset);
     HL_TABLE()[idx].sg_fontset = NOFONTSET;
 # endif
-    VIM_CLEAR(HL_TABLE()[idx].sg_font_name);
+    MNV_CLEAR(HL_TABLE()[idx].sg_font_name);
     HL_TABLE()[idx].sg_gui_attr = 0;
 #endif
     // Restore default link and context if they exist. Otherwise clears.
@@ -2323,8 +2323,8 @@ hl_set_font_name(char_u *font_name)
     if (id <= 0)
 	return;
 
-    vim_free(HL_TABLE()[id - 1].sg_font_name);
-    HL_TABLE()[id - 1].sg_font_name = vim_strsave(font_name);
+    mnv_free(HL_TABLE()[id - 1].sg_font_name);
+    HL_TABLE()[id - 1].sg_font_name = mnv_strsave(font_name);
 }
 
 /*
@@ -2344,7 +2344,7 @@ hl_set_bg_color_name(
     if (id <= 0)
 	return;
 
-    vim_free(HL_TABLE()[id - 1].sg_gui_bg_name);
+    mnv_free(HL_TABLE()[id - 1].sg_gui_bg_name);
     HL_TABLE()[id - 1].sg_gui_bg_name = name;
 }
 
@@ -2365,7 +2365,7 @@ hl_set_fg_color_name(
     if (id <= 0)
 	return;
 
-    vim_free(HL_TABLE()[id - 1].sg_gui_fg_name);
+    mnv_free(HL_TABLE()[id - 1].sg_gui_fg_name);
     HL_TABLE()[id - 1].sg_gui_fg_name = name;
 }
 
@@ -2546,7 +2546,7 @@ color_name2handle(char_u *name)
 #  define RGB(r, g, b)	(((r)<<16) | ((g)<<8) | (b))
 # endif
 
-# ifdef VIMDLL
+# ifdef MNVDLL
     static guicolor_T
 gui_adjust_rgb(guicolor_T c)
 {
@@ -2595,7 +2595,7 @@ decode_hex_color(char_u *hex)
     static guicolor_T
 colorname2rgb(char_u *name)
 {
-    dict_T      *colornames_table = get_vim_var_dict(VV_COLORNAMES);
+    dict_T      *colornames_table = get_mnv_var_dict(VV_COLORNAMES);
     char_u      *lc_name;
     dictitem_T  *colentry;
     char_u      *colstr;
@@ -2606,7 +2606,7 @@ colorname2rgb(char_u *name)
 	return INVALCOLOR;
 
     colentry = dict_find(colornames_table, lc_name, -1);
-    vim_free(lc_name);
+    mnv_free(lc_name);
     if (colentry == NULL)
 	return INVALCOLOR;
 
@@ -2640,7 +2640,7 @@ gui_get_color_cmn(char_u *name)
 {
     guicolor_T  color;
     // Only non X11 colors (not present in rgb.txt) and colors in
-    // color_name_tab[], useful when $VIMRUNTIME is not found,.
+    // color_name_tab[], useful when $MNVRUNTIME is not found,.
     // must be sorted by the 'value' field because it is used by bsearch()!
     static keyvalue_T rgb_tab[] = {
 	KEYVALUE_ENTRY(RGB(0x00, 0x00, 0x00), "black"),
@@ -2854,11 +2854,11 @@ get_attr_entry(garray_T *table, attrentry_T *aep)
 	if (aep->ae_u.term.start == NULL)
 	    taep->ae_u.term.start = NULL;
 	else
-	    taep->ae_u.term.start = vim_strsave(aep->ae_u.term.start);
+	    taep->ae_u.term.start = mnv_strsave(aep->ae_u.term.start);
 	if (aep->ae_u.term.stop == NULL)
 	    taep->ae_u.term.stop = NULL;
 	else
-	    taep->ae_u.term.stop = vim_strsave(aep->ae_u.term.stop);
+	    taep->ae_u.term.stop = mnv_strsave(aep->ae_u.term.stop);
     }
     else if (table == &cterm_attr_table)
     {
@@ -2963,8 +2963,8 @@ clear_hl_tables(void)
     for (i = 0; i < term_attr_table.ga_len; ++i)
     {
 	taep = &(((attrentry_T *)term_attr_table.ga_data)[i]);
-	vim_free(taep->ae_u.term.start);
-	vim_free(taep->ae_u.term.stop);
+	mnv_free(taep->ae_u.term.start);
+	mnv_free(taep->ae_u.term.stop);
     }
     ga_clear(&term_attr_table);
     ga_clear(&cterm_attr_table);
@@ -3497,7 +3497,7 @@ highlight_list_arg(
     ts = highlight_arg_to_string(type, iarg, sarg, buf);
 
     (void)syn_list_header(didh,
-	    (int)(vim_strsize(ts) + STRLEN(name) + 1), id);
+	    (int)(mnv_strsize(ts) + STRLEN(name) + 1), id);
     didh = TRUE;
     if (!got_int)
     {
@@ -3841,7 +3841,7 @@ syn_name2id_len(char_u *name, int len)
 	len = MAX_SYN_NAME;
     mch_memmove(name_u, name, len);
     name_u[len] = NUL;
-    vim_strup(name_u);
+    mnv_strup(name_u);
     if (!highlight_ht_inited)
 	return 0;
     hi = hash_find(&highlight_ht, name_u);
@@ -3929,7 +3929,7 @@ syn_check_group(char_u *pp, int len)
     id = syn_name2id_len(pp, len);
     if (id == 0)			// doesn't exist yet
     {
-	name = vim_strnsave(pp, len);
+	name = mnv_strnsave(pp, len);
 	if (name == NULL)
 	    return 0;
 	id = syn_add_group(name);
@@ -3951,10 +3951,10 @@ syn_add_group(char_u *name)
     // Check that the name is valid (ASCII letters, digits, underscores, dots, or hyphens).
     for (p = name; *p != NUL; ++p)
     {
-	if (!vim_isprintc(*p))
+	if (!mnv_isprintc(*p))
 	{
 	    emsg(_(e_unprintable_character_in_group_name));
-	    vim_free(name);
+	    mnv_free(name);
 	    return 0;
 	}
 	else if (!ASCII_ISALNUM(*p) && *p != '_' && *p != '.' && *p != '-')
@@ -3979,14 +3979,14 @@ syn_add_group(char_u *name)
     if (highlight_ga.ga_len >= MAX_HL_ID)
     {
 	emsg(_(e_too_many_highlight_and_syntax_groups));
-	vim_free(name);
+	mnv_free(name);
 	return 0;
     }
 
     // Make room for at least one other syntax_highlight entry.
     if (ga_grow(&highlight_ga, 1) == FAIL)
     {
-	vim_free(name);
+	mnv_free(name);
 	return 0;
     }
 
@@ -3997,11 +3997,11 @@ syn_add_group(char_u *name)
 	hn = alloc(offsetof(hlname_T, hn_key) + len + 1);
 	if (hn == NULL)
 	{
-	    vim_free(name);
+	    mnv_free(name);
 	    return 0;
 	}
-	vim_strncpy(hn->hn_key, name, len);
-	vim_strup(hn->hn_key);
+	mnv_strncpy(hn->hn_key, name, len);
+	mnv_strup(hn->hn_key);
 	hn->hn_id = highlight_ga.ga_len + 1;	// ID is index plus one
 	name_up = hn->hn_key;
     }
@@ -4033,8 +4033,8 @@ syn_unadd_group(void)
     hi = hash_find(&highlight_ht, HL_TABLE()[highlight_ga.ga_len].sg_name_u);
     if (!HASHITEM_EMPTY(hi))
 	hash_remove(&highlight_ht, hi, "highlight");
-    vim_free(HL_TABLE()[highlight_ga.ga_len].sg_name);
-    vim_free(HL_TABLE()[highlight_ga.ga_len].sg_name_u - HLNAME_KEY_OFF);
+    mnv_free(HL_TABLE()[highlight_ga.ga_len].sg_name);
+    mnv_free(HL_TABLE()[highlight_ga.ga_len].sg_name_u - HLNAME_KEY_OFF);
 }
 
 /*
@@ -4088,7 +4088,7 @@ syn_id2colors(int hl_id, guicolor_T *fgp, guicolor_T *bgp)
 #endif
 
 #if (defined(MSWIN) \
-	    && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL)) \
+	    && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL)) \
 	    && defined(FEAT_TERMGUICOLORS)) \
 	|| defined(FEAT_TERMINAL)
     void
@@ -4350,7 +4350,7 @@ highlight_changed(void)
 	    id = 0;
 	    for ( ; *p && *p != ','; ++p)	    // parse up to comma
 	    {
-		if (VIM_ISWHITE(*p))		    // ignore white space
+		if (MNV_ISWHITE(*p))		    // ignore white space
 		    continue;
 
 		if (attr > HL_ALL)  // Combination with ':' is not allowed.
@@ -4385,7 +4385,7 @@ highlight_changed(void)
 		    case ':':	++p;		    // highlight group name
 				if (attr || *p == NUL)	 // no combinations
 				    return FAIL;
-				end = vim_strchr(p, ',');
+				end = mnv_strchr(p, ',');
 				if (end == NULL)
 				    end = p + STRLEN(p);
 				id = syn_check_group(p, (int)(end - p));
@@ -4579,7 +4579,7 @@ set_context_in_highlight_cmd(expand_T *xp, char_u *arg)
 		p = skiptowhite(arg);
 	    }
 
-	    p = vim_strchr(arg, '=');
+	    p = mnv_strchr(arg, '=');
 	    if (p == NULL)
 	    {
 		// Didn't find a key=<value> pattern
@@ -4603,7 +4603,7 @@ set_context_in_highlight_cmd(expand_T *xp, char_u *arg)
 			STRNCMP(arg, "cterm=", 6) == 0 ||
 			STRNCMP(arg, "gui=", 4) == 0)
 		{
-		    char_u *comma = vim_strrchr(p + 1, ',');
+		    char_u *comma = mnv_strrchr(p + 1, ',');
 		    if (comma != NULL)
 			p = comma;
 		}
@@ -4753,7 +4753,7 @@ get_highlight_gui_color(expand_T *xp UNUSED, int idx)
     if (colorname != NULL)
     {
 	// :hi command doesn't allow space, so don't suggest any malformed items
-	if (vim_strchr(colorname, ' ') != NULL)
+	if (mnv_strchr(colorname, ' ') != NULL)
 	    return (char_u*)"";
 
 	if (expand_hi_curvalue != NULL && STRICMP(expand_hi_curvalue, colorname) == 0)
@@ -4926,7 +4926,7 @@ expand_highlight_group(
 	    // Top 4 items are special, after that sort all the color names
 	    unsortedItems = 4;
 
-	    dict_T *colornames_table = get_vim_var_dict(VV_COLORNAMES);
+	    dict_T *colornames_table = get_mnv_var_dict(VV_COLORNAMES);
 	    typval_T colornames_val;
 	    colornames_val.v_type = VAR_DICT;
 	    colornames_val.vval.v_dict = colornames_table;
@@ -5152,7 +5152,7 @@ highlight_get_info(int hl_idx, int resolve_link)
     return dict;
 
 error:
-    vim_free(dict);
+    mnv_free(dict);
     return NULL;
 }
 
@@ -5265,7 +5265,7 @@ hldict_attr_to_str(
     // If the attribute dict is empty, then return NONE to clear the attributes
     if (dict_len(attrdict) == 0)
     {
-	vim_strcat(attr_str, (char_u *)"NONE", len);
+	mnv_strcat(attr_str, (char_u *)"NONE", len);
 	return TRUE;
     }
 
@@ -5312,7 +5312,7 @@ add_attr_and_value(char_u *dptr, char_u *attr, int attrlen, char_u *value)
     // When the value contains a space and the attribute has an "=" (i.e. it
     // is a key=value pair), surround the value with single quotes so that
     // do_highlight() can parse it correctly.
-    if (vim_strchr(value, ' ') != NULL && vim_strchr(attr, '=') != NULL)
+    if (mnv_strchr(value, ' ') != NULL && mnv_strchr(attr, '=') != NULL)
     {
 	if (dptr + attrlen + vallen + 3 < hlsetBuf + HLSETBUFSZ)
 	{
@@ -5383,7 +5383,7 @@ hlg_add_or_update(dict_T *dict)
 	cleared = dict_get_bool(dict, "cleared", FALSE);
 	if (cleared == TRUE)
 	{
-	    vim_snprintf((char *)hlsetBuf, HLSETBUFSZ, "clear %s", name);
+	    mnv_snprintf((char *)hlsetBuf, HLSETBUFSZ, "clear %s", name);
 	    do_highlight(hlsetBuf, forceit, FALSE);
 	    done = TRUE;
 	}
@@ -5398,7 +5398,7 @@ hlg_add_or_update(dict_T *dict)
 	if (linksto == NULL || *linksto == NUL || error)
 	    return FALSE;
 
-	vim_snprintf((char *)hlsetBuf, HLSETBUFSZ, "%slink %s %s",
+	mnv_snprintf((char *)hlsetBuf, HLSETBUFSZ, "%slink %s %s",
 				dodefault ? "default " : "", name, linksto);
 	do_highlight(hlsetBuf, forceit, FALSE);
 
@@ -5678,7 +5678,7 @@ pop_highlight_overrides(void)
 
     // Set highlight_attr[] to state before override was pushed.
     memcpy(highlight_attr, set->attr, sizeof(highlight_attr));
-    vim_free(set);
+    mnv_free(set);
 }
 
 /*
@@ -5698,14 +5698,14 @@ parse_winhighlight(char_u *opt, int *len, char **errmsg)
 	return NULL;
 
     // Get number of overrides first so we can allocate array
-    while ((p = vim_strchr(p, ',')) != NULL)
+    while ((p = mnv_strchr(p, ',')) != NULL)
     {
 	p++;
 	num++;
     }
     p = opt;
     // Check if number of ':' matches number of ','
-    while ((p = vim_strchr(p, ':')) != NULL)
+    while ((p = mnv_strchr(p, ':')) != NULL)
     {
 	p++;
 	n_colons++;
@@ -5737,7 +5737,7 @@ parse_winhighlight(char_u *opt, int *len, char **errmsg)
 	int	fromid, toid;
 	int	*ids[2] = {&fromid, &toid};
 
-	p = vim_strchr(p, ':');
+	p = mnv_strchr(p, ':');
 
 	if (p == NULL)
 	    goto fail;
@@ -5750,7 +5750,7 @@ parse_winhighlight(char_u *opt, int *len, char **errmsg)
 	    goto fail;
 
 	toname = p;
-	tmp = vim_strchr(p, ',');
+	tmp = mnv_strchr(p, ',');
 
 	// Get hl for "to", must check for no trailing comma in case last
 	// element.
@@ -5817,7 +5817,7 @@ parse_winhighlight(char_u *opt, int *len, char **errmsg)
     *len = num;
     return arr;
 fail:
-    vim_free(arr);
+    mnv_free(arr);
     *errmsg = e_invalid_argument;
     return NULL;
 }
@@ -5843,7 +5843,7 @@ update_winhighlight(win_T *wp, char_u *opt)
 
     update_highlight_overrides(wp->w_hl, arr, num);
 
-    vim_free(wp->w_hl);
+    mnv_free(wp->w_hl);
     wp->w_hl = arr;
     wp->w_hl_len = num;
 

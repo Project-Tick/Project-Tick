@@ -1,20 +1,20 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
- * uninstall.c:	Minimalistic uninstall program for Vim on MS-Windows
+ * uninstall.c:	Minimalistic uninstall program for MNV on MS-Windows
  *		Removes:
- *		- the "Edit with Vim" popup menu entry
- *		- the Vim "Open With..." popup menu entry
- *		- any Vim Batch files in the path
- *		- icons for Vim on the Desktop
- *		- the Vim entry in the Start Menu
+ *		- the "Edit with MNV" popup menu entry
+ *		- the MNV "Open With..." popup menu entry
+ *		- any MNV Batch files in the path
+ *		- icons for MNV on the Desktop
+ *		- the MNV entry in the Start Menu
  */
 
 // Include common code for dosinst.c and uninstall.c.
@@ -57,20 +57,20 @@ reg_delete_key(HKEY hRootKey, const char *key, DWORD flag)
 }
 
 /*
- * Check if the popup menu entry exists and what gvim it refers to.
+ * Check if the popup menu entry exists and what gmnv it refers to.
  * Returns non-zero when it's found.
  */
     static int
-popup_gvim_path(char *buf, DWORD bufsize)
+popup_gmnv_path(char *buf, DWORD bufsize)
 {
     HKEY	key_handle;
     DWORD	value_type;
     int		r;
 
-    // Open the key where the path to gvim.exe is stored.
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Vim\\Gvim", 0,
+    // Open the key where the path to gmnv.exe is stored.
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MNV\\Gmnv", 0,
 		    KEY_WOW64_64KEY | KEY_READ, &key_handle) != ERROR_SUCCESS)
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Vim\\Gvim", 0,
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MNV\\Gmnv", 0,
 		    KEY_WOW64_32KEY | KEY_READ, &key_handle) != ERROR_SUCCESS)
 	    return 0;
 
@@ -83,19 +83,19 @@ popup_gvim_path(char *buf, DWORD bufsize)
 }
 
 /*
- * Check if the "Open With..." menu entry exists and what gvim it refers to.
+ * Check if the "Open With..." menu entry exists and what gmnv it refers to.
  * Returns non-zero when it's found.
  */
     static int
-openwith_gvim_path(char *buf, DWORD bufsize)
+openwith_gmnv_path(char *buf, DWORD bufsize)
 {
     HKEY	key_handle;
     DWORD	value_type;
     int		r;
 
-    // Open the key where the path to gvim.exe is stored.
+    // Open the key where the path to gmnv.exe is stored.
     if (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-		"Applications\\gvim.exe\\shell\\edit\\command", 0,
+		"Applications\\gmnv.exe\\shell\\edit\\command", 0,
 		    KEY_WOW64_64KEY | KEY_READ, &key_handle) != ERROR_SUCCESS)
 	return 0;
 
@@ -127,7 +127,7 @@ remove_popup(void)
 	    ++fail;
 	if (reg_delete_key(HKEY_CLASSES_ROOT, "CLSID\\{51EEE242-AD87-11d3-9C1E-0090278BBD99}", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, "*\\shellex\\ContextMenuHandlers\\gvim", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, "*\\shellex\\ContextMenuHandlers\\gmnv", flag) != ERROR_SUCCESS)
 	    ++fail;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Shell Extensions\\Approved", 0,
 		    flag | KEY_ALL_ACCESS, &kh) != ERROR_SUCCESS)
@@ -138,18 +138,18 @@ remove_popup(void)
 		++fail;
 	    RegCloseKey(kh);
 	}
-	if (reg_delete_key(HKEY_LOCAL_MACHINE, "Software\\Vim\\Gvim", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_LOCAL_MACHINE, "Software\\MNV\\Gmnv", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_LOCAL_MACHINE, "Software\\Vim", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_LOCAL_MACHINE, "Software\\MNV", flag) != ERROR_SUCCESS)
 	    ++fail;
     }
 
     if (fail == maxfail)
-	printf("No Vim popup registry entries could be removed\n");
+	printf("No MNV popup registry entries could be removed\n");
     else if (fail > 0)
-	printf("Some Vim popup registry entries could not be removed\n");
+	printf("Some MNV popup registry entries could not be removed\n");
     else
-	printf("The Vim popup registry entries have been removed\n");
+	printf("The MNV popup registry entries have been removed\n");
 }
 
     static void
@@ -168,28 +168,28 @@ remove_openwith(void)
 	else
 	    flag = KEY_WOW64_64KEY;
 
-	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gvim.exe\\shell\\edit\\command", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gmnv.exe\\shell\\edit\\command", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gvim.exe\\shell\\edit", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gmnv.exe\\shell\\edit", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gvim.exe\\shell", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gmnv.exe\\shell", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gvim.exe", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, "Applications\\gmnv.exe", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, ".htm\\OpenWithList\\gvim.exe", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, ".htm\\OpenWithList\\gmnv.exe", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, ".vim\\OpenWithList\\gvim.exe", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, ".mnv\\OpenWithList\\gmnv.exe", flag) != ERROR_SUCCESS)
 	    ++fail;
-	if (reg_delete_key(HKEY_CLASSES_ROOT, "*\\OpenWithList\\gvim.exe", flag) != ERROR_SUCCESS)
+	if (reg_delete_key(HKEY_CLASSES_ROOT, "*\\OpenWithList\\gmnv.exe", flag) != ERROR_SUCCESS)
 	    ++fail;
     }
 
     if (fail == maxfail)
-	printf("No Vim open-with registry entries could be removed\n");
+	printf("No MNV open-with registry entries could be removed\n");
     else if (fail > 0)
-	printf("Some Vim open-with registry entries could not be removed\n");
+	printf("Some MNV open-with registry entries could not be removed\n");
     else
-	printf("The Vim open-with registry entries have been removed\n");
+	printf("The MNV open-with registry entries have been removed\n");
 }
 
 /*
@@ -201,7 +201,7 @@ batfile_thisversion(char *path)
 {
     FILE	*fd;
     char	line[BUFSIZE];
-    int		key_len = strlen(VIMBAT_UNINSTKEY);
+    int		key_len = strlen(MNVBAT_UNINSTKEY);
     int		found = FALSE;
 
     fd = fopen(path, "r");
@@ -210,7 +210,7 @@ batfile_thisversion(char *path)
 
     while (fgets(line, sizeof(line), fd) != NULL)
     {
-	if (strncmp(line, VIMBAT_UNINSTKEY, key_len) == 0)
+	if (strncmp(line, MNVBAT_UNINSTKEY, key_len) == 0)
 	{
 	    found = TRUE;
 	    break;
@@ -287,7 +287,7 @@ remove_start_menu(void)
     int		i;
     struct stat st;
 
-    if (get_shell_folder_path(path, VIM_STARTMENU) == FAIL)
+    if (get_shell_folder_path(path, MNV_STARTMENU) == FAIL)
 	return;
 
     for (i = 1; i < TARGET_COUNT; ++i)
@@ -295,9 +295,9 @@ remove_start_menu(void)
     remove_if_exists(path, "uninstall.lnk");
     remove_if_exists(path, "Help.lnk");
     // Win95 uses .pif, WinNT uses .lnk
-    remove_if_exists(path, "Vim tutor.pif");
-    remove_if_exists(path, "Vim tutor.lnk");
-    remove_if_exists(path, "Vim online.url");
+    remove_if_exists(path, "MNV tutor.pif");
+    remove_if_exists(path, "MNV tutor.lnk");
+    remove_if_exists(path, "MNV online.url");
     if (stat(path, &st) == 0)
     {
 	printf("removing %s\n", path);
@@ -308,7 +308,7 @@ remove_start_menu(void)
     static void
 delete_uninstall_key(void)
 {
-    reg_delete_key(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Vim " VIM_VERSION_SHORT, KEY_WOW64_64KEY);
+    reg_delete_key(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MNV " MNV_VERSION_SHORT, KEY_WOW64_64KEY);
 }
 
     int
@@ -333,9 +333,9 @@ main(int argc, char *argv[])
 
     printf("This program will remove the following items:\n");
 
-    if (popup_gvim_path(popup_path, sizeof(popup_path)))
+    if (popup_gmnv_path(popup_path, sizeof(popup_path)))
     {
-	printf(" - the \"Edit with Vim\" entry in the popup menu\n");
+	printf(" - the \"Edit with MNV\" entry in the popup menu\n");
 	printf("   which uses \"%s\"\n", popup_path);
 	if (interactive)
 	    printf("\nRemove it (y/n)? ");
@@ -347,9 +347,9 @@ main(int argc, char *argv[])
 	    remove_openwith();
 	}
     }
-    else if (openwith_gvim_path(popup_path, sizeof(popup_path)))
+    else if (openwith_gmnv_path(popup_path, sizeof(popup_path)))
     {
-	printf(" - the Vim \"Open With...\" entry in the popup menu\n");
+	printf(" - the MNV \"Open With...\" entry in the popup menu\n");
 	printf("   which uses \"%s\"\n", popup_path);
 	printf("\nRemove it (y/n)? ");
 	if (confirm())
@@ -377,10 +377,10 @@ main(int argc, char *argv[])
 	}
     }
 
-    if (get_shell_folder_path(path, VIM_STARTMENU)
+    if (get_shell_folder_path(path, MNV_STARTMENU)
 	    && stat(path, &st) == 0)
     {
-	printf("\n - the \"%s\" entry in the Start Menu\n", VIM_STARTMENU);
+	printf("\n - the \"%s\" entry in the Start Menu\n", MNV_STARTMENU);
 	if (interactive)
 	    printf("\nRemove it (y/n)? ");
 	if (!interactive || confirm())
@@ -397,19 +397,19 @@ main(int argc, char *argv[])
 	    remove_batfiles(1);
     }
 
-    fd = fopen("gvim.exe", "r");
+    fd = fopen("gmnv.exe", "r");
     if (fd != NULL)
     {
 	fclose(fd);
-	printf("gvim.exe detected.  Attempting to unregister gvim with OLE\n");
-	system("gvim.exe -silent -unregister");
+	printf("gmnv.exe detected.  Attempting to unregister gmnv with OLE\n");
+	system("gmnv.exe -silent -unregister");
     }
 
     delete_uninstall_key();
 
     if (interactive)
     {
-	printf("\nYou may now want to delete the Vim executables and runtime files.\n");
+	printf("\nYou may now want to delete the MNV executables and runtime files.\n");
 	printf("(They are still where you unpacked them.)\n");
     }
 

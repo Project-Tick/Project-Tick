@@ -1,10 +1,10 @@
-# Aap recipe for Irish Vim spell files.
+# Aap recipe for Irish MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = ga_IE.aff ga_IE.dic
@@ -14,11 +14,11 @@ all: $SPELLDIR/ga.latin1.spl $SPELLDIR/ga.utf-8.spl ../README_ga.txt
 # I don't have an Irish locale, use the Dutch one instead.
 $SPELLDIR/ga.latin1.spl : $FILES
         :sys env LANG=nl_NL.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/ga ga_IE" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/ga ga_IE" -c q
 
 $SPELLDIR/ga.utf-8.spl : $FILES
         :sys env LANG=nl_NL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/ga ga_IE" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/ga ga_IE" -c q
 
 ../README_ga.txt : README_ga_IE.txt
         :copy $source $target
@@ -45,7 +45,7 @@ ga_IE.aff ga_IE.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -76,4 +76,4 @@ check:
             :delete ga_IE.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

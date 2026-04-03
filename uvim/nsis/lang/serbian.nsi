@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# serbian.nsi: Serbian language strings for gvim NSIS installer.
+# serbian.nsi: Serbian language strings for gmnv NSIS installer.
 #
 # Locale ID    : 3098
 # Locale Name  : sr
@@ -28,15 +28,15 @@ LicenseLangString page_lic_file 0 "..\lang\LICENSE.nsis.txt"
 # Translated README.txt file, which is opened after installation          {{{1
 ##############################################################################
 
-LangString vim_readme_file 0 "README.txt"
-#LangString vim_readme_file ${LANG_SERBIAN} "README.sr.txt"
+LangString mnv_readme_file 0 "README.txt"
+#LangString mnv_readme_file ${LANG_SERBIAN} "README.sr.txt"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_SERBIAN} \
-#    "Destination Folder (Must end with $\"vim$\")"
+#    "Destination Folder (Must end with $\"mnv$\")"
 
 LangString str_show_readme          ${LANG_SERBIAN} \
     "Прикажи ПРОЧИТАЈМЕ када се заврши инсталација"
@@ -59,70 +59,70 @@ LangString str_type_full            ${LANG_SERBIAN} \
 LangString str_section_old_ver      ${LANG_SERBIAN} \
     "Уклањање постојећ(е/их) верзиј(е/а)"
 LangString str_desc_old_ver         ${LANG_SERBIAN} \
-    "Уклања постојећ(у/е) Vim верзииј(у/е) из вашег система."
+    "Уклања постојећ(у/е) MNV верзииј(у/е) из вашег система."
 
 LangString str_section_exe          ${LANG_SERBIAN} \
-    "Vim ГКИ и фајлови потребни за извршавање"
+    "MNV ГКИ и фајлови потребни за извршавање"
 LangString str_desc_exe             ${LANG_SERBIAN} \
-    "Vim ГКИ извршни фајлови и фајлови потребни током извршавања. Ова компонента је неопходна."
+    "MNV ГКИ извршни фајлови и фајлови потребни током извршавања. Ова компонента је неопходна."
 
 LangString str_section_console      ${LANG_SERBIAN} \
-    "Vim конзолни програм"
+    "MNV конзолни програм"
 LangString str_desc_console         ${LANG_SERBIAN} \
-    "Конзолна верзија програма Vim (vim.exe)."
+    "Конзолна верзија програма MNV (mnv.exe)."
 
 LangString str_section_batch        ${LANG_SERBIAN} \
     "Креирај .bat фајлове"
 LangString str_desc_batch           ${LANG_SERBIAN} \
-    "Креира у Windows директоријуму .bat фајлове за Vim варијанте \
+    "Креира у Windows директоријуму .bat фајлове за MNV варијанте \
      у циљу коришћења из командне линије."
 
 LangString str_group_icons          ${LANG_SERBIAN} \
-    "Креирај иконе за Vim"
+    "Креирај иконе за MNV"
 LangString str_desc_icons           ${LANG_SERBIAN} \
-    "Креира иконе за Vim на различитим местима, како би се олакшао приступ."
+    "Креира иконе за MNV на различитим местима, како би се олакшао приступ."
 
 LangString str_section_desktop      ${LANG_SERBIAN} \
     "На радној површини"
 LangString str_desc_desktop         ${LANG_SERBIAN} \
-    "Креира иконе за gVim извршне фајлове на радној површини."
+    "Креира иконе за gMNV извршне фајлове на радној површини."
 
 LangString str_section_start_menu   ${LANG_SERBIAN} \
     "У фасцикли Програми унутар Старт менија"
 LangString str_desc_start_menu      ${LANG_SERBIAN} \
-    "Додаје Vim у фолдер Програми Старт менија."
+    "Додаје MNV у фолдер Програми Старт менија."
 
 #LangString str_section_quick_launch ${LANG_SERBIAN} \
 #    "In the Quick Launch Bar"
 #LangString str_desc_quick_launch    ${LANG_SERBIAN} \
-#    "Add Vim shortcut in the quick launch bar."
+#    "Add MNV shortcut in the quick launch bar."
 
 LangString str_section_edit_with    ${LANG_SERBIAN} \
-    "Додај Vim контекстни мени"
+    "Додај MNV контекстни мени"
 LangString str_desc_edit_with       ${LANG_SERBIAN} \
-    "Додаје Vim у $\"Отвори помоћу...$\" листу контекстног менија."
+    "Додаје MNV у $\"Отвори помоћу...$\" листу контекстног менија."
 
 #LangString str_section_edit_with32  ${LANG_SERBIAN} \
 #    "32-bit Version"
 #LangString str_desc_edit_with32     ${LANG_SERBIAN} \
-#    "Add Vim to the $\"Open With...$\" context menu list \
+#    "Add MNV to the $\"Open With...$\" context menu list \
 #     for 32-bit applications."
 
 #LangString str_section_edit_with64  ${LANG_SERBIAN} \
 #    "64-bit Version"
 #LangString str_desc_edit_with64     ${LANG_SERBIAN} \
-#    "Add Vim to the $\"Open With...$\" context menu list \
+#    "Add MNV to the $\"Open With...$\" context menu list \
 #     for 64-bit applications."
 
-LangString str_section_vim_rc       ${LANG_SERBIAN} \
+LangString str_section_mnv_rc       ${LANG_SERBIAN} \
     "Креирај Подразумевану конфигурацију"
-LangString str_desc_vim_rc          ${LANG_SERBIAN} \
-    "Креира подразумевани конфиг фајл (_vimrc) ако неки већ не постоји."
+LangString str_desc_mnv_rc          ${LANG_SERBIAN} \
+    "Креира подразумевани конфиг фајл (_mnvrc) ако неки већ не постоји."
 
 LangString str_group_plugin         ${LANG_SERBIAN} \
     "Креира директоријуме додатака"
 LangString str_desc_plugin          ${LANG_SERBIAN} \
-    "Креира директоријуме додатака. Ови директоријуми омогућавају проширење програма Vim \
+    "Креира директоријуме додатака. Ови директоријуми омогућавају проширење програма MNV \
      убацивањем фајла у директоријум."
 
 LangString str_section_plugin_home  ${LANG_SERBIAN} \
@@ -130,10 +130,10 @@ LangString str_section_plugin_home  ${LANG_SERBIAN} \
 LangString str_desc_plugin_home     ${LANG_SERBIAN} \
     "Креира директоријуме додатака у HOME директоријуму."
 
-LangString str_section_plugin_vim   ${LANG_SERBIAN} \
+LangString str_section_plugin_mnv   ${LANG_SERBIAN} \
     "Дељене"
-LangString str_desc_plugin_vim      ${LANG_SERBIAN} \
-    "Креира директоријуме додатака у Vim инсталационом директоријуму, користе их сви \
+LangString str_desc_plugin_mnv      ${LANG_SERBIAN} \
+    "Креира директоријуме додатака у MNV инсталационом директоријуму, користе их сви \
      на систему."
 
 LangString str_section_nls          ${LANG_SERBIAN} \
@@ -142,14 +142,14 @@ LangString str_desc_nls             ${LANG_SERBIAN} \
     "Инсталира фајлове за домаћу језичку подршку."
 
 LangString str_unsection_register   ${LANG_SERBIAN} \
-    "Поништи регистрацију Vim"
+    "Поништи регистрацију MNV"
 LangString str_desc_unregister      ${LANG_SERBIAN} \
-    "Поништава регистрацију програма Vim на систему."
+    "Поништава регистрацију програма MNV на систему."
 
 LangString str_unsection_exe        ${LANG_SERBIAN} \
-    "Уклони Vim извршне фајлове/фајлове потребне у време извршавања"
+    "Уклони MNV извршне фајлове/фајлове потребне у време извршавања"
 LangString str_desc_rm_exe          ${LANG_SERBIAN} \
-    "Уклања све Vim извршне фајлове и оне потребне у време извршавања."
+    "Уклања све MNV извршне фајлове и оне потребне у време извршавања."
 
 LangString str_ungroup_plugin       ${LANG_SERBIAN} \
     "Укони директоријуме додатака"
@@ -161,15 +161,15 @@ LangString str_unsection_plugin_home ${LANG_SERBIAN} \
 LangString str_desc_rm_plugin_home  ${LANG_SERBIAN} \
     "Уклања директоријуме додатака из HOME директоријума."
 
-LangString str_unsection_plugin_vim ${LANG_SERBIAN} \
+LangString str_unsection_plugin_mnv ${LANG_SERBIAN} \
     "Дељене"
-LangString str_desc_rm_plugin_vim   ${LANG_SERBIAN} \
-    "Уклања директоријуме додатака из Vim инсталациониг директоријума."
+LangString str_desc_rm_plugin_mnv   ${LANG_SERBIAN} \
+    "Уклања директоријуме додатака из MNV инсталациониг директоријума."
 
 LangString str_unsection_rootdir    ${LANG_SERBIAN} \
-    "Уклони Vim корени директоријум"
+    "Уклони MNV корени директоријум"
 LangString str_desc_rm_rootdir      ${LANG_SERBIAN} \
-    "Уклања Vim корени директоријум. Он садржи ваше Vim конфигурационе фајлове!"
+    "Уклања MNV корени директоријум. Он садржи ваше MNV конфигурационе фајлове!"
 
 
 ##############################################################################
@@ -177,30 +177,30 @@ LangString str_desc_rm_rootdir      ${LANG_SERBIAN} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_SERBIAN} \
-#    "Found $vim_old_ver_count Vim versions on your system.$\r$\n\
-#     This installer can only handle ${VIM_MAX_OLD_VER} versions \
+#    "Found $mnv_old_ver_count MNV versions on your system.$\r$\n\
+#     This installer can only handle ${MNV_MAX_OLD_VER} versions \
 #     at most.$\r$\n\
 #     Please remove some versions and start again."
 
 #LangString str_msg_invalid_root  ${LANG_SERBIAN} \
-#    "Invalid install path: $vim_install_root!$\r$\n\
-#     It should end with $\"vim$\"."
+#    "Invalid install path: $mnv_install_root!$\r$\n\
+#     It should end with $\"mnv$\"."
 
 #LangString str_msg_bin_mismatch  ${LANG_SERBIAN} \
 #    "Binary path mismatch!$\r$\n$\r$\n\
-#     Expect the binary path to be $\"$vim_bin_path$\",$\r$\n\
+#     Expect the binary path to be $\"$mnv_bin_path$\",$\r$\n\
 #     but system indicates the binary path is $\"$INSTDIR$\"."
 
-#LangString str_msg_vim_running   ${LANG_SERBIAN} \
-#    "Vim is still running on your system.$\r$\n\
-#     Please close all instances of Vim before you continue."
+#LangString str_msg_mnv_running   ${LANG_SERBIAN} \
+#    "MNV is still running on your system.$\r$\n\
+#     Please close all instances of MNV before you continue."
 
 #LangString str_msg_register_ole  ${LANG_SERBIAN} \
-#    "Attempting to register Vim with OLE. \
+#    "Attempting to register MNV with OLE. \
 #     There is no message indicates whether this works or not."
 
 #LangString str_msg_unreg_ole     ${LANG_SERBIAN} \
-#    "Attempting to unregister Vim with OLE. \
+#    "Attempting to unregister MNV with OLE. \
 #     There is no message indicates whether this works or not."
 
 #LangString str_msg_rm_start      ${LANG_SERBIAN} \
@@ -235,7 +235,7 @@ LangString str_msg_rm_exe_fail   ${LANG_SERBIAN} \
      Морате то ручно да обавите."
 
 #LangString str_msg_rm_root_fail  ${LANG_SERBIAN} \
-#    "WARNING: Cannot remove $\"$vim_install_root$\", it is not empty!"
+#    "WARNING: Cannot remove $\"$mnv_install_root$\", it is not empty!"
 
 LangString str_msg_uninstalling  ${LANG_SERBIAN} \
     "Уклањање старе верзије..."
@@ -251,23 +251,23 @@ LangString str_msg_unregistering ${LANG_SERBIAN} \
 # Dialog Box                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_SERBIAN} \
-    "Изаберите _vimrc подешавања"
-LangString str_vimrc_page_subtitle ${LANG_SERBIAN} \
+LangString str_mnvrc_page_title    ${LANG_SERBIAN} \
+    "Изаберите _mnvrc подешавања"
+LangString str_mnvrc_page_subtitle ${LANG_SERBIAN} \
     "Изаберите подешавања за побољшања, тастатуру и миша."
 
 LangString str_msg_compat_title    ${LANG_SERBIAN} \
-    " Vi / Vim понашање "
+    " Vi / MNV понашање "
 LangString str_msg_compat_desc     ${LANG_SERBIAN} \
     "&Компатибилност и побољшања"
 LangString str_msg_compat_vi       ${LANG_SERBIAN} \
     "Vi компатибилно"
-LangString str_msg_compat_vim      ${LANG_SERBIAN} \
-    "Vim оригинално"
+LangString str_msg_compat_mnv      ${LANG_SERBIAN} \
+    "MNV оригинално"
 LangString str_msg_compat_defaults ${LANG_SERBIAN} \
-    "Vim са неким побољшањима (учитава defaults.vim)"
+    "MNV са неким побољшањима (учитава defaults.mnv)"
 LangString str_msg_compat_all      ${LANG_SERBIAN} \
-    "Vim са свим побољшањима (учитава vimrc_example.vim) (Подразумевано)"
+    "MNV са свим побољшањима (учитава mnvrc_example.mnv) (Подразумевано)"
 
 LangString str_msg_keymap_title   ${LANG_SERBIAN} \
     " Мапирања "

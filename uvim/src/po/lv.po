@@ -1,14 +1,14 @@
-# Latvian Translation for Vim     vim:set foldmethod=marker:
+# Latvian Translation for MNV     mnv:set foldmethod=marker:
 #
-# Do ":help uganda"  in Vim to read copying and usage conditions.
-# Do ":help credits" in Vim to see a list of people who contributed.
+# Do ":help uganda"  in MNV to read copying and usage conditions.
+# Do ":help credits" in MNV to see a list of people who contributed.
 #
 # FIRST AUTHOR Valdis Vitolins <valdis.vitolins@odo.lv>, 2017.
 #
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim (Latvian)\n"
+"Project-Id-Version: MNV (Latvian)\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-03 18:03+0100\n"
 "PO-Revision-Date: 2017-05-03 18:08+0300\n"
@@ -35,8 +35,8 @@ msgid "E738: Can't list variables for %s"
 msgstr "E738: Nevar parādīt %s mainīgos"
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: Nevar ierakstīt viminfo failu %s!"
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: Nevar ierakstīt mnvinfo failu %s!"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -125,17 +125,17 @@ msgid "E254: Cannot allocate color %s"
 msgstr "E254: Nevar izdalīt krāsu %s"
 
 #, c-format
-msgid "E616: vim_SelFile: can't get font %s"
-msgstr "E616: vim_SelFile: nevar iegūt fontu %s"
+msgid "E616: mnv_SelFile: can't get font %s"
+msgstr "E616: mnv_SelFile: nevar iegūt fontu %s"
 
-msgid "E614: vim_SelFile: can't return to current directory"
-msgstr "E614: vim_SelFile: nevar atgriezties uz tekošo mapi"
+msgid "E614: mnv_SelFile: can't return to current directory"
+msgstr "E614: mnv_SelFile: nevar atgriezties uz tekošo mapi"
 
-msgid "E615: vim_SelFile: can't get current directory"
-msgstr "E615: vim_SelFile: nevar iegūt tekošo mapi"
+msgid "E615: mnv_SelFile: can't get current directory"
+msgstr "E615: mnv_SelFile: nevar iegūt tekošo mapi"
 
-msgid "Vim E458: Cannot allocate colormap entry, some colors may be incorrect"
-msgstr "Vim E458: Nevar izveidot krāsu karti, iespējams, ir kāda nepareiza krāsa"
+msgid "MNV E458: Cannot allocate colormap entry, some colors may be incorrect"
+msgstr "MNV E458: Nevar izveidot krāsu karti, iespējams, ir kāda nepareiza krāsa"
 
 #, c-format
 msgid "E624: Can't open file \"%s\""
@@ -215,7 +215,7 @@ msgstr "E298: Neizdevās iegūt bloku nr 2?"
 msgid "E304: ml_upd_block0(): Didn't get block 0??"
 msgstr "E304: ml_upd_block0(): Neizdevās iegūt bloku 0??"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Messages maintainer: Valdis Vitolins <valdis.vitolins@odo.lv>"
 
 msgid "Keys don't match!"
@@ -237,8 +237,8 @@ msgstr "E597: nevar izvēlēties fontu kopu"
 msgid "E533: Can't select wide font"
 msgstr "E533: nevar izvēlēties plato fontu"
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: Nevar atvērt logu!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: Nevar atvērt logu!\n"
 
 msgid "E388: Couldn't find definition"
 msgstr "E388: neatradu definīciju"

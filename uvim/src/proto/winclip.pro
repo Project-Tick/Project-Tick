@@ -12,4 +12,4 @@ short_u *enc_to_utf16(char_u *str, int *lenp);
 char_u *utf16_to_enc(short_u *str, int *lenp);
 void acp_to_enc(char_u *str, int str_size, char_u **out, int *outlen);
 void enc_to_acp(char_u *str, int str_size, char_u **out, int *outlen);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

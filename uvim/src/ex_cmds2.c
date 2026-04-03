@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * ex_cmds2.c: some more functions for command line commands
  */
 
-#include "vim.h"
+#include "mnv.h"
 #include "version.h"
 
 /*
@@ -147,7 +147,7 @@ browse_save_fname(buf_T *buf)
 
     if (setfname(buf, fname, NULL, TRUE) == OK)
 	buf->b_flags |= BF_NOTEDITED;
-    vim_free(fname);
+    mnv_free(fname);
 }
 # endif
 
@@ -167,15 +167,15 @@ dialog_changed(
 
     dialog_msg(buff, _("Save changes to \"%s\"?"), buf->b_fname);
     if (checkall)
-	ret = vim_dialog_yesnoallcancel(VIM_QUESTION, NULL, buff, 1);
+	ret = mnv_dialog_yesnoallcancel(MNV_QUESTION, NULL, buff, 1);
     else
-	ret = vim_dialog_yesnocancel(VIM_QUESTION, NULL, buff, 1);
+	ret = mnv_dialog_yesnocancel(MNV_QUESTION, NULL, buff, 1);
 
     // Init ea pseudo-structure, this is needed for the check_overwrite()
     // function.
     CLEAR_FIELD(ea);
 
-    if (ret == VIM_YES)
+    if (ret == MNV_YES)
     {
 	int	empty_bufname;
 
@@ -198,16 +198,16 @@ dialog_changed(
 	if (empty_bufname)
 	{
 	    buf->b_fname = NULL;
-	    VIM_CLEAR(buf->b_ffname);
-	    VIM_CLEAR(buf->b_sfname);
+	    MNV_CLEAR(buf->b_ffname);
+	    MNV_CLEAR(buf->b_sfname);
 	    unchanged(buf, TRUE, FALSE);
 	}
     }
-    else if (ret == VIM_NO)
+    else if (ret == MNV_NO)
     {
 	unchanged(buf, TRUE, FALSE);
     }
-    else if (ret == VIM_ALL)
+    else if (ret == MNV_ALL)
     {
 	/*
 	 * Write all modified files that can be written.
@@ -243,7 +243,7 @@ dialog_changed(
 	    }
 	}
     }
-    else if (ret == VIM_DISCARDALL)
+    else if (ret == MNV_DISCARDALL)
     {
 	/*
 	 * mark all buffers as unchanged
@@ -422,7 +422,7 @@ buf_found:
 	set_curbuf(buf, unload ? DOBUF_UNLOAD : DOBUF_GOTO);
 
 theend:
-    vim_free(bufnrs);
+    mnv_free(bufnrs);
     return ret;
 }
 
@@ -782,7 +782,7 @@ ex_compiler(exarg_T *eap)
     if (*eap->arg == NUL)
     {
 	// List all compiler scripts.
-	do_cmdline_cmd((char_u *)"echo globpath(&rtp, 'compiler/*.vim')");
+	do_cmdline_cmd((char_u *)"echo globpath(&rtp, 'compiler/*.mnv')");
 					// ) keep the indenter happy...
 	return;
     }
@@ -807,17 +807,17 @@ ex_compiler(exarg_T *eap)
 	// Explicitly prepend "g:" to make it work in a function.
 	old_cur_comp = get_var_value((char_u *)"g:current_compiler");
 	if (old_cur_comp != NULL)
-	    old_cur_comp = vim_strsave(old_cur_comp);
+	    old_cur_comp = mnv_strsave(old_cur_comp);
 	do_cmdline_cmd((char_u *)
 		"command -nargs=* -keepscript CompilerSet setlocal <args>");
     }
     do_unlet((char_u *)"g:current_compiler", TRUE);
     do_unlet((char_u *)"b:current_compiler", TRUE);
 
-    sprintf((char *)buf, "compiler/%s.vim", eap->arg);
+    sprintf((char *)buf, "compiler/%s.mnv", eap->arg);
     if (source_runtime(buf, DIP_ALL) == FAIL)
 	semsg(_(e_compiler_not_supported_str), eap->arg);
-    vim_free(buf);
+    mnv_free(buf);
 
     do_cmdline_cmd((char_u *)":delcommand CompilerSet");
 
@@ -833,7 +833,7 @@ ex_compiler(exarg_T *eap)
 	{
 	    set_internal_string_var((char_u *)"g:current_compiler",
 		    old_cur_comp);
-	    vim_free(old_cur_comp);
+	    mnv_free(old_cur_comp);
 	}
 	else
 	    do_unlet((char_u *)"g:current_compiler", TRUE);
@@ -886,7 +886,7 @@ requires_py_version(char_u *filename)
 
     for (i = 0; i < lines; i++)
     {
-	if (vim_fgets(IObuff, IOSIZE, file))
+	if (mnv_fgets(IObuff, IOSIZE, file))
 	    break;
 	if (i == 0 && IObuff[0] == '#' && IObuff[1] == '!')
 	{
@@ -959,7 +959,7 @@ source_pyx_file(exarg_T *eap, char_u *fname)
 # ifdef FEAT_PYTHON
 	ex_pyfile(&ex);
 # else
-	vim_snprintf((char *)IObuff, IOSIZE,
+	mnv_snprintf((char *)IObuff, IOSIZE,
 		_("W20: Required python version 2.x not supported, ignoring file: %s"),
 		fname);
 	msg((char *)IObuff);
@@ -971,7 +971,7 @@ source_pyx_file(exarg_T *eap, char_u *fname)
 # ifdef FEAT_PYTHON3
 	ex_py3file(&ex);
 # else
-	vim_snprintf((char *)IObuff, IOSIZE,
+	mnv_snprintf((char *)IObuff, IOSIZE,
 		_("W21: Required python version 3.x not supported, ignoring file: %s"),
 		fname);
 	msg((char *)IObuff);

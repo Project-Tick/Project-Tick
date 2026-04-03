@@ -2,7 +2,7 @@
  * os_haiku.rdef.in: Assets and resources file for Haiku
  */
 
-resource app_signature "application/x-vnd.Haiku-Vim-8";
+resource app_signature "application/x-vnd.Haiku-MNV-8";
 
 resource app_version {
 	major  = @MAJOR@,
@@ -11,8 +11,8 @@ resource app_version {
 	variety = B_APPV_FINAL,
 	internal = 0,
 
-	short_info = "VIM Editor",
-	long_info = "VI Improved Editor by Bram Moolenaar et al."
+	short_info = "MNV Editor",
+	long_info = "MNV is not Vim Editor by Bram Moolenaar et al."
 };
 
 resource app_flags B_MULTIPLE_LAUNCH;

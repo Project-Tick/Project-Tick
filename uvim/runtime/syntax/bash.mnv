@@ -1,0 +1,20 @@
+" MNV syntax file
+" Language:	bash
+" Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+" Last Change:	2023 Aug 13
+
+" quit when a syntax file was already loaded
+if exists("b:current_syntax")
+  finish
+endif
+
+" The actual syntax is in sh.mnv and controlled by buffer-local variables.
+unlet! b:is_sh
+unlet! b:is_kornshell
+let b:is_bash = 1
+
+runtime! syntax/sh.mnv
+
+let b:current_syntax = 'bash'
+
+" mnv: ts=8

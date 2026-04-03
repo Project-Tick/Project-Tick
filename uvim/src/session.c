@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * session.c: session related functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_SESSION)
 
@@ -43,8 +43,8 @@ ses_put_fname(FILE *fd, char_u *name, unsigned *flagp)
     }
 
     // escape special characters
-    p = vim_strsave_fnameescape(sname, VSE_NONE);
-    vim_free(sname);
+    p = mnv_strsave_fnameescape(sname, VSE_NONE);
+    mnv_free(sname);
     if (p == NULL)
 	return FAIL;
 
@@ -52,7 +52,7 @@ ses_put_fname(FILE *fd, char_u *name, unsigned *flagp)
     if (fputs((char *)p, fd) < 0)
 	retval = FAIL;
 
-    vim_free(p);
+    mnv_free(p);
     return retval;
 }
 
@@ -118,7 +118,7 @@ ses_arglist(
 		buf = alloc(MAXPATHL);
 		if (buf != NULL)
 		{
-		    (void)vim_FullName(s, buf, MAXPATHL, FALSE);
+		    (void)mnv_FullName(s, buf, MAXPATHL, FALSE);
 		    s = buf;
 		}
 	    }
@@ -126,10 +126,10 @@ ses_arglist(
 		    || ses_put_fname(fd, s, flagp) == FAIL
 		    || put_eol(fd) == FAIL)
 	    {
-		vim_free(buf);
+		mnv_free(buf);
 		return FAIL;
 	    }
-	    vim_free(buf);
+	    mnv_free(buf);
 	}
     }
     return OK;
@@ -557,7 +557,7 @@ store_session_globals(FILE *fd)
 	    {
 		// Escape special characters with a backslash.  Turn a LF and
 		// CR into \n and \r.
-		p = vim_strsave_escaped(tv_get_string(&this_var->di_tv),
+		p = mnv_strsave_escaped(tv_get_string(&this_var->di_tv),
 							(char_u *)"\\\"\n\r");
 		if (p == NULL)	    // out of memory
 		    break;
@@ -575,10 +575,10 @@ store_session_globals(FILE *fd)
 								   : ' ') < 0)
 			|| put_eol(fd) == FAIL)
 		{
-		    vim_free(p);
+		    mnv_free(p);
 		    return FAIL;
 		}
-		vim_free(p);
+		mnv_free(p);
 	    }
 	    else if (this_var->di_tv.v_type == VAR_FLOAT
 		    && var_flavour(this_var->di_key) == VAR_FLAVOUR_SESSION)
@@ -671,10 +671,10 @@ makeopens(
 		|| ses_put_fname(fd, sname, &ssop_flags) == FAIL
 		|| put_eol(fd) == FAIL)
 	{
-	    vim_free(sname);
+	    mnv_free(sname);
 	    goto fail;
 	}
-	vim_free(sname);
+	mnv_free(sname);
     }
 
     // If there is an empty, unnamed buffer we will wipe it out later.
@@ -985,8 +985,8 @@ makeopens(
 	    goto fail;
     }
 
-    // Lastly, execute the x.vim file if it exists.
-    if (put_line(fd, "let s:sx = expand(\"<sfile>:p:r\").\"x.vim\"") == FAIL
+    // Lastly, execute the x.mnv file if it exists.
+    if (put_line(fd, "let s:sx = expand(\"<sfile>:p:r\").\"x.mnv\"") == FAIL
 	    || put_line(fd, "if filereadable(s:sx)") == FAIL
 	    || put_line(fd, "  exe \"source \" . fnameescape(s:sx)") == FAIL
 	    || put_line(fd, "endif") == FAIL)
@@ -1026,7 +1026,7 @@ get_view_file(int c)
     // "="			-> "=="
     // ":" path separator	-> "=-"
     for (p = sname; *p; ++p)
-	if (*p == '=' || vim_ispathsep(*p))
+	if (*p == '=' || mnv_ispathsep(*p))
 	    ++len;
     retval = alloc(STRLEN(sname) + len + STRLEN(p_vdir) + 9);
     if (retval != NULL)
@@ -1041,7 +1041,7 @@ get_view_file(int c)
 		*s++ = '=';
 		*s++ = '=';
 	    }
-	    else if (vim_ispathsep(*p))
+	    else if (mnv_ispathsep(*p))
 	    {
 		*s++ = '=';
 # if defined(BACKSLASH_IN_FILENAME) || defined(AMIGA) || defined(VMS)
@@ -1056,10 +1056,10 @@ get_view_file(int c)
 	}
 	*s++ = '=';
 	*s++ = c;
-	STRCPY(s, ".vim");
+	STRCPY(s, ".mnv");
     }
 
-    vim_free(sname);
+    mnv_free(sname);
     return retval;
 }
 
@@ -1076,7 +1076,7 @@ ex_loadview(exarg_T *eap)
 	return;
 
     (void)do_source(fname, FALSE, DOSO_NONE, NULL);
-    vim_free(fname);
+    mnv_free(fname);
 }
 
 # if defined(FEAT_GUI_GNOME) \
@@ -1096,18 +1096,18 @@ write_session_file(char_u *filename)
 
     // Build an ex command line to create a script that restores the current
     // session if executed.  Escape the filename to avoid nasty surprises.
-    escaped_filename = vim_strsave_escaped(filename, escape_chars);
+    escaped_filename = mnv_strsave_escaped(filename, escape_chars);
     if (escaped_filename == NULL)
 	return FALSE;
     mksession_cmdline = alloc(10 + (int)STRLEN(escaped_filename) + 1);
     if (mksession_cmdline == NULL)
     {
-	vim_free(escaped_filename);
+	mnv_free(escaped_filename);
 	return FALSE;
     }
     strcpy(mksession_cmdline, "mksession ");
     STRCAT(mksession_cmdline, escaped_filename);
-    vim_free(escaped_filename);
+    mnv_free(escaped_filename);
 
     // Use a reasonable hardcoded set of 'sessionoptions' flags to avoid
     // unpredictable effects when the session is saved automatically.  Also,
@@ -1124,7 +1124,7 @@ write_session_file(char_u *filename)
     do_unlet((char_u *)"Save_VV_this_session", TRUE);
 
     ssop_flags = save_ssop_flags;
-    vim_free(mksession_cmdline);
+    mnv_free(mksession_cmdline);
 
     // Reopen the file and append a command to restore v:this_session,
     // as if this save never happened.	This is to avoid conflicts with
@@ -1160,7 +1160,7 @@ static int mksession_nl = FALSE;    // use NL only in put_eol()
 #endif
 
 /*
- * ":mkexrc", ":mkvimrc", ":mkview" and ":mksession".
+ * ":mkexrc", ":mkmnvrc", ":mkview" and ":mksession".
  */
     void
 ex_mkrc(exarg_T	*eap)
@@ -1196,7 +1196,7 @@ ex_mkrc(exarg_T	*eap)
     // ":mkview" or ":mkview 9": generate file name with 'viewdir'
     if (eap->cmdidx == CMD_mkview
 	    && (*eap->arg == NUL
-		|| (vim_isdigit(*eap->arg) && eap->arg[1] == NUL)))
+		|| (mnv_isdigit(*eap->arg) && eap->arg[1] == NUL)))
     {
 	eap->forceit = TRUE;
 	fname = get_view_file(*eap->arg);
@@ -1209,8 +1209,8 @@ ex_mkrc(exarg_T	*eap)
 #endif
 	if (*eap->arg != NUL)
 	fname = eap->arg;
-    else if (eap->cmdidx == CMD_mkvimrc)
-	fname = (char_u *)VIMRC_FILE;
+    else if (eap->cmdidx == CMD_mkmnvrc)
+	fname = (char_u *)MNVRC_FILE;
 #ifdef FEAT_SESSION
     else if (eap->cmdidx == CMD_mksession)
 	fname = (char_u *)SESSION_FILE;
@@ -1227,7 +1227,7 @@ ex_mkrc(exarg_T	*eap)
 		eap->cmdidx == CMD_mksession ? (char_u *)_("Save Session") :
 # endif
 		(char_u *)_("Save Setup"),
-		fname, (char_u *)"vim", NULL,
+		fname, (char_u *)"mnv", NULL,
 		(char_u *)_(BROWSE_FILTER_MACROS), NULL);
 	if (browseFile == NULL)
 	    goto theend;
@@ -1236,10 +1236,10 @@ ex_mkrc(exarg_T	*eap)
     }
 #endif
 
-#if defined(FEAT_SESSION) && defined(vim_mkdir)
+#if defined(FEAT_SESSION) && defined(mnv_mkdir)
     // When using 'viewdir' may have to create the directory.
     if (using_vdir && !mch_isdir(p_vdir))
-	vim_mkdir_emsg(p_vdir, 0755);
+	mnv_mkdir_emsg(p_vdir, 0755);
 #endif
 
     fd = open_exfile(fname, eap->forceit, WRITEBIN);
@@ -1258,8 +1258,8 @@ ex_mkrc(exarg_T	*eap)
 	    mksession_nl = TRUE;
 #endif
 
-	// Write the version command for :mkvimrc
-	if (eap->cmdidx == CMD_mkvimrc)
+	// Write the version command for :mkmnvrc
+	if (eap->cmdidx == CMD_mkmnvrc)
 	    (void)put_line(fd, "version 6.0");
 
 #ifdef FEAT_SESSION
@@ -1316,7 +1316,7 @@ ex_mkrc(exarg_T	*eap)
 			*dirnow = NUL;
 		    if (*dirnow != NUL && (ssop_flags & SSOP_SESDIR))
 		    {
-			if (vim_chdirfile(fname, NULL) == OK)
+			if (mnv_chdirfile(fname, NULL) == OK)
 			    shorten_fnames(TRUE);
 		    }
 		    else if (*dirnow != NUL
@@ -1336,7 +1336,7 @@ ex_mkrc(exarg_T	*eap)
 			    emsg(_(e_cannot_go_back_to_previous_directory));
 			shorten_fnames(TRUE);
 		    }
-		    vim_free(dirnow);
+		    mnv_free(dirnow);
 		}
 	    }
 	    else
@@ -1360,7 +1360,7 @@ ex_mkrc(exarg_T	*eap)
 	    }
 	}
 #endif
-	if (put_line(fd, "\" vim: set ft=vim :") == FAIL)
+	if (put_line(fd, "\" mnv: set ft=mnv :") == FAIL)
 	    failed = TRUE;
 
 	failed |= fclose(fd);
@@ -1376,9 +1376,9 @@ ex_mkrc(exarg_T	*eap)
 	    tbuf = alloc(MAXPATHL);
 	    if (tbuf != NULL)
 	    {
-		if (vim_FullName(fname, tbuf, MAXPATHL, FALSE) == OK)
-		    set_vim_var_string(VV_THIS_SESSION, tbuf, -1);
-		vim_free(tbuf);
+		if (mnv_FullName(fname, tbuf, MAXPATHL, FALSE) == OK)
+		    set_mnv_var_string(VV_THIS_SESSION, tbuf, -1);
+		mnv_free(tbuf);
 	    }
 	}
 #endif
@@ -1389,16 +1389,16 @@ ex_mkrc(exarg_T	*eap)
 
 #ifdef FEAT_BROWSE
 theend:
-    vim_free(browseFile);
+    mnv_free(browseFile);
 #endif
 #ifdef FEAT_SESSION
-    vim_free(viewFile);
+    mnv_free(viewFile);
 #endif
 
     apply_autocmds(EVENT_SESSIONWRITEPOST, NULL, NULL, FALSE, curbuf);
 }
 
-#if defined(FEAT_VIMINFO) || defined(FEAT_SESSION)
+#if defined(FEAT_MNVINFO) || defined(FEAT_SESSION)
     var_flavour_T
 var_flavour(char_u *varname)
 {
@@ -1409,7 +1409,7 @@ var_flavour(char_u *varname)
 	while (*(++p))
 	    if (ASCII_ISLOWER(*p))
 		return VAR_FLAVOUR_SESSION;
-	return VAR_FLAVOUR_VIMINFO;
+	return VAR_FLAVOUR_MNVINFO;
     }
     else
 	return VAR_FLAVOUR_DEFAULT;
@@ -1417,7 +1417,7 @@ var_flavour(char_u *varname)
 #endif
 
 /*
- * Write end-of-line character(s) for ":mkexrc", ":mkvimrc" and ":mksession".
+ * Write end-of-line character(s) for ":mkexrc", ":mkmnvrc" and ":mksession".
  * Return FAIL for a write error.
  */
     int

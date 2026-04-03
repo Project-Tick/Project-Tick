@@ -3,7 +3,7 @@
 # - a phony target 'java' depends on all of the testdir/input/java*.java
 # - when the syntax file is changed, timestamps of the JAVA files are updated so that the tests will
 #   be rerun against updated syntax
-# - when a vim setup file for test, e.g. testdir/input/setup/java_module_info.vim, is changed,
+# - when a mnv setup file for test, e.g. testdir/input/setup/java_module_info.mnv, is changed,
 #   timestamp of the corresponding input, testdir/input/java_module_info.java, is updated
 #
 # NOTE: At the moment this script DOES NOT strictly track dependency, like cpp on c, so run
@@ -17,19 +17,19 @@ for input in testdir/input/*.*; do
 	basename=$(basename "$input")
 
 	case "$basename" in
-		vim9_*.*) ft=vim;;
+		mnv9_*.*) ft=mnv;;
 		*_*.*) ft=${basename%%_*};;
 		*.*) ft=${basename%%.*};;
 		*) exit 1
 	esac
 
-	vimsetup=$dirname/setup/${basename%.*}.vim
-	if [ ! -r "$vimsetup" ]; then
-		vimsetup=
+	mnvsetup=$dirname/setup/${basename%.*}.mnv
+	if [ ! -r "$mnvsetup" ]; then
+		mnvsetup=
 	fi
 
 	cat << EOF
-$input: $ft.vim $vimsetup
+$input: $ft.mnv $mnvsetup
 	touch -c \$@
 $basename:: $input
 $ft:: $basename

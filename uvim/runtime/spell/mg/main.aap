@@ -1,10 +1,10 @@
-# Aap recipe for Malagasy Vim spell files.
+# Aap recipe for Malagasy MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = mg_MG.aff mg_MG.dic
@@ -14,11 +14,11 @@ all: $SPELLDIR/mg.latin1.spl $SPELLDIR/mg.utf-8.spl ../README_mg.txt
 
 $SPELLDIR/mg.latin1.spl : $FILES
         :sys env LANG=nl_NL.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/mg mg_MG" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/mg mg_MG" -c q
 
 $SPELLDIR/mg.utf-8.spl : $FILES
         :sys env LANG=nl_NL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/mg mg_MG" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/mg mg_MG" -c q
 
 ../README_mg.txt : README_mg_MG.txt
         :copy $source $target
@@ -45,7 +45,7 @@ mg_MG.aff mg_MG.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -76,4 +76,4 @@ check:
             :delete mg_MG.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

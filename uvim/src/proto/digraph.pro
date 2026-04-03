@@ -12,4 +12,4 @@ void f_digraph_setlist(typval_T *argvars, typval_T *rettv);
 char *keymap_init(void);
 void ex_loadkeymap(exarg_T *eap);
 void keymap_clear(garray_T *kmap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 et:
  *
- * VIM - Vi IMproved by Bram Moolenaar
+ * MNV - MNV is not Vim by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * sign.c: functions for managing signs
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_SIGNS)
 
@@ -124,7 +124,7 @@ sign_group_unref(char_u *groupname)
     {
         // All the signs in this group are removed
         hash_remove(&sg_table, hi, "sign remove");
-        vim_free(group);
+        mnv_free(group);
     }
 }
 
@@ -225,7 +225,7 @@ insert_sign(buf_T *buf, // buffer to store sign in
         newsign->se_group = sign_group_ref(group);
         if (newsign->se_group == NULL)
         {
-            vim_free(newsign);
+            mnv_free(newsign);
             return;
         }
     }
@@ -589,7 +589,7 @@ buf_delsign(buf_T *buf, // buffer sign is stored in
             if (sign->se_group != NULL)
                 sign_group_unref(sign->se_group->sg_name);
 
-            vim_free(sign);
+            mnv_free(sign);
             redraw_buf_line_later(buf, lnum);
 
             // Check whether only one sign needs to be deleted
@@ -756,7 +756,7 @@ buf_delete_signs(buf_T *buf, char_u *group)
             if (sign->se_group != NULL)
                 sign_group_unref(sign->se_group->sg_name);
 
-            vim_free(sign);
+            mnv_free(sign);
         }
         else
         {
@@ -782,7 +782,7 @@ sign_list_placed(buf_T *rbuf, char_u *sign_group)
     {
         if (buf->b_signlist != NULL)
         {
-            vim_snprintf(lbuf, MSG_BUF_LEN, _("Signs for %s:"), buf->b_fname);
+            mnv_snprintf(lbuf, MSG_BUF_LEN, _("Signs for %s:"), buf->b_fname);
             msg_puts_attr(lbuf, HL_ATTR(HLF_D));
             msg_putchar('\n');
         }
@@ -797,12 +797,12 @@ sign_list_placed(buf_T *rbuf, char_u *sign_group)
                 continue;
 
             if (sign->se_group != NULL)
-                vim_snprintf(group, MSG_BUF_LEN, _("  group=%s"),
+                mnv_snprintf(group, MSG_BUF_LEN, _("  group=%s"),
                              sign->se_group->sg_name);
             else
                 group[0] = '\0';
 
-            vim_snprintf(lbuf, MSG_BUF_LEN,
+            mnv_snprintf(lbuf, MSG_BUF_LEN,
                          _("    line=%ld  id=%d%s  name=%s  priority=%d"),
                          (long)sign->se_lnum, sign->se_id, group,
                          sign_typenr2name(sign->se_typenr), sign->se_priority);
@@ -925,7 +925,7 @@ alloc_new_sign(char_u *name)
 
             if (next_sign_typenr == start)
             {
-                vim_free(sp);
+                mnv_free(sp);
                 emsg(_(e_too_many_signs_defined));
                 return NULL;
             }
@@ -941,10 +941,10 @@ alloc_new_sign(char_u *name)
     if (++next_sign_typenr == MAX_TYPENR)
         next_sign_typenr = 1; // wrap around
 
-    sp->sn_name = vim_strsave(name);
+    sp->sn_name = mnv_strsave(name);
     if (sp->sn_name == NULL) // out of memory
     {
-        vim_free(sp);
+        mnv_free(sp);
         return NULL;
     }
 
@@ -957,8 +957,8 @@ alloc_new_sign(char_u *name)
 static void
 sign_define_init_icon(sign_T *sp, char_u *icon)
 {
-    vim_free(sp->sn_icon);
-    sp->sn_icon = vim_strsave(icon);
+    mnv_free(sp->sn_icon);
+    sp->sn_icon = mnv_strsave(icon);
     backslash_halve(sp->sn_icon);
 # ifdef FEAT_SIGN_ICONS
     if (gui.in_use)
@@ -996,7 +996,7 @@ sign_define_init_text(sign_T *sp, char_u *text)
     {
         for (s = text; s < endp; s += (*mb_ptr2len)(s))
         {
-            if (!vim_isprintc((*mb_ptr2char)(s)))
+            if (!mnv_isprintc((*mb_ptr2char)(s)))
                 break;
 
             cells += (*mb_ptr2cells)(s);
@@ -1006,7 +1006,7 @@ sign_define_init_text(sign_T *sp, char_u *text)
     {
         for (s = text; s < endp; ++s)
         {
-            if (!vim_isprintc(*s))
+            if (!mnv_isprintc(*s))
                 break;
         }
         cells = (int)(s - text);
@@ -1019,11 +1019,11 @@ sign_define_init_text(sign_T *sp, char_u *text)
         return FAIL;
     }
 
-    vim_free(sp->sn_text);
+    mnv_free(sp->sn_text);
     // Allocate one byte more if we need to pad up
     // with a space.
     int len = (int)(endp - text + ((cells == 1) ? 1 : 0));
-    sp->sn_text = vim_strnsave(text, len);
+    sp->sn_text = mnv_strnsave(text, len);
 
     // For single character sign text, pad with a space.
     if (sp->sn_text != NULL && cells == 1)
@@ -1318,7 +1318,7 @@ sign_jump(int sign_id, char_u *sign_group, buf_T *buf)
 
         sprintf((char *)cmd, "e +%ld %s", (long)lnum, buf->b_fname);
         do_cmdline_cmd(cmd);
-        vim_free(cmd);
+        mnv_free(cmd);
     }
 # ifdef FEAT_FOLDING
     foldOpenCursor();
@@ -1355,32 +1355,32 @@ sign_define_cmd(char_u *sign_name, char_u *cmdline)
         if (STRNCMP(arg, "icon=", 5) == 0)
         {
             arg += 5;
-            icon = vim_strnsave(arg, p - arg);
+            icon = mnv_strnsave(arg, p - arg);
         }
         else if (STRNCMP(arg, "text=", 5) == 0)
         {
             arg += 5;
-            text = vim_strnsave(arg, p - arg);
+            text = mnv_strnsave(arg, p - arg);
         }
         else if (STRNCMP(arg, "linehl=", 7) == 0)
         {
             arg += 7;
-            linehl = vim_strnsave(arg, p - arg);
+            linehl = mnv_strnsave(arg, p - arg);
         }
         else if (STRNCMP(arg, "texthl=", 7) == 0)
         {
             arg += 7;
-            texthl = vim_strnsave(arg, p - arg);
+            texthl = mnv_strnsave(arg, p - arg);
         }
         else if (STRNCMP(arg, "culhl=", 6) == 0)
         {
             arg += 6;
-            culhl = vim_strnsave(arg, p - arg);
+            culhl = mnv_strnsave(arg, p - arg);
         }
         else if (STRNCMP(arg, "numhl=", 6) == 0)
         {
             arg += 6;
-            numhl = vim_strnsave(arg, p - arg);
+            numhl = mnv_strnsave(arg, p - arg);
         }
         else if (STRNCMP(arg, "priority=", 9) == 0)
         {
@@ -1399,12 +1399,12 @@ sign_define_cmd(char_u *sign_name, char_u *cmdline)
         sign_define_by_name(sign_name, icon, linehl, text, texthl, culhl, numhl,
                             prio);
 
-    vim_free(icon);
-    vim_free(text);
-    vim_free(linehl);
-    vim_free(texthl);
-    vim_free(culhl);
-    vim_free(numhl);
+    mnv_free(icon);
+    mnv_free(text);
+    mnv_free(linehl);
+    mnv_free(texthl);
+    mnv_free(culhl);
+    mnv_free(numhl);
 }
 
 /*
@@ -1574,10 +1574,10 @@ parse_sign_cmd_args(int cmd,
     int lnum_arg = FALSE;
 
     // first arg could be placed sign id
-    if (VIM_ISDIGIT(*arg))
+    if (MNV_ISDIGIT(*arg))
     {
         *signid = getdigits(&arg);
-        if (!VIM_ISWHITE(*arg) && *arg != NUL)
+        if (!MNV_ISWHITE(*arg) && *arg != NUL)
         {
             *signid = -1;
             arg = arg1;
@@ -1741,7 +1741,7 @@ ex_sign(exarg_T *eap)
         while (arg[0] == '0' && arg[1] != NUL)
             ++arg;
 
-        char_u *name = vim_strsave(arg);
+        char_u *name = mnv_strsave(arg);
 
         if (idx == SIGNCMD_DEFINE)
             sign_define_cmd(name, p);
@@ -1752,7 +1752,7 @@ ex_sign(exarg_T *eap)
             // ":sign undefine {name}"
             sign_undefine_by_name(name, TRUE);
 
-        vim_free(name);
+        mnv_free(name);
     }
 }
 
@@ -1968,7 +1968,7 @@ sign_list_defined(sign_T *sp)
 
     if (sp->sn_priority > 0)
     {
-        vim_snprintf(lbuf, MSG_BUF_LEN, " priority=%d", sp->sn_priority);
+        mnv_snprintf(lbuf, MSG_BUF_LEN, " priority=%d", sp->sn_priority);
         msg_puts(lbuf);
     }
 
@@ -2023,8 +2023,8 @@ sign_list_defined(sign_T *sp)
 static void
 sign_undefine(sign_T *sp, sign_T *sp_prev)
 {
-    vim_free(sp->sn_name);
-    vim_free(sp->sn_icon);
+    mnv_free(sp->sn_name);
+    mnv_free(sp->sn_icon);
 # ifdef FEAT_SIGN_ICONS
     if (sp->sn_image != NULL)
     {
@@ -2032,14 +2032,14 @@ sign_undefine(sign_T *sp, sign_T *sp_prev)
         gui_mch_destroy_sign(sp->sn_image);
     }
 # endif
-    vim_free(sp->sn_text);
+    mnv_free(sp->sn_text);
 
     if (sp_prev == NULL)
         first_sign = sp->sn_next;
     else
         sp_prev->sn_next = sp->sn_next;
 
-    vim_free(sp);
+    mnv_free(sp);
 }
 
 # if defined(FEAT_SIGN_ICONS)
@@ -2209,7 +2209,7 @@ set_context_in_sign_cmd(expand_T *xp, char_u *arg)
     }
     while (*p != NUL);
 
-    p = vim_strchr(last, '=');
+    p = mnv_strchr(last, '=');
 
     // :sign define {name} {args}... {last}=
     //                               |     |
@@ -2225,7 +2225,7 @@ set_context_in_sign_cmd(expand_T *xp, char_u *arg)
                 break;
             case SIGNCMD_PLACE:
                 // List placed signs
-                if (VIM_ISDIGIT(*begin_subcmd_args))
+                if (MNV_ISDIGIT(*begin_subcmd_args))
                     //   :sign place {id} {args}...
                     expand_what = EXP_PLACE;
                 else
@@ -2311,7 +2311,7 @@ sign_define_from_dict(char_u *name_arg, dict_T *dict)
     if (name_arg == NULL)
         name = dict_get_string(dict, "name", TRUE);
     else
-        name = vim_strsave(name_arg);
+        name = mnv_strsave(name_arg);
 
     if (name == NULL || name[0] == NUL)
         goto cleanup;
@@ -2332,13 +2332,13 @@ sign_define_from_dict(char_u *name_arg, dict_T *dict)
         retval = 0;
 
 cleanup:
-    vim_free(name);
-    vim_free(icon);
-    vim_free(linehl);
-    vim_free(text);
-    vim_free(texthl);
-    vim_free(culhl);
-    vim_free(numhl);
+    mnv_free(name);
+    mnv_free(icon);
+    mnv_free(linehl);
+    mnv_free(text);
+    mnv_free(texthl);
+    mnv_free(culhl);
+    mnv_free(numhl);
 
     return retval;
 }
@@ -2370,7 +2370,7 @@ sign_define_multiple(list_T *l, list_T *retlist)
 void
 f_sign_define(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && (check_for_string_or_list_arg(argvars, 0) == FAIL ||
+    if (in_mnv9script() && (check_for_string_or_list_arg(argvars, 0) == FAIL ||
                             check_for_opt_dict_arg(argvars, 1) == FAIL))
         return;
 
@@ -2407,7 +2407,7 @@ f_sign_getdefined(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc_id(rettv, aid_sign_getdefined) == FAIL)
         return;
 
-    if (in_vim9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
         return;
 
     char_u *name = NULL;
@@ -2431,7 +2431,7 @@ f_sign_getplaced(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc_id(rettv, aid_sign_getplaced) == FAIL)
         return;
 
-    if (in_vim9script() && (check_for_opt_buffer_arg(argvars, 0) == FAIL ||
+    if (in_mnv9script() && (check_for_opt_buffer_arg(argvars, 0) == FAIL ||
                             (argvars[0].v_type != VAR_UNKNOWN &&
                              check_for_opt_dict_arg(argvars, 1) == FAIL)))
         return;
@@ -2495,7 +2495,7 @@ f_sign_jump(typval_T *argvars, typval_T *rettv)
     char_u *sign_group = NULL;
     rettv->vval.v_number = -1;
 
-    if (in_vim9script() && (check_for_number_arg(argvars, 0) == FAIL ||
+    if (in_mnv9script() && (check_for_number_arg(argvars, 0) == FAIL ||
                             check_for_string_arg(argvars, 1) == FAIL ||
                             check_for_buffer_arg(argvars, 2) == FAIL))
         return;
@@ -2523,7 +2523,7 @@ f_sign_jump(typval_T *argvars, typval_T *rettv)
     }
     else
     {
-        sign_group = vim_strsave(sign_group);
+        sign_group = mnv_strsave(sign_group);
         if (sign_group == NULL)
             return;
     }
@@ -2536,7 +2536,7 @@ f_sign_jump(typval_T *argvars, typval_T *rettv)
     rettv->vval.v_number = sign_jump(sign_id, sign_group, buf);
 
 cleanup:
-    vim_free(sign_group);
+    mnv_free(sign_group);
 }
 
 /*
@@ -2610,7 +2610,7 @@ sign_place_from_dict(typval_T *id_tv,
         }
         else
         {
-            group = vim_strsave(group);
+            group = mnv_strsave(group);
             if (group == NULL)
                 return -1;
         }
@@ -2672,7 +2672,7 @@ sign_place_from_dict(typval_T *id_tv,
         ret_sign_id = sign_id;
 
 cleanup:
-    vim_free(group);
+    mnv_free(group);
 
     return ret_sign_id;
 }
@@ -2686,7 +2686,7 @@ f_sign_place(typval_T *argvars, typval_T *rettv)
     dict_T *dict = NULL;
     rettv->vval.v_number = -1;
 
-    if (in_vim9script() && (check_for_number_arg(argvars, 0) == FAIL ||
+    if (in_mnv9script() && (check_for_number_arg(argvars, 0) == FAIL ||
                             check_for_string_arg(argvars, 1) == FAIL ||
                             check_for_string_arg(argvars, 2) == FAIL ||
                             check_for_buffer_arg(argvars, 3) == FAIL ||
@@ -2713,7 +2713,7 @@ f_sign_placelist(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
         return;
 
-    if (in_vim9script() && check_for_list_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_list_arg(argvars, 0) == FAIL)
         return;
 
     if (check_for_list_arg(argvars, 0) == FAIL)
@@ -2760,7 +2760,7 @@ void
 f_sign_undefine(typval_T *argvars, typval_T *rettv)
 {
 
-    if (in_vim9script() && check_for_opt_string_or_list_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_string_or_list_arg(argvars, 0) == FAIL)
         return;
 
     if (argvars[0].v_type == VAR_LIST && argvars[1].v_type == VAR_UNKNOWN)
@@ -2817,7 +2817,7 @@ sign_unplace_from_dict(typval_T *group_tv, dict_T *dict)
         }
         else
         {
-            group = vim_strsave(group);
+            group = mnv_strsave(group);
             if (group == NULL)
                 return retval;
         }
@@ -2856,7 +2856,7 @@ sign_unplace_from_dict(typval_T *group_tv, dict_T *dict)
         retval = 0;
 
 cleanup:
-    vim_free(group);
+    mnv_free(group);
 
     return retval;
 }
@@ -2926,7 +2926,7 @@ f_sign_unplacelist(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
         return;
 
-    if (in_vim9script() && check_for_list_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_list_arg(argvars, 0) == FAIL)
         return;
 
     if (check_for_list_arg(argvars, 0) == FAIL)

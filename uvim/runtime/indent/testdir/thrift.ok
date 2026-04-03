@@ -1,4 +1,4 @@
-// vim: set ft=thrift sw=4 et:
+// mnv: set ft=thrift sw=4 et:
 
 # START_INDENT
 namespace cpp foo

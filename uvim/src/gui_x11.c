@@ -1,18 +1,18 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *				GUI/Motif support by Robert Webb
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * Code for the Motif GUI.
  * Not used for GTK.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
@@ -54,8 +54,8 @@
 # include <X11/Xmu/Editres.h>
 #endif
 
-#define VIM_NAME	"vim"
-#define VIM_CLASS	"Vim"
+#define MNV_NAME	"mnv"
+#define MNV_CLASS	"MNV"
 
 // Default resource values
 #define DFLT_FONT		"7x13"
@@ -74,7 +74,7 @@
 #define DFLT_TOOLTIP_BG_COLOR	"#ffff91"
 #define DFLT_TOOLTIP_FG_COLOR	"#000000"
 
-Widget vimShell = (Widget)0;
+Widget mnvShell = (Widget)0;
 
 static Atom   wm_atoms[2];	// Window Manager Atoms
 #define DELETE_WINDOW_IDX 0	// index in wm_atoms[] for WM_DELETE_WINDOW
@@ -138,15 +138,15 @@ static Cursor gui_x11_create_blank_mouse(void);
 
 
 /*
- * Keycodes recognized by vim.
+ * Keycodes recognized by mnv.
  * NOTE: when changing this, the table in gui_gtk_x11.c probably needs the
  * same change!
  */
 static struct specialkey
 {
     KeySym  key_sym;
-    char_u  vim_code0;
-    char_u  vim_code1;
+    char_u  mnv_code0;
+    char_u  mnv_code1;
 } special_keys[] =
 {
     {XK_Up,		'k', 'u'},
@@ -283,7 +283,7 @@ static struct specialkey
 /*
  * X Resources:
  */
-static XtResource vim_resources[] =
+static XtResource mnv_resources[] =
 {
     {
 	XtNforeground,
@@ -490,9 +490,9 @@ static XtResource vim_resources[] =
 
 /*
  * This table holds all the X GUI command line options allowed.  This includes
- * the standard ones so that we can skip them when vim is started without the
+ * the standard ones so that we can skip them when mnv is started without the
  * GUI (but the GUI might start up later).
- * When changing this, also update doc/vim_gui.txt and the usage message!!!
+ * When changing this, also update doc/mnv_gui.txt and the usage message!!!
  */
 static XrmOptionDescRec cmdline_options[] =
 {
@@ -885,8 +885,8 @@ gui_x11_key_hit_cb(
 	    if (special_keys[i].key_sym == key_sym)
 	    {
 		string[0] = CSI;
-		string[1] = special_keys[i].vim_code0;
-		string[2] = special_keys[i].vim_code1;
+		string[1] = special_keys[i].mnv_code0;
+		string[2] = special_keys[i].mnv_code1;
 		len = -3;
 		break;
 	    }
@@ -1004,7 +1004,7 @@ gui_x11_mouse_cb(
     int		repeated_click = FALSE;
     int		x, y;
     int_u	x_modifiers;
-    int_u	vim_modifiers;
+    int_u	mnv_modifiers;
 
     if (event->type == MotionNotify)
     {
@@ -1023,7 +1023,7 @@ gui_x11_mouse_cb(
 	if (button != MOUSE_DRAG)	// just moving the rodent
 	{
 #ifdef FEAT_MENU
-	    if (dud)			// moved in vimForm
+	    if (dud)			// moved in mnvForm
 		y -= gui.menu_height;
 #endif
 	    gui_mouse_moved(x, y);
@@ -1072,15 +1072,15 @@ gui_x11_mouse_cb(
 #endif
     }
 
-    vim_modifiers = 0x0;
+    mnv_modifiers = 0x0;
     if (x_modifiers & ShiftMask)
-	vim_modifiers |= MOUSE_SHIFT;
+	mnv_modifiers |= MOUSE_SHIFT;
     if (x_modifiers & ControlMask)
-	vim_modifiers |= MOUSE_CTRL;
+	mnv_modifiers |= MOUSE_CTRL;
     if (x_modifiers & Mod1Mask)	    // Alt or Meta key
-	vim_modifiers |= MOUSE_ALT;
+	mnv_modifiers |= MOUSE_ALT;
 
-    gui_send_mouse_event(button, x, y, repeated_click, vim_modifiers);
+    gui_send_mouse_event(button, x, y, repeated_click, mnv_modifiers);
 }
 
 /*
@@ -1090,7 +1090,7 @@ gui_x11_mouse_cb(
 /*
  * Parse the GUI related command-line arguments.  Any arguments used are
  * deleted from argv, and *argc is decremented accordingly.  This is called
- * when vim is started, whether or not the GUI has been started.
+ * when mnv is started, whether or not the GUI has been started.
  */
     void
 gui_mch_prepare(int *argc, char **argv)
@@ -1169,7 +1169,7 @@ gui_mch_prepare(int *argc, char **argv)
 #endif
 
 /*
- * Check if the GUI can be started.  Called before gvimrc is sourced.
+ * Check if the GUI can be started.  Called before gmnvrc is sourced.
  * Return OK or FAIL.
  */
     int
@@ -1180,7 +1180,7 @@ gui_mch_init_check(void)
 #endif
     open_app_context();
     if (app_context != NULL)
-	gui.dpy = XtOpenDisplay(app_context, 0, VIM_NAME, VIM_CLASS,
+	gui.dpy = XtOpenDisplay(app_context, 0, MNV_NAME, MNV_CLASS,
 		cmdline_options, XtNumber(cmdline_options),
 		CARDINAL &gui_argc, gui_argv);
 
@@ -1240,14 +1240,14 @@ gui_mch_init(void)
     XSynchronize(gui.dpy, True);
 #endif
 
-    vimShell = XtVaAppCreateShell(VIM_NAME, VIM_CLASS,
+    mnvShell = XtVaAppCreateShell(MNV_NAME, MNV_CLASS,
 	    applicationShellWidgetClass, gui.dpy, NULL);
 
     /*
      * Get the application resources
      */
-    XtVaGetApplicationResources(vimShell, (XtPointer)&gui,
-	vim_resources, XtNumber(vim_resources), NULL);
+    XtVaGetApplicationResources(mnvShell, (XtPointer)&gui,
+	mnv_resources, XtNumber(mnv_resources), NULL);
 
     gui.scrollbar_height = gui.scrollbar_width;
 
@@ -1279,7 +1279,7 @@ gui_mch_init(void)
     }
 
     // Get the colors from the "Normal", "Tooltip", "Scrollbar" and "Menu"
-    // group (set in syntax.c or in a vimrc file)
+    // group (set in syntax.c or in a mnvrc file)
     set_normal_colors();
 
     /*
@@ -1293,17 +1293,17 @@ gui_mch_init(void)
     gc_mask = GCForeground | GCBackground;
     gc_vals.foreground = gui.norm_pixel;
     gc_vals.background = gui.back_pixel;
-    gui.text_gc = XtGetGC(vimShell, gc_mask, &gc_vals);
+    gui.text_gc = XtGetGC(mnvShell, gc_mask, &gc_vals);
 
     gc_vals.foreground = gui.back_pixel;
     gc_vals.background = gui.norm_pixel;
-    gui.back_gc = XtGetGC(vimShell, gc_mask, &gc_vals);
+    gui.back_gc = XtGetGC(mnvShell, gc_mask, &gc_vals);
 
     gc_mask |= GCFunction;
     gc_vals.foreground = gui.norm_pixel ^ gui.back_pixel;
     gc_vals.background = gui.norm_pixel ^ gui.back_pixel;
     gc_vals.function   = GXxor;
-    gui.invert_gc = XtGetGC(vimShell, gc_mask, &gc_vals);
+    gui.invert_gc = XtGetGC(mnvShell, gc_mask, &gc_vals);
 
     gui.visibility = VisibilityUnobscured;
     x11_setup_atoms(gui.dpy);
@@ -1331,45 +1331,45 @@ gui_mch_init(void)
 	 * to be done before the shell is popped up.
 	 */
 	if (mask & (XValue|YValue))
-	    XtVaSetValues(vimShell, XtNgeometry, gui.geom, NULL);
+	    XtVaSetValues(mnvShell, XtNgeometry, gui.geom, NULL);
     }
 
     gui_x11_create_widgets();
 
    /*
-    * Add an icon to Vim (Marcel Douben: 11 May 1998).
+    * Add an icon to MNV (Marcel Douben: 11 May 1998).
     */
-    if (vim_strchr(p_go, GO_ICON) != NULL)
+    if (mnv_strchr(p_go, GO_ICON) != NULL)
     {
 #ifndef HAVE_XPM
-# include "vim_icon.xbm"
-# include "vim_mask.xbm"
+# include "mnv_icon.xbm"
+# include "mnv_mask.xbm"
 
 	Arg	arg[2];
 
 	XtSetArg(arg[0], XtNiconPixmap,
 		XCreateBitmapFromData(gui.dpy,
 		    DefaultRootWindow(gui.dpy),
-		    (char *)vim_icon_bits,
-		    vim_icon_width,
-		    vim_icon_height));
+		    (char *)mnv_icon_bits,
+		    mnv_icon_width,
+		    mnv_icon_height));
 	XtSetArg(arg[1], XtNiconMask,
 		XCreateBitmapFromData(gui.dpy,
 		    DefaultRootWindow(gui.dpy),
-		    (char *)vim_mask_icon_bits,
-		    vim_mask_icon_width,
-		    vim_mask_icon_height));
-	XtSetValues(vimShell, arg, (Cardinal)2);
+		    (char *)mnv_mask_icon_bits,
+		    mnv_mask_icon_width,
+		    mnv_mask_icon_height));
+	XtSetValues(mnvShell, arg, (Cardinal)2);
 #else
 // Use Pixmaps, looking much nicer.
 
-# include "../runtime/vim32x32.xpm"
-# include "../runtime/vim16x16.xpm"
-# include "../runtime/vim48x48.xpm"
+# include "../runtime/mnv32x32.xpm"
+# include "../runtime/mnv16x16.xpm"
+# include "../runtime/mnv48x48.xpm"
 
     static Pixmap	icon = 0;
     static Pixmap	icon_mask = 0;
-    static char		**magick = vim32x32;
+    static char		**magick = mnv32x32;
     Window		root_window;
     XIconSize		*size;
     int			number_sizes;
@@ -1381,26 +1381,26 @@ gui_mch_init(void)
     /*
      * Adjust the icon to the preferences of the actual window manager.
      */
-    root_window = XRootWindowOfScreen(XtScreen(vimShell));
-    if (XGetIconSizes(XtDisplay(vimShell), root_window,
+    root_window = XRootWindowOfScreen(XtScreen(mnvShell));
+    if (XGetIconSizes(XtDisplay(mnvShell), root_window,
 						   &size, &number_sizes) != 0)
     {
 	if (number_sizes > 0)
 	{
 	    if (size->max_height >= 48 && size->max_width >= 48)
-		magick = vim48x48;
+		magick = mnv48x48;
 	    else if (size->max_height >= 32 && size->max_width >= 32)
-		magick = vim32x32;
+		magick = mnv32x32;
 	    else if (size->max_height >= 16 && size->max_width >= 16)
-		magick = vim16x16;
+		magick = mnv16x16;
 	}
     }
 
-    dsp = XtDisplay(vimShell);
-    scr = XtScreen(vimShell);
+    dsp = XtDisplay(mnvShell);
+    scr = XtScreen(mnvShell);
 
     cmap = DefaultColormap(dsp, DefaultScreen(dsp));
-    XtVaSetValues(vimShell, XtNcolormap, cmap, NULL);
+    XtVaSetValues(mnvShell, XtNcolormap, cmap, NULL);
 
     attr.valuemask = 0L;
     attr.valuemask = XpmCloseness | XpmReturnPixels | XpmColormap | XpmDepth;
@@ -1415,7 +1415,7 @@ gui_mch_init(void)
 	XpmFreeAttributes(&attr);
     }
 
-    XtVaSetValues(vimShell, XmNiconPixmap, icon, XmNiconMask, icon_mask, NULL);
+    XtVaSetValues(mnvShell, XmNiconPixmap, icon, XmNiconMask, icon_mask, NULL);
 #endif
     }
 
@@ -1448,8 +1448,8 @@ gui_mch_uninit(void)
     gui_x11_destroy_widgets();
     XtCloseDisplay(gui.dpy);
     gui.dpy = NULL;
-    vimShell = (Widget)0;
-    VIM_CLEAR(gui_argv);
+    mnvShell = (Widget)0;
+    MNV_CLEAR(gui_argv);
 }
 
 /*
@@ -1489,8 +1489,8 @@ gui_mch_new_colors(void)
 gui_mch_open(void)
 {
     // Actually open the window
-    XtRealizeWidget(vimShell);
-    XtManageChild(XtNameToWidget(vimShell, "*vimForm"));
+    XtRealizeWidget(mnvShell);
+    XtManageChild(XtNameToWidget(mnvShell, "*mnvForm"));
 
     gui.wid = gui_x11_get_wid();
     gui.blank_pointer = gui_x11_create_blank_mouse();
@@ -1503,23 +1503,23 @@ gui_mch_open(void)
 			      XInternAtom(gui.dpy, "WM_SAVE_YOURSELF", False);
     wm_atoms[DELETE_WINDOW_IDX] =
 			      XInternAtom(gui.dpy, "WM_DELETE_WINDOW", False);
-    XSetWMProtocols(gui.dpy, XtWindow(vimShell), wm_atoms, 2);
-    XtAddEventHandler(vimShell, NoEventMask, True, gui_x11_wm_protocol_handler,
+    XSetWMProtocols(gui.dpy, XtWindow(mnvShell), wm_atoms, 2);
+    XtAddEventHandler(mnvShell, NoEventMask, True, gui_x11_wm_protocol_handler,
 							     NULL);
 #ifdef HAVE_X11_XMU_EDITRES_H
     /*
      * Enable editres protocol (see "man editres").
      * Usually will need to add -lXmu to the linker line as well.
      */
-    XtAddEventHandler(vimShell, (EventMask)0, True, _XEditResCheckMessages,
+    XtAddEventHandler(mnvShell, (EventMask)0, True, _XEditResCheckMessages,
 	    (XtPointer)NULL);
 #endif
 
 #ifdef FEAT_CLIENTSERVER
     if (serverName == NULL && serverDelayedStartName != NULL)
     {
-	// This is a :gui command in a plain vim with no previous server
-	commWindow = XtWindow(vimShell);
+	// This is a :gui command in a plain mnv with no previous server
+	commWindow = XtWindow(mnvShell);
 	(void)serverRegisterName(gui.dpy, serverDelayedStartName);
     }
     else
@@ -1529,9 +1529,9 @@ gui_mch_open(void)
 	 * have to change the "server" registration to that of the main window
 	 * If we have not registered a name yet, remember the window
 	 */
-	serverChangeRegisteredWindow(gui.dpy, XtWindow(vimShell));
+	serverChangeRegisteredWindow(gui.dpy, XtWindow(mnvShell));
     }
-    XtAddEventHandler(vimShell, PropertyChangeMask, False,
+    XtAddEventHandler(mnvShell, PropertyChangeMask, False,
 		      gui_x11_send_event_handler, NULL);
 #endif
 
@@ -1560,7 +1560,7 @@ gui_init_tooltip_font(void)
     to.addr = (XtPointer)&gui.tooltip_fontset;
     to.size = sizeof(XFontSet);
 
-    if (XtConvertAndStore(vimShell, XtRString, &from, XtRFontSet, &to) == False)
+    if (XtConvertAndStore(mnvShell, XtRString, &from, XtRFontSet, &to) == False)
     {
 	// Failed. What to do?
     }
@@ -1580,7 +1580,7 @@ gui_init_menu_font(void)
     to.addr = (XtPointer)&gui.menu_fontset;
     to.size = sizeof(GuiFontset);
 
-    if (XtConvertAndStore(vimShell, XtRString, &from, XtRFontSet, &to) == False)
+    if (XtConvertAndStore(mnvShell, XtRString, &from, XtRFontSet, &to) == False)
     {
 	// Failed. What to do?
     }
@@ -1590,7 +1590,7 @@ gui_init_menu_font(void)
     to.addr = (XtPointer)&gui.menu_font;
     to.size = sizeof(GuiFont);
 
-    if (XtConvertAndStore(vimShell, XtRString, &from, XtRFontStruct, &to) == False)
+    if (XtConvertAndStore(mnvShell, XtRString, &from, XtRFontStruct, &to) == False)
     {
 	// Failed. What to do?
     }
@@ -1606,7 +1606,7 @@ gui_mch_exit(int rc UNUSED)
     // says that this isn't needed when exiting, so just skip it.
     XtCloseDisplay(gui.dpy);
 #endif
-    VIM_CLEAR(gui_argv);
+    MNV_CLEAR(gui_argv);
 }
 
 /*
@@ -1617,7 +1617,7 @@ gui_mch_get_winpos(int *x, int *y)
 {
     Dimension	xpos, ypos;
 
-    XtVaGetValues(vimShell,
+    XtVaGetValues(mnvShell,
 	XtNx,	&xpos,
 	XtNy,	&ypos,
 	NULL);
@@ -1633,7 +1633,7 @@ gui_mch_get_winpos(int *x, int *y)
     void
 gui_mch_set_winpos(int x, int y)
 {
-    XtVaSetValues(vimShell,
+    XtVaSetValues(mnvShell,
 	XtNx,	x,
 	XtNy,	y,
 	NULL);
@@ -1652,7 +1652,7 @@ gui_mch_set_shellsize(
 #ifdef FEAT_XIM
     height += xim_get_status_area_height(),
 #endif
-    XtVaSetValues(vimShell,
+    XtVaSetValues(mnvShell,
 	XtNwidthInc,	gui.char_width,
 	XtNheightInc,	gui.char_height,
 #if defined(XtSpecificationRelease) && XtSpecificationRelease >= 4
@@ -1680,7 +1680,7 @@ gui_mch_get_screen_dimensions(
 }
 
 /*
- * Initialise vim to use the font "font_name".  If it's NULL, pick a default
+ * Initialise mnv to use the font "font_name".  If it's NULL, pick a default
  * font.
  * If "fontset" is TRUE, load the "font_name" as a fontset.
  * Return FAIL if the font could not be loaded, OK otherwise.
@@ -1712,7 +1712,7 @@ gui_mch_init_font(
 #ifdef FEAT_XFONTSET
     if (do_fontset)
     {
-	// If 'guifontset' is set, VIM treats all font specifications as if
+	// If 'guifontset' is set, MNV treats all font specifications as if
 	// they were fontsets, and 'guifontset' becomes the default.
 	if (font_name != NULL)
 	{
@@ -1877,7 +1877,7 @@ gui_mch_get_fontname(GuiFont font, char_u *name)
     if (name != NULL && font == NULL)
     {
 	// In this case, there's no way other than doing this.
-	ret = vim_strsave(name);
+	ret = mnv_strsave(name);
     }
     else if (font != NULL)
     {
@@ -1892,14 +1892,14 @@ gui_mch_get_fontname(GuiFont font, char_u *name)
 	    xa_font_name = XGetAtomName(gui.dpy, value);
 	    if (xa_font_name != NULL)
 	    {
-		ret = vim_strsave((char_u *)xa_font_name);
+		ret = mnv_strsave((char_u *)xa_font_name);
 		XFree(xa_font_name);
 	    }
 	    else if (name != NULL)
-		ret = vim_strsave(name);
+		ret = mnv_strsave(name);
 	}
 	else if (name != NULL)
-	    ret = vim_strsave(name);
+	    ret = mnv_strsave(name);
     }
     return ret;
 }
@@ -2088,7 +2088,7 @@ check_fontset_sanity(XFontSet fs)
     static int
 fontset_width(XFontSet fs)
 {
- return XmbTextEscapement(fs, "Vim", 3) / 3;
+ return XmbTextEscapement(fs, "MNV", 3) / 3;
 }
 
     int
@@ -2161,7 +2161,7 @@ gui_mch_get_rgb_color(int r, int g, int b)
 // Using XParseColor() is very slow, put rgb in XColor directly.
 
     char	spec[8]; // space enough to hold "#RRGGBB"
-    vim_snprintf(spec, sizeof(spec), "#%.2x%.2x%.2x", r, g, b);
+    mnv_snprintf(spec, sizeof(spec), "#%.2x%.2x%.2x", r, g, b);
     if (XParseColor(gui.dpy, colormap, (char *)spec, &available) != 0
 	    && XAllocColor(gui.dpy, colormap, &available) != 0)
 	return (guicolor_T)available.pixel;
@@ -2422,8 +2422,8 @@ gui_mch_haskey(char_u *name)
     int i;
 
     for (i = 0; special_keys[i].key_sym != (KeySym)0; i++)
-	if (name[0] == special_keys[i].vim_code0 &&
-					 name[1] == special_keys[i].vim_code1)
+	if (name[0] == special_keys[i].mnv_code0 &&
+					 name[1] == special_keys[i].mnv_code1)
 	    return OK;
     return FAIL;
 }
@@ -2434,7 +2434,7 @@ gui_mch_haskey(char_u *name)
     int
 gui_get_x11_windis(Window *win, Display **dis)
 {
-    *win = XtWindow(vimShell);
+    *win = XtWindow(mnvShell);
     *dis = gui.dpy;
     return OK;
 }
@@ -2479,17 +2479,17 @@ gui_mch_invert_rectangle(
     void
 gui_mch_iconify(void)
 {
-    XIconifyWindow(gui.dpy, XtWindow(vimShell), DefaultScreen(gui.dpy));
+    XIconifyWindow(gui.dpy, XtWindow(mnvShell), DefaultScreen(gui.dpy));
 }
 
 #if defined(FEAT_EVAL)
 /*
- * Bring the Vim window to the foreground.
+ * Bring the MNV window to the foreground.
  */
     void
 gui_mch_set_foreground(void)
 {
-    XMapRaised(gui.dpy, XtWindow(vimShell));
+    XMapRaised(gui.dpy, XtWindow(mnvShell));
 }
 #endif
 
@@ -2545,7 +2545,7 @@ gui_mch_update(void)
 #endif
 	desired = (XtIMAll);
     while ((mask = XtAppPending(app_context)) && (mask & desired)
-	    && !vim_is_input_buf_full())
+	    && !mnv_is_input_buf_full())
 	XtAppProcessEvent(app_context, desired);
 }
 
@@ -2770,19 +2770,19 @@ gui_x11_check_copy_area(void)
     void
 clip_mch_lose_selection(Clipboard_T *cbd)
 {
-    clip_x11_lose_selection(vimShell, cbd);
+    clip_x11_lose_selection(mnvShell, cbd);
 }
 
     int
 clip_mch_own_selection(Clipboard_T *cbd)
 {
-    return clip_x11_own_selection(vimShell, cbd);
+    return clip_x11_own_selection(mnvShell, cbd);
 }
 
     void
 clip_mch_request_selection(Clipboard_T *cbd)
 {
- clip_x11_request_selection(vimShell, gui.dpy, cbd);
+ clip_x11_request_selection(mnvShell, gui.dpy, cbd);
 }
 
     void
@@ -2801,7 +2801,7 @@ clip_mch_set_selection(
  * Make a menu either grey or not grey.
  */
     void
-gui_mch_menu_grey(vimmenu_T *menu, int grey)
+gui_mch_menu_grey(mnvmenu_T *menu, int grey)
 {
     if (menu->id == (Widget)0)
 	return;
@@ -2821,7 +2821,7 @@ gui_mch_menu_grey(vimmenu_T *menu, int grey)
  * Make menu item hidden or not hidden
  */
     void
-gui_mch_menu_hidden(vimmenu_T *menu, int hidden)
+gui_mch_menu_hidden(mnvmenu_T *menu, int hidden)
 {
     if (menu->id == (Widget)0)
 	return;
@@ -2847,7 +2847,7 @@ gui_x11_menu_cb(
     XtPointer	client_data,
     XtPointer	call_data UNUSED)
 {
-    gui_menu_cb((vimmenu_T *)client_data);
+    gui_menu_cb((mnvmenu_T *)client_data);
 }
 
 #endif // FEAT_MENU
@@ -2873,7 +2873,7 @@ gui_x11_wm_protocol_handler(
 
     /*
      * The WM_SAVE_YOURSELF event arrives when the window manager wants to
-     * exit.  That can be cancelled though, thus Vim shouldn't exit here.
+     * exit.  That can be cancelled though, thus MNV shouldn't exit here.
      * Just sync our swap files.
      */
     if ((Atom)((XClientMessageEvent *)event)->data.l[0] ==
@@ -2885,7 +2885,7 @@ gui_x11_wm_protocol_handler(
 	// Set the window's WM_COMMAND property, to let the window manager
 	// know we are done saving ourselves.  We don't want to be restarted,
 	// thus set argv to NULL.
-	XSetCommand(gui.dpy, XtWindow(vimShell), NULL, 0);
+	XSetCommand(gui.dpy, XtWindow(mnvShell), NULL, 0);
 	return;
     }
 
@@ -3031,7 +3031,7 @@ gui_mch_get_rgb(guicolor_T pixel)
  * Add the callback functions.
  */
     void
-gui_x11_callbacks(Widget textArea, Widget vimForm)
+gui_x11_callbacks(Widget textArea, Widget mnvForm)
 {
     XtAddEventHandler(textArea, VisibilityChangeMask, FALSE,
 	gui_x11_visibility_cb, (XtPointer)0);
@@ -3039,34 +3039,34 @@ gui_x11_callbacks(Widget textArea, Widget vimForm)
     XtAddEventHandler(textArea, ExposureMask, FALSE, gui_x11_expose_cb,
 	(XtPointer)0);
 
-    XtAddEventHandler(vimShell, StructureNotifyMask, FALSE,
+    XtAddEventHandler(mnvShell, StructureNotifyMask, FALSE,
 	gui_x11_resize_window_cb, (XtPointer)0);
 
-    XtAddEventHandler(vimShell, FocusChangeMask, FALSE, gui_x11_focus_change_cb,
+    XtAddEventHandler(mnvShell, FocusChangeMask, FALSE, gui_x11_focus_change_cb,
 	(XtPointer)0);
     /*
      * Only install these enter/leave callbacks when 'p' in 'guioptions'.
      * Only needed for some window managers.
      */
-    if (vim_strchr(p_go, GO_POINTER) != NULL)
+    if (mnv_strchr(p_go, GO_POINTER) != NULL)
     {
-	XtAddEventHandler(vimShell, LeaveWindowMask, FALSE, gui_x11_leave_cb,
+	XtAddEventHandler(mnvShell, LeaveWindowMask, FALSE, gui_x11_leave_cb,
 	    (XtPointer)0);
 	XtAddEventHandler(textArea, LeaveWindowMask, FALSE, gui_x11_leave_cb,
 	    (XtPointer)0);
 	XtAddEventHandler(textArea, EnterWindowMask, FALSE, gui_x11_enter_cb,
 	    (XtPointer)0);
-	XtAddEventHandler(vimShell, EnterWindowMask, FALSE, gui_x11_enter_cb,
+	XtAddEventHandler(mnvShell, EnterWindowMask, FALSE, gui_x11_enter_cb,
 	    (XtPointer)0);
     }
 
-    XtAddEventHandler(vimForm, KeyPressMask, FALSE, gui_x11_key_hit_cb,
+    XtAddEventHandler(mnvForm, KeyPressMask, FALSE, gui_x11_key_hit_cb,
 	(XtPointer)0);
     XtAddEventHandler(textArea, KeyPressMask, FALSE, gui_x11_key_hit_cb,
 	(XtPointer)0);
 
     // get pointer moved events from scrollbar, needed for 'mousefocus'
-    XtAddEventHandler(vimForm, PointerMotionMask,
+    XtAddEventHandler(mnvForm, PointerMotionMask,
 	FALSE, gui_x11_mouse_cb, (XtPointer)1);
     XtAddEventHandler(textArea, ButtonPressMask | ButtonReleaseMask |
 					 ButtonMotionMask | PointerMotionMask,
@@ -3270,7 +3270,7 @@ mch_set_mouse_shape(int shape)
  * passing a normal menu item here.  Can't explain that, but better avoid it.
  */
     void
-gui_mch_menu_set_tip(vimmenu_T *menu)
+gui_mch_menu_set_tip(mnvmenu_T *menu)
 {
     if (menu->id == NULL || menu->parent == NULL
 				|| !menu_is_toolbar(menu->parent->name))

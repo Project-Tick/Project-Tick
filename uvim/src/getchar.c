@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -12,7 +12,7 @@
  * file, manipulations with redo buffer and stuff buffer.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * These buffers are used for storing:
@@ -122,7 +122,7 @@ free_buff(buffheader_T *buf)
     for (p = buf->bh_first.b_next; p != NULL; p = np)
     {
 	np = p->b_next;
-	vim_free(p);
+	mnv_free(p);
     }
     buf->bh_first.b_next = NULL;
     buf->bh_curr = NULL;
@@ -252,7 +252,7 @@ add_buff(
 
     if (!buf->bh_create_newblock && buf->bh_space >= (int)slen)
     {
-	vim_strncpy(buf->bh_curr->b_str + buf->bh_curr->b_strlen, s, (size_t)slen);
+	mnv_strncpy(buf->bh_curr->b_str + buf->bh_curr->b_strlen, s, (size_t)slen);
 	buf->bh_curr->b_strlen += slen;
 	buf->bh_space -= slen;
     }
@@ -268,7 +268,7 @@ add_buff(
 	p = alloc(offsetof(buffblock_T, b_str) + len + 1);
 	if (p == NULL)
 	    return; // no space, just forget it
-	vim_strncpy(p->b_str, s, (size_t)slen);
+	mnv_strncpy(p->b_str, s, (size_t)slen);
 	p->b_strlen = slen;
 	buf->bh_space = (int)(len - slen);
 	buf->bh_create_newblock = FALSE;
@@ -305,7 +305,7 @@ add_num_buff(buffheader_T *buf, long n)
     char_u	number[32];
     int		numberlen;
 
-    numberlen = vim_snprintf((char *)number, sizeof(number), "%ld", n);
+    numberlen = mnv_snprintf((char *)number, sizeof(number), "%ld", n);
     add_buff(buf, number, (long)numberlen);
 }
 
@@ -401,7 +401,7 @@ read_readbuf(buffheader_T *buf, int advance)
 	if (curr->b_str[++buf->bh_index] == NUL)
 	{
 	    buf->bh_first.b_next = curr->b_next;
-	    vim_free(curr);
+	    mnv_free(curr);
 	    buf->bh_index = 0;
 	}
     }
@@ -569,7 +569,7 @@ saveRedobuff(save_redo_T *save_redo)
 	return;
 
     add_buff(&redobuff, s, (long)slen);
-    vim_free(s);
+    mnv_free(s);
 }
 
 /*
@@ -956,7 +956,7 @@ start_redo(long count, int old_redo)
     // try to enter the count (in place of a previous count)
     if (count)
     {
-	while (VIM_ISDIGIT(c))	// skip "old" count
+	while (MNV_ISDIGIT(c))	// skip "old" count
 	    c = read_redo(FALSE, old_redo);
 	add_num_buff(&readbuf2, count);
     }
@@ -984,7 +984,7 @@ start_redo_ins(void)
     // skip the count and the command character
     while ((c = read_redo(FALSE, FALSE)) != NUL)
     {
-	if (vim_strchr((char_u *)"AaIiRrOo", c) != NULL)
+	if (mnv_strchr((char_u *)"AaIiRrOo", c) != NULL)
 	{
 	    if (c == 'O' || c == 'o')
 		add_buff(&readbuf2, NL_STR, -1L);
@@ -1118,7 +1118,7 @@ ins_typebuf(
 	s2 = alloc(newlen);
 	if (s2 == NULL)		    // out of memory
 	{
-	    vim_free(s1);
+	    mnv_free(s1);
 	    return FAIL;
 	}
 	typebuf.tb_buflen = newlen;
@@ -1134,7 +1134,7 @@ ins_typebuf(
 				     typebuf.tb_buf + typebuf.tb_off + offset,
 				       (size_t)(typebuf.tb_len - offset + 1));
 	if (typebuf.tb_buf != typebuf_init)
-	    vim_free(typebuf.tb_buf);
+	    mnv_free(typebuf.tb_buf);
 	typebuf.tb_buf = s1;
 
 	mch_memmove(s2 + newoff, typebuf.tb_noremap + typebuf.tb_off,
@@ -1143,7 +1143,7 @@ ins_typebuf(
 		   typebuf.tb_noremap + typebuf.tb_off + offset,
 					   (size_t)(typebuf.tb_len - offset));
 	if (typebuf.tb_noremap != noremapbuf_init)
-	    vim_free(typebuf.tb_noremap);
+	    mnv_free(typebuf.tb_noremap);
 	typebuf.tb_noremap = s2;
 
 	typebuf.tb_off = newoff;
@@ -1516,11 +1516,11 @@ free_typebuf(void)
     if (typebuf.tb_buf == typebuf_init)
 	internal_error("Free typebuf 1");
     else
-	VIM_CLEAR(typebuf.tb_buf);
+	MNV_CLEAR(typebuf.tb_buf);
     if (typebuf.tb_noremap == noremapbuf_init)
 	internal_error("Free typebuf 2");
     else
-	VIM_CLEAR(typebuf.tb_noremap);
+	MNV_CLEAR(typebuf.tb_noremap);
 }
 
 /*
@@ -1993,7 +1993,7 @@ vgetc(void)
 		// Handle K_TEAROFF here, the caller of vgetc() doesn't need to
 		// know that a menu was torn off
 		if (
-# ifdef VIMDLL
+# ifdef MNVDLL
 		    gui.in_use &&
 # endif
 		    c == K_TEAROFF)
@@ -2236,13 +2236,13 @@ do_key_input_pre(int c)
     buf[buflen] = NUL;
 
     typedchars[typedchars_pos] = NUL;
-    vim_unescape_csi(typedchars);
+    mnv_unescape_csi(typedchars);
 
     get_mode(curr_mode);
 
     // Lock the text to avoid weird things from happening.
     ++textlock;
-    set_vim_var_string(VV_CHAR, buf, (int)buflen);  // set v:char
+    set_mnv_var_string(VV_CHAR, buf, (int)buflen);  // set v:char
 
     v_event = get_v_event(&save_v_event);
     (void)dict_add_bool(v_event, "typed", KeyTyped);
@@ -2255,7 +2255,7 @@ do_key_input_pre(int c)
 	// Get the value of v:char.  It may be empty or more than one
 	// character.  Only use it when changed, otherwise continue with the
 	// original character.
-	v_char.string = get_vim_var_str(VV_CHAR);
+	v_char.string = get_mnv_var_str(VV_CHAR);
 	if (STRCMP(buf, v_char.string) != 0)
 	{
 	    v_char.length = STRLEN(v_char.string);
@@ -2269,7 +2269,7 @@ do_key_input_pre(int c)
 
     restore_v_event(v_event, &save_v_event);
 
-    set_vim_var_string(VV_CHAR, NULL, -1);  // clear v:char
+    set_mnv_var_string(VV_CHAR, NULL, -1);  // clear v:char
     --textlock;
 
     // Restore the State, it may have been changed.
@@ -2412,7 +2412,7 @@ getchar_common(typval_T *argvars, typval_T *rettv, int allow_number)
     int			simplify = TRUE;
     char_u		cursor_flag = 'm';
 
-    if ((in_vim9script()
+    if ((in_mnv9script()
 		&& check_for_opt_bool_or_number_arg(argvars, 0) == FAIL)
 	    || (argvars[0].v_type != VAR_UNKNOWN
 		    && check_for_opt_dict_arg(argvars, 1) == FAIL))
@@ -2495,10 +2495,10 @@ getchar_common(typval_T *argvars, typval_T *rettv, int allow_number)
     if (cursor_flag == 'h')
 	cursor_unsleep();
 
-    set_vim_var_nr(VV_MOUSE_WIN, 0);
-    set_vim_var_nr(VV_MOUSE_WINID, 0);
-    set_vim_var_nr(VV_MOUSE_LNUM, 0);
-    set_vim_var_nr(VV_MOUSE_COL, 0);
+    set_mnv_var_nr(VV_MOUSE_WIN, 0);
+    set_mnv_var_nr(VV_MOUSE_WINID, 0);
+    set_mnv_var_nr(VV_MOUSE_LNUM, 0);
+    set_mnv_var_nr(VV_MOUSE_COL, 0);
 
     if (n != 0 && (!allow_number || IS_SPECIAL(n) || mod_mask != 0))
     {
@@ -2524,7 +2524,7 @@ getchar_common(typval_T *argvars, typval_T *rettv, int allow_number)
 	    temp[i++] = n;
 	temp[i] = NUL;
 	rettv->v_type = VAR_STRING;
-	rettv->vval.v_string = vim_strnsave(temp, i);
+	rettv->vval.v_string = mnv_strnsave(temp, i);
 
 	if (is_mouse_key(n))
 	{
@@ -2551,10 +2551,10 @@ getchar_common(typval_T *argvars, typval_T *rettv, int allow_number)
 		    for (wp = firstwin; wp != win && wp != NULL;
 							       wp = wp->w_next)
 			++winnr;
-		set_vim_var_nr(VV_MOUSE_WIN, winnr);
-		set_vim_var_nr(VV_MOUSE_WINID, win->w_id);
-		set_vim_var_nr(VV_MOUSE_LNUM, lnum);
-		set_vim_var_nr(VV_MOUSE_COL, col + 1);
+		set_mnv_var_nr(VV_MOUSE_WIN, winnr);
+		set_mnv_var_nr(VV_MOUSE_WINID, win->w_id);
+		set_mnv_var_nr(VV_MOUSE_LNUM, lnum);
+		set_mnv_var_nr(VV_MOUSE_COL, col + 1);
 	    }
 	}
     }
@@ -2598,7 +2598,7 @@ f_getcharmod(typval_T *argvars UNUSED, typval_T *rettv)
 /*
  * Process messages that have been queued for netbeans or clientserver.
  * Also check if any jobs have ended.
- * These functions can call arbitrary Vim script and should only be called when
+ * These functions can call arbitrary MNV script and should only be called when
  * it is safe to do so.
  */
     void
@@ -2722,7 +2722,7 @@ at_ins_compl_key(void)
 	    && p[1] == KS_MODIFIER
 	    && (p[2] & MOD_MASK_CTRL))
 	c = p[3] & 0x1f;
-    return (ctrl_x_mode_not_default() && vim_is_ctrl_x_key(c))
+    return (ctrl_x_mode_not_default() && mnv_is_ctrl_x_key(c))
 		|| (compl_status_local() && (c == Ctrl_N || c == Ctrl_P));
 }
 
@@ -3156,7 +3156,7 @@ handle_mapping(
 
 		for (s = typebuf.tb_buf + typebuf.tb_off + 1;
 			   s < typebuf.tb_buf + typebuf.tb_off + typebuf.tb_len
-		   && (VIM_ISDIGIT(*s) || *s == ';' || *s == ' ');
+		   && (MNV_ISDIGIT(*s) || *s == ';' || *s == ' ');
 			++s)
 		    ;
 		if (*s == 'r' || *s == '|') // found one
@@ -3309,9 +3309,9 @@ handle_mapping(
 	    vgetc_busy = 0;
 	    may_garbage_collect = FALSE;
 
-	    save_m_keys = vim_strnsave(mp->m_keys, (size_t)mp->m_keylen);
+	    save_m_keys = mnv_strnsave(mp->m_keys, (size_t)mp->m_keylen);
 	    save_alt_m_keys = mp->m_alt != NULL
-				    ? vim_strnsave(mp->m_alt->m_keys,
+				    ? mnv_strnsave(mp->m_alt->m_keys,
 					     (size_t)save_alt_m_keylen) : NULL;
 	    map_str = eval_map_expr(mp, NUL);
 
@@ -3327,12 +3327,12 @@ handle_mapping(
 	    {
 		char_u	buf[4];
 
-		vim_free(map_str);
+		mnv_free(map_str);
 		buf[0] = K_SPECIAL;
 		buf[1] = KS_EXTRA;
 		buf[2] = KE_IGNORE;
 		buf[3] = NUL;
-		map_str = vim_strnsave(buf, 3);
+		map_str = mnv_strnsave(buf, 3);
 		if (State & MODE_CMDLINE)
 		{
 		    // redraw the command below the error
@@ -3388,12 +3388,12 @@ handle_mapping(
 					 0, TRUE, cmd_silent || save_m_silent);
 #ifdef FEAT_EVAL
 	    if (save_m_expr)
-		vim_free(map_str);
+		mnv_free(map_str);
 #endif
 	}
 #ifdef FEAT_EVAL
-	vim_free(save_m_keys);
-	vim_free(save_alt_m_keys);
+	mnv_free(save_m_keys);
+	mnv_free(save_alt_m_keys);
 #endif
 	*keylenp = keylen;
 	if (i == FAIL)
@@ -3703,7 +3703,7 @@ vgetorpeek(int advance)
 					  curwin->w_cursor.lnum, 0, ptr, ptr);
 				while (cts.cts_ptr < ptr + curwin->w_cursor.col)
 				{
-				    if (!VIM_ISWHITE(*cts.cts_ptr))
+				    if (!MNV_ISWHITE(*cts.cts_ptr))
 					curwin->w_wcol = cts.cts_vcol;
 				    cts.cts_vcol += lbr_chartabsize(&cts);
 				    if (has_mbyte)
@@ -4183,10 +4183,10 @@ fix_input_buffer(char_u *buf, int len)
 	if (p[0] == NUL || (p[0] == K_SPECIAL
 		    // timeout may generate K_CURSORHOLD
 		    && (i < 2 || p[1] != KS_EXTRA || p[2] != (int)KE_CURSORHOLD)
-#if defined(MSWIN) && (!defined(FEAT_GUI) || defined(VIMDLL))
+#if defined(MSWIN) && (!defined(FEAT_GUI) || defined(MNVDLL))
 		    // Win32 console passes modifiers
 		    && (
-# ifdef VIMDLL
+# ifdef MNVDLL
 			gui.in_use ||
 # endif
 			(i < 2 || p[1] != KS_MODIFIER))
@@ -4215,7 +4215,7 @@ fix_input_buffer(char_u *buf, int len)
     int
 input_available(void)
 {
-    return (!vim_is_input_buf_empty()
+    return (!mnv_is_input_buf_empty()
 # if defined(FEAT_CLIENTSERVER) || defined(FEAT_EVAL)
 	    || typebuf_was_filled
 # endif
@@ -4358,7 +4358,7 @@ may_add_last_used_map_to_redobuff(void)
     buf[2] = KE_SID;
     buflen = 3;
 
-    buflen += vim_snprintf((char *)buf + 3, 20, "%d;", sid);
+    buflen += mnv_snprintf((char *)buf + 3, 20, "%d;", sid);
     add_buff(&redobuff, buf, (long)buflen);
 }
 #endif

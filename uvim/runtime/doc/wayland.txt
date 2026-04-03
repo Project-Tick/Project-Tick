@@ -1,7 +1,7 @@
-*wayland.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*wayland.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Wayland Protocol Support				*wayland*
@@ -20,7 +20,7 @@ multiple Wayland seats in the same Wayland session.  If you don't know what
 this is means, then it likely does not matter for you.
 
 							*wayland-gui*
-See |gui-wayland|.  Please note that when using the GUI, Vim uses the toolkit
+See |gui-wayland|.  Please note that when using the GUI, MNV uses the toolkit
 such as GTK for accessing the clipboard, and does not access the clipboard
 though Wayland.  You can check this though the |v:clipmethod| variable, which
 should equal to "none" when running the GUI.
@@ -29,7 +29,7 @@ Wayland commands:
 							*:wlrestore* *:wl*
 :wl[restore] [display]	Reinitializes the connection to the Wayland
 			compositor.
-			Useful when running Vim in a screen/tmux session that
+			Useful when running MNV in a screen/tmux session that
 			continues running after the Wayland compositor
 			restarts.
 
@@ -46,14 +46,14 @@ Wayland commands:
 
 Wayland errors:
 							*E1548*
-Vim failed communicating with the Wayland compositor.  This is likely due to
+MNV failed communicating with the Wayland compositor.  This is likely due to
 the Wayland compositor process being killed.  Try the `:wlrestore` command to
 try connecting again.
 
 ==============================================================================
 2. Wayland Selections					*wayland-selections*
 
-Vim supports the wlr-data-control-unstable-v1 and ext-data-control-v1
+MNV supports the wlr-data-control-unstable-v1 and ext-data-control-v1
 protocols, for accessing the current Wayland selection.  These are the best
 case scenario protocols, see |wayland-focus-steal|.  Selection in this case
 essentially means the "clipboard."  You can check if your Wayland compositor
@@ -73,7 +73,7 @@ Some compositors that are known to support either or both protocols:
 
 If you come from X11, then the regular Wayland selection is equivalent to the
 CLIPBOARD selection in X11, and the primary Wayland selection equates to the
-X11 PRIMARY selection.  Accessing these selections is the same as X11 in Vim,
+X11 PRIMARY selection.  Accessing these selections is the same as X11 in MNV,
 in which the + register is the regular selection, and the * register is the
 primary selection.  Note that your compositor may not support primary
 selections, see |wayland-primary-selection| for more details.
@@ -84,8 +84,8 @@ emulate such functionality, a separate clipboard manager must be used in order
 to persist selection data when a Wayland client exits.
 
 							*wayland-and-x11*
-If your version of Vim comes compiled with both X11 and Wayland support, then
-Vim determines which one to use when accessing the clipboard using the
+If your version of MNV comes compiled with both X11 and Wayland support, then
+MNV determines which one to use when accessing the clipboard using the
 'clipmethod' option.
 
 						*wayland-primary-selection*
@@ -104,25 +104,25 @@ behaviour in its own protocols:
 					*wayland-focus-steal* *wayland-gnome*
 If you are using the GNOME desktop environment on Wayland, as of this writing,
 there is no method of accessing/modifying the clipboard for external clients
-such as Vim without being focused.  Focused in this case means the client has
+such as MNV without being focused.  Focused in this case means the client has
 received some sort of input event, such as a window being focused.  This is
 what the wlr-data-control-unstable-v1 and ext-data-control-v1 protocols solve.
 If your Wayland compositor does not support the above protocols, then the
 above explanation applies.
 
-To solve this problem, Vim implements a way of gaining focus in order to
+To solve this problem, MNV implements a way of gaining focus in order to
 access the clipboard, by creating a temporary transparent top-level surface.
 This is by default disabled and can be enabled via the 'wlsteal' option.
 Moreover, a seat that has a keyboard is also required, see 'wlseat', and the
-xdg-shell protocol must be available.  Additionally, Vim must be compiled with
+xdg-shell protocol must be available.  Additionally, MNV must be compiled with
 the |+wayland_focus_steal| feature.
 
 Note that this method can have several side effects from the result of focus
 stealing.  For example, if you have a taskbar that shows currently opened apps
-in your desktop environment, then when Vim attempts to steal focus, it may
+in your desktop environment, then when MNV attempts to steal focus, it may
 "flicker," as if a window was opened then immediately closed after.
 Additionally, if you are in fullscreen mode, this focus stealing won't work,
-because the created surface won't ever gain focus.  If this happens, Vim will
+because the created surface won't ever gain focus.  If this happens, MNV will
 seem to freeze temporarily, see 'wltimeoutlen' for more information.
 
- vim:tw=78:ts=8:noet:ft=help:norl
+ mnv:tw=78:ts=8:noet:ft=help:norl

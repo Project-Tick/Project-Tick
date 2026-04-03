@@ -232,15 +232,15 @@ EXAMPLES
        leading bytes are suppressed.
        % echo "010000: 41" | xxd -r -s -0x10000 > file
 
-       Use  xxd  as a filter within an editor such as vim(1) to hex dump a re‐
+       Use  xxd  as a filter within an editor such as mnv(1) to hex dump a re‐
        gion marked between `a' and `z'.
        :'a,'z!xxd
 
-       Use xxd as a filter within an editor such as vim(1) to recover a binary
+       Use xxd as a filter within an editor such as mnv(1) to recover a binary
        hex dump marked between `a' and `z'.
        :'a,'z!xxd -r
 
-       Use xxd as a filter within an editor such as vim(1) to recover one line
+       Use xxd as a filter within an editor such as mnv(1) to recover one line
        of a hex dump.  Move the cursor over the line and type:
        !!xxd -r
 

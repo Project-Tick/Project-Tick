@@ -1,0 +1,555 @@
+.TH MNV 1 "11. april 2006"
+.SH NAVN
+mnv \- MNV is not Vim, en programm�rs teksteditor
+.SH SYNOPSIS
+.br
+.B mnv
+[tilvalg] [fil ..]
+.br
+.B mnv
+[tilvalg] \-
+.br
+.B mnv
+[tilvalg] \-t tag
+.br
+.B mnv
+[tilvalg] \-q [fejlfil]
+.PP
+.br
+.B ex
+.br
+.B view
+.br
+.B gmnv
+.B gview
+.B emnv
+.B eview
+.br
+.B rmnv
+.B rview
+.B rgmnv
+.B rgview
+.SH BESKRIVELSE
+.B MNV
+er en teksteditor som er opad kompatibel med Vi.
+Den kan bruges til at redigere alle slags ren tekst.
+Den er s�rlig nyttig til at redigere programmer.
+.PP
+Der er mange forbedringer over Vi: multiniveau fortryd,
+multivinduer og -buffere, syntaksfremh�vning, redigering af kommandolinje,
+fuldf�relse af filnavn, onlinehj�lp, visuel markering, osv.
+Se ":help vi_diff.txt" for et overblik over forskellene mellem
+.B MNV
+og Vi.
+.PP
+Mens
+.B MNV
+k�rer, kan der indhentes massere af hj�lp fra online-hj�lpesystemet, med
+":help"-kommandoen.
+Se ONLINEHJ�LP-sektionen nedenfor.
+.PP
+Oftest startes
+.B MNV
+for at redigere en enkelt fil med kommandoen
+.PP
+	mnv fil
+.PP
+Mere generelt startes
+.B MNV
+med:
+.PP
+	mnv [tilvalg] [filliste]
+.PP
+Hvis fillisten mangler, s� startes editoren med en tom buffer.
+Ellers kan �n af f�lgende fire m�der bruges til at v�lge en eller
+flere filer som skal redigeres.
+.TP 12
+fil ..
+En liste over filnavne.
+Den f�rste bliver den nuv�rende fil og l�ses ind i bufferen.
+Mark�ren placeres p� den f�rste linje i bufferen.
+Du kan g� til de andre filer med ":next"-kommandoen. Skriv "\-\-" foran
+fillisten, for at redigere en fil som begynder med en bindestreg.
+.TP
+\-
+Filen som skal redigeres l�ses fra stdin. Kommandoer l�ses fra stderr, hvilket
+skal v�re en tty.
+.TP
+\-t {tag}
+Filen som skal redigeres og den indledende mark�rplacering afh�nger af
+et "tag", en slags g� til-etiket.
+{tag} opsl�s i tags-filen, den tilknyttede fil bliver den nuv�rende
+fil og den tilknyttede kommando udf�res.
+Det bruges mest til C-programmer, hvor {tag} kunne v�re et
+funktionsnavn.
+Virkningen er at filen som indeholder funktionen bliver den nuv�rende fil
+og mark�ren placeres i begyndelsen af funktionen.
+Se ":help tag\-commands".
+.TP
+\-q [fejlfil]
+Start i quickFix-tilstand.
+Filen [fejlfil] l�ses og den f�rste fejl vises.
+Hvis [fejlfil] udelades, s� indhentes filnavnet fra 'errorfile'-valgmuligheden
+(standard er "AztecC.Err" p� Amiga, "errors.err" p� andre
+systemer).
+Der kan hoppes til yderligere fejl med ":cn"-kommandoen.
+Se ":help quickfix".
+.PP
+.B MNV
+opf�rer sig anderledes, afh�ngig af navnet p� kommandoen (eksekverbaren kan
+stadig v�re den samme fil).
+.TP 10
+mnv
+Den "normale" m�de, alt er standard.
+.TP
+ex
+Start i Ex-tilstand.
+G� til normal tilstand med ":vi"-kommandoen.
+Det kan ogs� g�res med "\-e"-argumentet.
+.TP
+view
+Start i skrivebeskyttet tilstand. Du vil v�re beskyttet mod at skrive filerne.
+Det kan ogs� g�res med "\-R"-argumentet.
+.TP
+gmnv gview
+GUI-versionen.
+Starter et nyt vindue.
+Det kan ogs� g�res med "\-g"-argumentet.
+.TP
+emnv eview
+GUI-versionen i easy-tilstand.
+Starter et nyt vindue.
+Det kan ogs� g�res med "\-y"-argumentet.
+.TP
+rmnv rview rgmnv rgview
+Som dem ovenfor, men med restriktioner. Det vil ikke v�re muligt at starte
+skalkommandoer, eller at suspendere
+.B MNV\c
+\&.
+Det kan ogs� g�res med "\-Z"-argumentet.
+.SH TILVALG
+Tilvalgene kan gives i vilk�rlig r�kkef�lge, f�r eller efter filnavnene.
+Tilvalg uden et argument kan kombineres efter en enkelt bindestreg.
+.TP 12
++[nummer]
+Ved den f�rste fil, placeres mark�ren p� linje "nummer".
+Hvis "nummer" mangler, s� placeres mark�ren p� den sidste linje.
+.TP
++/{sti}
+Ved den f�rste fil, placeres mark�ren p� linjen med den
+f�rste forekomst af {sti}.
+Se ":help search\-pattern" for tilg�ngelige s�gem�nstre.
+.TP
++{kommando}
+.TP
+\-c {kommando}
+{kommando} udf�res efter den f�rste fil er blevet l�st.
+{kommando} fortolkes som en Ex-kommando.
+Hvis {kommando} indeholder mellemrum, s� skal den omsluttes af
+dobbelte citationstegn (det afh�nger af den skal der bruges).
+Eksempel: mnv "+set si" main.c
+.br
+Bem�rk: Du kan bruge op til 10 "+"- eller "\-c"-kommandoer.
+.TP
+\-S {fil}
+{fil} bliver sourced efter den f�rste fil er blevet l�st.
+Det svarer til \-c "source {fil}".
+{fil} m� ikke begynde med '\-'.
+Hvis {fil} udelades, s� bruges "Session.mnv" (virker kun n�r \-S er det sidste
+argument).
+.TP
+\-\-cmd {kommando}
+Ligesom at bruge "\-c", men kommandoen udf�res lige inden
+behandlingen af mnvrc-filer.
+Du kan bruge op til 10 af disse kommandoer, uafh�ngigt af "\-c"-kommandoer.
+.TP
+\-A
+Hvis
+.B MNV
+blev kompileret med underst�ttelse af ARABIC til redigering af filer som er
+orienteret h�jre mod venstre og arabisk tastaturlayout, s� starter tilvalget
+.B MNV
+i arabisk tilstand, dvs. 'arabic' s�ttes.
+Ellers gives en fejlmeddelelse og
+.B MNV
+afbrydes.
+.TP
+\-b
+Bin�r tilstand.
+Der s�ttes nogle f� valgmuligheder som g�r det muligt at redigere en
+bin�r eller eksekverbar fil.
+.TP
+\-C
+Kompatibel. S�t 'compatible'-valgmuligheden.
+Det f�r
+.B MNV
+til at opf�re sig mest som Vi, selvom der findes en .mnvrc-fil.
+.TP
+\-d
+Start i diff-tilstand.
+Der skal v�re to, tre eller fire filnavneargumenter.
+.B MNV
+�bner alle filerne og viser forskellene mellem dem.
+Virker ligesom mnvdiff(1).
+.TP
+\-d {enhed}
+�bn {enhed} til brug som en terminal.
+Kun p� Amiga.
+Eksempel:
+"\-d con:20/30/600/150".
+.TP
+\-D
+Fejlretning. G� til fejlretningstilstand n�r den f�rste kommando udf�res fra
+et script.
+.TP
+\-e
+Start
+.B MNV
+i Ex-tilstand, ligesom hvis "ex"-eksekverbaren blev kaldt.
+.TP
+\-E
+Start
+.B MNV
+i forbedret Ex-tilstand, ligesom hvis "exim"-eksekverbaren blev kaldt.
+.TP
+\-f
+Forgrund. I GUI-versionen, vil
+.B MNV
+ikke fork'e og frig�re fra skallen som den blev startet i.
+P� Amiga, genstartes
+.B MNV
+ikke for at �bne et nyt vindue.
+Tilvalget b�r bruges n�r
+.B MNV
+udf�res af et program der venter p� at redigeringssession
+bliver f�rdig (f.eks. mail).
+P� Amiga virker ":sh"- og ":!"-kommandoerne ikke.
+.TP
+\-\-nofork
+Forgrund. I GUI-versionen, vil
+.B MNV
+ikke fork'e og frig�re fra skallen som den blev startet i.
+.TP
+\-F
+Hvis
+.B MNV
+blev kompileret med underst�ttelse af FKMAP til redigering af filer som er
+orienteret h�jre mod venstre og persisk tastaturlayout, s� starter tilvalget
+.B MNV
+i persisk tilstand, dvs. 'fkmap' og 'rightleft' s�ttes.
+Ellers gives en fejlmeddelelse og
+.B MNV
+afbrydes.
+.TP
+\-g
+Hvis
+.B MNV
+blev kompileret med underst�ttelse af GUI, s� aktiveres GUI'en af
+denne valgmulighed. Hvis underst�ttelse af GUI ikke blev kompileret ind,
+s� gives en fejlmeddelelse og
+.B MNV
+afbrydes.
+.TP
+\-h
+Giv lidt hj�lp om kommandolinjeargumenterne og tilvalgene.
+Herefter afsluttes
+.B MNV\c
+\&.
+.TP
+\-H
+Hvis
+.B MNV
+blev kompileret med underst�ttelse af RIGHTLEFT til redigering af filer som er
+orienteret h�jre mod venstre og hebraisk tastaturlayout, s� starter tilvalget
+.B MNV
+i hebraisk tilstand, dvs. 'hkmap' og 'rightleft' s�ttes.
+Ellers gives en fejlmeddelelse og
+.B MNV
+afbrydes.
+.TP
+\-i {mnvinfo}
+N�r brug af mnvinfo-filen er aktiveret, s� s�tter tilvalget det
+filnavn som skal bruges, i stedet for standarden "~/.mnvinfo".
+Det kan ogs� bruges til at springe brugen af .mnvinfo-filen over,
+ved at give navnet "NONE".
+.TP
+\-L
+Samme som \-r.
+.TP
+\-l
+Lisp-tilstand.
+S�tter 'lisp'- og 'showmatch'-valgmulighederne til.
+.TP
+\-m
+�ndring af filer er deaktiveret.
+Nulstiller 'write'-valgmuligheden.
+Du kan stadig �ndre bufferen, men det er ikke muligt at skrive en fil.
+.TP
+\-M
+�ndringer tillades ikke. 'modifiable'- og 'write'-valgmulighederne fjernes,
+s� �ndringer ikke er tilladt og filer ikke kan skrives. Bem�rk at
+valgmulighederne kan s�ttes for at g�re det muligt at foretage �ndringer.
+.TP
+\-N
+No-compatible-tilstand. Nulstil 'compatible'-valgmuligheden.
+Det f�r
+.B MNV
+til at opf�re sig en smule bedre, men mindre Vi-kompatibel, selvom der ikke
+findes en .mnvrc-fil.
+.TP
+\-n
+Der bruges ingen swap-fil.
+Det er umuligt at gendanne efter programmet er holdt op med at virke.
+God hvis du vil redigere en fil p� et meget langsomt medie (f.eks. floppy).
+Kan ogs� g�res med ":set uc=0".
+Kan fortrydes med ":set uc=200".
+.TP
+\-nb
+Bliv en editor-server til NetBeans. Se dokumentationen for detaljer.
+.TP
+\-o[N]
+�bn N vinduer stablet.
+N�r N udelades, s� �bnes �t vindue pr. fil.
+.TP
+\-O[N]
+�bn N vinduer side om side.
+N�r N udelades, s� �bnes �t vindue pr. fil.
+.TP
+\-p[N]
+�bn N fanebladssider.
+N�r N udelades, s� �bnes �n fanebladsside pr. fil.
+.TP
+\-R
+Skrivebeskyttet tilstand.
+\&'readonly'-valgmuligheden s�ttes.
+Du kan stadig redigere bufferen, men vil v�re forhindret i
+fejlagtigt at overskrive en fil.
+Hvis du vil overskrive en fil, s� tilf�j et
+udr�bstegn til Ex-kommandoen, som i ":w!".
+\-R-tilvalget indeb�rer ogs� \-n-tilvalget (se ovenfor).
+\&'readonly'-valgmuligheden kan sl�s fra med ":set noro".
+Se ":help 'readonly'".
+.TP
+\-r
+Oplist swap-filer, med information om at bruge dem til gendannelse.
+.TP
+\-r {fil}
+Gendannelsestilstand.
+Swap-filen bruges til at gendanne en redigeringssession som holdt
+op med at virke. Swap-filen er en fil med det samme filnavn som tekstfilen,
+med ".swp" tilf�jet i slutningen.
+Se ":help recovery".
+.TP
+\-s
+Stille tilstand. Kun n�r der startes som "Ex" eller
+n�r "\-e"-tilvalget blev givet inden "\-s"-tilvalget.
+.TP
+\-s {scriptind}
+Script-filen {scriptind} l�ses.
+Tegnene i filen fortolkes som havde du skrevet dem.
+Det samme kan g�res med kommandoen ":source! {scriptind}".
+Hvis slutningen af filen n�s inden editoren afslutter,
+s� l�ses yderligere tegn fra tastaturet.
+.TP
+\-T {terminal}
+Fort�ller
+.B MNV
+navnet p� terminalen som du bruger.
+Kr�ves kun n�r den automatisk m�de ikke virker.
+Skal v�re en terminal som kendes af
+.B MNV
+(indbygget) eller defineret i termcap- eller terminfo-filen.
+.TP
+\-u {mnvrc}
+Brug kommandoerne i {mnvrc}-filen til initialiseringer.
+Alle de andre initialiseringer springes over.
+Brug den til at redigere en s�rlig slags filer.
+Den kan ogs� bruges til at springe alle initialiseringer over,
+ved at give navnet "NONE". Se ":help initialization" i mnv for flere detaljer.
+.TP
+\-U {gmnvrc}
+Brug kommandoerne i {gmnvrc}-filen til GUI-initialiseringer.
+Alle de andre GUI-initialiseringer springes over.
+Den kan ogs� bruges til at springe alle GUI-initialiseringer over,
+ved at give navnet "NONE". Se ":help gui\-init" i mnv for flere detaljer.
+.TP
+\-V[N]
+Uddybende. Giv meddelelser om hvilke filer som er sourced og til l�sning og
+skrivning af en mnvinfo-fil. Det valgfrie nummer N er v�rdien af 'verbose'.
+Standard er 10.
+.TP
+\-v
+Start
+.B MNV
+i Vi-tilstand, ligesom eksekverbaren kaldet "vi". Det har kun virkning n�r
+eksekverbaren kaldes "ex".
+.TP
+\-w {scriptud}
+Alle tegnene som du skrev optages i filen {scriptud}, indtil du afslutter
+.B MNV\c
+\&.
+Det er nyttigt hvis du vil oprette en script-fil som skal bruges med
+"mnv \-s" eller ":source!".
+Hvis {scriptud}-filen findes, s� tilf�jes tegnene til slutningen.
+.TP
+\-W {scriptud}
+Ligesom \-w, men en eksisterende fil overskrives.
+.TP
+\-x
+Brug kryptering n�r der skrives filer. Sp�rger efter en krypteringsn�gle.
+.TP
+\-X
+Opret ikke forbindelse til X-serveren. Afkorter opstartstiden i en terminal,
+men vinduets titel og udklipsholder bruges ikke.
+.TP
+\-y
+Start
+.B MNV
+i easy-tilstand, ligesom hvis "emnv"- eller "eview"-eksekverbarene blev kaldt.
+F�r
+.B MNV
+til at opf�re sig som en klik og skriv-editor.
+.TP
+\-Z
+Restriktiv tilstand. Virker ligesom eksekverbaren som begynder med "r".
+.TP
+\-\-
+Betegner slutningen af tilvalgene.
+Argumenter efter dette h�ndteres som et filnavn.
+Det kan bruges til at redigere et filnavn som begynder med et '\-'.
+.TP
+\-\-echo\-wid
+Kun GTK GUI: Ekko vinduets id p� stdout.
+.TP
+\-\-help
+Giv en hj�lpemeddelelse og afslut, ligesom "\-h".
+.TP
+\-\-literal
+Tag filnavnets argumenter bogstaveligt, udvid ikke jokertegn.
+Det har ingen virkning i Unix hvor skallen udvidder jokertegn.
+.TP
+\-\-noplugin
+Spring indl�sning af plugins over. Indeb�res af \-u NONE.
+.TP
+\-\-remote
+Opret forbindelse til en MNV-server og f� den til at redigere filerne
+som gives i resten af argumenterne. Hvis der ikke findes nogen server,
+s� gives der en advarsel og filerne redigeres i den nuv�reMNV MNV.
+.TP
+\-\-remote\-expr {udtryk}
+Opret forbindelse til en MNV-server, evaluer
+{udtryk} i den og udskriv resultatet p� stdout.
+.TP
+\-\-remote\-send {n�gler}
+Opret forbindelse til en MNV-server and send {n�gler} til den.
+.TP
+\-\-remote\-silent
+Som \-\-remote, men uden advarslen n�r der ikke findes nogen server.
+.TP
+\-\-remote\-wait
+Som \-\-remote, men MNV afslutter ikke f�r filerne er blevet redigeret.
+.TP
+\-\-remote\-wait\-silent
+Som \-\-remote\-wait, men uden advarslen n�r der ikke findes nogen server.
+.TP
+\-\-serverlist
+Oplist navnene p� allMNMNV-servere som der kan findes.
+.TP
+\-\-servername {navn}
+Brug servernavnet {navn}. Bruges til den nuv�rendMNMNV,
+medmindre det bruges med et \-\-remote-argument,
+s� er det navnet p� serveren som der skal oprettes forbindelse til.
+.TP
+\-\-socketid {id}
+Kun GTK GUI: Brug GtkPlug-mekanismen til at k�re gmnv i et andet vindue.
+.TP
+\-\-version
+Udskriv versionsinformation og afslut.
+.SH ONLINEHJ�LP
+Skriv ":help" i
+.B MNV
+for at begynde.
+Skriv ":help emne" for at f� hj�lp til et bestemt emne.
+F.eks.: ":help ZZ" for at f� hj�lpe til "ZZ"-kommandoen.
+Brug <Tab> og CTRL-D for at fuldf�re emner (":help cmdline\-completion").
+Tags findes til at hoppe fra et sted til et andet (en slags hypertekst-links,
+se ":help").
+Alle dokumentationsfiler kan vises p� denne m�de, f.eks.
+":help syntax.txt".
+.SH FILER
+.TP 15
+/usr/local/lib/mnv/doc/*.txt
+.B MNV\c
+-dokumentationsfilerne.
+Brug ":help doc\-file\-list" for at f� den fulde liste.
+.TP
+/usr/local/lib/mnv/doc/tags
+Tags-filen som bruges til at finde information i dokumentationsfilerne.
+.TP
+/usr/local/lib/mnv/syntax/syntax.mnv
+Systembrede syntaksinitialiseringer.
+.TP
+/usr/local/lib/mnv/syntax/*.mnv
+Syntaksfiler til diverse sprog.
+.TP
+/usr/local/lib/mnv/mnvrc
+Systembrede
+.B MNV\c
+-initialiseringer.
+.TP
+~/.mnvrc
+Dine personlige
+.B MNV\c
+-initialiseringer.
+.TP
+/usr/local/lib/mnv/gmnvrc
+Systembrede gmnv-initialiseringer.
+.TP
+~/.gmnvrc
+Dine personlige gmnv-initialiseringer.
+.TP
+/usr/local/lib/mnv/optwin.mnv
+Script som bruges til ":options"-kommandoen,
+en god m�de til at vise og s�tte valgmuligheder.
+.TP
+/usr/local/lib/mnv/menu.mnv
+Systembrede menu-initialiseringer til gmnv.
+.TP
+/usr/local/lib/mnv/bugreport.mnv
+Script til at generere en fejlrapport. Se ":help bugs".
+.TP
+/usr/local/lib/mnv/filetype.mnv
+Script til at registrere filtypen ud fra navnet. Se ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/scripts.mnv
+Script til at registrere filtypen ud fra indholdet. Se ":help 'filetype'".
+.TP
+/usr/local/lib/mnv/print/*.ps
+Filer som bruges til PostScript-udskrivning.
+.PP
+L�s MNV-hjemmesiden for seneste info:
+.br
+<URL:http://www.mnv.org/>
+.SH SE OGS�
+mnvtutor(1)
+.SH FORFATTER
+Det meste af
+.B MNV
+blev lavet af Bram Moolenaar, med en masse hj�lp fra andre.
+Se ":help credits" i
+.B MNV\c
+\&.
+.br
+.B MNV
+er baseret p� Stevie, arbejdet p� af: Tim Thompson,
+Tony Andrews og G.R. (Fred) Walter.
+Selvom der n�sten ikke er noget af den originale kode tilbage.
+.SH FEJL
+Formodentligt.
+Se ":help todo" for en liste over kendte problemer.
+.PP
+Bem�rk at flere ting som af nogle kan anses som v�rende fejl,
+faktisk er pga. en for n�r reproduktion af Vi's opf�rsel.
+Og hvis du t�nker at andre ting er fejl "fordi Vi g�r det anderledes",
+s� kig n�rmere p� vi_diff.txt-filen (eller skriv :help vi_diff.MNV i MNV).
+Se ogs� 'compatible'- og 'cpoptions'-valgmulighederne.

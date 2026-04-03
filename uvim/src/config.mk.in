@@ -1,5 +1,5 @@
 #
-# config.mk.in -- autoconf template for Vim on Unix		vim:ts=8:sw=8:
+# config.mk.in -- autoconf template for MNV on Unix		mnv:ts=8:sw=8:
 #
 # DO NOT EDIT config.mk!!  It will be overwritten by configure.
 # Edit Makefile and run "make" or run ./configure with other arguments.
@@ -13,7 +13,7 @@
 
 @SET_MAKE@
 
-VIMNAME		= @VIMNAME@
+MNVNAME		= @MNVNAME@
 EXNAME		= @EXNAME@
 VIEWNAME	= @VIEWNAME@
 
@@ -116,8 +116,8 @@ CROSS_COMPILING = @CROSS_COMPILING@
 
 COMPILEDBY	= @compiledby@
 
-INSTALLVIMDIFF	= @dovimdiff@
-INSTALLGVIMDIFF	= @dogvimdiff@
+INSTALLMNVDIFF	= @domnvdiff@
+INSTALLGMNVDIFF	= @dogmnvdiff@
 INSTALL_LANGS	= @INSTALL_LANGS@
 INSTALL_TOOL_LANGS	= @INSTALL_TOOL_LANGS@
 

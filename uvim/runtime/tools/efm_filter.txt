@@ -1,8 +1,8 @@
-[adopted from a message that Ives posted in the Vim mailing list]
+[adopted from a message that Ives posted in the MNV mailing list]
 
 Some compilers produce an error message that cannot be handled with
-'errorformat' in Vim.  Following is an example of a Perl script that
-translates one error message into something that Vim understands.
+'errorformat' in MNV.  Following is an example of a Perl script that
+translates one error message into something that MNV understands.
 
 
 The compiler that generates this kind of error messages (4 lines):
@@ -17,7 +17,7 @@ The way I use it is:
 
 :set   errorformat=%f>%l:%c:%t:%n:%m
 :set   makeprg=clearmake\ -C\ gnu
-:set   shellpipe=2>&1\|\ vimccparse
+:set   shellpipe=2>&1\|\ mnvccparse
 
 If somebody thinks this is useful: feel free to do whatever you can think
 of with this code.

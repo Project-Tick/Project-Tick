@@ -3,7 +3,7 @@
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .SH NAME
 .I xxd
 \- make a hex dump or do the reverse.
@@ -341,19 +341,19 @@ in effect, the leading bytes are suppressed.
 \fI% echo "010000: 41" | xxd \-r \-s \-0x10000 > file\fR
 .PP
 Use xxd as a filter within an editor such as
-.B vim(1)
+.B mnv(1)
 to hex dump a region marked between `a' and `z'.
 .br
 \fI:'a,'z!xxd\fR
 .PP
 Use xxd as a filter within an editor such as
-.B vim(1)
+.B mnv(1)
 to recover a binary hex dump marked between `a' and `z'.
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
 Use xxd as a filter within an editor such as
-.B vim(1)
+.B mnv(1)
 to recover one line of a hex dump.  Move the cursor over the line and type:
 .br
 \fI!!xxd \-r\fR

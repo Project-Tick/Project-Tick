@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
-# Server that will accept connections from a Vim channel.
-# Used by test_channel.vim.
+# Server that will accept connections from a MNV channel.
+# Used by test_channel.mnv.
 #
 # This requires Python 2.6 or later.
 

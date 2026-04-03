@@ -1,17 +1,17 @@
-# Turkish translations for Vim
-# Vim Türkçe çevirileri
+# Turkish translations for MNV
+# MNV Türkçe çevirileri
 # Copyright (C) 2019-2026 Emir SARI <emir_sari@icloud.com>
-# This file is distributed under the same license as the Vim package.
+# This file is distributed under the same license as the MNV package.
 # Emir SARI <emir_sari@icloud.com>, 2019-2026
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim Turkish Localization Project\n"
-"Report-Msgid-Bugs-To: vim-dev@vim.org\n"
+"Project-Id-Version: MNV Turkish Localization Project\n"
+"Report-Msgid-Bugs-To: mnv-dev@mnv.org\n"
 "POT-Creation-Date: 2026-01-06 14:41+0000\n"
 "PO-Revision-Date: 2026-02-04 20:00+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
-"Language-Team: Turkish <https://github.com/bitigchi/vim>\n"
+"Language-Team: Turkish <https://github.com/bitigchi/mnv>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -639,8 +639,8 @@ msgstr[1] "Düzenlenecek %d dosya daha var. Yine de çıkılsın mı?"
 msgid "unknown"
 msgstr "bilinmeyen"
 
-msgid "Greetings, Vim user!"
-msgstr "Selamlar Vim kullanıcısı!"
+msgid "Greetings, MNV user!"
+msgstr "Selamlar MNV kullanıcısı!"
 
 msgid "Already only one tab page"
 msgstr "Zaten bir sekme sayfası var"
@@ -736,8 +736,8 @@ msgstr "[Dosya pek büyük]"
 msgid "[Permission Denied]"
 msgstr "[İzin verilmedi]"
 
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: stdin'den okunuyor...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: stdin'den okunuyor...\n"
 
 msgid "Reading from stdin..."
 msgstr "stdin'den okunuyor..."
@@ -819,9 +819,9 @@ msgstr "[Tamamlanmamış son satır]"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as "
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as "
 "well"
-msgstr "W12: Uyarı: \"%s\" dosyası ve Vim'deki arabellek değişti"
+msgstr "W12: Uyarı: \"%s\" dosyası ve MNV'deki arabellek değişti"
 
 msgid "See \":help W12\" for more info."
 msgstr "Ek bilgi için \":help W12\" yazın."
@@ -929,10 +929,10 @@ msgstr "İptal"
 msgid "Input _Methods"
 msgstr "Giriş _Yöntemleri"
 
-msgid "VIM - Search and Replace..."
+msgid "MNV - Search and Replace..."
 msgstr "VİM - Ara ve Değiştir..."
 
-msgid "VIM - Search..."
+msgid "MNV - Search..."
 msgstr "VİM - Ara..."
 
 msgid "Find what:"
@@ -968,8 +968,8 @@ msgstr "Tümünü Değiştir"
 msgid "_Close"
 msgstr "K_apat"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: Oturum yöneticisinden işi sonlandırma isteği geldi\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: Oturum yöneticisinden işi sonlandırma isteği geldi\n"
 
 msgid "Close tab"
 msgstr "Sekmeyi kapat"
@@ -980,8 +980,8 @@ msgstr "Yeni sekme"
 msgid "Open Tab..."
 msgstr "Sekme Aç..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: Ana pencere beklenmedik bir biçimde gitti\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: Ana pencere beklenmedik bir biçimde gitti\n"
 
 msgid "&Filter"
 msgstr "&Süz"
@@ -1007,8 +1007,8 @@ msgstr "&Tamam"
 msgid "Selection"
 msgstr "Seçim"
 
-msgid "Vim dialog"
-msgstr "Vim"
+msgid "MNV dialog"
+msgstr "MNV"
 
 msgid "Find &Next"
 msgstr "Sonrakini &Bul"
@@ -1066,8 +1066,8 @@ msgstr "So&nlandır"
 msgid "no specific match"
 msgstr "belirli bir eşleşme yok"
 
-msgid "Vim - Font Selector"
-msgstr "Vim - Yazıtipi Seçicisi"
+msgid "MNV - Font Selector"
+msgstr "MNV - Yazıtipi Seçicisi"
 
 msgid "Name:"
 msgstr "Ad:"
@@ -1252,14 +1252,14 @@ msgstr "satır eklenemiyor"
 msgid "string cannot contain newlines"
 msgstr "dizi \"yeni satır\" imi içeremez"
 
-msgid "error converting Scheme values to Vim"
-msgstr "Scheme değerlerini Vim değerlerine dönüştürürken hata"
+msgid "error converting Scheme values to MNV"
+msgstr "Scheme değerlerini MNV değerlerine dönüştürürken hata"
 
-msgid "Vim error: ~a"
-msgstr "Vim hatası: ~a"
+msgid "MNV error: ~a"
+msgstr "MNV hatası: ~a"
 
-msgid "Vim error"
-msgstr "Vim hatası"
+msgid "MNV error"
+msgstr "MNV hatası"
 
 msgid "buffer is invalid"
 msgstr "arabellek geçersiz"
@@ -1270,8 +1270,8 @@ msgstr "pencere geçersiz"
 msgid "linenr out of range"
 msgstr "linenr erimin dışında"
 
-msgid "not allowed in the Vim sandbox"
-msgstr "Vim kum havuzunda izin verilmiyor"
+msgid "not allowed in the MNV sandbox"
+msgstr "MNV kum havuzunda izin verilmiyor"
 
 msgid "invalid buffer number"
 msgstr "Geçersiz arabellek numarası"
@@ -1301,8 +1301,8 @@ msgstr "satır numarası erimin dışında"
 msgid "unknown flag: "
 msgstr "geçersiz bayrak: "
 
-msgid "unknown vimOption"
-msgstr "geçersiz vimOption"
+msgid "unknown mnvOption"
+msgstr "geçersiz mnvOption"
 
 msgid "keyboard interrupt"
 msgstr "klavye araya girdi"
@@ -1496,8 +1496,8 @@ msgstr "NetBeans bu grafik arabirimde desteklenmiyor\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "'-nb' kullanılamaz: Derleme sırasında etkinleştirilmemiş\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "Bu Vim karşılaştırma özelliği ile derlenmemiş"
+msgid "This MNV was not compiled with the diff feature."
+msgstr "Bu MNV karşılaştırma özelliği ile derlenmemiş"
 
 msgid "Attempt to open script file again: \""
 msgstr "Betik dosyası yeniden açılmaya çalışılıyor: \""
@@ -1508,27 +1508,27 @@ msgstr "Okuma için açılamıyor: \""
 msgid "Cannot open for script output: \""
 msgstr "Betik çıktısı için açılamıyor: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: Hata: gvim'i NetBeans içinden başlatma başarısız oldu\n"
+msgid "MNV: Error: Failure to start gmnv from NetBeans\n"
+msgstr "MNV: Hata: gmnv'i NetBeans içinden başlatma başarısız oldu\n"
 
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: Hata: Vim'in bu sürümü bir Cygwin uçbirimi içinde çalışmaz\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: Hata: MNV'in bu sürümü bir Cygwin uçbirimi içinde çalışmaz\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: Uyarı: Çıktı bir uçbirime değil\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: Uyarı: Çıktı bir uçbirime değil\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: Uyarı: Girdi bir uçbirimden değil\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: Uyarı: Girdi bir uçbirimden değil\n"
 
-msgid "pre-vimrc command line"
-msgstr "vimrc uygulanma öncesi komut satırı"
+msgid "pre-mnvrc command line"
+msgstr "mnvrc uygulanma öncesi komut satırı"
 
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"Daha fazla bilgi için: \"vim -h\"\n"
+"Daha fazla bilgi için: \"mnv -h\"\n"
 
 msgid "[file ..]       edit specified file(s)"
 msgstr "[dosya ..]      belirlenen dosyaları düzenle"
@@ -1551,8 +1551,8 @@ msgstr ""
 "\n"
 "Kullanım:"
 
-msgid " vim [arguments] "
-msgstr " vim [argümanlar] "
+msgid " mnv [arguments] "
+msgstr " mnv [argümanlar] "
 
 msgid ""
 "\n"
@@ -1593,14 +1593,14 @@ msgstr "--\t\t\tBundan sonra yalnızca dosya adları"
 msgid "--literal\t\tDon't expand wildcards"
 msgstr "--literal\t\tJoker karakterleri genişletme!"
 
-msgid "-register\t\tRegister this gvim for OLE"
-msgstr "-register\t\tBu gvim'i OLE için kaydet"
+msgid "-register\t\tRegister this gmnv for OLE"
+msgstr "-register\t\tBu gmnv'i OLE için kaydet"
 
-msgid "-unregister\t\tUnregister gvim for OLE"
-msgstr "-unregister\t\tgvim'in OLE kaydını sil"
+msgid "-unregister\t\tUnregister gmnv for OLE"
+msgstr "-unregister\t\tgmnv'in OLE kaydını sil"
 
-msgid "-g\t\t\tRun using GUI (like \"gvim\")"
-msgstr "-g\t\t\tGrafik arabirim kullanarak çalıştır (\"gvim\" gibi)"
+msgid "-g\t\t\tRun using GUI (like \"gmnv\")"
+msgstr "-g\t\t\tGrafik arabirim kullanarak çalıştır (\"gmnv\" gibi)"
 
 msgid "-f  or  --nofork\tForeground: Don't fork when starting GUI"
 msgstr "-f veya --nofork\tÖnalan: Grafik arabirim başlatılırken çatallama!"
@@ -1617,17 +1617,17 @@ msgstr "-E\t\t\tGeliştirilmiş Ex kipi"
 msgid "-s\t\t\tSilent (batch) mode (only for \"ex\")"
 msgstr "-s\t\t\tSessiz (toplu iş) kipi (yalnızca \"ex\" için)"
 
-msgid "-d\t\t\tDiff mode (like \"vimdiff\")"
-msgstr "-d\t\t\tKarşılaştırma kipi (like \"vimdiff\")"
+msgid "-d\t\t\tDiff mode (like \"mnvdiff\")"
+msgstr "-d\t\t\tKarşılaştırma kipi (like \"mnvdiff\")"
 
-msgid "-y\t\t\tEasy mode (like \"evim\", modeless)"
-msgstr "-y\t\t\tKolay kip (\"evim\" gibi, kipsiz)"
+msgid "-y\t\t\tEasy mode (like \"emnv\", modeless)"
+msgstr "-y\t\t\tKolay kip (\"emnv\" gibi, kipsiz)"
 
 msgid "-R\t\t\tReadonly mode (like \"view\")"
 msgstr "-R\t\t\tSaltokunur kip (\"view\" gibi)"
 
-msgid "-Z\t\t\tRestricted mode (like \"rvim\")"
-msgstr "-Z\t\t\tKısıtlanmış kip (\"rvim\" gibi)"
+msgid "-Z\t\t\tRestricted mode (like \"rmnv\")"
+msgstr "-Z\t\t\tKısıtlanmış kip (\"rmnv\" gibi)"
 
 msgid "-m\t\t\tModifications (writing files) not allowed"
 msgstr "-m\t\t\tDeğişikliklere (dosya yazma) izin verme"
@@ -1689,11 +1689,11 @@ msgstr "--gui-dialog-file {fname}  Sınama amaçlı: İletişim kutusuna metin y
 msgid "--ttyfail\t\tExit if input or output is not a terminal"
 msgstr "--ttyfail\t\tGirdi veya çıktı bir uçbirime değilse çık"
 
-msgid "-u <vimrc>\t\tUse <vimrc> instead of any .vimrc"
-msgstr "-u <vimrc>\t\tHerhangi bir .vimrc yerine <vimrc> kullan"
+msgid "-u <mnvrc>\t\tUse <mnvrc> instead of any .mnvrc"
+msgstr "-u <mnvrc>\t\tHerhangi bir .mnvrc yerine <mnvrc> kullan"
 
-msgid "-U <gvimrc>\t\tUse <gvimrc> instead of any .gvimrc"
-msgstr "-U <gvimrc>\t\tHerhangi bir .gvimrc yerine <gvimrc> kullan"
+msgid "-U <gmnvrc>\t\tUse <gmnvrc> instead of any .gmnvrc"
+msgstr "-U <gmnvrc>\t\tHerhangi bir .gmnvrc yerine <gmnvrc> kullan"
 
 msgid "--noplugin\t\tDon't load plugin scripts"
 msgstr "--noplugin\t\tEklenti betiklerini yükleme"
@@ -1713,8 +1713,8 @@ msgstr "+\t\t\tDosyanın sonunda başlat"
 msgid "+<lnum>\t\tStart at line <lnum>"
 msgstr "+<satırno>\t\t<satırno> numaralı satırda başlat"
 
-msgid "--cmd <command>\tExecute <command> before loading any vimrc file"
-msgstr "--cmd <komut>\tHerhangi bir vimrc dosyası yüklemeden <komut> çalıştır"
+msgid "--cmd <command>\tExecute <command> before loading any mnvrc file"
+msgstr "--cmd <komut>\tHerhangi bir mnvrc dosyası yüklemeden <komut> çalıştır"
 
 msgid "-c <command>\t\tExecute <command> after loading the first file"
 msgstr "-c <komut>\t\tİlk dosyayı yükleyip <komut> komutunu çalıştır"
@@ -1734,8 +1734,8 @@ msgstr "-W <betikçık>\tGirilen tüm komutları <betikçık> dosyasına yaz"
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\tŞifrelenmiş dosyaları düzenle"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
-msgstr "-display <görüntü>\tVim'i bu belirtilen X sunucusuna bağla"
+msgid "-display <display>\tConnect MNV to this particular X-server"
+msgstr "-display <görüntü>\tMNV'i bu belirtilen X sunucusuna bağla"
 
 msgid "-X\t\t\tDo not connect to X server"
 msgstr "-X\t\t\tX sunucusuna bağlama"
@@ -1746,8 +1746,8 @@ msgstr "-X\t\t\tWayland bileşikleştiricisine bağlama"
 msgid "--clientserver <socket|x11> Backend for clientserver communication"
 msgstr "--clientserver <yuva|x11> İstemci-sunucu iletişimi için arka uç"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
-msgstr "--remote <dosya>\tOlanaklıysa <dosya>'yı bir Vim sunucusunda düzenle"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
+msgstr "--remote <dosya>\tOlanaklıysa <dosya>'yı bir MNV sunucusunda düzenle"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr "--remote-silent <dosya>  Aynısı, yalnızca sunucu yoksa şikayet etme"
@@ -1767,19 +1767,19 @@ msgid ""
 msgstr ""
 "--remote-tab[-wait][-silent] <dosya>  --remote, artı sekme sayfası kullan"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
-msgstr "--remote-send <anahtar>\tBir Vim sunucusuna <anahtar> gönder ve çık"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
+msgstr "--remote-send <anahtar>\tBir MNV sunucusuna <anahtar> gönder ve çık"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
 msgstr ""
-"--remote-expr <ifade>\t<ifade>'leri bir Vim sunucusunda değerlendir ve "
+"--remote-expr <ifade>\t<ifade>'leri bir MNV sunucusunda değerlendir ve "
 "sonuçları yazdır"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
-msgstr "--serverlist\t\tVar olan Vim sunucu adlarını liste ve çık"
+msgid "--serverlist\t\tList available MNV server names and exit"
+msgstr "--serverlist\t\tVar olan MNV sunucu adlarını liste ve çık"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
-msgstr "--servername <ad>\t<ad> Vim sunucusuna gönder veya sunucu ol"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
+msgstr "--servername <ad>\t<ad> MNV sunucusuna gönder veya sunucu ol"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
 msgstr "--startuptime <dsy>\tBaşlangıç zamanlama iletilerini <dsy>'ya yaz"
@@ -1787,11 +1787,11 @@ msgstr "--startuptime <dsy>\tBaşlangıç zamanlama iletilerini <dsy>'ya yaz"
 msgid "--log <file>\t\tStart logging to <file> early"
 msgstr "--log <dosya>\t<dosya>'ya günlüklemeyi erkenden başlat"
 
-msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
-msgstr "-i <viminfo>\t\t.viminfo yerine <viminfo> kullan"
+msgid "-i <mnvinfo>\t\tUse <mnvinfo> instead of .mnvinfo"
+msgstr "-i <mnvinfo>\t\t.mnvinfo yerine <mnvinfo> kullan"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
-msgstr "--clean\t\t'nocompatible', Vim öntanımlıları, eklenti-viminfo yok"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no mnvinfo"
+msgstr "--clean\t\t'nocompatible', MNV öntanımlıları, eklenti-mnvinfo yok"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h veya --help\tYardımı (bu iletiyi) yazdır ve çık"
@@ -1801,16 +1801,16 @@ msgstr "--version\t\tSürüm bilgisini yazdır ve çık"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Motif version):\n"
+"Arguments recognised by gmnv (Motif version):\n"
 msgstr ""
 "\n"
-"gvim tarafından tanınan argümanlar (Motif sürümü):\n"
+"gmnv tarafından tanınan argümanlar (Motif sürümü):\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <görüntü>\tVim'i <görüntü>'de çalıştır"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <görüntü>\tMNV'i <görüntü>'de çalıştır"
 
-msgid "-iconic\t\tStart Vim iconified"
-msgstr "-iconic\t\tVim'i simge durumunda başlat"
+msgid "-iconic\t\tStart MNV iconified"
+msgstr "-iconic\t\tMNV'i simge durumunda başlat"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
 msgstr "-background <renk>\tArdalanı <renk> yap (kısa: -bg)"
@@ -1848,28 +1848,28 @@ msgstr "-xrm <özkaynak>\tBelirtilen özkaynağı ayarla"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (GTK+ version):\n"
+"Arguments recognised by gmnv (GTK+ version):\n"
 msgstr ""
 "\n"
-"gvim tarafından tanınan argümanlar (GTK+ sürümü):\n"
+"gmnv tarafından tanınan argümanlar (GTK+ sürümü):\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <görüntü>\tVim'i <görüntü>'de çalıştır (veya: --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <görüntü>\tMNV'i <görüntü>'de çalıştır (veya: --display)"
 
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr "--role <rol>\tAna pencereyi tanımlamak için eşsiz bir rol ayarla"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\tBaşka bir GTK parçacığında Vim'i aç"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\tBaşka bir GTK parçacığında MNV'i aç"
 
-msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
-msgstr "--echo-wid\t\tgvim'in pencere kimliğini stdout'ta echo yapmasını sağla"
+msgid "--echo-wid\t\tMake gmnv echo the Window ID on stdout"
+msgstr "--echo-wid\t\tgmnv'in pencere kimliğini stdout'ta echo yapmasını sağla"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
-msgstr "-P <üst başlık>\tVim'i üst uygulama içinde aç"
+msgid "-P <parent title>\tOpen MNV inside parent application"
+msgstr "-P <üst başlık>\tMNV'i üst uygulama içinde aç"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\tVim'i başka bir win32 parçacığı içinde aç"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\tMNV'i başka bir win32 parçacığı içinde aç"
 
 msgid "Seen modifyOtherKeys: true\n"
 msgstr "modifyOtherKeys görüldü: true\n"
@@ -1935,16 +1935,16 @@ msgstr "Blok 0 şuradan okunamıyor: "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"Herhangi bir değişiklik yapılmadı veya Vim takas dosyasını güncellemedi."
+"Herhangi bir değişiklik yapılmadı veya MNV takas dosyasını güncellemedi."
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " Vim'in bu sürümüyle kullanılamaz.\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " MNV'in bu sürümüyle kullanılamaz.\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "Vim 3.0 sürümünü kullanın.\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "MNV 3.0 sürümünü kullanın.\n"
 
 msgid " cannot be used on this computer.\n"
 msgstr " bu bilgisayarda kullanılamaz.\n"
@@ -2092,11 +2092,11 @@ msgstr "   tarih: "
 msgid "             dated: "
 msgstr "           tarih: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [Vim 3.0 sürümünden itibaren]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [MNV 3.0 sürümünden itibaren]"
 
-msgid "         [does not look like a Vim swap file]"
-msgstr "         [bir Vim takas dosyasına benzemiyor]"
+msgid "         [does not look like a MNV swap file]"
+msgstr "         [bir MNV takas dosyasına benzemiyor]"
 
 msgid "         file name: "
 msgstr "         dosya adı: "
@@ -2143,10 +2143,10 @@ msgstr " (HÅLÅ ÇALIŞIYOR)"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [Vim'in bu sürümüyle kullanılamaz]"
+"         [MNV'in bu sürümüyle kullanılamaz]"
 
 msgid ""
 "\n"
@@ -2206,8 +2206,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) Bu dosya düzenleme oturumu çöktü.\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    Durum buysa \":recover\" veya \"vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    Durum buysa \":recover\" veya \"mnv -r "
 
 msgid ""
 "\"\n"
@@ -2235,7 +2235,7 @@ msgstr "Swap dosyası \""
 msgid "\" already exists!"
 msgstr "\" zaten var!"
 
-msgid "VIM - ATTENTION"
+msgid "MNV - ATTENTION"
 msgstr "VİM - DİKKAT"
 
 msgid "Swap file already exists!"
@@ -2291,7 +2291,7 @@ msgstr "%s işlenirken hata tespit edildi:"
 msgid "line %4ld:"
 msgstr "satır %4ld:"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Türkçeye çeviren: Emir SARI <emir_sari@icloud.com>"
 
 msgid "Interrupt: "
@@ -2371,12 +2371,12 @@ msgstr "Kabuk, yürütme için çağrılıyor: \"%s\""
 msgid "Warning: terminal cannot highlight"
 msgstr "Uyarı: Uçbirim vurgulama yapamıyor"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
 msgstr ""
-"Değişikliklerden vazgeçip Vim'den çıkmak için :qa! yazıp <Enter>'a basın"
+"Değişikliklerden vazgeçip MNV'den çıkmak için :qa! yazıp <Enter>'a basın"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "Vim'den çıkmak için :qa yazıp <Enter>'a basın"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "MNV'den çıkmak için :qa yazıp <Enter>'a basın"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -2470,7 +2470,7 @@ msgstr ""
 msgid "cannot open "
 msgstr "Açılamıyor: "
 
-msgid "VIM: Can't open window!\n"
+msgid "MNV: Can't open window!\n"
 msgstr "VİM: Pencere açılamıyor!\n"
 
 msgid "Need Amigados version 2.04 or later\n"
@@ -2487,8 +2487,8 @@ msgid "Cannot create "
 msgstr "Oluşturulamıyor: "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vim %d ile çıkıyor\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNV %d ile çıkıyor\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "Konsol kipi değiştirilemiyor?!\n"
@@ -2531,10 +2531,10 @@ msgstr "X görüntüsünü açma %ld milisaniye sürdü"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: X hatası alındı\n"
+"MNV: X hatası alındı\n"
 
 #, c-format
 msgid "restoring X11 display %s"
@@ -2645,8 +2645,8 @@ msgid "At line"
 msgstr "Satırda"
 
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: %s olayı yakalandı\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: %s olayı yakalandı\n"
 
 msgid "close"
 msgstr "kapat"
@@ -2658,16 +2658,16 @@ msgid "shutdown"
 msgstr "kapat"
 
 msgid ""
-"VIMRUN.EXE not found in your $PATH.\n"
+"MNVRUN.EXE not found in your $PATH.\n"
 "External commands will not pause after completion.\n"
-"See  :help win32-vimrun  for more information."
+"See  :help win32-mnvrun  for more information."
 msgstr ""
-"VIMRUN.EXE $PATH üzerinde bulunamadı.\n"
+"MNVRUN.EXE $PATH üzerinde bulunamadı.\n"
 "Dış komutlar tamamlandıktan sonra duraklamayacak.\n"
-"Ek bilgi için :help win32-vimrun yazın."
+"Ek bilgi için :help win32-mnvrun yazın."
 
-msgid "Vim Warning"
-msgstr "Vim - Uyarı"
+msgid "MNV Warning"
+msgstr "MNV - Uyarı"
 
 #, c-format
 msgid "shell returned %d"
@@ -2797,8 +2797,8 @@ msgstr "\"%s\" aranıyor"
 msgid "not found in '%s': \"%s\""
 msgstr "'%s' içinde bulunamadı: \"%s\""
 
-msgid "Source Vim script"
-msgstr "Vim betiği kaynak al"
+msgid "Source MNV script"
+msgstr "MNV betiği kaynak al"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -3360,8 +3360,8 @@ msgstr[1] "%ld saniye önce"
 msgid "new shell started\n"
 msgstr "yeni kabuk başlatıldı\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: Girdi okunurken hata, çıkılıyor...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: Girdi okunurken hata, çıkılıyor...\n"
 
 msgid "No undo possible; continue anyway"
 msgstr "Geri alma olanaklı değil; yine de sürdürülsün mü?"
@@ -3639,20 +3639,20 @@ msgstr "(grafik arabirim ile)."
 msgid "  Features included (+) or not (-):\n"
 msgstr " İçerilen özellikler (+), içerilmeyenler (-) ile gösterilir:\n"
 
-msgid "   system vimrc file: \""
-msgstr "        sistem vimrc dosyası: \""
+msgid "   system mnvrc file: \""
+msgstr "        sistem mnvrc dosyası: \""
 
-msgid "     user vimrc file: \""
-msgstr "     kullanıcı vimrc dosyası: \""
+msgid "     user mnvrc file: \""
+msgstr "     kullanıcı mnvrc dosyası: \""
 
-msgid " 2nd user vimrc file: \""
-msgstr "  kullanıcı 2. vimrc dosyası: \""
+msgid " 2nd user mnvrc file: \""
+msgstr "  kullanıcı 2. mnvrc dosyası: \""
 
-msgid " 3rd user vimrc file: \""
-msgstr "  kullanıcı 3. vimrc dosyası: \""
+msgid " 3rd user mnvrc file: \""
+msgstr "  kullanıcı 3. mnvrc dosyası: \""
 
-msgid " 4th user vimrc file: \""
-msgstr "  kullanıcı 4. vimrc dosyası: \""
+msgid " 4th user mnvrc file: \""
+msgstr "  kullanıcı 4. mnvrc dosyası: \""
 
 msgid "      user exrc file: \""
 msgstr "      kullanıcı exrc dosyası: \""
@@ -3660,17 +3660,17 @@ msgstr "      kullanıcı exrc dosyası: \""
 msgid "  2nd user exrc file: \""
 msgstr "   kullanıcı 2. exrc dosyası: \""
 
-msgid "  system gvimrc file: \""
-msgstr "       sistem gvimrc dosyası: \""
+msgid "  system gmnvrc file: \""
+msgstr "       sistem gmnvrc dosyası: \""
 
-msgid "    user gvimrc file: \""
-msgstr "    kullanıcı gvimrc dosyası: \""
+msgid "    user gmnvrc file: \""
+msgstr "    kullanıcı gmnvrc dosyası: \""
 
-msgid "2nd user gvimrc file: \""
-msgstr " kullanıcı 2. gvimrc dosyası: \""
+msgid "2nd user gmnvrc file: \""
+msgstr " kullanıcı 2. gmnvrc dosyası: \""
 
-msgid "3rd user gvimrc file: \""
-msgstr " kullanıcı 3. gvimrc dosyası: \""
+msgid "3rd user gmnvrc file: \""
+msgstr " kullanıcı 3. gmnvrc dosyası: \""
 
 msgid "       defaults file: \""
 msgstr "        öntanımlılar dosyası: \""
@@ -3678,11 +3678,11 @@ msgstr "        öntanımlılar dosyası: \""
 msgid "    system menu file: \""
 msgstr "       sistem menü dosyaları: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "       $VIM öntanımlı konumu: \""
+msgid "  fall-back for $MNV: \""
+msgstr "       $MNV öntanımlı konumu: \""
 
-msgid " f-b for $VIMRUNTIME: \""
-msgstr "$VIMRUNTIME öntanımlı konumu: \""
+msgid " f-b for $MNVRUNTIME: \""
+msgstr "$MNVRUNTIME öntanımlı konumu: \""
 
 msgid "Compilation: "
 msgstr "Derleme: "
@@ -3696,8 +3696,8 @@ msgstr "Bağlama: "
 msgid "  DEBUG BUILD"
 msgstr " HATA AYIKLAMA AMAÇLI SÜRÜM"
 
-msgid "VIM - Vi IMproved"
-msgstr "VİM - Vi IMproved"
+msgid "MNV - MNV is not Vim"
+msgstr "VİM - MNV is not Vim"
 
 msgid "version "
 msgstr "sürüm: "
@@ -3705,8 +3705,8 @@ msgstr "sürüm: "
 msgid "by Bram Moolenaar et al."
 msgstr "geliştirme: Bram Moolenaar ve diğerleri"
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim açık kaynaklıdır ve özgürce dağıtılabilir"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV açık kaynaklıdır ve özgürce dağıtılabilir"
 
 msgid "Help poor children in Uganda!"
 msgstr "Uganda'daki yoksul çocuklara yardım edin!"
@@ -3726,7 +3726,7 @@ msgstr "sürüm bilgisi için     :help version9<Enter>  "
 msgid "Running in Vi compatible mode"
 msgstr "Vi uyumlu kipte çalışıyor"
 
-msgid "type  :set nocp<Enter>        for Vim defaults"
+msgid "type  :set nocp<Enter>        for MNV defaults"
 msgstr "öntanımlı ayarlar için :set nocp<Enter>       "
 
 msgid "type  :help cp-default<Enter> for info on this"
@@ -3747,11 +3747,11 @@ msgstr "                              iki kip için       "
 msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "menü -> Düzen -> Genel Ayarlar -> Vi Uyumlu Kipi Aç/Kapat"
 
-msgid "                              for Vim defaults   "
-msgstr "                        Vim öntanımlıları için   "
+msgid "                              for MNV defaults   "
+msgstr "                        MNV öntanımlıları için   "
 
-msgid "Sponsor Vim development!"
-msgstr "Vim'in geliştirilmesine sponsor olun!"
+msgid "Sponsor MNV development!"
+msgstr "MNV'in geliştirilmesine sponsor olun!"
 
 msgid "type  :help sponsor<Enter>    for information "
 msgstr "bilgi için             :help sponsor<Enter>   "
@@ -3812,8 +3812,8 @@ msgstr ""
 "# Tam sureti kopyalanan | satırları:\n"
 
 #, c-format
-msgid "%sviminfo: %s in line: "
-msgstr "%sviminfo: satırdaki %s: "
+msgid "%smnvinfo: %s in line: "
+msgstr "%smnvinfo: satırdaki %s: "
 
 msgid ""
 "\n"
@@ -3873,8 +3873,8 @@ msgstr ""
 "# Atlama listesi (önce en yeniler):\n"
 
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# Bu viminfo dosyası Vim %s tarafından oluşturulmuştur.\n"
+msgid "# This mnvinfo file was generated by MNV %s.\n"
+msgstr "# Bu mnvinfo dosyası MNV %s tarafından oluşturulmuştur.\n"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -3887,8 +3887,8 @@ msgid "# Value of 'encoding' when this file was written\n"
 msgstr "# Bu dosya yazıldığı sıradaki 'encoding'in değeri\n"
 
 #, c-format
-msgid "Reading viminfo file \"%s\"%s%s%s%s"
-msgstr "\"%s\" viminfo dosyası okunuyor...%s%s%s%s"
+msgid "Reading mnvinfo file \"%s\"%s%s%s%s"
+msgstr "\"%s\" mnvinfo dosyası okunuyor...%s%s%s%s"
 
 msgid " info"
 msgstr " bilgiler-"
@@ -3903,8 +3903,8 @@ msgid " FAILED"
 msgstr " BAŞARISIZ"
 
 #, c-format
-msgid "Writing viminfo file \"%s\""
-msgstr "viminfo dosyası \"%s\" yazılıyor"
+msgid "Writing mnvinfo file \"%s\""
+msgstr "mnvinfo dosyası \"%s\" yazılıyor"
 
 msgid "wayland protocol error -> "
 msgstr "Wayland protokolü hatası -> "
@@ -3926,32 +3926,32 @@ msgstr "E370: %s kitaplığı yüklenemedi"
 msgid "Sorry, this command is disabled: the Perl library could not be loaded."
 msgstr "Üzgünüm, bu komut etkin değil: Perl kitaplığı yüklenemedi."
 
-msgid "Edit with Vim using &tabpages"
-msgstr "Vim'de &sekme sayfaları kullanarak düzenle"
+msgid "Edit with MNV using &tabpages"
+msgstr "MNV'de &sekme sayfaları kullanarak düzenle"
 
-msgid "Edit with single &Vim"
-msgstr "Tek bir &Vim ile düzenle"
+msgid "Edit with single &MNV"
+msgstr "Tek bir &MNV ile düzenle"
 
-msgid "Diff with Vim"
-msgstr "Vim kullanarak karşılaştır"
+msgid "Diff with MNV"
+msgstr "MNV kullanarak karşılaştır"
 
-msgid "Edit with &Vim"
-msgstr "&Vim ile düzenle"
+msgid "Edit with &MNV"
+msgstr "&MNV ile düzenle"
 
-msgid "Edit with existing Vim"
-msgstr "Var olan Vim ile düzenle"
+msgid "Edit with existing MNV"
+msgstr "Var olan MNV ile düzenle"
 
-msgid "Edit with existing Vim - "
-msgstr "Var olan Vim ile düzenle - "
+msgid "Edit with existing MNV - "
+msgstr "Var olan MNV ile düzenle - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "Seçili dosyaları Vim ile düzenler"
+msgid "Edits the selected file(s) with MNV"
+msgstr "Seçili dosyaları MNV ile düzenler"
 
-msgid "Error creating process: Check if gvim is in your path!"
-msgstr "Süreç oluşturulurken hata: gvim'in yol üzerinde olduğundan emin olun!"
+msgid "Error creating process: Check if gmnv is in your path!"
+msgstr "Süreç oluşturulurken hata: gmnv'in yol üzerinde olduğundan emin olun!"
 
-msgid "gvimext.dll error"
-msgstr "gvimext.dll hatası"
+msgid "gmnvext.dll error"
+msgstr "gmnvext.dll hatası"
 
 msgid "Interrupted"
 msgstr "Yarıda kesildi"
@@ -3962,9 +3962,9 @@ msgstr "E10: \\ sonrasında /, ? veya & gelmeli"
 msgid "E11: Invalid in command-line window; :q<CR> closes the window"
 msgstr "E11: Komut satırı penceresinde geçersiz; :q<CR> pencereyi kapatır"
 
-msgid "E12: Command not allowed from exrc/vimrc in current dir or tag search"
+msgid "E12: Command not allowed from exrc/mnvrc in current dir or tag search"
 msgstr ""
-"E12: Geçerli dizin veya etiket aramasında exrc veya vimrc'den komutlara izin "
+"E12: Geçerli dizin veya etiket aramasında exrc veya mnvrc'den komutlara izin "
 "verilmiyor"
 
 msgid "E13: File exists (add ! to override)"
@@ -4375,16 +4375,16 @@ msgstr "E134: Satırlardan oluşan erim kendi içine taşınamaz"
 msgid "E135: *Filter* Autocommands must not change current buffer"
 msgstr "E135: *Süzgeç* otokomutları şu anki arabelleği değiştirmemelidir"
 
-msgid "E136: viminfo: Too many errors, skipping rest of file"
-msgstr "E136: viminfo: Çok fazla hata, dosyanın geri kalanı atlanıyor"
+msgid "E136: mnvinfo: Too many errors, skipping rest of file"
+msgstr "E136: mnvinfo: Çok fazla hata, dosyanın geri kalanı atlanıyor"
 
 #, c-format
-msgid "E137: Viminfo file is not writable: %s"
-msgstr "E137: Viminfo dosyası yazılabilir değil: %s"
+msgid "E137: MNVinfo file is not writable: %s"
+msgstr "E137: MNVinfo dosyası yazılabilir değil: %s"
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: viminfo dosyası %s yazılamıyor!"
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: mnvinfo dosyası %s yazılamıyor!"
 
 msgid "E139: File is loaded in another buffer"
 msgstr "E139: Dosya başka bir arabellekte yüklü"
@@ -4406,8 +4406,8 @@ msgstr "E143: yeni %s arabelleğini otokomutlar beklenmedik bir biçimde sildi"
 msgid "E144: Non-numeric argument to :z"
 msgstr "E144: :z için sayısal olmayan argüman"
 
-msgid "E145: Shell commands and some functionality not allowed in rvim"
-msgstr "E145: rvim içinde kabuk komutları ve bazı işlevselliğe izin verilmez"
+msgid "E145: Shell commands and some functionality not allowed in rmnv"
+msgstr "E145: rmnv içinde kabuk komutları ve bazı işlevselliğe izin verilmez"
 
 msgid "E146: Regular expressions can't be delimited by letters"
 msgstr "E146: Düzenli ifadeler harflerle sınırlandırılamaz"
@@ -4587,8 +4587,8 @@ msgstr "E193: %s bir işlev içinde değil"
 msgid "E194: No alternate file name to substitute for '#'"
 msgstr "E194: '#' yerine koymak için başka dosya adı yok"
 
-msgid "E195: Cannot open viminfo file for reading"
-msgstr "E195: viminfo dosyası okuma için açılamıyor"
+msgid "E195: Cannot open mnvinfo file for reading"
+msgstr "E195: mnvinfo dosyası okuma için açılamıyor"
 
 msgid "E196: No digraphs in this version"
 msgstr "E196: Bu sürümde ikili harfler bulunmamaktadır"
@@ -4772,7 +4772,7 @@ msgid "E250: Fonts for the following charsets are missing in fontset %s:"
 msgstr ""
 "E250: %s yazıtipi kümesi içinde şu karakter setleri için fontlar eksik:"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
 msgstr "E251: VİM oturumu kayıt değeri düzgün oluşturulmamış. Silindi!"
 
 #, c-format
@@ -4932,8 +4932,8 @@ msgid "E306: Cannot open %s"
 msgstr "E306: %s açılamıyor"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s Vim takas dosyasına pek benzemiyor"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s MNV takas dosyasına pek benzemiyor"
 
 msgid "E308: Warning: Original file may have been changed"
 msgstr "E308: Uyarı: Orijinal dosya değiştirilmiş olabilir"
@@ -5946,8 +5946,8 @@ msgstr "E606: :try olmadan :finally"
 msgid "E607: Multiple :finally"
 msgstr "E607: Birden fazla :finally"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: 'Vim' öneki ile kural dışı durumlar :throw edilemez"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: 'MNV' öneki ile kural dışı durumlar :throw edilemez"
 
 #, c-format
 msgid "E609: Cscope error: %s"
@@ -6165,8 +6165,8 @@ msgstr "E677: Geçici dosya yazılırken hata"
 msgid "E678: Invalid character after %s%%[dxouU]"
 msgstr "E678: %s%%[dxouU] sonrası geçersiz karakter"
 
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: syncolor.vim yüklenirken özyineli döngü"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: syncolor.mnv yüklenirken özyineli döngü"
 
 #, c-format
 msgid "E680: <buffer=%d>: invalid buffer number"
@@ -6488,8 +6488,8 @@ msgstr "E770: Yazım dosyasında desteklenmeyen bölüm"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: Eski yazım dosyası; güncellenmesi gerekiyor"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: Yazım dosyası Vim'in daha yeni bir sürümü için"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: Yazım dosyası MNV'in daha yeni bir sürümü için"
 
 #, c-format
 msgid "E773: Symlink loop for \"%s\""
@@ -6516,8 +6516,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: Eski .sug dosyası, güncellenmesi gerekiyor: %s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: Bu .sug dosyası Vim'in daha yeni bir sürümü için: %s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: Bu .sug dosyası MNV'in daha yeni bir sürümü için: %s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -6705,8 +6705,8 @@ msgstr "E832: Şifrelenmemiş dosyanın şifrelenmiş bir geri al dosyası var: 
 
 #, c-format
 msgid ""
-"E833: %s is encrypted and this version of Vim does not support encryption"
-msgstr "E833: %s şifrelenmiş ve Vim'in bu sürümü şifrelemeyi desteklemiyor"
+"E833: %s is encrypted and this version of MNV does not support encryption"
+msgstr "E833: %s şifrelenmiş ve MNV'in bu sürümü şifrelemeyi desteklemiyor"
 
 msgid "E834: Conflicts with value of 'listchars'"
 msgstr "E834: 'listchars' değeriyle çakışmalar var"
@@ -6714,11 +6714,11 @@ msgstr "E834: 'listchars' değeriyle çakışmalar var"
 msgid "E835: Conflicts with value of 'fillchars'"
 msgstr "E835: 'fillchars' değeriyle çakışmalar var"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
-msgstr "E836: Bu Vim :py3 komutundan sonra :python komutunu yürütemez"
+msgid "E836: This MNV cannot execute :python after using :py3"
+msgstr "E836: Bu MNV :py3 komutundan sonra :python komutunu yürütemez"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
-msgstr "E837: Bu Vim :python komutundan sonra :py3 komutunu yürütemez"
+msgid "E837: This MNV cannot execute :py3 after using :python"
+msgstr "E837: Bu MNV :python komutundan sonra :py3 komutunu yürütemez"
 
 msgid "E838: NetBeans is not supported with this GUI"
 msgstr "E838: NetBeans bu grafik arabirimde desteklenmiyor"
@@ -6786,8 +6786,8 @@ msgstr "E857: Sözlük anahtarı \"%s\" gerekiyor"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: Eval geçerli bir python nesnesi döndürmedi"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: Döndürülen python nesnesi vim değerine dönüştürülemedi"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: Döndürülen python nesnesi mnv değerine dönüştürülemedi"
 
 msgid "E860: Need 'id' and 'type' or 'types' with 'both'"
 msgstr "E860: 'both' ile 'id' ve 'type' veya 'types' gerekli"
@@ -6866,9 +6866,9 @@ msgstr "E878: (BSO düzenli ifadesi) Dal gezinmesi için bellek ayrılamadı!"
 msgid "E879: (NFA regexp) Too many \\z("
 msgstr "E879: (BSO düzenli ifadesi) Çok fazla \\z("
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
 msgstr ""
-"E880: Vim içinde Python SystemExit kural dışı durumu elden geçirilemiyor"
+"E880: MNV içinde Python SystemExit kural dışı durumu elden geçirilemiyor"
 
 msgid "E881: Line count changed unexpectedly"
 msgstr "E881: Satır sayısı beklenmeyen bir biçimde değişti"
@@ -6891,8 +6891,8 @@ msgid "E885: Not possible to change sign %s"
 msgstr "E885: %s işaretini değiştirmek olanaklı değil"
 
 #, c-format
-msgid "E886: Can't rename viminfo file to %s!"
-msgstr "E886: viminfo dosyasının adı %s olarak değiştirilemiyor!"
+msgid "E886: Can't rename mnvinfo file to %s!"
+msgstr "E886: mnvinfo dosyasının adı %s olarak değiştirilemiyor!"
 
 msgid ""
 "E887: Sorry, this command is disabled, the Python's site module could not be "
@@ -7042,8 +7042,8 @@ msgid "E928: String required"
 msgstr "E928: Dizi gerekiyor"
 
 #, c-format
-msgid "E929: Too many viminfo temp files, like %s!"
-msgstr "E929: Çok fazla viminfo geçici dosyası; örneğin %s!"
+msgid "E929: Too many mnvinfo temp files, like %s!"
+msgstr "E929: Çok fazla mnvinfo geçici dosyası; örneğin %s!"
 
 msgid "E930: Cannot use :redir inside execute()"
 msgstr "E930: :redir, execute() içinde kullanılamaz"
@@ -7215,8 +7215,8 @@ msgstr "E979: İkili nesne sırası erimin dışında: %ld"
 msgid "E980: Lowlevel input not supported"
 msgstr "E980: Alt düzey girdi desteklenmiyor"
 
-msgid "E981: Command not allowed in rvim"
-msgstr "E981: Bu komuta rvim'de izin verilmiyor"
+msgid "E981: Command not allowed in rmnv"
+msgstr "E981: Bu komuta rmnv'de izin verilmiyor"
 
 msgid "E982: ConPTY is not available"
 msgstr "E982: ConPTY kullanılamıyor"
@@ -7237,8 +7237,8 @@ msgstr "E986: Etiket yığınında tagfunc dahilinde değişiklik yapılamaz"
 msgid "E987: Invalid return value from tagfunc"
 msgstr "E987: Etiket işlevinden geçersiz dönüş değeri"
 
-msgid "E988: GUI cannot be used. Cannot execute gvim.exe."
-msgstr "E988: Grafik arabirim kullanılamaz. gvim.exe yürütülemiyor."
+msgid "E988: GUI cannot be used. Cannot execute gmnv.exe."
+msgstr "E988: Grafik arabirim kullanılamaz. gmnv.exe yürütülemiyor."
 
 msgid "E989: Non-default argument follows default argument"
 msgstr "E989: Öntanımlı olmayan argüman öntanımlı argümandan sonra"
@@ -7438,21 +7438,21 @@ msgstr "E1036: %c, sayı veya kayan noktalı değer argümanları gerektirir"
 msgid "E1037: Cannot use \"%s\" with %s"
 msgstr "E1037: \"%s\", %s ile birlikte kullanılamaz"
 
-msgid "E1038: \"vim9script\" can only be used in a script"
-msgstr "E1038: \"vim9script\" yalnızca bir betikte kullanılabilir"
+msgid "E1038: \"mnv9script\" can only be used in a script"
+msgstr "E1038: \"mnv9script\" yalnızca bir betikte kullanılabilir"
 
-msgid "E1039: \"vim9script\" must be the first command in a script"
-msgstr "E1039: \"vim9script\" bir betikteki ilk komut olmalıdır"
+msgid "E1039: \"mnv9script\" must be the first command in a script"
+msgstr "E1039: \"mnv9script\" bir betikteki ilk komut olmalıdır"
 
-msgid "E1040: Cannot use :scriptversion after :vim9script"
-msgstr "E1040: :vim9script sonrası :scriptversion kullanılamaz"
+msgid "E1040: Cannot use :scriptversion after :mnv9script"
+msgstr "E1040: :mnv9script sonrası :scriptversion kullanılamaz"
 
 #, c-format
 msgid "E1041: Redefining script item: \"%s\""
 msgstr "E1041: Betik ögesi yeniden tanımlanıyor: \"%s\""
 
-msgid "E1042: Export can only be used in vim9script"
-msgstr "E1042: Dışa aktarım yalnızca vim9script içinde kullanılabilir"
+msgid "E1042: Export can only be used in mnv9script"
+msgstr "E1042: Dışa aktarım yalnızca mnv9script içinde kullanılabilir"
 
 msgid "E1043: Invalid command after :export"
 msgstr "E1043: :export sonrası geçersiz komut"
@@ -7588,8 +7588,8 @@ msgid "E1083: Missing backtick"
 msgstr "E1083: Ters eğik kesme imi eksik"
 
 #, c-format
-msgid "E1084: Cannot delete Vim9 script function %s"
-msgstr "E1084: Vim9 betik işlevi %s silinemiyor"
+msgid "E1084: Cannot delete MNV9 script function %s"
+msgstr "E1084: MNV9 betik işlevi %s silinemiyor"
 
 #, c-format
 msgid "E1085: Not a callable type: %s"
@@ -7641,8 +7641,8 @@ msgid "E1099: Unknown error while executing %s"
 msgstr "E1099: %s çalıştırılırken bilinmeyen hata"
 
 #, c-format
-msgid "E1100: Command not supported in Vim9 script (missing :var?): %s"
-msgstr "E1100: Komut Vim9 betiğinde desteklenmiyor (:var? eksik): %s"
+msgid "E1100: Command not supported in MNV9 script (missing :var?): %s"
+msgstr "E1100: Komut MNV9 betiğinde desteklenmiyor (:var? eksik): %s"
 
 #, c-format
 msgid "E1101: Cannot declare a script variable in a function: %s"
@@ -7725,14 +7725,14 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: Değişken öncesi virgül eksik: %s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: \"%s\" yalnızca eski Vim betiklerinde kullanılabilir"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: \"%s\" yalnızca eski MNV betiklerinde kullanılabilir"
 
 msgid "E1125: Final requires a value"
 msgstr "E1125: Final, bir değer gerektirir"
 
-msgid "E1126: Cannot use :let in Vim9 script"
-msgstr "E1126: :let, Vim9 betiğinde kullanılamaz"
+msgid "E1126: Cannot use :let in MNV9 script"
+msgstr "E1126: :let, MNV9 betiğinde kullanılamaz"
 
 msgid "E1127: Missing name after dot"
 msgstr "E1127: Nokta sonrası ad eksik"
@@ -7834,8 +7834,8 @@ msgstr "E1156: Değişken listesi özyineli olarak değiştirilemiyor"
 msgid "E1157: Missing return type"
 msgstr "E1157: Dönüş türü eksik"
 
-msgid "E1158: Cannot use flatten() in Vim9 script, use flattennew()"
-msgstr "E1158: flatten(), Vim9 betiğinde kullanılamaz, flattennew() kullanın"
+msgid "E1158: Cannot use flatten() in MNV9 script, use flattennew()"
+msgstr "E1158: flatten(), MNV9 betiğinde kullanılamaz, flattennew() kullanın"
 
 msgid "E1159: Cannot split a window when closing the buffer"
 msgstr "E1159: Arabellek kapatılırken bir pencere bölünemez"
@@ -7861,8 +7861,8 @@ msgstr ""
 "E1163: %d değişkeni: Tür uyumsuzluğu, %s bekleniyordu; ancak %s alındı (%s "
 "içinde)"
 
-msgid "E1164: vim9cmd must be followed by a command"
-msgstr "E1164: vim9cmd sonrası bir komut gelmelidir"
+msgid "E1164: mnv9cmd must be followed by a command"
+msgstr "E1164: mnv9cmd sonrası bir komut gelmelidir"
 
 #, c-format
 msgid "E1165: Cannot use a range with an assignment: %s"
@@ -7930,8 +7930,8 @@ msgid "E1181: Cannot use an underscore here"
 msgstr "E1181: Alt çizgi burada kullanılamaz"
 
 #, c-format
-msgid "E1182: Cannot define a dict function in Vim9 script: %s"
-msgstr "E1182: Vim9 betiğinde bir sözlük işlevi tanımlanamaz: %s"
+msgid "E1182: Cannot define a dict function in MNV9 script: %s"
+msgstr "E1182: MNV9 betiğinde bir sözlük işlevi tanımlanamaz: %s"
 
 #, c-format
 msgid "E1183: Cannot use a range with an assignment operator: %s"
@@ -7947,8 +7947,8 @@ msgstr "E1185: :redir END eksik"
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: İfade bir değer sonucu vermiyor: %s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: defaults.vim kaynaklanamadı"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: defaults.mnv kaynaklanamadı"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: Komut satırı penceresinden bir uçbirim açılamıyor"
@@ -7970,8 +7970,8 @@ msgstr "E1191: Derlenemeyen işlev çağrısı: %s"
 msgid "E1192: Empty function name"
 msgstr "E1192: Boş işlev adı"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
-msgstr "E1193: cryptmethod xchacha20 bu Vim ile kullanılamıyor"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
+msgstr "E1193: cryptmethod xchacha20 bu MNV ile kullanılamıyor"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: Üstbilgi şifrelenemiyor, yetersiz alan"
@@ -8163,8 +8163,8 @@ msgstr "E1243: ASCII kodu 32-127 eriminde değil"
 msgid "E1244: Bad color string: %s"
 msgstr "E1244: Hatalı renk dizisi: %s"
 
-msgid "E1245: Cannot expand <sfile> in a Vim9 function"
-msgstr "E1245: <sfile>, bir Vim9 işlevinde genişletilemiyor"
+msgid "E1245: Cannot expand <sfile> in a MNV9 function"
+msgstr "E1245: <sfile>, bir MNV9 işlevinde genişletilemiyor"
 
 #, c-format
 msgid "E1246: Cannot find variable to (un)lock: %s"
@@ -8207,9 +8207,9 @@ msgid "E1256: String or function required for argument %d"
 msgstr "E1256: %d argümanı için dizi veya işlev gerekiyor"
 
 #, c-format
-msgid "E1257: Imported script must use \"as\" or end in .vim: %s"
+msgid "E1257: Imported script must use \"as\" or end in .mnv: %s"
 msgstr ""
-"E1257: İçe aktarılmış betik \"as\" kullanmalıdır veya .vim ile bitmelidir: %s"
+"E1257: İçe aktarılmış betik \"as\" kullanmalıdır veya .mnv ile bitmelidir: %s"
 
 #, c-format
 msgid "E1258: No '.' after imported name: %s"
@@ -8223,15 +8223,15 @@ msgstr "E1259: İçe aktarılmış ad sonrası ad eksik: %s"
 msgid "E1260: Cannot unlet an imported item: %s"
 msgstr "E1260: İçe aktarılmış bir öge inlet yapılamıyor: %s"
 
-msgid "E1261: Cannot import .vim without using \"as\""
-msgstr "E1261: .vim, \"as\" kullanmadan içe aktarılamıyor"
+msgid "E1261: Cannot import .mnv without using \"as\""
+msgstr "E1261: .mnv, \"as\" kullanmadan içe aktarılamıyor"
 
 #, c-format
 msgid "E1262: Cannot import the same script twice: %s"
 msgstr "E1262: Aynı betik iki kez içe aktarılamaz: %s"
 
-msgid "E1263: Cannot use name with # in Vim9 script, use export instead"
-msgstr "E1263: Vim9 betiğinde bir adla # kullanılamaz, yerine export kullanın"
+msgid "E1263: Cannot use name with # in MNV9 script, use export instead"
+msgstr "E1263: MNV9 betiğinde bir adla # kullanılamaz, yerine export kullanın"
 
 #, c-format
 msgid "E1264: Autoload import cannot use absolute or relative path: %s"
@@ -8251,15 +8251,15 @@ msgid "E1267: Function name must start with a capital: %s"
 msgstr "E1267: İşlev adı büyük harfle başlamalıdır: %s"
 
 #, c-format
-msgid "E1268: Cannot use s: in Vim9 script: %s"
-msgstr "E1268: s:, Vim9 betiğinde kullanılamaz: %s"
+msgid "E1268: Cannot use s: in MNV9 script: %s"
+msgstr "E1268: s:, MNV9 betiğinde kullanılamaz: %s"
 
 #, c-format
-msgid "E1269: Cannot create a Vim9 script variable in a function: %s"
-msgstr "E1269: Bir işlevde bir Vim9 betik değişkeni oluşturulamaz: %s"
+msgid "E1269: Cannot create a MNV9 script variable in a function: %s"
+msgstr "E1269: Bir işlevde bir MNV9 betik değişkeni oluşturulamaz: %s"
 
-msgid "E1270: Cannot use :s\\/sub/ in Vim9 script"
-msgstr "E1270: :s\\/sub/, Vim9 betiğinde kullanılamaz"
+msgid "E1270: Cannot use :s\\/sub/ in MNV9 script"
+msgstr "E1270: :s\\/sub/, MNV9 betiğinde kullanılamaz"
 
 #, c-format
 msgid "E1271: Compiling closure without context: %s"
@@ -8426,8 +8426,8 @@ msgstr "E1314: Sınıf adı bir BÜYÜK harfle başlamalıdır: %s"
 msgid "E1315: White space required after name: %s"
 msgstr "E1315: Ad sonrası boşluk gerekiyor: %s"
 
-msgid "E1316: Class can only be defined in Vim9 script"
-msgstr "E1316: Sınıf, yalnızca Vim9 betiğinde kullanılabilir"
+msgid "E1316: Class can only be defined in MNV9 script"
+msgstr "E1316: Sınıf, yalnızca MNV9 betiğinde kullanılabilir"
 
 #, c-format
 msgid "E1317: Invalid object variable declaration: %s"
@@ -8508,8 +8508,8 @@ msgstr "E1340: Sınıfta argüman halihazırda beyan edilmiş: %s"
 msgid "E1341: Variable already declared in the class: %s"
 msgstr "E1341: Sınıfta değişken halihazırda beyan edilmiş: %s"
 
-msgid "E1342: Interface can only be defined in Vim9 script"
-msgstr "E1342: Arayüz yalnızca Vim9 betiğinde tanımlanabilir"
+msgid "E1342: Interface can only be defined in MNV9 script"
+msgstr "E1342: Arayüz yalnızca MNV9 betiğinde tanımlanabilir"
 
 #, c-format
 msgid "E1343: Interface name must start with an uppercase letter: %s"
@@ -8710,8 +8710,8 @@ msgstr ""
 "E1392: \"%2$s\" sınıfındaki \"%1$s\" sınıf değişkeni kilitlenemiyor/"
 "açılamıyor"
 
-msgid "E1393: Type can only be defined in Vim9 script"
-msgstr "E1393: Tür, yalnızca Vim9 betiğinde tanımlanabilir"
+msgid "E1393: Type can only be defined in MNV9 script"
+msgstr "E1393: Tür, yalnızca MNV9 betiğinde tanımlanabilir"
 
 #, c-format
 msgid "E1394: Type name must start with an uppercase letter: %s"
@@ -8769,8 +8769,8 @@ msgstr "E1412: Yerleşik nesne yöntemi \"%s\" desteklenmiyor"
 msgid "E1413: Builtin class method not supported"
 msgstr "E1413: Yerleşik sınıf yöntemi desteklenmiyor"
 
-msgid "E1414: Enum can only be defined in Vim9 script"
-msgstr "E1414: Enümerasyon, yalnızca Vim9 betiğinde kullanılabilir"
+msgid "E1414: Enum can only be defined in MNV9 script"
+msgstr "E1414: Enümerasyon, yalnızca MNV9 betiğinde kullanılabilir"
 
 #, c-format
 msgid "E1415: Enum name must start with an uppercase letter: %s"
@@ -9041,8 +9041,8 @@ msgstr "E1545: Tez düzelt listesi yığını kullanılamıyor"
 msgid "E1546: Cannot switch to a closing buffer"
 msgstr "E1546: Kapatılan bir arabelleğe geçilemez"
 
-msgid "E1547: This version of Vim does support :redrawtabpanel"
-msgstr "E1547: Vim'in bu sürümü :redrawtabpanel'i desteklemiyor"
+msgid "E1547: This version of MNV does support :redrawtabpanel"
+msgstr "E1547: MNV'in bu sürümü :redrawtabpanel'i desteklemiyor"
 
 msgid "E1548: Wayland connection is unavailable"
 msgstr "E1548: Wayland bağlantısı kullanılabilir değil"
@@ -9251,8 +9251,8 @@ msgstr ""
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "içsel hata: imp.find_module BOŞ bir çoklu öge döndürdü"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "vim.Dictionary öznitelikleri silinemiyor"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "mnv.Dictionary öznitelikleri silinemiyor"
 
 msgid "cannot modify fixed dictionary"
 msgstr "sabit sözlükte değişiklik yapılamaz"
@@ -9275,8 +9275,8 @@ msgid "list index out of range"
 msgstr "liste sırası erimin dışında"
 
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "içsel hata: %d vim liste ögesi alınamadı"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "içsel hata: %d mnv liste ögesi alınamadı"
 
 msgid "slice step cannot be zero"
 msgstr "dilim adımı sıfır olamaz"
@@ -9286,8 +9286,8 @@ msgid "attempt to assign sequence of size greater than %d to extended slice"
 msgstr "genişletilmiş dilime %d boyuttan büyük bir sıralamayı atama denemesi"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "içsel hata: %d vim liste ögesi yok"
+msgid "internal error: no MNV list item %d"
+msgstr "içsel hata: %d mnv liste ögesi yok"
 
 msgid "internal error: not enough list items"
 msgstr "içsel hata: Yeterli liste ögesi yok"
@@ -9302,8 +9302,8 @@ msgstr "%d boyut sıralamayı %d boyut genişletilmiş dizine atama denemesi"
 msgid "failed to add item to list"
 msgstr "öge listeye eklenemedi"
 
-msgid "cannot delete vim.List attributes"
-msgstr "vim.List öznitelikleri silinemiyor"
+msgid "cannot delete mnv.List attributes"
+msgstr "mnv.List öznitelikleri silinemiyor"
 
 msgid "cannot modify fixed list"
 msgstr "sabit listede değişiklik yapılamaz"
@@ -9314,8 +9314,8 @@ msgstr "tuple yapıcısı anahtar sözcük argümanları kabul etmez"
 msgid "tuple index out of range"
 msgstr "tuple sırası erimin dışında"
 
-msgid "cannot delete vim.Tuple attributes"
-msgstr "vim.Tuple öznitelikleri silinemiyor"
+msgid "cannot delete mnv.Tuple attributes"
+msgstr "mnv.Tuple öznitelikleri silinemiyor"
 
 msgid "cannot modify fixed tuple"
 msgstr "sabit tuplede değişiklik yapılamaz"
@@ -9377,16 +9377,16 @@ msgid "mark name must be a single character"
 msgstr "im adı tek bir karakterden olmalıdır"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "vim.Buffer nesnesi bekleniyordu, %s geldi"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "mnv.Buffer nesnesi bekleniyordu, %s geldi"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "%d arabelleğine geçilemedi"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "vim.Window nesnesi bekleniyordu, %s geldi"
+msgid "expected mnv.Window object, but got %s"
+msgstr "mnv.Window nesnesi bekleniyordu, %s geldi"
 
 msgid "failed to find window in the current tab page"
 msgstr "geçerli sekme sayfasında pencere bulunamadı"
@@ -9395,8 +9395,8 @@ msgid "did not switch to the specified window"
 msgstr "belirtilen pencereye geçilemedi"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "vim.TabPage nesnesi bekleniyordu, %s geldi"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "mnv.TabPage nesnesi bekleniyordu, %s geldi"
 
 msgid "did not switch to the specified tab page"
 msgstr "belirtilen sekme sayfasına geçilemedi"
@@ -9405,16 +9405,16 @@ msgid "failed to run the code"
 msgstr "kod çalıştırılamadı"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "%s vim sözlüğüne dönüştürülemedi"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "%s mnv sözlüğüne dönüştürülemedi"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "%s vim listesine dönüştürülemedi"
+msgid "unable to convert %s to a MNV list"
+msgstr "%s mnv listesine dönüştürülemedi"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "%s vim yapısına dönüştürülemedi"
+msgid "unable to convert %s to a MNV structure"
+msgstr "%s mnv yapısına dönüştürülemedi"
 
 msgid "internal error: NULL reference passed"
 msgstr "içsel hata: NULL başvuru geçirildi"
@@ -9425,26 +9425,26 @@ msgstr "içsel hata: Geçersiz değer türü"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.MNV_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "Yol kancası ayarlanamadı: sys.path_hooks bir liste değil\n"
 "Şimdi şunları yapmanız gerekiyor:\n"
-"- vim.path_hook'u sys.path_hooks'a iliştirmek\n"
-"- vim.VIM_SPECIAL_PATH'i sys.path'e iliştirmek\n"
+"- mnv.path_hook'u sys.path_hooks'a iliştirmek\n"
+"- mnv.MNV_SPECIAL_PATH'i sys.path'e iliştirmek\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.MNV_SPECIAL_PATH to sys.path"
 msgstr ""
 "Yol ayarlanamadı: sys.path bir liste değil\n"
-"Şimdi vim.VIM_SPECIAL_PATH'i sys.path'e iliştirmelisiniz"
+"Şimdi mnv.MNV_SPECIAL_PATH'i sys.path'e iliştirmelisiniz"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Vim makro dosyaları (*.vim)\t*.vim\n"
+"MNV makro dosyaları (*.mnv)\t*.mnv\n"
 "Tüm dosyalar (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -9455,19 +9455,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Tüm dosyalar (*.*)\t*.*\n"
 "C kaynak dosyaları (*.c, *.h)\t*.c;*.h\n"
 "C++ kaynak dosyaları (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB kodu (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim dosyaları (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV dosyaları (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Vim makro dosyaları (*.vim)\t*.vim\n"
+"MNV makro dosyaları (*.mnv)\t*.mnv\n"
 "Tüm dosyalar (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -9477,15 +9477,15 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Tüm dosyalar (*)\t*\n"
 "C kaynak dosyaları (*.c, *.h)\t*.c;*.h\n"
 "C++ kaynak dosyaları (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim dosyaları (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV dosyaları (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
-msgid "GVim"
-msgstr "GVim"
+msgid "GMNV"
+msgstr "GMNV"
 
 msgid "Text Editor"
 msgstr "Metin Düzenleyicisi"
@@ -9496,8 +9496,8 @@ msgstr "Metin dosyalarını düzenleyin"
 msgid "Text;editor;"
 msgstr "Metin;düzenleyici;"
 
-msgid "Vim"
-msgstr "Vim"
+msgid "MNV"
+msgstr "MNV"
 
 msgid "(local to window)"
 msgstr "(pencereye yerel)"
@@ -9934,8 +9934,8 @@ msgstr "bu pencerenin imleci bağlı diğer pencerelerle birlikte kayar"
 msgid "size of a terminal window"
 msgstr "bir uçbirim penceresinin boyutu"
 
-msgid "key that precedes Vim commands in a terminal window"
-msgstr "bir uçbirim penceresinde Vim komutlarından önce gelen düğme"
+msgid "key that precedes MNV commands in a terminal window"
+msgstr "bir uçbirim penceresinde MNV komutlarından önce gelen düğme"
 
 msgid "max number of lines to keep for scrollback in a terminal window"
 msgstr ""
@@ -10014,8 +10014,8 @@ msgstr "pencere başlığı için kullanılacak 'columns' yüzdesi"
 msgid "when not empty, string to be used for the window title"
 msgstr "boş değilken, pencere başlığı yerine kullanılacak dizi"
 
-msgid "string to restore the title to when exiting Vim"
-msgstr "Vim'den çıkarken başlığın döndürüleceği dizi"
+msgid "string to restore the title to when exiting MNV"
+msgstr "MNV'den çıkarken başlığın döndürüleceği dizi"
 
 msgid "set the text of the icon for this window"
 msgstr "bu pencere için simgenin metnini ayarla"
@@ -10023,8 +10023,8 @@ msgstr "bu pencere için simgenin metnini ayarla"
 msgid "when not empty, text for the icon of this window"
 msgstr "boş değilken, bu pencerenin simgesi için metin"
 
-msgid "restore the screen contents when exiting Vim"
-msgstr "Vim'den çıkarken ekran içeriğini eski haline getir"
+msgid "restore the screen contents when exiting MNV"
+msgstr "MNV'den çıkarken ekran içeriğini eski haline getir"
 
 msgid "timeout used for terminal OSC responses"
 msgstr "uçbirim OSC yanıtları için zaman aşımı"
@@ -10635,8 +10635,8 @@ msgstr "'autowrite' gibi; ancak daha çok komutla çalışır"
 msgid "always write without asking for confirmation"
 msgstr "onay beklemeden her zaman yaz"
 
-msgid "automatically read a file when it was modified outside of Vim"
-msgstr "Vim dışında değiştirildiğinde dosyayı kendiliğinden oku"
+msgid "automatically read a file when it was modified outside of MNV"
+msgstr "MNV dışında değiştirildiğinde dosyayı kendiliğinden oku"
 
 msgid "keep oldest version of a file; specifies file name extension"
 msgstr "bir dosyanın en eski sürümünü tut; dosya adı uzantısı belirler"
@@ -10892,10 +10892,10 @@ msgid "multi-byte characters"
 msgstr "çoklu bayt karakterler"
 
 msgid ""
-"character encoding used in Vim: \"latin1\", \"utf-8\",\n"
+"character encoding used in MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", etc."
 msgstr ""
-"Vim'de kullanılan karakter kodlamaları: \"latin1\", \"utf-8\",\n"
+"MNV'de kullanılan karakter kodlamaları: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\" gibi"
 
 msgid "character encoding for the current file"
@@ -10944,8 +10944,8 @@ msgstr "Bir pencerede yok sayılacak otokomut olaylarının listesi"
 msgid "load plugin scripts when starting up"
 msgstr "başlarken eklenti betiklerini yükle"
 
-msgid "enable reading .vimrc/.exrc/.gvimrc in the current directory"
-msgstr "geçerli dizinde .vimrc/.exrc/.gvimrc okumayı etkinleştir"
+msgid "enable reading .mnvrc/.exrc/.gmnvrc in the current directory"
+msgstr "geçerli dizinde .mnvrc/.exrc/.gmnvrc okumayı etkinleştir"
 
 msgid "safer working with script files in the current directory"
 msgstr "geçerli dizinde betik dosyalarıyla daha güvenli çalışma"
@@ -10971,11 +10971,11 @@ msgstr ":mkview için neyin kaydedileceğini belirleyen sözcükler listesi"
 msgid "directory where to store files with :mkview"
 msgstr ":mkview ile dosyaların depolanacağı dizin"
 
-msgid "list that specifies what to write in the viminfo file"
-msgstr "viminfo dosyasına nelerin yazılacağını belirleyen liste"
+msgid "list that specifies what to write in the mnvinfo file"
+msgstr "mnvinfo dosyasına nelerin yazılacağını belirleyen liste"
 
-msgid "file name used for the viminfo file"
-msgstr "viminfo dosyası için kullanılan dosya adı"
+msgid "file name used for the mnvinfo file"
+msgstr "mnvinfo dosyası için kullanılan dosya adı"
 
 msgid "what happens with a buffer when it's no longer in a window"
 msgstr "bir arabellek artık bir pencerede değilken ne olacağı"

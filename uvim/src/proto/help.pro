@@ -10,4 +10,4 @@ void fix_help_buffer(void);
 void ex_exusage(exarg_T *eap);
 void ex_viusage(exarg_T *eap);
 void ex_helptags(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

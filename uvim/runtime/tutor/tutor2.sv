@@ -1,13 +1,13 @@
 ===============================================================================
-=    V ä l k o m m e n   t i l l   V I M - h a n d l e d n i n g e n          =
+=    V ä l k o m m e n   t i l l   M N V - h a n d l e d n i n g e n          =
 =                              -   Version 1.7                                =
 ===============================================================================
 =			    K A P I T E L   T V Å			      =
 ===============================================================================
 
-     Hic Sunt Dracones: om detta är din första kontakt med Vim och du
+     Hic Sunt Dracones: om detta är din första kontakt med MNV och du
      avsåg att börja med introduktionskapitlet, skriv vänligen
-     :q!<ENTER> och kör vimtutor för kapitel 1 istället.
+     :q!<ENTER> och kör mnvtutor för kapitel 1 istället.
 
      Den ungefärliga tiden för att slutföra detta kapitel är 8-10 minuter,
      beroende på hur mycket tid som läggs på experimentering.
@@ -24,7 +24,7 @@
      - Skriv  daw  för att radera ETT ORD (inklusive efterföljande mellanslag)
      - Prova med andra operatorer:  ciw  (ändra),  yiw  (kopiera),  gqiw  (formatera)
 
----> Öva på: "Vims", (text_objekt), och 'kraftfulla' ord här.
+---> Öva på: "MNVs", (text_objekt), och 'kraftfulla' ord här.
 
   2. Arbeta med innehåll inom parenteser:
      - Placera markören inuti något () {} [] <> par nedan
@@ -151,7 +151,7 @@ REFERENS: 	Numrerade register 	:h quote0
  ** Använd systemets urklipp och svarta hålet för avancerad redigering **
 
  Obs: Urklippsanvändning kräver X11/Wayland-bibliotek på Linux-system OCH
-      en Vim byggd med "+clipboard" (vanligtvis en Huge-byggning). Kontrollera med
+      en MNV byggd med "+clipboard" (vanligtvis en Huge-byggning). Kontrollera med
       ":version"  och ":echo has('clipboard_working')"
 
   1. Urklippsregister  +  och  *  :
@@ -178,16 +178,16 @@ REFERENS: 	Numrerade register 	:h quote0
      - Prova att öppna ett annat program och klistra in från urklipp
 
   4. Kom ihåg:
-     - Urklippsregister fungerar mellan olika Vim-instanser
+     - Urklippsregister fungerar mellan olika MNV-instanser
      - Urklippsregister fungerar inte alltid
      - Svarta hålet förhindrar oavsiktlig registerskrivning
      - Standard " register är fortfarande tillgängligt för normal kopiering/inklistring
-     - Namngivna register (a-z) förblir privata för varje Vim-session
+     - Namngivna register (a-z) förblir privata för varje MNV-session
 
   5. Urklippsfelsökning:
      - Kontrollera stöd med :echo has('clipboard_working')
      - 1 betyder tillgängligt, 0 betyder inte inkompilerat
-     - På Linux kan vim-gtk eller vim-x11 paket behövas
+     - På Linux kan mnv-gtk eller mnv-x11 paket behövas
        (kontrollera :version utdata)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -286,7 +286,7 @@ REFERENS: 	Markeringar 	:h marks
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Detta avslutar kapitel två av Vim-handledningen. Det är ett pågående arbete.
+  Detta avslutar kapitel två av MNV-handledningen. Det är ett pågående arbete.
 
   Detta kapitel skrevs av Paul D. Parker och Christian Brabandt.
   Svensk översättning av Daniel Nylander.

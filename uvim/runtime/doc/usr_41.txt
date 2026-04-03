@@ -1,14 +1,14 @@
-*usr_41.txt*	For Vim version 9.2.  Last change: 2026 Feb 16
+*usr_41.txt*	For MNV version 9.2.  Last change: 2026 Feb 16
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
-			      Write a Vim script
+			      Write a MNV script
 
 
-The Vim script language is used for the startup vimrc file, syntax files, and
-many other things.  This chapter explains the items that can be used in a Vim
+The MNV script language is used for the startup mnvrc file, syntax files, and
+many other things.  This chapter explains the items that can be used in a MNV
 script.  There are a lot of them, therefore this is a long chapter.
 
 |41.1|	Introduction
@@ -29,51 +29,51 @@ script.  There are a lot of them, therefore this is a long chapter.
 Table of contents: |usr_toc.txt|
 
 ==============================================================================
-*41.1*	Introduction				*vim-script-intro* *script*
+*41.1*	Introduction				*mnv-script-intro* *script*
 
-Let's start with some nomenclature. A Vim script is any file that Vim can
-interpret and execute.  This includes files written in Vim's scripting
-language like for example .vim files or configuration files like .vimrc and
-.gvimrc.  These scripts may define functions, commands and settings that Vim
+Let's start with some nomenclature. A MNV script is any file that MNV can
+interpret and execute.  This includes files written in MNV's scripting
+language like for example .mnv files or configuration files like .mnvrc and
+.gmnvrc.  These scripts may define functions, commands and settings that MNV
 uses to customize and extend its behavior.
 
-						*vim-script-notation*
-The correct notation is "Vim script" (or "Vim9 script" when referring to the
-new Vim9 language |Vim9-script|), so we will use "Vim script" to refer to the
-Vim scripting language throughout this documentation. This shorthand helps to
-streamline explanations and discussions about scripting with Vim.
+						*mnv-script-notation*
+The correct notation is "MNV script" (or "MNV9 script" when referring to the
+new MNV9 language |MNV9-script|), so we will use "MNV script" to refer to the
+MNV scripting language throughout this documentation. This shorthand helps to
+streamline explanations and discussions about scripting with MNV.
 
-A Vim plugin is a collection of one or more Vim scripts, along with additional
+A MNV plugin is a collection of one or more MNV scripts, along with additional
 files like help documentation, configuration files, and other resources,
-designed to add specific features or functionalities to Vim. A plugin can
+designed to add specific features or functionalities to MNV. A plugin can
 provide new commands, enhance existing capabilities, and integrate external
-tools or services into the Vim environment.
+tools or services into the MNV environment.
 
-Your first experience with Vim scripts is the vimrc file.  Vim reads it when
+Your first experience with MNV scripts is the mnvrc file.  MNV reads it when
 it starts up and executes the commands.  You can set options to the values you
 prefer, define mappings, select plugins and much more.   You can use any colon
 command in it (commands that start with a ":"; these are sometimes referred to
 as Ex commands or command-line commands).
 
-Syntax files are also Vim scripts.  As are files that set options for a
-specific file type.  A complicated macro can be defined by a separate Vim
+Syntax files are also MNV scripts.  As are files that set options for a
+specific file type.  A complicated macro can be defined by a separate MNV
 script file.  You can think of other uses yourself.
 
-Vim script comes in two flavors: legacy and |Vim9|.  Since this help file is
-for new users, we'll teach you the newer and more convenient |Vim9| syntax.
-While legacy script is particularly for Vim, |Vim9| script looks more like
+MNV script comes in two flavors: legacy and |MNV9|.  Since this help file is
+for new users, we'll teach you the newer and more convenient |MNV9| syntax.
+While legacy script is particularly for MNV, |MNV9| script looks more like
 other languages, such as JavaScript and TypeScript.
 
-To try out Vim script the best way is to edit a script file and source it.
+To try out MNV script the best way is to edit a script file and source it.
 Basically: >
-	:edit test.vim
+	:edit test.mnv
 	[insert the script lines you want]
 	:w
 	:source %
 
 Let's start with a simple example: >
 
-	vim9script
+	mnv9script
 	var i = 1
 	while i < 5
 	  echo "count is" i
@@ -87,10 +87,10 @@ The output of the example code is:
 	count is 3 ~
 	count is 4 ~
 
-In the first line the `vim9script` command makes clear this is a new, |Vim9|
+In the first line the `mnv9script` command makes clear this is a new, |MNV9|
 script file.  That matters for how the rest of the file is used.  It is
 recommended to put it in the very first line, before any comments.
-							*vim9-declarations*
+							*mnv9-declarations*
 The `var i = 1` command declares the "i" variable and initializes it.  The
 generic form is: >
 
@@ -143,13 +143,13 @@ commands to a file.  For example, to try out the "for" loop above do this:
 After pressing colon you will see ":'<,'>", which is the range of the Visually
 selected text.
 
-For some commands it matters they are executed as in |Vim9| script.  But typed
+For some commands it matters they are executed as in |MNV9| script.  But typed
 commands normally use legacy script syntax, such as the example below that
 causes the E1004 error.  For that use this fourth step:
-4. press colon, then "vim9 so" and Enter
+4. press colon, then "mnv9 so" and Enter
 
-"vim9" is short for `vim9cmd`, which is a command modifier to execute the
-following command in |Vim9| syntax.
+"mnv9" is short for `mnv9cmd`, which is a command modifier to execute the
+following command in |MNV9| syntax.
 
 Note that this won't work for examples that require a script context.
 
@@ -167,7 +167,7 @@ A binary number starts with "0b" or "0B".  For example "0b101" is decimal 5.
 
 A decimal number is just digits.  Careful: In legacy script don't put a zero
 before a decimal number, it will be interpreted as an octal number!  That's
-one reason to use |Vim9| script.
+one reason to use |MNV9| script.
 
 The `echo` command evaluates its argument and when it is a number always
 prints the decimal form.  Example: >
@@ -187,12 +187,12 @@ confusion.  If we put a minus sign before both numbers we get an error: >
 	echo -0x7f -0o36
 <	E1004: White space required before and after '-' at "-0o36" ~
 
-Note: if you are not using a |Vim9| script to try out these commands but type
+Note: if you are not using a |MNV9| script to try out these commands but type
 them directly, they will be executed as legacy script.  Then the echo command
 sees the second minus sign as subtraction.  To get the error, prefix the
-command with `vim9cmd`: >
+command with `mnv9cmd`: >
 
-	vim9cmd echo -0x7f -0o36
+	mnv9cmd echo -0x7f -0o36
 <	E1004: White space required before and after '-' at "-0o36" ~
 
 White space in an expression is often required to make sure it is easy to read
@@ -226,16 +226,16 @@ variables type this command: >
 
 You can use global variables everywhere.  However, it is too easy to use the
 same name in two unrelated scripts.  Therefore variables declared in a script
-are local to that script.  For example, if you have this in "script1.vim": >
+are local to that script.  For example, if you have this in "script1.mnv": >
 
-	vim9script
+	mnv9script
 	var counter = 5
 	echo counter
 <	5 ~
 
-And you try to use the variable in "script2.vim": >
+And you try to use the variable in "script2.mnv": >
 
-	vim9script
+	mnv9script
 	echo counter
 <	E121: Undefined variable: counter ~
 
@@ -244,16 +244,16 @@ that script and not elsewhere.
 
 If you do want to share variables between scripts, use the "g:" prefix and
 assign the value directly, do not use `var`.  And use a specific name to avoid
-mistakes.  Thus in "script1.vim": >
+mistakes.  Thus in "script1.mnv": >
 
-	vim9script
+	mnv9script
 	g:mash_counter = 5
 	echo g:mash_counter
 <	5 ~
 
-And then in "script2.vim": >
+And then in "script2.mnv": >
 
-	vim9script
+	mnv9script
 	echo g:mash_counter
 <	5 ~
 
@@ -269,7 +269,7 @@ used ones are:
 	b:name		variable local to a buffer
 	w:name		variable local to a window
 	g:name		global variable (also in a function)
-	v:name		variable predefined by Vim
+	v:name		variable predefined by MNV
 
 
 DELETING VARIABLES
@@ -285,14 +285,14 @@ when it doesn't, append !: >
 
 	unlet! g:counter
 
-You cannot `unlet` script-local variables in |Vim9| script, only in legacy
+You cannot `unlet` script-local variables in |MNV9| script, only in legacy
 script.
 
 When a script has been processed to the end, the local variables declared
 there will not be deleted.  Functions defined in the script can use them.
 Example:
 >
-	vim9script
+	mnv9script
 	var counter = 0
 	def g:GetCount(): number
 	  counter += 1
@@ -312,7 +312,7 @@ it to an empty or null value after you no longer need it.  Example: >
 	...
 	lines = []
 
-Note: below we'll leave out the `vim9script` line from examples, so we can
+Note: below we'll leave out the `mnv9script` line from examples, so we can
 concentrate on the relevant commands, but you'll still need to put it at the
 top of your script file.
 
@@ -320,7 +320,7 @@ top of your script file.
 STRING VARIABLES AND CONSTANTS
 
 So far only numbers were used for the variable value.  Strings can be used as
-well.  Numbers and strings are the basic types of variables that Vim supports.
+well.  Numbers and strings are the basic types of variables that MNV supports.
 Example: >
 
 	var name = "Peter"
@@ -394,7 +394,7 @@ See |expr-quote| for the full list of special items in a string.
 ==============================================================================
 *41.3*	Expressions
 
-Vim has a fairly standard way to handle expressions.  You can read the
+MNV has a fairly standard way to handle expressions.  You can read the
 definition here: |expression-syntax|.  Here we will show the most common
 items.
 
@@ -495,7 +495,7 @@ The `if` commands executes the following statements, until the matching
 
 Only when the expression {condition} evaluates to true or one will the
 {statements} be executed.  If they are not executed they must still be valid
-commands.  If they contain garbage, Vim won't be able to find the matching
+commands.  If they contain garbage, MNV won't be able to find the matching
 `endif`.
 
 You can also use `else`.  The generic form for this is:
@@ -519,7 +519,7 @@ Finally, there is `elseif`
 This works just like using `else` and then `if`, but without the need for an
 extra `endif`.
 
-A useful example for your vimrc file is checking the 'term' option and doing
+A useful example for your mnvrc file is checking the 'term' option and doing
 something depending upon its value: >
 
 	if &term == "xterm"
@@ -553,9 +553,9 @@ The result is true if the condition is met and false otherwise.  An example: >
 	  echo "you are using an old version, upgrade!"
 	endif
 
-Here "v:version" is a variable defined by Vim, which has the value of the Vim
+Here "v:version" is a variable defined by MNV, which has the value of the MNV
 version.  800 is for version 8.0, version 8.1 has the value 801.  This is
-useful to write a script that works with multiple versions of Vim.
+useful to write a script that works with multiple versions of MNV.
 See |v:version|.  You can also check for a specific feature with `has()` or a
 specific patch, see |has-patch|.
 
@@ -616,7 +616,7 @@ Example: >
 	  ++counter
 	endwhile
 
-The `sleep` command makes Vim take a nap.  The "50m" specifies fifty
+The `sleep` command makes MNV take a nap.  The "50m" specifies fifty
 milliseconds.  Another example is `sleep 4`, which sleeps for four seconds.
 
 `continue` and `break` can also be used in between `for` and `endfor`.
@@ -625,7 +625,7 @@ Even more looping can be done with the `for` command, see below in |41.8|.
 ==============================================================================
 *41.5*	Executing an expression
 
-So far the commands in the script were executed by Vim directly.  The
+So far the commands in the script were executed by MNV directly.  The
 `execute` command allows executing the result of an expression.  This is a
 very powerful way to build commands and execute them.
 
@@ -656,7 +656,7 @@ Example: >
 This will move the cursor "count" lines down.
 
 Make sure that the argument for `normal` is a complete command.  Otherwise
-Vim will run into the end of the argument and silently abort the command.  For
+MNV will run into the end of the argument and silently abort the command.  For
 example, if you start the delete operator, you must give the movement command
 also.  This works: >
 
@@ -693,7 +693,7 @@ A "&" character is prepended to "path", thus the argument to eval() is
 ==============================================================================
 *41.6*	Using functions
 
-Vim defines many functions and provides a large amount of functionality that
+MNV defines many functions and provides a large amount of functionality that
 way.  A few examples will be given in this section.  You can find the whole
 list below: |function-list|.
 
@@ -707,7 +707,7 @@ search() function uses its first argument as a search pattern and the second
 one as flags.  The "W" flag means the search doesn't wrap around the end of
 the file.
 
-Using the `call` command is optional in |Vim9| script.  It is required in
+Using the `call` command is optional in |MNV9| script.  It is required in
 legacy script and on the command line: >
 
 	call search("Date: ", "W")
@@ -754,7 +754,7 @@ String manipulation:					*string-functions*
 	printf()		format a string according to "%" items
 	escape()		escape characters in a string with a '\'
 	shellescape()		escape a string for use with a shell command
-	fnameescape()		escape a file name for use with a Vim command
+	fnameescape()		escape a file name for use with a MNV command
 	tr()			translate characters from one set to another
 	strtrans()		translate a string to make it printable
 	keytrans()		translate internal keycodes to a form that
@@ -790,7 +790,7 @@ String manipulation:					*string-functions*
 	strpart()		get part of a string using byte index
 	strcharpart()		get part of a string using char index
 	slice()			take a slice of a string, using char index in
-				Vim9 script
+				MNV9 script
 	strgetchar()		get character from a string using char index
 	expand()		expand special keywords
 	expandcmd()		expand a command like done for `:edit`
@@ -1202,23 +1202,23 @@ Interactive:					*interactive-functions*
 
 GUI:						*gui-functions*
 	getfontname()		get name of current font being used
-	getwinpos()		position of the Vim window
-	getwinposx()		X position of the Vim window
-	getwinposy()		Y position of the Vim window
+	getwinpos()		position of the MNV window
+	getwinposx()		X position of the MNV window
+	getwinposy()		Y position of the MNV window
 	balloon_show()		set the balloon content
 	balloon_split()		split a message for a balloon
 	balloon_gettext()	get the text in the balloon
 
-Vim server:					*server-functions*
+MNV server:					*server-functions*
 	serverlist()		return the list of server names
 	remote_startserver()	run a server
-	remote_send()		send command characters to a Vim server
-	remote_expr()		evaluate an expression in a Vim server
-	server2client()		send a reply to a client of a Vim server
-	remote_peek()		check if there is a reply from a Vim server
-	remote_read()		read a reply from a Vim server
-	foreground()		move the Vim window to the foreground
-	remote_foreground()	move the Vim server window to the foreground
+	remote_send()		send command characters to a MNV server
+	remote_expr()		evaluate an expression in a MNV server
+	server2client()		send a reply to a client of a MNV server
+	remote_peek()		check if there is a reply from a MNV server
+	remote_read()		read a reply from a MNV server
+	foreground()		move the MNV window to the foreground
+	remote_foreground()	move the MNV server window to the foreground
 
 Window size and position:			*window-size-functions*
 	winheight()		get height of a specific window
@@ -1260,7 +1260,7 @@ Testing:				    *test-functions*
 	assert_report()		report a test failure
 	test_alloc_fail()	make memory allocation fail
 	test_autochdir()	enable 'autochdir' during startup
-	test_override()		test with Vim internal overrides
+	test_override()		test with MNV internal overrides
 	test_garbagecollect_now()   free memory right now
 	test_garbagecollect_soon()  set a flag to free memory soon
 	test_getvalue()		get value of an internal variable
@@ -1276,7 +1276,7 @@ Testing:				    *test-functions*
 	test_null_partial()	return a null Partial function
 	test_null_string()	return a null String
 	test_null_tuple()	return a null Tuple
-	test_settime()		set the time Vim uses internally
+	test_settime()		set the time MNV uses internally
 	test_setmouse()		set the mouse position
 	test_feedinput()	add key sequence to input buffer
 	test_option_not_set()	reset flag indicating option was set
@@ -1306,9 +1306,9 @@ Inter-process communication:		    *channel-functions*
 	ch_setoptions()		set channel options
 	ch_status()		get status of a channel
 	json_encode()		encode an expression to a JSON string
-	json_decode()		decode a JSON string to Vim types
+	json_decode()		decode a JSON string to MNV types
 	js_encode()		encode an expression to a JSON string
-	js_decode()		decode a JSON string to Vim types
+	js_decode()		decode a JSON string to MNV types
 	base64_encode()		encode a blob into a base64 string
 	base64_decode()		decode a base64 string into a blob
 	err_teapot()		give error 418 or 503
@@ -1437,16 +1437,16 @@ Various:					*various-functions*
 	visualmode()		last visual mode used
 	exists()		check if a variable, function, etc. exists
 	exists_compiled()	like exists() but check at compile time
-	has()			check if a feature is supported in Vim
+	has()			check if a feature is supported in MNV
 	changenr()		return number of most recent change
 	cscope_connection()	check if a cscope connection exists
 	did_filetype()		check if a FileType autocommand was used
 	diff()			diff two Lists of strings
 	eventhandler()		check if invoked by an event handler
 	getcellpixels()		get List of cell pixel size
-	getpid()		get process ID of Vim
-	getscriptinfo()		get list of sourced Vim scripts
-	getstacktrace()		get current stack trace of Vim scripts
+	getpid()		get process ID of MNV
+	getscriptinfo()		get list of sourced MNV scripts
+	getstacktrace()		get current stack trace of MNV scripts
 	getimstatus()		check if IME status is active
 	interrupt()		interrupt script execution
 	windowsversion()	get MS-Windows version
@@ -1480,7 +1480,7 @@ Various:					*various-functions*
 ==============================================================================
 *41.7*	Defining a function
 
-Vim enables you to define your own functions.  The basic function declaration
+MNV enables you to define your own functions.  The basic function declaration
 begins as follows: >
 
 	def {name}({var1}, {var2}, ...): return-type
@@ -1495,7 +1495,7 @@ with this line: >
 
 	def Min(num1: number, num2: number): number
 
-This tells Vim that the function is named "Min", it takes two arguments that
+This tells MNV that the function is named "Min", it takes two arguments that
 are numbers: "num1" and "num2" and returns a number.
 
 The first thing you need to do is to check to see which number is smaller:
@@ -1512,7 +1512,7 @@ Let's assign the variable "smaller" the value of the smallest number: >
 	endif
 
 The variable "smaller" is a local variable.  It is declared to be a number,
-that way Vim can warn you for any mistakes.  Variables used inside a function
+that way MNV can warn you for any mistakes.  Variables used inside a function
 are local unless prefixed by something like "g:", "w:", or "b:".
 
 	Note:
@@ -1561,10 +1561,10 @@ this: >
 
 	echo Min(5, 8)
 
-Only now will the function be executed and the lines be parsed by Vim.
+Only now will the function be executed and the lines be parsed by MNV.
 If there are mistakes, like using an undefined variable or function, you will
 now get an error message.  When defining the function these errors are not
-detected.  To get the errors sooner you can tell Vim to compile all the
+detected.  To get the errors sooner you can tell MNV to compile all the
 functions in the script: >
 
 	defcompile
@@ -1612,10 +1612,10 @@ functions: >
 
 	:function
 <	def <SNR>86_Show(start: string, ...items: list<string>) ~
-	function GetVimIndent() ~
+	function GetMNVIndent() ~
 	function SetSyn(name) ~
 
-The "<SNR>" prefix means that a function is script-local.  |Vim9| functions
+The "<SNR>" prefix means that a function is script-local.  |MNV9| functions
 will start with "def" and include argument and return types.  Legacy functions
 are listed with "function".
 
@@ -1657,7 +1657,7 @@ To delete the SetSyn() function: >
 	:delfunction SetSyn
 
 Deleting only works for global functions and functions in legacy script, not
-for functions defined in a |Vim9| script.
+for functions defined in a |MNV9| script.
 
 You get an error when the function doesn't exist or cannot be deleted.
 
@@ -1695,7 +1695,7 @@ More information about defining your own functions here: |user-functions|.
 ==============================================================================
 *41.8*	Lists and Dictionaries
 
-So far we have used the basic types String and Number.  Vim also supports
+So far we have used the basic types String and Number.  MNV also supports
 three composite types: List, Tuple and Dictionary.
 
 A List is an ordered sequence of items.  The items can be any kind of value,
@@ -1894,7 +1894,7 @@ This will issue an error, because it is interpreted as: >
 	:set nice
 	:set file
 
-|Vim9| script is very picky when it comes to white space.  This was done
+|MNV9| script is very picky when it comes to white space.  This was done
 intentionally to make sure scripts are easy to read and to avoid mistakes.
 If you use white space sensibly it will just work.  When not you will get an
 error message telling you where white space is missing or should be removed.
@@ -1902,7 +1902,7 @@ error message telling you where white space is missing or should be removed.
 ==============================================================================
 *41.10*	Line continuation
 
-In legacy Vim script line continuation is done by preceding a continuation
+In legacy MNV script line continuation is done by preceding a continuation
 line with a backslash: >
 	let mylist = [
 			\ 'one',
@@ -1912,7 +1912,7 @@ line with a backslash: >
 This requires the 'cpo' option to exclude the "C" flag.  Normally this is done
 by putting this at the start of the script: >
 	let s:save_cpo = &cpo
-	set cpo&vim
+	set cpo&mnv
 
 And restore the option at the end of the script: >
 	let &cpo = s:save_cpo
@@ -1920,7 +1920,7 @@ And restore the option at the end of the script: >
 
 A few more details can be found here: |line-continuation|.
 
-In |Vim9| script the backslash can still be used, but in most places it is not
+In |MNV9| script the backslash can still be used, but in most places it is not
 needed: >
 	var mylist = [
 			'one',
@@ -1928,12 +1928,12 @@ needed: >
 			]
 
 Also, the 'cpo' option does not need to be changed.  See
-|vim9-line-continuation| for details.
+|mnv9-line-continuation| for details.
 
 ==============================================================================
 *41.11*	Comments
 
-In |Vim9| script the character # starts a comment.  That character and
+In |MNV9| script the character # starts a comment.  That character and
 everything after it until the end-of-line is considered a comment and
 is ignored, except for commands that don't consider comments, as shown in
 examples below.  A comment can start on any character position on the line,
@@ -1941,7 +1941,7 @@ but not when it is part of the command, e.g. inside a string.
 
 The character " (the double quote mark) starts a comment in legacy script.
 This involves some cleverness to make sure double quoted strings are not
-recognized as comments (just one reason to prefer |Vim9| script).
+recognized as comments (just one reason to prefer |MNV9| script).
 
 There is a little "catch" with comments for some commands.  Examples: >
 
@@ -1981,19 +1981,19 @@ Here it is intended, in other cases it might be accidental.  To spot these
 problems, you can highlight trailing spaces: >
 	match Search /\s\+$/
 
-For Unix there is one special way to comment a line, that allows making a Vim
+For Unix there is one special way to comment a line, that allows making a MNV
 script executable, and it also works in legacy script: >
-	#!/usr/bin/env vim -S
-	echo "this is a Vim script"
+	#!/usr/bin/env mnv -S
+	echo "this is a MNV script"
 	quit
 
 ==============================================================================
 *41.12*	Fileformat
 
-The end-of-line character depends on the system.  For Vim scripts it is
+The end-of-line character depends on the system.  For MNV scripts it is
 recommended to always use the Unix fileformat.  Lines are then separated with
 the Newline character.  This also works on any other system.  That way you can
-copy your Vim scripts from MS-Windows to Unix and they still work.  See
+copy your MNV scripts from MS-Windows to Unix and they still work.  See
 |:source_crnl|.  To be sure it is set right, do this before writing the file:
 >
 	:setlocal fileformat=unix
@@ -2003,8 +2003,8 @@ The CR character causes various problems, better avoid this.
 
 ==============================================================================
 
-Advance information about writing Vim script is in |usr_50.txt|.
+Advance information about writing MNV script is in |usr_50.txt|.
 
 Next chapter: |usr_42.txt|  Add new menus
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

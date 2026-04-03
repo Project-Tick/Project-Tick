@@ -1,40 +1,40 @@
 #!/usr/bin/perl -w
 
-# vimparse.pl - Reformats the error messages of the Perl interpreter for use
-# with the quickfix mode of Vim
+# mnvparse.pl - Reformats the error messages of the Perl interpreter for use
+# with the quickfix mode of MNV
 #
 # Copyright (c) 2001 by Joerg Ziefle <joerg.ziefle@gmx.de>
 # You may use and distribute this software under the same terms as Perl itself.
 #
-# Usage: put one of the two configurations below in your ~/.vimrc (without the
-# description and '# ') and enjoy (be sure to adjust the paths to vimparse.pl
+# Usage: put one of the two configurations below in your ~/.mnvrc (without the
+# description and '# ') and enjoy (be sure to adjust the paths to mnvparse.pl
 # before):
 #
 # Program is run interactively with 'perl -w':
 #
-# set makeprg=$HOME/bin/vimparse.pl\ %\ $*
+# set makeprg=$HOME/bin/mnvparse.pl\ %\ $*
 # set errorformat=%f:%l:%m
 #
 # Program is only compiled with 'perl -wc':
 #
-# set makeprg=$HOME/bin/vimparse.pl\ -c\ %\ $*
+# set makeprg=$HOME/bin/mnvparse.pl\ -c\ %\ $*
 # set errorformat=%f:%l:%m
 #
 # Usage:
-#	vimparse.pl [-c] [-f <errorfile>] <programfile> [programargs]
+#	mnvparse.pl [-c] [-f <errorfile>] <programfile> [programargs]
 #
 #		-c	compile only, don't run (perl -wc)
 #		-f	write errors to <errorfile>
 #
 # Example usages:
 #	* From the command line:
-#		vimparse.pl program.pl
+#		mnvparse.pl program.pl
 #
-#		vimparse.pl -c -f errorfile program.pl
-#		Then run vim -q errorfile to edit the errors with Vim.
+#		mnvparse.pl -c -f errorfile program.pl
+#		Then run mnv -q errorfile to edit the errors with MNV.
 #
-#	* From Vim:
-#		Edit in Vim (and save, if you don't have autowrite on), then
+#	* From MNV:
+#		Edit in MNV (and save, if you don't have autowrite on), then
 #		type ':mak' or ':mak args' (args being the program arguments)
 #		to error check.
 #
@@ -140,10 +140,10 @@ Examples:
 		Displays output on STDOUT.
 
 		$0 -c -f errorfile program.pl
-		Then run 'vim -q errorfile' to edit the errors with Vim.
+		Then run 'mnv -q errorfile' to edit the errors with MNV.
 
-	* In Vim:
-		Edit in Vim (and save, if you don't have autowrite on), then
+	* In MNV:
+		Edit in MNV (and save, if you don't have autowrite on), then
 		type ':mak' or ':mak args' (args being the program arguments)
 		to error check.
 EOT

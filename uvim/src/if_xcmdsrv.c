@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  * X command server by Flemming Madsen
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  *
  * if_xcmdsrv.c: Functions for passing commands through an X11 display.
  *
  */
 
-#include "vim.h"
+#include "mnv.h"
 #include "version.h"
 
 #if (defined(FEAT_CLIENTSERVER) && defined(FEAT_X11))
@@ -23,10 +23,10 @@
 
 /*
  * This file provides procedures that implement the command server
- * functionality of Vim when in contact with an X11 server.
+ * functionality of MNV when in contact with an X11 server.
  *
  * Adapted from TCL/TK's send command  in tkSend.c of the tk 3.6 distribution.
- * Adapted for use in Vim by Flemming Madsen. Protocol changed to that of tk 4
+ * Adapted for use in MNV by Flemming Madsen. Protocol changed to that of tk 4
  */
 
 /*
@@ -58,7 +58,7 @@
  * sent commands.  The information in the structure is used to
  * process the result when it arrives.  You're probably wondering
  * how there could ever be multiple outstanding sent commands.
- * This could happen if Vim instances invoke each other recursively.
+ * This could happen if MNV instances invoke each other recursively.
  * It's unlikely, but possible.
  */
 
@@ -145,7 +145,7 @@ static PendingCommand *pendingCommands = NULL;
  *
  * -i errorInfo
  * -e errorCode
- *	Not applicable for Vim
+ *	Not applicable for MNV
  *
  * Options may appear in any order, and only the -s option must be
  * present.  As with commands, there may be additional options besides
@@ -202,13 +202,13 @@ static void	server_parse_message(Display *dpy, char_u *propInfo, long_u numItems
 
 // Private variables for the "server" functionality
 static Atom	registryProperty = None;
-static Atom	vimProperty = None;
+static Atom	mnvProperty = None;
 static int	got_x_error = FALSE;
 
 static char_u	*empty_prop = (char_u *)"";	// empty GetRegProp() result
 
 /*
- * Associate an ASCII name with Vim.  Try real hard to get a unique one.
+ * Associate an ASCII name with MNV.  Try real hard to get a unique one.
  * Returns FAIL or OK.
  */
     int
@@ -245,7 +245,7 @@ serverRegisterName(
     }
     while (res < 0)
 	;
-    vim_free(p);
+    mnv_free(p);
 
     return OK;
 }
@@ -315,9 +315,9 @@ DoRegisterName(Display *dpy, char_u *name)
 
 	namelen = STRLEN(name);
 # ifdef FEAT_EVAL
-	set_vim_var_string(VV_SEND_SERVER, name, (int)namelen);
+	set_mnv_var_string(VV_SEND_SERVER, name, (int)namelen);
 # endif
-	serverName = vim_strnsave(name, namelen);
+	serverName = mnv_strnsave(name, namelen);
 	need_maketitle = TRUE;
 	return 0;
     }
@@ -338,7 +338,7 @@ serverChangeRegisteredWindow(
 
     commWindow = newwin;
 
-    // Always call SendInit() here, to make sure commWindow is marked as a Vim
+    // Always call SendInit() here, to make sure commWindow is marked as a MNV
     // window.
     if (SendInit(dpy) < 0)
 	return;
@@ -362,11 +362,11 @@ serverChangeRegisteredWindow(
 # endif
 
 /*
- * Send to an instance of Vim via the X display.
+ * Send to an instance of MNV via the X display.
  * Returns 0 for OK, negative for an error.
  */
     int
-serverSendToVim(
+serverSendToMNV(
     Display	*dpy,			// Where to send.
     char_u	*name,			// Where to send.
     char_u	*cmd,			// What to send.
@@ -390,18 +390,18 @@ serverSendToVim(
     if (result != NULL)
 	*result = NULL;
     if (name == NULL || *name == NUL)
-	name = (char_u *)"GVIM";    // use a default name
+	name = (char_u *)"GMNV";    // use a default name
 
     if (commProperty == None && dpy != NULL && SendInit(dpy) < 0)
 	return -1;
 
 # if defined(FEAT_EVAL)
-    ch_log(NULL, "serverSendToVim(%s, %s)", name, cmd);
+    ch_log(NULL, "serverSendToMNV(%s, %s)", name, cmd);
 # endif
 
     // Execute locally if no display or target is ourselves
     if (dpy == NULL || (serverName != NULL && STRICMP(name, serverName) == 0))
-	return sendToLocalVim(cmd, asExpr, result);
+	return sendToLocalMNV(cmd, asExpr, result);
 
     /*
      * Bind the server name to a communication window.
@@ -421,7 +421,7 @@ serverSendToVim(
 	    {
 		LookupName(dpy, loosename ? loosename : name,
 			   /*DELETE=*/TRUE, NULL);
-		vim_free(loosename);
+		mnv_free(loosename);
 		continue;
 	    }
 	}
@@ -449,7 +449,7 @@ serverSendToVim(
     sprintf((char *)property, "%c%c%c-n %s%c-E %s%c-s %s",
 		      0, asExpr ? 'c' : 'k', 0, name, 0, p_enc, 0, cmd);
     if (name == loosename)
-	vim_free(loosename);
+	mnv_free(loosename);
     // Add a back reference to our comm window
     serial++;
     sprintf((char *)property + length, "%c-r %x %d",
@@ -458,7 +458,7 @@ serverSendToVim(
     length += STRLEN(property + length + 1) + 1;
 
     res = AppendPropCarefully(dpy, w, commProperty, property, length + 1);
-    vim_free(property);
+    mnv_free(property);
     if (res < 0)
     {
 	emsg(_(e_failed_to_send_command_to_destination_program));
@@ -501,13 +501,13 @@ serverSendToVim(
     }
 
 # if defined(FEAT_EVAL)
-    ch_log(NULL, "serverSendToVim() result: %s",
+    ch_log(NULL, "serverSendToMNV() result: %s",
 	    pending.result == NULL ? "NULL" : (char *)pending.result);
 # endif
     if (result != NULL)
 	*result = pending.result;
     else
-	vim_free(pending.result);
+	mnv_free(pending.result);
 
     return pending.code == 0 ? 0 : -1;
 }
@@ -520,7 +520,7 @@ WaitForPend(void *p)
 }
 
 /*
- * Return TRUE if window "w" exists and has a "Vim" property on it.
+ * Return TRUE if window "w" exists and has a "MNV" property on it.
  */
     static int
 WindowValid(Display *dpy, Window w)
@@ -539,7 +539,7 @@ WindowValid(Display *dpy, Window w)
 	return FALSE;
 
     for (i = 0; i < numProp; i++)
-	if (plist[i] == vimProperty)
+	if (plist[i] == mnvProperty)
 	{
 	    XFree(plist);
 	    return TRUE;
@@ -597,7 +597,7 @@ ServerWait(
 	check_due_timer();
 # endif
 
-	// Just look out for the answer without calling back into Vim
+	// Just look out for the answer without calling back into MNV
 	if (localLoop)
 	{
 # ifdef HAVE_SELECT
@@ -626,13 +626,13 @@ ServerWait(
 
 
 /*
- * Fetch a list of all the Vim instance names currently registered for the
+ * Fetch a list of all the MNV instance names currently registered for the
  * display.
  *
  * Returns a newline separated list in allocated memory or NULL.
  */
     char_u *
-serverGetVimNames(Display *dpy)
+serverGetMNVNames(Display *dpy)
 {
     char_u	*regProp;
     char_u	*entry;
@@ -768,7 +768,7 @@ serverSendReply(char_u *name, char_u *str)
     // Add length of what "%x" resulted in.
     length += STRLEN(property + length);
     res = AppendPropCarefully(dpy, win, commProperty, property, length + 1);
-    vim_free(property);
+    mnv_free(property);
 
     return res;
 }
@@ -804,7 +804,7 @@ serverReadReply(
 
     if ((p = ServerReplyFind(win, SROP_Find)) != NULL && p->strings.ga_len > 0)
     {
-	*str = vim_strsave(p->strings.ga_data);
+	*str = mnv_strsave(p->strings.ga_data);
 	len = STRLEN(*str) + 1;
 	if (len < p->strings.ga_len)
 	{
@@ -862,10 +862,10 @@ SendInit(Display *dpy)
 
     if (commProperty == None)
 	commProperty = XInternAtom(dpy, "Comm", False);
-    if (vimProperty == None)
-	vimProperty = XInternAtom(dpy, "Vim", False);
+    if (mnvProperty == None)
+	mnvProperty = XInternAtom(dpy, "MNV", False);
     if (registryProperty == None)
-	registryProperty = XInternAtom(dpy, "VimRegistry", False);
+	registryProperty = XInternAtom(dpy, "MNVRegistry", False);
 
     if (commWindow == None)
     {
@@ -881,10 +881,10 @@ SendInit(Display *dpy)
 	XUngrabServer(dpy);
     }
 
-    // Make window recognizable as a vim window
-    XChangeProperty(dpy, commWindow, vimProperty, XA_STRING,
-		    8, PropModeReplace, (char_u *)VIM_VERSION_SHORT,
-			(int)STRLEN_LITERAL(VIM_VERSION_SHORT) + 1);
+    // Make window recognizable as a mnv window
+    XChangeProperty(dpy, commWindow, mnvProperty, XA_STRING,
+		    8, PropModeReplace, (char_u *)MNV_VERSION_SHORT,
+			(int)STRLEN_LITERAL(MNV_VERSION_SHORT) + 1);
 
     XSync(dpy, False);
     (void)XSetErrorHandler(old_handler);
@@ -954,7 +954,7 @@ LookupName(
 		    && STRNICMP(name, p + 1, STRLEN(name)) == 0)
 	    {
 		sscanf((char *)entry, "%x", &returnValue);
-		*loose = vim_strsave(p + 1);
+		*loose = mnv_strsave(p + 1);
 		break;
 	    }
 	    while (*p != 0)
@@ -994,7 +994,7 @@ LookupName(
  * occurrence is not ours since it is not yet put into the registry (by us)
  *
  * This is necessary in the following scenario:
- * 1. There is an old windowid for an exit'ed vim in the registry
+ * 1. There is an old windowid for an exit'ed mnv in the registry
  * 2. We get that id for our commWindow but only want to send, not register.
  * 3. The window will mistakenly be regarded valid because of own commWindow
  */
@@ -1102,7 +1102,7 @@ GetRegProp(
 	    XFree(*regPropp);
 	XDeleteProperty(dpy, RootWindow(dpy, 0), registryProperty);
 	if (domsg)
-	    emsg(_(e_vim_instance_registry_property_is_badly_formed_deleted));
+	    emsg(_(e_mnv_instance_registry_property_is_badly_formed_deleted));
 	return FAIL;
     }
     return OK;
@@ -1110,7 +1110,7 @@ GetRegProp(
 
 
 /*
- * This procedure is invoked by the various X event loops throughout Vims when
+ * This procedure is invoked by the various X event loops throughout MNVs when
  * a property changes on the communication window.  This procedure reads the
  * property and enqueues command requests and responses. If immediate is true,
  * it runs the event immediately instead of enqueuing it. Immediate can cause
@@ -1160,7 +1160,7 @@ serverEventProc(
 
 /*
  * Saves x clientserver commands in a queue so that they can be called when
- * vim is idle.
+ * mnv is idle.
  */
     static void
 save_in_queue(char_u *propInfo, long_u len)
@@ -1202,7 +1202,7 @@ server_parse_messages(void)
 	head.next = node->next;
 	node->next->prev = node->prev;
 	server_parse_message(X_DISPLAY, node->propInfo, node->len);
-	vim_free(node);
+	mnv_free(node);
     }
 }
 
@@ -1283,7 +1283,7 @@ server_parse_message(
 		    case 'r':
 			end = skipwhite(p + 2);
 			resWindow = 0;
-			while (vim_isxdigit(*end))
+			while (mnv_isxdigit(*end))
 			{
 			    resWindow = 16 * resWindow + (long_u)hex2nr(*end);
 			    ++end;
@@ -1353,9 +1353,9 @@ server_parse_message(
 						 reply.ga_data, reply.ga_len);
 			ga_clear(&reply);
 		    }
-		    vim_free(res);
+		    mnv_free(res);
 		}
-		vim_free(tofree);
+		mnv_free(tofree);
 	    }
 	}
 	else if (*p == 'r' && p[1] == 0)
@@ -1416,7 +1416,7 @@ server_parse_message(
 		pcPtr->code = code;
 		res = serverConvert(enc, res, &tofree);
 		if (tofree == NULL)
-		    res = vim_strsave(res);
+		    res = mnv_strsave(res);
 		pcPtr->result = res;
 		break;
 	    }
@@ -1431,7 +1431,7 @@ server_parse_message(
 	    char_u	*enc;
 
 	    /*
-	     * This is a (n)otification.  Sent with serverreply_send in Vim
+	     * This is a (n)otification.  Sent with serverreply_send in MNV
 	     * script.  Execute any autocommand and save it for later retrieval
 	     */
 	    p += 2;
@@ -1477,7 +1477,7 @@ server_parse_message(
 		sprintf((char *)winstr, "0x%x", (unsigned int)win);
 		apply_autocmds(EVENT_REMOTEREPLY, winstr, str, TRUE, curbuf);
 	    }
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	}
 	else
 	{
@@ -1540,6 +1540,6 @@ IsSerialName(char_u *str)
 {
     int len = STRLEN(str);
 
-    return (len > 1 && vim_isdigit(str[len - 1]));
+    return (len > 1 && mnv_isdigit(str[len - 1]));
 }
 #endif	// FEAT_CLIENTSERVER

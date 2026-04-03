@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -120,8 +120,8 @@ extern int _stricoll(char *a, char *b);
 # ifdef FEAT_ARABIC
 #  include "arabic.pro"
 # endif
-# ifdef FEAT_VIMINFO
-#  include "viminfo.pro"
+# ifdef FEAT_MNVINFO
+#  include "mnvinfo.pro"
 # endif
 # ifdef FEAT_TABPANEL
 #  include "tabpanel.pro"
@@ -140,21 +140,21 @@ int semsg(const char *, ...) ATTRIBUTE_COLD ATTRIBUTE_FORMAT_PRINTF(1, 2);
 // These prototypes cannot be produced automatically.
 void siemsg(const char *, ...) ATTRIBUTE_COLD ATTRIBUTE_FORMAT_PRINTF(1, 2);
 
-int vim_snprintf_add(char *, size_t, const char *, ...) ATTRIBUTE_FORMAT_PRINTF(3, 4);
+int mnv_snprintf_add(char *, size_t, const char *, ...) ATTRIBUTE_FORMAT_PRINTF(3, 4);
 
-int vim_snprintf(char *, size_t, const char *, ...) ATTRIBUTE_FORMAT_PRINTF(3, 4);
-size_t vim_snprintf_safelen(char *, size_t, const char *, ...) ATTRIBUTE_FORMAT_PRINTF(3, 4);
+int mnv_snprintf(char *, size_t, const char *, ...) ATTRIBUTE_FORMAT_PRINTF(3, 4);
+size_t mnv_snprintf_safelen(char *, size_t, const char *, ...) ATTRIBUTE_FORMAT_PRINTF(3, 4);
 
-int vim_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap)
+int mnv_vsnprintf(char *str, size_t str_m, const char *fmt, va_list ap)
 	ATTRIBUTE_FORMAT_PRINTF(3, 0);
-int vim_vsnprintf_typval(char *str, size_t str_m, const char *fmt, va_list ap, typval_T *tvs)
+int mnv_vsnprintf_typval(char *str, size_t str_m, const char *fmt, va_list ap, typval_T *tvs)
 	ATTRIBUTE_FORMAT_PRINTF(3, 0);
 
 # include "message.pro"
 # include "misc1.pro"
 # include "misc2.pro"
 # ifndef HAVE_STRPBRK	    // not generated automatically from misc2.c
-char_u *vim_strpbrk(char_u *s, char_u *charset);
+char_u *mnv_strpbrk(char_u *s, char_u *charset);
 # endif
 # ifndef HAVE_QSORT
 // Use our own qsort(), don't define the prototype when not used.
@@ -163,8 +163,8 @@ void qsort(void *base, size_t elm_count, size_t elm_size, int (*cmp)(const void 
 # include "mouse.pro"
 # include "move.pro"
 # include "mbyte.pro"
-# ifdef VIMDLL
-// Function name differs when VIMDLL is defined
+# ifdef MNVDLL
+// Function name differs when MNVDLL is defined
 int mbyte_im_get_status(void);
 void mbyte_im_set_active(int active_arg);
 # endif
@@ -222,18 +222,18 @@ void mbyte_im_set_active(int active_arg);
 # include "usercmd.pro"
 # include "userfunc.pro"
 # include "version.pro"
-# include "vim9script.pro"
+# include "mnv9script.pro"
 # ifdef FEAT_EVAL
-// include vim9.h here, the types defined there are used by function arguments.
-#  include "vim9.h"
-#  include "vim9class.pro"
-#  include "vim9cmds.pro"
-#  include "vim9compile.pro"
-#  include "vim9execute.pro"
-#  include "vim9expr.pro"
-#  include "vim9generics.pro"
-#  include "vim9instr.pro"
-#  include "vim9type.pro"
+// include mnv9.h here, the types defined there are used by function arguments.
+#  include "mnv9.h"
+#  include "mnv9class.pro"
+#  include "mnv9cmds.pro"
+#  include "mnv9compile.pro"
+#  include "mnv9execute.pro"
+#  include "mnv9expr.pro"
+#  include "mnv9generics.pro"
+#  include "mnv9instr.pro"
+#  include "mnv9type.pro"
 # endif
 # include "window.pro"
 
@@ -294,8 +294,8 @@ void ch_error(channel_T *ch, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3)
 #  include "gui.pro"
 #  if !defined(HAVE_SETENV) && !defined(HAVE_PUTENV) && !defined(VMS)
 extern int putenv(const char *string);			// in misc2.c
-#   ifdef USE_VIMPTY_GETENV
-extern char_u *vimpty_getenv(const char_u *string);	// in misc2.c
+#   ifdef USE_MNVPTY_GETENV
+extern char_u *mnvpty_getenv(const char_u *string);	// in misc2.c
 #   endif
 #  endif
 #  ifdef FEAT_GUI_MSWIN

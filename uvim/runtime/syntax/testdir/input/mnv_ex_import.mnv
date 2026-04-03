@@ -1,0 +1,119 @@
+" MNV :import command
+" MNV_TEST_SETUP hi link mnvImportName Todo
+
+
+import "foo.mnv"
+impor v:true ? "foo.mnv" : "bar.mnv"
+
+import v:true ?
+      \ "foo.mnv" :
+      \ "bar.mnv"
+
+import v:true
+      \ ? "foo.mnv"
+      \ : "bar.mnv"
+
+import v:true ?
+      "\ comment 
+      \ "foo.mnv" :
+      "\ comment 
+      \ "bar.mnv"
+
+import v:true
+      "\ comment 
+      \ ? "foo.mnv"
+      "\ comment
+      \ : "bar.mnv"
+
+import "foo.mnv" as bar
+import v:true ? "foo.mnv" : "bar.mnv" as baz
+
+import v:true ?
+      \ "foo.mnv" :
+      \ "bar.mnv"
+      \ as baz
+
+import v:true
+      \ ? "foo.mnv"
+      \ : "bar.mnv"
+      \ as baz
+
+import v:true ?
+      "\ comment 
+      \ "foo.mnv" :
+      "\ comment 
+      \ "bar.mnv"
+      "\ comment
+      \ as baz
+
+import v:true
+      "\ comment 
+      \ ? "foo.mnv"
+      "\ comment
+      \ : "bar.mnv"
+      "\ comment
+      \ as baz
+
+echo "Foo" | import "foo.mnv"
+
+
+" autoload
+
+import autoload "foo.mnv"
+import autoload v:true ? "foo.mnv" : "bar.mnv"
+
+import autoload v:true ?
+      \ "foo.mnv" :
+      \ "bar.mnv"
+
+import autoload v:true
+      \ ? "foo.mnv"
+      \ : "bar.mnv"
+
+import autoload v:true ?
+      "\ comment 
+      \"foo.mnv" :
+      "\ comment
+      \ "bar.mnv"
+
+import autoload v:true
+      "\ comment 
+      \ ? "foo.mnv"
+      "\ comment
+      \ : "bar.mnv"
+
+import autoload "foo.mnv" as bar
+import autoload v:true ? "foo.mnv" : "bar.mnv" as baz
+
+import autoload v:true ?
+      \ "foo.mnv" :
+      \ "bar.mnv"
+      \ as baz
+
+import autoload v:true
+      \ ? "foo.mnv"
+      \ : "bar.mnv"
+      \ as baz
+
+import autoload v:true ?
+      "\ comment 
+      \ "foo.mnv" :
+      "\ comment 
+      \ "bar.mnv"
+      "\ comment
+      \ as baz
+
+import autoload v:true
+      "\ comment 
+      \ ? "foo.mnv"
+      "\ comment
+      \ : "bar.mnv"
+      "\ comment
+      \ as baz
+
+
+" "as" keyword in expr
+
+let as = "modules/"
+import v:true ? as .. "foo.mnv" : as .. "bar.mnv" as other
+

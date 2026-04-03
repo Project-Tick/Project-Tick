@@ -20,7 +20,7 @@
  *
  */
 
-// The following includes come from Vim:
+// The following includes come from MNV:
 
 // defines HAVE_ATTRIBUTE_UNUSED
 #ifdef HAVE_CONFIG_H
@@ -43,7 +43,7 @@
 # define inline __inline
 #endif
 
-// Vim replacement for BUG()
+// MNV replacement for BUG()
 void xdl_bug(const char *msg);
 
 #if !defined(XINCLUDE_H)

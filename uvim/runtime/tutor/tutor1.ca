@@ -1,17 +1,17 @@
 ===============================================================================
-=    B e n v i n g u t s   a l   t u t o r   d e l   V I M   -   Versió 1.5   =
+=    B e n v i n g u t s   a l   t u t o r   d e l   M N V   -   Versió 1.5   =
 ===============================================================================
 
-   El Vim és un editor potent i té moltes ordres, massa com per a
+   El MNV és un editor potent i té moltes ordres, massa com per a
    explicar-les totes un tutor com aquest. Aquest tutor està pensat per a
-   ensenyar les ordres bàsiques que us permetin fer servir el Vim com a
+   ensenyar les ordres bàsiques que us permetin fer servir el MNV com a
    editor de propòsit general.
 
    El temps aproximat de completar el tutor és d'uns 25 o 30 minuts
    depenent de quant temps dediqueu a experimentar.
 
    Feu una còpia d'aquest fitxer per a practicar-hi (si heu començat amb
-   el programa vimtutor això que esteu llegint ja és una còpia).
+   el programa mnvtutor això que esteu llegint ja és una còpia).
 
    És important recordar que aquest tutor està pensat per a ensenyar
    practicant, és a dir que haureu d'executar les ordres si les voleu
@@ -41,11 +41,11 @@
 Nota: Si no esteu segurs de la tecla que heu premut, premeu <ESC> per a
       tornar al mode Normal. Llavors torneu a teclejar l'ordre que volíeu.
 
-Nota: Les tecles de moviment del cursor (fletxes) també funcionen. Però
+Nota: Les tecles de momnvent del cursor (fletxes) també funcionen. Però
       usant hjkl anireu més ràpid un cop us hi hagueu acostumant.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     Lliçó 1.1.2: ENTRAR I SORTIR DEL VIM
+                     Lliçó 1.1.2: ENTRAR I SORTIR DEL MNV
 
 
   !! NOTA: Abans de seguir els passos següents llegiu *tota* la lliçó!!
@@ -59,10 +59,10 @@ Nota: Les tecles de moviment del cursor (fletxes) també funcionen. Però
                                 :wq  <ENTRAR>
 
   3. Quan vegeu l'introductor de l'intèrpret escriviu l'ordre amb la
-     qual heu arribat a aquest tutor. Podria ser:   vimtutor <ENTRAR>
-                                            O bé:   vim tutor <ENTRAR>
+     qual heu arribat a aquest tutor. Podria ser:   mnvtutor <ENTRAR>
+                                            O bé:   mnv tutor <ENTRAR>
 
----> 'vim' és l'editor vim, i 'tutor' és el fitxer que voleu editar.
+---> 'mnv' és l'editor mnv, i 'tutor' és el fitxer que voleu editar.
 
   4. Si heu memoritzat les ordres, feu els passos anteriors, de l'1 al 3,
      per a sortir i tornar a entrar a l'editor. Llavors moveu el cursor
@@ -120,7 +120,7 @@ NOTA: Mentre aneu fent no tracteu de memoritzar, practiqueu i prou.
   1. El cursor es mou amb les fletxes o bé amb les tecles hjkl.
          h (esquerra)   j (avall)       k (amunt)    l (dreta)
 
-  2. Per a entrar al Vim (des de l'intèrpret) escriviu:  vim FITXER <ENTRAR>
+  2. Per a entrar al MNV (des de l'intèrpret) escriviu:  mnv FITXER <ENTRAR>
 
   3. Per a sortir teclegeu:  <ESC> :q! <ENTRAR>  per a descartar els canvis.
              O BÉ teclegeu:  <ESC> :wq <ENTRAR>  per a desar els canvis.
@@ -543,7 +543,7 @@ Nota:  Totes les ordres  :  s'han d'acabar amb la tecla <ENTRAR>
   4. Això desa el text en un fitxer amb el nom de PROVA. Per a comprovar-ho
      escriviu  :!dir  i mireu el contingut del directori.
 
-Note: Si sortiu del Vim i entreu una altra vegada amb el fitxer PROVA, el
+Note: Si sortiu del MNV i entreu una altra vegada amb el fitxer PROVA, el
       fitxer serà una còpia exacta del tutor que heu desat.
 
   5. Ara esborreu el fitxer teclejant (MS-DOS):   :!del PROVA
@@ -740,7 +740,7 @@ Nota: Així s'evita haver de prémer  i , l'últim caràcter, el text a inserir,
 
                  ** Utilitzeu el sistema intern d'ajuda **
 
-  El Vim té un extens sistema d'ajuda. Per a llegir una introducció proveu una
+  El MNV té un extens sistema d'ajuda. Per a llegir una introducció proveu una
   d'aquestes tres coses:
         - premeu la tecla <AJUDA> (si la teniu)
         - premeu la tecla <F1> (si la teniu)
@@ -762,48 +762,48 @@ Nota: Així s'evita haver de prémer  i , l'últim caràcter, el text a inserir,
 
                    ** Activeu funcions automàticament **
 
- El Vim té moltes més funcions que el Vi, però moltes estan desactivades
+ El MNV té moltes més funcions que el Vi, però moltes estan desactivades
  per defecte. Per a començar a utilitzar més funcions heu de crear un
- fitxer "vimrc".
+ fitxer "mnvrc".
 
-  1. Comenceu a editar el fitxer "vimrc", depenent del sistema
-        :edit ~/.vimrc         per Unix
-        :edit ~/_vimrc         per MS-Windows
+  1. Comenceu a editar el fitxer "mnvrc", depenent del sistema
+        :edit ~/.mnvrc         per Unix
+        :edit ~/_mnvrc         per MS-Windows
 
-  2. Llegiu el fitxer "vimrc" d'exemple:
+  2. Llegiu el fitxer "mnvrc" d'exemple:
 
-        :read $VIMRUNTIME/vimrc_example.vim
+        :read $MNVRUNTIME/mnvrc_example.mnv
 
   3. Deseu el fitxer amb:
 
         :write
 
- El pròxim cop que executeu el Vim usarà ressaltat de sintaxi.  Podeu
- afegir els ajustos que vulgueu en aquest fitxer "vimrc".
+ El pròxim cop que executeu el MNV usarà ressaltat de sintaxi.  Podeu
+ afegir els ajustos que vulgueu en aquest fitxer "mnvrc".
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Aquí conclou el Tutor del Vim. És una breu introducció a l'editor Vim,
+  Aquí conclou el Tutor del MNV. És una breu introducció a l'editor MNV,
   suficient perquè el pugueu començar a fer servir. No és complet perquè
-  el Vim té moltes ordres. Per a llegir el manual de l'usuari, feu:
+  el MNV té moltes ordres. Per a llegir el manual de l'usuari, feu:
   ":help user-manual".
 
   Per a un estudi més a fons us recomanem el següent llibre:
-        Vim - Vi Improved - de Steve Oualline
+        MNV - MNV is not Vim - de Steve Oualline
         Editorial: New Riders
-  És el primer llibre dedicat completament al Vim, especialment útil per a
+  És el primer llibre dedicat completament al MNV, especialment útil per a
   usuaris novells. Conté molts exemples i diagrames.
   Vegeu https://iccf-holland.org/click5.html
 
-  Aquest altre és més vell i tracta més sobre el Vi que sobre el Vim:
+  Aquest altre és més vell i tracta més sobre el Vi que sobre el MNV:
         Learning the Vi Editor - de Linda Lamb
         Editorial: O'Reilly & Associates Inc.
   És un bon llibre per a aprendre qualsevol cosa que desitgeu sobre el Vi.
-  La sisena edició també inclou informació sobre el Vim.
+  La sisena edició també inclou informació sobre el MNV.
 
   Aquest tutorial ha estat escrit per Michael C. Pierce i Robert K. Ware,
   Colorado School of Mines amb la col·laboració de Charles Smith, Colorado
   State University. E-mail: bware@mines.colorado.edu.
 
-  Modificat pel Vim per Bram Moolenaar.
+  Modificat pel MNV per Bram Moolenaar.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

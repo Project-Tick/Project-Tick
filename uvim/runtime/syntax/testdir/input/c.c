@@ -1,15 +1,15 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
- * VIM_TEST_SETUP let g:c_comment_strings = 1
+ * MNV_TEST_SETUP let g:c_comment_strings = 1
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 #define EXTERN
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef __CYGWIN__
 # include <cygwin/version.h>
@@ -18,7 +18,7 @@
 # include <limits.h>
 #endif
 
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
 # include "iscygpty.h"
 #endif
 
@@ -29,12 +29,12 @@
 #define EDIT_TAG    3	    // tag name argument given, use tagname
 #define EDIT_QF	    4	    // start in quickfix mode
 
-#if (defined(UNIX) || defined(VMS)) && !defined(NO_VIM_MAIN)
+#if (defined(UNIX) || defined(VMS)) && !defined(NO_MNV_MAIN)
 static int file_owned(char *fname);
 #endif
 static void mainerr(int, char_u *);
 static void early_arg_scan(mparm_T *parmp);
-#ifndef NO_VIM_MAIN
+#ifndef NO_MNV_MAIN
 static void usage(void);
 static void parse_command_name(mparm_T *parmp);
 static void command_line_scan(mparm_T *parmp);
@@ -81,18 +81,18 @@ static mparm_T	params;
 static void *s_vbuf = NULL;		// buffer for setvbuf()
 #endif
 
-#ifndef NO_VIM_MAIN	// skip this for unittests
+#ifndef NO_MNV_MAIN	// skip this for unittests
 
 static char_u *start_dir = NULL;	// current working dir on startup
 
 static int has_dash_c_arg = FALSE;
 
-# ifdef VIMDLL
+# ifdef MNVDLL
 __declspec(dllexport)
 # endif
     int
 # ifdef MSWIN
-VimMain
+MNVMain
 # else
 main
 # endif
@@ -118,6 +118,6 @@ main
      */
     return mzscheme_main();
 #else
-    return vim_main2();
+    return mnv_main2();
 #endif
 }

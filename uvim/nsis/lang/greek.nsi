@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# greek.nsi: Greek language strings for gvim NSIS installer.
+# greek.nsi: Greek language strings for gmnv NSIS installer.
 #
 # Locale ID    : 1032
 # Locale Name  : el
@@ -28,15 +28,15 @@ LicenseLangString page_lic_file 0 "..\lang\LICENSE.nsis.txt"
 # Translated README.txt file, which is opened after installation          {{{1
 ##############################################################################
 
-LangString vim_readme_file 0 "README.txt"
-#LangString vim_readme_file ${LANG_GREEK} "README.el.txt"
+LangString mnv_readme_file 0 "README.txt"
+#LangString mnv_readme_file ${LANG_GREEK} "README.el.txt"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_GREEK} \
-#    "Φάκελος προορισμός (Πρέπει να τελειώνει σε $\"vim$\")"
+#    "Φάκελος προορισμός (Πρέπει να τελειώνει σε $\"mnv$\")"
 
 LangString str_show_readme          ${LANG_GREEK} \
     "Εμφάνιση README μετά την ολοκλήρωση της εγκατάστασης"
@@ -59,70 +59,70 @@ LangString str_type_full            ${LANG_GREEK} \
 LangString str_section_old_ver      ${LANG_GREEK} \
     "Απεγκατάσταση υπάρχουσων εκδόσεων"
 LangString str_desc_old_ver         ${LANG_GREEK} \
-    "Απεγκατάσταση υπάρχουσων εκδόσεων Vim από το σύστημά σας."
+    "Απεγκατάσταση υπάρχουσων εκδόσεων MNV από το σύστημά σας."
 
 LangString str_section_exe          ${LANG_GREEK} \
-    "Vim GUI and runtime files"
+    "MNV GUI and runtime files"
 LangString str_desc_exe             ${LANG_GREEK} \
-    "Vim GUI executables and runtime files.  This component is required."
+    "MNV GUI executables and runtime files.  This component is required."
 
 LangString str_section_console      ${LANG_GREEK} \
-    "Vim console program"
+    "MNV console program"
 LangString str_desc_console         ${LANG_GREEK} \
-    "Console version of Vim (vim.exe)."
+    "Console version of MNV (mnv.exe)."
 
 LangString str_section_batch        ${LANG_GREEK} \
     "Δημιουργία αρχείων .bat"
 LangString str_desc_batch           ${LANG_GREEK} \
-    "Δημιουργία αρχείων .bat από παράγωγα Vim στον κατάλογο των Windows για \
+    "Δημιουργία αρχείων .bat από παράγωγα MNV στον κατάλογο των Windows για \
      χρήση γραμμής εντολών."
 
 LangString str_group_icons          ${LANG_GREEK} \
-    "Δημιουργία  εικονιδίων Vim"
+    "Δημιουργία  εικονιδίων MNV"
 LangString str_desc_icons           ${LANG_GREEK} \
-    "Δημιουργία εικονιδίων για τον Vim σε διάφορες τοποθεσίες για την διευκόλυνση της προσβασιμότητας."
+    "Δημιουργία εικονιδίων για τον MNV σε διάφορες τοποθεσίες για την διευκόλυνση της προσβασιμότητας."
 
 LangString str_section_desktop      ${LANG_GREEK} \
     "Στην επιφάνεια εργασίας"
 LangString str_desc_desktop         ${LANG_GREEK} \
-    "Δημιουργία εικονιδίων για gVim εκτελέσιμα στην επιφάνεια εργασίας."
+    "Δημιουργία εικονιδίων για gMNV εκτελέσιμα στην επιφάνεια εργασίας."
 
 LangString str_section_start_menu   ${LANG_GREEK} \
     "In the Start Menu Programs Folder"
 LangString str_desc_start_menu      ${LANG_GREEK} \
-    "Προσθήκη του Vim στον φάκελο προγραμμάτων του μενού εκκίνησης."
+    "Προσθήκη του MNV στον φάκελο προγραμμάτων του μενού εκκίνησης."
 
 #LangString str_section_quick_launch ${LANG_GREEK} \
 #    "In the Quick Launch Bar"
 #LangString str_desc_quick_launch    ${LANG_GREEK} \
-#    "Add Vim shortcut in the quick launch bar."
+#    "Add MNV shortcut in the quick launch bar."
 
 LangString str_section_edit_with    ${LANG_GREEK} \
-    "Add Vim Context Menu"
+    "Add MNV Context Menu"
 LangString str_desc_edit_with       ${LANG_GREEK} \
-    "Add Vim to the $\"Open With...$\" context menu list."
+    "Add MNV to the $\"Open With...$\" context menu list."
 
 #LangString str_section_edit_with32  ${LANG_GREEK} \
 #    "32-bit Version"
 #LangString str_desc_edit_with32     ${LANG_GREEK} \
-#    "Add Vim to the $\"Open With...$\" context menu list \
+#    "Add MNV to the $\"Open With...$\" context menu list \
 #     for 32-bit applications."
 
 #LangString str_section_edit_with64  ${LANG_GREEK} \
 #    "64-bit Version"
 #LangString str_desc_edit_with64     ${LANG_GREEK} \
-#    "Add Vim to the $\"Open With...$\" context menu list \
+#    "Add MNV to the $\"Open With...$\" context menu list \
 #     for 64-bit applications."
 
-LangString str_section_vim_rc       ${LANG_GREEK} \
+LangString str_section_mnv_rc       ${LANG_GREEK} \
     "Δημιουργία προεπιλεγμένων ρυθμίσεων"
-LangString str_desc_vim_rc          ${LANG_GREEK} \
-    "Δημιουργία προεπιλεγμένου αρχείου ρυθμίσεων (_vimrc) αν δεν υπάρχει ήδη."
+LangString str_desc_mnv_rc          ${LANG_GREEK} \
+    "Δημιουργία προεπιλεγμένου αρχείου ρυθμίσεων (_mnvrc) αν δεν υπάρχει ήδη."
 
 LangString str_group_plugin         ${LANG_GREEK} \
     "Δημιουργία καταλόγων Plugin"
 LangString str_desc_plugin          ${LANG_GREEK} \
-    "Δημιουργία καταλόγων plugin.  Οι κατάλογοι Plugin επιτρέπουν την επέκταση του Vim \
+    "Δημιουργία καταλόγων plugin.  Οι κατάλογοι Plugin επιτρέπουν την επέκταση του MNV \
      με την μεταφορά ενός αρχείου σε έναν κατάλογο."
 
 LangString str_section_plugin_home  ${LANG_GREEK} \
@@ -130,10 +130,10 @@ LangString str_section_plugin_home  ${LANG_GREEK} \
 LangString str_desc_plugin_home     ${LANG_GREEK} \
     "Δημιουργία καταλόγων plugin στον κατάλογο HOME."
 
-LangString str_section_plugin_vim   ${LANG_GREEK} \
+LangString str_section_plugin_mnv   ${LANG_GREEK} \
     "Shared"
-LangString str_desc_plugin_vim      ${LANG_GREEK} \
-    "Δημιουργία καταλόγων plugin στον κατάλογο εγκατάστασης του Vim, χρησιμοποιείται από \
+LangString str_desc_plugin_mnv      ${LANG_GREEK} \
+    "Δημιουργία καταλόγων plugin στον κατάλογο εγκατάστασης του MNV, χρησιμοποιείται από \
      όλους στο σύστημα."
 
 LangString str_section_nls          ${LANG_GREEK} \
@@ -142,14 +142,14 @@ LangString str_desc_nls             ${LANG_GREEK} \
     "Install files for native language support."
 
 LangString str_unsection_register   ${LANG_GREEK} \
-    "Unregister Vim"
+    "Unregister MNV"
 LangString str_desc_unregister      ${LANG_GREEK} \
-    "Unregister Vim from the system."
+    "Unregister MNV from the system."
 
 LangString str_unsection_exe        ${LANG_GREEK} \
-    "Remove Vim Executables/Runtime Files"
+    "Remove MNV Executables/Runtime Files"
 LangString str_desc_rm_exe          ${LANG_GREEK} \
-    "Remove all Vim executables and runtime files."
+    "Remove all MNV executables and runtime files."
 
 LangString str_ungroup_plugin       ${LANG_GREEK} \
     "Remove plugin directories"
@@ -161,15 +161,15 @@ LangString str_unsection_plugin_home ${LANG_GREEK} \
 LangString str_desc_rm_plugin_home  ${LANG_GREEK} \
     "Remove the plugin directories from HOME directory."
 
-LangString str_unsection_plugin_vim ${LANG_GREEK} \
+LangString str_unsection_plugin_mnv ${LANG_GREEK} \
     "Shared"
-LangString str_desc_rm_plugin_vim   ${LANG_GREEK} \
-    "Remove the plugin directories from Vim install directory."
+LangString str_desc_rm_plugin_mnv   ${LANG_GREEK} \
+    "Remove the plugin directories from MNV install directory."
 
 LangString str_unsection_rootdir    ${LANG_GREEK} \
-    "Remove the Vim root directory"
+    "Remove the MNV root directory"
 LangString str_desc_rm_rootdir      ${LANG_GREEK} \
-    "Remove the Vim root directory. It contains your Vim configuration files!"
+    "Remove the MNV root directory. It contains your MNV configuration files!"
 
 
 ##############################################################################
@@ -177,30 +177,30 @@ LangString str_desc_rm_rootdir      ${LANG_GREEK} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_GREEK} \
-#    "Found $vim_old_ver_count Vim versions on your system.$\r$\n\
-#     This installer can only handle ${VIM_MAX_OLD_VER} versions \
+#    "Found $mnv_old_ver_count MNV versions on your system.$\r$\n\
+#     This installer can only handle ${MNV_MAX_OLD_VER} versions \
 #     at most.$\r$\n\
 #     Please remove some versions and start again."
 
 #LangString str_msg_invalid_root  ${LANG_GREEK} \
-#    "Invalid install path: $vim_install_root!$\r$\n\
-#     It should end with $\"vim$\"."
+#    "Invalid install path: $mnv_install_root!$\r$\n\
+#     It should end with $\"mnv$\"."
 
 #LangString str_msg_bin_mismatch  ${LANG_GREEK} \
 #    "Binary path mismatch!$\r$\n$\r$\n\
-#     Expect the binary path to be $\"$vim_bin_path$\",$\r$\n\
+#     Expect the binary path to be $\"$mnv_bin_path$\",$\r$\n\
 #     but system indicates the binary path is $\"$INSTDIR$\"."
 
-#LangString str_msg_vim_running   ${LANG_GREEK} \
-#    "Vim is still running on your system.$\r$\n\
-#     Please close all instances of Vim before you continue."
+#LangString str_msg_mnv_running   ${LANG_GREEK} \
+#    "MNV is still running on your system.$\r$\n\
+#     Please close all instances of MNV before you continue."
 
 #LangString str_msg_register_ole  ${LANG_GREEK} \
-#    "Attempting to register Vim with OLE. \
+#    "Attempting to register MNV with OLE. \
 #     There is no message indicates whether this works or not."
 
 #LangString str_msg_unreg_ole     ${LANG_GREEK} \
-#    "Attempting to unregister Vim with OLE. \
+#    "Attempting to unregister MNV with OLE. \
 #     There is no message indicates whether this works or not."
 
 #LangString str_msg_rm_start      ${LANG_GREEK} \
@@ -235,7 +235,7 @@ LangString str_msg_rm_exe_fail   ${LANG_GREEK} \
      Πρέπει να το κάνετε χειροκίνητα."
 
 #LangString str_msg_rm_root_fail  ${LANG_GREEK} \
-#    "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Αδύνατη η αφαίρεση $\"$vim_install_root$\", δεν είναι κενό!"
+#    "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Αδύνατη η αφαίρεση $\"$mnv_install_root$\", δεν είναι κενό!"
 
 LangString str_msg_uninstalling  ${LANG_GREEK} \
     "Απεγκατάσταση παλιάς έκδοσης the old version..."
@@ -251,23 +251,23 @@ LangString str_msg_unregistering ${LANG_GREEK} \
 # Dialog Box                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_GREEK} \
-    "Επιλογή ρυθμίσεων _vimrc"
-LangString str_vimrc_page_subtitle ${LANG_GREEK} \
+LangString str_mnvrc_page_title    ${LANG_GREEK} \
+    "Επιλογή ρυθμίσεων _mnvrc"
+LangString str_mnvrc_page_subtitle ${LANG_GREEK} \
     "Choose the settings for enhancement, keyboard and mouse."
 
 LangString str_msg_compat_title    ${LANG_GREEK} \
-    " Συμπεριφορά Vi / Vim  "
+    " Συμπεριφορά Vi / MNV  "
 LangString str_msg_compat_desc     ${LANG_GREEK} \
     "&Compatibility and enhancements"
 LangString str_msg_compat_vi       ${LANG_GREEK} \
     "Vi compatible"
-LangString str_msg_compat_vim      ${LANG_GREEK} \
-    "Vim original"
+LangString str_msg_compat_mnv      ${LANG_GREEK} \
+    "MNV original"
 LangString str_msg_compat_defaults ${LANG_GREEK} \
-    "Vim with some enhancements (load defaults.vim)"
+    "MNV with some enhancements (load defaults.mnv)"
 LangString str_msg_compat_all      ${LANG_GREEK} \
-    "Vim with all enhancements (load vimrc_example.vim) (Default)"
+    "MNV with all enhancements (load mnvrc_example.mnv) (Default)"
 
 LangString str_msg_keymap_title   ${LANG_GREEK} \
     " Mappings "

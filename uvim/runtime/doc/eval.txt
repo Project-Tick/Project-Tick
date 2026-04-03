@@ -1,7 +1,7 @@
-*eval.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*eval.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Expression evaluation			*expression* *expr* *E15* *eval*
@@ -12,9 +12,9 @@ Note: Expression evaluation can be disabled at compile time.  If this has been
 done, the features in this document are not available.  See |+eval| and
 |no-eval-feature|.
 
-This file is mainly about the backwards compatible (legacy) Vim script.  For
-specifics of Vim9 script, which can execute much faster, supports type
-checking and much more, see |vim9.txt|.  Where the syntax or semantics differ
+This file is mainly about the backwards compatible (legacy) MNV script.  For
+specifics of MNV9 script, which can execute much faster, supports type
+checking and much more, see |mnv9.txt|.  Where the syntax or semantics differ
 a remark is given.
 
 1.  Variables			|variables|
@@ -33,11 +33,11 @@ a remark is given.
 7.  Commands			|expression-commands|
 8.  Exception handling		|exception-handling|
 9.  Examples			|eval-examples|
-10. Vim script version		|vimscript-version|
+10. MNV script version		|mnvscript-version|
 11. No +eval feature		|no-eval-feature|
 12. The sandbox			|eval-sandbox|
 13. Textlock			|textlock|
-14. Vim script library		|vim-script-library|
+14. MNV script library		|mnv-script-library|
 15. Clipboard providers		|clipboard-providers|
 
 Testing support is documented in |testing.txt|.
@@ -101,11 +101,11 @@ the Number.  Examples:
 	Number 0	-->	String "0" ~
 	Number -1	-->	String "-1" ~
 							*octal*
-Conversion from a String to a Number only happens in legacy Vim script, not in
-Vim9 script.  It is done by converting the first digits to a number.
+Conversion from a String to a Number only happens in legacy MNV script, not in
+MNV9 script.  It is done by converting the first digits to a number.
 Hexadecimal "0xf9", Octal "017" or "0o17", and Binary "0b10"
 numbers are recognized
-NOTE: when using |Vim9| script or |scriptversion-4| octal with a leading "0"
+NOTE: when using |MNV9| script or |scriptversion-4| octal with a leading "0"
 is not recognized.  The 0o notation requires patch 8.2.0886.
 If the String doesn't start with digits, the result is zero.
 Examples:
@@ -128,7 +128,7 @@ base, use |str2nr()|.
 
 						*TRUE* *FALSE* *Boolean*
 For boolean operators Numbers are used.  Zero is FALSE, non-zero is TRUE.
-You can also use |v:false| and |v:true|, in Vim9 script |false| and |true|.
+You can also use |v:false| and |v:true|, in MNV9 script |false| and |true|.
 When TRUE is returned from a function it is the Number one, FALSE is the
 number zero.
 
@@ -191,10 +191,10 @@ You will not get an error if you try to change the type of a variable.
 1.2 Function references ~
 					*Funcref* *E695* *E718* *E1192*
 A Funcref variable is obtained with the |function()| function, the |funcref()|
-function, (in |Vim9| script) the name of a function, or created with the
+function, (in |MNV9| script) the name of a function, or created with the
 lambda expression |expr-lambda|.  It can be used in an expression in the place
 of a function name, before the parenthesis around the arguments, to invoke the
-function it refers to.  Example in |Vim9| script: >
+function it refers to.  Example in |MNV9| script: >
 
 	:var Fn = MyFunc
 	:echo Fn()
@@ -467,9 +467,9 @@ Changing the order of items in a list: >
 	:call reverse(list)		" reverse the order of items
 	:call uniq(sort(list))		" sort and remove duplicates
 
-In a Vim9 script or a def method, a new item can be appended to a List by
+In a MNV9 script or a def method, a new item can be appended to a List by
 using the list length as the index: >
-    vim9script
+    mnv9script
     var l: list<string>
     l[0] = 'a'
     l[1] = 'b'
@@ -772,15 +772,15 @@ entry.  Note that the String '04' and the Number 04 are different, since the
 Number will be converted to the String '4', leading zeros are dropped.  The
 empty string can also be used as a key.
 
-In |Vim9| script a literal key can be used if it consists only of alphanumeric
-characters, underscore and dash, see |vim9-literal-dict|.
+In |MNV9| script a literal key can be used if it consists only of alphanumeric
+characters, underscore and dash, see |mnv9-literal-dict|.
 						*literal-Dict* *#{}*
 To avoid having to put quotes around every key the #{} form can be used in
 legacy script.  This does require the key to consist only of ASCII letters,
 digits, '-' and '_'.  Example: >
 	:let mydict = #{zero: 0, one_key: 1, two-key: 2, 333: 3}
 Note that 333 here is the string "333".  Empty keys are not possible with #{}.
-In |Vim9| script the #{} form cannot be used because it can be confused with
+In |MNV9| script the #{} form cannot be used because it can be confused with
 the start of a comment.
 
 A value can be any expression.  Using a Dictionary for a value creates a
@@ -895,7 +895,7 @@ special way with a dictionary.  Example: >
 
 This is like a method in object oriented programming.  The entry in the
 Dictionary is a |Funcref|.  The local variable "self" refers to the dictionary
-the function was invoked from.  When using |Vim9| script you can use classes
+the function was invoked from.  When using |MNV9| script you can use classes
 and objects, see `:class`.
 
 It is also possible to add a function without the "dict" attribute as a
@@ -1087,9 +1087,9 @@ works, as explained above.
 If you need to know the type of a variable or expression, use the |type()|
 function.
 
-When the '!' flag is included in the 'viminfo' option, global variables that
+When the '!' flag is included in the 'mnvinfo' option, global variables that
 start with an uppercase letter, and don't contain a lowercase letter, are
-stored in the viminfo file |viminfo-file|.
+stored in the mnvinfo file |mnvinfo-file|.
 
 When the 'sessionoptions' option contains "global", global variables that
 start with an uppercase letter and contain at least one lowercase letter are
@@ -1098,7 +1098,7 @@ stored in the session file |session-file|.
 variable name		can be stored where ~
 my_var_6		not
 My_Var_6		session file
-MY_VAR_6		viminfo file
+MY_VAR_6		mnvinfo file
 
 
 In legacy script it is possible to form a variable name with curly braces, see
@@ -1155,7 +1155,7 @@ Expression syntax summary, from least to most significant:
 	expr8 %	 expr8 ...	number modulo
 
 |expr8|	expr9
-	<type>expr9		type check and conversion (|Vim9| only)
+	<type>expr9		type check and conversion (|MNV9| only)
 
 |expr9|	expr10
 	! expr9			logical NOT
@@ -1187,7 +1187,7 @@ Expression syntax summary, from least to most significant:
 	function(expr1, ...)	function call
 	func{ti}on(expr1, ...)	function call with curly braces
 	{args -> expr1}		legacy lambda expression
-	(args) => expr1		Vim9 lambda expression
+	(args) => expr1		MNV9 lambda expression
 
 
 "..." indicates that the operations in this level can be concatenated.
@@ -1213,8 +1213,8 @@ it evaluates to |TRUE|, the result is the value of the expression between the
 '?' and ':', otherwise the result is the value of the expression after the
 ':'.
 
-In |Vim9| script the first expression must evaluate to a boolean, see
-|vim9-boolean|.
+In |MNV9| script the first expression must evaluate to a boolean, see
+|mnv9-boolean|.
 
 Example: >
 	:echo lnum == 1 ? "top" : lnum
@@ -1249,7 +1249,7 @@ value for an expression that may result in zero or empty: >
 These are similar, but not equal: >
 	expr2 ?? expr1
 	expr2 ? expr2 : expr1
-In the second line "expr2" is evaluated twice.  And in |Vim9| script the type
+In the second line "expr2" is evaluated twice.  And in |MNV9| script the type
 of expr2 before "?" must be a boolean.
 
 
@@ -1263,7 +1263,7 @@ The "||" and "&&" operators take one argument on each side.
 
 In legacy script the arguments are (converted to) Numbers.
 
-In |Vim9| script the values must be boolean, see |vim9-boolean|.  Use "!!" to
+In |MNV9| script the values must be boolean, see |mnv9-boolean|.  Use "!!" to
 convert any type to a boolean.
 
 The result is:
@@ -1303,7 +1303,7 @@ expr4							*expr4* *E1153*
 expr5 {cmp} expr5
 
 Compare two expr5 expressions.  In legacy script the result is a 0 if it
-evaluates to false, or 1 if it evaluates to true.  In |Vim9| script the result
+evaluates to false, or 1 if it evaluates to true.  In |MNV9| script the result
 is |true| or |false|.
 
 			*expr-==*  *expr-!=*  *expr->*	 *expr->=*
@@ -1330,7 +1330,7 @@ Examples:
 "abc" ==# "Abc"	  evaluates to 0
 "abc" ==? "Abc"	  evaluates to 1
 "abc" == "Abc"	  evaluates to 1 if 'ignorecase' is set, 0 otherwise
-NOTE: In |Vim9| script 'ignorecase' is not used.
+NOTE: In |MNV9| script 'ignorecase' is not used.
 
 						*E691* *E692* *E1517* *E1518*
 A |List| can only be compared with a |List| and only "equal", "not equal",
@@ -1376,7 +1376,7 @@ means the values are different: >
 	echo 0 is []
 	0
 "is#"/"isnot#" and "is?"/"isnot?" can be used to match and ignore case.
-In |Vim9| script this doesn't work, two strings are never identical.
+In |MNV9| script this doesn't work, two strings are never identical.
 
 In legacy script, when comparing a String with a Number, the String is
 converted to a Number, and the comparison is done on Numbers.  This means
@@ -1388,7 +1388,7 @@ because 'x' converted to a Number is zero.  However: >
 	0
 Inside a List or Tuple or Dictionary this conversion is not used.
 
-In |Vim9| script the types must match.
+In |MNV9| script the types must match.
 
 When comparing two Strings, this is done with strcmp() or stricmp().  This
 results in the mathematical difference (comparing byte values), not
@@ -1441,10 +1441,10 @@ result is a new list with the two lists concatenated.  Same for a |Tuple|.
 
 For String concatenation ".." is preferred, since "." is ambiguous, it is also
 used for |Dict| member access and floating point numbers.
-In |Vim9| script and when |vimscript-version| is 2 or higher, using "." is not
+In |MNV9| script and when |mnvscript-version| is 2 or higher, using "." is not
 allowed.
 
-In |Vim9| script the arguments of ".." are converted to String for simple
+In |MNV9| script the arguments of ".." are converted to String for simple
 types: Number, Float, Special and Bool.  For other types |string()| should be
 used.
 
@@ -1477,8 +1477,8 @@ When dividing a Number by zero the result depends on the value:
 	  0 / 0  = -0x80000000	(like NaN for Float)
 	 >0 / 0  =  0x7fffffff	(like positive infinity)
 	 <0 / 0  = -0x7fffffff	(like negative infinity)
-	(before Vim 7.2 it was always 0x7fffffff)
-In |Vim9| script dividing a number by zero is an error.	*E1154*
+	(before MNV 7.2 it was always 0x7fffffff)
+In |MNV9| script dividing a number by zero is an error.	*E1154*
 
 When 64-bit Number support is enabled:
 	  0 / 0  = -0x8000000000000000	(like NaN for Float)
@@ -1496,7 +1496,7 @@ expr8							*expr8*
 -----
 <type>expr9
 
-This is only available in |Vim9| script, see |type-casting|.
+This is only available in |MNV9| script, see |type-casting|.
 
 
 expr9							*expr9*
@@ -1512,10 +1512,10 @@ For '+' the number is unchanged.  Note: "++" has no effect.
 In legacy script a String will be converted to a Number first.  Note that if
 the string does not start with a digit you likely don't get what you expect.
 
-In |Vim9| script an error is given when "-" or "+" is used and the type is not
+In |MNV9| script an error is given when "-" or "+" is used and the type is not
 a number.
 
-In |Vim9| script "!" can be used for any type and the result is always a
+In |MNV9| script "!" can be used for any type and the result is always a
 boolean.  Use "!!" to convert any type to a boolean, according to whether the
 value is |falsy|.
 
@@ -1538,7 +1538,7 @@ Evaluation is always from left to right.
 							*expr-[]* *E111*
 expr10[expr1]		item of String or |List| or |Tuple|
 						*E909* *subscript* *E1062*
-In legacy Vim script:
+In legacy MNV script:
 If expr10 is a Number or String this results in a String that contains the
 expr1'th single byte from expr10.  expr10 is used as a String (a number is
 automatically converted to a String), expr1 as a Number.  This doesn't
@@ -1547,7 +1547,7 @@ recognize multibyte encodings, see `byteidx()` for an alternative, or use
 byte under the cursor: >
 	:let c = getline(".")[col(".") - 1]
 
-In |Vim9| script:					*E1147* *E1148*
+In |MNV9| script:					*E1147* *E1148*
 If expr10 is a String this results in a String that contains the expr1'th
 single character (including any composing characters) from expr10.  To use
 byte indexes use |strpart()|.
@@ -1558,7 +1558,7 @@ start with one!
 If the length of the String is less than the index, the result is an empty
 String.  A negative index always results in an empty string (reason: backward
 compatibility).  Use [-1:] to get the last byte or character.
-In Vim9 script a negative index is used like with a list: count from the end.
+In MNV9 script a negative index is used like with a list: count from the end.
 
 If expr10 is a |List| then it results the item at index expr1.  See
 |list-index| for possible index values.  If the index is out of range this
@@ -1578,11 +1578,11 @@ If expr10 is a String this results in the substring with the bytes or
 characters from expr1a to and including expr1b.  expr10 is used as a String,
 expr1a and expr1b are used as a Number.
 
-In legacy Vim script the indexes are byte indexes.  This doesn't recognize
+In legacy MNV script the indexes are byte indexes.  This doesn't recognize
 multibyte encodings, see |byteidx()| for computing the indexes.  If expr10 is
 a Number it is first converted to a String.
 
-In Vim9 script the indexes are character indexes and include composing
+In MNV9 script the indexes are character indexes and include composing
 characters.  To use byte indexes use |strpart()|.  To use character indexes
 without including composing characters use |strcharpart()|.
 
@@ -1718,7 +1718,7 @@ Floating point numbers can be written in two forms:
 	[-+]{N}.{M}[eE][-+]{exp}
 
 {N} and {M} are numbers.  Both {N} and {M} must be present and can only
-contain digits, except that in |Vim9| script in {N} single quotes between
+contain digits, except that in |MNV9| script in {N} single quotes between
 digits are ignored.
 [-+] means there is an optional plus or minus sign.
 {exp} is the exponent, power of 10.
@@ -1742,7 +1742,7 @@ Rationale:
 Before floating point was introduced, the text "123.456" was interpreted as
 the two numbers "123" and "456", both converted to a string and concatenated,
 resulting in the string "123456".  Since this was considered pointless, and we
-could not find it intentionally being used in Vim scripts, this backwards
+could not find it intentionally being used in MNV scripts, this backwards
 incompatibility was accepted in favor of being able to use the normal notation
 for floating point numbers.
 
@@ -1757,7 +1757,7 @@ also use functions, like the following: >
 <
 						*floating-point-precision*
 The precision and range of floating points numbers depends on what "double"
-means in the library Vim was compiled with.  There is no way to change this at
+means in the library MNV was compiled with.  There is no way to change this at
 runtime.
 
 The default for displaying a |Float| is to use 6 decimal places, like using
@@ -1838,7 +1838,7 @@ $"string"		interpolated string constant		*expr-$quote*
 $'string'		interpolated literal string constant	*expr-$'*
 
 Interpolated strings are an extension of the |string| and |literal-string|,
-allowing the inclusion of Vim script expressions (see |expr1|).  Any
+allowing the inclusion of MNV script expressions (see |expr1|).  Any
 expression returning a value can be enclosed between curly braces.  The value
 is converted to a string.  All the text and results of the expressions
 are concatenated to make a new string.
@@ -1935,8 +1935,8 @@ variables.
 						*expr-env-expand*
 Note that there is a difference between using $VAR directly and using
 expand("$VAR").  Using it directly will only expand environment variables that
-are known inside the current Vim session.  Using expand() will first try using
-the environment variables known inside the current Vim session.  If that
+are known inside the current MNV session.  Using expand() will first try using
+the environment variables known inside the current MNV session.  If that
 fails, a shell will be used to expand the variable.  This can be slow, but it
 does expand all variables that the shell knows about.  Example: >
 	:echo $shell
@@ -1960,7 +1960,7 @@ See below |functions|.
 lambda expression				*expr-lambda* *lambda*
 -----------------
 {args -> expr1}		legacy lambda expression		*E451*
-(args) => expr1		|Vim9| lambda expression
+(args) => expr1		|MNV9| lambda expression
 
 A lambda expression creates a new unnamed function which returns the result of
 evaluating |expr1|.  Lambda expressions differ from |user-functions| in
@@ -1978,8 +1978,8 @@ The arguments are optional.  Example: >
 	:echo F('ignored')
 <	error function
 
-The |Vim9| lambda does not only use a different syntax, it also adds type
-checking and can be split over multiple lines, see |vim9-lambda|.
+The |MNV9| lambda does not only use a different syntax, it also adds type
+checking and can be split over multiple lines, see |mnv9-lambda|.
 
 							*closure*
 Lambda expressions can access outer scope variables and arguments.  This is
@@ -2025,7 +2025,7 @@ refers to the closure.  This cycle results in the memory not being freed.
 Recommendation: don't do this.
 
 Notice how execute() is used to execute an Ex command.  That's ugly though.
-In Vim9 script you can use a command block, see |inline-function|.
+In MNV9 script you can use a command block, see |inline-function|.
 
 Although you can use the loop variable of a `for` command, it must still exist
 when the closure is called, otherwise you get an error.  *E1302*
@@ -2048,7 +2048,7 @@ command |:unlet|.
 Using a name that is not an internal variable or refers to a variable that has
 been destroyed results in an error.
 
-In |Vim9| script `:let` is not used and variables work differently, see |:var|.
+In |MNV9| script `:let` is not used and variables work differently, see |:var|.
 
 						*variable-scope*
 There are several name spaces for variables.  Which one is to be used is
@@ -2056,15 +2056,15 @@ specified by what is prepended:
 
 		(nothing) In a function: local to the function;
 			  in a legacy script: global;
-			  in a |Vim9|  script: local to the script
+			  in a |MNV9|  script: local to the script
 |buffer-variable|    b:	  Local to the current buffer.
 |window-variable|    w:	  Local to the current window.
 |tabpage-variable|   t:	  Local to the current tab page.
 |global-variable|    g:	  Global.
 |local-variable|     l:	  Local to a function (only in a legacy function)
-|script-variable|    s:	  Local to a |:source|'ed Vim script.
+|script-variable|    s:	  Local to a |:source|'ed MNV script.
 |function-argument|  a:	  Function argument (only in a legacy function).
-|vim-variable|       v:	  Global, predefined by Vim.
+|mnv-variable|       v:	  Global, predefined by MNV.
 
 The scope name by itself can be used as a |Dictionary|.  For example, to
 delete all script-local variables: >
@@ -2072,8 +2072,8 @@ delete all script-local variables: >
 	:    unlet s:[k]
 	:endfor
 
-Note: in Vim9 script variables can also be local to a block of commands, see
-|vim9-scopes|.
+Note: in MNV9 script variables can also be local to a block of commands, see
+|mnv9-scopes|.
 						*buffer-variable* *b:var* *b:*
 A variable name that is preceded with "b:" is local to the current buffer.
 Thus you can have several "b:foo" variables, one for each buffer.
@@ -2106,7 +2106,7 @@ It is deleted when the tab page is closed. {not available when compiled
 without the |+windows| feature}
 
 						*global-variable* *g:var* *g:*
-Inside functions and in |Vim9| script global variables are accessed with "g:".
+Inside functions and in |MNV9| script global variables are accessed with "g:".
 Omitting this will access a variable local to a function or script.  "g:"
 can also be used in any other place if you like.
 
@@ -2118,9 +2118,9 @@ refers to "v:count".  Using "l:count" you can have a local variable with the
 same name.
 
 						*script-variable* *s:var*
-In a legacy Vim script variables starting with "s:" can be used.  They cannot
+In a legacy MNV script variables starting with "s:" can be used.  They cannot
 be accessed from outside of the scripts, thus are local to the script.
-In |Vim9| script the "s:" prefix can be omitted, variables are script-local by
+In |MNV9| script the "s:" prefix can be omitted, variables are script-local by
 default.
 
 They can be used in:
@@ -2180,7 +2180,7 @@ when calling StartCounting().  It doesn't matter from where StartCounting() is
 called, the s:counter variable will be accessible in MyCounter().
 
 When the same script is sourced again it will use the same script variables.
-They will remain valid as long as Vim is running.  This can be used to
+They will remain valid as long as MNV is running.  This can be used to
 maintain a counter: >
 
 	if !exists("s:counter")
@@ -2195,14 +2195,14 @@ Note that this means that filetype plugins don't get a different set of script
 variables for each buffer.  Use local buffer variables instead |b:var|.
 
 
-PREDEFINED VIM VARIABLES			*vim-variable* *v:var* *v:*
+PREDEFINED MNV VARIABLES			*mnv-variable* *v:var* *v:*
 							*E963* *E1063*
 Most variables are read-only, when a variable can be set by the user, it will
 be mentioned at the variable description below.  The type cannot be changed.
 
 					*v:argv* *argv-variable*
-v:argv		The command line arguments Vim was invoked with.  This is a
-		list of strings.  The first item is the Vim command.
+v:argv		The command line arguments MNV was invoked with.  This is a
+		list of strings.  The first item is the MNV command.
 		See |v:progpath| for the command with full path.
 
 					*v:beval_col* *beval_col-variable*
@@ -2290,7 +2290,7 @@ v:cmdbang	Set like v:cmdarg for a file read/write command.  When a "!"
 
 						*v:collate* *collate-variable*
 v:collate	The current locale setting for collation order of the runtime
-		environment.  This allows Vim scripts to be aware of the
+		environment.  This allows MNV scripts to be aware of the
 		current locale encoding.  Technical: it's the value of
 		LC_COLLATE.  When not using a locale the value is "C".
 		This variable can not be set directly, use the |:language|
@@ -2303,7 +2303,7 @@ v:colornames	A dictionary that maps color names to hex color strings.
 		|highlight-guibg|, and |highlight-guisp| parameters.
 
 		The key values in the dictionary (the color names) should be
-		lower cased, because Vim looks up a color by its lower case
+		lower cased, because MNV looks up a color by its lower case
 		name.
 
 		Updating an entry in v:colornames has no immediate effect on
@@ -2317,7 +2317,7 @@ v:colornames	A dictionary that maps color names to hex color strings.
 <
 		This cannot be used to override the |cterm-colors| but it can
 		be used to override other colors.  For example, the X11 colors
-		defined in the `colors/lists/default.vim` (previously defined
+		defined in the `colors/lists/default.mnv` (previously defined
 		in |rgb.txt|).  When defining new color names in a plugin, the
 		recommended practice is to set a color entry only when it does
 		not already exist.  For example: >
@@ -2330,17 +2330,17 @@ v:colornames	A dictionary that maps color names to hex color strings.
 		Using |extend()| with the 'keep' option updates each color only
 		if it did not exist in |v:colornames|.  Doing so allows the
 		user to choose the precise color value for a common name
-		by setting it in their |.vimrc|.
+		by setting it in their |.mnvrc|.
 
 		It is possible to remove entries from this dictionary but
 		doing so is NOT recommended, because it is disruptive to
 		other scripts.  It is also unlikely to achieve the desired
 		result because the |:colorscheme| and |:highlight| commands
-		will both automatically load all `colors/lists/default.vim`
+		will both automatically load all `colors/lists/default.mnv`
 		color scripts.
 
 		You can make changes to that file, but make sure to add new
-		keys instead of updating existing ones, otherwise Vim will
+		keys instead of updating existing ones, otherwise MNV will
 		skip loading the file (thinking it hasn't been changed).
 
 				*v:completed_item* *completed_item-variable*
@@ -2369,7 +2369,7 @@ v:count1	Just like "v:count", but defaults to one when no count is
 
 						*v:ctype* *ctype-variable*
 v:ctype		The current locale setting for characters of the runtime
-		environment.  This allows Vim scripts to be aware of the
+		environment.  This allows MNV scripts to be aware of the
 		current locale encoding.  Technical: it's the value of
 		LC_CTYPE.  When not using a locale the value is "C".
 		This variable can not be set directly, use the |:language|
@@ -2379,19 +2379,19 @@ v:ctype		The current locale setting for characters of the runtime
 					*v:dying* *dying-variable*
 v:dying		Normally zero.  When a deadly signal is caught it's set to
 		one.  When multiple signals are caught the number increases.
-		Can be used in an autocommand to check if Vim didn't
+		Can be used in an autocommand to check if MNV didn't
 		terminate normally. {only works on Unix}
 		Example: >
-	:au VimLeave * if v:dying | echo "\nAAAAaaaarrrggghhhh!!!\n" | endif
+	:au MNVLeave * if v:dying | echo "\nAAAAaaaarrrggghhhh!!!\n" | endif
 <		Note: if another deadly signal is caught when v:dying is one,
-		VimLeave autocommands will not be executed.
+		MNVLeave autocommands will not be executed.
 
 					*v:exiting* *exiting-variable*
-v:exiting	Vim exit code.  Normally zero, non-zero when something went
-		wrong.  The value is v:null before invoking the |VimLeavePre|
-		and |VimLeave| autocmds.  See |:q|, |:x| and |:cquit|.
+v:exiting	MNV exit code.  Normally zero, non-zero when something went
+		wrong.  The value is v:null before invoking the |MNVLeavePre|
+		and |MNVLeave| autocmds.  See |:q|, |:x| and |:cquit|.
 		Example: >
-			:au VimLeave * echo "Exit value is " .. v:exiting
+			:au MNVLeave * echo "Exit value is " .. v:exiting
 <
 					*v:echospace* *echospace-variable*
 v:echospace	Number of screen cells that can be used for an `:echo` message
@@ -2451,7 +2451,7 @@ v:false		A Number with value zero.  Used to put "false" in JSON.  See
 <			v:false ~
 		That is so that eval() can parse the string back to the same
 		value.  Read-only.
-		In |Vim9| script "false" can be used which has a boolean type.
+		In |MNV9| script "false" can be used which has a boolean type.
 
 					*v:fcs_reason* *fcs_reason-variable*
 v:fcs_reason	The reason why the |FileChangedShell| event was triggered.
@@ -2466,7 +2466,7 @@ v:fcs_reason	The reason why the |FileChangedShell| event was triggered.
 
 					*v:fcs_choice* *fcs_choice-variable*
 v:fcs_choice	What should happen after a |FileChangedShell| event was
-		triggered.  Can be used in an autocommand to tell Vim what to
+		triggered.  Can be used in an autocommand to tell MNV what to
 		do with the affected buffer:
 			reload		Reload the buffer (does not work if
 					the file was deleted).
@@ -2482,7 +2482,7 @@ v:fcs_choice	What should happen after a |FileChangedShell| event was
 			<empty>		Nothing, the autocommand should do
 					everything that needs to be done.
 		The default is empty.  If another (invalid) value is used then
-		Vim behaves like it is empty, there is no warning message.
+		MNV behaves like it is empty, there is no warning message.
 
 					*v:fname* *fname-variable*
 v:fname		When evaluating 'includeexpr': the file name that was
@@ -2557,7 +2557,7 @@ v:key		Key of the current item of a |Dictionary|.  Only valid while
 
 						*v:lang* *lang-variable*
 v:lang		The current locale setting for messages of the runtime
-		environment.  This allows Vim scripts to be aware of the
+		environment.  This allows MNV scripts to be aware of the
 		current language.  Technical: it's the value of LC_MESSAGES.
 		The value is system dependent.
 		This variable can not be set directly, use the |:language|
@@ -2568,7 +2568,7 @@ v:lang		The current locale setting for messages of the runtime
 
 						*v:lc_time* *lc_time-variable*
 v:lc_time	The current locale setting for time messages of the runtime
-		environment.  This allows Vim scripts to be aware of the
+		environment.  This allows MNV scripts to be aware of the
 		current language.  Technical: it's the value of LC_TIME.
 		This variable can not be set directly, use the |:language|
 		command.  See |multi-lang|.
@@ -2627,7 +2627,7 @@ v:null		An empty String.  Used to put "null" in JSON.  See
 <			v:null ~
 		That is so that eval() can parse the string back to the same
 		value.  Read-only.
-		In |Vim9| script `null` can be used without "v:".
+		In |MNV9| script `null` can be used without "v:".
 		In some places `v:null` and `null` can be used for a List,
 		Dict, Job, etc. that is not set.  That is slightly different
 		than an empty List, Dict, etc.
@@ -2643,16 +2643,16 @@ v:numbersize	Number of bits in a Number.  This is normally 64, but on some
 		systems it may be 32.
 
 					*v:oldfiles* *oldfiles-variable*
-v:oldfiles	List of file names that is loaded from the |viminfo| file on
-		startup.  These are the files that Vim remembers marks for.
+v:oldfiles	List of file names that is loaded from the |mnvinfo| file on
+		startup.  These are the files that MNV remembers marks for.
 		The length of the List is limited by the ' argument of the
-		'viminfo' option (default is 100).
-		When the |viminfo| file is not used the List is empty.
+		'mnvinfo' option (default is 100).
+		When the |mnvinfo| file is not used the List is empty.
 		Also see |:oldfiles| and |c_#<|.
 		The List can be modified, but this has no effect on what is
-		stored in the |viminfo| file later.  If you use values other
+		stored in the |mnvinfo| file later.  If you use values other
 		than String this will cause trouble.
-		{only when compiled with the |+viminfo| feature}
+		{only when compiled with the |+mnvinfo| feature}
 
 						    *v:option_new*
 v:option_new    New value of the option.  Valid while executing an |OptionSet|
@@ -2708,32 +2708,32 @@ v:profiling	Normally zero.  Set to one after using ":profile start".
 		See |profiling|.
 
 					*v:progname* *progname-variable*
-v:progname	Contains the name (with path removed) with which Vim was
+v:progname	Contains the name (with path removed) with which MNV was
 		invoked.  Allows you to do special initialisations for |view|,
-		|evim| etc., or any other name you might symlink to Vim.
+		|emnv| etc., or any other name you might symlink to MNV.
 		Read-only.
 
 					*v:progpath* *progpath-variable*
-v:progpath	Contains the command with which Vim was invoked, in a form
-		that when passed to the shell will run the same Vim executable
+v:progpath	Contains the command with which MNV was invoked, in a form
+		that when passed to the shell will run the same MNV executable
 		as the current one (if $PATH remains unchanged).
-		Useful if you want to message a Vim server using a
+		Useful if you want to message a MNV server using a
 		|--remote-expr|.
 		To get the full path use: >
 			echo exepath(v:progpath)
 <		If the command has a relative path it will be expanded to the
 		full path, so that it still works after `:cd`.  Thus starting
-		"./vim" results in "/home/user/path/to/vim/src/vim".
+		"./mnv" results in "/home/user/path/to/mnv/src/mnv".
 		On Linux and other systems it will always be the full path.
-		On Mac it may just be "vim" and using exepath() as mentioned
+		On Mac it may just be "mnv" and using exepath() as mentioned
 		above should be used to get the full path.
-		On MS-Windows the executable may be called "vim.exe", but the
+		On MS-Windows the executable may be called "mnv.exe", but the
 		".exe" is not added to v:progpath.
 		Read-only.
 
 				*v:python3_version* *python3-version-variable*
 v:python3_version
-		Version of Python 3 that Vim was built against.  When
+		Version of Python 3 that MNV was built against.  When
 		Python is loaded dynamically (|python-dynamic|), this version
 		should exactly match the Python library up to the minor
 		version (e.g.  3.10.2 and 3.10.3 are compatible as the minor
@@ -2785,7 +2785,7 @@ v:searchforward			*v:searchforward* *searchforward-variable*
 					*v:shell_error* *shell_error-variable*
 v:shell_error	Result of the last shell command.  When non-zero, the last
 		shell command had an error.  When zero, there was no problem.
-		This only works when the shell returns the error code to Vim.
+		This only works when the shell returns the error code to MNV.
 		The value -1 is often used when the command could not be
 		executed.  Read-only.
 		Example: >
@@ -2797,17 +2797,17 @@ v:shell_error	Result of the last shell command.  When non-zero, the last
 		|scriptversion| is 3 or higher.
 
 					*v:sizeofint* *sizeofint-variable*
-v:sizeofint	Number of bytes in an int.  Depends on how Vim was compiled.
+v:sizeofint	Number of bytes in an int.  Depends on how MNV was compiled.
 		This is only useful for deciding whether a test will give the
 		expected result.
 
 					*v:sizeoflong* *sizeoflong-variable*
-v:sizeoflong	Number of bytes in a long.  Depends on how Vim was compiled.
+v:sizeoflong	Number of bytes in a long.  Depends on how MNV was compiled.
 		This is only useful for deciding whether a test will give the
 		expected result.
 
 				*v:sizeofpointer* *sizeofpointer-variable*
-v:sizeofpointer	Number of bytes in a pointer.  Depends on how Vim was
+v:sizeofpointer	Number of bytes in a pointer.  Depends on how MNV was
 		compiled.  This is only useful for deciding whether a test
 		will give the expected result.
 
@@ -2840,7 +2840,7 @@ v:swapchoice	|SwapExists| autocommands can set this to the selected choice
 					*v:swapcommand* *swapcommand-variable*
 v:swapcommand	Normal mode command to be executed after a file has been
 		opened.  Can be used for a |SwapExists| autocommand to have
-		another Vim open the file and jump to the right place.  For
+		another MNV open the file and jump to the right place.  For
 		example, when jumping to a tag the value is ":tag tagname\r".
 		For ":edit +cmd file" the value is ":cmd\r".
 
@@ -2881,19 +2881,19 @@ v:t_tuple	Value of |Tuple| type.  Read-only.  See: |type()|
 
 				    *v:termresponse* *termresponse-variable*
 v:termresponse	The escape sequence returned by the terminal for the |t_RV|
-		termcap entry.  It is set when Vim receives an escape sequence
+		termcap entry.  It is set when MNV receives an escape sequence
 		that starts with ESC [ or CSI, then '>' or '?' and ends in a
 		'c', with only digits and ';' in between.
 		When this variable is set, the TermResponse autocommand event
 		is fired, so that you can react to the response from the
 		terminal.  The TermResponseAll event is also fired, with
 		<amatch> set to "version".  You can use |terminalprops()| to
-		see what Vim figured out about the terminal.
+		see what MNV figured out about the terminal.
 		The response from a new xterm is: "<Esc>[> Pp ; Pv ; Pc c".
 		Pp is the terminal type: 0 for vt100 and 1 for vt220.  Pv is
 		the patch level (since this was introduced in patch 95, it's
 		always 95 or higher).  Pc is always zero.
-		If Pv is 141 or higher then Vim will try to request terminal
+		If Pv is 141 or higher then MNV will try to request terminal
 		codes.  This only works with xterm |xterm-codes|.
 		{only when compiled with |+termresponse| feature}
 
@@ -2966,7 +2966,7 @@ v:throwpoint	The point where the exception most recently caught and not
 	:catch /.*/
 	:  echo "Exception from" v:throwpoint
 	:endtry
-<		Output: "Exception from test.vim, line 2"
+<		Output: "Exception from test.mnv, line 2"
 
 						*v:true* *true-variable*
 v:true		A Number with value one.  Used to put "true" in JSON.  See
@@ -2976,14 +2976,14 @@ v:true		A Number with value one.  Used to put "true" in JSON.  See
 <			v:true ~
 		That is so that eval() can parse the string back to the same
 		value.  Read-only.
-		In |Vim9| script "true" can be used which has a boolean type.
+		In |MNV9| script "true" can be used which has a boolean type.
 						*v:val* *val-variable*
 v:val		Value of the current item of a |List| or |Dictionary|.  Only
 		valid while evaluating the expression used with |map()| and
 		|filter()|.  Read-only.
 
 					*v:version* *version-variable*
-v:version	Version number of Vim: Major version number times 100 plus
+v:version	Version number of MNV: Major version number times 100 plus
 		minor version number.  Version 5.0 is 500.  Version 5.1
 		is 501.  Read-only.  "version" also works, for backwards
 		compatibility, unless |scriptversion| is 3 or higher.
@@ -3004,13 +3004,13 @@ v:versionlong	Like v:version, but also including the patchlevel in the last
 		Use the has() function to make sure the patch is actually
 		included.
 
-				*v:vim_did_enter* *vim_did_enter-variable*
-v:vim_did_enter	Zero until most of startup is done.  It is set to one just
-		before |VimEnter| autocommands are triggered.
+				*v:mnv_did_enter* *mnv_did_enter-variable*
+v:mnv_did_enter	Zero until most of startup is done.  It is set to one just
+		before |MNVEnter| autocommands are triggered.
 
-				*v:vim_did_init* *vim_did_init-variable*
-v:vim_did_init	Zero until initialization is done.  It is set to one just
-		after |vimrc| is sourced and before |load-plugins|.
+				*v:mnv_did_init* *mnv_did_init-variable*
+v:mnv_did_init	Zero until initialization is done.  It is set to one just
+		after |mnvrc| is sourced and before |load-plugins|.
 
 					*v:warningmsg* *warningmsg-variable*
 v:warningmsg	Last given warning message.  It's allowed to set this
@@ -3018,18 +3018,18 @@ v:warningmsg	Last given warning message.  It's allowed to set this
 
 				*v:wayland_display* *wayland_display-variable*
 v:wayland_display
-		The name of the Wayland display that Vim is connected to.
+		The name of the Wayland display that MNV is connected to.
 		Equivalent to the $WAYLAND_DISPLAY environment variable.
-		If this is empty, then Vim is not connected to any display.
+		If this is empty, then MNV is not connected to any display.
 
 					*v:windowid* *windowid-variable*
 v:windowid	When any X11/Wayland based GUI is running or when running in a
-		terminal and Vim connects to the X server (|-X|) this will be
+		terminal and MNV connects to the X server (|-X|) this will be
 		set to the window ID.
 		When an MS-Windows GUI is running this will be set to the
 		window handle.
 		Otherwise the value is zero.
-		Note: for windows inside Vim use |winnr()| or |win_getid()|,
+		Note: for windows inside MNV use |winnr()| or |win_getid()|,
 		see |window-ID|.
 
 ==============================================================================
@@ -3048,8 +3048,8 @@ functions.  The function takes arguments, executes a sequence of Ex commands
 and can return a value.
 
 You can find most information about defining functions in |userfunc.txt|.
-For Vim9 functions, which execute much faster, support type checking and more,
-see |vim9.txt|.
+For MNV9 functions, which execute much faster, support type checking and more,
+see |mnv9.txt|.
 
 ==============================================================================
 6. Curly braces names					*curly-braces-names*
@@ -3059,9 +3059,9 @@ variable.  This is a regular variable name with one or more expressions
 wrapped in braces {} like this: >
 	my_{adjective}_variable
 
-This only works in legacy Vim script, not in |Vim9| script.
+This only works in legacy MNV script, not in |MNV9| script.
 
-When Vim encounters this, it evaluates the expression inside the braces, puts
+When MNV encounters this, it evaluates the expression inside the braces, puts
 that in place of the expression, and re-interprets the whole as a variable
 name.  So in the above example, if the variable "adjective" was set to
 "noisy", then the reference would be to "my_noisy_variable", whereas if
@@ -3102,8 +3102,8 @@ This does NOT work: >
 ==============================================================================
 7. Commands						*expression-commands*
 
-Note: in |Vim9| script `:let` is not used.  `:var` is used for variable
-declarations and assignments do not use a command.  |vim9-declaration|
+Note: in |MNV9| script `:let` is not used.  `:var` is used for variable
+declarations and assignments do not use a command.  |mnv9-declaration|
 
 :let {var-name} = {expr1}				*:let* *E18*
 			Set internal variable {var-name} to the result of the
@@ -3147,8 +3147,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 			of {var} and {expr1} don't fit the operator.
 			`+=` modifies a |List| or a |Blob| in-place instead of
 			creating a new one.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 
 :let ${env-name} = {expr1}			*:let-environment* *:let-$*
@@ -3165,8 +3165,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 			Append {expr1} to the environment variable {env-name}.
 			If the environment variable didn't exist yet this
 			works like "=".
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 :let @{reg-name} = {expr1}			*:let-register* *:let-@*
 			Write the result of the expression {expr1} in register
@@ -3186,8 +3186,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 :let @{reg-name} ..= {expr1}
 			Append {expr1} to register {reg-name}.  If the
 			register was empty it's like setting it to {expr1}.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 :let &{option-name} = {expr1}			*:let-option* *:let-&*
 			Set option {option-name} to the result of the
@@ -3208,8 +3208,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 :let &{option-name} ..= {expr1}
 			For a string option: Append {expr1} to the value.
 			Does not insert a comma like |:set+=|.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 :let &{option-name} += {expr1}
 :let &{option-name} -= {expr1}
@@ -3223,8 +3223,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 :let &l:{option-name} ..= {expr1}
 			Like above, but only set the local value of an option
 			(if there is one).  Works like |:setlocal|.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 :let &g:{option-name} = {expr1}
 :let &g:{option-name} += {expr1}
@@ -3233,8 +3233,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 :let &g:{option-name} ..= {expr1}
 			Like above, but only set the global value of an option
 			(if there is one).  Works like |:setglobal|.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 						*E1093* *E1537* *E1538* *E1535*
 :let [{name1}, {name2}, ...] = {expr1}		*:let-unpack* *E687* *E688*
@@ -3266,8 +3266,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 			Like above, but add, subtract, multiply, divide,
 			modulo, or append the value for each |List| or |Tuple|
 			item.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 :let [{name}, ..., ; {lastname}] = {expr1}				*E452*
 			Like |:let-unpack| above, but the |List| or |Tuple|
@@ -3285,8 +3285,8 @@ declarations and assignments do not use a command.  |vim9-declaration|
 :let [{name}, ..., ; {lastname}] ..= {expr1}
 			Like above, but add/subtract/append the value for each
 			|List| item.
-			`.=` is not supported with Vim script version 2 and
-			later, see |vimscript-version|.
+			`.=` is not supported with MNV script version 2 and
+			later, see |mnvscript-version|.
 
 						*:let=<<* *:let-heredoc*
 					*E990* *E991* *E172* *E221* *E1145*
@@ -3301,16 +3301,16 @@ text...
 			If "eval" is not specified, then each line of text is
 			used as a |literal-string|, except that single quotes
 			does not need to be doubled.
-			If "eval" is specified, then any Vim expression in the
+			If "eval" is specified, then any MNV expression in the
 			form {expr} is evaluated and the result replaces the
 			expression, like with |interpolated-string|.
 			Example where $HOME is expanded: >
 				let lines =<< trim eval END
 				  some text
-				  See the file {$HOME}/.vimrc
+				  See the file {$HOME}/.mnvrc
 				  more text
 				END
-<			There can be multiple Vim expressions in a single line
+<			There can be multiple MNV expressions in a single line
 			but an expression cannot span multiple lines.  If any
 			expression evaluation fails, then the assignment
 			fails.
@@ -3383,15 +3383,15 @@ text...
 			  t:	local tab page variables
 			  s:	script-local variables
 			  l:	local function variables
-			  v:	Vim variables.
-			This does not work in Vim9 script. |vim9-declaration|
+			  v:	MNV variables.
+			This does not work in MNV9 script. |mnv9-declaration|
 
 :let			List the values of all variables.  The type of the
 			variable is indicated before the value:
 			    <nothing>	String
 				#	Number
 				*	Funcref
-			This does not work in Vim9 script. |vim9-declaration|
+			This does not work in MNV9 script. |mnv9-declaration|
 
 :unl[et][!] {name} ...			*:unlet* *:unl* *E108* *E795* *E1081*
 			Remove the internal variable {name}.  Several variable
@@ -3411,7 +3411,7 @@ text...
 			deleted when the script ends).  Function-local
 			variables are automatically deleted when the function
 			ends.
-			In |Vim9| script variables declared in a function or
+			In |MNV9| script variables declared in a function or
 			script cannot be removed.
 
 :unl[et] ${env-name} ...			*:unlet-environment* *:unlet-$*
@@ -3437,8 +3437,8 @@ text...
 <			is equivalent to: >
 				:let x = 1
 				:lockvar! x
-<			NOTE: in Vim9 script `:const` works differently, see
-			|vim9-const|
+<			NOTE: in MNV9 script `:const` works differently, see
+			|mnv9-const|
 			This is useful if you want to make sure the variable
 			is not modified.  If the value is a List or Dictionary
 			literal then the items also cannot be changed: >
@@ -3531,7 +3531,7 @@ text...
 			opposite of |:lockvar|.
 
 			If {name} does not exist:
-			- In |Vim9| script an error is given.
+			- In |MNV9| script an error is given.
 			- In legacy script this is silently ignored.
 
 :if {expr1}		    *:if* *:end* *:endif* *:en* *E171* *E579* *E580*
@@ -3541,7 +3541,7 @@ text...
 			always use `:endif` to avoid confusion and to make
 			auto-indenting work properly.
 
-			From Vim version 4.5 until 5.0, every Ex command in
+			From MNV version 4.5 until 5.0, every Ex command in
 			between the `:if` and `:endif` is ignored.  These two
 			commands were just to allow for future expansions in a
 			backward compatible way.  Nesting was allowed.  Note
@@ -3554,7 +3554,7 @@ text...
 				:  version-5-specific-commands
 				:endif
 <			The commands still need to be parsed to find the
-			`endif`.  Sometimes an older Vim has a problem with a
+			`endif`.  Sometimes an older MNV has a problem with a
 			new command.  For example, `:silent` is recognized as
 			a `:substitute` command.  In that case `:execute` can
 			avoid problems: >
@@ -3562,7 +3562,7 @@ text...
 				:  execute "silent 1,$delete"
 				:endif
 <
-			In |Vim9| script `:endif` cannot be shortened, to
+			In |MNV9| script `:endif` cannot be shortened, to
 			improve script readability.
 			NOTE: The `:append` and `:insert` commands don't work
 			properly in between `:if` and `:endif`.
@@ -3571,13 +3571,13 @@ text...
 :el[se]			Execute the commands until the next matching `:else`
 			or `:endif` if they previously were not being
 			executed.
-			In |Vim9| script `:else` cannot be shortened, to
+			In |MNV9| script `:else` cannot be shortened, to
 			improve script readability.
 
 					*:elseif* *:elsei* *E582* *E584*
 :elsei[f] {expr1}	Short for `:else` `:if`, with the addition that there
 			is no extra `:endif`.
-			In |Vim9| script `:elseif` cannot be shortened, to
+			In |MNV9| script `:elseif` cannot be shortened, to
 			improve script readability.
 
 :wh[ile] {expr1}			*:while* *:endwhile* *:wh* *:endw*
@@ -3593,7 +3593,7 @@ text...
 				   :let lnum = lnum + 1
 				:endwhile
 <
-			In |Vim9| script `:while`  and `:endwhile` cannot be
+			In |MNV9| script `:while`  and `:endwhile` cannot be
 			shortened, to improve script readability.
 			NOTE: The `:append` and `:insert` commands don't work
 			properly inside a `:while` and `:for` loop.
@@ -3605,7 +3605,7 @@ text...
 			a |Tuple|, a |Blob| or a |String|. *E1177*
 
 			Variable {var} is set to the value of each item.
-			In |Vim9| script the loop variable must not have been
+			In |MNV9| script the loop variable must not have been
 			declared yet, unless when it is a
 			global/window/tab/buffer variable.
 
@@ -3616,7 +3616,7 @@ text...
 				:for item in copy(mylist)
 <
 			When {object} is a |List| and not making a copy, in
-			legacy script Vim stores a reference to the next item
+			legacy script MNV stores a reference to the next item
 			in the |List| before executing the commands with the
 			current item.  Thus the current item can be removed
 			without effect.  Removing any later item means it will
@@ -3627,18 +3627,18 @@ text...
 				endfor
 <			Note that reordering the |List| (e.g., with sort() or
 			reverse()) may have unexpected effects.
-			In |Vim9| script the index is used.  If an item before
+			In |MNV9| script the index is used.  If an item before
 			the current one is deleted the next item will be
 			skipped.
 
-			When {object} is a |Blob|, Vim always makes a copy to
+			When {object} is a |Blob|, MNV always makes a copy to
 			iterate over.  Unlike with |List|, modifying the
 			|Blob| does not affect the iteration.
 
 			When {object} is a |String| each item is a string with
 			one character, plus any combining characters.
 
-			In |Vim9| script `:endfor` cannot be shortened, to
+			In |MNV9| script `:endfor` cannot be shortened, to
 			improve script readability.
 
 :for [{var1}, {var2}, ...] in {listlist}
@@ -3660,7 +3660,7 @@ text...
 			all nested `:try`s inside the loop.  The outermost
 			`:endtry` then jumps back to the start of the loop.
 
-			In |Vim9| script `:cont` is the shortest form, to
+			In |MNV9| script `:cont` is the shortest form, to
 			improve script readability.
 						*:break* *:brea* *E587*
 :brea[k]		When used inside a `:while` or `:for` loop, skips to
@@ -3673,7 +3673,7 @@ text...
 			all nested `:try`s inside the loop.  The outermost
 			`:endtry` then jumps to the command after the loop.
 
-			In |Vim9| script `:break` cannot be shortened, to
+			In |MNV9| script `:break` cannot be shortened, to
 			improve script readability.
 
 :try						*:try* *:endt* *:endtry*
@@ -3701,19 +3701,19 @@ text...
 			command (see `:catch`).  In this case, the script
 			processing is not terminated.
 
-			The value "Vim:Interrupt" is used for an interrupt
-			exception.  An error in a Vim command is converted
-			to a value of the form "Vim({command}):{errmsg}",
+			The value "MNV:Interrupt" is used for an interrupt
+			exception.  An error in a MNV command is converted
+			to a value of the form "MNV({command}):{errmsg}",
 			other errors are converted to a value of the form
-			"Vim:{errmsg}".  {command} is the full command name,
+			"MNV:{errmsg}".  {command} is the full command name,
 			and {errmsg} is the message that is displayed if the
 			error exception is not caught, always beginning with
 			the error number.
 			Examples: >
-		try | sleep 100 | catch /^Vim:Interrupt$/ | endtry
-		try | edit | catch /^Vim(edit):E\d\+/ | echo "error" | endtry
+		try | sleep 100 | catch /^MNV:Interrupt$/ | endtry
+		try | edit | catch /^MNV(edit):E\d\+/ | echo "error" | endtry
 <
-			In |Vim9| script `:endtry` cannot be shortened, to
+			In |MNV9| script `:endtry` cannot be shortened, to
 			improve script readability.
 
 					*:cat* *:catch*
@@ -3724,16 +3724,16 @@ text...
 			matching {pattern} is being thrown and has not yet
 			been caught by a previous `:catch`.  Otherwise, these
 			commands are skipped.
-			Pattern can start with "Vim({cmd})" to indicate an
+			Pattern can start with "MNV({cmd})" to indicate an
 			exception that occurred when executing the Ex command
 			{cmd}.  When {pattern} is omitted all errors are
 			caught. Examples: >
-		:catch /^Vim:Interrupt$/	 " catch interrupts (CTRL-C)
-		:catch /^Vim\%((\S\+)\)\=:E/	 " catch all Vim errors
-		:catch /^Vim\%((\S\+)\)\=:/	 " catch errors and interrupts
-		:catch /^Vim(write):/		 " catch all errors in :write
-		:catch /^Vim(!):/		 " catch all errors in :!
-		:catch /^Vim\%((\S\+)\)\=:E123:/ " catch error E123
+		:catch /^MNV:Interrupt$/	 " catch interrupts (CTRL-C)
+		:catch /^MNV\%((\S\+)\)\=:E/	 " catch all MNV errors
+		:catch /^MNV\%((\S\+)\)\=:/	 " catch errors and interrupts
+		:catch /^MNV(write):/		 " catch all errors in :write
+		:catch /^MNV(!):/		 " catch all errors in :!
+		:catch /^MNV\%((\S\+)\)\=:E123:/ " catch error E123
 		:catch /my-exception/		 " catch user exception
 		:catch /.*/			 " catch everything
 		:catch				 " same as /.*/
@@ -3747,7 +3747,7 @@ text...
 			NOTE: It is not reliable to ":catch" the TEXT of
 			an error message because it may vary in different
 			locales.
-			In |Vim9| script `:catch` cannot be shortened, to
+			In |MNV9| script `:catch` cannot be shortened, to
 			improve script readability.
 
 					*:fina* *:finally* *E606* *E607*
@@ -3758,7 +3758,7 @@ text...
 			`:break`, `:finish`, or `:return`, or by an error or
 			interrupt or exception (see `:throw`).
 
-			In |Vim9| script `:finally` cannot be shortened, to
+			In |MNV9| script `:finally` cannot be shortened, to
 			improve script readability and avoid confusion with
 			`:final`.
 
@@ -3784,7 +3784,7 @@ text...
 			for when an error causes the parsing to skip the whole
 			line and not see the "|" that separates the commands.
 
-			In |Vim9| script `:throw` cannot be shortened, to
+			In |MNV9| script `:throw` cannot be shortened, to
 			improve script readability.
 
 							*:ec* *:echo*
@@ -3799,7 +3799,7 @@ text...
 		:echo "the value of 'shell' is" &shell
 <							*:echo-redraw*
 			A later redraw may make the message disappear again.
-			And since Vim mostly postpones redrawing until it's
+			And since MNV mostly postpones redrawing until it's
 			finished with a sequence of commands this happens
 			quite often.  To avoid that a command from before the
 			`:echo` causes a redraw afterwards (redraws are often
@@ -3816,7 +3816,7 @@ text...
 				:echon "the value of 'shell' is " &shell
 <
 			Note the difference between using `:echo`, which is a
-			Vim command, and `:!echo`, which is an external shell
+			MNV command, and `:!echo`, which is an external shell
 			command: >
 		:!echo %		--> filename
 <			The arguments of ":!" are expanded, see |:_%|. >
@@ -3867,7 +3867,7 @@ text...
 			When [N] is given then the window will show up for
 			this number of seconds.  The last `:echowindow` with a
 			count matters, it is used once only.
-			The message window is available when Vim was compiled
+			The message window is available when MNV was compiled
 			with the +timer and the +popupwin features.
 
 							*:echoe* *:echoerr*
@@ -3899,7 +3899,7 @@ text...
 			the `append()` call appends the List with text to the
 			buffer.  This is similar to `:call` but works with any
 			expression.
-			In |Vim9| script an expression without an effect will
+			In |MNV9| script an expression without an effect will
 			result in error *E1207* .  This should help noticing
 			mistakes.
 
@@ -3929,14 +3929,14 @@ text...
 		:execute '!ls' | echo "theend"
 
 <			":execute" is also a nice way to avoid having to type
-			control characters in a Vim script for a ":normal"
+			control characters in a MNV script for a ":normal"
 			command: >
 		:execute "normal ixxx\<Esc>"
 <			This has an <Esc> character, see |expr-string|.
 
 			Be careful to correctly escape special characters in
 			file names.  The |fnameescape()| function can be used
-			for Vim commands, |shellescape()| for |:!| commands.
+			for MNV commands, |shellescape()| for |:!| commands.
 			Examples: >
 		:execute "e " .. fnameescape(filename)
 		:execute "!ls " .. shellescape(filename, 1)
@@ -3944,11 +3944,11 @@ text...
 			Note: The executed string may be any command-line, but
 			starting or ending "if", "while" and "for" does not
 			always work, because when commands are skipped the
-			":execute" is not evaluated and Vim loses track of
+			":execute" is not evaluated and MNV loses track of
 			where blocks start and end.  Also "break" and
 			"continue" should not be inside ":execute".
 			This example does not work, because the ":execute" is
-			not evaluated and Vim does not see the "while", and
+			not evaluated and MNV does not see the "while", and
 			gives an error for finding an ":endwhile": >
 		:if 0
 		: execute 'while i > 5'
@@ -3971,10 +3971,10 @@ text...
 ==============================================================================
 8. Exception handling					*exception-handling*
 
-The Vim script language comprises an exception handling feature.  This section
-explains how it can be used in a Vim script.
+The MNV script language comprises an exception handling feature.  This section
+explains how it can be used in a MNV script.
 
-Exceptions may be raised by Vim on an error or on interrupt, see
+Exceptions may be raised by MNV on an error or on interrupt, see
 |catch-errors| and |catch-interrupt|.  You can also explicitly throw an
 exception by using the ":throw" command, see |throw-catch|.
 
@@ -4081,7 +4081,7 @@ When none of the active try conditionals catches an exception, just their
 finally clauses are executed.  Thereafter, the script processing terminates.
 An error message is displayed in case of an uncaught exception explicitly
 thrown by a ":throw" command.  For uncaught error and interrupt exceptions
-implicitly raised by Vim, the error message(s) or interrupt message are shown
+implicitly raised by MNV, the error message(s) or interrupt message are shown
 as usual.
 
 For examples see |throw-catch|.
@@ -4283,7 +4283,7 @@ catch clause: >
 This displays "Caught foo, throw bar" and then "Caught bar".
 
 							*rethrow*
-There is no real rethrow in the Vim script language, but you may throw
+There is no real rethrow in the MNV script language, but you may throw
 "v:exception" instead: >
 
 	:function! Bar()
@@ -4295,10 +4295,10 @@ There is no real rethrow in the Vim script language, but you may throw
 	:  endtry
 	:endfunction
 <							*try-echoerr*
-Note that this method cannot be used to "rethrow" Vim error or interrupt
-exceptions, because it is not possible to fake Vim internal exceptions.
+Note that this method cannot be used to "rethrow" MNV error or interrupt
+exceptions, because it is not possible to fake MNV internal exceptions.
 Trying so causes an error exception.  You should throw your own exception
-denoting the situation.  If you want to cause a Vim error exception containing
+denoting the situation.  If you want to cause a MNV error exception containing
 the original error exception value, you can use the |:echoerr| command: >
 
 	:try
@@ -4313,7 +4313,7 @@ the original error exception value, you can use the |:echoerr| command: >
 
 This code displays
 
-	Vim(echoerr):Vim:E492: Not an editor command:	asdf ~
+	MNV(echoerr):MNV:E492: Not an editor command:	asdf ~
 
 
 CLEANUP CODE						*try-finally*
@@ -4423,9 +4423,9 @@ the right pattern for the ":catch" command, you have to know how the format of
 the error exception is.
    Error exceptions have the following format: >
 
-	Vim({cmdname}):{errmsg}
+	MNV({cmdname}):{errmsg}
 or >
-	Vim:{errmsg}
+	MNV:{errmsg}
 
 {cmdname} is the name of the command that failed; the second form is used when
 the command name is not known.  {errmsg} is the error message usually produced
@@ -4440,19 +4440,19 @@ The command >
 normally produces the error message >
 	E108: No such variable: "novar"
 which is converted inside try conditionals to an exception >
-	Vim(unlet):E108: No such variable: "novar"
+	MNV(unlet):E108: No such variable: "novar"
 
 The command >
 	:dwim
 normally produces the error message >
 	E492: Not an editor command: dwim
 which is converted inside try conditionals to an exception >
-	Vim:E492: Not an editor command: dwim
+	MNV:E492: Not an editor command: dwim
 
 You can catch all ":unlet" errors by a >
-	:catch /^Vim(unlet):/
+	:catch /^MNV(unlet):/
 or all errors for misspelled command names by a >
-	:catch /^Vim:E492:/
+	:catch /^MNV:E492:/
 
 Some error messages may be produced by different commands: >
 	:function nofunc
@@ -4461,12 +4461,12 @@ and >
 both produce the error message >
 	E128: Function name must start with a capital: nofunc
 which is converted inside try conditionals to an exception >
-	Vim(function):E128: Function name must start with a capital: nofunc
+	MNV(function):E128: Function name must start with a capital: nofunc
 or >
-	Vim(delfunction):E128: Function name must start with a capital: nofunc
+	MNV(delfunction):E128: Function name must start with a capital: nofunc
 respectively.  You can catch the error by its number independently on the
 command that caused it if you use the following pattern: >
-	:catch /^Vim(\a\+):E128:/
+	:catch /^MNV(\a\+):E128:/
 
 Some commands like >
 	:let x = novar
@@ -4475,16 +4475,16 @@ produce multiple error messages, here: >
 	E15: Invalid expression:  novar
 Only the first is used for the exception value, since it is the most specific
 one (see |except-several-errors|).  So you can catch it by >
-	:catch /^Vim(\a\+):E121:/
+	:catch /^MNV(\a\+):E121:/
 
 You can catch all errors related to the name "nofunc" by >
 	:catch /\<nofunc\>/
 
-You can catch all Vim errors in the ":write" and ":read" commands by >
-	:catch /^Vim(\(write\|read\)):E\d\+:/
+You can catch all MNV errors in the ":write" and ":read" commands by >
+	:catch /^MNV(\(write\|read\)):E\d\+:/
 
-You can catch all Vim errors by the pattern >
-	:catch /^Vim\((\a\+)\)\=:E\d\+:/
+You can catch all MNV errors by the pattern >
+	:catch /^MNV\((\a\+)\)\=:E\d\+:/
 <
 							*catch-text*
 NOTE: You should never catch the error message text itself: >
@@ -4492,12 +4492,12 @@ NOTE: You should never catch the error message text itself: >
 only works in the English locale, but not when the user has selected
 a different language by the |:language| command.  It is however helpful to
 cite the message text in a comment: >
-	:catch /^Vim(\a\+):E108:/   " No such variable
+	:catch /^MNV(\a\+):E108:/   " No such variable
 
 
 IGNORING ERRORS						*ignore-errors*
 
-You can ignore errors in a specific Vim command by catching them locally: >
+You can ignore errors in a specific MNV command by catching them locally: >
 
 	:try
 	:  write
@@ -4517,7 +4517,7 @@ then hide the error from the user.
 
 	:try
 	:  write
-	:catch /^Vim(write):/
+	:catch /^MNV(write):/
 	:endtry
 
 which only catches real write errors.  So catch only what you'd like to ignore
@@ -4533,7 +4533,7 @@ This works also when a try conditional is active.
 CATCHING INTERRUPTS					*catch-interrupt*
 
 When there are active try conditionals, an interrupt (CTRL-C) is converted to
-the exception "Vim:Interrupt".  You can catch it like every exception.  The
+the exception "MNV:Interrupt".  You can catch it like every exception.  The
 script is not terminated, then.
    Example: >
 
@@ -4560,7 +4560,7 @@ script is not terminated, then.
 	:      echo "\nIllegal command:" command
 	:      continue
 	:    endif
-	:  catch /^Vim:Interrupt$/
+	:  catch /^MNV:Interrupt$/
 	:    echo "\nCommand interrupted"
 	:    " Caught the interrupt.  Continue with next prompt.
 	:  endtry
@@ -4595,7 +4595,7 @@ a script in order to catch unexpected things.
 	:
 	:  " handle known problem
 	:
-	:catch /^Vim:Interrupt$/
+	:catch /^MNV:Interrupt$/
 	:    echo "Script interrupted"
 	:catch /.*/
 	:  echo "Internal error (" .. v:exception .. ")"
@@ -4677,7 +4677,7 @@ is thrown that can be caught by the caller of the command.
 
 This just displays: >
 
-	Vim(write):E212: Can't open file for writing (/i/m/p/o/s/s/i/b/l/e)
+	MNV(write):E212: Can't open file for writing (/i/m/p/o/s/s/i/b/l/e)
 
 If you really need to execute the autocommands even when the main action
 fails, trigger the event from the catch clause.
@@ -4751,7 +4751,7 @@ some way. >
 	:  else
 	:    echo "Error after writing"
 	:  endif
-	:catch /^Vim(write):/
+	:catch /^MNV(write):/
 	:    echo "Error on writing"
 	:endtry
 
@@ -4781,7 +4781,7 @@ EXCEPTION HIERARCHIES AND PARAMETERIZED EXCEPTIONS	*except-hier-param*
 
 Some programming languages allow to use hierarchies of exception classes or to
 pass additional information with the object of an exception class.  You can do
-similar things in Vim.
+similar things in MNV.
    In order to throw an exception from a hierarchy, just throw the complete
 class name with the components separated by a colon, for instance throw the
 string "EXCEPT:MATHERR:OVERFLOW" for an overflow in a mathematical library.
@@ -4821,7 +4821,7 @@ parentheses can be cut out from |v:exception| with the ":substitute" command.
 	:function! Write(file)
 	:  try
 	:    execute "write" fnameescape(a:file)
-	:  catch /^Vim(write):/
+	:  catch /^MNV(write):/
 	:    throw "EXCEPT:IO(" .. getcwd() .. ", " .. a:file .. "):WRITEERR"
 	:  endtry
 	:endfunction
@@ -4850,10 +4850,10 @@ parentheses can be cut out from |v:exception| with the ":substitute" command.
 	:
 	:endtry
 
-The exceptions raised by Vim itself (on error or when pressing CTRL-C) use
-a flat hierarchy:  they are all in the "Vim" class.  You cannot throw yourself
-exceptions with the "Vim" prefix; they are reserved for Vim.
-   Vim error exceptions are parameterized with the name of the command that
+The exceptions raised by MNV itself (on error or when pressing CTRL-C) use
+a flat hierarchy:  they are all in the "MNV" class.  You cannot throw yourself
+exceptions with the "MNV" prefix; they are reserved for MNV.
+   MNV error exceptions are parameterized with the name of the command that
 failed, if known.  See |catch-errors|.
 
 
@@ -4863,7 +4863,7 @@ The exception handling concept requires that the command sequence causing the
 exception is aborted immediately and control is transferred to finally clauses
 and/or a catch clause.
 
-In the Vim script language there are cases where scripts and functions
+In the MNV script language there are cases where scripts and functions
 continue after an error: in functions without the "abort" flag or in a command
 after ":silent!", control flow goes to the following line, and outside
 functions, control flow goes to the line following the outermost ":endwhile"
@@ -4880,7 +4880,7 @@ by specifying a finally clause.)
 
 When no try conditional is active, the usual abortion and continuation
 behavior is used instead of immediate abortion.  This ensures compatibility of
-scripts written for Vim 6.1 and earlier.
+scripts written for MNV 6.1 and earlier.
 
 However, when sourcing an existing script that does not use exception handling
 commands (or when calling one of its functions) from inside an active try
@@ -4918,7 +4918,7 @@ clauses, however, is executed.
 
 This displays: >
     inner finally
-    outer catch-all caught "Vim(catch):E54: Unmatched \("
+    outer catch-all caught "MNV(catch):E54: Unmatched \("
     outer finally
 The original exception is discarded and an error exception is raised, instead.
 
@@ -4942,7 +4942,7 @@ causes >
 	E121: Undefined variable: novar
 	E15: Invalid expression: novar
 The value of the error exception inside try conditionals is: >
-	Vim(echo):E121: Undefined variable: novar
+	MNV(echo):E121: Undefined variable: novar
 <							*except-syntax-error*
 But when a syntax error is detected after a normal error in the same command,
 the syntax error is used for the exception being thrown.
@@ -4952,7 +4952,7 @@ causes >
 	E108: No such variable: "novar"
 	E488: Trailing characters
 The value of the error exception inside try conditionals is: >
-	Vim(unlet):E488: Trailing characters
+	MNV(unlet):E488: Trailing characters
 This is done because the syntax error might change the execution path in a way
 not intended by the user.  Example: >
 	try
@@ -4960,7 +4960,7 @@ not intended by the user.  Example: >
 	catch /.*/
 	    echo "outer catch:" v:exception
 	endtry
-This displays "outer catch: Vim(unlet):E488: Trailing characters", and then
+This displays "outer catch: MNV(unlet):E488: Trailing characters", and then
 a "E600: Missing :endtry" error message is given, see |except-single-line|.
 
 ==============================================================================
@@ -5012,7 +5012,7 @@ As a one-liner: >
 
 scanf() replacement ~
 							*sscanf*
-There is no sscanf() function in Vim.  If you need to extract parts from a
+There is no sscanf() function in MNV.  If you need to extract parts from a
 line, you can use matchstr() and substitute() to do it.  This example shows
 how to get the file name, line number and column number out of a line like
 "foobar.txt, 123, 45". >
@@ -5048,27 +5048,27 @@ the list, this code can be used as a base: >
     enddef
 
 ==============================================================================
-10. Vim script versions		*vimscript-version* *vimscript-versions*
+10. MNV script versions		*mnvscript-version* *mnvscript-versions*
 							*scriptversion*
-Over time many features have been added to Vim script.  This includes Ex
+Over time many features have been added to MNV script.  This includes Ex
 commands, functions, variable types, etc.  Each individual feature can be
 checked with the |has()| and |exists()| functions.
 
-Sometimes old syntax of functionality gets in the way of making Vim better.
-When support is taken away this will break older Vim scripts.  To make this
-explicit the |:scriptversion| command can be used.  When a Vim script is not
-compatible with older versions of Vim this will give an explicit error,
+Sometimes old syntax of functionality gets in the way of making MNV better.
+When support is taken away this will break older MNV scripts.  To make this
+explicit the |:scriptversion| command can be used.  When a MNV script is not
+compatible with older versions of MNV this will give an explicit error,
 instead of failing in mysterious ways.
 
-When using a legacy function, defined with `:function`, in |Vim9| script then
+When using a legacy function, defined with `:function`, in |MNV9| script then
 scriptversion 4 is used.
 
 							*scriptversion-1*  >
  :scriptversion 1
-<	This is the original Vim script, same as not using a |:scriptversion|
+<	This is the original MNV script, same as not using a |:scriptversion|
 	command.  Can be used to go back to old syntax for a range of lines.
 	Test for support with: >
-		has('vimscript-1')
+		has('mnvscript-1')
 
 <							*scriptversion-2*  >
  :scriptversion 2
@@ -5078,12 +5078,12 @@ scriptversion 4 is used.
 
 							*scriptversion-3*  >
  :scriptversion 3
-<	All |vim-variable|s must be prefixed by "v:".  E.g. "version" doesn't
+<	All |mnv-variable|s must be prefixed by "v:".  E.g. "version" doesn't
 	work as |v:version| anymore, it can be used as a normal variable.
 	Same for some obvious names as "count" and others.
 
 	Test for support with: >
-		has('vimscript-3')
+		has('mnvscript-3')
 <
 							*scriptversion-4*  >
  :scriptversion 4
@@ -5103,13 +5103,13 @@ scriptversion 4 is used.
 <	The quotes must be surrounded by digits.
 
 	Test for support with: >
-		has('vimscript-4')
+		has('mnvscript-4')
 
 ==============================================================================
 11. No +eval feature				*no-eval-feature*
 
 When the |+eval| feature was disabled at compile time, none of the expression
-evaluation commands are available.  To prevent this from causing Vim scripts
+evaluation commands are available.  To prevent this from causing MNV scripts
 to generate all kinds of errors, the ":if" and ":endif" commands are still
 recognized, though the argument of the ":if" and everything between the ":if"
 and the matching ":endif" is ignored.  Nesting of ":if" blocks is allowed, but
@@ -5126,7 +5126,7 @@ missing: >
 	:endif
 
 To execute a command only when the |+eval| feature is disabled can be done in
-two ways.  The simplest is to exit the script (or Vim) prematurely: >
+two ways.  The simplest is to exit the script (or MNV) prematurely: >
 	if 1
 	   echo "commands executed with +eval"
 	   finish
@@ -5175,7 +5175,7 @@ A few options contain an expression.  When this expression is evaluated it may
 have to be done in the sandbox to avoid a security risk.  But the sandbox is
 restrictive, thus this only happens when the option was set from an insecure
 location.  Insecure in this context are:
-- sourcing a .vimrc or .exrc in the current directory
+- sourcing a .mnvrc or .exrc in the current directory
 - while executing in the sandbox
 - value coming from a modeline
 - executing a function that was defined in the sandbox
@@ -5187,8 +5187,8 @@ option will still be marked as it was set in the sandbox.
 13. Textlock							*textlock*
 
 In a few situations it is not allowed to change the text in the buffer, jump
-to another window and some other things that might confuse or break what Vim
-is currently doing.  This mostly applies to things that happen when Vim is
+to another window and some other things that might confuse or break what MNV
+is currently doing.  This mostly applies to things that happen when MNV is
 actually doing something else.  For example, evaluating the 'balloonexpr' may
 happen any moment the mouse cursor is resting at some position.
 
@@ -5196,31 +5196,31 @@ This is not allowed when the textlock is active:
 	- changing the buffer text
 	- jumping to another buffer or window
 	- editing another file
-	- closing a window or quitting Vim
+	- closing a window or quitting MNV
 	- etc.
 
 ==============================================================================
-14. Vim script library					*vim-script-library*
+14. MNV script library					*mnv-script-library*
 
-Vim comes bundled with a Vim script library, that can be used by runtime,
+MNV comes bundled with a MNV script library, that can be used by runtime,
 script authors.  Currently, it only includes very few functions, but it may
 grow over time.
 
-The functions are available as |Vim9-script| as well as using legacy Vim
-script (to be used for non Vim 9.0 versions and Neovim).
+The functions are available as |MNV9-script| as well as using legacy MNV
+script (to be used for non MNV 9.0 versions and Neomnv).
 
-							*dist#vim* *dist#vim9*
-The functions make use of the autoloaded prefix "dist#vim" (for legacy Vim
-script and Neovim) and "dist#vim9" for Vim9 script.
+							*dist#mnv* *dist#mnv9*
+The functions make use of the autoloaded prefix "dist#mnv" (for legacy MNV
+script and Neomnv) and "dist#mnv9" for MNV9 script.
 
 The following functions are available:
 
-dist#vim#IsSafeExecutable(filetype, executable) ~
-dist#vim9#IsSafeExecutable(filetype:string, executable:string): bool ~
+dist#mnv#IsSafeExecutable(filetype, executable) ~
+dist#mnv9#IsSafeExecutable(filetype:string, executable:string): bool ~
 
 This function takes a filetype and an executable and checks whether it is safe
 to execute the given executable.  For security reasons users may not want to
-have Vim execute random executables or may have forbidden to do so for
+have MNV execute random executables or may have forbidden to do so for
 specific filetypes by setting the "<filetype>_exec" variable (|plugin_exec|).
 
 It returns |true| or |false| to indicate whether the plugin should run the
@@ -5233,11 +5233,11 @@ given executable.  It takes the following arguments:
 
 							*package-open*
 The |:Open| and |:Launch| command are provided by the included plugin
-$VIMRUNTIME/plugin/openPlugin.vim
+$MNVRUNTIME/plugin/openPlugin.mnv
 
-					*dist#vim9#Open()* *:Open* *:URLOpen*
+					*dist#mnv9#Open()* *:Open* *:URLOpen*
 						      *g:Openprg* *gx*
-dist#vim9#Open(file: string) ~
+dist#mnv9#Open(file: string) ~
 
 Opens `path` with the system default handler (macOS `open`, Windows
 `start`, Linux `xdg-open`, …).  If the variable |g:Openprg| exists the
@@ -5262,39 +5262,39 @@ Associated setting variables:
 
 NOTE: Escaping of the path is automatically applied.
 
-Usage: >vim
-	:call dist#vim9#Open(<path>)
+Usage: >mnv
+	:call dist#mnv9#Open(<path>)
 	:Open <path>
 	:URLOpen <path>
 <
-						*dist#vim9#Launch()* *:Launch*
-dist#vim9#Launch(file: string) ~
+						*dist#mnv9#Launch()* *:Launch*
+dist#mnv9#Launch(file: string) ~
 
 Launches <args> with the appropriate system programs.  Intended for launching
-GUI programs within Vim.
+GUI programs within MNV.
 
 The |:Launch| user command uses shell completion for its first argument.
 
 NOTE: escaping of <args> is left to the user
 
 Examples: >
-	vim9script
+	mnv9script
 
-	import autoload 'dist/vim9.vim'
+	import autoload 'dist/mnv9.mnv'
 	# Execute 'makeprg' into another xterm window
-	vim9.Launch('xterm ' .. expandcmd(&makeprg))
+	mnv9.Launch('xterm ' .. expandcmd(&makeprg))
 <
 
-Usage: >vim
-	:call dist#vim9#Launch(<args>)
+Usage: >mnv
+	:call dist#mnv9#Launch(<args>)
 	:Launch <app> <args>.
 <
 ==============================================================================
 15. Clipboard providers				*clipboard-providers*
 
 The clipboard provider feature allows the "+" |quoteplus| and "*" |quotestar|
-registers to be overridden by custom Vim script functions.  There can be
-multiple providers, and Vim chooses which one to use based on 'clipmethod'.
+registers to be overridden by custom MNV script functions.  There can be
+multiple providers, and MNV chooses which one to use based on 'clipmethod'.
 
 Despite the name, it should be treated separate from the clipboard
 functionality.  It essentially overrides the existing behaviour of the
@@ -5317,16 +5317,16 @@ check if the "+" is available for use, it can be checked with: >
 	if has('unnamedplus')
 <
 						*clipboard-providers-clipmethod*
-To integrate the providers with Vim's clipboard functionality, the
+To integrate the providers with MNV's clipboard functionality, the
 'clipmethod' option is used on all platforms.  The names of clipboard
-providers should be put inside the option, and if Vim chooses it, then it
+providers should be put inside the option, and if MNV chooses it, then it
 overrides the "+" and "*" registers.  Note that the "+" and "*" will not be
-saved in the viminfo at all.
+saved in the mnvinfo at all.
 
 						*clipboard-providers-define*
-To define a clipboard provider, the |v:clipproviders| vim variable is used. It
+To define a clipboard provider, the |v:clipproviders| mnv variable is used. It
 is a |dict| where each key is the clipboard provider name, and the value is
-another |dict| declaring the "available", "copy", and "paste" callbacks: >vim
+another |dict| declaring the "available", "copy", and "paste" callbacks: >mnv
 	let v:clipproviders["myprovider"] = {
 	    \ "available": function("Available"),
 	    \ "paste": {
@@ -5344,7 +5344,7 @@ Each callback can either be a name of a function in a string, a |Funcref|, or
 a |lambda| expression.
 
 With the exception of the "available" callback if a callback is not provided,
-Vim will not invoke anything, and this is not an error.
+MNV will not invoke anything, and this is not an error.
 
 						*clipboard-providers-textlock*
 In both the "paste" and "copy" callbacks, it is not allowed to change the
@@ -5352,9 +5352,9 @@ buffer text, see |textlock|.
 
 						*clipboard-providers-available*
 The "available" callback is optional, does not take any arguments and should
-return a |boolean| or non-zero number, which tells Vim if it is available
-for use.  If it is not, then Vim skips over it and tries the next 'clipmethod'
-value.  If the "available" callback is not provided, Vim assumes the provider
+return a |boolean| or non-zero number, which tells MNV if it is available
+for use.  If it is not, then MNV skips over it and tries the next 'clipmethod'
+value.  If the "available" callback is not provided, MNV assumes the provider
 is always available for use (true).
 
 						*clipboard-providers-paste*
@@ -5365,7 +5365,7 @@ It should return a |list| or |tuple| containing the following elements in
 order:
 	1. Register type (and optional width) conforming to |setreg()|.  If it
 	   is an empty string, then the type is automatically chosen.
-	2. A |list| of strings to return to Vim, each representing a line.
+	2. A |list| of strings to return to MNV, each representing a line.
 
 						*clipboard-providers-copy*
 The "copy" callback returns nothing and takes the following arguments in the
@@ -5374,7 +5374,7 @@ following order:
 	2. Register type conforming to |getregtype()|
 	3. List of strings to use, each representing a line.
 
-Below is a sample script that makes use of the clipboard provider feature: >vim
+Below is a sample script that makes use of the clipboard provider feature: >mnv
 	func Available()
 	    return v:true
 	endfunc
@@ -5402,4 +5402,4 @@ Below is a sample script that makes use of the clipboard provider feature: >vim
 	    \ }
 	set clipmethod^=test
 <
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

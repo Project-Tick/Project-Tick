@@ -1,17 +1,17 @@
-# Aap recipe for French Vim spell files.
+# Aap recipe for French MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = fr_FR.aff fr_FR.dic
 
 all: $SPELLDIR/fr.latin1.spl $SPELLDIR/fr.utf-8.spl ../README_fr.txt
 
-# The spell file is iso-8859-15, but Vim normally uses "latin1" for this.
+# The spell file is iso-8859-15, but MNV normally uses "latin1" for this.
 # This is OK for the utf-8 files, but for latin1 we need to avoid the "oe"
 # character.  When unpacking we create four files:
 #    fr_FR_latin1.aff    modified file
@@ -26,13 +26,13 @@ $SPELLDIR/fr.latin1.spl : $FILES
         :copy {force} fr_FR_latin1.aff fr_FR.aff
         :copy {force} fr_FR_latin1.dic fr_FR.dic
         :sys env LANG=fr_FR.ISO-8859-15@euro
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/fr fr_FR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/fr fr_FR" -c q
 
 $SPELLDIR/fr.utf-8.spl : $FILES
         :copy {force} fr_FR_iso15.aff fr_FR.aff
         :copy {force} fr_FR_iso15.dic fr_FR.dic
         :sys env LANG=fr_FR.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/fr fr_FR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/fr fr_FR" -c q
 
 ../README_fr.txt : README_fr_FR.txt
         :cat $source >!$target
@@ -65,24 +65,24 @@ fr_FR.aff fr_FR.dic: {buildcheck=}
         :copy fr_FR.dic fr_FR_iso15.dic
         # For the latin1 .dic file change all the "oe" characters to the two
         # characters "oe".
-        :sys $VIM -u NONE -e -c "set enc=latin1"
+        :sys $MNV -u NONE -e -c "set enc=latin1"
                     -c "e fr_FR.dic"
-                    -c "%s/½/oe/g"
+                    -c "%s/ï¿½/oe/g"
                     -c "w! fr_FR_latin1.dic"
                     -c q
         # For the latin1 .aff file delete all the "oe" and "OE" characters and
         # delete the REP lines with those characters.
-        :sys $VIM -u NONE -e -c "set enc=latin1"
+        :sys $MNV -u NONE -e -c "set enc=latin1"
                     -c "e fr_FR.aff"
-                    -c "%s/½//g"
-                    -c "%s/¼//g"
+                    -c "%s/ï¿½//g"
+                    -c "%s/ï¿½//g"
                     -c "%g/REP.*oe/d"
                     -c "w! fr_FR_latin1.aff"
                     -c q
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 # This uses the iso-8859-15 files.
 diff:
         :assertpkg diff
@@ -123,4 +123,4 @@ check:
             :delete fr_FR.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

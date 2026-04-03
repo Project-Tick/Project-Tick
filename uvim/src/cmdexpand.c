@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * cmdexpand.c: functions for command-line completion
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static int	cmd_showtail;	// Only show path tail in lists ?
 static int	may_expand_pattern = FALSE;
@@ -76,7 +76,7 @@ cmdline_fuzzy_completion_supported(expand_T *xp)
 	break;
     }
 
-    return vim_strchr(p_wop, WOP_FUZZY) != NULL;
+    return mnv_strchr(p_wop, WOP_FUZZY) != NULL;
 }
 
 /*
@@ -87,7 +87,7 @@ cmdline_fuzzy_completion_supported(expand_T *xp)
     int
 cmdline_fuzzy_complete(char_u *fuzzystr)
 {
-    return vim_strchr(p_wop, WOP_FUZZY) != NULL && *fuzzystr != NUL;
+    return mnv_strchr(p_wop, WOP_FUZZY) != NULL && *fuzzystr != NUL;
 }
 
 /*
@@ -134,16 +134,16 @@ wildescape(
 	    if (xp->xp_backslash & XP_BS_THREE)
 	    {
 		char *pat = (xp->xp_backslash & XP_BS_COMMA) ?  " ," : " ";
-		p = vim_strsave_escaped(files[i], (char_u *)pat);
+		p = mnv_strsave_escaped(files[i], (char_u *)pat);
 		if (p != NULL)
 		{
-		    vim_free(files[i]);
+		    mnv_free(files[i]);
 		    files[i] = p;
 #if defined(BACKSLASH_IN_FILENAME)
-		    p = vim_strsave_escaped(files[i], (char_u *)" ");
+		    p = mnv_strsave_escaped(files[i], (char_u *)" ");
 		    if (p != NULL)
 		    {
-			vim_free(files[i]);
+			mnv_free(files[i]);
 			files[i] = p;
 		    }
 #endif
@@ -151,25 +151,25 @@ wildescape(
 	    }
 	    else if (xp->xp_backslash & XP_BS_COMMA)
 	    {
-		if (vim_strchr(files[i], ',') != NULL)
+		if (mnv_strchr(files[i], ',') != NULL)
 		{
-		    p = vim_strsave_escaped(files[i], (char_u *)",");
+		    p = mnv_strsave_escaped(files[i], (char_u *)",");
 		    if (p != NULL)
 		    {
-			vim_free(files[i]);
+			mnv_free(files[i]);
 			files[i] = p;
 		    }
 		}
 	    }
 #ifdef BACKSLASH_IN_FILENAME
-	    p = vim_strsave_fnameescape(files[i], vse_what);
+	    p = mnv_strsave_fnameescape(files[i], vse_what);
 #else
-	    p = vim_strsave_fnameescape(files[i],
+	    p = mnv_strsave_fnameescape(files[i],
 		    xp->xp_shell ? VSE_SHELL : vse_what);
 #endif
 	    if (p != NULL)
 	    {
-		vim_free(files[i]);
+		mnv_free(files[i]);
 		files[i] = p;
 	    }
 
@@ -191,10 +191,10 @@ wildescape(
 	// would terminate the ":tag" command.
 	for (int i = 0; i < numfiles; ++i)
 	{
-	    p = vim_strsave_escaped(files[i], (char_u *)"\\|\"");
+	    p = mnv_strsave_escaped(files[i], (char_u *)"\\|\"");
 	    if (p != NULL)
 	    {
-		vim_free(files[i]);
+		mnv_free(files[i]);
 		files[i] = p;
 	    }
 	}
@@ -298,7 +298,7 @@ nextwild(
 	if (cmdline_fuzzy_completion_supported(xp)
 		|| xp->xp_context == EXPAND_PATTERN_IN_BUF)
 	    // Don't modify the search string
-	    tmp = vim_strnsave(xp->xp_pattern, xp->xp_pattern_len);
+	    tmp = mnv_strnsave(xp->xp_pattern, xp->xp_pattern_len);
 	else
 	    tmp = addstar(xp->xp_pattern, xp->xp_pattern_len, xp->xp_context);
 
@@ -315,9 +315,9 @@ nextwild(
 		use_options += WILD_ICASE;
 
 	    p = ExpandOne(xp, tmp,
-			 vim_strnsave(&ccline->cmdbuff[i], xp->xp_pattern_len),
+			 mnv_strnsave(&ccline->cmdbuff[i], xp->xp_pattern_len),
 							   use_options, type);
-	    vim_free(tmp);
+	    mnv_free(tmp);
 	    // longest match: make sure it is not shorter, happens with :help
 	    if (p != NULL && type == WILD_LONGEST)
 	    {
@@ -330,7 +330,7 @@ nextwild(
 			break;
 		}
 		if ((int)STRLEN(p) < j)
-		    VIM_CLEAR(p);
+		    MNV_CLEAR(p);
 	    }
 	}
     }
@@ -338,8 +338,8 @@ nextwild(
     // Save cmdline before inserting selected item
     if (!wild_navigate && ccline->cmdbuff != NULL)
     {
-	vim_free(cmdline_orig);
-	cmdline_orig = vim_strnsave(ccline->cmdbuff, ccline->cmdlen);
+	mnv_free(cmdline_orig);
+	cmdline_orig = mnv_strnsave(ccline->cmdbuff, ccline->cmdlen);
     }
 
     if (p != NULL && !got_int && !(options & WILD_NOSELECT))
@@ -381,7 +381,7 @@ nextwild(
 	// free expanded pattern
 	(void)ExpandOne(xp, NULL, NULL, 0, WILD_FREE);
 
-    vim_free(p);
+    mnv_free(p);
 
     return OK;
 }
@@ -416,11 +416,11 @@ cmdline_pum_create(
     }
 
     // Compute the popup menu starting column
-    compl_startcol = ccline == NULL ? 0 : vim_strsize(ccline->cmdbuff) + 1;
-    prefix_len = vim_strsize(xp->xp_pattern);
+    compl_startcol = ccline == NULL ? 0 : mnv_strsize(ccline->cmdbuff) + 1;
+    prefix_len = mnv_strsize(xp->xp_pattern);
     if (showtail)
-	prefix_len += vim_strsize(showmatches_gettail(matches[0]))
-	    - vim_strsize(matches[0]);
+	prefix_len += mnv_strsize(showmatches_gettail(matches[0]))
+	    - mnv_strsize(matches[0]);
     compl_startcol = cmdline_col_off + MAX(0, compl_startcol - prefix_len);
 
     return EXPAND_OK;
@@ -459,7 +459,7 @@ cmdline_pum_remove(cmdline_info_T *cclp UNUSED, int defer_redraw)
 #endif
 
     pum_undisplay();
-    VIM_CLEAR(compl_match_array);
+    MNV_CLEAR(compl_match_array);
     compl_match_arraysize = 0;
     if (!defer_redraw)
     {
@@ -787,7 +787,7 @@ win_redr_status_matches(
     }
 
     win_redraw_last_status(topframe);
-    vim_free(buf);
+    mnv_free(buf);
 }
 
 /*
@@ -869,7 +869,7 @@ get_next_or_prev_match(int mode, expand_T *xp)
 	    compl_selected = findex;
 	    cmdline_pum_display();
 	}
-	else if (vim_strchr(p_wop, WOP_PUM) != NULL)
+	else if (mnv_strchr(p_wop, WOP_PUM) != NULL)
 	{
 	    if (cmdline_pum_create(get_cmdline_info(), xp, xp->xp_files,
 			xp->xp_numfiles, cmd_showtail) == EXPAND_OK)
@@ -886,7 +886,7 @@ get_next_or_prev_match(int mode, expand_T *xp)
 
     xp->xp_selected = findex;
     // Return the original text or the selected match
-    return vim_strsave(findex == -1 ? xp->xp_orig : xp->xp_files[findex]);
+    return mnv_strsave(findex == -1 ? xp->xp_orig : xp->xp_files[findex]);
 }
 
 /*
@@ -952,7 +952,7 @@ ExpandOne_start(int mode, expand_T *xp, char_u *str, int options)
 		    beep_flush();
 	    }
 	    if (!(non_suf_match != 1 && mode == WILD_EXPAND_FREE))
-		ss = vim_strsave(xp->xp_files[0]);
+		ss = mnv_strsave(xp->xp_files[0]);
 	}
     }
 
@@ -1000,14 +1000,14 @@ find_longest_match(expand_T *xp, int options)
 	if (i < xp->xp_numfiles)
 	{
 	    if (!(options & WILD_NO_BEEP))
-		vim_beep(BO_WILD);
+		mnv_beep(BO_WILD);
 	    break;
 	}
     }
 
     ss = alloc(len + 1);
     if (ss)
-	vim_strncpy(ss, xp->xp_files[0], (size_t)len);
+	mnv_strncpy(ss, xp->xp_files[0], (size_t)len);
 
     return ss;
 }
@@ -1068,9 +1068,9 @@ ExpandOne(
 	return get_next_or_prev_match(mode, xp);
 
     if (mode == WILD_CANCEL)
-	ss = vim_strsave(xp->xp_orig ? xp->xp_orig : (char_u *)"");
+	ss = mnv_strsave(xp->xp_orig ? xp->xp_orig : (char_u *)"");
     else if (mode == WILD_APPLY)
-	ss = vim_strsave(xp->xp_selected == -1
+	ss = mnv_strsave(xp->xp_selected == -1
 			    ? (xp->xp_orig ? xp->xp_orig : (char_u *)"")
 			    : xp->xp_files[xp->xp_selected]);
 
@@ -1079,7 +1079,7 @@ ExpandOne(
     {
 	FreeWild(xp->xp_numfiles, xp->xp_files);
 	xp->xp_numfiles = -1;
-	VIM_CLEAR(xp->xp_orig);
+	MNV_CLEAR(xp->xp_orig);
 
 	// The entries from xp_files may be used in the PUM, remove it.
 	if (compl_match_array != NULL)
@@ -1092,7 +1092,7 @@ ExpandOne(
 
     if (xp->xp_numfiles == -1 && mode != WILD_APPLY && mode != WILD_CANCEL)
     {
-	vim_free(xp->xp_orig);
+	mnv_free(xp->xp_orig);
 	xp->xp_orig = orig;
 	orig_saved = TRUE;
 
@@ -1138,7 +1138,7 @@ ExpandOne(
 
 	    for (i = 0; i < xp->xp_numfiles; ++i)
 	    {
-		ss_len += vim_snprintf_safelen(
+		ss_len += mnv_snprintf_safelen(
 		    (char *)ss + ss_len,
 		    ss_size - ss_len,
 		    "%s%s%s",
@@ -1154,7 +1154,7 @@ ExpandOne(
 
     // Free "orig" if it wasn't stored in "xp->xp_orig".
     if (!orig_saved)
-	vim_free(orig);
+	mnv_free(orig);
 
     return ss;
 }
@@ -1182,13 +1182,13 @@ ExpandCleanup(expand_T *xp)
 	FreeWild(xp->xp_numfiles, xp->xp_files);
 	xp->xp_numfiles = -1;
     }
-    VIM_CLEAR(xp->xp_orig);
+    MNV_CLEAR(xp->xp_orig);
 }
 
     void
 clear_cmdline_orig(void)
 {
-    VIM_CLEAR(cmdline_orig);
+    MNV_CLEAR(cmdline_orig);
 }
 
 /*
@@ -1252,9 +1252,9 @@ showmatches_oneline(
 		halved_slash = backslash_halve_save(path);
 		isdir = mch_isdir(halved_slash != NULL ? halved_slash
 			: matches[j]);
-		vim_free(exp_path);
+		mnv_free(exp_path);
 		if (halved_slash != path)
-		    vim_free(halved_slash);
+		    mnv_free(halved_slash);
 	    }
 	    else
 		// Expansion was done here, file names are literal.
@@ -1319,7 +1319,7 @@ showmatches(expand_T *xp, int display_wildmenu, int display_list, int noselect)
     }
 
     if (display_wildmenu && !display_list
-	    && vim_strchr(p_wop, WOP_PUM) != NULL)
+	    && mnv_strchr(p_wop, WOP_PUM) != NULL)
     {
 	int retval = cmdline_pum_create(ccline, xp, matches, numMatches,
 		showtail && !noselect);
@@ -1360,10 +1360,10 @@ showmatches(expand_T *xp, int display_wildmenu, int display_list, int noselect)
 			  || xp->xp_context == EXPAND_BUFFERS))
 	    {
 		home_replace(NULL, matches[i], NameBuff, MAXPATHL, TRUE);
-		len = vim_strsize(NameBuff);
+		len = mnv_strsize(NameBuff);
 	    }
 	    else
-		len = vim_strsize(SHOW_MATCH(i));
+		len = mnv_strsize(SHOW_MATCH(i));
 	    if (len > maxlen)
 		maxlen = len;
 	}
@@ -1426,7 +1426,7 @@ showmatches_gettail(char_u *s)
 
     for (p = s; *p != NUL; )
     {
-	if (vim_ispathsep(*p)
+	if (mnv_ispathsep(*p)
 #ifdef BACKSLASH_IN_FILENAME
 		&& !rem_backslash(p)
 #endif
@@ -1469,7 +1469,7 @@ expand_showtail(expand_T *xp)
 	// separator, on DOS the '*' "path\*\file" must not be skipped.
 	if (rem_backslash(s))
 	    ++s;
-	else if (vim_strchr((char_u *)"*?[", *s) != NULL)
+	else if (mnv_strchr((char_u *)"*?[", *s) != NULL)
 	    return FALSE;
     }
     return TRUE;
@@ -1502,7 +1502,7 @@ addstar(
     {
 	// Matching will be done internally (on something other than files).
 	// So we convert the file-matching-type wildcards into our kind for
-	// use with vim_regcomp().  First work out how long it will be:
+	// use with mnv_regcomp().  First work out how long it will be:
 
 	// For help tags the translation is done in find_help_tags().
 	// For a tag pattern starting with "/" no translation is needed.
@@ -1518,7 +1518,7 @@ addstar(
 		|| ((context == EXPAND_TAGS_LISTFILES
 			|| context == EXPAND_TAGS)
 		    && fname[0] == '/'))
-	    retval = vim_strnsave(fname, len);
+	    retval = mnv_strnsave(fname, len);
 	else
 	{
 	    new_len = len + 2;		// +2 for '^' at start, NUL at end
@@ -1580,7 +1580,7 @@ addstar(
 	retval = alloc(len + 4);
 	if (retval != NULL)
 	{
-	    vim_strncpy(retval, fname, len);
+	    mnv_strncpy(retval, fname, len);
 
 	    // Don't add a star to *, ~, ~user, $var or `cmd`.
 	    // * would become **, which walks the whole tree.
@@ -1600,8 +1600,8 @@ addstar(
 #endif
 	    if ((*retval != '~' || tail != retval)
 		    && !ends_in_star
-		    && vim_strchr(tail, '$') == NULL
-		    && vim_strchr(retval, '`') == NULL)
+		    && mnv_strchr(tail, '$') == NULL
+		    && mnv_strchr(retval, '`') == NULL)
 		retval[len++] = '*';
 	    else if (len > 0 && retval[len - 1] == '$')
 		--len;
@@ -1722,8 +1722,8 @@ set_cmd_index(char_u *cmd, exarg_T *eap, expand_T *xp, int *complp)
 	while (ASCII_ISALPHA(*p) || *p == '*')    // Allow * wild card
 	    ++p;
 	// A user command may contain digits.
-	// Include "9" for "vim9*" commands; "vim9cmd" and "vim9script".
-	if (ASCII_ISUPPER(cmd[0]) || STRNCMP("vim9", cmd, 4) == 0)
+	// Include "9" for "mnv9*" commands; "mnv9cmd" and "mnv9script".
+	if (ASCII_ISUPPER(cmd[0]) || STRNCMP("mnv9", cmd, 4) == 0)
 	    while (ASCII_ISALNUM(*p) || *p == '*')
 		++p;
 	// for python 3.x: ":py3*" commands completion
@@ -1734,7 +1734,7 @@ set_cmd_index(char_u *cmd, exarg_T *eap, expand_T *xp, int *complp)
 		++p;
 	}
 	// check for non-alpha command
-	if (p == cmd && vim_strchr((char_u *)"@*!=><&~#", *p) != NULL)
+	if (p == cmd && mnv_strchr((char_u *)"@*!=><&~#", *p) != NULL)
 	    ++p;
 	len = (int)(p - cmd);
 
@@ -1762,7 +1762,7 @@ set_cmd_index(char_u *cmd, exarg_T *eap, expand_T *xp, int *complp)
 
     if (eap->cmdidx == CMD_SIZE)
     {
-	if (*cmd == 's' && vim_strchr((char_u *)"cgriI", cmd[1]) != NULL)
+	if (*cmd == 's' && mnv_strchr((char_u *)"cgriI", cmd[1]) != NULL)
 	{
 	    eap->cmdidx = CMD_substitute;
 	    p = cmd + 1;
@@ -1825,7 +1825,7 @@ set_context_for_wildcard_arg(
 	}
 	// An argument can contain just about everything, except
 	// characters that end the command and white space.
-	else if (c == '|' || c == '\n' || c == '"' || (VIM_ISWHITE(c)
+	else if (c == '|' || c == '\n' || c == '"' || (MNV_ISWHITE(c)
 #ifdef SPACE_IN_FILENAME
 		    && (!(eap != NULL && (eap->argt & EX_NOSPC)) || usefilter)
 #endif
@@ -1838,7 +1838,7 @@ set_context_for_wildcard_arg(
 		    c = mb_ptr2char(p);
 		else
 		    c = *p;
-		if (c == '`' || vim_isfilec_or_wc(c))
+		if (c == '`' || mnv_isfilec_or_wc(c))
 		    break;
 		if (has_mbyte)
 		    len = (*mb_ptr2len)(p);
@@ -1879,7 +1879,7 @@ set_context_for_wildcard_arg(
     if (*xp->xp_pattern == '$')
     {
 	for (p = xp->xp_pattern + 1; *p != NUL; ++p)
-	    if (!vim_isIDc(*p))
+	    if (!mnv_isIDc(*p))
 		break;
 	if (*p == NUL)
 	{
@@ -1916,7 +1916,7 @@ set_context_in_argopt(expand_T *xp, char_u *arg)
 {
     char_u	*p;
 
-    p = vim_strchr(arg, '=');
+    p = mnv_strchr(arg, '=');
     if (p == NULL)
 	xp->xp_pattern = arg;
     else
@@ -1935,7 +1935,7 @@ set_context_in_terminalopt(expand_T *xp, char_u *arg)
 {
     char_u	*p;
 
-    p = vim_strchr(arg, '=');
+    p = mnv_strchr(arg, '=');
     if (p == NULL)
 	xp->xp_pattern = arg;
     else
@@ -1954,7 +1954,7 @@ set_context_in_terminalopt(expand_T *xp, char_u *arg)
 set_context_in_filter_cmd(expand_T *xp, char_u *arg)
 {
     if (*arg != NUL)
-	arg = skip_vimgrep_pat(arg, NULL, NULL);
+	arg = skip_mnvgrep_pat(arg, NULL, NULL);
     if (arg == NULL || *arg == NUL)
     {
 	xp->xp_context = EXPAND_NOTHING;
@@ -2041,7 +2041,7 @@ find_cmd_after_substitute_cmd(char_u *arg)
 		++arg;
 	}
     }
-    while (arg[0] && vim_strchr((char_u *)"|\"#", arg[0]) == NULL)
+    while (arg[0] && mnv_strchr((char_u *)"|\"#", arg[0]) == NULL)
 	++arg;
     if (arg[0] != NUL)
 	return arg;
@@ -2070,7 +2070,7 @@ find_cmd_after_isearch_cmd(expand_T *xp, char_u *arg)
 	arg = skipwhite(arg + 1);
 
 	// Check for trailing illegal characters
-	if (*arg == NUL || vim_strchr((char_u *)"|\"\n", *arg) == NULL)
+	if (*arg == NUL || mnv_strchr((char_u *)"|\"\n", *arg) == NULL)
 	    xp->xp_context = EXPAND_NOTHING;
 	else
 	    return arg;
@@ -2086,7 +2086,7 @@ find_cmd_after_isearch_cmd(expand_T *xp, char_u *arg)
     static char_u *
 set_context_in_unlet_cmd(expand_T *xp, char_u *arg)
 {
-    while ((xp->xp_pattern = vim_strchr(arg, ' ')) != NULL)
+    while ((xp->xp_pattern = mnv_strchr(arg, ' ')) != NULL)
 	arg = xp->xp_pattern + 1;
 
     xp->xp_context = EXPAND_USER_VARS;
@@ -2187,7 +2187,7 @@ set_context_in_breakadd_cmd(expand_T *xp, char_u *arg, cmdidx_T cmdidx)
 	p = skipwhite(p);
 
 	// skip line number (if specified)
-	if (VIM_ISDIGIT(*p))
+	if (MNV_ISDIGIT(*p))
 	{
 	    p = skipdigits(p);
 	    if (*p != ' ')
@@ -2222,7 +2222,7 @@ set_context_in_scriptnames_cmd(expand_T *xp, char_u *arg)
     xp->xp_pattern = NULL;
 
     p = skipwhite(arg);
-    if (VIM_ISDIGIT(*p))
+    if (MNV_ISDIGIT(*p))
 	return NULL;
 
     xp->xp_context = EXPAND_SCRIPTNAMES;
@@ -2386,7 +2386,7 @@ set_context_by_cmdname(
 	case CMD_verbose:
 	case CMD_vertical:
 	case CMD_windo:
-	case CMD_vim9cmd:
+	case CMD_mnv9cmd:
 	case CMD_legacy:
 	    return arg;
 
@@ -2456,7 +2456,7 @@ set_context_by_cmdname(
 	case CMD_tjump:
 	case CMD_stjump:
 	case CMD_ptjump:
-	    if (vim_strchr(p_wop, WOP_TAGFILE) != NULL)
+	    if (mnv_strchr(p_wop, WOP_TAGFILE) != NULL)
 		xp->xp_context = EXPAND_TAGS_LISTFILES;
 	    else
 		xp->xp_context = EXPAND_TAGS;
@@ -2531,7 +2531,7 @@ set_context_by_cmdname(
 	case CMD_bdelete:
 	case CMD_bwipeout:
 	case CMD_bunload:
-	    while ((xp->xp_pattern = vim_strchr(arg, ' ')) != NULL)
+	    while ((xp->xp_pattern = mnv_strchr(arg, ' ')) != NULL)
 		arg = xp->xp_pattern + 1;
 	    // FALLTHROUGH
 	case CMD_buffer:
@@ -2682,7 +2682,7 @@ set_context_by_cmdname(
 #endif
 
 	case CMD_argdelete:
-	    while ((xp->xp_pattern = vim_strchr(arg, ' ')) != NULL)
+	    while ((xp->xp_pattern = mnv_strchr(arg, ' ')) != NULL)
 		arg = xp->xp_pattern + 1;
 	    xp->xp_context = EXPAND_ARGLIST;
 	    xp->xp_pattern = arg;
@@ -2733,7 +2733,7 @@ set_one_cmd_context(
     ea.argt = 0;
 
     // 1. skip comment lines and leading space, colons or bars
-    for (cmd = buff; vim_strchr((char_u *)" \t:|", *cmd) != NULL; cmd++)
+    for (cmd = buff; mnv_strchr((char_u *)" \t:|", *cmd) != NULL; cmd++)
 	;
     xp->xp_pattern = cmd;
 
@@ -2784,7 +2784,7 @@ set_one_cmd_context(
 	while (*arg != NUL && STRNCMP(arg, "++", 2) == 0)
 	{
 	    p = arg + 2;
-	    while (*p && !vim_isspace(*p))
+	    while (*p && !mnv_isspace(*p))
 		MB_PTR_ADV(p);
 
 	    // Still touching the command after "++"?
@@ -2880,7 +2880,7 @@ set_one_cmd_context(
     }
 
     if (!(ea.argt & EX_EXTRA) && *arg != NUL
-				  && vim_strchr((char_u *)"|\"", *arg) == NULL)
+				  && mnv_strchr((char_u *)"|\"", *arg) == NULL)
 	// no arguments allowed but there is something
 	return NULL;
 
@@ -3004,7 +3004,7 @@ expand_cmdline(
     xp->xp_pattern_len = (int)(str + col - xp->xp_pattern);
     if (cmdline_fuzzy_completion_supported(xp))
 	// If fuzzy matching, don't modify the search string
-	file_str = vim_strsave(xp->xp_pattern);
+	file_str = mnv_strsave(xp->xp_pattern);
     else
 	file_str = addstar(xp->xp_pattern, xp->xp_pattern_len, xp->xp_context);
     if (file_str == NULL)
@@ -3019,7 +3019,7 @@ expand_cmdline(
 	*matchcount = 0;
 	*matches = NULL;
     }
-    vim_free(file_str);
+    mnv_free(file_str);
 
     return EXPAND_OK;
 }
@@ -3051,7 +3051,7 @@ expand_files_and_dirs(
 	free_pat = TRUE;
 
 	pat_len = STRLEN(pat);
-	pat = vim_strnsave(pat, pat_len);
+	pat = mnv_strnsave(pat, pat_len);
 	if (pat == NULL)
 	    return ret;
 
@@ -3126,7 +3126,7 @@ expand_files_and_dirs(
 	ret = expand_wildcards_eval(&pat, numMatches, matches, flags);
     }
     if (free_pat)
-	vim_free(pat);
+	mnv_free(pat);
 #ifdef BACKSLASH_IN_FILENAME
     if (p_csl[0] != NUL && (options & WILD_IGNORE_COMPLETESLASH) == 0)
     {
@@ -3507,16 +3507,16 @@ ExpandFromContext(
 	tofree = alloc(len);
 	if (tofree == NULL)
 	    return FAIL;
-	vim_snprintf((char *)tofree, len, "^<SNR>\\d\\+_%s", pat + 3);
+	mnv_snprintf((char *)tofree, len, "^<SNR>\\d\\+_%s", pat + 3);
 	pat = tofree;
     }
 
     if (!fuzzy)
     {
-	regmatch.regprog = vim_regcomp(pat, magic_isset() ? RE_MAGIC : 0);
+	regmatch.regprog = mnv_regcomp(pat, magic_isset() ? RE_MAGIC : 0);
 	if (regmatch.regprog == NULL)
 	{
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	    return FAIL;
 	}
 	// set ignore-case according to p_ic, p_scs and pat
@@ -3548,8 +3548,8 @@ ExpandFromContext(
 	ret = ExpandOther(pat, xp, &regmatch, matches, numMatches);
 
     if (!fuzzy)
-	vim_regfree(regmatch.regprog);
-    vim_free(tofree);
+	mnv_regfree(regmatch.regprog);
+    mnv_free(tofree);
 
     return ret;
 }
@@ -3628,7 +3628,7 @@ ExpandGenericExt(
 	if (xp->xp_pattern[0] != NUL)
 	{
 	    if (!fuzzy)
-		match = vim_regexec(regmatch, str, (colnr_T)0);
+		match = mnv_regexec(regmatch, str, (colnr_T)0);
 	    else
 	    {
 		score = fuzzy_match_str(str, pat);
@@ -3642,9 +3642,9 @@ ExpandGenericExt(
 	    continue;
 
 	if (escaped)
-	    str = vim_strsave_escaped(str, (char_u *)" \t\\.");
+	    str = mnv_strsave_escaped(str, (char_u *)" \t\\.");
 	else
-	    str = vim_strsave(str);
+	    str = mnv_strsave(str);
 	if (str == NULL)
 	{
 	    if (!fuzzy)
@@ -3658,7 +3658,7 @@ ExpandGenericExt(
 
 	if (ga_grow(&ga, 1) == FAIL)
 	{
-	    vim_free(str);
+	    mnv_free(str);
 	    break;
 	}
 
@@ -3792,9 +3792,9 @@ expand_shellcmd_onedir(
 		name = NULL;
 	    }
 	}
-	vim_free(name);
+	mnv_free(name);
     }
-    vim_free(*matches);
+    mnv_free(*matches);
 }
 
 /*
@@ -3825,10 +3825,10 @@ expand_shellcmd(
 
     // for ":set path=" and ":set tags=" halve backslashes for escaped space
     patlen = STRLEN(filepat);
-    pat = vim_strnsave(filepat, patlen);
+    pat = mnv_strnsave(filepat, patlen);
     if (pat == NULL)
     {
-	vim_free(buf);
+	mnv_free(buf);
 	return FAIL;
     }
 
@@ -3852,14 +3852,14 @@ expand_shellcmd(
 
     flags |= EW_FILE | EW_EXEC | EW_SHELLCMD;
 
-    if (pat[0] == '.' && (vim_ispathsep(pat[1])
-			       || (pat[1] == '.' && vim_ispathsep(pat[2]))))
+    if (pat[0] == '.' && (mnv_ispathsep(pat[1])
+			       || (pat[1] == '.' && mnv_ispathsep(pat[2]))))
 	path = (char_u *)".";
     else
     {
 	// For an absolute name we don't use $PATH.
 	if (!mch_isFullName(pat))
-	    path = vim_getenv((char_u *)"PATH", &mustfree);
+	    path = mnv_getenv((char_u *)"PATH", &mustfree);
 	if (path == NULL)
 	    path = (char_u *)"";
     }
@@ -3891,9 +3891,9 @@ expand_shellcmd(
 	else
 	{
 #if defined(MSWIN)
-	    e = vim_strchr(s, ';');
+	    e = mnv_strchr(s, ';');
 #else
-	    e = vim_strchr(s, ':');
+	    e = mnv_strchr(s, ':');
 #endif
 	    if (e == NULL)
 		e = s + STRLEN(s);
@@ -3918,7 +3918,7 @@ expand_shellcmd(
 	{
 	    if (pathlen > 0)
 	    {
-		vim_strncpy(buf, s, pathlen);
+		mnv_strncpy(buf, s, pathlen);
 		if (seplen > 0)
 		{
 		    STRCPY(buf + pathlen, PATHSEPSTR);
@@ -3937,17 +3937,17 @@ expand_shellcmd(
     *matches = ga.ga_data;
     *numMatches = ga.ga_len;
 
-    vim_free(buf);
-    vim_free(pat);
+    mnv_free(buf);
+    mnv_free(pat);
     if (mustfree)
-	vim_free(path);
+	mnv_free(path);
     hash_clear(&found_ht);
     return OK;
 }
 
 #if defined(FEAT_EVAL)
 /*
- * Call "user_expand_func()" to invoke a user defined Vim script function and
+ * Call "user_expand_func()" to invoke a user defined MNV script function and
  * return the result (either a string, a List or NULL).
  */
     static void *
@@ -3971,7 +3971,7 @@ call_user_expand_func(
 	ccline->cmdbuff[ccline->cmdlen] = 0;
     }
 
-    pat = vim_strnsave(xp->xp_pattern, xp->xp_pattern_len);
+    pat = mnv_strnsave(xp->xp_pattern, xp->xp_pattern_len);
 
     args[0].v_type = VAR_STRING;
     args[0].vval.v_string = pat;
@@ -3989,7 +3989,7 @@ call_user_expand_func(
     if (ccline->cmdbuff != NULL)
 	ccline->cmdbuff[ccline->cmdlen] = keep;
 
-    vim_free(pat);
+    mnv_free(pat);
     return ret;
 }
 
@@ -4029,7 +4029,7 @@ ExpandUserDefined(
 
     for (s = retstr; *s != NUL; s = e)
     {
-	e = vim_strchr(s, '\n');
+	e = mnv_strchr(s, '\n');
 	if (e == NULL)
 	    e = s + STRLEN(s);
 	keep = *e;
@@ -4038,7 +4038,7 @@ ExpandUserDefined(
 	if (xp->xp_pattern[0] != NUL)
 	{
 	    if (!fuzzy)
-		match = vim_regexec(regmatch, s, (colnr_T)0);
+		match = mnv_regexec(regmatch, s, (colnr_T)0);
 	    else
 	    {
 		score = fuzzy_match_str(s, pat);
@@ -4052,13 +4052,13 @@ ExpandUserDefined(
 
 	if (match)
 	{
-	    char_u  *p = vim_strnsave(s, (size_t)(e - s));
+	    char_u  *p = mnv_strnsave(s, (size_t)(e - s));
 	    if (p == NULL)
 		break;
 
 	    if (ga_grow(&ga, 1) == FAIL)
 	    {
-		vim_free(p);
+		mnv_free(p);
 		break;
 	    }
 
@@ -4078,7 +4078,7 @@ ExpandUserDefined(
 	if (*e != NUL)
 	    ++e;
     }
-    vim_free(retstr);
+    mnv_free(retstr);
 
     if (ga.ga_len == 0)
 	return OK;
@@ -4126,13 +4126,13 @@ ExpandUserList(
 	if (li->li_tv.v_type != VAR_STRING || li->li_tv.vval.v_string == NULL)
 	    continue;  // Skip non-string items and empty strings
 
-	p = vim_strsave(li->li_tv.vval.v_string);
+	p = mnv_strsave(li->li_tv.vval.v_string);
 	if (p == NULL)
 	    break;
 
 	if (ga_grow(&ga, 1) == FAIL)
 	{
-	    vim_free(p);
+	    mnv_free(p);
 	    break;
 	}
 
@@ -4177,7 +4177,7 @@ globpath(
     filelen = STRLEN(file);
 
 #if defined(MSWIN)
-    // Using the platform's path separator (\) makes vim incorrectly
+    // Using the platform's path separator (\) makes mnv incorrectly
     // treat it as an escape character, use '/' instead.
 # define TMP_PATHSEPSTR "/"
 #else
@@ -4224,12 +4224,12 @@ globpath(
 		    FreeWild(num_p, p);
 		    p = NULL;
 		}
-		vim_free(p);
+		mnv_free(p);
 	    }
 	}
     }
 
-    vim_free(buf);
+    mnv_free(buf);
 }
 #undef TMP_PATHSEPSTR
 
@@ -4391,7 +4391,7 @@ wildmenu_process_key_filenames(cmdline_info_T *cclp, int key, expand_T *xp)
 	{
 	    if (has_mbyte)
 		j -= (*mb_head_off)(cclp->cmdbuff, cclp->cmdbuff + j);
-	    if (vim_ispathsep(cclp->cmdbuff[j]))
+	    if (mnv_ispathsep(cclp->cmdbuff[j]))
 	    {
 		found = TRUE;
 		break;
@@ -4400,7 +4400,7 @@ wildmenu_process_key_filenames(cmdline_info_T *cclp, int key, expand_T *xp)
 	if (found
 		&& cclp->cmdbuff[j - 1] == '.'
 		&& cclp->cmdbuff[j - 2] == '.'
-		&& (vim_ispathsep(cclp->cmdbuff[j - 3]) || j == i + 2))
+		&& (mnv_ispathsep(cclp->cmdbuff[j - 3]) || j == i + 2))
 	{
 	    cmdline_del(cclp, j - 2);
 	    key = p_wc;
@@ -4418,9 +4418,9 @@ wildmenu_process_key_filenames(cmdline_info_T *cclp, int key, expand_T *xp)
 	{
 	    if (has_mbyte)
 		j -= (*mb_head_off)(cclp->cmdbuff, cclp->cmdbuff + j);
-	    if (vim_ispathsep(cclp->cmdbuff[j])
+	    if (mnv_ispathsep(cclp->cmdbuff[j])
 #ifdef BACKSLASH_IN_FILENAME
-		    && vim_strchr((char_u *)" *?[{`$%#",
+		    && mnv_strchr((char_u *)" *?[{`$%#",
 			cclp->cmdbuff[j + 1]) == NULL
 #endif
 	       )
@@ -4544,7 +4544,7 @@ f_getcompletion(typval_T *argvars, typval_T *rettv)
     int		options = WILD_SILENT | WILD_USE_NL | WILD_ADD_SLASH
 					| WILD_NO_BEEP | WILD_HOME_REPLACE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_bool_arg(argvars, 2) == FAIL))
@@ -4656,7 +4656,7 @@ f_getcompletion(typval_T *argvars, typval_T *rettv)
 
     if (cmdline_fuzzy_completion_supported(&xpc))
 	// when fuzzy matching, don't modify the search string
-	pat = vim_strnsave(xpc.xp_pattern, xpc.xp_pattern_len);
+	pat = mnv_strnsave(xpc.xp_pattern, xpc.xp_pattern_len);
     else
 	pat = addstar(xpc.xp_pattern, xpc.xp_pattern_len, xpc.xp_context);
 
@@ -4669,7 +4669,7 @@ f_getcompletion(typval_T *argvars, typval_T *rettv)
 	for (i = 0; i < xpc.xp_numfiles; i++)
 	    list_append_string(rettv->vval.v_list, xpc.xp_files[i], -1);
     }
-    vim_free(pat);
+    mnv_free(pat);
     ExpandCleanup(&xpc);
 }
 
@@ -4747,7 +4747,7 @@ copy_substring_from_pos(pos_T *start, pos_T *end, char_u **match,
     int		segment_len;
     linenr_T	lnum;
     garray_T	ga;
-    int		exacttext = vim_strchr(p_wop, WOP_EXACTTEXT) != NULL;
+    int		exacttext = mnv_strchr(p_wop, WOP_EXACTTEXT) != NULL;
 
     if (start->lnum > end->lnum
 	    || (start->lnum == end->lnum && start->col >= end->col))
@@ -4831,7 +4831,7 @@ is_regex_match(char_u *pat, char_u *str)
 
     ++emsg_off;
     ++msg_silent;
-    regmatch.regprog = vim_regcomp(pat, RE_MAGIC + RE_STRING);
+    regmatch.regprog = mnv_regcomp(pat, RE_MAGIC + RE_STRING);
     --emsg_off;
     --msg_silent;
 
@@ -4843,11 +4843,11 @@ is_regex_match(char_u *pat, char_u *str)
 
     ++emsg_off;
     ++msg_silent;
-    result = vim_regexec_nl(&regmatch, str, (colnr_T)0);
+    result = mnv_regexec_nl(&regmatch, str, (colnr_T)0);
     --emsg_off;
     --msg_silent;
 
-    vim_regfree(regmatch.regprog);
+    mnv_regfree(regmatch.regprog);
     return result;
 }
 
@@ -4878,16 +4878,16 @@ concat_pattern_with_buffer_match(
 #if defined(FEAT_EVAL) || defined(FEAT_SPELL)
 	if (lowercase)
 	{
-	    char_u  *mword = vim_strnsave(line + end_match_pos->col,
+	    char_u  *mword = mnv_strnsave(line + end_match_pos->col,
 		    match_len);
 	    if (mword == NULL)
 		goto cleanup;
 	    char_u  *lower = strlow_save(mword);
-	    vim_free(mword);
+	    mnv_free(mword);
 	    if (lower == NULL)
 		goto cleanup;
 	    mch_memmove(match + pat_len, lower, match_len);
-	    vim_free(lower);
+	    mnv_free(lower);
 	}
 	else
 #endif
@@ -4898,7 +4898,7 @@ concat_pattern_with_buffer_match(
 
 #if defined(FEAT_EVAL) || defined(FEAT_SPELL)
 cleanup:
-    vim_free(match);
+    mnv_free(match);
     return NULL;
 #endif
 }
@@ -4923,7 +4923,7 @@ expand_pattern_in_buf(
     int		compl_started = FALSE;
     int		search_flags;
     char_u	*match, *full_match;
-    int		exacttext = vim_strchr(p_wop, WOP_EXACTTEXT) != NULL;
+    int		exacttext = mnv_strchr(p_wop, WOP_EXACTTEXT) != NULL;
 
 #ifdef FEAT_SEARCH_EXTRA
     has_range = search_first_line != 0;
@@ -5025,17 +5025,17 @@ expand_pattern_in_buf(
 	    // version of the word to handle smartcase behavior.
 	    if (match == NULL || !is_regex_match(match, full_match))
 	    {
-		vim_free(match);
+		mnv_free(match);
 		match = concat_pattern_with_buffer_match(pat, pat_len,
 			&end_match_pos, TRUE);
 		if (match == NULL || !is_regex_match(match, full_match))
 		{
-		    vim_free(match);
-		    vim_free(full_match);
+		    mnv_free(match);
+		    mnv_free(full_match);
 		    continue;
 		}
 	    }
-	    vim_free(full_match);
+	    mnv_free(full_match);
 	}
 
 	// Include this match if it is not a duplicate
@@ -5043,7 +5043,7 @@ expand_pattern_in_buf(
 	{
 	    if (STRCMP(match, ((char_u **)ga.ga_data)[i]) == 0)
 	    {
-		VIM_CLEAR(match);
+		MNV_CLEAR(match);
 		break;
 	    }
 	}

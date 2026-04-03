@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -25,7 +25,7 @@
  * 2016  Kazunobu Kuriyama  <kazunobu.kuriyama@gmail.com>
  */
 
-#include "vim.h"
+#include "mnv.h"
 #ifdef USE_GRESOURCE
 # include "auto/gui_gtk_gresources.h"
 #endif
@@ -105,18 +105,18 @@ enum
     TARGET_TEXT_URI_LIST,
     TARGET_TEXT_PLAIN,
     TARGET_TEXT_PLAIN_UTF8,
-    TARGET_VIM,
-    TARGET_VIMENC
+    TARGET_MNV,
+    TARGET_MNVENC
 };
 
 /*
- * Table of selection targets supported by Vim.
+ * Table of selection targets supported by MNV.
  * Note: Order matters, preferred types should come first.
  */
 static const GtkTargetEntry selection_targets[] =
 {
-    {VIMENC_ATOM_NAME,	0, TARGET_VIMENC},
-    {VIM_ATOM_NAME,	0, TARGET_VIM},
+    {MNVENC_ATOM_NAME,	0, TARGET_MNVENC},
+    {MNV_ATOM_NAME,	0, TARGET_MNV},
     {"text/html",	0, TARGET_HTML},
     {"UTF8_STRING",	0, TARGET_UTF8_STRING},
     {"COMPOUND_TEXT",	0, TARGET_COMPOUND_TEXT},
@@ -129,7 +129,7 @@ static const GtkTargetEntry selection_targets[] =
 
 #ifdef FEAT_DND
 /*
- * Table of DnD targets supported by Vim.
+ * Table of DnD targets supported by MNV.
  * Note: Order matters, preferred types should come first.
  */
 static const GtkTargetEntry dnd_targets[] =
@@ -168,11 +168,11 @@ static GdkAtom save_yourself_atom = GDK_NONE;
  */
 static GdkAtom html_atom = GDK_NONE;
 static GdkAtom utf8_string_atom = GDK_NONE;
-static GdkAtom vim_atom = GDK_NONE;	// Vim's own special selection format
-static GdkAtom vimenc_atom = GDK_NONE;	// Vim's extended selection format
+static GdkAtom mnv_atom = GDK_NONE;	// MNV's own special selection format
+static GdkAtom mnvenc_atom = GDK_NONE;	// MNV's extended selection format
 
 /*
- * Keycodes recognized by vim.
+ * Keycodes recognized by mnv.
  * NOTE: when changing this, the table in gui_x11.c probably needs the same
  * change!
  */
@@ -297,7 +297,7 @@ const special_keys[] =
 
 /*
  * This table holds all the X GUI command line options allowed.  This includes
- * the standard ones so that we can skip them when Vim is started without the
+ * the standard ones so that we can skip them when MNV is started without the
  * GUI (but the GUI might start up later).
  *
  * When changing this, also update doc/gui_x11.txt and the usage message!!!
@@ -360,7 +360,7 @@ static const cmdline_option_T cmdline_options[] =
     {"-?",			ARG_FOR_GTK|ARG_NEEDS_GUI},
     {"--help",			ARG_FOR_GTK|ARG_NEEDS_GUI|ARG_KEEP},
     {"--usage",			ARG_FOR_GTK|ARG_NEEDS_GUI},
-# if 0 // conflicts with Vim's own --version argument
+# if 0 // conflicts with MNV's own --version argument
     {"--version",		ARG_FOR_GTK|ARG_NEEDS_GUI},
 # endif
     {"--disable-crash-dialog",	ARG_FOR_GTK},
@@ -395,7 +395,7 @@ static int using_gnome = 0;
  * discarded.
  * When a gtk_window_resize() request is sent to gtk, the width/height of
  * the request is saved. Recent stale requests are kept around in a list.
- * See https://github.com/vim/vim/issues/10123
+ * See https://github.com/Project-Tick/Project-Tick/issues/10123
  */
 # if 0  // Change to 1 to enable ch_log() calls for debugging.
 #  ifdef FEAT_EVAL
@@ -466,7 +466,7 @@ clear_resize_hists(void)
     {
 	resize_hist_T *next_hist = old_resize_hists->next;
 
-	vim_free(old_resize_hists);
+	mnv_free(old_resize_hists);
 	old_resize_hists = next_hist;
 # ifdef ENABLE_RESIZE_HISTORY_LOG
 	i++;
@@ -510,7 +510,7 @@ match_stale_width_height(int width, int height)
 free_all_resize_hist(void)
 {
     clear_resize_hists();
-    vim_free(latest_resize_hist);
+    mnv_free(latest_resize_hist);
 }
 # endif
 #endif
@@ -524,7 +524,7 @@ static guint dragging_button_state = 0;
 /*
  * Parse the GUI related command-line arguments.  Any arguments used are
  * deleted from argv, and *argc is decremented accordingly.  This is called
- * when vim is started, whether or not the GUI has been started.
+ * when mnv is started, whether or not the GUI has been started.
  */
     void
 gui_mch_prepare(int *argc, char **argv)
@@ -535,7 +535,7 @@ gui_mch_prepare(int *argc, char **argv)
 
 #if defined(USE_GNOME_SESSION)
     /*
-     * Determine the command used to invoke Vim, to be passed as restart
+     * Determine the command used to invoke MNV, to be passed as restart
      * command to the session manager.	If argv[0] contains any directory
      * components try building an absolute path, otherwise leave it as is.
      */
@@ -547,7 +547,7 @@ gui_mch_prepare(int *argc, char **argv)
 
 	if (mch_FullName((char_u *)argv[0], buf, (int)sizeof(buf), TRUE) == OK)
 	{
-	    abs_restart_command = (char *)vim_strsave(buf);
+	    abs_restart_command = (char *)mnv_strsave(buf);
 	    restart_command = abs_restart_command;
 	}
     }
@@ -587,7 +587,7 @@ gui_mch_prepare(int *argc, char **argv)
 		    break;
 #ifdef FEAT_NETBEANS_INTG
 		// darn, -nb has non-standard syntax
-		if (vim_strchr((char_u *)":=", argv[i][len]) != NULL
+		if (mnv_strchr((char_u *)":=", argv[i][len]) != NULL
 			&& (option->flags & ARG_INDEX_MASK) == ARG_NETBEANS)
 		    break;
 #endif
@@ -627,7 +627,7 @@ gui_mch_prepare(int *argc, char **argv)
 		    value = argv[i + 1];
 	    }
 
-	    // Check for options handled by Vim itself
+	    // Check for options handled by MNV itself
 	    switch (option->flags & ARG_INDEX_MASK)
 	    {
 		case ARG_REVERSE:
@@ -641,7 +641,7 @@ gui_mch_prepare(int *argc, char **argv)
 		    break;
 		case ARG_GEOMETRY:
 		    if (value != NULL)
-			gui.geom = vim_strsave((char_u *)value);
+			gui.geom = mnv_strsave((char_u *)value);
 		    break;
 		case ARG_BACKGROUND:
 		    background_argument = value;
@@ -708,9 +708,9 @@ gui_mch_prepare(int *argc, char **argv)
     void
 gui_mch_free_all(void)
 {
-    vim_free(gui_argv);
+    mnv_free(gui_argv);
 # if defined(USE_GNOME_SESSION)
-    vim_free(abs_restart_command);
+    mnv_free(abs_restart_command);
 # endif
 # ifdef TRACK_RESIZE_HISTORY
     free_all_resize_hist();
@@ -1100,7 +1100,7 @@ keyval_to_string(unsigned int keyval, char_u *string)
     }
     else
     {
-	// Translate keys which are represented by ASCII control codes in Vim.
+	// Translate keys which are represented by ASCII control codes in MNV.
 	// There are only a few of those; most control keys are translated to
 	// special terminal-like control sequences.
 	len = 1;
@@ -1129,7 +1129,7 @@ keyval_to_string(unsigned int keyval, char_u *string)
 }
 
     static int
-modifiers_gdk2vim(guint state)
+modifiers_gdk2mnv(guint state)
 {
     int modifiers = 0;
 
@@ -1300,7 +1300,7 @@ key_press_event(GtkWidget *widget UNUSED,
     }
 
     // Handle modifiers.
-    modifiers = modifiers_gdk2vim(state);
+    modifiers = modifiers_gdk2mnv(state);
 
     // Recognize special keys.
     key = simplify_key(key, &modifiers);
@@ -1441,15 +1441,15 @@ selection_received_cb(GtkWidget		*widget UNUSED,
 	return;
     }
 
-    if (gtk_selection_data_get_data_type(data) == vim_atom)
+    if (gtk_selection_data_get_data_type(data) == mnv_atom)
     {
 	motion_type = *text++;
 	--len;
     }
-    else if (gtk_selection_data_get_data_type(data) == vimenc_atom)
+    else if (gtk_selection_data_get_data_type(data) == mnvenc_atom)
     {
 	char_u		*enc;
-	vimconv_T	conv;
+	mnvconv_T	conv;
 
 	motion_type = *text++;
 	--len;
@@ -1490,7 +1490,7 @@ selection_received_cb(GtkWidget		*widget UNUSED,
 	}
 	else if (len >= 2 && text[0] == 0xff && text[1] == 0xfe)
 	{
-	    vimconv_T conv;
+	    mnvconv_T conv;
 
 	    // UTF-16, we get this for HTML
 	    conv.vc_type = CONV_NONE;
@@ -1514,7 +1514,7 @@ selection_received_cb(GtkWidget		*widget UNUSED,
 
     clip_yank_selection(motion_type, text, (long)len, cbd);
     received_selection = RS_OK;
-    vim_free(tmpbuf);
+    mnv_free(tmpbuf);
     g_free(tmpbuf_utf8);
 }
 
@@ -1549,8 +1549,8 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
     if (info != (guint)TARGET_STRING
 	    && (!clip_html || info != (guint)TARGET_HTML)
 	    && info != (guint)TARGET_UTF8_STRING
-	    && info != (guint)TARGET_VIMENC
-	    && info != (guint)TARGET_VIM
+	    && info != (guint)TARGET_MNVENC
+	    && info != (guint)TARGET_MNV
 	    && info != (guint)TARGET_COMPOUND_TEXT
 	    && info != (guint)TARGET_TEXT_PLAIN
 	    && info != (guint)TARGET_TEXT_PLAIN_UTF8
@@ -1568,7 +1568,7 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
     // (Not that pasting 2G of text is ever going to work, but... ;-)
     length = MIN(tmplen, (long_u)(G_MAXINT - 1));
 
-    if (info == (guint)TARGET_VIM)
+    if (info == (guint)TARGET_MNV)
     {
 	tmpbuf = alloc(length + 1);
 	if (tmpbuf != NULL)
@@ -1578,14 +1578,14 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 	}
 	// For our own format, the first byte contains the motion type
 	++length;
-	vim_free(string);
+	mnv_free(string);
 	string = tmpbuf;
-	type = vim_atom;
+	type = mnv_atom;
     }
 
     else if (info == (guint)TARGET_HTML)
     {
-	vimconv_T conv;
+	mnvconv_T conv;
 
 	// Since we get utf-16, we probably should set it as well.
 	conv.vc_type = CONV_NONE;
@@ -1594,7 +1594,7 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 	{
 	    tmpbuf = string_convert(&conv, string, &length);
 	    convert_setup(&conv, NULL, NULL);
-	    vim_free(string);
+	    mnv_free(string);
 	    string = tmpbuf;
 	}
 
@@ -1607,7 +1607,7 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 		tmpbuf[0] = 0xff;
 		tmpbuf[1] = 0xfe;
 		mch_memmove(tmpbuf + 2, string, (size_t)length);
-		vim_free(string);
+		mnv_free(string);
 		string = tmpbuf;
 		length += 2;
 	    }
@@ -1620,11 +1620,11 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 #endif
 	    gtk_selection_data_set(selection_data, html_atom, 16,
 							      string, length);
-	    vim_free(string);
+	    mnv_free(string);
 	}
 	return;
     }
-    else if (info == (guint)TARGET_VIMENC)
+    else if (info == (guint)TARGET_MNVENC)
     {
 	int l = STRLEN(p_enc);
 
@@ -1636,10 +1636,10 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 	    STRCPY(tmpbuf + 1, p_enc);
 	    mch_memmove(tmpbuf + l + 2, string, (size_t)length);
 	    length += l + 2;
-	    vim_free(string);
+	    mnv_free(string);
 	    string = tmpbuf;
 	}
-	type = vimenc_atom;
+	type = mnvenc_atom;
     }
 
     // gtk_selection_data_set_text() handles everything for us.  This is
@@ -1649,7 +1649,7 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 	if (output_conv.vc_type != CONV_NONE)
 	{
 	    tmpbuf = string_convert(&output_conv, string, &length);
-	    vim_free(string);
+	    mnv_free(string);
 	    if (tmpbuf == NULL)
 		return;
 	    string = tmpbuf;
@@ -1660,7 +1660,7 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 	    gtk_selection_data_set_text(selection_data,
 					(const char *)string, length);
 	}
-	vim_free(string);
+	mnv_free(string);
 	return;
     }
 
@@ -1673,12 +1673,12 @@ selection_get_cb(GtkWidget	    *widget UNUSED,
 	selection_data->format = 8;	// 8 bits per char
 #endif
 	gtk_selection_data_set(selection_data, type, 8, string, length);
-	vim_free(string);
+	mnv_free(string);
     }
 }
 
 /*
- * Check if the GUI can be started.  Called before gvimrc is sourced and
+ * Check if the GUI can be started.  Called before gmnvrc is sourced and
  * before fork().
  * Return OK or FAIL.
  */
@@ -1701,7 +1701,7 @@ gui_mch_early_init_check(int give_message)
 }
 
 /*
- * Check if the GUI can be started.  Called before gvimrc is sourced but after
+ * Check if the GUI can be started.  Called before gmnvrc is sourced but after
  * fork().
  * Return OK or FAIL.
  */
@@ -1726,9 +1726,9 @@ gui_mch_init_check(void)
 #endif
 
     // This defaults to argv[0], but we want it to match the name of the
-    // shipped gvim.desktop so that Vim's windows can be associated with this
+    // shipped gmnv.desktop so that MNV's windows can be associated with this
     // file.
-    g_set_prgname("gvim");
+    g_set_prgname("gmnv");
 
     // Don't use gtk_init() or gnome_init(), it exits on failure.
     if (!gtk_init_check(&gui_argc, &gui_argv))
@@ -1769,7 +1769,7 @@ static timeout_cb_type	motion_repeat_timer_cb(gpointer);
 process_motion_notify(int x, int y, GdkModifierType state)
 {
     int	    button;
-    int_u   vim_modifiers;
+    int_u   mnv_modifiers;
     GtkAllocation allocation;
 
     // Need to add GDK_BUTTON1_MASK state when dragging a touch.
@@ -1792,10 +1792,10 @@ process_motion_notify(int x, int y, GdkModifierType state)
     }
 
     // translate modifier coding between the main engine and GTK
-    vim_modifiers = modifiers_gdk2mouse(state);
+    mnv_modifiers = modifiers_gdk2mouse(state);
 
     // inform the editor engine about the occurrence of this event
-    gui_send_mouse_event(button, x, y, FALSE, vim_modifiers);
+    gui_send_mouse_event(button, x, y, FALSE, mnv_modifiers);
 
     /*
      * Auto repeat timer handling.
@@ -1908,7 +1908,7 @@ motion_repeat_timer_cb(gpointer data UNUSED)
 
     // If there already is a mouse click in the input buffer, wait another
     // time (otherwise we would create a backlog of clicks)
-    if (vim_used_in_input_buf() > 10)
+    if (mnv_used_in_input_buf() > 10)
 	return TRUE;
 
     motion_repeat_timer = 0;
@@ -1957,7 +1957,7 @@ motion_notify_event(GtkWidget *widget,
 /*
  * Mouse button handling.  Note please that we are capturing multiple click's
  * by our own timeout mechanism instead of the one provided by GTK+ itself.
- * This is due to the way the generic VIM code is recognizing multiple clicks.
+ * This is due to the way the generic MNV code is recognizing multiple clicks.
  */
     static gint
 button_press_event(GtkWidget *widget,
@@ -1967,7 +1967,7 @@ button_press_event(GtkWidget *widget,
     int button;
     int repeated_click = FALSE;
     int x, y;
-    int_u vim_modifiers;
+    int_u mnv_modifiers;
 
     gui.event_time = event->time;
 
@@ -2020,9 +2020,9 @@ button_press_event(GtkWidget *widget,
 	xim_reset();
 #endif
 
-    vim_modifiers = modifiers_gdk2mouse(event->state);
+    mnv_modifiers = modifiers_gdk2mouse(event->state);
 
-    gui_send_mouse_event(button, x, y, repeated_click, vim_modifiers);
+    gui_send_mouse_event(button, x, y, repeated_click, mnv_modifiers);
 
     return TRUE;
 }
@@ -2036,7 +2036,7 @@ scroll_event(GtkWidget *widget,
 	     gpointer data UNUSED)
 {
     int	    button = 0;  // silence gcc
-    int_u   vim_modifiers;
+    int_u   mnv_modifiers;
 #if GTK_CHECK_VERSION(3,4,0)
     static double  acc_x, acc_y;
 # if !GTK_CHECK_VERSION(3,22,0)
@@ -2094,7 +2094,7 @@ scroll_event(GtkWidget *widget,
 	xim_reset();
 #endif
 
-    vim_modifiers = modifiers_gdk2mouse(event->state);
+    mnv_modifiers = modifiers_gdk2mouse(event->state);
 
 #if GTK_CHECK_VERSION(3,4,0)
 # ifdef GDK_WINDOWING_WAYLAND
@@ -2104,25 +2104,25 @@ scroll_event(GtkWidget *widget,
 	{ // right
 	    acc_x = MAX(0.0, acc_x - 1.0);
 	    gui_send_mouse_event(MOUSE_6, (int)event->x, (int)event->y,
-		    FALSE, vim_modifiers);
+		    FALSE, mnv_modifiers);
 	}
 	while (acc_x <= -1.0)
 	{ // left
 	    acc_x = MIN(0.0, acc_x + 1.0);
 	    gui_send_mouse_event(MOUSE_7, (int)event->x, (int)event->y,
-		    FALSE, vim_modifiers);
+		    FALSE, mnv_modifiers);
 	}
 	while (acc_y >= 1.0)
 	{ // down
 	    acc_y = MAX(0.0, acc_y - 1.0);
 	    gui_send_mouse_event(MOUSE_5, (int)event->x, (int)event->y,
-		    FALSE, vim_modifiers);
+		    FALSE, mnv_modifiers);
 	}
 	while (acc_y <= -1.0)
 	{ // up
 	    acc_y = MIN(0.0, acc_y + 1.0);
 	    gui_send_mouse_event(MOUSE_4, (int)event->x, (int)event->y,
-		    FALSE, vim_modifiers);
+		    FALSE, mnv_modifiers);
 	}
     }
     else
@@ -2135,7 +2135,7 @@ scroll_event(GtkWidget *widget,
     else
 #endif
 	gui_send_mouse_event(button, (int)event->x, (int)event->y,
-		FALSE, vim_modifiers);
+		FALSE, mnv_modifiers);
 
     return TRUE;
 }
@@ -2147,7 +2147,7 @@ button_release_event(GtkWidget *widget UNUSED,
 		     gpointer data UNUSED)
 {
     int x, y;
-    int_u vim_modifiers;
+    int_u mnv_modifiers;
 
     gui.event_time = event->time;
 
@@ -2163,9 +2163,9 @@ button_release_event(GtkWidget *widget UNUSED,
     x = event->x;
     y = event->y;
 
-    vim_modifiers = modifiers_gdk2mouse(event->state);
+    mnv_modifiers = modifiers_gdk2mouse(event->state);
 
-    gui_send_mouse_event(MOUSE_RELEASE, x, y, FALSE, vim_modifiers);
+    gui_send_mouse_event(MOUSE_RELEASE, x, y, FALSE, mnv_modifiers);
 
     switch (event->button)
     {
@@ -2241,7 +2241,7 @@ filter_uri_list(char_u **outlist, int max, char_u *src)
 		src += 11;
 	    while (src[0] == '/' && src[1] == '/')
 		++src;
-	    outlist[j++] = vim_strsave(src);
+	    outlist[j++] = mnv_strsave(src);
 	}
 	src += STRLEN(src) + 1;
     }
@@ -2261,7 +2261,7 @@ parse_uri_list(int *count, char_u *data, int len)
 	if (n > 0 && (array = ALLOC_MULT(char_u *, n)) != NULL)
 	    n = filter_uri_list(array, n, tmp);
     }
-    vim_free(tmp);
+    mnv_free(tmp);
     *count = n;
     return array;
 }
@@ -2292,7 +2292,7 @@ drag_handle_uri_list(GdkDragContext	*context,
 	gui_handle_drop(x, y, modifiers, fnames, nfiles);
     }
     else
-	vim_free(fnames);
+	mnv_free(fnames);
 }
 
     static void
@@ -2319,9 +2319,9 @@ drag_handle_text(GdkDragContext	    *context,
 
     dnd_yank_drag_data(text, (long)len);
     gtk_drag_finish(context, TRUE, FALSE, time_); // accept
-    vim_free(tmpbuf);
+    mnv_free(tmpbuf);
 
-    dropkey[2] = modifiers_gdk2vim(state);
+    dropkey[2] = modifiers_gdk2mnv(state);
 
     if (dropkey[2] != 0)
 	add_to_input_buf(dropkey, (int)sizeof(dropkey));
@@ -2415,7 +2415,7 @@ sm_client_check_changed_any(GnomeClient	    *client UNUSED,
 /*
  * "save_yourself" signal handler.  Initiate an interaction to ask the user
  * for confirmation if necessary.  Save the current editing session and tell
- * the session manager how to restart Vim.
+ * the session manager how to restart MNV.
  */
     static gboolean
 sm_client_save_yourself(GnomeClient	    *client,
@@ -2426,7 +2426,7 @@ sm_client_save_yourself(GnomeClient	    *client,
 			gboolean	    fast UNUSED,
 			gpointer	    data UNUSED)
 {
-    static const char	suffix[] = "-session.vim";
+    static const char	suffix[] = "-session.mnv";
     char		*session_file;
     unsigned int	len;
     gboolean		success;
@@ -2465,7 +2465,7 @@ sm_client_save_yourself(GnomeClient	    *client,
 	// Tell the session manager how to wipe out the stored session data.
 	// This isn't as dangerous as it looks, don't worry :)	session_file
 	// is a unique absolute filename.  Usually it'll be something like
-	// `/home/user/.gnome2/vim-XXXXXX-session.vim'.
+	// `/home/user/.gnome2/mnv-XXXXXX-session.mnv'.
 	i = 0;
 	argv[i++] = "rm";
 	argv[i++] = session_file;
@@ -2474,7 +2474,7 @@ sm_client_save_yourself(GnomeClient	    *client,
 	gnome_client_set_discard_command(client, i, (char **)argv);
 
 	// Tell the session manager how to restore the just saved session.
-	// This is easily done thanks to Vim's -S option.  Pass the -f flag
+	// This is easily done thanks to MNV's -S option.  Pass the -f flag
 	// since there's no need to fork -- it might even cause confusion.
 	// Also pass the window role to give the WM something to match on.
 	// The role is set in gui_mch_open(), thus should _never_ be NULL.
@@ -2508,8 +2508,8 @@ sm_client_die(GnomeClient *client UNUSED, gpointer data UNUSED)
     // Don't write messages to the GUI anymore
     full_screen = FALSE;
 
-    vim_strncpy(IObuff, (char_u *)
-		    _("Vim: Received \"die\" request from session manager\n"),
+    mnv_strncpy(IObuff, (char_u *)
+		    _("MNV: Received \"die\" request from session manager\n"),
 		    IOSIZE - 1);
     preserve_exit();
 }
@@ -2619,7 +2619,7 @@ setup_save_yourself(void)
 		    XSetWMProtocols(GDK_WINDOW_XDISPLAY(mainwin_win),
 			    GDK_WINDOW_XID(mainwin_win),
 			    new_atoms, count + 1);
-		    vim_free(new_atoms);
+		    mnv_free(new_atoms);
 		}
 	    }
 	    XFree(existing_atoms);
@@ -2738,9 +2738,9 @@ pixbuf_new_from_png_data(const unsigned char *data, unsigned int len)
     static void
 mainwin_realize(GtkWidget *widget UNUSED, gpointer data UNUSED)
 {
-#include "../runtime/vim16x16_png.h"
-#include "../runtime/vim32x32_png.h"
-#include "../runtime/vim48x48_png.h"
+#include "../runtime/mnv16x16_png.h"
+#include "../runtime/mnv32x32_png.h"
+#include "../runtime/mnv48x48_png.h"
 
     GdkWindow * const mainwin_win = gtk_widget_get_window(gui.mainwin);
 
@@ -2754,14 +2754,14 @@ mainwin_realize(GtkWidget *widget UNUSED, gpointer data UNUSED)
 	fflush(stdout);
     }
 
-    if (vim_strchr(p_go, GO_ICON) != NULL)
+    if (mnv_strchr(p_go, GO_ICON) != NULL)
     {
 	GtkIconTheme *icon_theme;
 
 	icon_theme = gtk_icon_theme_get_default();
 
-	if (icon_theme && gtk_icon_theme_has_icon(icon_theme, "gvim"))
-	    gtk_window_set_icon_name(GTK_WINDOW(gui.mainwin), "gvim");
+	if (icon_theme && gtk_icon_theme_has_icon(icon_theme, "gmnv"))
+	    gtk_window_set_icon_name(GTK_WINDOW(gui.mainwin), "gmnv");
 	else
 	{
 	    /*
@@ -2769,9 +2769,9 @@ mainwin_realize(GtkWidget *widget UNUSED, gpointer data UNUSED)
 	     */
 	    GList *icons = NULL;
 
-	    icons = g_list_prepend(icons, pixbuf_new_from_png_data(vim16x16_png, vim16x16_png_len));
-	    icons = g_list_prepend(icons, pixbuf_new_from_png_data(vim32x32_png, vim32x32_png_len));
-	    icons = g_list_prepend(icons, pixbuf_new_from_png_data(vim48x48_png, vim48x48_png_len));
+	    icons = g_list_prepend(icons, pixbuf_new_from_png_data(mnv16x16_png, mnv16x16_png_len));
+	    icons = g_list_prepend(icons, pixbuf_new_from_png_data(mnv32x32_png, mnv32x32_png_len));
+	    icons = g_list_prepend(icons, pixbuf_new_from_png_data(mnv48x48_png, mnv48x48_png_len));
 
 	    gtk_window_set_icon_list(GTK_WINDOW(gui.mainwin), icons);
 
@@ -2798,7 +2798,7 @@ mainwin_realize(GtkWidget *widget UNUSED, gpointer data UNUSED)
     {
 	if (serverName == NULL && serverDelayedStartName != NULL)
 	{
-	    // This is a :gui command in a plain vim with no previous server
+	    // This is a :gui command in a plain mnv with no previous server
 	    commWindow = GDK_WINDOW_XID(mainwin_win);
 
 	    (void)serverRegisterName(GDK_WINDOW_XDISPLAY(mainwin_win),
@@ -2891,8 +2891,8 @@ mainwin_screen_changed_cb(GtkWidget  *widget,
  * After the drawing area comes up, we calculate all colors and create the
  * dummy blank cursor.
  *
- * Don't try to set any VIM scrollbar sizes anywhere here. I'm relying on the
- * fact that the main VIM engine doesn't take them into account anywhere.
+ * Don't try to set any MNV scrollbar sizes anywhere here. I'm relying on the
+ * fact that the main MNV engine doesn't take them into account anywhere.
  */
     static void
 drawarea_realize_cb(GtkWidget *widget, gpointer data UNUSED)
@@ -3019,7 +3019,7 @@ drawarea_configure_event_cb(GtkWidget	      *widget,
     // the field send_event of such GdkEventConfigures is set to FALSE in
     // configure_native_child().
     //
-    // Obviously, this is a terrible hack making GVim depend on GTK's
+    // Obviously, this is a terrible hack making GMNV depend on GTK's
     // implementation details.  Therefore, watch out any relevant internal
     // changes happening in GTK in the feature (sigh).
     //
@@ -3053,7 +3053,7 @@ drawarea_configure_event_cb(GtkWidget	      *widget,
 
 /*
  * Callback routine for the "delete_event" signal on the toplevel window.
- * Tries to vim gracefully, or refuses to exit with changed buffers.
+ * Tries to mnv gracefully, or refuses to exit with changed buffers.
  */
     static gint
 delete_event_cb(GtkWidget *widget UNUSED,
@@ -3233,7 +3233,7 @@ update_window_manager_hints(int force_width, int force_height)
 			       |GDK_HINT_MIN_SIZE;
 	// Using gui.formwin as geometry widget doesn't work as expected
 	// with GTK+ 2 -- dunno why.  Presumably all the resizing hacks
-	// in Vim confuse GTK+.  For GTK 3 the second argument should be NULL
+	// in MNV confuse GTK+.  For GTK 3 the second argument should be NULL
 	// to make the width/height inc works, despite the docs saying
 	// something else.
 	gtk_window_set_geometry_hints(GTK_WINDOW(gui.mainwin), NULL,
@@ -3710,7 +3710,7 @@ gui_mch_init(void)
     // gtk_init_check() in gui_mch_init_check().
     if (using_gnome)
     {
-	gnome_program_init(VIMPACKAGE, VIM_VERSION_SHORT,
+	gnome_program_init(MNVPACKAGE, MNV_VERSION_SHORT,
 			   LIBGNOMEUI_MODULE, gui_argc, gui_argv, NULL);
 # if defined(LC_NUMERIC)
 	{
@@ -3724,11 +3724,11 @@ gui_mch_init(void)
 # endif
     }
 #endif
-    VIM_CLEAR(gui_argv);
+    MNV_CLEAR(gui_argv);
 
 #if GLIB_CHECK_VERSION(2,1,3)
     // Set the human-readable application name
-    g_set_application_name("Vim");
+    g_set_application_name("MNV");
 #endif
     /*
      * Force UTF-8 output no matter what the value of 'encoding' is.
@@ -3799,7 +3799,7 @@ gui_mch_init(void)
 #ifdef FEAT_GUI_GNOME
 	if (using_gnome)
 	{
-	    gui.mainwin = gnome_app_new("Vim", NULL);
+	    gui.mainwin = gnome_app_new("MNV", NULL);
 # ifdef USE_XSMP
 	    // Use the GNOME save-yourself functionality now.
 	    xsmp_close();
@@ -3810,7 +3810,7 @@ gui_mch_init(void)
 	    gui.mainwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     }
 
-    gtk_widget_set_name(gui.mainwin, "vim-main-window");
+    gtk_widget_set_name(gui.mainwin, "mnv-main-window");
 
     // Create the PangoContext used for drawing all text.
     gui.text_context = gtk_widget_create_pango_context(gui.mainwin);
@@ -3860,7 +3860,7 @@ gui_mch_init(void)
      * Create the menubar and handle
      */
     gui.menubar = gtk_menu_bar_new();
-    gtk_widget_set_name(gui.menubar, "vim-menubar");
+    gtk_widget_set_name(gui.menubar, "mnv-menubar");
 
     // Avoid that GTK takes <F10> away from us.
     {
@@ -3906,13 +3906,13 @@ gui_mch_init(void)
     // GTK_RELIEF_NONE, there's no need to specify that, probably.
 # else
     gtk_rc_parse_string(
-	    "style \"vim-toolbar-style\" {\n"
+	    "style \"mnv-toolbar-style\" {\n"
 	    "  GtkToolbar::button_relief = GTK_RELIEF_NONE\n"
 	    "}\n"
-	    "widget \"*.vim-toolbar\" style \"vim-toolbar-style\"\n");
+	    "widget \"*.mnv-toolbar\" style \"mnv-toolbar-style\"\n");
 # endif
     gui.toolbar = gtk_toolbar_new();
-    gtk_widget_set_name(gui.toolbar, "vim-toolbar");
+    gtk_widget_set_name(gui.toolbar, "mnv-toolbar");
     set_toolbar_style(GTK_TOOLBAR(gui.toolbar));
 
 # ifdef FEAT_GUI_GNOME
@@ -3934,7 +3934,7 @@ gui_mch_init(void)
     else
 # endif	// FEAT_GUI_GNOME
     {
-	if (vim_strchr(p_go, GO_TOOLBAR) != NULL
+	if (mnv_strchr(p_go, GO_TOOLBAR) != NULL
 		&& (toolbar_flags & (TOOLBAR_TEXT | TOOLBAR_ICONS)))
 	    gtk_widget_show(gui.toolbar);
 	gtk_box_pack_start(GTK_BOX(vbox), gui.toolbar, FALSE, FALSE, 0);
@@ -4007,7 +4007,7 @@ gui_mch_init(void)
     gtk_widget_set_events(gui.formwin, GDK_EXPOSURE_MASK);
 #endif
 #if GTK_CHECK_VERSION(3,22,2)
-    gtk_widget_set_name(gui.formwin, "vim-gtk-form");
+    gtk_widget_set_name(gui.formwin, "mnv-gtk-form");
 #endif
 
     gui.drawarea = gtk_drawing_area_new();
@@ -4105,8 +4105,8 @@ gui_mch_init(void)
     /*
      * Set clipboard specific atoms
      */
-    vim_atom = gdk_atom_intern(VIM_ATOM_NAME, FALSE);
-    vimenc_atom = gdk_atom_intern(VIMENC_ATOM_NAME, FALSE);
+    mnv_atom = gdk_atom_intern(MNV_ATOM_NAME, FALSE);
+    mnvenc_atom = gdk_atom_intern(MNVENC_ATOM_NAME, FALSE);
     clip_star.gtk_sel_atom = GDK_SELECTION_PRIMARY;
     clip_plus.gtk_sel_atom = gdk_atom_intern("CLIPBOARD", FALSE);
 
@@ -4129,7 +4129,7 @@ gui_mch_init(void)
      * Only install these enter/leave callbacks when 'p' in 'guioptions'.
      * Only needed for some window managers.
      */
-    if (vim_strchr(p_go, GO_POINTER) != NULL)
+    if (mnv_strchr(p_go, GO_POINTER) != NULL)
     {
 	g_signal_connect(G_OBJECT(gui.drawarea), "leave-notify-event",
 			 G_CALLBACK(leave_notify_event), NULL);
@@ -4247,7 +4247,7 @@ gui_mch_new_colors(void)
 				     gtk_widget_get_style_context(gui.formwin);
 	GtkCssProvider * const provider = gtk_css_provider_new();
 	gchar * const css = g_strdup_printf(
-		"widget#vim-gtk-form {\n"
+		"widget#mnv-gtk-form {\n"
 		"  background-color: #%.2lx%.2lx%.2lx;\n"
 		"}\n",
 		 (gui.back_pixel >> 16) & 0xff,
@@ -4296,7 +4296,7 @@ form_configure_event(GtkWidget *widget UNUSED,
 #ifdef TRACK_RESIZE_HISTORY
     // Resize requests are made for gui.mainwin;
     // get its dimensions for searching if this event
-    // is a response to a vim request.
+    // is a response to a mnv request.
     int	    w, h;
     gtk_window_get_size(GTK_WINDOW(gui.mainwin), &w, &h);
 
@@ -4305,7 +4305,7 @@ form_configure_event(GtkWidget *widget UNUSED,
 	   w, h, (int)Columns, (int)Rows);
 # endif
 
-    // Look through history of recent vim resize requests.
+    // Look through history of recent mnv resize requests.
     // If this event matches:
     //	    - "latest resize hist" We're caught up;
     //		clear the history and process this event.
@@ -4377,8 +4377,8 @@ mainwin_destroy_cb(GObject *object UNUSED, gpointer data UNUSED)
 
     if (!exiting) // only do anything if the destroy was unexpected
     {
-	vim_strncpy(IObuff,
-		(char_u *)_("Vim: Main window unexpectedly destroyed\n"),
+	mnv_strncpy(IObuff,
+		(char_u *)_("MNV: Main window unexpectedly destroyed\n"),
 		IOSIZE - 1);
 	preserve_exit();
     }
@@ -4523,7 +4523,7 @@ gui_mch_open(void)
 	char *role;
 
 	// Invent a unique-enough ID string for the role
-	role = g_strdup_printf("vim-%u-%u-%u",
+	role = g_strdup_printf("mnv-%u-%u-%u",
 			       (unsigned)mch_get_pid(),
 			       (unsigned)g_random_int(),
 			       (unsigned)time(NULL));
@@ -4578,7 +4578,7 @@ gui_mch_open(void)
 		y += hh - pixel_height;
 	    gtk_window_move(GTK_WINDOW(gui.mainwin), x, y);
 	}
-	VIM_CLEAR(gui.geom);
+	MNV_CLEAR(gui.geom);
 
 	// From now until everyone's stopped trying to set the window hints
 	// to their correct minimum values, stop them being set as we need
@@ -4623,7 +4623,7 @@ gui_mch_open(void)
     }
 
     // Get the colors from the "Normal" and "Menu" group (set in syntax.c or
-    // in a vimrc file)
+    // in a mnvrc file)
     set_normal_colors();
 
     // Check that none of the colors are the same as the background color
@@ -4643,7 +4643,7 @@ gui_mch_open(void)
      *
      * We connect this signal deferred finally after anything is in place,
      * since this is intended to handle resizements coming from the window
-     * manager upon us and should not interfere with what VIM is requesting
+     * manager upon us and should not interfere with what MNV is requesting
      * upon startup.
      */
 #ifdef TRACK_RESIZE_HISTORY
@@ -4683,12 +4683,12 @@ gui_mch_open(void)
 	 * connect signal handlers to hide the widgets just after they've been
 	 * marked visible, but before the main window is realized.
 	 */
-	if (using_gnome && vim_strchr(p_go, GO_MENUS) == NULL)
+	if (using_gnome && mnv_strchr(p_go, GO_MENUS) == NULL)
 	    menu_handler = g_signal_connect_after(gui.menubar_h, "show",
 						  G_CALLBACK(&gtk_widget_hide),
 						  NULL);
 # ifdef FEAT_TOOLBAR
-	if (using_gnome && vim_strchr(p_go, GO_TOOLBAR) == NULL
+	if (using_gnome && mnv_strchr(p_go, GO_TOOLBAR) == NULL
 		&& (toolbar_flags & (TOOLBAR_TEXT | TOOLBAR_ICONS)))
 	    tool_handler = g_signal_connect_after(gui.toolbar_h, "show",
 						  G_CALLBACK(&gtk_widget_hide),
@@ -4722,7 +4722,7 @@ gui_mch_open(void)
 }
 
 /*
- * Clean up for when exiting Vim.
+ * Clean up for when exiting MNV.
  */
     void
 gui_mch_exit(int rc UNUSED)
@@ -4875,9 +4875,9 @@ gui_mch_set_shellsize(int width, int height,
 #endif // !GTK_CHECK_VERSION(3,0,0)
     /*
      * Wait until all events are processed to prevent a crash because the
-     * real size of the drawing area doesn't reflect Vim's internal ideas.
+     * real size of the drawing area doesn't reflect MNV's internal ideas.
      *
-     * This is a bit of a hack, since Vim is a terminal application with a GUI
+     * This is a bit of a hack, since MNV is a terminal application with a GUI
      * on top, while the GUI expects to be the boss.
      */
     gui_mch_update();
@@ -4892,7 +4892,7 @@ gui_mch_settitle(char_u *title, char_u *icon UNUSED)
     gtk_window_set_title(GTK_WINDOW(gui.mainwin), (const char *)title);
 
     if (output_conv.vc_type != CONV_NONE)
-	vim_free(title);
+	mnv_free(title);
 }
 
 #if defined(FEAT_MENU)
@@ -5025,7 +5025,7 @@ gui_mch_adjust_charheight(void)
     // LINTED: avoid warning: bitwise operation on signed value
     gui.char_ascent = PANGO_PIXELS(ascent + p_linespace * PANGO_SCALE / 2);
 
-    // A not-positive value of char_height may crash Vim.  Only happens
+    // A not-positive value of char_height may crash MNV.  Only happens
     // if 'linespace' is negative (which does make sense sometimes).
     gui.char_ascent = MAX(gui.char_ascent, 0);
     gui.char_height = MAX(gui.char_height, gui.char_ascent + 1);
@@ -5081,15 +5081,15 @@ gui_mch_font_dialog(char_u *oldval)
 
 	// Annoying bug in GTK (or Pango): if the font name does not include a
 	// size, zero is used.  Use default point size ten.
-	if (!vim_isdigit(oldname[STRLEN(oldname) - 1]))
+	if (!mnv_isdigit(oldname[STRLEN(oldname) - 1]))
 	{
-	    char_u	*p = vim_strnsave(oldname, STRLEN(oldname) + 3);
+	    char_u	*p = mnv_strnsave(oldname, STRLEN(oldname) + 3);
 
 	    if (p != NULL)
 	    {
 		STRCPY(p + STRLEN(p), " 10");
 		if (oldname != oldval)
-		    vim_free(oldname);
+		    mnv_free(oldname);
 		oldname = p;
 	    }
 	}
@@ -5103,7 +5103,7 @@ gui_mch_font_dialog(char_u *oldval)
 #endif
 
 	if (oldname != oldval)
-	    vim_free(oldname);
+	    mnv_free(oldname);
     }
     else
 #if GTK_CHECK_VERSION(3,2,0)
@@ -5132,12 +5132,12 @@ gui_mch_font_dialog(char_u *oldval)
 
 	    // Apparently some font names include a comma, need to escape
 	    // that, because in 'guifont' it separates names.
-	    p = vim_strsave_escaped((char_u *)name, (char_u *)",");
+	    p = mnv_strsave_escaped((char_u *)name, (char_u *)",");
 	    g_free(name);
 	    if (p != NULL && input_conv.vc_type != CONV_NONE)
 	    {
 		fontname = string_convert(&input_conv, p, NULL);
-		vim_free(p);
+		mnv_free(p);
 	    }
 	    else
 		fontname = p;
@@ -5159,7 +5159,7 @@ gui_mch_font_dialog(char_u *oldval)
  *
  * Note that we don't need to check for italic style since Xft can
  * emulate italic on its own, provided you have a proper fontconfig
- * setup.  We wouldn't be able to emulate it in Vim anyway.
+ * setup.  We wouldn't be able to emulate it in MNV anyway.
  */
     static void
 get_styled_font_variants(void)
@@ -5271,7 +5271,7 @@ ascii_glyph_table_init(void)
 }
 
 /*
- * Initialize Vim to use the font or fontset with the given name.
+ * Initialize MNV to use the font or fontset with the given name.
  * Return FAIL if the font could not be loaded, OK otherwise.
  */
     int
@@ -5312,7 +5312,7 @@ gui_mch_init_font(char_u *font_name, int fontset UNUSED)
      * http://bugzilla.gnome.org/show_bug.cgi?id=106618
      * http://bugzilla.gnome.org/show_bug.cgi?id=106624
      *
-     * With this, for all four of the following cases, Vim works fine:
+     * With this, for all four of the following cases, MNV works fine:
      *	   guifont=CJK_fixed_width_font
      *	   guifont=Non_CJK_fixed_font
      *	   guifont=Non_CJK_fixed_font,CJK_Fixed_font
@@ -5389,7 +5389,7 @@ gui_mch_get_font(char_u *name, int report_error)
 	if (buf != NULL)
 	{
 	    font = pango_font_description_from_string((const char *)buf);
-	    vim_free(buf);
+	    mnv_free(buf);
 	}
 	else
 	    font = NULL;
@@ -5439,7 +5439,7 @@ gui_mch_get_fontname(GuiFont font, char_u *name UNUSED)
 
 	if (pangoname != NULL)
 	{
-	    char_u	*s = vim_strsave((char_u *)pangoname);
+	    char_u	*s = mnv_strsave((char_u *)pangoname);
 
 	    g_free(pangoname);
 	    return s;
@@ -5500,10 +5500,10 @@ gui_mch_expand_font(
 	    {
 		if (add_match(buf) != OK)
 		{
-		    vim_free(buf);
+		    mnv_free(buf);
 		    break;
 		}
-		vim_free(buf);
+		mnv_free(buf);
 	    }
 	    else
 		break;
@@ -5963,7 +5963,7 @@ gui_gtk_draw_string(int row, int col, char_u *s, int len, int flags)
 		new_conv_buf[plen] = ' ';
 		mch_memmove(new_conv_buf + plen + 1, conv_buf + plen,
 							  convlen - plen + 1);
-		vim_free(conv_buf);
+		mnv_free(conv_buf);
 		conv_buf = new_conv_buf;
 		++convlen;
 		bp = conv_buf + plen;
@@ -6084,7 +6084,7 @@ gui_gtk_draw_string(int row, int col, char_u *s, int len, int flags)
 	byte_sum += slen;
 	needs_pango = should_need_pango;
     }
-    vim_free(conv_buf);
+    mnv_free(conv_buf);
     return len_sum;
 }
 
@@ -6128,7 +6128,7 @@ gui_gtk_draw_string_ext(
     /*
      * Optimization hack:  If possible, skip the itemize and shaping process
      * for pure ASCII strings.	This optimization is particularly effective
-     * because Vim draws space characters to clear parts of the screen.
+     * because MNV draws space characters to clear parts of the screen.
      */
     if (!(flags & DRAW_ITALIC)
 	    && !((flags & DRAW_BOLD) && gui.font_can_bold)
@@ -6212,13 +6212,13 @@ not_ascii:
 	    /*
 	     * Increment the bidirectional embedding level by 1 if it is not
 	     * even.  An odd number means the output will be RTL, but we don't
-	     * want that since Vim handles right-to-left text on its own.  It
+	     * want that since MNV handles right-to-left text on its own.  It
 	     * would probably be sufficient to just set level = 0, but you can
 	     * never know :)
 	     *
 	     * Unfortunately we can't take advantage of Pango's ability to
 	     * render both LTR and RTL at the same time.  In order to support
-	     * that, Vim's main screen engine would have to make use of Pango
+	     * that, MNV's main screen engine would have to make use of Pango
 	     * functionality.
 	     */
 	    item->analysis.level = (item->analysis.level + 1) & (~1U);
@@ -6518,7 +6518,7 @@ gui_mch_iconify(void)
 
 #if defined(FEAT_EVAL)
 /*
- * Bring the Vim window to the foreground.
+ * Bring the MNV window to the foreground.
  */
     void
 gui_mch_set_foreground(void)
@@ -6637,7 +6637,7 @@ gui_mch_draw_part_cursor(int w, int h, guicolor_T color)
 gui_mch_update(void)
 {
     int cnt = 0;	// prevent endless loop
-    while (g_main_context_pending(NULL) && !vim_is_input_buf_full()
+    while (g_main_context_pending(NULL) && !mnv_is_input_buf_full()
 								&& ++cnt < 100)
 	g_main_context_iteration(NULL, TRUE);
 }
@@ -7180,7 +7180,7 @@ clip_gtk_owner_exists(Clipboard_T *cbd)
  * Make a menu item appear either active or not active (grey or not grey).
  */
     void
-gui_mch_menu_grey(vimmenu_T *menu, int grey)
+gui_mch_menu_grey(mnvmenu_T *menu, int grey)
 {
     if (menu->id == NULL)
 	return;
@@ -7201,7 +7201,7 @@ gui_mch_menu_grey(vimmenu_T *menu, int grey)
  * Make menu item hidden or not hidden.
  */
     void
-gui_mch_menu_hidden(vimmenu_T *menu, int hidden)
+gui_mch_menu_hidden(mnvmenu_T *menu, int hidden)
 {
     if (menu->id == 0)
 	return;
@@ -7610,7 +7610,7 @@ gui_mch_register_sign(char_u *signfile)
 	    semsg("E255: %s", message);
 
 	    if (input_conv.vc_type != CONV_NONE)
-		vim_free(message);
+		mnv_free(message);
 	}
 	g_error_free(error);
     }

@@ -1,7 +1,7 @@
-*usr_26.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_26.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 				  Repeating
@@ -14,7 +14,7 @@ will be explained.
 |26.1|	Repeating with Visual mode
 |26.2|	Add and subtract
 |26.3|	Making a change in many files
-|26.4|	Using Vim from a shell script
+|26.4|	Using MNV from a shell script
 
      Next chapter: |usr_27.txt|  Search commands and patterns
  Previous chapter: |usr_25.txt|  Editing formatted text
@@ -93,7 +93,7 @@ Using CTRL-A on these numbers results in:
 	007	foo bar ~
 	010	foo bar ~
 
-7 plus one is 10?  What happened here is that Vim recognized "007" as an octal
+7 plus one is 10?  What happened here is that MNV recognized "007" as an octal
 number, because there is a leading zero.  This notation is often used in C
 programs.  If you do not want a number with leading zeros to be handled as
 octal, use this: >
@@ -136,12 +136,12 @@ this, because you might have more files in the buffer list than you think.
 Check this with the ":buffers" command (or ":ls").
 
 ==============================================================================
-*26.4*	Using Vim from a shell script
+*26.4*	Using MNV from a shell script
 
 Suppose you have a lot of files in which you need to change the string
 "-person-" to "Jones" and then print it.  How do you do that?  One way is to
 do a lot of typing.  The other is to write a shell script to do the work.
-   The Vim editor does a superb job as a screen-oriented editor when using
+   The MNV editor does a superb job as a screen-oriented editor when using
 Normal mode commands.  For batch processing, however, Normal mode commands do
 not result in clear, commented command files; so here you will use Ex mode
 instead.  This mode gives you a nice command-line interface that makes it easy
@@ -153,19 +153,19 @@ command-line (:) command.)
 	write tempfile
 	quit
 
-You put these commands in the file "change.vim".  Now to run the editor in
+You put these commands in the file "change.mnv".  Now to run the editor in
 batch mode, use this shell script: >
 
 	for file in *.txt; do
-	  vim -e -s $file < change.vim
+	  mnv -e -s $file < change.mnv
 	  lpr -r tempfile
 	done
 
 The for-done loop is a shell construct to repeat the two lines in between,
 while the $file variable is set to a different file name each time.
-   The second line runs the Vim editor in Ex mode (-e argument) on the file
-$file and reads commands from the file "change.vim".  The -s argument tells
-Vim to operate in silent mode.  In other words, do not keep outputting the
+   The second line runs the MNV editor in Ex mode (-e argument) on the file
+$file and reads commands from the file "change.mnv".  The -s argument tells
+MNV to operate in silent mode.  In other words, do not keep outputting the
 :prompt, or any other prompt for that matter.
    The "lpr -r tempfile" command prints the resulting "tempfile" and deletes
 it (that's what the -r argument does).
@@ -173,18 +173,18 @@ it (that's what the -r argument does).
 
 READING FROM STDIN
 
-Vim can read text on standard input.  Since the normal way is to read commands
-there, you must tell Vim to read text instead.  This is done by passing the
+MNV can read text on standard input.  Since the normal way is to read commands
+there, you must tell MNV to read text instead.  This is done by passing the
 "-" argument in place of a file.  Example: >
 
-	ls | vim -
+	ls | mnv -
 
 This allows you to edit the output of the "ls" command, without first saving
 the text in a file.
    If you use the standard input to read text from, you can use the "-S"
 argument to read a script: >
 
-	producer | vim -S change.vim -
+	producer | mnv -S change.mnv -
 
 
 NORMAL MODE SCRIPTS
@@ -192,7 +192,7 @@ NORMAL MODE SCRIPTS
 If you really want to use Normal mode commands in a script, you can use it
 like this: >
 
-	vim -s script file.txt ...
+	mnv -s script file.txt ...
 <
 	Note:
 	"-s" has a different meaning when it is used without "-e".  Here it
@@ -208,7 +208,7 @@ You need to imagine what the result would be, which can be a bit difficult.
 Another way is to record the commands while you perform them manually.  This
 is how you do that: >
 
-	vim -w script file.txt ...
+	mnv -w script file.txt ...
 
 All typed keys will be written to "script".  If you make a small mistake you
 can just continue and remember to edit the script later.
@@ -220,4 +220,4 @@ start all over, use the "-W" argument.  It overwrites any existing file.
 
 Next chapter: |usr_27.txt|  Search commands and patterns
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

@@ -79,7 +79,7 @@ RESIZE 5,16
   ?cursor = 3,2
 
 !Cursor goes missing
-# For more context: https://github.com/neovim/neovim/pull/21124
+# For more context: https://github.com/neomnv/neomnv/pull/21124
 RESET
 RESIZE 5,5
 RESIZE 3,1

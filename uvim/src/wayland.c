@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -30,7 +30,7 @@
  *	      found here: https://github.com/bugaevc/wl-clipboard
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef FEAT_WAYLAND
 
@@ -233,8 +233,8 @@ vwl_log_handler(const char *fmt, va_list args)
     if (buf == NULL)
 	return;
 
-    vim_strncpy((char_u*)buf, (char_u*)prefix, len);
-    vim_vsnprintf(buf + len, 512 - len, fmt, args);
+    mnv_strncpy((char_u*)buf, (char_u*)prefix, len);
+    mnv_vsnprintf(buf + len, 512 - len, fmt, args);
 
     // Remove newline that libwayland puts
     buf[STRLEN(buf) - 1] = NUL;
@@ -244,7 +244,7 @@ vwl_log_handler(const char *fmt, va_list args)
 #endif
     emsg(buf);
 
-    vim_free(buf);
+    mnv_free(buf);
 }
 
 /*
@@ -258,7 +258,7 @@ wl_seat_listener_event_name(
 {
     vwl_seat_T *seat = data;
 
-    seat->label = (char *)vim_strsave((char_u *)name);
+    seat->label = (char *)mnv_strsave((char_u *)name);
 }
 
 /*
@@ -451,7 +451,7 @@ vwl_connection_new(const char *display)
 
     if (ct->display.proxy == NULL)
     {
-	vim_free(ct);
+	mnv_free(ct);
 	return NULL;
     }
 
@@ -461,7 +461,7 @@ vwl_connection_new(const char *display)
     if (ct->registry.proxy == NULL)
     {
 	wl_display_disconnect(ct->display.proxy);
-	vim_free(ct);
+	mnv_free(ct);
 	return NULL;
     }
 
@@ -470,7 +470,7 @@ vwl_connection_new(const char *display)
     wl_registry_add_listener(ct->registry.proxy, &wl_registry_listener, ct);
 
 #ifdef FEAT_WAYLAND_CLIPBOARD_FS
-    env = mch_getenv("VIM_WAYLAND_FORCE_FS");
+    env = mch_getenv("MNV_WAYLAND_FORCE_FS");
     force_fs = (env != NULL && STRCMP(env, "1") == 0);
 
     if (force_fs)
@@ -530,8 +530,8 @@ vwl_seat_destroy(vwl_seat_T *self)
 	else
 	    wl_seat_destroy(self->proxy);
     }
-    vim_free(self->label);
-    vim_free(self);
+    mnv_free(self->label);
+    mnv_free(self);
 }
 
 /*
@@ -568,7 +568,7 @@ vwl_connection_destroy(vwl_connection_T *self)
 	wl_display_disconnect(self->display.proxy);
 	self->display.proxy = NULL;
     }
-    vim_free(self);
+    mnv_free(self);
 }
 
 /*
@@ -631,13 +631,13 @@ wayland_set_display(const char *display)
     // Leave unchanged if display is empty (but not NULL)
     if (STRCMP(display, "") != 0)
     {
-	vim_free(wayland_display_name);
-	wayland_display_name = (char*)vim_strsave((char_u*)display);
+	mnv_free(wayland_display_name);
+	wayland_display_name = (char*)mnv_strsave((char_u*)display);
     }
 
 exit:
 #ifdef FEAT_EVAL
-    set_vim_var_string(VV_WAYLAND_DISPLAY, (char_u*)display, -1);
+    set_mnv_var_string(VV_WAYLAND_DISPLAY, (char_u*)display, -1);
 #endif
 }
 
@@ -836,7 +836,7 @@ ex_wlrestore(exarg_T *eap)
 #endif
 
     if (display != NULL)
-	display = (char*)vim_strsave((char_u*)display);
+	display = (char*)mnv_strsave((char_u*)display);
 
     // Will lose any selections we own
     wayland_uninit_connection();
@@ -855,7 +855,7 @@ ex_wlrestore(exarg_T *eap)
     else
 	msg(_("failed restoring, lost connection to Wayland display"));
 
-    vim_free(display);
+    mnv_free(display);
 
     choose_clipmethod();
 }
@@ -920,7 +920,7 @@ vwl_connection_get_data_device_manager(
 
     if (!(*supported & req_sel))
     {
-	vim_free(manager);
+	mnv_free(manager);
 	return NULL;
     }
 
@@ -955,7 +955,7 @@ vwl_data_device_manager_get_data_device(
 	    break;
 # endif
 	default:
-	    vim_free(device);
+	    mnv_free(device);
 	    return NULL;
     }
     device->protocol = self->protocol;
@@ -990,7 +990,7 @@ vwl_data_device_manager_create_data_source(vwl_data_device_manager_T *self)
 	    break;
 # endif
 	default:
-	    vim_free(source);
+	    mnv_free(source);
 	    return NULL;
     }
     source->protocol = self->protocol;
@@ -1048,7 +1048,7 @@ vwl_data_device_wrap_offer_proxy(vwl_data_device_T *self, void *proxy)
 	    default: \
 		break; \
 	} \
-	vim_free(self); \
+	mnv_free(self); \
     }
 
 VWL_FUNC_DATA_PROXY_DESTROY(device)
@@ -1079,7 +1079,7 @@ vwl_data_offer_destroy(vwl_data_offer_T *self)
 	    break;
     }
     ga_clear_strings(&self->mime_types);
-    vim_free(self);
+    mnv_free(self);
 }
 
 /*
@@ -1090,7 +1090,7 @@ vwl_data_device_manager_discard(vwl_data_device_manager_T *self)
 {
     if (self == NULL)
 	return;
-    vim_free(self);
+    mnv_free(self);
 }
 
 # define VWL_FUNC_DATA_DEVICE_EVENT_DATA_OFFER(device_type, offer_type) \
@@ -1270,9 +1270,9 @@ static const struct zwp_primary_selection_source_v1_listener
 	vwl_data_offer_T *self = data; \
 	if (self->listener->offer(self->data, self, mime_type)) \
 	{ \
-	    char *mime = (char *)vim_strsave((char_u *)mime_type); \
+	    char *mime = (char *)mnv_strsave((char_u *)mime_type); \
 	    if (ga_grow(&self->mime_types, 1) == FAIL) \
-		vim_free(mime); \
+		mnv_free(mime); \
 	    else \
 		if (mime != NULL) \
 		    ((char **)self->mime_types.ga_data) \

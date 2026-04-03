@@ -49,10 +49,10 @@
 #undef UNIX
 
 /* Defined to the size of an int */
-#undef VIM_SIZEOF_INT
+#undef MNV_SIZEOF_INT
 
 /* Defined to the size of a long */
-#undef VIM_SIZEOF_LONG
+#undef MNV_SIZEOF_LONG
 
 /* Defined to the size of off_t */
 #undef SIZEOF_OFF_T
@@ -65,7 +65,7 @@
 
 /*
  * If we cannot trust one of the following from the libraries, we use our
- * own safe but probably slower vim_memmove().
+ * own safe but probably slower mnv_memmove().
  */
 #undef USEBCOPY
 #undef USEMEMMOVE
@@ -311,7 +311,7 @@
 /* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
 #undef HAVE_SYS_WAIT_H
 
-/* This is currently unused in vim: */
+/* This is currently unused in mnv: */
 /* Define if you have the ANSI C header files. */
 /* #undef STDC_HEADERS */
 
@@ -403,7 +403,7 @@
 /* Define if you don't want to include Arabic support. */
 #undef DISABLE_ARABIC
 
-/* Define if you want to always define a server name at vim startup. */
+/* Define if you want to always define a server name at mnv startup. */
 #undef FEAT_AUTOSERVERNAME
 
 /* Define if you want to use sockets for clientserver communication. */
@@ -472,7 +472,7 @@
 // Define default global runtime after path.
 #undef RUNTIME_GLOBAL_AFTER
 
-/* Define name of who modified a released Vim */
+/* Define name of who modified a released MNV */
 #undef MODIFIED_BY
 
 /* Define if you want XSMP interaction as well as vanilla swapfile safety */

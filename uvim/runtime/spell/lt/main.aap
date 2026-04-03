@@ -1,10 +1,10 @@
-# Aap recipe for Lithuanian Vim spell files.
+# Aap recipe for Lithuanian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = lt_LT.aff lt_LT.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/lt.iso-8859-13.spl $SPELLDIR/lt.utf-8.spl \
          ../README_lt.txt
 
 $SPELLDIR/lt.iso-8859-13.spl : $FILES
-        :sys env LANG=lt_LT.ISO8859-13 $VIM -u NONE -e -c "mkspell! $SPELLDIR/lt lt_LT" -c q
+        :sys env LANG=lt_LT.ISO8859-13 $MNV -u NONE -e -c "mkspell! $SPELLDIR/lt lt_LT" -c q
 
 $SPELLDIR/lt.utf-8.spl : $FILES
-        :sys env LANG=lt_LT.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/lt lt_LT" -c q
+        :sys env LANG=lt_LT.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/lt lt_LT" -c q
 
 ../README_lt.txt: README_lt_LT.txt
         :copy $source $target
@@ -44,7 +44,7 @@ lt_LT.aff lt_LT.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -75,4 +75,4 @@ check:
             :delete lt_LT.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

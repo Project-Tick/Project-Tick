@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * quickfix.c: functions for quickfix mode, using a file with error messages
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_QUICKFIX)
 
@@ -325,9 +325,9 @@ efmpat_to_regpat(
 	return NULL;
     }
     if ((idx && idx < FMT_PATTERN_R
-		&& vim_strchr((char_u *)"DXOPQ", efminfo->prefix) != NULL)
+		&& mnv_strchr((char_u *)"DXOPQ", efminfo->prefix) != NULL)
 	    || (idx == FMT_PATTERN_R
-		&& vim_strchr((char_u *)"OPQ", efminfo->prefix) == NULL))
+		&& mnv_strchr((char_u *)"OPQ", efminfo->prefix) == NULL))
     {
 	semsg(_(e_unexpected_chr_in_format_str), *efmpat);
 	return NULL;
@@ -432,9 +432,9 @@ scanf_fmt_to_regpat(
     static char_u *
 efm_analyze_prefix(char_u *efmp, efm_T *efminfo)
 {
-    if (vim_strchr((char_u *)"+-", *efmp) != NULL)
+    if (mnv_strchr((char_u *)"+-", *efmp) != NULL)
 	efminfo->flags = *efmp++;
-    if (vim_strchr((char_u *)"DXAEWINCZGOPQ", *efmp) != NULL)
+    if (mnv_strchr((char_u *)"DXAEWINCZGOPQ", *efmp) != NULL)
 	efminfo->prefix = *efmp;
     else
     {
@@ -489,7 +489,7 @@ efm_to_regpat(
 		if (ptr == NULL)
 		    return FAIL;
 	    }
-	    else if (vim_strchr((char_u *)"%\\.^$~[", *efmp) != NULL)
+	    else if (mnv_strchr((char_u *)"%\\.^$~[", *efmp) != NULL)
 		*ptr++ = *efmp;		// regexp magic characters
 	    else if (*efmp == '#')
 		*ptr++ = '*';
@@ -513,7 +513,7 @@ efm_to_regpat(
 	{
 	    if (*efmp == '\\' && efmp + 1 < efm + len)
 		++efmp;
-	    else if (vim_strchr((char_u *)".*^$~[", *efmp) != NULL)
+	    else if (mnv_strchr((char_u *)".*^$~[", *efmp) != NULL)
 		*ptr++ = '\\';	// escape regexp atoms
 	    if (*efmp)
 		*ptr++ = *efmp;
@@ -536,8 +536,8 @@ free_efm_list(efm_T **efm_first)
     for (efm_ptr = *efm_first; efm_ptr != NULL; efm_ptr = *efm_first)
     {
 	*efm_first = efm_ptr->next;
-	vim_regfree(efm_ptr->prog);
-	vim_free(efm_ptr);
+	mnv_regfree(efm_ptr->prog);
+	mnv_free(efm_ptr);
     }
     fmt_start = NULL;
 }
@@ -619,7 +619,7 @@ parse_efm_option(char_u *efm)
 
 	if (efm_to_regpat(efm, len, fmt_ptr, fmtstr) == FAIL)
 	    goto parse_efm_error;
-	if ((fmt_ptr->prog = vim_regcomp(fmtstr, RE_MAGIC + RE_STRING)) == NULL)
+	if ((fmt_ptr->prog = mnv_regcomp(fmtstr, RE_MAGIC + RE_STRING)) == NULL)
 	    goto parse_efm_error;
 	// Advance to next part
 	efm = skip_to_option_part(efm + len);	// skip comma and spaces
@@ -634,7 +634,7 @@ parse_efm_error:
     free_efm_list(&fmt_first);
 
 parse_efm_end:
-    vim_free(fmtstr);
+    mnv_free(fmtstr);
 
     return fmt_first;
 }
@@ -665,7 +665,7 @@ typedef struct {
     buf_T	*buf;
     linenr_T	buflnum;
     linenr_T	lnumlast;
-    vimconv_T	vc;
+    mnvconv_T	vc;
 } qfstate_T;
 
 /*
@@ -688,7 +688,7 @@ qf_grow_linebuf(qfstate_T *state, int newsz)
     }
     else if (state->linelen > state->growbufsiz)
     {
-	if ((p = vim_realloc(state->growbuf, state->linelen + 1)) == NULL)
+	if ((p = mnv_realloc(state->growbuf, state->linelen + 1)) == NULL)
 	    return NULL;
 	state->growbuf = p;
 	state->growbufsiz = state->linelen;
@@ -710,7 +710,7 @@ qf_get_next_str_line(qfstate_T *state)
     if (*p_str == NUL) // Reached the end of the string
 	return QF_END_OF_INPUT;
 
-    p = vim_strchr(p_str, '\n');
+    p = mnv_strchr(p_str, '\n');
     if (p != NULL)
 	len = (int)(p - p_str) + 1;
     else
@@ -727,7 +727,7 @@ qf_get_next_str_line(qfstate_T *state)
 	state->linebuf = IObuff;
 	state->linelen = len;
     }
-    vim_strncpy(state->linebuf, p_str, state->linelen);
+    mnv_strncpy(state->linebuf, p_str, state->linelen);
 
     // Increment using len in order to discard the rest of the
     // line if it exceeds LINE_MAXLEN.
@@ -770,7 +770,7 @@ qf_get_next_list_line(qfstate_T *state)
 	state->linelen = len;
     }
 
-    vim_strncpy(state->linebuf, p_li->li_tv.vval.v_string, state->linelen);
+    mnv_strncpy(state->linebuf, p_li->li_tv.vval.v_string, state->linelen);
 
     state->p_li = p_li->li_next;	// next item
     return QF_OK;
@@ -804,7 +804,7 @@ qf_get_next_buf_line(qfstate_T *state)
 	state->linebuf = IObuff;
 	state->linelen = len;
     }
-    vim_strncpy(state->linebuf, p_buf, state->linelen);
+    mnv_strncpy(state->linebuf, p_buf, state->linelen);
 
     return QF_OK;
 }
@@ -859,7 +859,7 @@ qf_get_next_file_line(qfstate_T *state)
 
 	    state->growbufsiz = 2 * state->growbufsiz < LINE_MAXLEN
 		? 2 * state->growbufsiz : LINE_MAXLEN;
-	    if ((p = vim_realloc(state->growbuf, state->growbufsiz)) == NULL)
+	    if ((p = mnv_realloc(state->growbuf, state->growbufsiz)) == NULL)
 		return QF_NOMEM;
 	    state->growbuf = p;
 	}
@@ -892,11 +892,11 @@ qf_get_next_file_line(qfstate_T *state)
 	    if (state->linelen < IOSIZE)
 	    {
 		STRCPY(state->linebuf, line);
-		vim_free(line);
+		mnv_free(line);
 	    }
 	    else
 	    {
-		vim_free(state->growbuf);
+		mnv_free(state->growbuf);
 		state->linebuf = state->growbuf = line;
 		state->growbufsiz = state->linelen < LINE_MAXLEN
 						? state->linelen : LINE_MAXLEN;
@@ -990,7 +990,7 @@ qf_parse_fmt_f(regmatch_T *rmp, int midx, qffields_T *fields, int prefix)
 
     // For separate filename patterns (%O, %P and %Q), the specified file
     // should exist.
-    if (vim_strchr((char_u *)"OPQ", prefix) != NULL
+    if (mnv_strchr((char_u *)"OPQ", prefix) != NULL
 	    && mch_getperm(fields->namebuf) == -1)
 	return QF_FAIL;
 
@@ -1103,13 +1103,13 @@ copy_nonerror_line(char_u *linebuf, int linelen, qffields_T *fields)
     if (linelen >= fields->errmsglen)
     {
 	// linelen + null terminator
-	if ((p = vim_realloc(fields->errmsg, linelen + 1)) == NULL)
+	if ((p = mnv_realloc(fields->errmsg, linelen + 1)) == NULL)
 	    return QF_NOMEM;
 	fields->errmsg = p;
 	fields->errmsglen = linelen + 1;
     }
     // copy whole line to error message
-    vim_strncpy(fields->errmsg, linebuf, linelen);
+    mnv_strncpy(fields->errmsg, linebuf, linelen);
 
     return QF_OK;
 }
@@ -1130,12 +1130,12 @@ qf_parse_fmt_m(regmatch_T *rmp, int midx, qffields_T *fields)
     if (len >= fields->errmsglen)
     {
 	// len + null terminator
-	if ((p = vim_realloc(fields->errmsg, len + 1)) == NULL)
+	if ((p = mnv_realloc(fields->errmsg, len + 1)) == NULL)
 	    return QF_NOMEM;
 	fields->errmsg = p;
 	fields->errmsglen = len + 1;
     }
-    vim_strncpy(fields->errmsg, rmp->startp[midx], len);
+    mnv_strncpy(fields->errmsg, rmp->startp[midx], len);
     return QF_OK;
 }
 
@@ -1281,7 +1281,7 @@ qf_parse_match(
 
     if ((idx == 'C' || idx == 'Z') && !qf_multiline)
 	return QF_FAIL;
-    if (vim_strchr((char_u *)"EWIN", idx) != NULL)
+    if (mnv_strchr((char_u *)"EWIN", idx) != NULL)
 	fields->type = idx;
     else
 	fields->type = 0;
@@ -1335,7 +1335,7 @@ qf_parse_get_fields(
     int		r;
 
     if (qf_multiscan &&
-		vim_strchr((char_u *)"OPQ", fmt_ptr->prefix) == NULL)
+		mnv_strchr((char_u *)"OPQ", fmt_ptr->prefix) == NULL)
 	return QF_FAIL;
 
     fields->namebuf[0] = NUL;
@@ -1356,7 +1356,7 @@ qf_parse_get_fields(
     // Always ignore case when looking for a matching error.
     regmatch.rm_ic = TRUE;
     regmatch.regprog = fmt_ptr->prog;
-    r = vim_regexec(&regmatch, linebuf, (colnr_T)0);
+    r = mnv_regexec(&regmatch, linebuf, (colnr_T)0);
     fmt_ptr->prog = regmatch.regprog;
     if (r)
 	status = qf_parse_match(linebuf, linelen, fmt_ptr, &regmatch,
@@ -1461,14 +1461,14 @@ qf_parse_multiline_pfx(
 	    if (ptr == NULL)
 		return QF_FAIL;
 	    STRCPY(ptr, qfprev->qf_text);
-	    vim_free(qfprev->qf_text);
+	    mnv_free(qfprev->qf_text);
 	    qfprev->qf_text = ptr;
 	    *(ptr += len) = '\n';
 	    STRCPY(++ptr, fields->errmsg);
 	}
 	if (qfprev->qf_nr == -1)
 	    qfprev->qf_nr = fields->enr;
-	if (vim_isprintc(fields->type) && !qfprev->qf_type)
+	if (mnv_isprintc(fields->type) && !qfprev->qf_type)
 	    // only printable chars allowed
 	    qfprev->qf_type = fields->type;
 
@@ -1564,18 +1564,18 @@ restofline:
 	if (fmt_ptr->conthere)
 	    fmt_start = fmt_ptr;
 
-	if (vim_strchr((char_u *)"AEWIN", idx) != NULL)
+	if (mnv_strchr((char_u *)"AEWIN", idx) != NULL)
 	{
 	    qfl->qf_multiline = TRUE;	// start of a multi-line message
 	    qfl->qf_multiignore = FALSE;// reset continuation
 	}
-	else if (vim_strchr((char_u *)"CZ", idx) != NULL)
+	else if (mnv_strchr((char_u *)"CZ", idx) != NULL)
 	{				// continuation of multi-line msg
 	    status = qf_parse_multiline_pfx(idx, qfl, fields);
 	    if (status != QF_OK)
 		return status;
 	}
-	else if (vim_strchr((char_u *)"OPQ", idx) != NULL)
+	else if (mnv_strchr((char_u *)"OPQ", idx) != NULL)
 	{				// global file names
 	    status = qf_parse_file_pfx(idx, fields, qfl, tail);
 	    if (status == QF_MULTISCAN)
@@ -1654,10 +1654,10 @@ qf_alloc_fields(qffields_T *pfields)
     static void
 qf_free_fields(qffields_T *pfields)
 {
-    vim_free(pfields->namebuf);
-    vim_free(pfields->module);
-    vim_free(pfields->errmsg);
-    vim_free(pfields->pattern);
+    mnv_free(pfields->namebuf);
+    mnv_free(pfields->module);
+    mnv_free(pfields->errmsg);
+    mnv_free(pfields->pattern);
 }
 
 /*
@@ -1709,7 +1709,7 @@ qf_cleanup_state(qfstate_T *pstate)
     if (pstate->fd != NULL)
 	fclose(pstate->fd);
 
-    vim_free(pstate->growbuf);
+    mnv_free(pstate->growbuf);
     if (pstate->vc.vc_type != CONV_NONE)
 	convert_setup(&pstate->vc, NULL, NULL);
 }
@@ -1794,7 +1794,7 @@ qf_init_ext(
     int		    status;
 
     // Do not used the cached buffer, it may have been wiped out.
-    VIM_CLEAR(qf_last_bufname);
+    MNV_CLEAR(qf_last_bufname);
 
     CLEAR_FIELD(state);
     CLEAR_FIELD(fields);
@@ -1830,13 +1830,13 @@ qf_init_ext(
     if (last_efm == NULL || (STRCMP(last_efm, efm) != 0))
     {
 	// free the previously parsed data
-	VIM_CLEAR(last_efm);
+	MNV_CLEAR(last_efm);
 	free_efm_list(&fmt_first);
 
 	// parse the current 'efm'
 	fmt_first = parse_efm_option(efm);
 	if (fmt_first != NULL)
-	    last_efm = vim_strsave(efm);
+	    last_efm = mnv_strsave(efm);
     }
 
     if (fmt_first == NULL)	// nothing found
@@ -1929,7 +1929,7 @@ qf_init(win_T	    *wp,
     static void
 qf_store_title(qf_list_T *qfl, char_u *title)
 {
-    VIM_CLEAR(qfl->qf_title);
+    MNV_CLEAR(qfl->qf_title);
 
     if (title == NULL)
 	return;
@@ -1952,7 +1952,7 @@ qf_cmdtitle(char_u *cmd)
 {
     static char_u qftitle_str[IOSIZE];
 
-    vim_snprintf((char *)qftitle_str, IOSIZE, ":%s", (char *)cmd);
+    mnv_snprintf((char *)qftitle_str, IOSIZE, ":%s", (char *)cmd);
     return qftitle_str;
 }
 
@@ -1981,7 +1981,7 @@ qf_pop_stack(qf_info_T *qi, int adjust)
 	qi->qf_lists[i - 1] = qi->qf_lists[i];
 
     // fill with zeroes now unused list at the top
-    vim_memset(qi->qf_lists + qi->qf_listcount - 1, 0, sizeof(*qi->qf_lists));
+    mnv_memset(qi->qf_lists + qi->qf_listcount - 1, 0, sizeof(*qi->qf_lists));
 
     if (adjust)
     {
@@ -2110,8 +2110,8 @@ qf_free_lists(qf_info_T *qi)
 {
     qf_free_list_stack_items(qi);
 
-    vim_free(qi->qf_lists);
-    vim_free(qi);
+    mnv_free(qi->qf_lists);
+    mnv_free(qi);
 }
 
 /*
@@ -2192,7 +2192,7 @@ decr_quickfix_busy(void)
 
 	    qf_delq_head = q->next;
 	    ll_free_all(&q->qi);
-	    vim_free(q);
+	    mnv_free(q);
 	}
     }
 # ifdef ABORT_ON_INTERNAL_ERROR
@@ -2273,13 +2273,13 @@ qf_add_entry(
 	{
 	    p = shorten_fname1(fullname);
 	    if (p != NULL)
-		qfp->qf_fname = vim_strsave(p);
+		qfp->qf_fname = mnv_strsave(p);
 	}
     }
-    vim_free(fullname);
-    if ((qfp->qf_text = vim_strsave(mesg)) == NULL)
+    mnv_free(fullname);
+    if ((qfp->qf_text = mnv_strsave(mesg)) == NULL)
     {
-	vim_free(qfp);
+	mnv_free(qfp);
 	return QF_FAIL;
     }
     qfp->qf_lnum = lnum;
@@ -2296,23 +2296,23 @@ qf_add_entry(
     }
     if (pattern == NULL || *pattern == NUL)
 	qfp->qf_pattern = NULL;
-    else if ((qfp->qf_pattern = vim_strsave(pattern)) == NULL)
+    else if ((qfp->qf_pattern = mnv_strsave(pattern)) == NULL)
     {
-	vim_free(qfp->qf_text);
-	vim_free(qfp);
+	mnv_free(qfp->qf_text);
+	mnv_free(qfp);
 	return QF_FAIL;
     }
     if (module == NULL || *module == NUL)
 	qfp->qf_module = NULL;
-    else if ((qfp->qf_module = vim_strsave(module)) == NULL)
+    else if ((qfp->qf_module = mnv_strsave(module)) == NULL)
     {
-	vim_free(qfp->qf_text);
-	vim_free(qfp->qf_pattern);
-	vim_free(qfp);
+	mnv_free(qfp->qf_text);
+	mnv_free(qfp->qf_pattern);
+	mnv_free(qfp);
 	return QF_FAIL;
     }
     qfp->qf_nr = nr;
-    if (type != 1 && !vim_isprintc(type)) // only printable chars allowed
+    if (type != 1 && !mnv_isprintc(type)) // only printable chars allowed
 	type = 0;
     qfp->qf_type = type;
     qfp->qf_valid = valid;
@@ -2410,14 +2410,14 @@ qf_resize_stack_base(qf_info_T *qi, int n)
 	    qf_pop_stack(qi, TRUE);
     }
 
-    new = vim_realloc(qi->qf_lists, lsz * n);
+    new = mnv_realloc(qi->qf_lists, lsz * n);
 
     if (new == NULL)
 	return FAIL;
 
     // fill with zeroes any newly allocated memory
     if (n > qi->qf_maxcount)
-	vim_memset(new + qi->qf_maxcount, 0, lsz * (n - qi->qf_maxcount));
+	mnv_memset(new + qi->qf_maxcount, 0, lsz * (n - qi->qf_maxcount));
 
     qi->qf_lists = new;
     qi->qf_maxcount = n;
@@ -2490,7 +2490,7 @@ qf_alloc_stack(qfltype_T qfltype, int n)
     if (qi->qf_lists == NULL)
     {
 	if (qfltype != QFLT_QUICKFIX)
-	    vim_free(qi);
+	    mnv_free(qi);
 	return NULL;
     }
     qi->qf_maxcount = n;
@@ -2639,7 +2639,7 @@ copy_loclist(qf_list_T *from_qfl, qf_list_T *to_qfl)
     to_qfl->qf_last = NULL;
     to_qfl->qf_ptr = NULL;
     if (from_qfl->qf_title != NULL)
-	to_qfl->qf_title = vim_strsave(from_qfl->qf_title);
+	to_qfl->qf_title = mnv_strsave(from_qfl->qf_title);
     else
 	to_qfl->qf_title = NULL;
     if (from_qfl->qf_ctx != NULL)
@@ -2743,7 +2743,7 @@ qf_get_fnum(qf_list_T *qfl, char_u *directory, char_u *fname)
 	slash_adjust(directory);
     slash_adjust(fname);
 # endif
-    if (directory != NULL && !vim_isAbsName(fname)
+    if (directory != NULL && !mnv_isAbsName(fname)
 	    && (ptr = concat_fnames(directory, fname, TRUE)) != NULL)
     {
 	// Here we check if the file really exists.
@@ -2752,12 +2752,12 @@ qf_get_fnum(qf_list_T *qfl, char_u *directory, char_u *fname)
 	// directory change.
 	if (mch_getperm(ptr) < 0)
 	{
-	    vim_free(ptr);
+	    mnv_free(ptr);
 	    directory = qf_guess_filepath(qfl, fname);
 	    if (directory)
 		ptr = concat_fnames(directory, fname, TRUE);
 	    else
-		ptr = vim_strsave(fname);
+		ptr = mnv_strsave(fname);
 	    if (ptr == NULL)
 		return 0;
 	}
@@ -2771,16 +2771,16 @@ qf_get_fnum(qf_list_T *qfl, char_u *directory, char_u *fname)
 	    && bufref_valid(&qf_last_bufref))
     {
 	buf = qf_last_bufref.br_buf;
-	vim_free(ptr);
+	mnv_free(ptr);
     }
     else
     {
-	vim_free(qf_last_bufname);
+	mnv_free(qf_last_bufname);
 	buf = buflist_new(bufname, NULL, (linenr_T)0, BLN_NOOPT);
 	if (bufname == ptr)
 	    qf_last_bufname = bufname;
 	else
-	    qf_last_bufname = vim_strsave(bufname);
+	    qf_last_bufname = mnv_strsave(bufname);
 	set_bufref(&qf_last_bufref, buf);
     }
     if (buf == NULL)
@@ -2811,10 +2811,10 @@ qf_push_dir(char_u *dirbuf, struct dir_stack_T **stackptr, int is_file_stack)
     *stackptr = ds_new;
 
     // store directory on the stack
-    if (vim_isAbsName(dirbuf)
+    if (mnv_isAbsName(dirbuf)
 	    || (*stackptr)->next == NULL
 	    || is_file_stack)
-	(*stackptr)->dirname = vim_strsave(dirbuf);
+	(*stackptr)->dirname = mnv_strsave(dirbuf);
     else
     {
 	// Okay we don't have an absolute path.
@@ -2832,17 +2832,17 @@ qf_push_dir(char_u *dirbuf, struct dir_stack_T **stackptr, int is_file_stack)
 		// pop the new element from the stack and free it
 		ds_ptr = *stackptr;
 		*stackptr = (*stackptr)->next;
-		vim_free(ds_ptr);
+		mnv_free(ds_ptr);
 
 		return NULL;
 	    }
 	    if (mch_isdir(dirname) == TRUE)
 	    {
-		vim_free((*stackptr)->dirname);
+		mnv_free((*stackptr)->dirname);
 		(*stackptr)->dirname = dirname;
 		break;
 	    }
-	    vim_free(dirname);
+	    mnv_free(dirname);
 	    ds_new = ds_new->next;
 	}
 
@@ -2851,15 +2851,15 @@ qf_push_dir(char_u *dirbuf, struct dir_stack_T **stackptr, int is_file_stack)
 	{
 	    ds_ptr = (*stackptr)->next;
 	    (*stackptr)->next = (*stackptr)->next->next;
-	    vim_free(ds_ptr->dirname);
-	    vim_free(ds_ptr);
+	    mnv_free(ds_ptr->dirname);
+	    mnv_free(ds_ptr);
 	}
 
 	// Nothing found -> it must be on top level
 	if (ds_new == NULL)
 	{
-	    vim_free((*stackptr)->dirname);
-	    (*stackptr)->dirname = vim_strsave(dirbuf);
+	    mnv_free((*stackptr)->dirname);
+	    (*stackptr)->dirname = mnv_strsave(dirbuf);
 	}
     }
 
@@ -2869,7 +2869,7 @@ qf_push_dir(char_u *dirbuf, struct dir_stack_T **stackptr, int is_file_stack)
     // pop the new element from the stack and free it
     ds_ptr = *stackptr;
     *stackptr = (*stackptr)->next;
-    vim_free(ds_ptr);
+    mnv_free(ds_ptr);
 
     return NULL;
 }
@@ -2891,8 +2891,8 @@ qf_pop_dir(struct dir_stack_T **stackptr)
     {
 	ds_ptr = *stackptr;
 	*stackptr = (*stackptr)->next;
-	vim_free(ds_ptr->dirname);
-	vim_free(ds_ptr);
+	mnv_free(ds_ptr->dirname);
+	mnv_free(ds_ptr);
     }
 
     // return NEW top element as current dir or NULL if stack is empty
@@ -2910,8 +2910,8 @@ qf_clean_dir_stack(struct dir_stack_T **stackptr)
     while ((ds_ptr = *stackptr) != NULL)
     {
 	*stackptr = (*stackptr)->next;
-	vim_free(ds_ptr->dirname);
-	vim_free(ds_ptr);
+	mnv_free(ds_ptr->dirname);
+	mnv_free(ds_ptr);
     }
 }
 
@@ -2950,7 +2950,7 @@ qf_guess_filepath(qf_list_T *qfl, char_u *filename)
     fullname = NULL;
     while (ds_ptr)
     {
-	vim_free(fullname);
+	mnv_free(fullname);
 	fullname = concat_fnames(ds_ptr->dirname, filename, TRUE);
 
 	// If concat_fnames failed, just go on. The worst thing that can happen
@@ -2961,15 +2961,15 @@ qf_guess_filepath(qf_list_T *qfl, char_u *filename)
 	ds_ptr = ds_ptr->next;
     }
 
-    vim_free(fullname);
+    mnv_free(fullname);
 
     // clean up all dirs we already left
     while (qfl->qf_dir_stack->next != ds_ptr)
     {
 	ds_tmp = qfl->qf_dir_stack->next;
 	qfl->qf_dir_stack->next = qfl->qf_dir_stack->next->next;
-	vim_free(ds_tmp->dirname);
-	vim_free(ds_tmp);
+	mnv_free(ds_tmp->dirname);
+	mnv_free(ds_tmp);
     }
 
     return ds_ptr == NULL ? NULL : ds_ptr->dirname;
@@ -3185,7 +3185,7 @@ qf_get_entry(
 }
 
 /*
- * Find a window displaying a Vim help file in the current tab page.
+ * Find a window displaying a MNV help file in the current tab page.
  */
     static win_T *
 qf_find_help_win(void)
@@ -3671,7 +3671,7 @@ qf_jump_print_msg(
     // scrolled up.
     if (!msg_scrolled)
 	update_topline_redraw();
-    IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE,
+    IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE,
 	    _("(%d of %d)%s%s: "), qf_index,
 	    qf_get_curlist(qi)->qf_count,
 	    qf_ptr->qf_cleared ? _(" (line deleted)") : "",
@@ -3968,7 +3968,7 @@ qf_list_entry(qfline_T *qfp, int qf_idx, int cursel)
 
     fname = NULL;
     if (qfp->qf_module != NULL && *qfp->qf_module != NUL)
-	vim_snprintf((char *)IObuff, IOSIZE, "%2d %s", qf_idx,
+	mnv_snprintf((char *)IObuff, IOSIZE, "%2d %s", qf_idx,
 						(char *)qfp->qf_module);
     else
     {
@@ -3985,7 +3985,7 @@ qf_list_entry(qfline_T *qfp, int qf_idx, int cursel)
 	if (fname == NULL)
 	    sprintf((char *)IObuff, "%2d", qf_idx);
 	else
-	    vim_snprintf((char *)IObuff, IOSIZE, "%2d %s",
+	    mnv_snprintf((char *)IObuff, IOSIZE, "%2d %s",
 		    qf_idx, (char *)fname);
     }
 
@@ -4093,7 +4093,7 @@ qf_list(exarg_T *eap)
     shorten_fnames(FALSE);
 
     // Get the attributes for the different quickfix highlight items.  Note
-    // that this depends on syntax items defined in the qf.vim syntax file
+    // that this depends on syntax items defined in the qf.mnv syntax file
     qfFileAttr = syn_name2attr((char_u *)"qfFileName");
     if (qfFileAttr == 0)
 	qfFileAttr = HL_ATTR(HLF_D);
@@ -4130,7 +4130,7 @@ qf_fmt_text(garray_T *gap, char_u *text)
 	{
 	    ga_append(gap, ' ');
 	    while (*++p != NUL)
-		if (!VIM_ISWHITE(*p) && *p != '\n')
+		if (!MNV_ISWHITE(*p) && *p != '\n')
 		    break;
 	}
 	else
@@ -4147,19 +4147,19 @@ qf_range_text(garray_T *gap, qfline_T *qfp)
 {
     string_T	buf = {IObuff, 0};
 
-    buf.length = vim_snprintf_safelen((char *)buf.string, IOSIZE, "%ld", qfp->qf_lnum);
+    buf.length = mnv_snprintf_safelen((char *)buf.string, IOSIZE, "%ld", qfp->qf_lnum);
 
     if (qfp->qf_end_lnum > 0 && qfp->qf_lnum != qfp->qf_end_lnum)
     {
-	buf.length += vim_snprintf_safelen((char *)buf.string + buf.length,
+	buf.length += mnv_snprintf_safelen((char *)buf.string + buf.length,
 	    IOSIZE - buf.length, "-%ld", qfp->qf_end_lnum);
     }
     if (qfp->qf_col > 0)
     {
-	buf.length += vim_snprintf_safelen((char *)buf.string + buf.length,
+	buf.length += mnv_snprintf_safelen((char *)buf.string + buf.length,
 	    IOSIZE - buf.length, " col %d", qfp->qf_col);
 	if (qfp->qf_end_col > 0 && qfp->qf_col != qfp->qf_end_col)
-	    buf.length += vim_snprintf_safelen((char *)buf.string + buf.length,
+	    buf.length += mnv_snprintf_safelen((char *)buf.string + buf.length,
 		IOSIZE - buf.length, "-%d", qfp->qf_end_col);
     }
 
@@ -4177,7 +4177,7 @@ qf_msg(qf_info_T *qi, int which, char *lead)
     int    count = qi->qf_lists[which].qf_count;
     char_u buf[IOSIZE];
 
-    vim_snprintf((char *)buf, IOSIZE, _("%serror list %d of %d; %d errors "),
+    mnv_snprintf((char *)buf, IOSIZE, _("%serror list %d of %d; %d errors "),
 	    lead,
 	    which + 1,
 	    qi->qf_listcount,
@@ -4189,10 +4189,10 @@ qf_msg(qf_info_T *qi, int which, char *lead)
 
 	if (len < 34)
 	{
-	    vim_memset(buf + len, ' ', 34 - len);
+	    mnv_memset(buf + len, ' ', 34 - len);
 	    buf[34] = NUL;
 	}
-	vim_strcat(buf, (char_u *)title, IOSIZE);
+	mnv_strcat(buf, (char_u *)title, IOSIZE);
     }
     trunc_string(buf, buf, Columns - 1, IOSIZE);
     msg((char *)buf);
@@ -4296,13 +4296,13 @@ qf_free_items(qf_list_T *qfl)
 	qfpnext = qfp->qf_next;
 	if (!stop)
 	{
-	    vim_free(qfp->qf_fname);
-	    vim_free(qfp->qf_module);
-	    vim_free(qfp->qf_text);
-	    vim_free(qfp->qf_pattern);
+	    mnv_free(qfp->qf_fname);
+	    mnv_free(qfp->qf_module);
+	    mnv_free(qfp->qf_text);
+	    mnv_free(qfp->qf_pattern);
 	    clear_tv(&qfp->qf_user_data);
 	    stop = (qfp == qfpnext);
-	    vim_free(qfp);
+	    mnv_free(qfp);
 	    if (stop)
 		// Somehow qf_count may have an incorrect value, set it to 1
 		// to avoid crashing when it's wrong.
@@ -4338,7 +4338,7 @@ qf_free(qf_list_T *qfl)
 {
     qf_free_items(qfl);
 
-    VIM_CLEAR(qfl->qf_title);
+    MNV_CLEAR(qfl->qf_title);
     free_tv(qfl->qf_ctx);
     qfl->qf_ctx = NULL;
     free_callback(&qfl->qf_qftf_cb);
@@ -5337,7 +5337,7 @@ qf_jump_first(qf_info_T *qi, int_u save_qfid, int forceit)
 }
 
 /*
- * Return TRUE when using ":vimgrep" for ":grep".
+ * Return TRUE when using ":mnvgrep" for ":grep".
  */
     int
 grep_internal(cmdidx_T cmdidx)
@@ -5386,7 +5386,7 @@ get_mef_name(void)
 
     if (*p_mef == NUL)
     {
-	name = vim_tempname('e', FALSE);
+	name = mnv_tempname('e', FALSE);
 	if (name == NULL)
 	    emsg(_(e_cant_get_temp_file_name));
 	return name;
@@ -5397,7 +5397,7 @@ get_mef_name(void)
 	    break;
 
     if (*p == NUL)
-	return vim_strsave(p_mef);
+	return mnv_strsave(p_mef);
 
     // Keep trying until the name doesn't exist yet.
     for (;;)
@@ -5420,7 +5420,7 @@ get_mef_name(void)
 # endif
 		)
 	    break;
-	vim_free(name);
+	mnv_free(name);
     }
     return name;
 }
@@ -5477,10 +5477,10 @@ ex_make(exarg_T *eap)
     char_u	*errorformat = p_efm;
     int		newlist = TRUE;
 
-    // Redirect ":grep" to ":vimgrep" if 'grepprg' is "internal".
+    // Redirect ":grep" to ":mnvgrep" if 'grepprg' is "internal".
     if (grep_internal(eap->cmdidx))
     {
-	ex_vimgrep(eap);
+	ex_mnvgrep(eap);
 	return;
     }
 
@@ -5507,7 +5507,7 @@ ex_make(exarg_T *eap)
     cmd = make_get_fullcmd(eap->arg, fname);
     if (cmd == NULL)
     {
-	vim_free(fname);
+	mnv_free(fname);
 	return;
     }
 
@@ -5554,8 +5554,8 @@ ex_make(exarg_T *eap)
 cleanup:
     decr_quickfix_busy();
     mch_remove(fname);
-    vim_free(fname);
-    vim_free(cmd);
+    mnv_free(fname);
+    mnv_free(cmd);
 }
 
 /*
@@ -6236,7 +6236,7 @@ ex_cfile(exarg_T *eap)
 	if (browse_file == NULL)
 	    return;
 	set_string_option_direct((char_u *)"ef", -1, browse_file, OPT_FREE, 0);
-	vim_free(browse_file);
+	mnv_free(browse_file);
     }
     else
 # endif
@@ -6290,17 +6290,17 @@ ex_cfile(exarg_T *eap)
 }
 
 /*
- * Return the vimgrep autocmd name.
+ * Return the mnvgrep autocmd name.
  */
     static char_u *
 vgr_get_auname(cmdidx_T cmdidx)
 {
     switch (cmdidx)
     {
-	case CMD_vimgrep:     return (char_u *)"vimgrep";
-	case CMD_lvimgrep:    return (char_u *)"lvimgrep";
-	case CMD_vimgrepadd:  return (char_u *)"vimgrepadd";
-	case CMD_lvimgrepadd: return (char_u *)"lvimgrepadd";
+	case CMD_mnvgrep:     return (char_u *)"mnvgrep";
+	case CMD_lmnvgrep:    return (char_u *)"lmnvgrep";
+	case CMD_mnvgrepadd:  return (char_u *)"mnvgrepadd";
+	case CMD_lmnvgrepadd: return (char_u *)"lmnvgrepadd";
 	case CMD_grep:	      return (char_u *)"grep";
 	case CMD_lgrep:	      return (char_u *)"lgrep";
 	case CMD_grepadd:     return (char_u *)"grepadd";
@@ -6310,7 +6310,7 @@ vgr_get_auname(cmdidx_T cmdidx)
 }
 
 /*
- * Initialize the regmatch used by vimgrep for pattern "s".
+ * Initialize the regmatch used by mnvgrep for pattern "s".
  */
     static void
 vgr_init_regmatch(regmmatch_T *regmatch, char_u *s)
@@ -6326,17 +6326,17 @@ vgr_init_regmatch(regmmatch_T *regmatch, char_u *s)
 	    emsg(_(e_no_previous_regular_expression));
 	    return;
 	}
-	regmatch->regprog = vim_regcomp(last_search_pat(), RE_MAGIC);
+	regmatch->regprog = mnv_regcomp(last_search_pat(), RE_MAGIC);
     }
     else
-	regmatch->regprog = vim_regcomp(s, RE_MAGIC);
+	regmatch->regprog = mnv_regcomp(s, RE_MAGIC);
 
     regmatch->rmm_ic = p_ic;
     regmatch->rmm_maxcol = 0;
 }
 
 /*
- * Display a file name when vimgrep is running.
+ * Display a file name when mnvgrep is running.
  */
     static void
 vgr_display_fname(char_u *fname)
@@ -6350,7 +6350,7 @@ vgr_display_fname(char_u *fname)
     else
     {
 	msg_outtrans(p);
-	vim_free(p);
+	mnv_free(p);
     }
     msg_clr_eos();
     msg_didout = FALSE;	    // overwrite this message
@@ -6360,7 +6360,7 @@ vgr_display_fname(char_u *fname)
 }
 
 /*
- * Load a dummy buffer to search for a pattern using vimgrep.
+ * Load a dummy buffer to search for a pattern using mnvgrep.
  */
     static buf_T *
 vgr_load_dummy_buf(
@@ -6397,7 +6397,7 @@ vgr_load_dummy_buf(
 
 /*
  * Check whether a quickfix/location list is valid. Autocmds may remove or
- * change a quickfix list when vimgrep is running. If the list is not found,
+ * change a quickfix list when mnvgrep is running. If the list is not found,
  * create a new list.
  */
     static int
@@ -6458,7 +6458,7 @@ vgr_match_buflines(
 	if (!(flags & VGR_FUZZY))
 	{
 	    // Regular expression match
-	    while (vim_regexec_multi(regmatch, curwin, buf, lnum,
+	    while (mnv_regexec_multi(regmatch, curwin, buf, lnum,
 								col, NULL) > 0)
 	    {
 		// Pass the buffer number so that it gets used even for a
@@ -6586,7 +6586,7 @@ vgr_jump_to_match(
 }
 
 /*
- * :vimgrep command arguments
+ * :mnvgrep command arguments
  */
 typedef struct
 {
@@ -6600,9 +6600,9 @@ typedef struct
 } vgr_args_T;
 
 /*
- * Process :vimgrep command arguments. The command syntax is:
+ * Process :mnvgrep command arguments. The command syntax is:
  *
- *	:{count}vimgrep /{pattern}/[g][j] {file} ...
+ *	:{count}mnvgrep /{pattern}/[g][j] {file} ...
  */
     static int
 vgr_process_args(
@@ -6614,7 +6614,7 @@ vgr_process_args(
     CLEAR_POINTER(args);
 
     args->regmatch.regprog = NULL;
-    args->qf_title = vim_strsave(qf_cmdtitle(*eap->cmdlinep));
+    args->qf_title = mnv_strsave(qf_cmdtitle(*eap->cmdlinep));
 
     if (eap->addr_count > 0)
 	args->tomatch = eap->line2;
@@ -6622,7 +6622,7 @@ vgr_process_args(
 	args->tomatch = MAXLNUM;
 
     // Get the search pattern: either white-separated or enclosed in //
-    p = skip_vimgrep_pat(eap->arg, &args->spat, &args->flags);
+    p = skip_mnvgrep_pat(eap->arg, &args->spat, &args->flags);
     if (p == NULL)
     {
 	emsg(_(e_invalid_search_pattern_or_delimiter));
@@ -6745,7 +6745,7 @@ vgr_process_files(
 	else
 	{
 	    // Try for a match in all lines of the buffer.
-	    // For ":1vimgrep" look for first match only.
+	    // For ":1mnvgrep" look for first match only.
 	    found_match = vgr_match_buflines(qf_get_curlist(qi),
 		    fname, buf, cmd_args->spat, &cmd_args->regmatch,
 		    &cmd_args->tomatch, duplicate_name, cmd_args->flags);
@@ -6798,7 +6798,7 @@ vgr_process_files(
 		    if (buf == *first_match_buf
 			    && *target_dir == NULL
 			    && STRCMP(dirname_start, dirname_now) != 0)
-			*target_dir = vim_strsave(dirname_now);
+			*target_dir = mnv_strsave(dirname_now);
 
 		    // The buffer is still loaded, the Filetype autocommands
 		    // need to be done now, in that buffer.  And the modelines
@@ -6822,19 +6822,19 @@ vgr_process_files(
     status = OK;
 
 theend:
-    vim_free(dirname_now);
-    vim_free(dirname_start);
+    mnv_free(dirname_now);
+    mnv_free(dirname_start);
     return status;
 }
 
 /*
- * ":vimgrep {pattern} file(s)"
- * ":vimgrepadd {pattern} file(s)"
- * ":lvimgrep {pattern} file(s)"
- * ":lvimgrepadd {pattern} file(s)"
+ * ":mnvgrep {pattern} file(s)"
+ * ":mnvgrepadd {pattern} file(s)"
+ * ":lmnvgrep {pattern} file(s)"
+ * ":lmnvgrepadd {pattern} file(s)"
  */
     void
-ex_vimgrep(exarg_T *eap)
+ex_mnvgrep(exarg_T *eap)
 {
     vgr_args_T	args;
     qf_info_T	*qi;
@@ -6868,8 +6868,8 @@ ex_vimgrep(exarg_T *eap)
 	goto theend;
 
     if ((eap->cmdidx != CMD_grepadd && eap->cmdidx != CMD_lgrepadd
-		&& eap->cmdidx != CMD_vimgrepadd
-		&& eap->cmdidx != CMD_lvimgrepadd)
+		&& eap->cmdidx != CMD_mnvgrepadd
+		&& eap->cmdidx != CMD_lmnvgrepadd)
 					|| qf_stack_empty(qi))
 	// make place for a new list
 	qf_new_list(qi, args.qf_title);
@@ -6935,9 +6935,9 @@ ex_vimgrep(exarg_T *eap)
     }
 
 theend:
-    vim_free(args.qf_title);
-    vim_free(target_dir);
-    vim_regfree(args.regmatch.regprog);
+    mnv_free(args.qf_title);
+    mnv_free(target_dir);
+    mnv_regfree(args.regmatch.regprog);
 }
 
 /*
@@ -6964,7 +6964,7 @@ restore_start_dir(char_u *dirname_start)
 	ea.cmdidx = (curwin->w_localdir == NULL) ? CMD_cd : CMD_lcd;
 	ex_cd(&ea);
     }
-    vim_free(dirname_now);
+    mnv_free(dirname_now);
 }
 
 /*
@@ -7720,7 +7720,7 @@ qf_add_entry_from_dict(
     pattern = dict_get_string(d, "pattern", TRUE);
     text = dict_get_string(d, "text", TRUE);
     if (text == NULL)
-	text = vim_strsave((char_u *)"");
+	text = mnv_strsave((char_u *)"");
     typval_T user_data;
     user_data.v_type = VAR_UNKNOWN;
     dict_get_tv(d, "user_data", &user_data);
@@ -7763,11 +7763,11 @@ qf_add_entry_from_dict(
 			&user_data,
 			valid);
 
-    vim_free(filename);
-    vim_free(module);
-    vim_free(pattern);
-    vim_free(text);
-    vim_free(type);
+    mnv_free(filename);
+    mnv_free(module);
+    mnv_free(pattern);
+    mnv_free(text);
+    mnv_free(type);
     clear_tv(&user_data);
 
     if (valid)
@@ -8020,7 +8020,7 @@ qf_setprop_title(qf_info_T *qi, int qf_idx, dict_T *what, dictitem_T *di)
     if (di->di_tv.v_type != VAR_STRING)
 	return FAIL;
 
-    vim_free(qfl->qf_title);
+    mnv_free(qfl->qf_title);
     qfl->qf_title = dict_get_string(what, "title", TRUE);
     if (qf_idx == qi->qf_curlist)
 	qf_update_win_titlevar(qi);
@@ -8040,10 +8040,10 @@ qf_setprop_items(qf_info_T *qi, int qf_idx, dictitem_T *di, int action)
     if (di->di_tv.v_type != VAR_LIST)
 	return FAIL;
 
-    title_save = vim_strsave(qi->qf_lists[qf_idx].qf_title);
+    title_save = mnv_strsave(qi->qf_lists[qf_idx].qf_title);
     retval = qf_add_entries(qi, qf_idx, di->di_tv.vval.v_list,
 	    title_save, action == ' ' ? 'a' : action);
-    vim_free(title_save);
+    mnv_free(title_save);
 
     return retval;
 }
@@ -8165,7 +8165,7 @@ qf_setprop_qftf(qf_info_T *qi UNUSED, qf_list_T *qfl, dictitem_T *di)
 /*
  * Set quickfix/location list properties (title, items, context).
  * Also used to add items from parsing a list of lines.
- * Used by the setqflist() and setloclist() Vim script functions.
+ * Used by the setqflist() and setloclist() MNV script functions.
  */
     static int
 qf_set_properties(qf_info_T *qi, dict_T *what, int action, char_u *title)
@@ -8536,7 +8536,7 @@ ex_cbuffer(exarg_T *eap)
 
     if (buf->b_sfname)
     {
-	vim_snprintf((char *)IObuff, IOSIZE, "%s (%s)",
+	mnv_snprintf((char *)IObuff, IOSIZE, "%s (%s)",
 		(char *)qf_title, (char *)buf->b_sfname);
 	qf_title = IObuff;
     }
@@ -8729,7 +8729,7 @@ hgr_get_ll(int *new_ll)
 hgr_search_file(
 	qf_list_T *qfl,
 	char_u *fname,
-	vimconv_T *p_vc,
+	mnvconv_T *p_vc,
 	regmatch_T *p_regmatch)
 {
     FILE	*fd;
@@ -8740,7 +8740,7 @@ hgr_search_file(
 	return;
 
     lnum = 1;
-    while (!vim_fgets(IObuff, IOSIZE, fd) && !got_int)
+    while (!mnv_fgets(IObuff, IOSIZE, fd) && !got_int)
     {
 	char_u    *line = IObuff;
 
@@ -8753,7 +8753,7 @@ hgr_search_file(
 		line = IObuff;
 	}
 
-	if (vim_regexec(p_regmatch, line, (colnr_T)0))
+	if (mnv_regexec(p_regmatch, line, (colnr_T)0))
 	{
 	    int	l = (int)STRLEN(line);
 
@@ -8783,12 +8783,12 @@ hgr_search_file(
 	    {
 		got_int = TRUE;
 		if (line != IObuff)
-		    vim_free(line);
+		    mnv_free(line);
 		break;
 	    }
 	}
 	if (line != IObuff)
-	    vim_free(line);
+	    mnv_free(line);
 	++lnum;
 	line_breakcheck();
     }
@@ -8804,7 +8804,7 @@ hgr_search_files_in_dir(
 	qf_list_T *qfl,
 	char_u *dirname,
 	regmatch_T *p_regmatch,
-	vimconv_T *p_vc
+	mnvconv_T *p_vc
 # ifdef FEAT_MULTI_LANG
 	, char_u *lang
 # endif
@@ -8851,7 +8851,7 @@ hgr_search_in_rtp(qf_list_T *qfl, regmatch_T *p_regmatch, char_u *lang)
 {
     char_u	*p;
 
-    vimconv_T	vc;
+    mnvconv_T	vc;
 
     // Help files are in utf-8 or latin1, convert lines when 'encoding'
     // differs.
@@ -8929,7 +8929,7 @@ ex_helpgrep(exarg_T *eap)
     // Check for a specified language
     lang = check_help_lang(eap->arg);
 # endif
-    regmatch.regprog = vim_regcomp(eap->arg, RE_MAGIC + RE_STRING);
+    regmatch.regprog = mnv_regcomp(eap->arg, RE_MAGIC + RE_STRING);
     regmatch.rm_ic = FALSE;
     if (regmatch.regprog != NULL)
     {
@@ -8941,7 +8941,7 @@ ex_helpgrep(exarg_T *eap)
 
 	hgr_search_in_rtp(qfl, &regmatch, lang);
 
-	vim_regfree(regmatch.regprog);
+	mnv_regfree(regmatch.regprog);
 
 	qfl->qf_nonevalid = FALSE;
 	qfl->qf_ptr = qfl->qf_start;
@@ -9061,7 +9061,7 @@ f_getloclist(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 # ifdef FEAT_QUICKFIX
     win_T	*wp;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -9078,7 +9078,7 @@ f_getloclist(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 f_getqflist(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
 {
 # ifdef FEAT_QUICKFIX
-    if (in_vim9script() && check_for_opt_dict_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_dict_arg(argvars, 0) == FAIL)
 	return;
 
     get_qf_loc_list(TRUE, NULL, &argvars[0], rettv);
@@ -9164,7 +9164,7 @@ f_setloclist(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_list_arg(argvars, 1) == FAIL
 		|| check_for_opt_string_arg(argvars, 2) == FAIL
@@ -9183,7 +9183,7 @@ f_setloclist(typval_T *argvars, typval_T *rettv)
     void
 f_setqflist(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_list_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN

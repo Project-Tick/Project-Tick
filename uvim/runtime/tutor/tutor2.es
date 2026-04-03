@@ -1,12 +1,12 @@
 ===============================================================================
-=     B i e n v e n i d o   a l   t u t o r   d e   V I M  -  Versión 1.7     =
+=     B i e n v e n i d o   a l   t u t o r   d e   M N V  -  Versión 1.7     =
 ===============================================================================
 =	                         CAPÍTULO DOS                                 =
 ===============================================================================
 
-     Hic Sunt Dracones: si esta es tu primera vez usando Vim y tienes la
+     Hic Sunt Dracones: si esta es tu primera vez usando MNV y tienes la
      intención de aprovechar el capítulo de introducción, simplemente escribe
-     :q!<ENTER> y ejecuta vimtutor para empezar por el Capítulo 1.
+     :q!<ENTER> y ejecuta mnvtutor para empezar por el Capítulo 1.
 
      El tiempo aproximado para completar este capítulo es de 8-10 minutos,
      dependiendo de cuanto tiempo dediques a experimentar.
@@ -26,7 +26,7 @@
      - Prueba con otras operaciones:  ciw  (cambiar),  yiw  (copiar),
        gqiw  (formato)
 
----> Practica aquí: "Vim's", (text_object), y aquí palabras 'poderosas'.
+---> Practica aquí: "MNV's", (text_object), y aquí palabras 'poderosas'.
 
   2. Trabaja con contenido entre paréntesis, corchetes o llaves:
      - Situa el cursor dentro de cualquier par de los símbolos () {} [] <>
@@ -86,7 +86,7 @@ NOTA: Eliminar también funciona dentro de los registros, por ejemplo:
 
 REFERENCIAS: 	Registros 		:h registers
 		Registros nominales     :h quotea
-		Movimiento		:h motion.txt<ENTER> /inner<ENTER>
+		Momnviento		:h motion.txt<ENTER> /inner<ENTER>
 		CTRL-R			:h insert<ENTER> /CTRL-R<ENTER>
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,7 +152,7 @@ NOTA: Deberías comprobar cómo las líneas completas eliminadas
 
 NOTA: La eliminación completa de líneas (dd) persisten más en los registros
       numerados que las copias completas de lína o las eliminaciones que
-      implican pequeños movimientos
+      implican pequeños momnvientos
 
 REFERENCIA: 	Registros numerados	:h quote0
 
@@ -164,7 +164,7 @@ REFERENCIA: 	Registros numerados	:h quote0
                     ** para una edición avanzada **
 
  Nota: El uso del portapapeles del sistema requiere de bibliotecas X11/Wayland
-       en sistemas Linux Y una compilación de Vim con la opción "+clipboard"
+       en sistemas Linux Y una compilación de MNV con la opción "+clipboard"
        (normalmente una compilación enorme). Se puede comprobar mediante
        ":version"  o ":echo has('clipboard_working')"
 
@@ -198,18 +198,18 @@ REFERENCIA: 	Registros numerados	:h quote0
 
   4. Recuerda:
      - Los registros del portapapeles funcionan a través de diferentes
-       instancias de Vim
+       instancias de MNV
      - El registro del portapapelesno siempre está funcional
      - El agujero negro previene el sobreescribir accidentalmente un registro
      - El registro predeterminado " todavía está disponible para una acción
        normal de copado/pegado
-     - Los registros nominales (a-z) permanecen privados para cada sesión de Vim
+     - Los registros nominales (a-z) permanecen privados para cada sesión de MNV
 
   5. Problemas con el portapapeles:
-     - Comprueba que tu Vim lo admite mediante :echo has('clipboard_working')
+     - Comprueba que tu MNV lo admite mediante :echo has('clipboard_working')
      - Si el comando anterior devuelve un 1 significa que está disponible,
-       Si devuelve un 0, significa que esa compilación de Vim no lo admite.
-     - En Linux, se puede necesitar el paquete vim-gtk o vim-x11 package
+       Si devuelve un 0, significa que esa compilación de MNV no lo admite.
+     - En Linux, se puede necesitar el paquete mnv-gtk o mnv-x11 package
        (comprueba :version output)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -264,7 +264,7 @@ NOTA: Las marcas y los registros no comparten sus nombres. Así pues el
       Esto no se cumple con los registros y las macros.
 
 REFERENCIA: 	Marcas 				:h marks
-		Movimientos con las marcas	:h mark-motions
+		Momnvientos con las marcas	:h mark-motions
 						(diferencia entre ' y `)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -312,7 +312,7 @@ REFERENCIA: 	Marcas 				:h marks
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Con esto concluye el capítulo dos del Tutor de Vim.
+  Con esto concluye el capítulo dos del Tutor de MNV.
   Este es un trabajo en progreso.
 
   Este capítulo fue escrito por Paul D. Parker y Christian Brabandt.

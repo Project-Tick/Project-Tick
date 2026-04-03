@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * textobject.c: functions for text objects
  */
-#include "vim.h"
+#include "mnv.h"
 
 static int cls(void);
 static int skip_chars(int, int);
@@ -73,8 +73,8 @@ findsent(int dir, long count)
 
 	// go back to the previous non-white non-punctuation character
 	found_dot = FALSE;
-	while (c = gchar_pos(&pos), VIM_ISWHITE(c)
-				|| vim_strchr((char_u *)".!?)]\"'", c) != NULL)
+	while (c = gchar_pos(&pos), MNV_ISWHITE(c)
+				|| mnv_strchr((char_u *)".!?)]\"'", c) != NULL)
 	{
 	    tpos = pos;
 	    if (decl(&tpos) == -1 || (LINEEMPTY(tpos.lnum) && dir == FORWARD))
@@ -82,11 +82,11 @@ findsent(int dir, long count)
 
 	    if (found_dot)
 		break;
-	    if (vim_strchr((char_u *) ".!?", c) != NULL)
+	    if (mnv_strchr((char_u *) ".!?", c) != NULL)
 		found_dot = TRUE;
 
-	    if (vim_strchr((char_u *) ")]\"'", c) != NULL
-		&& vim_strchr((char_u *) ".!?)]\"'", gchar_pos(&tpos)) == NULL)
+	    if (mnv_strchr((char_u *) ")]\"'", c) != NULL
+		&& mnv_strchr((char_u *) ".!?)]\"'", gchar_pos(&tpos)) == NULL)
 		break;
 
 	    decl(&pos);
@@ -94,7 +94,7 @@ findsent(int dir, long count)
 
 	// remember the line where the search started
 	startlnum = pos.lnum;
-	cpo_J = vim_strchr(p_cpo, CPO_ENDOFSENT) != NULL;
+	cpo_J = mnv_strchr(p_cpo, CPO_ENDOFSENT) != NULL;
 
 	for (;;)		// find end of sentence
 	{
@@ -111,7 +111,7 @@ findsent(int dir, long count)
 		do
 		    if ((c = inc(&tpos)) == -1)
 			break;
-		while (vim_strchr((char_u *)")]\"'", c = gchar_pos(&tpos))
+		while (mnv_strchr((char_u *)")]\"'", c = gchar_pos(&tpos))
 			!= NULL);
 		if (c == -1  || (!cpo_J && (c == ' ' || c == '\t')) || c == NUL
 		    || (cpo_J && (c == ' ' && inc(&tpos) >= 0
@@ -174,7 +174,7 @@ findpar(
     linenr_T	curr;
     int		did_skip;   // TRUE after separating lines have been skipped
     int		first;	    // TRUE on first line
-    int		posix = (vim_strchr(p_cpo, CPO_PARA) != NULL);
+    int		posix = (mnv_strchr(p_cpo, CPO_PARA) != NULL);
 #ifdef FEAT_FOLDING
     linenr_T	fold_first;	// first line of a closed fold
     linenr_T	fold_last;	// last line of a closed fold
@@ -345,7 +345,7 @@ cls(void)
     if (cls_bigword)
 	return 1;
 
-    if (vim_iswordc(c))
+    if (mnv_iswordc(c))
 	return 2;
     return 1;
 }
@@ -652,7 +652,7 @@ find_first_blank(pos_T *posp)
     while (decl(posp) != -1)
     {
 	c = gchar_pos(posp);
-	if (!VIM_ISWHITE(c))
+	if (!MNV_ISWHITE(c))
 	{
 	    incl(posp);
 	    break;
@@ -891,7 +891,7 @@ extend:
 	    while (LT_POS(pos, curwin->w_cursor))
 	    {
 		c = gchar_pos(&pos);
-		if (!VIM_ISWHITE(c))
+		if (!MNV_ISWHITE(c))
 		{
 		    at_start_sent = FALSE;
 		    break;
@@ -914,7 +914,7 @@ extend:
 		if (at_start_sent)
 		    find_first_blank(&curwin->w_cursor);
 		c = gchar_cursor();
-		if (!at_start_sent || (!include && !VIM_ISWHITE(c)))
+		if (!at_start_sent || (!include && !MNV_ISWHITE(c)))
 		    findsent(BACKWARD, 1L);
 		at_start_sent = !at_start_sent;
 	    }
@@ -937,7 +937,7 @@ extend:
 		while (LT_POS(pos, curwin->w_cursor))
 		{
 		    c = gchar_pos(&pos);
-		    if (!VIM_ISWHITE(c))
+		    if (!MNV_ISWHITE(c))
 		    {
 			at_start_sent = TRUE;
 			break;
@@ -963,7 +963,7 @@ extend:
      * If the cursor started on a blank, check if it is just before the start
      * of the next sentence.
      */
-    while (c = gchar_pos(&pos), VIM_ISWHITE(c))	// VIM_ISWHITE() is a macro
+    while (c = gchar_pos(&pos), MNV_ISWHITE(c))	// MNV_ISWHITE() is a macro
 	incl(&pos);
     if (EQUAL_POS(pos, curwin->w_cursor))
     {
@@ -999,11 +999,11 @@ extend:
 	if (start_blank)
 	{
 	    find_first_blank(&curwin->w_cursor);
-	    c = gchar_pos(&curwin->w_cursor);	// VIM_ISWHITE() is a macro
-	    if (VIM_ISWHITE(c))
+	    c = gchar_pos(&curwin->w_cursor);	// MNV_ISWHITE() is a macro
+	    if (MNV_ISWHITE(c))
 		decl(&curwin->w_cursor);
 	}
-	else if (c = gchar_cursor(), !VIM_ISWHITE(c))
+	else if (c = gchar_cursor(), !MNV_ISWHITE(c))
 	    find_first_blank(&start_pos);
     }
 
@@ -1085,7 +1085,7 @@ current_block(
      * user wants.
      */
     save_cpo = p_cpo;
-    p_cpo = (char_u *)(vim_strchr(p_cpo, CPO_MATCHBSL) != NULL ? "%M" : "%");
+    p_cpo = (char_u *)(mnv_strchr(p_cpo, CPO_MATCHBSL) != NULL ? "%M" : "%");
     if ((pos = findmatch(NULL, what)) != NULL)
     {
 	while (count-- > 0)
@@ -1372,7 +1372,7 @@ again:
      */
     inc_cursor();
     p = ml_get_cursor();
-    for (cp = p; *cp != NUL && *cp != '>' && !VIM_ISWHITE(*cp); MB_PTR_ADV(cp))
+    for (cp = p; *cp != NUL && *cp != '>' && !MNV_ISWHITE(*cp); MB_PTR_ADV(cp))
 	;
     len = (int)(cp - p);
     if (len == 0)
@@ -1384,8 +1384,8 @@ again:
     epat = alloc(len + 9);
     if (spat == NULL || epat == NULL)
     {
-	vim_free(spat);
-	vim_free(epat);
+	mnv_free(spat);
+	mnv_free(epat);
 	curwin->w_cursor = old_pos;
 	goto theend;
     }
@@ -1395,8 +1395,8 @@ again:
     r = do_searchpair(spat, (char_u *)"", epat, FORWARD, NULL,
 						    0, NULL, (linenr_T)0, 0L);
 
-    vim_free(spat);
-    vim_free(epat);
+    mnv_free(spat);
+    mnv_free(epat);
 
     if (r < 1 || LT_POS(curwin->w_cursor, old_end))
     {
@@ -1691,7 +1691,7 @@ find_next_quote(
 	c = line[col];
 	if (c == NUL)
 	    return -1;
-	else if (escape != NULL && vim_strchr(escape, c))
+	else if (escape != NULL && mnv_strchr(escape, c))
 	{
 	    ++col;
 	    if (line[col] == NUL)
@@ -1728,7 +1728,7 @@ find_prev_quote(
 	col_start -= (*mb_head_off)(line, line + col_start);
 	n = 0;
 	if (escape != NULL)
-	    while (col_start - n > 0 && vim_strchr(escape,
+	    while (col_start - n > 0 && mnv_strchr(escape,
 					     line[col_start - n - 1]) != NULL)
 	    ++n;
 	if (n & 1)
@@ -1932,11 +1932,11 @@ current_quote(
     // the starting quote.
     if (include)
     {
-	if (VIM_ISWHITE(line[col_end + 1]))
-	    while (VIM_ISWHITE(line[col_end + 1]))
+	if (MNV_ISWHITE(line[col_end + 1]))
+	    while (MNV_ISWHITE(line[col_end + 1]))
 		++col_end;
 	else
-	    while (col_start > 0 && VIM_ISWHITE(line[col_start - 1]))
+	    while (col_start > 0 && MNV_ISWHITE(line[col_start - 1]))
 		--col_start;
     }
 

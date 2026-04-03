@@ -1,4 +1,4 @@
-TRANSLATING VIM MESSAGES
+TRANSLATING MNV MESSAGES
 
 This file explains how to create and maintain po files using
 gnu-gettext.win32, a MINGW32 Windows port of gettext by Franco Bez
@@ -29,8 +29,8 @@ If you don't have a xx.po file, you must create it with the command:
 
 	make -f Make_ming.mak first_time
 
-This will produce a new brand xx.po file with all the messages in Vim ready
-for translation. Then you must source the cleanup.vim script from inside Vim;
+This will produce a new brand xx.po file with all the messages in MNV ready
+for translation. Then you must source the cleanup.mnv script from inside MNV;
 it will comment the untranslated messages (now, all). I recommend to use
 syntax highlighting so you can identify the untranslated messages easily.
 You also must remove the '..\' that prepends the name of the source files.
@@ -42,11 +42,11 @@ Then you must go step (2) below.
 If you are updating a po file you must follow the next steps (they are nearly
 the same as in the Unix case, only the commands change):
 
-(1) Add new and changed messages from the Vim sources:
+(1) Add new and changed messages from the MNV sources:
 
 	make -f Make_ming.mak xx
 
-    This will extract all the strings from Vim and merge them in with the
+    This will extract all the strings from MNV and merge them in with the
     existing translations.  Requires the GNU gettext utilities.  Also requires
     unpacking the extra archive.
     Your original xx.po file will be copied to xx.po.orig
@@ -61,33 +61,33 @@ the same as in the Unix case, only the commands change):
     Remove "#~" and "#, fuzzy" after adding the translation.
 
     There is one special message:
-	msgid "Messages maintainer: The Vim Project"
+	msgid "Messages maintainer: The MNV Project"
     You should include your name and e-mail address instead, for example:
-	msgstr "Berichten übersetzt bei: John Doe <john@doe.org>"
+	msgstr "Berichten ï¿½bersetzt bei: John Doe <john@doe.org>"
 
 (3) Clean up
     This is very important to make sure the translation works on all systems.
     Comment-out all non-translated strings.  There are two types:
     - items marked with "#, fuzzy"
     - items with an empty msgstr
-    You can do this with the cleanup.vim script:
+    You can do this with the cleanup.mnv script:
 
-	:source cleanup.vim
+	:source cleanup.mnv
 
 (4) Check:
 
-	vim -S check.vim xx.po
+	mnv -S check.mnv xx.po
 	make -f Make_ming.mak xx.mo
 
     Look out for syntax errors and fix them.
 
-(5) This is an extra step, ;-). If you want the vim.mo file installed in your
+(5) This is an extra step, ;-). If you want the mnv.mo file installed in your
     system you must run:
 
 	make -f Make_ming.mak install
 
     This will create the xx\LC_MESSAGES directory (if it does not exist) and
-    will copy vim.po to it.
+    will copy mnv.po to it.
     You can also use the following command to install all languages:
 
 	make -f Make_ming.mak install-all
@@ -102,6 +102,6 @@ Suggestions will be welcomed.
 
 Eduardo F. Amatria <eferna1@platea.pntic.mec.es>
 
-Happy Vimming with NLS!!
+Happy MNVming with NLS!!
 
-vim:tw=78:
+mnv:tw=78:

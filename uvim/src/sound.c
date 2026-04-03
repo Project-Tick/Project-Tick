@@ -1,23 +1,23 @@
 /* vi:set ts=8 sts=4 sw=4 et:
  *
- * VIM - Vi IMproved    by Bram Moolenaar
+ * MNV - MNV is not Vim    by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * sound.c: functions related making noise
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_SOUND)
 
 static long sound_id = 0;
 
-// soundcb_T is typedef'ed in vim.h
+// soundcb_T is typedef'ed in mnv.h
 
 struct soundcb_S
 {
@@ -102,7 +102,7 @@ delete_sound_callback(soundcb_T *soundcb)
             else
                 prev->snd_next = p->snd_next;
             free_callback(&p->snd_callback);
-            vim_free(p);
+            mnv_free(p);
             break;
         }
 }
@@ -183,7 +183,7 @@ invoke_sound_callback(void)
         call_sound_callback(scb->scb_callback, scb->scb_id, scb->scb_result);
 
         delete_sound_callback(scb->scb_callback);
-        vim_free(scb);
+        mnv_free(scb);
     }
     redraw_after_callback(TRUE, FALSE);
 }
@@ -191,7 +191,7 @@ invoke_sound_callback(void)
 static void
 sound_play_common(typval_T *argvars, typval_T *rettv, int playfile)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
         return;
 
     if (context == NULL)
@@ -258,7 +258,7 @@ f_sound_playfile(typval_T *argvars, typval_T *rettv)
 void
 f_sound_stop(typval_T *argvars, typval_T *rettv UNUSED)
 {
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
         return;
 
     if (context != NULL)
@@ -294,7 +294,7 @@ sound_free(void)
         scb = callback_queue;
         callback_queue = scb->scb_next;
         delete_sound_callback(scb->scb_callback);
-        vim_free(scb);
+        mnv_free(scb);
     }
 }
 #  endif
@@ -320,7 +320,7 @@ sound_wndproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
                 {
                     char buf[32];
 
-                    vim_snprintf(buf, sizeof(buf), "close sound%06ld",
+                    mnv_snprintf(buf, sizeof(buf), "close sound%06ld",
                                  p->snd_id);
                     mciSendStringA(buf, NULL, 0, 0);
 
@@ -343,7 +343,7 @@ sound_window(void)
 {
     if (g_hWndSound == NULL)
     {
-        LPCSTR clazz = "VimSound";
+        LPCSTR clazz = "MNVSound";
         WNDCLASS wndclass = { 0, sound_wndproc, 0,    0, g_hinst, NULL, 0,
                               0, NULL,          clazz };
         RegisterClass(&wndclass);
@@ -359,7 +359,7 @@ f_sound_playevent(typval_T *argvars, typval_T *rettv)
 {
     WCHAR *wp;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
         return;
 
     wp = enc_to_utf16(tv_get_string(&argvars[0]), NULL);
@@ -382,7 +382,7 @@ f_sound_playfile(typval_T *argvars, typval_T *rettv)
     char buf[32];
     MCIERROR err;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
         return;
 
     filename = tv_get_string(&argvars[0]);
@@ -393,7 +393,7 @@ f_sound_playfile(typval_T *argvars, typval_T *rettv)
     {
         return;
     }
-    vim_snprintf((char *)p, len, "open \"%s\" alias sound%06ld", filename,
+    mnv_snprintf((char *)p, len, "open \"%s\" alias sound%06ld", filename,
                  newid);
 
     wp = enc_to_utf16((char_u *)p, NULL);
@@ -406,7 +406,7 @@ f_sound_playfile(typval_T *argvars, typval_T *rettv)
     if (err != 0)
         return;
 
-    vim_snprintf(buf, sizeof(buf), "play sound%06ld notify", newid);
+    mnv_snprintf(buf, sizeof(buf), "play sound%06ld notify", newid);
     err = mciSendStringA(buf, NULL, 0, sound_window());
     if (err != 0)
         goto failure;
@@ -417,14 +417,14 @@ f_sound_playfile(typval_T *argvars, typval_T *rettv)
     soundcb = get_sound_callback(&argvars[1]);
     if (soundcb != NULL)
     {
-        vim_snprintf(buf, sizeof(buf), "sound%06ld", newid);
+        mnv_snprintf(buf, sizeof(buf), "sound%06ld", newid);
         soundcb->snd_id = newid;
         soundcb->snd_device_id = mciGetDeviceID(buf);
     }
     return;
 
 failure:
-    vim_snprintf(buf, sizeof(buf), "close sound%06ld", newid);
+    mnv_snprintf(buf, sizeof(buf), "close sound%06ld", newid);
     mciSendStringA(buf, NULL, 0, NULL);
 }
 
@@ -434,11 +434,11 @@ f_sound_stop(typval_T *argvars, typval_T *rettv UNUSED)
     long id;
     char buf[32];
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
         return;
 
     id = tv_get_number(&argvars[0]);
-    vim_snprintf(buf, sizeof(buf), "stop sound%06ld", id);
+    mnv_snprintf(buf, sizeof(buf), "stop sound%06ld", id);
     mciSendStringA(buf, NULL, 0, NULL);
 }
 
@@ -466,7 +466,7 @@ sound_free(void)
 static void
 sound_play_common(typval_T *argvars, typval_T *rettv, bool playfile)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
         return;
 
     char_u *sound_name = tv_get_string(&argvars[0]);
@@ -497,7 +497,7 @@ f_sound_playfile(typval_T *argvars, typval_T *rettv)
 void
 f_sound_stop(typval_T *argvars, typval_T *rettv UNUSED)
 {
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
         return;
     sound_mch_stop(tv_get_number(&argvars[0]));
 }

@@ -1,18 +1,18 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved    by Bram Moolenaar
+ * MNV - MNV is not Vim    by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  *
  * File MOTIF_REDEFINES.H originally delivers together with
  * OpenVMS Porting Library
  * defunct link: openvms.compaq.com/openvms/products/ips/porting.html
  *
- * This file has been modified for Vim development.
+ * This file has been modified for MNV development.
  * Original file contains just defines that GTK for OpenVMS uses,
  * but not all functions that DECW library has. Therefore it has been expanded
- * with necessary defines for Vim on OpenVMS with GTK GUI.
+ * with necessary defines for MNV on OpenVMS with GTK GUI.
  *
  * Zoltan Arpadffy <arpadffy@polarhome.com>
  */

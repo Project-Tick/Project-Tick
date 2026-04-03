@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -38,7 +38,7 @@
  * in tl_scrollback are no longer used.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_TERMINAL)
 
@@ -234,8 +234,8 @@ cursor_color_copy(char_u **to_color, char_u *from_color)
     // Avoid a free & alloc if the value is already right.
     if (cursor_color_equal(*to_color, from_color))
 	return;
-    vim_free(*to_color);
-    *to_color = (from_color == NULL) ? NULL : vim_strsave(from_color);
+    mnv_free(*to_color);
+    *to_color = (from_color == NULL) ? NULL : mnv_strsave(from_color);
 }
 
     static char_u *
@@ -262,13 +262,13 @@ parse_termwinsize(win_T *wp, int *rows, int *cols)
     if (*wp->w_p_tws == NUL)
 	return FALSE;
 
-    char_u *p = vim_strchr(wp->w_p_tws, 'x');
+    char_u *p = mnv_strchr(wp->w_p_tws, 'x');
 
     // Syntax of value was already checked when it's set.
     if (p == NULL)
     {
 	minsize = TRUE;
-	p = vim_strchr(wp->w_p_tws, '*');
+	p = mnv_strchr(wp->w_p_tws, '*');
     }
     *rows = atoi((char *)wp->w_p_tws);
     *cols = atoi((char *)p + 1);
@@ -331,7 +331,7 @@ set_term_and_win_size(term_T *term, jobopt_T *opt)
 	{
 	    char_u buf[100];
 
-	    vim_snprintf((char *)buf, 100, "%dx%d",
+	    mnv_snprintf((char *)buf, 100, "%dx%d",
 						 term->tl_rows, term->tl_cols);
 	    set_option_value_give_err((char_u *)"termwinsize",
 							   0L, buf, OPT_LOCAL);
@@ -492,7 +492,7 @@ term_start(
 	if (!can_abandon(curbuf, flags & TERM_START_FORCEIT))
 	{
 	    no_write_message();
-	    vim_free(term);
+	    mnv_free(term);
 	    return NULL;
 	}
 	if (do_ecmd(0, NULL, NULL, &split_ea, ECMD_ONE,
@@ -500,7 +500,7 @@ term_start(
 			  + ((flags & TERM_START_FORCEIT) ? ECMD_FORCEIT : 0),
 							       curwin) == FAIL)
 	{
-	    vim_free(term);
+	    mnv_free(term);
 	    return NULL;
 	}
     }
@@ -514,7 +514,7 @@ term_start(
 							 BLN_NEW | BLN_LISTED);
 	if (buf == NULL || ml_open(buf) == FAIL)
 	{
-	    vim_free(term);
+	    mnv_free(term);
 	    return NULL;
 	}
 	old_curbuf = curbuf;
@@ -554,7 +554,7 @@ term_start(
 	if (curwin == old_curwin)
 	{
 	    // split failed
-	    vim_free(term);
+	    mnv_free(term);
 	    return NULL;
 	}
     }
@@ -579,13 +579,13 @@ term_start(
 
     if (opt->jo_term_name != NULL)
     {
-	vim_free(curbuf->b_ffname);
-	curbuf->b_ffname = vim_strsave(opt->jo_term_name);
+	mnv_free(curbuf->b_ffname);
+	curbuf->b_ffname = mnv_strsave(opt->jo_term_name);
     }
     else if (argv != NULL)
     {
-	vim_free(curbuf->b_ffname);
-	curbuf->b_ffname = vim_strsave((char_u *)"!system");
+	mnv_free(curbuf->b_ffname);
+	curbuf->b_ffname = mnv_strsave((char_u *)"!system");
     }
     else
     {
@@ -616,28 +616,28 @@ term_start(
 	    // Prepend a ! to the command name to avoid the buffer name equals
 	    // the executable, otherwise ":w!" would overwrite it.
 	    if (i == 0)
-		vim_snprintf((char *)p, len, "!%s", cmd);
+		mnv_snprintf((char *)p, len, "!%s", cmd);
 	    else
-		vim_snprintf((char *)p, len, "!%s (%d)", cmd, i);
+		mnv_snprintf((char *)p, len, "!%s (%d)", cmd, i);
 	    if (buflist_findname(p) == NULL)
 	    {
-		vim_free(curbuf->b_ffname);
+		mnv_free(curbuf->b_ffname);
 		curbuf->b_ffname = p;
 		break;
 	    }
 	}
     }
-    vim_free(curbuf->b_sfname);
-    curbuf->b_sfname = vim_strsave(curbuf->b_ffname);
+    mnv_free(curbuf->b_sfname);
+    curbuf->b_sfname = mnv_strsave(curbuf->b_ffname);
     curbuf->b_fname = curbuf->b_ffname;
 
     apply_autocmds(EVENT_BUFFILEPOST, NULL, NULL, FALSE, curbuf);
 
     if (opt->jo_term_opencmd != NULL)
-	term->tl_opencmd = vim_strsave(opt->jo_term_opencmd);
+	term->tl_opencmd = mnv_strsave(opt->jo_term_opencmd);
 
     if (opt->jo_eof_chars != NULL)
-	term->tl_eof_chars = vim_strsave(opt->jo_eof_chars);
+	term->tl_eof_chars = mnv_strsave(opt->jo_eof_chars);
 
     set_string_option_direct((char_u *)"buftype", -1,
 				  (char_u *)"terminal", OPT_FREE|OPT_LOCAL, 0);
@@ -660,13 +660,13 @@ term_start(
 #if defined(FEAT_SESSION)
     // Remember the command for the session file.
     if (opt->jo_term_norestore || argv != NULL)
-	term->tl_command = vim_strsave((char_u *)"NONE");
+	term->tl_command = mnv_strsave((char_u *)"NONE");
     else if (argvar->v_type == VAR_STRING)
     {
 	char_u	*cmd = argvar->vval.v_string;
 
 	if (cmd != NULL && STRCMP(cmd, p_sh) != 0)
-	    term->tl_command = vim_strsave(cmd);
+	    term->tl_command = mnv_strsave(cmd);
     }
     else if (argvar->v_type == VAR_LIST
 	    && argvar->vval.v_list != NULL
@@ -683,11 +683,11 @@ term_start(
 
 	    if (s == NULL)
 		break;
-	    p = vim_strsave_fnameescape(s, VSE_NONE);
+	    p = mnv_strsave_fnameescape(s, VSE_NONE);
 	    if (p == NULL)
 		break;
 	    ga_concat(&ga, p);
-	    vim_free(p);
+	    mnv_free(p);
 	    ga_append(&ga, ' ');
 	}
 	if (item == NULL)
@@ -704,20 +704,20 @@ term_start(
     {
 	char_u *p = skiptowhite(opt->jo_term_kill);
 
-	term->tl_kill = vim_strnsave(opt->jo_term_kill, p - opt->jo_term_kill);
+	term->tl_kill = mnv_strnsave(opt->jo_term_kill, p - opt->jo_term_kill);
     }
 
     if (opt->jo_term_api != NULL)
     {
 	char_u *p = skiptowhite(opt->jo_term_api);
 
-	term->tl_api = vim_strnsave(opt->jo_term_api, p - opt->jo_term_api);
+	term->tl_api = mnv_strnsave(opt->jo_term_api, p - opt->jo_term_api);
     }
     else
-	term->tl_api = vim_strsave((char_u *)"Tapi_");
+	term->tl_api = mnv_strsave((char_u *)"Tapi_");
 
     if (opt->jo_set2 & JO2_TERM_HIGHLIGHT)
-	term->tl_highlight_name = vim_strsave(opt->jo_term_highlight);
+	term->tl_highlight_name = mnv_strsave(opt->jo_term_highlight);
 
 #if defined(FEAT_GUI) || defined(FEAT_TERMGUICOLORS)
     // Save the user-defined palette, it is only used in GUI (or 'tgc' is on).
@@ -726,7 +726,7 @@ term_start(
 	term->tl_palette = ALLOC_MULT(long_u, 16);
 	if (term->tl_palette == NULL)
 	{
-	    vim_free(term);
+	    mnv_free(term);
 	    return NULL;
 	}
 	memcpy(term->tl_palette, opt->jo_ansi_colors, sizeof(long_u) * 16);
@@ -758,7 +758,7 @@ term_start(
 #endif
 
 	// Make sure we don't get stuck on sending keys to the job, it leads to
-	// a deadlock if the job is waiting for Vim to read.
+	// a deadlock if the job is waiting for MNV to read.
 	channel_set_nonblock(term->tl_job->jv_channel, PART_IN);
 
 	if (old_curbuf != NULL)
@@ -825,7 +825,7 @@ ex_terminal(exarg_T *eap)
 
 	cmd += 2;
 	p = skiptowhite(cmd);
-	ep = vim_strchr(cmd, '=');
+	ep = mnv_strchr(cmd, '=');
 	if (ep != NULL)
 	{
 	    if (ep < p)
@@ -886,14 +886,14 @@ ex_terminal(exarg_T *eap)
 	    char_u *buf = NULL;
 	    char_u *keys;
 
-	    vim_free(opt.jo_eof_chars);
+	    mnv_free(opt.jo_eof_chars);
 	    p = skiptowhite(cmd);
 	    *p = NUL;
 	    keys = replace_termcodes(ep + 1, &buf, 0,
 		    REPTERM_FROM_PART | REPTERM_DO_LT | REPTERM_SPECIAL, NULL);
 	    opt.jo_set2 |= JO2_EOF_CHARS;
-	    opt.jo_eof_chars = vim_strsave(keys);
-	    vim_free(buf);
+	    opt.jo_eof_chars = mnv_strsave(keys);
+	    mnv_free(buf);
 	    *p = ' ';
 	}
 #ifdef MSWIN
@@ -929,7 +929,7 @@ ex_terminal(exarg_T *eap)
     if (*cmd == NUL)
     {
 	// Make a copy of 'shell', an autocommand may change the option.
-	tofree = cmd = vim_strsave(p_sh);
+	tofree = cmd = mnv_strsave(p_sh);
 
 	// default to close when the shell exits
 	if (opt.jo_term_finish == NUL)
@@ -956,9 +956,9 @@ ex_terminal(exarg_T *eap)
 	// :term ++shell command
 	if (unix_build_argv(cmd, &argv, &tofree1, &tofree2) == OK)
 	    term_start(NULL, argv, &opt, eap->forceit ? TERM_START_FORCEIT : 0);
-	vim_free(argv);
-	vim_free(tofree1);
-	vim_free(tofree2);
+	mnv_free(argv);
+	mnv_free(tofree1);
+	mnv_free(tofree2);
 	goto theend;
 #else
 # ifdef MSWIN
@@ -969,7 +969,7 @@ ex_terminal(exarg_T *eap)
 	if (newcmd == NULL)
 	    goto theend;
 	tofree = newcmd;
-	vim_snprintf((char *)newcmd, cmdlen, "%s %s %s", p_sh, p_shcf, cmd);
+	mnv_snprintf((char *)newcmd, cmdlen, "%s %s %s", p_sh, p_shcf, cmd);
 	cmd = newcmd;
 # else
 	emsg(_(e_sorry_plusplusshell_not_supported_on_this_system));
@@ -983,8 +983,8 @@ ex_terminal(exarg_T *eap)
     term_start(argvar, NULL, &opt, eap->forceit ? TERM_START_FORCEIT : 0);
 
 theend:
-    vim_free(tofree);
-    vim_free(opt.jo_eof_chars);
+    mnv_free(tofree);
+    mnv_free(opt.jo_eof_chars);
 }
 
     static char_u *
@@ -1097,7 +1097,7 @@ term_write_session(FILE *fd, win_T *wp, hashtab_T *terminal_bufs)
 	char	    id_as_str[NUMBUFLEN];
 	hashitem_T  *entry;
 
-	vim_snprintf(id_as_str, sizeof(id_as_str), "%d", bufnr);
+	mnv_snprintf(id_as_str, sizeof(id_as_str), "%d", bufnr);
 
 	entry = hash_find(terminal_bufs, (char_u *)id_as_str);
 	if (!HASHITEM_EMPTY(entry))
@@ -1131,7 +1131,7 @@ term_write_session(FILE *fd, win_T *wp, hashtab_T *terminal_bufs)
     {
 	char *hash_key = alloc(NUMBUFLEN);
 
-	vim_snprintf(hash_key, NUMBUFLEN, "%d", bufnr);
+	mnv_snprintf(hash_key, NUMBUFLEN, "%d", bufnr);
 	hash_add(terminal_bufs, (char_u *)hash_key, "terminal session");
     }
 
@@ -1160,10 +1160,10 @@ free_scrollback(term_T *term)
     int i;
 
     for (i = 0; i < term->tl_scrollback.ga_len; ++i)
-	vim_free(((sb_line_T *)term->tl_scrollback.ga_data + i)->sb_cells);
+	mnv_free(((sb_line_T *)term->tl_scrollback.ga_data + i)->sb_cells);
     ga_clear(&term->tl_scrollback);
     for (i = 0; i < term->tl_scrollback_postponed.ga_len; ++i)
-	vim_free(((sb_line_T *)term->tl_scrollback_postponed.ga_data + i)->sb_cells);
+	mnv_free(((sb_line_T *)term->tl_scrollback_postponed.ga_data + i)->sb_cells);
     ga_clear(&term->tl_scrollback_postponed);
 }
 
@@ -1228,31 +1228,31 @@ free_unused_terminals(void)
 	ga_clear(&term->tl_osc_buf);
 
 	term_free_vterm(term);
-	vim_free(term->tl_api);
-	vim_free(term->tl_title);
+	mnv_free(term->tl_api);
+	mnv_free(term->tl_title);
 #ifdef FEAT_SESSION
-	vim_free(term->tl_command);
+	mnv_free(term->tl_command);
 #endif
-	vim_free(term->tl_kill);
-	vim_free(term->tl_status_text);
-	vim_free(term->tl_opencmd);
-	vim_free(term->tl_eof_chars);
-	vim_free(term->tl_arg0_cmd);
+	mnv_free(term->tl_kill);
+	mnv_free(term->tl_status_text);
+	mnv_free(term->tl_opencmd);
+	mnv_free(term->tl_eof_chars);
+	mnv_free(term->tl_arg0_cmd);
 #ifdef MSWIN
 	if (term->tl_out_fd != NULL)
 	    fclose(term->tl_out_fd);
 #endif
-	vim_free(term->tl_highlight_name);
-	vim_free(term->tl_cursor_color);
-	vim_free(term->tl_palette);
-	vim_free(term);
+	mnv_free(term->tl_highlight_name);
+	mnv_free(term->tl_cursor_color);
+	mnv_free(term->tl_palette);
+	mnv_free(term);
     }
 }
 
 /*
  * Get the part that is connected to the tty. Normally this is PART_IN, but
  * when writing buffer lines to the job it can be another.  This makes it
- * possible to do "1,5term vim -".
+ * possible to do "1,5term mnv -".
  */
     static ch_part_T
 get_tty_part(term_T *term UNUSED)
@@ -1847,8 +1847,8 @@ term_confirm_stop(buf_T *buf)
     int	ret;
 
     dialog_msg(buff, _("Kill job in \"%s\"?"), buf_get_fname(buf));
-    ret = vim_dialog_yesno(VIM_QUESTION, NULL, buff, 1);
-    if (ret == VIM_YES)
+    ret = mnv_dialog_yesno(MNV_QUESTION, NULL, buff, 1);
+    if (ret == MNV_YES)
 	return OK;
     else
 	return FAIL;
@@ -1926,9 +1926,9 @@ add_scrollback_line_to_buffer(term_T *term, char_u *text, int len)
 	{
 	    WideCharToMultiByte_alloc(enc_codepage, 0,
 				      ret, length, (char **)&text, &len, 0, 0);
-	    vim_free(ret);
+	    mnv_free(ret);
 	    ml_append_buf(term->tl_buffer, lnum, text, len, FALSE);
-	    vim_free(text);
+	    mnv_free(text);
 	}
     }
     else
@@ -2013,7 +2013,7 @@ cleanup_scrollback(term_T *term)
     {
 	ml_delete(curbuf->b_ml.ml_line_count);
 	line = (sb_line_T *)gap->ga_data + gap->ga_len - 1;
-	vim_free(line->sb_cells);
+	mnv_free(line->sb_cells);
 	--gap->ga_len;
     }
     curbuf = curwin->w_buffer;
@@ -2131,7 +2131,7 @@ update_snapshot(term_T *term)
 		ga_clear(&ga);
 	    }
 	    else
-		vim_free(p);
+		mnv_free(p);
 	}
     }
 
@@ -2257,7 +2257,7 @@ set_terminal_mode(term_T *term, int normal_mode)
     may_trigger_modechanged();
     if (!normal_mode)
 	handle_postponed_scrollback(term);
-    VIM_CLEAR(term->tl_status_text);
+    MNV_CLEAR(term->tl_status_text);
     if (term->tl_buffer == curbuf)
 	maketitle();
 }
@@ -2572,7 +2572,7 @@ term_paste_register(int prev_c UNUSED)
 	    {
 		WideCharToMultiByte_alloc(CP_UTF8, 0,
 			ret, length, (char **)&s, &length, 0, 0);
-		vim_free(ret);
+		mnv_free(ret);
 	    }
 	}
 #endif
@@ -2580,7 +2580,7 @@ term_paste_register(int prev_c UNUSED)
 		s, (int)STRLEN(s), NULL);
 #ifdef MSWIN
 	if (tmp != s)
-	    vim_free(s);
+	    mnv_free(s);
 #endif
 
 	if (item->li_next != NULL || type == MLINE)
@@ -2888,7 +2888,7 @@ terminal_loop(int blocking)
 	/*
 	 * The shell or another program may change the tty settings.  Getting
 	 * them for every typed character is a bit of overhead, but it's needed
-	 * for the first character typed, e.g. when Vim starts in a shell.
+	 * for the first character typed, e.g. when MNV starts in a shell.
 	 */
 	if (mch_isatty(tty_fd))
 	{
@@ -3352,11 +3352,11 @@ handle_settermprop(
 	case VTERM_PROP_TITLE:
 	    if (disable_vterm_title_for_testing)
 		break;
-	    strval = vim_strnsave((char_u *)value->string.str,
+	    strval = mnv_strnsave((char_u *)value->string.str,
 							    value->string.len);
 	    if (strval == NULL)
 		break;
-	    vim_free(term->tl_title);
+	    mnv_free(term->tl_title);
 	    // a blank title isn't useful, make it empty, so that "running" is
 	    // displayed
 	    if (*skipwhite(strval) == NUL)
@@ -3383,7 +3383,7 @@ handle_settermprop(
 		    WideCharToMultiByte_alloc(enc_codepage, 0,
 					ret, length, (char**)&term->tl_title,
 					&length, 0, 0);
-		    vim_free(ret);
+		    mnv_free(ret);
 		}
 	    }
 #endif
@@ -3392,7 +3392,7 @@ handle_settermprop(
 		term->tl_title = strval;
 		strval = NULL;
 	    }
-	    VIM_CLEAR(term->tl_status_text);
+	    MNV_CLEAR(term->tl_status_text);
 	    if (term == curbuf->b_term)
 	    {
 		maketitle();
@@ -3417,7 +3417,7 @@ handle_settermprop(
 	    break;
 
 	case VTERM_PROP_CURSORCOLOR:
-	    strval = vim_strnsave((char_u *)value->string.str,
+	    strval = mnv_strnsave((char_u *)value->string.str,
 							    value->string.len);
 	    if (strval == NULL)
 		break;
@@ -3433,7 +3433,7 @@ handle_settermprop(
 	default:
 	    break;
     }
-    vim_free(strval);
+    mnv_free(strval);
 
     // Always return 1, otherwise vterm doesn't store the value internally.
     return 1;
@@ -3487,7 +3487,7 @@ limit_scrollback(term_T *term, garray_T *gap, int update_buffer)
     curbuf = term->tl_buffer;
     for (i = 0; i < todo; ++i)
     {
-	vim_free(((sb_line_T *)gap->ga_data + i)->sb_cells);
+	mnv_free(((sb_line_T *)gap->ga_data + i)->sb_cells);
 	if (update_buffer)
 	    ml_delete(1);
     }
@@ -3590,7 +3590,7 @@ handle_pushline(int cols, const VTermScreenCell *cells, void *user)
 	if (update_buffer)
 	    text = (char_u *)"";
 	else
-	    text = vim_strsave((char_u *)"");
+	    text = mnv_strsave((char_u *)"");
 	text_len = 0;
     }
     else
@@ -3652,7 +3652,7 @@ handle_postponed_scrollback(term_T *term)
 	if (text == NULL)
 	    text = (char_u *)"";
 	add_scrollback_line_to_buffer(term, text, (int)STRLEN(text));
-	vim_free(pp_line->sb_text);
+	mnv_free(pp_line->sb_text);
 
 	line = (sb_line_T *)term->tl_scrollback.ga_data
 						 + term->tl_scrollback.ga_len;
@@ -3674,7 +3674,7 @@ handle_postponed_scrollback(term_T *term)
     static int
 handle_bell(void *user UNUSED)
 {
-    vim_beep(BO_TERM);
+    mnv_beep(BO_TERM);
     return 0;
 }
 
@@ -3722,7 +3722,7 @@ term_after_channel_closed(term_T *term)
 	    }
 	    else
 #endif
-	    // If this is the last normal window: exit Vim.
+	    // If this is the last normal window: exit MNV.
 	    if (term->tl_buffer->b_nwindows > 0 && only_one_window())
 	    {
 		exarg_T ea;
@@ -3767,9 +3767,9 @@ term_after_channel_closed(term_T *term)
 	    if (buf != NULL)
 	    {
 		ch_log(NULL, "terminal job finished, opening window");
-		vim_snprintf(buf, len, cmd, fnum);
+		mnv_snprintf(buf, len, cmd, fnum);
 		do_cmdline_cmd((char_u *)buf);
-		vim_free(buf);
+		mnv_free(buf);
 	    }
 	}
 	else
@@ -3835,8 +3835,8 @@ term_channel_closed(channel_T *ch)
 	    term->tl_channel_closed = TRUE;
 	    did_one = TRUE;
 
-	    VIM_CLEAR(term->tl_title);
-	    VIM_CLEAR(term->tl_status_text);
+	    MNV_CLEAR(term->tl_title);
+	    MNV_CLEAR(term->tl_status_text);
 #ifdef MSWIN
 	    if (term->tl_out_fd != NULL)
 	    {
@@ -4430,7 +4430,7 @@ term_init_default_colors(term_T *term)
 
     if (!get_vterm_color_from_synid(id, fg, bg))
     {
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
 	int tmp;
 #endif
 
@@ -4438,8 +4438,8 @@ term_init_default_colors(term_T *term)
 	if (cterm_normal_fg_color > 0)
 	{
 	    cterm_color2vterm(cterm_normal_fg_color - 1, fg);
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-# ifdef VIMDLL
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+# ifdef MNVDLL
 	    if (!gui.in_use)
 # endif
 	    {
@@ -4457,8 +4457,8 @@ term_init_default_colors(term_T *term)
 	if (cterm_normal_bg_color > 0)
 	{
 	    cterm_color2vterm(cterm_normal_bg_color - 1, bg);
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-# ifdef VIMDLL
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+# ifdef MNVDLL
 	    if (!gui.in_use)
 # endif
 	    {
@@ -4649,7 +4649,7 @@ handle_drop_command(listitem_T *item)
     ea.cmdidx = CMD_split;
     ex_splitview(&ea);
 
-    vim_free(tofree);
+    mnv_free(tofree);
 }
 
 /*
@@ -4766,7 +4766,7 @@ sync_shell_dir(garray_T *gap)
     new_dir = alloc(gap->ga_len - offset + 1);
     url_decode(pos, gap->ga_len-offset, new_dir);
     changedir_func(new_dir, TRUE, CDSCOPE_WINDOW);
-    vim_free(new_dir);
+    mnv_free(new_dir);
 }
 
 /*
@@ -4893,13 +4893,13 @@ parse_csi(
 #endif
 	{
 	    // We roughly estimate the position of the terminal window inside
-	    // the Vim window by assuming a 10 x 7 character cell.
+	    // the MNV window by assuming a 10 x 7 character cell.
 	    x += wp->w_wincol * 7;
 	    y += W_WINROW(wp) * 10;
 	}
     }
 
-    len = vim_snprintf(buf, 100, "\x1b[3;%d;%dt", x, y);
+    len = mnv_snprintf(buf, 100, "\x1b[3;%d;%dt", x, y);
     channel_send(term->tl_job->jv_channel, get_tty_part(term),
 						     (char_u *)buf, len, NULL);
     return 1;
@@ -4916,7 +4916,7 @@ static VTermStateFallbacks state_fallbacks = {
 };
 
 /*
- * Use Vim's allocation functions for vterm so profiling works.
+ * Use MNV's allocation functions for vterm so profiling works.
  */
     static void *
 vterm_malloc(size_t size, void *data UNUSED)
@@ -4928,7 +4928,7 @@ vterm_malloc(size_t size, void *data UNUSED)
     static void
 vterm_memfree(void *ptr, void *data UNUSED)
 {
-    vim_free(ptr);
+    mnv_free(ptr);
 }
 
 static VTermAllocatorFunctions vterm_allocator = {
@@ -5113,7 +5113,7 @@ term_get_status_text(term_T *term)
     len = 9 + STRLEN(fname) + STRLEN(txt);
     term->tl_status_text = alloc(len);
     if (term->tl_status_text != NULL)
-	vim_snprintf((char *)term->tl_status_text, len, "%s [%s]",
+	mnv_snprintf((char *)term->tl_status_text, len, "%s [%s]",
 		fname, txt);
     return term->tl_status_text;
 }
@@ -5124,7 +5124,7 @@ term_get_status_text(term_T *term)
     void
 term_clear_status_text(term_T *term)
 {
-    VIM_CLEAR(term->tl_status_text);
+    MNV_CLEAR(term->tl_status_text);
 }
 
 /*
@@ -5236,7 +5236,7 @@ f_term_dumpwrite(typval_T *argvars, typval_T *rettv UNUSED)
     if (check_restricted() || check_secure())
 	return;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_dict_arg(argvars, 2) == FAIL))
@@ -5519,11 +5519,11 @@ read_dump_file(FILE *fd, VTermPos *cursor_pos)
 	    }
 
 	    // save the character for repeating it
-	    VIM_CLEAR_STRING(prev_char);
+	    MNV_CLEAR_STRING(prev_char);
 	    if (ga_text.ga_data != NULL)
 	    {
 		prev_char.length = (size_t)(ga_text.ga_len - prev_len);
-		prev_char.string = vim_strnsave(
+		prev_char.string = mnv_strnsave(
 		    ((char_u *)ga_text.ga_data) + prev_len,
 		    prev_char.length);
 		if (prev_char.string == NULL)
@@ -5678,7 +5678,7 @@ read_dump_file(FILE *fd, VTermPos *cursor_pos)
 
     ga_clear(&ga_text);
     ga_clear(&ga_cell);
-    vim_free(prev_char.string);
+    mnv_free(prev_char.string);
 
     return max_cells;
 }
@@ -5701,7 +5701,7 @@ get_separator(int text_width, char_u *fname)
     if (textline == NULL)
 	return NULL;
 
-    fname_size = vim_strsize(fname);
+    fname_size = mnv_strsize(fname);
     if (fname_size < width - 8)
     {
 	// enough room, don't use the full window width
@@ -5711,13 +5711,13 @@ get_separator(int text_width, char_u *fname)
     {
 	// full name doesn't fit, use only the tail
 	p = gettail(fname);
-	fname_size = vim_strsize(p);
+	fname_size = mnv_strsize(p);
     }
     // skip characters until the name fits
     while (fname_size > width - 8)
     {
 	p += (*mb_ptr2len)(p);
-	fname_size = vim_strsize(p);
+	fname_size = mnv_strsize(p);
     }
 
     for (i = 0; i < (width - fname_size) / 2 - 1; ++i)
@@ -5791,7 +5791,7 @@ term_load_dump(typval_T *argvars, typval_T *rettv, int do_diff)
 	fname_tofree = alloc(len);
 	if (fname_tofree != NULL)
 	{
-	    vim_snprintf((char *)fname_tofree, len, "dump diff %s", fname1);
+	    mnv_snprintf((char *)fname_tofree, len, "dump diff %s", fname1);
 	    opt.jo_term_name = fname_tofree;
 	}
     }
@@ -5856,7 +5856,7 @@ term_load_dump(typval_T *argvars, typval_T *rettv, int do_diff)
 	    goto theend;
 	if (add_empty_scrollback(term, &term->tl_default_color, 0) == OK)
 	    ml_append(curbuf->b_ml.ml_line_count, textline, 0, FALSE);
-	vim_free(textline);
+	mnv_free(textline);
 
 	textline = get_separator(width, fname2);
 	if (textline == NULL)
@@ -5869,7 +5869,7 @@ term_load_dump(typval_T *argvars, typval_T *rettv, int do_diff)
 	width2 = read_dump_file(fd2, &cursor_pos2);
 	if (width2 > width)
 	{
-	    vim_free(textline);
+	    mnv_free(textline);
 	    textline = alloc(width2 + 1);
 	    if (textline == NULL)
 		goto theend;
@@ -5899,7 +5899,7 @@ term_load_dump(typval_T *argvars, typval_T *rettv, int do_diff)
 								    ->sb_cells;
 
 		// Make a copy, getting the second line will invalidate it.
-		line1 = vim_strsave(ml_get(lnum));
+		line1 = mnv_strsave(ml_get(lnum));
 		if (line1 == NULL)
 		    break;
 		p1 = line1;
@@ -5964,7 +5964,7 @@ term_load_dump(typval_T *argvars, typval_T *rettv, int do_diff)
 		    ++col;
 		}
 
-		vim_free(line1);
+		mnv_free(line1);
 	    }
 	    if (add_empty_scrollback(term, &term->tl_default_color,
 						 term->tl_top_diff_rows) == OK)
@@ -5991,8 +5991,8 @@ term_load_dump(typval_T *argvars, typval_T *rettv, int do_diff)
     }
 
 theend:
-    vim_free(textline);
-    vim_free(fname_tofree);
+    mnv_free(textline);
+    mnv_free(fname_tofree);
     fclose(fd1);
     if (fd2 != NULL)
 	fclose(fd2);
@@ -6030,40 +6030,40 @@ term_swap_diff(void)
     // move lines from top to above the bottom part
     for (lnum = 1; lnum <= top_rows; ++lnum)
     {
-	p = vim_strsave(ml_get(1));
+	p = mnv_strsave(ml_get(1));
 	if (p == NULL)
 	    return OK;
 	ml_append(bot_start, p, 0, FALSE);
 	ml_delete(1);
-	vim_free(p);
+	mnv_free(p);
     }
 
     // move lines from bottom to the top
     for (lnum = 1; lnum <= bot_rows; ++lnum)
     {
-	p = vim_strsave(ml_get(bot_start + lnum));
+	p = mnv_strsave(ml_get(bot_start + lnum));
 	if (p == NULL)
 	    return OK;
 	ml_delete(bot_start + lnum);
 	ml_append(lnum - 1, p, 0, FALSE);
-	vim_free(p);
+	mnv_free(p);
     }
 
     // move top title to bottom
-    p = vim_strsave(ml_get(bot_rows + 1));
+    p = mnv_strsave(ml_get(bot_rows + 1));
     if (p == NULL)
 	return OK;
     ml_append(line_count - top_rows - 1, p, 0, FALSE);
     ml_delete(bot_rows + 1);
-    vim_free(p);
+    mnv_free(p);
 
     // move bottom title to top
-    p = vim_strsave(ml_get(line_count - top_rows));
+    p = mnv_strsave(ml_get(line_count - top_rows));
     if (p == NULL)
 	return OK;
     ml_delete(line_count - top_rows);
     ml_append(bot_rows, p, 0, FALSE);
-    vim_free(p);
+    mnv_free(p);
 
     if (top_rows == bot_rows)
     {
@@ -6096,7 +6096,7 @@ term_swap_diff(void)
 						       + line_count - top_rows,
 		    temp,
 		    sizeof(sb_line_T) * top_rows);
-	    vim_free(temp);
+	    mnv_free(temp);
 	}
     }
 
@@ -6113,7 +6113,7 @@ term_swap_diff(void)
     void
 f_term_dumpdiff(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_dict_arg(argvars, 2) == FAIL))
@@ -6128,7 +6128,7 @@ f_term_dumpdiff(typval_T *argvars, typval_T *rettv)
     void
 f_term_dumpload(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -6144,7 +6144,7 @@ f_term_getaltscreen(typval_T *argvars, typval_T *rettv)
 {
     buf_T	*buf;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getaltscreen()");
@@ -6174,7 +6174,7 @@ f_term_getattr(typval_T *argvars, typval_T *rettv)
 	{"reverse",   HL_INVERSE},
     };
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -6208,7 +6208,7 @@ f_term_getcursor(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getcursor()");
@@ -6240,13 +6240,13 @@ f_term_getjob(typval_T *argvars, typval_T *rettv)
 {
     buf_T	*buf;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getjob()");
     if (buf == NULL)
     {
-	if (in_vim9script())
+	if (in_mnv9script())
 	{
 	    rettv->v_type = VAR_JOB;
 	    rettv->vval.v_job = NULL;
@@ -6287,7 +6287,7 @@ f_term_getline(typval_T *argvars, typval_T *rettv)
 
     rettv->v_type = VAR_STRING;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_lnum_arg(argvars, 1) == FAIL))
 	return;
@@ -6304,7 +6304,7 @@ f_term_getline(typval_T *argvars, typval_T *rettv)
 
 	// vterm is finished, get the text from the buffer
 	if (lnum > 0 && lnum <= buf->b_ml.ml_line_count)
-	    rettv->vval.v_string = vim_strsave(ml_get_buf(buf, lnum, FALSE));
+	    rettv->vval.v_string = mnv_strsave(ml_get_buf(buf, lnum, FALSE));
     }
     else
     {
@@ -6337,7 +6337,7 @@ f_term_getscrolled(typval_T *argvars, typval_T *rettv)
 {
     buf_T	*buf;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getscrolled()");
@@ -6358,7 +6358,7 @@ f_term_getsize(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getsize()");
@@ -6380,7 +6380,7 @@ f_term_setsize(typval_T *argvars, typval_T *rettv UNUSED)
     term_T	*term;
     varnumber_T rows, cols;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_number_arg(argvars, 2) == FAIL))
@@ -6419,7 +6419,7 @@ f_term_getstatus(typval_T *argvars, typval_T *rettv)
 
     rettv->v_type = VAR_STRING;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getstatus()");
@@ -6433,7 +6433,7 @@ f_term_getstatus(typval_T *argvars, typval_T *rettv)
 	STRCPY(val, "finished");
     if (term->tl_normal_mode)
 	STRCAT(val, ",normal");
-    rettv->vval.v_string = vim_strsave(val);
+    rettv->vval.v_string = mnv_strsave(val);
 }
 
 /*
@@ -6446,7 +6446,7 @@ f_term_gettitle(typval_T *argvars, typval_T *rettv)
 
     rettv->v_type = VAR_STRING;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_gettitle()");
@@ -6454,7 +6454,7 @@ f_term_gettitle(typval_T *argvars, typval_T *rettv)
 	return;
 
     if (buf->b_term->tl_title != NULL)
-	rettv->vval.v_string = vim_strsave(buf->b_term->tl_title);
+	rettv->vval.v_string = mnv_strsave(buf->b_term->tl_title);
 }
 
 /*
@@ -6467,7 +6467,7 @@ f_term_gettty(typval_T *argvars, typval_T *rettv)
     char_u	*p = NULL;
     int		num = 0;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_opt_bool_arg(argvars, 1) == FAIL))
 	return;
@@ -6494,7 +6494,7 @@ f_term_gettty(typval_T *argvars, typval_T *rettv)
 	    return;
     }
     if (p != NULL)
-	rettv->vval.v_string = vim_strsave(p);
+	rettv->vval.v_string = mnv_strsave(p);
 }
 
 /*
@@ -6534,7 +6534,7 @@ f_term_scrape(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_lnum_arg(argvars, 1) == FAIL))
 	return;
@@ -6619,10 +6619,10 @@ f_term_scrape(typval_T *argvars, typval_T *rettv)
 
 	dict_add_string(dcell, "chars", mbs);
 
-	vim_snprintf((char *)rgb, 8, "#%02x%02x%02x",
+	mnv_snprintf((char *)rgb, 8, "#%02x%02x%02x",
 				     fg.red, fg.green, fg.blue);
 	dict_add_string(dcell, "fg", rgb);
-	vim_snprintf((char *)rgb, 8, "#%02x%02x%02x",
+	mnv_snprintf((char *)rgb, 8, "#%02x%02x%02x",
 				     bg.red, bg.green, bg.blue);
 	dict_add_string(dcell, "bg", rgb);
 
@@ -6646,7 +6646,7 @@ f_term_sendkeys(typval_T *argvars, typval_T *rettv UNUSED)
     char_u	*msg;
     term_T	*term;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -6698,7 +6698,7 @@ f_term_getansicolors(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     buf = term_get_buf(argvars, "term_getansicolors()");
@@ -6715,7 +6715,7 @@ f_term_getansicolors(typval_T *argvars, typval_T *rettv)
 	size_t	hexbuflen;
 
 	vterm_state_get_palette_color(state, index, &color);
-	hexbuflen = vim_snprintf_safelen((char *)hexbuf, sizeof(hexbuf),
+	hexbuflen = mnv_snprintf_safelen((char *)hexbuf, sizeof(hexbuf),
 	    "#%02x%02x%02x", color.red, color.green, color.blue);
 	if (list_append_string(list, hexbuf, (int)hexbuflen) == FAIL)
 	    return;
@@ -6733,7 +6733,7 @@ f_term_setansicolors(typval_T *argvars, typval_T *rettv UNUSED)
     listitem_T	*li;
     int		n = 0;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_list_arg(argvars, 1) == FAIL))
 	return;
@@ -6793,7 +6793,7 @@ f_term_setapi(typval_T *argvars, typval_T *rettv UNUSED)
     term_T	*term;
     char_u	*api;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -6802,10 +6802,10 @@ f_term_setapi(typval_T *argvars, typval_T *rettv UNUSED)
     if (buf == NULL)
 	return;
     term = buf->b_term;
-    vim_free(term->tl_api);
+    mnv_free(term->tl_api);
     api = tv_get_string_chk(&argvars[1]);
     if (api != NULL)
-	term->tl_api = vim_strsave(api);
+	term->tl_api = mnv_strsave(api);
     else
 	term->tl_api = NULL;
 }
@@ -6821,7 +6821,7 @@ f_term_setrestore(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     term_T	*term;
     char_u	*cmd;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -6830,10 +6830,10 @@ f_term_setrestore(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     if (buf == NULL)
 	return;
     term = buf->b_term;
-    vim_free(term->tl_command);
+    mnv_free(term->tl_command);
     cmd = tv_get_string_chk(&argvars[1]);
     if (cmd != NULL)
-	term->tl_command = vim_strsave(cmd);
+	term->tl_command = mnv_strsave(cmd);
     else
 	term->tl_command = NULL;
 #endif
@@ -6849,7 +6849,7 @@ f_term_setkill(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     term_T	*term;
     char_u	*how;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -6858,10 +6858,10 @@ f_term_setkill(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     if (buf == NULL)
 	return;
     term = buf->b_term;
-    vim_free(term->tl_kill);
+    mnv_free(term->tl_kill);
     how = tv_get_string_chk(&argvars[1]);
     if (how != NULL)
-	term->tl_kill = vim_strsave(how);
+	term->tl_kill = mnv_strsave(how);
     else
 	term->tl_kill = NULL;
 }
@@ -6875,7 +6875,7 @@ f_term_start(typval_T *argvars, typval_T *rettv)
     jobopt_T	opt;
     buf_T	*buf;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_or_list_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -6907,7 +6907,7 @@ f_term_wait(typval_T *argvars, typval_T *rettv UNUSED)
 {
     buf_T	*buf;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_buffer_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL))
 	return;
@@ -7045,7 +7045,7 @@ dyn_conpty_init(int verbose)
     if (hKerneldll)
 	return OK;
 
-    hKerneldll = vimLoadLib("kernel32.dll");
+    hKerneldll = mnvLoadLib("kernel32.dll");
     for (i = 0; conpty_entry[i].name != NULL
 					&& conpty_entry[i].ptr != NULL; ++i)
     {
@@ -7108,7 +7108,7 @@ conpty_term_and_job_init(
 	goto failed;
     }
 
-    term->tl_arg0_cmd = vim_strsave(cmd);
+    term->tl_arg0_cmd = mnv_strsave(cmd);
 
     cmd_wchar = enc_to_utf16(cmd, NULL);
 
@@ -7233,10 +7233,10 @@ conpty_term_and_job_init(
     ResumeThread(proc_info.hThread);
     CloseHandle(proc_info.hThread);
 
-    vim_free(cmd_wchar);
-    vim_free(cmd_wchar_copy);
-    vim_free(cwd_wchar);
-    vim_free(env_wchar);
+    mnv_free(cmd_wchar);
+    mnv_free(cmd_wchar_copy);
+    mnv_free(cwd_wchar);
+    mnv_free(env_wchar);
 
     if (create_vterm(term, term->tl_rows, term->tl_cols) == FAIL)
 	goto failed;
@@ -7258,7 +7258,7 @@ conpty_term_and_job_init(
     job->jv_proc_info = proc_info;
     job->jv_job_object = jo;
     job->jv_status = JOB_STARTED;
-    job->jv_tty_type = vim_strsave((char_u *)"conpty");
+    job->jv_tty_type = mnv_strsave((char_u *)"conpty");
     ++job->jv_refcount;
     term->tl_job = job;
 
@@ -7280,9 +7280,9 @@ conpty_term_and_job_init(
 failed:
     ga_clear(&ga_cmd);
     ga_clear(&ga_env);
-    vim_free(cmd_wchar);
-    vim_free(cmd_wchar_copy);
-    vim_free(cwd_wchar);
+    mnv_free(cmd_wchar);
+    mnv_free(cmd_wchar_copy);
+    mnv_free(cwd_wchar);
     if (channel != NULL)
 	channel_clear(channel);
     if (job != NULL)
@@ -7297,7 +7297,7 @@ failed:
     if (term->tl_siex.lpAttributeList != NULL)
     {
 	pDeleteProcThreadAttributeList(term->tl_siex.lpAttributeList);
-	vim_free(term->tl_siex.lpAttributeList);
+	mnv_free(term->tl_siex.lpAttributeList);
     }
     term->tl_siex.lpAttributeList = NULL;
     if (o_theirs != NULL)
@@ -7333,7 +7333,7 @@ term_free_conpty(term_T *term)
     if (term->tl_siex.lpAttributeList != NULL)
     {
 	pDeleteProcThreadAttributeList(term->tl_siex.lpAttributeList);
-	vim_free(term->tl_siex.lpAttributeList);
+	mnv_free(term->tl_siex.lpAttributeList);
     }
     term->tl_siex.lpAttributeList = NULL;
     if (term->tl_conpty != NULL)
@@ -7409,9 +7409,9 @@ dyn_winpty_init(int verbose)
     // Load winpty.dll, prefer using the 'winptydll' option, fall back to just
     // winpty.dll.
     if (*p_winptydll != NUL)
-	hWinPtyDLL = vimLoadLib((char *)p_winptydll);
+	hWinPtyDLL = mnvLoadLib((char *)p_winptydll);
     if (!hWinPtyDLL)
-	hWinPtyDLL = vimLoadLib(WINPTY_DLL);
+	hWinPtyDLL = mnvLoadLib(WINPTY_DLL);
     if (!hWinPtyDLL)
     {
 	if (verbose)
@@ -7477,7 +7477,7 @@ winpty_term_and_job_init(
 	goto failed;
     }
 
-    term->tl_arg0_cmd = vim_strsave(cmd);
+    term->tl_arg0_cmd = mnv_strsave(cmd);
 
     cmd_wchar = enc_to_utf16(cmd, NULL);
     ga_clear(&ga_cmd);
@@ -7572,9 +7572,9 @@ winpty_term_and_job_init(
     }
 
     winpty_spawn_config_free(spawn_config);
-    vim_free(cmd_wchar);
-    vim_free(cwd_wchar);
-    vim_free(env_wchar);
+    mnv_free(cmd_wchar);
+    mnv_free(cwd_wchar);
+    mnv_free(env_wchar);
 
     if (create_vterm(term, term->tl_rows, term->tl_cols) == FAIL)
 	goto failed;
@@ -7601,7 +7601,7 @@ winpty_term_and_job_init(
 	    (short_u *)winpty_conin_name(term->tl_winpty), NULL);
     job->jv_tty_out = utf16_to_enc(
 	    (short_u *)winpty_conout_name(term->tl_winpty), NULL);
-    job->jv_tty_type = vim_strsave((char_u *)"winpty");
+    job->jv_tty_type = mnv_strsave((char_u *)"winpty");
     ++job->jv_refcount;
     term->tl_job = job;
 
@@ -7623,8 +7623,8 @@ winpty_term_and_job_init(
 failed:
     ga_clear(&ga_cmd);
     ga_clear(&ga_env);
-    vim_free(cmd_wchar);
-    vim_free(cwd_wchar);
+    mnv_free(cmd_wchar);
+    mnv_free(cwd_wchar);
     if (spawn_config != NULL)
 	winpty_spawn_config_free(spawn_config);
     if (channel != NULL)
@@ -7651,7 +7651,7 @@ failed:
 	if (msg != NULL)
 	{
 	    emsg(msg);
-	    vim_free(msg);
+	    mnv_free(msg);
 	}
 	winpty_error_free(winpty_err);
     }
@@ -7728,7 +7728,7 @@ create_pty_only(term_T *term, jobopt_T *options)
     if (create_vterm(term, term->tl_rows, term->tl_cols) == FAIL)
 	return FAIL;
 
-    vim_snprintf(in_name, sizeof(in_name), "\\\\.\\pipe\\vim-%d-in-%d",
+    mnv_snprintf(in_name, sizeof(in_name), "\\\\.\\pipe\\mnv-%d-in-%d",
 	    GetCurrentProcessId(),
 	    curbuf->b_fnum);
     hPipeIn = CreateNamedPipe(in_name, PIPE_ACCESS_OUTBOUND,
@@ -7738,7 +7738,7 @@ create_pty_only(term_T *term, jobopt_T *options)
     if (hPipeIn == INVALID_HANDLE_VALUE)
 	goto failed;
 
-    vim_snprintf(out_name, sizeof(out_name), "\\\\.\\pipe\\vim-%d-out-%d",
+    mnv_snprintf(out_name, sizeof(out_name), "\\\\.\\pipe\\mnv-%d-out-%d",
 	    GetCurrentProcessId(),
 	    curbuf->b_fnum);
     hPipeOut = CreateNamedPipe(out_name, PIPE_ACCESS_INBOUND,
@@ -7771,8 +7771,8 @@ create_pty_only(term_T *term, jobopt_T *options)
 	(sock_T)hPipeOut,
 	(sock_T)hPipeOut);
     channel_set_job(channel, term->tl_job, options);
-    term->tl_job->jv_tty_in = vim_strsave((char_u*)in_name);
-    term->tl_job->jv_tty_out = vim_strsave((char_u*)out_name);
+    term->tl_job->jv_tty_in = mnv_strsave((char_u*)in_name);
+    term->tl_job->jv_tty_out = mnv_strsave((char_u*)out_name);
 
     return OK;
 

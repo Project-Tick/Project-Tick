@@ -1,0 +1,530 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH MNV 1 "28. November 2024"
+.SH BEZEICHNUNG
+mnv \- MNV is not Vim, ein Text\-Editor f�r Programmierer
+.SH �BERSICHT
+.br
+\fBmnv\fP [Optionen] [Datei ...]
+.br
+\fBmnv\fP [Optionen] \-
+.br
+\fBmnv\fP [Optionen] \-t Tag
+.br
+\fBmnv\fP [Optionen] \-q [Fehlerdatei]
+.PP
+.br
+\fBex\fP
+.br
+\fBview\fP
+.br
+\fBgmnv\fP \fBgview\fP \fBemnv\fP \fBeview\fP
+.br
+\fBrmnv\fP \fBrview\fP \fBrgmnv\fP \fBrgview\fP
+.SH BESCHREIBUNG
+\fBMNV\fP ist ein Text\-Editor, der aufw�rtskompatibel zu Vi ist. Er kann
+verwendet werden, um alle Arten von Klartext zu bearbeiten. Er ist besonders
+n�tzlich, um Programme zu bearbeiten.
+.PP
+\fBMNV\fP hat eine Menge an Erweiterungen gegen�ber Vi, z.B.: Mehrstufiges
+R�ckg�ngigmachen, mehrere Fenster und Puffer, Syntax\-Hervorhebung,
+Bearbeiten der Befehlszeile, Dateinamenerg�nzung, eingebaute Hilfe, visuelle
+Auswahl, usw. ... Siehe �:help vi_diff.txt� f�r eine �bersicht der
+Unterschiede zwischen \fBMNV\fP und Vi.
+.PP
+Im laufenden \fBMNV\fP kann mit dem Befehl �:help� viel Hilfe durch das
+eingebaute Hilfesystem erlangt werden. Siehe den Abschnitt EINGEBAUTE HILFE
+weiter unten.
+.PP
+Meistens wird \fBMNV\fP zum Bearbeiten einer einzigen Datei mit dem folgenden
+Befehl gestartet:
+.PP
+  mnv Datei
+.PP
+Allgemeiner betrachtet, wird \fBMNV\fP folgenderma�en gestartet:
+.PP
+  mnv [Optionen] [Dateiliste]
+.PP
+Bei einer fehlenden Dateiliste startet der Editor mit einem leeren
+Puffer. Andernfalls werden eine oder mehrere Dateien mit einer der folgenden
+vier Optionen bearbeitet:
+.TP  12
+Datei ...
+Eine Liste von Dateinamen. Die erste Datei wird in den Puffer geladen und
+zur aktuellen. Der Cursor wird auf der ersten Zeile des Puffers
+platziert. Zu den anderen Dateien kann mit dem Befehl �:next� gelangt
+werden. Falls einer der Dateinamen mit einem Bindestrich beginnt, stellen
+Sie der Dateiliste �\-\-� voran.
+.TP
+\fB\-\fP
+Die zu bearbeitende Datei wird von der Standardeingabe gelesen. Befehle
+werden von der Standardfehlerausgabe gelesen, die ein Text\-Terminal sein
+sollte.
+.TP
+\fB\-t\fP {Tag}
+Die zu bearbeitende Datei und die anf�ngliche Cursor\-Position h�ngen von
+einem �Tag� ab, einer Art Sprungmarke. {Tag} wird in der Tag\-Datei
+nachgeschlagen, die zugeh�rige Datei wird zur aktuellen und der zugeh�rige
+Befehl wird ausgef�hrt. Dies wird meistens f�r Programme in der Sprache �C�
+benutzt, wobei {Tag} ein Funktionsname sein k�nnte. Die Wirkung dieses
+Befehls ist, dass die Datei, die die Funktion enth�lt, als aktuelle im
+Editor ge�ffnet und angezeigt wird und der Cursor auf dem Beginn der
+Funktion positioniert wird. Siehe �:help tag\-commands�.
+.TP
+\fB\-q\fP [Fehlerdatei]
+Startet im QuickFix\-Modus. Die Datei [Fehlerdatei] wird gelesen und der
+erste Fehler wird angezeigt. Falls [Fehlerdatei] ausgelassen wird, wird der
+Dateiname aus der Option �Fehlerdatei� ermittelt (auf dem Amiga ist dies
+standardm��ig �AztecC.Err�, sowie �errors.err� bei anderen). Weitere Fehler
+k�nnen mit dem �:cn�\-Befehl angesprungen werden. Siehe �:help quickfix�.
+.PP
+\fBMNV\fP reagiert in Abh�ngigkeit vom benutzten Programmnamen unterschiedlich
+(die ausf�hrbare Datei kann dieselbe sein).
+.TP  10
+\fBmnv\fP
+Der �normale� Weg, alles ist standardm��ig.
+.TP
+\fBex\fP
+Startet im Ex\-Modus. Mit dem Befehl �:vi� gelangen Sie in den normalen
+Modus. Funktioniert auch mit dem Argument \fB\-e\fP.
+.TP
+\fBview\fP
+Startet im schreibgesch�tzten Modus. Die Datei wird vor dem �berschreiben
+gesch�tzt. Dasselbe wird mit dem Argument \fB\-R\fP erreicht.
+.TP
+\fBgmnv gview\fP
+Startet die grafische Version. �ffnet ein neues Fenster. Dasselbe wird mit
+dem Argument \fB\-g\fP erreicht.
+.TP
+\fBemnv eview\fP
+Startet die grafische Version im einfachen Modus. �ffnet ein neues
+Fenster. Dasselbe wird mit dem Argument \fB\-y\fP erreicht.
+.TP
+\fBrmnv rview rgmnv rgview\fP
+Wie die obigen, aber mit Beschr�nkungen. Es ist nicht m�glich, Shell\-Befehle
+aufzurufen oder \fBMNV\fP zu suspendieren. Dasselbe wird mit dem Argument \fB\-Z\fP
+erreicht.
+.SH OPTIONEN
+Die Optionen k�nnen in beliebiger Reihenfolge vor oder nach den Dateinamen
+angegeben werden. Optionen ohne Argument k�nnen hinter einem einzigen
+Bindestrich gruppiert werden.
+.TP  12
+\fB+\fP[Nummer]
+In der ersten Datei wird der Cursor auf die Zeile [Nummer] gesetzt. Falls
+[Nummer] nicht angegeben wird, wird der Cursor in die letzte Zeile der Datei
+gesetzt.
+.TP
+\fB+\fP/{Suchmuster}
+In der ersten Datei wird der Cursor auf das erste Auftreten von {Suchmuster}
+gesetzt. Siehe �:help search\-pattern� f�r die verf�gbaren Suchmuster.
+.TP
+\fB+\fP{Befehl}
+.TP
+\fB\-c\fP {Befehl}
+{Befehl} wird nach dem Lesen der ersten Datei ausgef�hrt. Als {Befehl} wird
+ein Ex\-Befehl erwartet. Sind in {Befehl} Leerzeichen vorhanden, muss er in
+Anf�hrungszeichen gesetzt werden (h�ngt von der verwendeten Shell
+ab). Beispiel: �mnv "+set si" main.c�
+.br
+Anmerkung: Sie k�nnen bis zu zehn \fB+c\fP\- oder \fB\-c\fP\-Befehle verwenden.
+.TP
+\fB\-A\fP
+Falls \fBMNV\fP mit Unterst�tzung f�r das Schreiben von rechts nach links und
+arabischer Tastaturbelegung compiliert wurde (ARABIC), startet dieser
+Parameter den Modus f�rs Arabische (:set arabic). Anderenfalls beendet sich
+\fBMNV\fP mit einer Fehlermeldung.
+.TP
+\fB\-b\fP
+Bin�rer Modus: Es werden einige Variablen gesetzt, sodass es m�glich ist,
+eine bin�re oder ausf�hrbare Datei zu bearbeiten.
+.TP
+\fB\-C\fP
+Kompatibler Modus: Setzt die Option �compatible�. Das machtMNVBMNV\fP im
+Verhalten sehr �hnlich zu Vi, selbst wenn eine .mnvrc\-Datei existiert.
+.TP
+\fB\-d\fP
+Diff\-Modus: Es sollten von zwei bis zu acht Dateinamen als Argumente
+�bergeben werden. \MNMNV\fP �ffnet sie alle und zeigt deren die Unterschiede
+an. Arbeitet wie \fBmnvdiff\fP(1).
+.TP
+\fB\-d\fP {Ger�t}, \fB\-dev\fP {Ger�t}
+�ffnet das {Ger�t}, um es als Terminal zu nutzen. Nur auf dem
+Amiga. Beispiel: �\-d con:20/30/600/150�.
+.TP
+\fB\-D\fP
+Debug\-Modus: \fBMNV\fP geht in den Modus zur Fehlersuche, wenn der erste Befehl
+aus einem Skript ausgef�hrt wird.
+.TP
+\fB\-e\fP
+Ex\-Modus: Startet \fBMNV\fP als w�rde die ausf�hrbare Datei \fBex\fP lauten.
+.TP
+\fB\-E\fP
+Verbesserter Ex\-Modus: Startet \fBMNV\fP als w�rde die ausf�hrbare Datei
+\fBexim\fP lauten.
+.TP
+\fB\-f\fP
+Vordergrund: Bei der GUI\-Version erzeugt \fBMNV\fP keinen neuen Prozess und
+l�st sich nicht von der Shell, in der er aufgerufen wurde. Auf dem Amiga
+wird kein neues Fenster ge�ffnet. Dieser Parameter wird benutzt, damit das
+aufrufende Programm auf das Beenden der Bearbeitungssitzung wartet
+(z.B. mail). Auf dem Amiga funktionieren die Befehle �:sh� und �:!� nicht.
+.TP
+\fB\-F\fP
+Wenn \fBMNV\fP mit FKMAP\-Unterst�tzung f�r das Schreiben von rechts nach links
+und Farsi\-Tastatur\-Belegung kompiliert wurde, startet \fBMNV\fP im Farsi\-Modus,
+d.h. die Optionen �fkmap� und �rightleft� werden gesetzt. Andernfalls bricht
+\fBMNV\fP mit einer Fehlermeldung ab.
+.br
+Hinweis: Die Unterst�tzung von Farsi wurde im Patch 8.1.0932 entfernt.
+.TP
+\fB\-g\fP
+Falls \fBMNV\fP mit GUI\-Unterst�tzung kompiliert wurde, wird die GUI
+aktiviert. Falls keine GUI\-Unterst�tzung einkompiliert wurde, wird \MNMNV\fP
+mit einer Fehlermeldung abgebrochen.
+.TP
+\fB\-H\fP
+Falls \fBMNV\fP mit RIGHTLEFT\-Unterst�tzung f�r das Schreiben von rechts nach
+links und hebr�ischer Tastaturbelegung kompiliert wurde, startet \MNMNV\fP im
+hebr�ischen Modus und die Optionen �hkmap� und �rightleft� werden
+gesetzt. Andernfalls beendet sich \fBMNV\fP mit einer Fehlermeldung.
+.TP
+\fB\-i\fP {MNVInfo}
+Verwendet zum Lesen und Schreiben die angegebene Datei anstatt der Vorgabe
+�~/.mnvinfo�. Es ist auch m�glich, die Verwendung einer .mnvinfo\-Datei durch
+Angabe des Dateinamens �NONE� zu verhindern.
+.TP
+\fB\-l\fP
+Lisp\-Modus: Aktiviert die Optionen �lisp� und �showmatch�.
+.TP
+\fB\-L\fP
+Dasselbe wie \fB\-r\fP.
+.TP
+\fB\-m\fP
+Deaktiviert das Ver�ndern von Dateien, indem die Option �write�
+zur�ckgesetzt wird. Der Puffer kann ver�ndert werden, nur das Schreiben
+einer Datei ist nicht m�glich.
+.TP
+\fB\-M\fP
+Keine Ver�nderungen erlaubt. Die Optionen �modifiable� und �write� werden
+zur�ckgesetzt, so dass �nderungen nicht erlaubt sind und Dateien nicht
+geschrieben werden k�nnen. Beachten Sie, dass diese Optionen dennoch
+nachtr�glich zum Erlauben von �nderungen gesetzt werden k�nnen.
+.TP
+\fB\-n\fP
+Verwendet keine Auslagerungsdatei. Eine Wiederherstellung nach einem Absturz
+ist nicht m�glich. Auf einem langsamen Medium (z.B. Diskette) kann diese
+Einstellung n�tzlich sein. Kann auch mit �set uc=0� erreicht werden; kann
+mit �set uc=200� aufgehoben werden.
+.TP
+\fB\-N\fP
+Nicht\-kompatibler Modus: Setzt die Option �compatible� zur�ck. Dies
+veranlasst \fBMNV\fP, sich ein wenig besser, aber weniger Vi\-kompatibel zu
+verhalten, selbst wenn es keine .mnvrc\-Datei gibt.
+.TP
+\fB\-nb\fP
+\fBMNV\fP fungiert als Editor\-Server f�r NetBeans. Details siehe Dokumentation.
+.TP
+\fB\-o\fP[N]
+�ffnet N Fenster �bereinander. Wenn keine Zahl angegeben wird, �ffnet ein
+Fenster pro Datei.
+.TP
+\fB\-O\fP[N]
+�ffnet N Fenster nebeneinander. Wenn keine Zahl angegeben wird, �ffnet ein
+Fenster pro Datei.
+.TP
+\fB\-p\fP[N]
+�ffnet N Reiterseiten. Wenn keine Zahl angegeben wird, �ffnet eine
+Reiterseite pro Datei.
+.TP
+\fB\-P\fP {Eltern\-Titel}
+Nur Win32\-GUI: Gibt den Titel der Elternapplikation an. Wenn m�glich l�uft
+\fBMNV\fP in einem MDI\-Fenster innerhalb der Applikation. {Eltern\-Titel} muss
+im Fenstertitel der Elternapplikation vorkommen. Stellen Sie sicher, dass er
+spezifisch genug ist. Beachten Sie, dass die Implementierung immer noch
+primitiv ist. Sie wird nicht mit allen Applikationen funktionieren und das
+Men� funktioniert nicht.
+.TP
+\fB\-r\fP
+Listet die Auslagerungsdateien auf und gibt Informationen zu ihrer
+Verwendbarkeit zur Wiederherstellung aus.
+.TP
+\fB\-r\fP {Datei}
+Wiederherstellungsmodus: Die Auslagerungsdatei wird zur Wiederherstellung
+einer abgest�rzten Bearbeitungssitzung verwendet und hat denselben
+Dateinamen wie die Textdatei mit angeh�ngtem �.swp�. Siehe �:help recovery�.
+.TP
+\fB\-R\fP
+Schreibgesch�tzter Modus: Die Option �readonly� wird gesetzt. Der Puffer
+kann noch bearbeitet werden, aber es wird verhindert, eine Datei aus
+Versehen zu �berschreiben. Wenn Sie wirklich eine Datei �berschreiben
+wollen, f�gen Sie dem Ex\-Befehl ein Ausrufezeichen hinzu (wie in �:w!�). Die
+Option \fB\-R\fP bedingt die Option \fB\-n\fP (siehe oben). Die Option �readonly�
+kann durch �:set noro� zur�ckgesetzt werden. Siehe �:help readonly�.
+.TP
+\fB\-s\fP
+Stiller Modus: Nur wenn die ausf�hrbare Datei als \fBex\fP aufgerufen wird oder
+vor \fB\-s\fP die Option \fB\-e\fP angegeben wird.
+.TP
+\fB\-s\fP {Eingabeskript}
+Die Skriptdatei {Eingabeskript} wird gelesen und ausgef�hrt, als w�rden Sie
+die Zeichen eingeben. Dasselbe kann mit dem Befehl �:source!
+{Eingabeskript}� erreicht werden. Wird das Ende der Datei vor dem Beenden
+des Editors erreicht, werden weitere Zeichen von der Tastatur gelesen.
+.TP
+\fB\-S\fP {Datei}
+{Datei} wird nach dem Lesen der ersten Datei ausgef�hrt. Dies entspricht �\-c
+"source {Datei}"�. {Datei} darf nicht mit einem Bindestrich (\-)
+anfangen. Wenn kein Dateiname angegeben wird, wird �Session.mnv� verwendet
+(Funktioniert nur, wenn \fB\-S\fP als letztes Argument steht).
+.TP
+\fB\-T\fP {Terminal}
+Setzt den Namen des benutzten Terminals. Nur erforderlich, wenn die
+Automatik nicht funktioniert. Sollte ein \fBMNV\fP bekanntes (eingebautes) oder
+in einer Termcap\- oder Terminfo\-Datei definiertes Terminal sein.
+.TP
+\fB\-u\fP {mnvrc}
+Verwendet zur Initialisierung die Befehle in der Datei {mnvrc}. Alle anderen
+Initialisierungen werden �bersprungen. Benutzen Sie dies, um eine besondere
+Art von Dateien zu bearbeiten. Dies kann auch benutzt werden, um alle
+Initialisierungen zu �berspringen, indem der Name �NONE� angegeben wird. F�r
+weitere Einzelheiten siehe �:help initialization� innerhalb vonMNVBMNV\fP.
+.TP
+\fB\-U\fP {gmnvrc}
+Benutzt die Befehle in der Datei {gmnvrc} f�r die Initialisierung der
+grafischen Oberfl�che. Alle anderen GUI\-Initialisierungen werden
+�bersprungen. Dies kann ebenfalls benutzt werden, um alle
+GUI\-Initialisierungen zu �berspringen, indem der Name �NONE� angegeben
+wird. Siehe �:help gui\-init� innerhalb vonMNVBMNV\fP f�r weitere Einzelheiten.
+.TP
+\fB\-v\fP
+Vi\-Modus: Startet \fBMNV\fP als w�rde die ausf�hrbare Datei mit \fBvi\fP
+aufgerufen. Dies wirkt sich nur aus, wenn die ausf�hrbare Datei als \fBex\fP
+aufgerufen wird.
+.TP
+\fB\-V\fP[N]
+Ausf�hrlich (verbose): Gibt Meldungen dar�ber, welche Befehlsdateien
+ausgef�hrt werden, und �ber das Lesen und Schreiben einer mnvinfo\-Datei. Die
+optionale Zahl N ist der Wert f�r �verbose�. Vorgabe ist 10.
+.TP
+\fB\-V\fP[N]{Dateiname}
+Wie \fB\-V\fP und setzt �verbosefile� auf {Dateiname}. Das Ergebnis besteht
+darin, dass Meldungen nicht angezeigt werden, sondern in die Datei
+{Dateiname} geschrieben werden. {Dateiname} darf nicht mit einer Ziffer
+anfangen.
+.TP
+\fB\-w\fP{Nummer}
+Setzt die Option �window� auf {Nummer}.
+.TP
+\fB\-w\fP {Ausgabeskript}
+Alle Zeichen, die eingegeben werden, werden in der Datei {Ausgabeskript}
+aufgezeichnet, solange bis Sie \fBMNV\fP beenden. Dies ist n�tzlich, falls Sie
+eine Skript\-Datei zum Benutzen mit �mnv \-s� oder �:source!� erzeugen
+wollen. Falls die Datei {Ausgabeskript} vorhanden ist, werden die Zeichen
+angeh�ngt.
+.TP
+\fB\-W\fP {Ausgabeskript}
+Wie \fB\-w\fP, aber eine bereits vorhandene Datei wird �berschrieben.
+.TP
+\fB\-x\fP
+Benutzt beim Schreiben von Dateien eine Verschl�sselung, falls \MNMNV\fP mit
+Unterst�tzung von Verschl�sselung kompiliert worden ist. Fragt nach dem
+Schl�ssel.
+.TP
+\fB\-X\fP
+Verbindet nicht mit dem X\-Server. Dadurch verk�rzt sich die Startzeit in
+einem Terminal, aber der Fenstertitel und die Zwischenablage werden nicht
+verwendet.
+.TP
+\fB\-y\fP
+Einfacher Modus: Startet \fBMNV\fP als w�rde die ausf�hrbare Datei \fBemnv\fP oder
+\fBeview\fP hei�en. \MNMNV\fP verh�lt sich dann wie ein Editor zum Klicken und
+Tippen.
+.TP
+\fB\-Z\fP
+Eingeschr�nkter Modus: Funktioniert, als w�rde der Name der ausf�hrbaren
+Datei mit �r� beginnen.
+.TP
+\fB\-\-\fP
+Markiert das Ende der Optionen. Argumente, die folgen, werden als Dateinamen
+behandelt. Dies kann benutzt werden, um einen Dateinamen mit �\-� am Anfang
+zu verwenden.
+.TP
+\fB\-\-clean\fP
+Verwendet keine pers�nlichen Einstellungen (mnvrc, plugins,
+usw,). Hilfreich, um festzustellen, ob ein Problem mit einer sauberen
+MNV\-Konfiguration reproduzierbar ist.
+.TP
+\fB\-\-cmd\fP {Befehl}
+Wie \fB\-c\fP, aber dieser Befehl wird vor allen mnvrc\-Dateien ausgef�hrt. Sie
+k�nnen unabh�ngig von den \fB\-c\fP\-Befehlen bis zu zehn dieser Befehle
+verwenden.
+.TP
+\fB\-\-echo\-wid\fP
+Nur GTK\-GUI: Schreibe die Fenster\-ID auf die Standardausgabe.
+.TP
+\fB\-\-gui\-dialog\-file\fP {Name}
+Schreibt bei der Verwendung der GUI den Titel und die Meldung des Dialogs in
+die Datei {Name}, anstatt sie als Dialog anzuzeigen. Die Datei wird entweder
+erzeugt oder erweitert. Dies ist nur f�r Testzwecke hilfreich, um zu
+verhindern, dass Tests bei einem nicht sichtbaren Dialog h�ngen
+bleiben. Ohne Verwendung der GUI wird dieses Argument ignoriert.
+.TP
+\fB\-\-help, \-h, \-?\fP
+Gibt eine kleine Hilfe f�r die Befehlszeilenparameter und Optionen
+aus. Danach beendet sich \fBMNV\fP.
+.TP
+\fB\-\-literal\fP
+Nimmt die Dateinamen so wie sie sind und vervollst�ndigt sie nicht unter
+Ber�cksichtigung von Metazeichen. Dies wirkt sich nicht unter Unix aus, wo
+die Shell die Metazeichen expandiert.
+.TP
+\fB\-\-log\fP {Dateiname}
+Wenn \fBMNV\fP mit dem Eval\- und dem Channel\-Feature kompiliert worden ist,
+wird das Protokollieren gestartet. Eintr�ge werden nach {Dateiname}
+geschrieben. Dies funktioniert wie das Aufrufen von
+\fIch_logfile({Dateiname}, 'ao')\fP sehr fr�h w�hrend des Programmstarts.
+.TP
+\fB\-\-nofork\fP
+Vordergrund: Bei der GUI\-Version erzeugt \fBMNV\fP keinen neuen Prozess und
+l�st sich nicht von der Shell, in der er aufgerufen wurde.
+.TP
+\fB\-\-noplugin\fP
+L�dt keine Erweiterungen. Impliziert durch �\-u NONE�.
+.TP
+\fB\-\-not\-a\-term\fP
+Teilt \fBMNV\fP mit, dass dem Benutzer klar ist, dass Eingabe und/oder Ausgabe
+nicht mit einem Terminal verbunden sind. Das vermeidet die entsprechende
+Warnung und eine Verz�gerung von zwei Sekunden.
+.TP
+\fB\-\-remote\fP
+Verbindet mit einem MNV\-Server und l�sst ihn die in den restlichen
+Argumenten angegeben Dateien editieren. Wenn kein Server gefunden wird,
+f�hrt dies zu einer Warnmeldung und die Dateien werden im gegenw�rtigen
+\fBMNV\fP zum Bearbeiten ge�ffnet.
+.TP
+\fB\-\-remote\-expr\fP {Ausdruck}
+Verbindet mit einem MNV\-Server, wertet dort {Ausdruck} aus und zeigt das
+Ergebnis auf der Standardausgabe an.
+.TP
+\fB\-\-remote\-send\fP {Zeichen}
+Verbindet mit einem MNV\-Server und sendet ihm {Zeichen}.
+.TP
+\fB\-\-remote\-silent\fP
+Wie \fB\-\-remote\fP, aber ohne Warnung, wenn kein Server gefunden wird.
+.TP
+\fB\-\-remote\-wait\fP
+Wie \fB\-\-remote\fP, aber \fBMNV\fP beendet sich nicht, bis die Dateien bearbeitet
+wurden.
+.TP
+\fB\-\-remote\-wait\-silent\fP
+Wie \fB\-\-remote\-wait\fP, aber ohne Warnung, wenn kein Server gefunden wird.
+.TP
+\fB\-\-serverlist\fP
+Listet die Namen aller gefundenen MNV\-Server auf.
+.TP
+\fB\-\-servername\fP {Name}
+Benutzt {Name} als Server\-Namen. Wird f�r den gegenw�rtigenMNVBMNV\fP benutzt,
+au�er es wird mit einem der \fB\-\-remote\fP\-Argumente benutzt, dann ist es der
+Name des zu kontaktierenden Servers.
+.TP
+\fB\-\-socketid\fP {ID}
+Nur GTK\-GUI: Benutzt den GtkPlug\-Mechanismus, um \fBgMNV\fP in einem anderen
+Fenster laufen zu lassen.
+.TP
+\fB\-\-startuptime\fP {Datei}
+Schreibt w�hrend des Programmstarts Meldungen zu Zeitmessungen in die Datei
+{Datei}.
+.TP
+\fB\-\-ttyfail\fP
+Beendet das Programm sofort, wenn Standardeingabe oder Standardausgabe keine
+Terminals (tty) sind.
+.TP
+\fB\-\-version\fP
+Versionsinformation anzeigen und beenden.
+.TP
+\fB\-\-windowid\fP {ID}
+Nur Win32\-GUI: Veranlasst, dass \fBgMNV\fP versucht, das Fenster {ID} als
+Eltern zu verwenden, so dass es in diesem Fenster abl�uft.
+.SH "EINGEBAUTE HILFE"
+Geben Sie in \fBMNV\fP �:help� ein, um eine Einstiegshilfe zu erhalten. Geben
+Sie �:help Begriff� ein, um Hilfe �ber ein bestimmtes Thema zu bekommen. Zum
+Beispiel �:help ZZ� f�r Hilfe �ber den Befehl �ZZ�. Benutzen Sie
+<Tab> und STRG\-D, um Begriffe zu vervollst�ndigen (�:help
+cmdline\-completion�). Tags sind vorhanden, um von einem Ort zum anderen zu
+springen (eine Art Hypertext\-Verkn�pfungen, siehe �:help�). Auf diese Weise
+k�nnen alle Dokumentations\-Dateien aufgerufen werden, zum Beispiel �:help
+syntax.txt�.
+.SH DATEIEN
+.TP  15
+/usr/local/share/mnv/mnv??/doc/*.txt
+Dokumentations\-Dateien f�r \MNMNV\fP. Verwenden Sie �:help doc\-file\-list�, um
+die gesamte Liste zu bekommen.
+.br
+\fImnv??\fP ist die verk�rzte Versionsnummer, wie mnv91 von \MNMNV 9.1\fP
+.TP
+/usr/local/share/mnv/mnv??/doc/tags
+�Tag�\-Datei zum Auffinden von Informationen in der Dokumentation.
+.TP
+/usr/local/share/mnv/mnv??/syntax/syntax.mnv
+Systemweite Einrichtung der Syntaxhervorhebung.
+.TP
+/usr/local/share/mnv/mnv??/syntax/*.mnv
+Syntaxdateien f�r verschiedenen Sprachen.
+.TP
+/usr/local/share/mnv/mnvrc
+Systemweite Einstellungsdatei f�r \MNMNV\fP.
+.TP
+~/.mnvrc, ~/.mnv/mnvrc, $XDG_CONFIG_HOME/mnv/mnvrc
+Pers�nlichen Einstellungen f�rMNVBMNV\fP.
+.TP
+/usr/local/share/mnv/gmnvrc
+Systemweite Einstellungsdatei f�r \fMNMNV\fP.
+.TP
+~/.gmnvrc, ~/.mnv/gmnvrc, $XDG_CONFIG_HOME/mnv/gmnvrc
+Pers�nlichen Einstellungen f�r MNVgMNV\fP.
+.TP
+/usr/local/share/mnv/mnv??/optwin.mnv
+Script zur Verwendung von dem Befehl �:options�. Eine sch�ne M�glichkeit, um
+Optionen zu betrachten und zu setzen.
+.TP
+/usr/local/share/mnv/mnv??/menu.mnv
+Systemweite Einstellungsdatei f�r das Men� von MNVgMNV\fP.
+.TP
+/usr/local/share/mnv/mnv??/bugreport.mnv
+Script zum Generieren eines Fehlerberichts. Siehe �:help bugs�.
+.TP
+/usr/local/share/mnv/mnv??/filetype.mnv
+Script zur Erkennung des Typs einer Datei anhand ihres Dateinamens. Siehe
+�:help filetype�.
+.TP
+/usr/local/share/mnv/mnv??/scripts.mnv
+Script zur Erkennung des Typs einer Datei anhand ihres Inhalts. Siehe �:help
+filetype�.
+.TP
+/usr/local/share/mnv/mnv??/print/*.ps
+Dateien zum Drucken von PostScript.
+.PP
+F�r die neuesten Informationen lesen Sie diMNMNV\-Homepage:
+.br
+<URL:http://www.mnv.org/>
+.SH "SIEHE AUCH"
+\fBmnvtutor\fP(1)
+.SH AUTOR
+\fBMNV\fP wurde gr��tenteils von Bram Moolenaar erstellt, mit viel Hilfe von
+anderen Leuten. Siehe �:help credits� inMNVBMNV\fP.
+.br
+\fBMNV\fP basiert auf Stevie, der von Tim Thompson, Tony Andrews und
+G.R. (Fred) Walter geschrieben wurde. Es ist jedoch kaum etwas vom
+urspr�nglichen Code �brig geblieben.
+.SH FEHLER
+Die sind m�glich. Siehe �:help todo� f�r eine Liste bekannter Probleme.
+.PP
+Beachten Sie, dass gewisse Dinge, die manche Leute als Fehler betrachten
+m�gen, in Wirklichkeit durch zu getreue Nachbildung des Vi\-Verhaltens
+verursacht werden. Und falls Sie denken, dass andere Dinge Fehler sind,
+�weil Vi es anders tut�, sollten Sie einen genaueren Blick auf die Datei
+vi_diff.txt werfen (oder in MNV �:help vi_diff.txt� eingeben). Sehen Sie
+sich auch die Optionen �compatible� und �cpoptions� an.

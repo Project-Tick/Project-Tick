@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * edit.c: functions for Insert mode
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #define BACKSPACE_CHAR		    1
 #define BACKSPACE_WORD		    2
@@ -114,7 +114,7 @@ static int	dont_sync_undo = FALSE;	// CTRL-G U prevents syncing undo for
 		&& curwin->w_cursor.col > 0)			\
 	{							\
 	    (c) = char_before_cursor();				\
-	    if (vim_isprintc(c))				\
+	    if (mnv_isprintc(c))				\
 		TRIGGER_AUTOCOMPLETE();				\
 	}							\
     } while (0)
@@ -209,8 +209,8 @@ edit(
 	    ptr = (char_u *)"v";
 	else
 	    ptr = (char_u *)"i";
-	set_vim_var_string(VV_INSERTMODE, ptr, 1);
-	set_vim_var_string(VV_CHAR, NULL, -1);  // clear v:char
+	set_mnv_var_string(VV_INSERTMODE, ptr, 1);
+	set_mnv_var_string(VV_CHAR, NULL, -1);  // clear v:char
 #endif
 	ins_apply_autocmds(EVENT_INSERTENTER);
 
@@ -226,7 +226,7 @@ edit(
 	// Do not restore if v:char was set to a non-empty string.
 	if (!EQUAL_POS(curwin->w_cursor, save_cursor)
 #ifdef FEAT_EVAL
-		&& *get_vim_var_str(VV_CHAR) == NUL
+		&& *get_mnv_var_str(VV_CHAR) == NUL
 #endif
 		&& save_cursor.lnum <= curbuf->b_ml.ml_line_count)
 	{
@@ -438,7 +438,7 @@ edit(
     string_T inserted = get_inserted();
     new_insert_skip = (int)inserted.length;
     if (inserted.string != NULL)
-	vim_free(inserted.string);
+	mnv_free(inserted.string);
 
     old_indent = 0;
 
@@ -624,7 +624,7 @@ edit(
 			&& curwin->w_cursor.col > 0)
 		{
 		    c = char_before_cursor();
-		    if (vim_isprintc(c))
+		    if (mnv_isprintc(c))
 		    {
 			ins_compl_enable_autocomplete();
 			ins_compl_init_get_longest();
@@ -722,7 +722,7 @@ edit(
 		    {
 			for (p = str; *p != NUL; MB_PTR_ADV(p))
 			    ins_compl_addleader(PTR2CHAR(p));
-			vim_free(str);
+			mnv_free(str);
 		    }
 		    else
 #endif
@@ -887,7 +887,7 @@ do_intr:
 		    got_int = FALSE;
 		}
 		else
-		    vim_beep(BO_IM);
+		    mnv_beep(BO_IM);
 		break;
 	    }
 doESCkey:
@@ -1414,7 +1414,7 @@ normalchar:
 			}
 			AppendToRedobuffLit(str, -1);
 		    }
-		    vim_free(str);
+		    mnv_free(str);
 		    c = NUL;
 		}
 
@@ -1440,7 +1440,7 @@ normalchar:
 	    // Insert a normal character and check for abbreviations on a
 	    // special character.  Let CTRL-] expand abbreviations without
 	    // inserting it.
-	    if (vim_iswordc(c) || (!echeck_abbr(
+	    if (mnv_iswordc(c) || (!echeck_abbr(
 			// Add ABBR_OFF for characters above 0x100, this is
 			// what check_abbr() expects.
 				(has_mbyte && c >= 0x100) ? (c + ABBR_OFF) : c)
@@ -1462,7 +1462,7 @@ normalchar:
 #endif
 	    // Trigger autocompletion
 	    if (ins_compl_has_autocomplete() && !char_avail()
-		    && vim_isprintc(c))
+		    && mnv_isprintc(c))
 		TRIGGER_AUTOCOMPLETE();
 
 	    break;
@@ -1712,7 +1712,7 @@ decodeModifyOtherKeys(int c)
 	{
 	    if (p[idx] == ';')
 		++argidx;
-	    else if (VIM_ISDIGIT(p[idx]))
+	    else if (MNV_ISDIGIT(p[idx]))
 		arg[argidx] = arg[argidx] * 10 + (p[idx] - '0');
 	    else
 		break;
@@ -1894,7 +1894,7 @@ truncate_spaces(char_u *line, size_t len)
     int	    i;
 
     // find start of trailing white space
-    for (i = (int)len - 1; i >= 0 && VIM_ISWHITE(line[i]); i--)
+    for (i = (int)len - 1; i >= 0 && MNV_ISWHITE(line[i]); i--)
     {
 	if (State & REPLACE_FLAG)
 	    replace_join(0);	    // remove a NUL from the replace stack
@@ -2018,7 +2018,7 @@ get_literal(int noReduceKeys)
 	{
 	    if (hex || unicode != 0)
 	    {
-		if (!vim_isxdigit(nc))
+		if (!mnv_isxdigit(nc))
 		    break;
 		cc = cc * 16 + hex2nr(nc);
 	    }
@@ -2030,7 +2030,7 @@ get_literal(int noReduceKeys)
 	    }
 	    else
 	    {
-		if (!VIM_ISDIGIT(nc))
+		if (!MNV_ISDIGIT(nc))
 		    break;
 		cc = cc * 10 + nc - '0';
 	    }
@@ -2189,7 +2189,7 @@ insertchar(
      */
     if (textwidth > 0
 	    && (force_format
-		|| (!VIM_ISWHITE(c)
+		|| (!MNV_ISWHITE(c)
 		    && !((State & REPLACE_FLAG)
 			&& !(State & VREPLACE_FLAG)
 			&& *ml_get_cursor() != NUL)
@@ -2236,14 +2236,14 @@ insertchar(
 	 * comment leader.  First, check what comment leader we can find.
 	 */
 	i = get_leader_len(line = ml_get_curline(), &p, FALSE, TRUE);
-	if (i > 0 && vim_strchr(p, COM_MIDDLE) != NULL)	// Just checking
+	if (i > 0 && mnv_strchr(p, COM_MIDDLE) != NULL)	// Just checking
 	{
 	    // Skip middle-comment string
 	    while (*p && p[-1] != ':')	// find end of middle flags
 		++p;
 	    middle_len = copy_option_part(&p, lead_end, COM_MAX_LEN, ",");
 	    // Don't count trailing white space for middle_len
-	    while (middle_len > 0 && VIM_ISWHITE(lead_end[middle_len - 1]))
+	    while (middle_len > 0 && MNV_ISWHITE(lead_end[middle_len - 1]))
 		--middle_len;
 
 	    // Find the end-comment string
@@ -2253,7 +2253,7 @@ insertchar(
 
 	    // Skip white space before the cursor
 	    i = curwin->w_cursor.col;
-	    while (--i >= 0 && VIM_ISWHITE(line[i]))
+	    while (--i >= 0 && MNV_ISWHITE(line[i]))
 		;
 	    i++;
 
@@ -2332,7 +2332,7 @@ insertchar(
 		&& i < INPUT_BUFLEN
 		&& (textwidth == 0
 		    || (virtcol += byte2cells(buf[i - 1])) < (colnr_T)textwidth)
-		&& !(!no_abbr && !vim_iswordc(c) && vim_iswordc(buf[i - 1])))
+		&& !(!no_abbr && !mnv_iswordc(c) && mnv_iswordc(buf[i - 1])))
 	{
 #ifdef FEAT_RIGHTLEFT
 	    c = vgetc();
@@ -2394,9 +2394,9 @@ redo_literal(int c)
 
     // Only digits need special treatment.  Translate them into a string of
     // three digits.
-    if (VIM_ISDIGIT(c))
+    if (MNV_ISDIGIT(c))
     {
-	vim_snprintf((char *)buf, sizeof(buf), "%03d", c);
+	mnv_snprintf((char *)buf, sizeof(buf), "%03d", c);
 	AppendToRedobuff(buf);
     }
     else
@@ -2539,12 +2539,12 @@ stop_insert(
     int added = inserted.string == NULL ? 0 : (int)inserted.length - new_insert_skip;
     if (did_restart_edit == 0 || added > 0)
     {
-	vim_free(last_insert.string);
+	mnv_free(last_insert.string);
 	last_insert = inserted;			    // structure copy
 	last_insert_skip = added < 0 ? 0 : new_insert_skip;
     }
     else
-	vim_free(inserted.string);
+	mnv_free(inserted.string);
 
     if (!arrow_used && end_insert_pos != NULL)
     {
@@ -2564,13 +2564,13 @@ stop_insert(
 	    {
 		dec_cursor();
 		cc = gchar_cursor();
-		if (!VIM_ISWHITE(cc))
+		if (!MNV_ISWHITE(cc))
 		    curwin->w_cursor = tpos;
 	    }
 
 	    auto_format(TRUE, FALSE);
 
-	    if (VIM_ISWHITE(cc))
+	    if (MNV_ISWHITE(cc))
 	    {
 		if (gchar_cursor() != NUL)
 		    inc_cursor();
@@ -2591,7 +2591,7 @@ stop_insert(
 	// Do this when ESC was used or moving the cursor up/down.
 	// Check for the old position still being valid, just in case the text
 	// got changed unexpectedly.
-	if (!nomove && did_ai && (esc || (vim_strchr(p_cpo, CPO_INDENT) == NULL
+	if (!nomove && did_ai && (esc || (mnv_strchr(p_cpo, CPO_INDENT) == NULL
 			&& curwin->w_cursor.lnum != end_insert_pos->lnum))
 		&& end_insert_pos->lnum <= curbuf->b_ml.ml_line_count)
 	{
@@ -2605,7 +2605,7 @@ stop_insert(
 		if (gchar_cursor() == NUL && curwin->w_cursor.col > 0)
 		    --curwin->w_cursor.col;
 		cc = gchar_cursor();
-		if (!VIM_ISWHITE(cc))
+		if (!MNV_ISWHITE(cc))
 		    break;
 		if (del_char(TRUE) == FAIL)
 		    break;  // should not happen
@@ -2651,7 +2651,7 @@ set_last_insert(int c)
 {
     char_u	*s;
 
-    vim_free(last_insert.string);
+    mnv_free(last_insert.string);
     last_insert.string = alloc(MB_MAXBYTES * 3 + 5);
     if (last_insert.string == NULL)
     {
@@ -2674,7 +2674,7 @@ set_last_insert(int c)
     void
 free_last_insert(void)
 {
-    VIM_CLEAR_STRING(last_insert);
+    MNV_CLEAR_STRING(last_insert);
 }
 #endif
 
@@ -2736,7 +2736,7 @@ beginline(int flags)
 	{
 	    char_u  *ptr;
 
-	    for (ptr = ml_get_curline(); VIM_ISWHITE(*ptr)
+	    for (ptr = ml_get_curline(); MNV_ISWHITE(*ptr)
 			       && !((flags & BL_FIX) && ptr[1] == NUL); ++ptr)
 		++curwin->w_cursor.col;
 	}
@@ -2766,7 +2766,7 @@ oneright(void)
 	// Adjust for multi-wide char (excluding TAB)
 	ptr = ml_get_cursor();
 	coladvance(getviscol() + ((*ptr != TAB
-					  && vim_isprintc((*mb_ptr2char)(ptr)))
+					  && mnv_isprintc((*mb_ptr2char)(ptr)))
 		    ? ptr2cells(ptr) : 1));
 	curwin->w_set_curswant = TRUE;
 	// Return OK if the cursor moved, FAIL otherwise (at window edge).
@@ -2831,7 +2831,7 @@ oneleft(void)
 
 	    // Adjust for multi-wide char (not a TAB)
 	    ptr = ml_get_cursor();
-	    if (*ptr != TAB && vim_isprintc((*mb_ptr2char)(ptr))
+	    if (*ptr != TAB && mnv_isprintc((*mb_ptr2char)(ptr))
 							 && ptr2cells(ptr) > 1)
 		curwin->w_cursor.coladd = 0;
 	}
@@ -2907,7 +2907,7 @@ cursor_up(
     // larger than the line number and '-' is in 'cpoptions'
     linenr_T lnum = curwin->w_cursor.lnum;
     if (n > 0 && (lnum <= 1
-		       || (n >= lnum && vim_strchr(p_cpo, CPO_MINUS) != NULL)))
+		       || (n >= lnum && mnv_strchr(p_cpo, CPO_MINUS) != NULL)))
 	return FAIL;
     cursor_up_inner(curwin, n);
 
@@ -2976,7 +2976,7 @@ cursor_down(
     if (n > 0
 	    && (lnum >= line_count
 		|| (lnum + n > line_count
-				     && vim_strchr(p_cpo, CPO_MINUS) != NULL)))
+				     && mnv_strchr(p_cpo, CPO_MINUS) != NULL)))
 	return FAIL;
     cursor_down_inner(curwin, n);
 
@@ -3101,7 +3101,7 @@ get_last_insert_save(void)
 
     if (insert.string == NULL)
 	return NULL;
-    s = vim_strnsave(insert.string, insert.length);
+    s = mnv_strnsave(insert.string, insert.length);
     if (s == NULL)
 	return NULL;
 
@@ -3172,7 +3172,7 @@ replace_push(
 	{
 	    mch_memmove(p, replace_stack,
 				 (size_t)(replace_stack_nr * sizeof(char_u)));
-	    vim_free(replace_stack);
+	    mnv_free(replace_stack);
 	}
 	replace_stack = p;
     }
@@ -3310,7 +3310,7 @@ mb_replace_pop_ins(int cc)
     static void
 replace_flush(void)
 {
-    VIM_CLEAR(replace_stack);
+    MNV_CLEAR(replace_stack);
     replace_stack_len = 0;
     replace_stack_nr = 0;
 }
@@ -3559,7 +3559,7 @@ ins_reg(void)
     }
     if (regname == NUL || !valid_yank_reg(regname, FALSE))
     {
-	vim_beep(BO_REG);
+	mnv_beep(BO_REG);
 	need_redraw = TRUE;	// remove the '"'
     }
     else
@@ -3577,7 +3577,7 @@ ins_reg(void)
 	}
 	else if (insert_reg(regname, literally) == FAIL)
 	{
-	    vim_beep(BO_REG);
+	    mnv_beep(BO_REG);
 	    need_redraw = TRUE;	// remove the '"'
 	}
 	else if (stop_insert_mode)
@@ -3660,7 +3660,7 @@ ins_ctrl_g(void)
 		  break;
 
 	// Unknown CTRL-G command, reserved for future expansion.
-	default:  vim_beep(BO_CTRLG);
+	default:  mnv_beep(BO_CTRLG);
     }
 }
 
@@ -3771,7 +3771,7 @@ ins_esc(
 	if (--*count > 0)	// repeat what was typed
 	{
 	    // Vi repeats the insert without replacing characters.
-	    if (vim_strchr(p_cpo, CPO_REPLCNT) != NULL)
+	    if (mnv_strchr(p_cpo, CPO_REPLCNT) != NULL)
 		State &= ~REPLACE_FLAG;
 
 	    (void)start_redo_ins();
@@ -3969,7 +3969,7 @@ ins_start_select(int c)
 ins_insert(int replaceState)
 {
 #ifdef FEAT_EVAL
-    set_vim_var_string(VV_INSERTMODE,
+    set_mnv_var_string(VV_INSERTMODE,
 		   (char_u *)((State & REPLACE_FLAG) ? "i"
 			    : replaceState == MODE_VREPLACE ? "v" : "r"), 1);
 #endif
@@ -4057,7 +4057,7 @@ ins_del(void)
 	temp = curwin->w_cursor.col;
 	if (!can_bs(BS_EOL)		// only if "eol" included
 		|| do_join(2, FALSE, TRUE, FALSE, FALSE) == FAIL)
-	    vim_beep(BO_BS);
+	    mnv_beep(BO_BS);
 	else
 	{
 	    curwin->w_cursor.col = temp;
@@ -4070,7 +4070,7 @@ ins_del(void)
 	}
     }
     else if (del_char(FALSE) == FAIL)  // delete char under cursor
-	vim_beep(BO_BS);
+	mnv_beep(BO_BS);
     did_ai = FALSE;
     did_si = FALSE;
     can_si = FALSE;
@@ -4141,7 +4141,7 @@ ins_bs(
 					 && curwin->w_cursor.col <= ai_col)
 		    || (!can_bs(BS_EOL) && curwin->w_cursor.col == 0))))
     {
-	vim_beep(BO_BS);
+	mnv_beep(BO_BS);
 	return FALSE;
     }
 
@@ -4241,7 +4241,7 @@ ins_bs(
 
 			    if (curbuf->b_ml.ml_flags
 					      & (ML_LINE_DIRTY | ML_ALLOCATED))
-				vim_free(curbuf->b_ml.ml_line_ptr);
+				mnv_free(curbuf->b_ml.ml_line_ptr);
 			    curbuf->b_ml.ml_line_ptr = newp;
 			    curbuf->b_ml.ml_line_len--;
 			    curbuf->b_ml.ml_line_textlen--;
@@ -4354,7 +4354,7 @@ ins_bs(
 	    // Use chartabsize() so that virtual text and wrapping are ignored.
 	    while (ptr < cursor_ptr)
 	    {
-		int	cur_space = VIM_ISWHITE(*ptr);
+		int	cur_space = MNV_ISWHITE(*ptr);
 
 		if (!prev_space && cur_space)
 		{
@@ -4439,14 +4439,14 @@ ins_bs(
 		}
 
 		// start of word?
-		if (mode == BACKSPACE_WORD && !vim_isspace(cc))
+		if (mode == BACKSPACE_WORD && !mnv_isspace(cc))
 		{
 		    mode = BACKSPACE_WORD_NOT_SPACE;
-		    temp = vim_iswordc(cc);
+		    temp = mnv_iswordc(cc);
 		}
 		// end of word?
 		else if (mode == BACKSPACE_WORD_NOT_SPACE
-			&& ((vim_isspace(cc) || vim_iswordc(cc) != temp)
+			&& ((mnv_isspace(cc) || mnv_iswordc(cc) != temp)
 			|| prev_cclass != cclass))
 		{
 #ifdef FEAT_RIGHTLEFT
@@ -4521,12 +4521,12 @@ ins_bs(
 
     // vi behaviour: the cursor moves backward but the character that
     //		     was there remains visible
-    // Vim behaviour: the cursor moves backward and the character that
+    // MNV behaviour: the cursor moves backward and the character that
     //		      was there is erased from the screen.
     // We can emulate the vi behaviour by pretending there is a dollar
     // displayed even when there isn't.
     //  --pkv Sun Jan 19 01:56:40 EST 2003
-    if (vim_strchr(p_cpo, CPO_BACKSPACE) != NULL && dollar_vcol == -1)
+    if (mnv_strchr(p_cpo, CPO_BACKSPACE) != NULL && dollar_vcol == -1)
 	dollar_vcol = curwin->w_virtcol;
 
 #ifdef FEAT_FOLDING
@@ -4734,7 +4734,7 @@ ins_left(void)
      * if 'whichwrap' set for cursor in insert mode may go to
      * previous line
      */
-    else if (vim_strchr(p_ww, '[') != NULL && curwin->w_cursor.lnum > 1)
+    else if (mnv_strchr(p_ww, '[') != NULL && curwin->w_cursor.lnum > 1)
     {
 	// always break undo when moving upwards/downwards, else undo may break
 	start_arrow(&tpos);
@@ -4743,7 +4743,7 @@ ins_left(void)
 	curwin->w_set_curswant = TRUE;	// so we stay at the end
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
     dont_sync_undo = FALSE;
 }
 
@@ -4803,7 +4803,7 @@ ins_s_left(void)
 	curwin->w_set_curswant = TRUE;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
     dont_sync_undo = FALSE;
 }
 
@@ -4841,7 +4841,7 @@ ins_right(void)
     }
     // if 'whichwrap' set for cursor in insert mode, may move the
     // cursor to the next line
-    else if (vim_strchr(p_ww, ']') != NULL
+    else if (mnv_strchr(p_ww, ']') != NULL
 	    && curwin->w_cursor.lnum < curbuf->b_ml.ml_line_count)
     {
 	start_arrow(&curwin->w_cursor);
@@ -4850,7 +4850,7 @@ ins_right(void)
 	curwin->w_cursor.col = 0;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
     dont_sync_undo = FALSE;
 }
 
@@ -4873,7 +4873,7 @@ ins_s_right(void)
 	curwin->w_set_curswant = TRUE;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
     dont_sync_undo = FALSE;
 }
 
@@ -4903,7 +4903,7 @@ ins_up(
 	can_cindent = TRUE;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
 }
 
     static void
@@ -4931,7 +4931,7 @@ ins_pageup(void)
 	can_cindent = TRUE;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
 }
 
     static void
@@ -4960,7 +4960,7 @@ ins_down(
 	can_cindent = TRUE;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
 }
 
     static void
@@ -4988,7 +4988,7 @@ ins_pagedown(void)
 	can_cindent = TRUE;
     }
     else
-	vim_beep(BO_CRSR);
+	mnv_beep(BO_CRSR);
 }
 
 #ifdef FEAT_DND
@@ -5119,7 +5119,7 @@ ins_tab(void)
 	{
 	    pos = curwin->w_cursor;
 	    cursor = &pos;
-	    saved_line = vim_strnsave(ml_get_curline(), ml_get_curline_len());
+	    saved_line = mnv_strnsave(ml_get_curline(), ml_get_curline_len());
 	    if (saved_line == NULL)
 		return FALSE;
 	    ptr = saved_line + pos.col;
@@ -5131,12 +5131,12 @@ ins_tab(void)
 	}
 
 	// When 'L' is not in 'cpoptions' a tab always takes up 'ts' spaces.
-	if (vim_strchr(p_cpo, CPO_LISTWM) == NULL)
+	if (mnv_strchr(p_cpo, CPO_LISTWM) == NULL)
 	    curwin->w_p_list = FALSE;
 
 	// Find first white before the cursor
 	fpos = curwin->w_cursor;
-	while (fpos.col > 0 && VIM_ISWHITE(ptr[-1]))
+	while (fpos.col > 0 && MNV_ISWHITE(ptr[-1]))
 	{
 	    --fpos.col;
 	    --ptr;
@@ -5159,7 +5159,7 @@ ins_tab(void)
 
 	// Use as many TABs as possible.  Beware of 'breakindent', 'showbreak'
 	// and 'linebreak' adding extra virtual columns.
-	while (VIM_ISWHITE(*ptr))
+	while (MNV_ISWHITE(*ptr))
 	{
 	    i = lbr_chartabsize(&cts);
 	    if (cts.cts_vcol + i > want_vcol)
@@ -5227,7 +5227,7 @@ ins_tab(void)
 					   curbuf->b_ml.ml_line_len - col - i);
 
 		    if (curbuf->b_ml.ml_flags & (ML_LINE_DIRTY | ML_ALLOCATED))
-			vim_free(curbuf->b_ml.ml_line_ptr);
+			mnv_free(curbuf->b_ml.ml_line_ptr);
 		    curbuf->b_ml.ml_line_ptr = newp;
 		    curbuf->b_ml.ml_line_len -= i;
 		    curbuf->b_ml.ml_line_textlen = 0;
@@ -5270,7 +5270,7 @@ ins_tab(void)
 	}
 
 	if (State & VREPLACE_FLAG)
-	    vim_free(saved_line);
+	    mnv_free(saved_line);
 	curwin->w_p_list = save_list;
     }
 
@@ -5431,7 +5431,7 @@ ins_copychar(linenr_T lnum)
 
     if (lnum < 1 || lnum > curbuf->b_ml.ml_line_count)
     {
-	vim_beep(BO_COPY);
+	mnv_beep(BO_COPY);
 	return NUL;
     }
 
@@ -5453,7 +5453,7 @@ ins_copychar(linenr_T lnum)
 
     c = (*mb_ptr2char)(ptr);
     if (c == NUL)
-	vim_beep(BO_COPY);
+	mnv_beep(BO_COPY);
     return c;
 }
 
@@ -5513,7 +5513,7 @@ get_nolist_virtcol(void)
 	|| curwin->w_buffer->b_ml.ml_mfp == NULL
 	|| curwin->w_cursor.lnum > curwin->w_buffer->b_ml.ml_line_count)
 	return 0;
-    if (curwin->w_p_list && vim_strchr(p_cpo, CPO_LISTWM) == NULL)
+    if (curwin->w_p_list && mnv_strchr(p_cpo, CPO_LISTWM) == NULL)
 	return getvcol_nolist(&curwin->w_cursor);
     validate_virtcol();
     return curwin->w_virtcol;
@@ -5552,7 +5552,7 @@ do_insert_char_pre(int c)
 
     // Lock the text to avoid weird things from happening.
     ++textlock;
-    set_vim_var_string(VV_CHAR, buf, (int)buflen);  // set v:char
+    set_mnv_var_string(VV_CHAR, buf, (int)buflen);  // set v:char
 
     res = NULL;
     if (ins_apply_autocmds(EVENT_INSERTCHARPRE))
@@ -5560,11 +5560,11 @@ do_insert_char_pre(int c)
 	// Get the value of v:char.  It may be empty or more than one
 	// character.  Only use it when changed, otherwise continue with the
 	// original character to avoid breaking autoindent.
-	if (STRCMP(buf, get_vim_var_str(VV_CHAR)) != 0)
-	    res = vim_strsave(get_vim_var_str(VV_CHAR));
+	if (STRCMP(buf, get_mnv_var_str(VV_CHAR)) != 0)
+	    res = mnv_strsave(get_mnv_var_str(VV_CHAR));
     }
 
-    set_vim_var_string(VV_CHAR, NULL, -1);  // clear v:char
+    set_mnv_var_string(VV_CHAR, NULL, -1);  // clear v:char
     --textlock;
 
     // Restore the State, it may have been changed.

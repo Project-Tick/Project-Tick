@@ -1,7 +1,7 @@
-*options.txt*	For Vim version 9.2.  Last change: 2026 Apr 01
+*options.txt*	For MNV version 9.2.  Last change: 2026 Apr 01
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Options							*options*
@@ -12,7 +12,7 @@ Options							*options*
 
 For an overview of options see quickref.txt |option-list|.
 
-Vim has a number of internal variables and switches which can be set to
+MNV has a number of internal variables and switches which can be set to
 achieve special effects.  These options come in three forms:
 	boolean		can only be on or off		*boolean* *toggle*
 	number		has a numeric value
@@ -52,11 +52,11 @@ achieve special effects.  These options come in three forms:
 :se[t] {option}!   or
 :se[t] inv{option}	Toggle option: Invert value.
 
-				*:set-default* *:set-&* *:set-&vi* *:set-&vim*
+				*:set-default* *:set-&* *:set-&vi* *:set-&mnv*
 :se[t] {option}&	Reset option to its default value.  May depend on the
 			current value of 'compatible'.
 :se[t] {option}&vi	Reset option to its Vi default value.
-:se[t] {option}&vim	Reset option to its Vim default value.
+:se[t] {option}&mnv	Reset option to its MNV default value.
 
 :se[t] all&		Set all options to their default value.  The values of
 			these options are not changed:
@@ -155,7 +155,7 @@ was last set.  Example: >
 <  shiftwidth=4 ~
 	  Last set from modeline line 1 ~
   cindent ~
-	  Last set from /usr/local/share/vim/vim60/ftplugin/c.vim line 30 ~
+	  Last set from /usr/local/share/mnv/mnv60/ftplugin/c.mnv line 30 ~
 This is only done when specific option values are requested, not for ":verbose
 set all" or ":verbose set" without an argument.
 When the option was set by hand there is no "Last set" message.
@@ -172,8 +172,8 @@ A few special texts:
 		Option was set with command line argument |-c|, +, |-S| or
 		|-q|.
 	Last set from environment variable ~
-		Option was set from an environment variable, $VIMINIT,
-		$GVIMINIT or $EXINIT.
+		Option was set from an environment variable, $MNVINIT,
+		$GMNVINIT or $EXINIT.
 	Last set from error handler ~
 		Option was cleared when evaluating it resulted in an error.
 
@@ -207,7 +207,7 @@ security reasons.
 
 The listing from ":set" looks different from Vi.  Long string options are put
 at the end of the list.  The number of options is quite large.  The output of
-"set all" probably does not fit on the screen, causing Vim to give the
+"set all" probably does not fit on the screen, causing MNV to give the
 |more-prompt|.
 
 							*option-backslash*
@@ -249,9 +249,9 @@ include the '"' in the option value, use '\"' instead.  This example sets the
 'titlestring' option to 'hi "there"': >
    :set titlestring=hi\ \"there\"
 
-In |Vim9| script it's simpler, comments start with a '#' character, and only
+In |MNV9| script it's simpler, comments start with a '#' character, and only
 when preceded by white space.  A backslash is needed less often: >
-   vim9script
+   mnv9script
    set titlestring=hi\ "there"
    set titlestring=hi#there#
    set titlestring=hi\ \#there#
@@ -305,7 +305,7 @@ allows you to set 'list' in one window but not in another.  And set
 'shiftwidth' to 3 in one buffer and 4 in another.
 
 The following explains what happens to these local options in specific
-situations.  You don't really need to know all of this, since Vim mostly uses
+situations.  You don't really need to know all of this, since MNV mostly uses
 the option values you would expect.  Unfortunately, doing what the user
 expects is a bit complicated...
 
@@ -326,7 +326,7 @@ last closed window where the buffer was edited last are used.
 
 It's possible to set a local window option specifically for a type of buffer.
 When you edit another buffer in the same window, you don't want to keep
-using these local window options.  Therefore Vim keeps a global value of the
+using these local window options.  Therefore MNV keeps a global value of the
 local window options, which is used when editing another buffer.  Each window
 has its own copy of these values.  Thus these are local to the window, but
 global to all buffers in the window.  With this you can do: >
@@ -475,7 +475,7 @@ Examples:
 Set to a script-local function: >
 	set opfunc=s:MyLocalFunc
 	set opfunc=<SID>MyLocalFunc
-In |Vim9| script the "s:" and "<SID>" can be omitted if the function exists in
+In |MNV9| script the "s:" and "<SID>" can be omitted if the function exists in
 the script: >
 	set opfunc=MyLocalFunc
 
@@ -490,7 +490,7 @@ Set using a variable with lambda expression: >
 	let L = {a, b, c -> MyTagFunc(a, b , c)}
 	let &tagfunc = L
 
-In Vim9 script, in a compiled function, you can use a lambda, but a
+In MNV9 script, in a compiled function, you can use a lambda, but a
 closure does not work, because the function will be called without the
 context of where it was defined.
 
@@ -504,7 +504,7 @@ Setting the filetype
 				:if !did_filetype()
 				:  setlocal filetype={filetype}
 				:endif
-<			This command is used in a filetype.vim file to avoid
+<			This command is used in a filetype.mnv file to avoid
 			setting the 'filetype' option twice, causing different
 			settings and syntax files to be loaded.
 
@@ -547,7 +547,7 @@ command, not when assigning a value to an option with ":let".
 
 							*$HOME-windows*
 On MS-Windows, if $HOME is not defined as an environment variable, then
-at runtime Vim will set it to the expansion of $HOMEDRIVE$HOMEPATH.
+at runtime MNV will set it to the expansion of $HOMEDRIVE$HOMEPATH.
 If $HOMEDRIVE is not set then $USERPROFILE is used.
 
 This expanded value is not exported to the environment, this matters when
@@ -573,7 +573,7 @@ the system, mostly it is something like 256 or 1024 characters.
 
 			If your delete key terminal code is wrong, but the
 			code for backspace is alright, you can put this in
-			your .vimrc: >
+			your .mnvrc: >
 				:fixdel
 <			This works no matter what the actual code for
 			backspace is.
@@ -617,10 +617,10 @@ the system, mostly it is something like 256 or 1024 characters.
 Besides changing options with the ":set" command, there are three alternatives
 to set options automatically for one or more files:
 
-1. When starting Vim initializations are read from various places.  See
+1. When starting MNV initializations are read from various places.  See
    |initialization|.  Most of them are performed for all editing sessions,
-   and some of them depend on the directory where Vim is started.
-   You can create an initialization file with |:mkvimrc|, |:mkview| and
+   and some of them depend on the directory where MNV is started.
+   You can create an initialization file with |:mkmnvrc|, |:mkview| and
    |:mksession|.
 2. If you start editing a new file, the automatic commands are executed.
    This can be used to set options for files matching a particular pattern and
@@ -629,14 +629,14 @@ to set options automatically for one or more files:
    number of lines at the beginning and end of the file are checked for
    modelines.  This is explained here.
 
-					*modeline* *vim:* *vi:* *ex:* *E520*
+					*modeline* *mnv:* *vi:* *ex:* *E520*
 There are two forms of modelines.  The first form:
-	[text{white}]{vi:|vim:|ex:}[white]{options}
+	[text{white}]{vi:|mnv:|ex:}[white]{options}
 
 [text{white}]		empty or any text followed by at least one blank
 			character (<Space> or <Tab>); "ex:" always requires at
 			least one blank character
-{vi:|vim:|ex:}		the string "vi:", "vim:" or "ex:"
+{vi:|mnv:|ex:}		the string "vi:", "mnv:" or "ex:"
 [white]			optional white space
 {options}		a list of option settings, separated with white space
 			or ':', where each part between ':' is the argument
@@ -644,39 +644,39 @@ There are two forms of modelines.  The first form:
 
 Examples:
    vi:noai:sw=3 ts=6 ~
-   vim: tw=77 ~
+   mnv: tw=77 ~
 
 The second form (this is compatible with some versions of Vi):
 
-	[text{white}]{vi:|vim:|Vim:|ex:}[white]se[t] {options}:[text]
+	[text{white}]{vi:|mnv:|MNV:|ex:}[white]se[t] {options}:[text]
 
 [text{white}]		empty or any text followed by at least one blank
 			character (<Space> or <Tab>); "ex:" always requires at
 			least one blank character
-{vi:|vim:|Vim:|ex:}	the string "vi:", "vim:", "Vim:" or "ex:"
+{vi:|mnv:|MNV:|ex:}	the string "vi:", "mnv:", "MNV:" or "ex:"
 [white]			optional white space
 se[t]			the string "set " or "se " (note the space); When
-			"Vim" is used it must be "set".
+			"MNV" is used it must be "set".
 {options}		a list of options, separated with white space, which
 			is the argument for a ":set" command
 :			a colon
 [text]			any text or empty
 
 Examples:
-   /* vim: set ai tw=75: */ ~
-   /* Vim: set ai tw=75: */ ~
+   /* mnv: set ai tw=75: */ ~
+   /* MNV: set ai tw=75: */ ~
 
-The white space before {vi:|vim:|Vim:|ex:} is required.  This minimizes the
+The white space before {vi:|mnv:|MNV:|ex:} is required.  This minimizes the
 chance that a normal word like "lex:" is caught.  There is one exception:
-"vi:" and "vim:" can also be at the start of the line (for compatibility with
+"vi:" and "mnv:" can also be at the start of the line (for compatibility with
 version 3.0).  Using "ex:" at the start of the line will be ignored (this
 could be short for "example:").
 
 If the modeline is disabled within a modeline, subsequent modelines will be
 ignored.  This is to allow turning off modeline on a per-file basis.  This is
 useful when a line looks like a modeline but isn't.  For example, it would be
-good to start a YAML file containing strings like "vim:" with
-    # vim: nomodeline ~
+good to start a YAML file containing strings like "mnv:" with
+    # mnv: nomodeline ~
 so as to avoid modeline misdetection.  Following options on the same line
 after modeline deactivation, if any, are still evaluated (but you would
 normally not have any).
@@ -694,18 +694,18 @@ option after opening the file, it won't be changed if you edit the same buffer
 in another window.  But window-local options will be set.
 
 							*modeline-version*
-If the modeline is only to be used for some versions of Vim, the version
-number can be specified where "vim:" or "Vim:" is used:
-	vim{vers}:	version {vers} or later
-	vim<{vers}:	version before {vers}
-	vim={vers}:	version {vers}
-	vim>{vers}:	version after {vers}
-{vers} is 700 for Vim 7.0 (hundred times the major version plus minor).
-For example, to use a modeline only for Vim 7.0:
-	/* vim700: set foldmethod=marker */ ~
-To use a modeline for Vim after version 7.2:
-	/* vim>702: set cole=2: */ ~
-There can be no blanks between "vim" and the ":".
+If the modeline is only to be used for some versions of MNV, the version
+number can be specified where "mnv:" or "MNV:" is used:
+	mnv{vers}:	version {vers} or later
+	mnv<{vers}:	version before {vers}
+	mnv={vers}:	version {vers}
+	mnv>{vers}:	version after {vers}
+{vers} is 700 for MNV 7.0 (hundred times the major version plus minor).
+For example, to use a modeline only for MNV 7.0:
+	/* mnv700: set foldmethod=marker */ ~
+To use a modeline for MNV after version 7.2:
+	/* mnv>702: set cole=2: */ ~
+There can be no blanks between "mnv" and the ":".
 
 
 The number of lines that are checked can be set with the 'modelines' option.
@@ -752,7 +752,7 @@ an abbreviation if there is one.  Both forms may be used.
 In this document when a boolean option is "set" that means that ":set option"
 is entered.  When an option is "reset", ":set nooption" is used.
 
-For some options there are two default values: The "Vim default", which is
+For some options there are two default values: The "MNV default", which is
 used when 'compatible' is not set, and the "Vi default", which is used when
 'compatible' is set.
 
@@ -831,7 +831,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'ambiwidth' 'ambw'	string (default: "single")
 			global
 	Only effective when 'encoding' is "utf-8" or another Unicode encoding.
-	Tells Vim what to do with characters with East Asian Width Class
+	Tells MNV what to do with characters with East Asian Width Class
 	Ambiguous (such as Euro, Registered Sign, Copyright Sign, Greek
 	letters, Cyrillic letters).
 
@@ -853,16 +853,16 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Registered sign, Greek/Cyrillic letters are represented by two octets,
 	therefore those fonts have "wide" glyphs for them.  This is also
 	true of some line drawing characters used to make tables in text
-	file.  Therefore, when a CJK font is used for GUI Vim or
-	Vim is running inside a terminal (emulators) that uses a CJK font
-	(or Vim is run inside an xterm invoked with "-cjkwidth" option.),
+	file.  Therefore, when a CJK font is used for GUI MNV or
+	MNV is running inside a terminal (emulators) that uses a CJK font
+	(or MNV is run inside an xterm invoked with "-cjkwidth" option.),
 	this option should be set to "double" to match the width perceived
-	by Vim with the width of glyphs in the font.  Perhaps it also has
+	by MNV with the width of glyphs in the font.  Perhaps it also has
 	to be set to "double" under CJK MS-Windows when the system locale is
 	set to one of CJK locales.  See Unicode Standard Annex #11
 	(http://www.unicode.org/reports/tr11).
 
-	Vim may set this option automatically at startup time when Vim is
+	MNV may set this option automatically at startup time when MNV is
 	compiled with the |+termresponse| feature and if |t_u7| is set to the
 	escape sequence to request cursor position report.  The response can
 	be found in |v:termu7resp|.
@@ -872,8 +872,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with GUI enabled
 			on macOS}
-	This option only has an effect in the GUI version of Vim on macOS
-	v10.2 or later.  When on, Vim will use smooth ("antialiased") fonts,
+	This option only has an effect in the GUI version of MNV on macOS
+	v10.2 or later.  When on, MNV will use smooth ("antialiased") fonts,
 	which can be easier to read at certain sizes on certain displays.
 	Setting this option can sometimes cause problems if 'guifont' is set
 	to its default (empty string).
@@ -926,7 +926,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with it, use
 			exists("+autochdir") to check}
-	When on, Vim will change the current working directory whenever you
+	When on, MNV will change the current working directory whenever you
 	open a file, switch buffers, delete a buffer or open/close a window.
 	It will change to the directory containing the file which was opened
 	or selected.  When a buffer has no name it also has no directory, thus
@@ -937,7 +937,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'autocomplete' 'ac'	boolean (default off)
 			global or local to buffer |global-local|
 			{only available on platforms with timing support}
-	When on, Vim shows a completion menu as you type, similar to using
+	When on, MNV shows a completion menu as you type, similar to using
 	|i_CTRL-N|, but triggered automatically.  See |ins-autocompletion|.
 
 					*'autocompletedelay'* *'acl'*
@@ -981,8 +981,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 				 *'autoread'* *'ar'* *'noautoread'* *'noar'*
 'autoread' 'ar'		boolean	(default off)
 			global or local to buffer |global-local|
-	When a file has been detected to have been changed outside of Vim and
-	it has not been changed inside of Vim, automatically read it again.
+	When a file has been detected to have been changed outside of MNV and
+	it has not been changed inside of MNV, automatically read it again.
 	When the file has been deleted this is not done, so you have the text
 	from before it was deleted.  When it appears again then it is read.
 	|timestamp|
@@ -994,31 +994,31 @@ A jump table for the options with a short description can be found at |Q_op|.
 			*'autoshelldir'* *'asd'* *'noautoshelldir'* *'noasd'*
 'autoshelldir' 'asd'	boolean (default off)
 			global
-	When on, Vim will change the current working directory whenever you
+	When on, MNV will change the current working directory whenever you
 	change the directory of the shell running in a terminal window.  You
 	need proper setting-up, so whenever the shell's pwd changes an OSC 7
 	escape sequence will be emitted.  For example, on Linux, you can
 	source /etc/profile.d/vte.sh in your shell profile if you use bash or
 	zsh.  For bash this should work (put it in a bash init file): >
-		if [[ -n "$VIM_TERMINAL" ]]; then
-		    PROMPT_COMMAND='_vim_sync_PWD'
-		    function _vim_sync_PWD() {
+		if [[ -n "$MNV_TERMINAL" ]]; then
+		    PROMPT_COMMAND='_mnv_sync_PWD'
+		    function _mnv_sync_PWD() {
 			printf '\033]7;file://%s\033\\' "$PWD"
 		    }
 		fi
 <
 	Or, in a zsh init file: >
-		if [[ -n "$VIM_TERMINAL" ]]; then
+		if [[ -n "$MNV_TERMINAL" ]]; then
 		    autoload -Uz add-zsh-hook
-		    add-zsh-hook -Uz chpwd _vim_sync_PWD
-		    function _vim_sync_PWD() {
+		    add-zsh-hook -Uz chpwd _mnv_sync_PWD
+		    function _mnv_sync_PWD() {
 			printf '\033]7;file://%s\033\\' "$PWD"
 		    }
 		fi
 <
 	In a fish init file: >
-		if test -n "$VIM_TERMINAL"
-		    function _vim_sync_PWD --on-variable=PWD
+		if test -n "$MNV_TERMINAL"
+		    function _mnv_sync_PWD --on-variable=PWD
 			printf '\033]7;file://%s\033\\' "$PWD"
 		    end
 		end
@@ -1048,24 +1048,24 @@ A jump table for the options with a short description can be found at |Q_op|.
 'autowriteall' 'awa'	boolean	(default off)
 			global
 	Like 'autowrite', but also used for commands ":edit", ":enew",
-	":quit", ":qall", ":exit", ":xit", ":recover" and closing the Vim
+	":quit", ":qall", ":exit", ":xit", ":recover" and closing the MNV
 	window.
-	Setting this option also implies that Vim behaves like 'autowrite' has
+	Setting this option also implies that MNV behaves like 'autowrite' has
 	been set.
 
 							*'background'* *'bg'*
 'background' 'bg'	string	(default "dark" or "light", see below)
 			global
-	When set to "dark", Vim will try to use colors that look good on a
-	dark background.  When set to "light", Vim will try to use colors that
+	When set to "dark", MNV will try to use colors that look good on a
+	dark background.  When set to "light", MNV will try to use colors that
 	look good on a light background.  Any other value is illegal.
-	Vim tries to set the default value according to the terminal used.
+	MNV tries to set the default value according to the terminal used.
 	This will not always be correct.
-	Setting this option does not change the background color, it tells Vim
+	Setting this option does not change the background color, it tells MNV
 	what the background color looks like.  For changing the background
 	color, see |:hi-normal|.
 
-	When 'background' is changed Vim will adjust the default color groups
+	When 'background' is changed MNV will adjust the default color groups
 	for the new value.  But the colors used for syntax highlighting will
 	not change.					*g:colors_name*
 	When a color scheme is loaded (the "g:colors_name" variable is set)
@@ -1076,25 +1076,25 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	When setting 'background' to the default value with: >
 		:set background&
-<	Vim will guess the value.  In the GUI this should work correctly,
-	in other cases Vim might not be able to guess the right value.
+<	MNV will guess the value.  In the GUI this should work correctly,
+	in other cases MNV might not be able to guess the right value.
 	If the GUI supports a dark theme, you can use the "d" flag in
 	'guioptions', see |'go-d'|.
 
-	When the |t_RB| option is set, Vim will use it to request the background
+	When the |t_RB| option is set, MNV will use it to request the background
 	color from the terminal.  If the returned RGB value is dark/light and
 	'background' is not dark/light, 'background' will be set and the
 	screen is redrawn.  This may have side effects, make |t_RB| empty in
-	your .vimrc if you suspect this problem.  The response to |t_RB| can
+	your .mnvrc if you suspect this problem.  The response to |t_RB| can
 	be found in |v:termrbgresp|.
 
 	When starting the GUI, the default value for 'background' will be
-	"light".  When the value is not set in the .gvimrc, and Vim detects
+	"light".  When the value is not set in the .gmnvrc, and MNV detects
 	that the background is actually quite dark, 'background' is set to
-	"dark".  But this happens only AFTER the .gvimrc file has been read
+	"dark".  But this happens only AFTER the .gmnvrc file has been read
 	(because the window needs to be opened to find the actual background
 	color).  To get around this, force the GUI window to be opened by
-	putting a ":gui" command in the .gvimrc file, before where the value
+	putting a ":gui" command in the .gmnvrc file, before where the value
 	of 'background' is used (e.g., before ":syntax on").
 
 	For MS-Windows the default is "dark".
@@ -1106,7 +1106,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'background' value to decide whether the terminal window will start
 	with a white or black background.
 
-	Normally this option would be set in the .vimrc file.  Possibly
+	Normally this option would be set in the .mnvrc file.  Possibly
 	depending on the terminal name.  Example: >
 		:if &term == "pcterm"
 		:  set background=dark
@@ -1114,13 +1114,13 @@ A jump table for the options with a short description can be found at |Q_op|.
 <	When this option is set, the default settings for the highlight groups
 	will change.  To use other settings, place ":highlight" commands AFTER
 	the setting of the 'background' option.
-	This option is also used in the "$VIMRUNTIME/syntax/syntax.vim" file
+	This option is also used in the "$MNVRUNTIME/syntax/syntax.mnv" file
 	to select the colors for syntax highlighting.  After changing this
-	option, you must load syntax.vim again to see the result.  This can be
+	option, you must load syntax.mnv again to see the result.  This can be
 	done with ":syntax on".
 
 							*'backspace'* *'bs'*
-'backspace' 'bs'	string	(Vim default: "indent,eol,start",
+'backspace' 'bs'	string	(MNV default: "indent,eol,start",
 				 Vi default:  "")
 			global
 	Influences the working of <BS>, <Del>, CTRL-W and CTRL-U in Insert
@@ -1190,14 +1190,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  file.
 	- When the file is a link the new file will not be a link.
 
-	The "auto" value is the middle way: When Vim sees that renaming the
+	The "auto" value is the middle way: When MNV sees that renaming the
 	file is possible without side effects (the attributes can be passed on
 	and the file is not a link) that is used.  When problems are expected,
 	a copy will be made.
 
 	The "breaksymlink" and "breakhardlink" values can be used in
 	combination with any of "yes", "no" and "auto".  When included, they
-	force Vim to always break either symbolic or hard links by doing
+	force MNV to always break either symbolic or hard links by doing
 	exactly what the "no" option does, renaming the original file to
 	become the backup and writing a new file in its place.  This can be
 	useful for example in source trees where all the files are symbolic or
@@ -1205,7 +1205,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	be propagated back to the original source.
 								*crontab*
 	One situation where "no" and "auto" will cause problems: A program
-	that opens a file, invokes Vim to edit that file, and then tests if
+	that opens a file, invokes MNV to edit that file, and then tests if
 	the open file was changed (through the file descriptor) will check the
 	backup file instead of the newly created file.  "crontab -e" is an
 	example, as are several |file-watcher| daemons like inotify.  In that
@@ -1229,7 +1229,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	again not rename the file.
 
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'backupdir'* *'bdir'*
 'backupdir' 'bdir'	string	(default for Amiga: ".,t:",
@@ -1238,7 +1238,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 	List of directories for the backup file, separated with commas.
 	- The backup file will be created in the first directory in the list
-	  where this is possible.  The directory must exist, Vim will not
+	  where this is possible.  The directory must exist, MNV will not
 	  create it for you.
 	- Empty means that no backup file will be created ('patchmode' is
 	  impossible!).  Writing may fail because of this.
@@ -1265,7 +1265,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	- Careful with '\' characters, type one before a space, type two to
 	  get one in the option (see |option-backslash|), for example: >
 	    :set bdir=c:\\tmp,\ dir\\,with\\,commas,\\\ dir\ with\ spaces
-<	- For backwards compatibility with Vim version 3.0 a '>' at the start
+<	- For backwards compatibility with MNV version 3.0 a '>' at the start
 	  of the option is removed.
 	See also 'backup' and 'writebackup' options.
 	If you want to hide your backup files on Unix, consider this value: >
@@ -1307,8 +1307,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	When $TMPDIR, $TMP or $TEMP is not defined, it is not used for the
 	default value.  "/tmp/*" is only used for Unix.
 
-	WARNING: Not having a backup file means that when Vim fails to write
-	your buffer correctly and then, for whatever reason, Vim exits, you
+	WARNING: Not having a backup file means that when MNV fails to write
+	your buffer correctly and then, for whatever reason, MNV exits, you
 	lose both the original file and what you were writing.  Only disable
 	backups if you don't care about losing the file.
 
@@ -1380,7 +1380,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	NOTE: The balloon is displayed only if the cursor is on a text
 	character.  If the result of evaluating 'balloonexpr' is not empty,
-	Vim does not try to send a message to an external debugger (Netbeans
+	MNV does not try to send a message to an external debugger (Netbeans
 	or Sun Workshop).
 
 	If the expression starts with s: or |<SID>|, then it is replaced with
@@ -1450,7 +1450,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'binary' 'bin'		boolean	(default off)
 			local to buffer
 	This option should be set before editing a binary file.  You can also
-	use the |-b| Vim argument.  When this option is switched on a few
+	use the |-b| MNV argument.  When this option is switched on a few
 	options will be changed (also when it already was on):
 		'textwidth'  will be set to 0
 		'wrapmargin' will be set to 0
@@ -1472,7 +1472,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This avoids you have to do ":set bin", which would have effect for all
 	files you edit.
 	When writing a file the <EOL> for the last line is only written if
-	there was one in the original file (normally Vim appends an <EOL> to
+	there was one in the original file (normally MNV appends an <EOL> to
 	the last line if there is none; this would make the file longer).  See
 	the 'endofline' option.
 
@@ -1495,7 +1495,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Often used for UCS-2 files on MS-Windows.  For other applications it
 	causes trouble, for example: "cat file1 file2" makes the BOM of file2
 	appear halfway through the resulting file.  Gcc doesn't accept a BOM.
-	When Vim reads a file and 'fileencodings' starts with "ucs-bom", a
+	When MNV reads a file and 'fileencodings' starts with "ucs-bom", a
 	check for the presence of the BOM is done and 'bomb' set accordingly.
 	Unless 'binary' is set, it is removed from the first line, so that you
 	don't see it when editing.  When you don't change the options, the BOM
@@ -1592,8 +1592,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			local to buffer
 	When this option is set, the buffer shows up in the buffer list.  If
 	it is reset it is not used for ":bnext", "ls", the Buffers menu, etc.
-	This option is reset by Vim for buffers that are only used to remember
-	a file name or marks.  Vim sets it when starting to edit a buffer.
+	This option is reset by MNV for buffers that are only used to remember
+	a file name or marks.  MNV sets it when starting to edit a buffer.
 	But not when moving to a buffer with ":buffer".
 
 						*'buftype'* *'bt'* *E382*
@@ -1623,7 +1623,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Also see |win_gettype()|, which returns the type of the window.
 
 	Be careful with changing this option, it can have many side effects!
-	One such effect is that Vim will not check the timestamp of the file,
+	One such effect is that MNV will not check the timestamp of the file,
 	if the file is changed by another program this will not be noticed.
 
 	A "quickfix" buffer is only used for the error list and the location
@@ -1635,7 +1635,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			work (":w filename" does work though).
 	both:		The buffer is never considered to be 'modified'.
 			There is no warning when the changes will be lost, for
-			example when you quit Vim.
+			example when you quit MNV.
 	both:		A swap file is only created when using too much memory
 			(when 'swapfile' has been reset there is never a swap
 			file).
@@ -1690,7 +1690,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	The default value is taken from $CDPATH, with a "," prepended to look
 	in the current directory first.
 	If the default value taken from $CDPATH is not what you want, include
-	a modified version of the following command in your vimrc file to
+	a modified version of the following command in your mnvrc file to
 	override it: >
 	  :let &cdpath = ',' .. substitute(substitute($CDPATH, '[, ]', '\\\0', 'g'), ':', ',', 'g')
 <	Environment variables are expanded |:set_env|.
@@ -1699,7 +1699,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	(parts of 'cdpath' can be passed to the shell to expand file names).
 
 						*'cedit'*
-'cedit'			string	(Vi default: "", Vim default: CTRL-F)
+'cedit'			string	(Vi default: "", MNV default: CTRL-F)
 			global
 	The key used in Command-line Mode to open the command-line window.
 	The default is CTRL-F when 'compatible' is off.
@@ -1711,7 +1711,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		:set cedit=<Esc>
 <	|Nvi| also has this option, but it only uses the first character.
 	See |cmdwin|.
-	NOTE: This option is set to the Vim default value when 'compatible'
+	NOTE: This option is set to the MNV default value when 'compatible'
 	is reset.
 
 				*'charconvert'* *'ccv'* *E202* *E214* *E513*
@@ -1732,9 +1732,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Additionally, names given in 'fileencodings' and 'fileencoding' are
 	used.
 	Conversion between "latin1", "unicode", "ucs-2", "ucs-4" and "utf-8"
-	is done internally by Vim, 'charconvert' is not used for this.
-	'charconvert' is also used to convert the viminfo file, if the 'c'
-	flag is present in 'viminfo'.  Also used for Unicode conversion.
+	is done internally by MNV, 'charconvert' is not used for this.
+	'charconvert' is also used to convert the mnvinfo file, if the 'c'
+	flag is present in 'mnvinfo'.  Also used for Unicode conversion.
 	Example: >
 		set charconvert=CharConvert()
 		fun CharConvert()
@@ -1743,19 +1743,19 @@ A jump table for the options with a short description can be found at |Q_op|.
 			\ .. " <" .. v:fname_in .. " >" .. v:fname_out)
 		  return v:shell_error
 		endfun
-<	The related Vim variables are:
+<	The related MNV variables are:
 		v:charconvert_from	name of the current encoding
 		v:charconvert_to	name of the desired encoding
 		v:fname_in		name of the input file
 		v:fname_out		name of the output file
 	Note that v:fname_in and v:fname_out will never be the same.
 	Note that v:charconvert_from and v:charconvert_to may be different
-	from 'encoding'.  Vim internally uses UTF-8 instead of UCS-2 or UCS-4.
+	from 'encoding'.  MNV internally uses UTF-8 instead of UCS-2 or UCS-4.
 
 	The advantage of using a function call without arguments is that it is
 	faster, see |expr-option-function|.
 
-	Encryption is not done by Vim when using 'charconvert'.  If you want
+	Encryption is not done by MNV when using 'charconvert'.  If you want
 	to encrypt the file after conversion, 'charconvert' should take care
 	of this.
 
@@ -1854,7 +1854,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	These names are recognized:
 
 						*clipboard-unnamed*
-	unnamed		When included, Vim will use the clipboard register '*'
+	unnamed		When included, MNV will use the clipboard register '*'
 			for all yank, delete, change and put operations which
 			would normally go to the unnamed register.  When a
 			register is explicitly specified, it will always be
@@ -1881,7 +1881,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 						*clipboard-autoselect*
 	autoselect	Works like the 'a' flag in 'guioptions': If present,
 			then whenever Visual mode is started, or the Visual
-			area extended, Vim tries to become the owner of the
+			area extended, MNV tries to become the owner of the
 			windowing system's global selection or put the
 			selected text on the clipboard used by the selection
 			register "*.  See |'go-a'| and |quotestar| for details.
@@ -1903,8 +1903,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	html		When the clipboard contains HTML, use this when
 			pasting.  When putting text on the clipboard, mark it
 			as HTML.  This works to copy rendered HTML from
-			Firefox, paste it as raw HTML in Vim, select the HTML
-			in Vim and paste it in a rich edit box in Firefox.
+			Firefox, paste it as raw HTML in MNV, select the HTML
+			in MNV and paste it in a rich edit box in Firefox.
 			You probably want to add this only temporarily,
 			possibly use BufEnter autocommands.
 			Only supported for GTK version 2 and later.
@@ -1915,7 +1915,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			the terminal 'term'.  If there is a match, no
 			connection will be made to the X server or Wayland
 			compositor.  This is useful in this situation:
-			- Running Vim in a console.
+			- Running MNV in a console.
 			- $DISPLAY/$WAYLAND_DISPLAY is set to start
 			  applications on another display.
 			- You do not want to connect to the X server/Wayland
@@ -1949,7 +1949,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		x11		X11 selections
 		<name>		Use a clipboard provider with the given name
 
-	Note: This option is ignored when either the GUI is running or if Vim
+	Note: This option is ignored when either the GUI is running or if MNV
 	is run on a system without Wayland or X11 support, such as Windows or
 	macOS.  The GUI or system way of accessing the clipboard is used
 	instead, meaning |v:clipmethod| will be set to "none".  The
@@ -1958,7 +1958,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	clipboard functionality.
 
 	The option value is a list of comma separated items.  The list is
-	parsed left to right in order, and the first method that Vim
+	parsed left to right in order, and the first method that MNV
 	determines is available or is working is used as the actual method for
 	accessing the clipboard.
 
@@ -2002,12 +2002,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Number of columns of the screen.  Normally this is set by the terminal
 	initialization and does not have to be set by hand.  Also see
 	|posix-screen-size|.
-	When Vim is running in the GUI or in a resizable window, setting this
+	When MNV is running in the GUI or in a resizable window, setting this
 	option will cause the window size to be changed.  When you only want
-	to use the size for the GUI, put the command in your |gvimrc| file.
-	When you set this option and Vim is unable to change the physical
+	to use the size for the GUI, put the command in your |gmnvrc| file.
+	When you set this option and MNV is unable to change the physical
 	number of columns of the display, the display may be messed up.  For
-	the GUI it is always possible and Vim limits the number of columns to
+	the GUI it is always possible and MNV limits the number of columns to
 	what fits on the screen.  You can use this command to get the widest
 	window possible: >
 		:set columns=9999
@@ -2030,47 +2030,47 @@ A jump table for the options with a short description can be found at |Q_op|.
 	commonly used by commenting plugins (e.g. |comment-install|).
 
 			*'compatible'* *'cp'* *'nocompatible'* *'nocp'*
-'compatible' 'cp'	boolean	(default on, off when a |vimrc| or |gvimrc|
-					file is found, reset in |defaults.vim|)
+'compatible' 'cp'	boolean	(default on, off when a |mnvrc| or |gmnvrc|
+					file is found, reset in |defaults.mnv|)
 			global
-	This option has the effect of making Vim either more Vi-compatible, or
-	make Vim behave in a more useful way.
+	This option has the effect of making MNV either more Vi-compatible, or
+	make MNV behave in a more useful way.
 
 	This is a special kind of option, because when it's set or reset,
 	other options are also changed as a side effect.
 	NOTE: Setting or resetting this option can have a lot of unexpected
 	effects: Mappings are interpreted in another way, undo behaves
-	differently, etc.  If you set this option in your vimrc file, you
+	differently, etc.  If you set this option in your mnvrc file, you
 	should probably put it at the very start.
 
 	By default this option is on and the Vi defaults are used for the
-	options.  This default was chosen for those people who want to use Vim
+	options.  This default was chosen for those people who want to use MNV
 	just like Vi, and don't even (want to) know about the 'compatible'
 	option.
-	When a |vimrc| or |gvimrc| file is found while Vim is starting up,
+	When a |mnvrc| or |gmnvrc| file is found while MNV is starting up,
 	this option is switched off, and all options that have not been
-	modified will be set to the Vim defaults.  Effectively, this means
-	that when a |vimrc| or |gvimrc| file exists, Vim will use the Vim
+	modified will be set to the MNV defaults.  Effectively, this means
+	that when a |mnvrc| or |gmnvrc| file exists, MNV will use the MNV
 	defaults, otherwise it will use the Vi defaults.  (Note: This doesn't
-	happen for the system-wide vimrc or gvimrc file, nor for a file given
+	happen for the system-wide mnvrc or gmnvrc file, nor for a file given
 	with the |-u| argument).  Also see |compatible-default| and
 	|posix-compliance|.
 	You can also set this option with the "-C" argument, and reset it with
 	"-N".  See |-C| and |-N|.
 	See 'cpoptions' for more fine tuning of Vi compatibility.
 
-	When this option is set, numerous other options are set to make Vim as
+	When this option is set, numerous other options are set to make MNV as
 	Vi-compatible as possible.  When this option is unset, various options
-	are set to make Vim more useful.  The table below lists all the
+	are set to make MNV more useful.  The table below lists all the
 	options affected.
 	The {?} column indicates when the options are affected:
 	+  Means that the option is set to the value given in {set value} when
 	   'compatible' is set.
 	&  Means that the option is set to the value given in {set value} when
-	   'compatible' is set AND is set to its Vim default value when
+	   'compatible' is set AND is set to its MNV default value when
 	   'compatible' is unset.
 	-  Means the option is NOT changed when setting 'compatible' but IS
-	   set to its Vim default when 'compatible' is unset.
+	   set to its MNV default when 'compatible' is unset.
 	The {effect} column summarises the change when 'compatible' is set.
 
 	option		? set value	effect ~
@@ -2085,10 +2085,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 			  else: "auto"	copy or rename backup file
 	'balloonexpr'	+ ""		text to show in evaluation balloon
 	'breakindent'	+ off		don't indent when wrapping lines
-	'cedit'		- {unchanged}	{set vim default only on resetting 'cp'}
+	'cedit'		- {unchanged}	{set mnv default only on resetting 'cp'}
 	'cdhome'	+ off		":cd" don't chdir to home on non-Unix
 	'cindent'	+ off		no C code indentation
-	'compatible'	- {unchanged}	{set vim default only on resetting 'cp'}
+	'compatible'	- {unchanged}	{set mnv default only on resetting 'cp'}
 	'copyindent'	+ off		don't copy indent structure
 	'cpoptions'	& (all flags)	Vi-compatible flags
 	'cscopepathcomp'+ 0		don't show directories in tags list
@@ -2119,7 +2119,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'joinspaces'	+ on		insert 2 spaces after period
 	'modeline'	& off		no modelines
 	'more'		& off		no pauses in listings
-	'mzquantum'	- {unchanged}	{set vim default only on resetting 'cp'}
+	'mzquantum'	- {unchanged}	{set mnv default only on resetting 'cp'}
 	'numberwidth'	& 8		min number of columns for line number
 	'preserveindent'+ off		don't preserve current indent structure
 						when changing it
@@ -2127,7 +2127,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'ruler'		& off		no ruler
 	'scrolljump'	+ 1		no jump scroll
 	'scrolloff'	+ 0		no scroll offset
-	'shelltemp'	- {unchanged}	{set vim default only on resetting 'cp'}
+	'shelltemp'	- {unchanged}	{set mnv default only on resetting 'cp'}
 	'shiftround'	+ off		indent not rounded to shiftwidth
 	'shortmess'	& "S"		no shortening of messages
 	'showcmd'	& off		command characters not shown
@@ -2146,7 +2146,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'tildeop'	+ off		tilde is not an operator
 	'ttimeout'	+ off		no terminal timeout
 	'undofile'	+ off		don't use an undo file
-	'viminfo'       - {unchanged}	{set Vim default only on resetting 'cp'}
+	'mnvinfo'       - {unchanged}	{set MNV default only on resetting 'cp'}
 	'virtualedit'	+ ""		cursor can only be placed on characters
 	'whichwrap'	& ""		left-right movements don't wrap
 	'wildchar'	& CTRL-E	only when the current value is <Tab>
@@ -2192,7 +2192,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		{"refresh": "always"}, the function will be invoked again
 		whenever the leading text changes.
 		If generating matches is potentially slow, call
-		|complete_check()| periodically to keep Vim responsive.  This
+		|complete_check()| periodically to keep MNV responsive.  This
 		is especially important for |ins-autocompletion|.
 	F	equivalent to using "F{func}", where the function is taken
 		from the 'completefunc' option.
@@ -2246,7 +2246,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'completefuzzycollect' 'cfc'	string	(default: empty)
 				global
 	DEPRECATED: This option is no longer used; changing it has no effect.
-	When 'completeopt' contains "fuzzy", Vim will internally use the
+	When 'completeopt' contains "fuzzy", MNV will internally use the
 	equivalent of:
 		"keyword,files,whole_line"
 
@@ -2512,9 +2512,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Also see 'preserveindent'.
 
 						*'cpoptions'* *'cpo'* *cpo*
-'cpoptions' 'cpo'	string	(Vim default: "aABceFsz",
+'cpoptions' 'cpo'	string	(MNV default: "aABceFsz",
 				 Vi default:  all flags, except "#{|&/\.~"
-				 |$VIM_POSIX|:  all flags)
+				 |$MNV_POSIX|:  all flags)
 			global
 	A sequence of single character flags.  When a character is present
 	this indicates Vi-compatible behavior.  This is used for things where
@@ -2525,19 +2525,19 @@ A jump table for the options with a short description can be found at |Q_op|.
 	"+=" and "-=" feature of ":set" |add-option-flags|.
 
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
-	NOTE: In a |Vim9| script, when `vim9script` is encountered, the value
-	is saved, 'cpoptions' is set to the Vim default, and the saved value
+	NOTE: In a |MNV9| script, when `mnv9script` is encountered, the value
+	is saved, 'cpoptions' is set to the MNV default, and the saved value
 	is restored at the end of the script.  Changes to the value of
 	'cpoptions' will be applied to the saved value, but keep in mind that
 	removing a flag that is not present when 'cpoptions' is changed has no
-	effect.  In the |.vimrc| file the value is not restored, thus using
-	`vim9script` in the |.vimrc| file results in using the Vim default.
+	effect.  In the |.mnvrc| file the value is not restored, thus using
+	`mnv9script` in the |.mnvrc| file results in using the MNV default.
 
 	NOTE: This option is set to the POSIX default value at startup when
-	the Vi default value would be used and the $VIM_POSIX environment
-	variable exists |posix|.  This means Vim tries to behave like the
+	the Vi default value would be used and the $MNV_POSIX environment
+	variable exists |posix|.  This means MNV tries to behave like the
 	POSIX specification.
 
 	    contains	behavior	~
@@ -2691,7 +2691,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			marks are kept like |:keepmarks| was used.
 								*cpo-s*
 		s	Set buffer options when entering the buffer for the
-			first time.  This is like it is in Vim version 3.0.
+			first time.  This is like it is in MNV version 3.0.
 			And it is the default.  If not present the options are
 			set when the buffer is created.
 								*cpo-S*
@@ -2709,7 +2709,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			 X     yes     each time when buffer entered (vi comp.)
 								*cpo-t*
 		t	Search pattern for the tag command is remembered for
-			"n" command.  Otherwise Vim only puts the pattern in
+			"n" command.  Otherwise MNV only puts the pattern in
 			the history for search pattern, but doesn't change the
 			last used search pattern.
 								*cpo-u*
@@ -2729,7 +2729,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			overwrites a readonly file, if possible.
 								*cpo-x*
 		x	<Esc> on the command-line executes the command-line.
-			The default in Vim is to abandon the command-line,
+			The default in MNV is to abandon the command-line,
 			because <Esc> normally aborts a command.  |c_<Esc>|
 								*cpo-X*
 		X	When using a count with "R" the replaced text is
@@ -2813,7 +2813,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			their target paths.
 
 	POSIX flags.  These are not included in the Vi default value, except
-	when $VIM_POSIX was set on startup. |posix|
+	when $MNV_POSIX was set on startup. |posix|
 
 	    contains	behavior	~
 								*cpo-#*
@@ -2836,7 +2836,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			at the start of a line.
 								*cpo-.*
 		.	The ":chdir" and ":cd" commands fail if the current
-			buffer is modified, unless ! is used.  Vim doesn't
+			buffer is modified, unless ! is used.  MNV doesn't
 			need this, since it remembers the full path of an
 			opened file.
 								*cpo-bar*
@@ -2850,18 +2850,18 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Method used for encryption when the buffer is written to a file:
 							*pkzip*
 	   zip		PkZip compatible method.  A weak kind of encryption.
-			Backwards compatible with Vim 7.2 and older.
+			Backwards compatible with MNV 7.2 and older.
 			Only use if you need to be backwards compatible.
 							*blowfish*
 	   blowfish	Blowfish method.  Medium strong encryption but it has
-			an implementation flaw.  Requires Vim 7.3 or later,
-			files can NOT be read by Vim 7.2 and older.  This adds
+			an implementation flaw.  Requires MNV 7.3 or later,
+			files can NOT be read by MNV 7.2 and older.  This adds
 			a "seed" to the file, every time you write the file
 			the encrypted bytes will be different.
 			Obsolete, please do no longer use.
 							*blowfish2*
 	   blowfish2	Blowfish method.  Medium strong encryption.  Requires
-			Vim 7.4.401 or later, files can NOT be read by Vim 7.3
+			MNV 7.4.401 or later, files can NOT be read by MNV 7.3
 			and older.  This adds a "seed" to the file, every time
 			you write the file the encrypted bytes will be
 			different.  The whole undo file is encrypted, not just
@@ -2871,9 +2871,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   xchacha20	XChaCha20 Cipher with Poly1305 Message Authentication
 			Code.  Medium strong to strong encryption.
 			Encryption is provided by the libsodium library, it
-			requires Vim to be built with |+sodium|.
+			requires MNV to be built with |+sodium|.
 			It adds a seed and a message authentication code (MAC)
-			to the file.  This needs at least a Vim 8.2.3022 to
+			to the file.  This needs at least a MNV 8.2.3022 to
 			read the encrypted file.
 			Encryption of swap files is not supported, therefore
 			no swap file will be used when xchacha20 encryption is
@@ -2881,7 +2881,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			Encryption of undo files is not yet supported,
 			therefore no undo file will currently be written.
 			CAREFUL: Files written with this method might have to
-			be read back with the same version of Vim if the
+			be read back with the same version of MNV if the
 			binary format changes later.
 			Obsolete, please do no longer use.
 	   xchacha20v2  Same algorithm as with "xchacha20" that correctly
@@ -2890,11 +2890,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 			parameters in the libsodium library ever change.
 			STILL EXPERIMENTAL: Files written with this method
 			might have to be read back with the same version of
-			Vim if the binary format changes later.
+			MNV if the binary format changes later.
 
 	You should use "blowfish2", also to re-encrypt older files.  The
 	"xchacha20" method provides better encryption, but it does not work
-	with all versions of Vim.
+	with all versions of MNV.
 
 	When reading an encrypted file 'cryptmethod' will be set automatically
 	to the detected method of the file being read.  Thus if you write it
@@ -2907,9 +2907,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	the value "blowfish2".  When setting the local value to an empty
 	string the buffer will use the global value.
 
-	When a new encryption method is added in a later version of Vim, and
+	When a new encryption method is added in a later version of MNV, and
 	the current version does not recognize it, you will get	*E821* .
-	You need to edit this file with the later version of Vim.
+	You need to edit this file with the later version of MNV.
 
 						*'cscopepathcomp'* *'cspc'*
 'cscopepathcomp' 'cspc'	number	(default 0)
@@ -3112,7 +3112,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{not available when compiled without the |+diff|
 			feature}
 	Join the current window in the group of windows that shows differences
-	between files.  See |vimdiff|.
+	between files.  See |mnvdiff|.
 
 					    *'dia'* *'diffanchors'* *E1549*
 'diffanchors' 'dia'	string	(default "")
@@ -3301,9 +3301,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 				 for Unix: ".,~/tmp,/var/tmp,/tmp")
 			global
 	List of directory names for the swap file, separated with commas.
-	Recommended value:  ".,~/vimswap//" - this will put the swap file next
+	Recommended value:  ".,~/mnvswap//" - this will put the swap file next
 	to the edited file if possible, and in your personal swap directory
-	otherwise.  Make sure "~/vimswap//" is only readable for you.
+	otherwise.  Make sure "~/mnvswap//" is only readable for you.
 
 	Possible items:
 	- The swap file will be created in the first directory where this is
@@ -3335,7 +3335,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	- Careful with '\' characters, type one before a space, type two to
 	  get one in the option (see |option-backslash|), for example: >
 	    :set dir=c:\\tmp,\ dir\\,with\\,commas,\\\ dir\ with\ spaces
-<	- For backwards compatibility with Vim version 3.0 a '>' at the start
+<	- For backwards compatibility with MNV version 3.0 a '>' at the start
 	  of the option is removed.
 	Using "." first in the list is recommended.  This means that editing
 	the same file twice will result in a warning.  Using "/tmp" on Unix is
@@ -3353,7 +3353,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 					*'display'* *'dy'*
 'display' 'dy'		string	(default "", set to "truncate" in
-							       |defaults.vim|)
+							       |defaults.mnv|)
 			global
 	Change the way text is displayed.  This is a comma-separated list of
 	flags:
@@ -3387,7 +3387,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	toggled each time the flag is given.  See |complex-change|.  See
 	also 'gdefault' option.
 	Switching this option on may break plugins!
-	This option is not used in |Vim9| script.
+	This option is not used in |MNV9| script.
 
 					*'emoji'* *'emo'* *'noemoji'* *'noemo'*
 'emoji' 'emo'	boolean (default: on)
@@ -3402,14 +3402,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 'encoding' 'enc'	string (default for MS-Windows: "utf-8",
 				otherwise: value from $LANG or "latin1")
 			global
-	Sets the character encoding used inside Vim.  It applies to text in
+	Sets the character encoding used inside MNV.  It applies to text in
 	the buffers, registers, Strings in expressions, text stored in the
-	viminfo file, etc.  It sets the kind of characters which Vim can work
+	mnvinfo file, etc.  It sets the kind of characters which MNV can work
 	with.  See |encoding-names| for the possible values.
 
 	NOTE: Changing this option will not change the encoding of the
-	existing text in Vim.  It may cause non-ASCII text to become invalid.
-	It should normally be kept at its default value, or set when Vim
+	existing text in MNV.  It may cause non-ASCII text to become invalid.
+	It should normally be kept at its default value, or set when MNV
 	starts up.  See |multibyte|.  To reload the menus see |:menutrans|.
 
 	This option cannot be set from a |modeline|.  It would most likely
@@ -3432,7 +3432,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		if has("multi_byte_encoding")
 <
 	Normally 'encoding' will be equal to your current locale.  This will
-	be the default if Vim recognizes your environment settings.  If
+	be the default if MNV recognizes your environment settings.  If
 	'encoding' is not set to the current locale, 'termencoding' must be
 	set to convert typed and displayed text.  See |encoding-table|.
 
@@ -3452,9 +3452,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'fileencodings' are empty.  When conversion is needed, switch to using
 	utf-8.
 
-	When "unicode", "ucs-2" or "ucs-4" is used, Vim internally uses utf-8.
+	When "unicode", "ucs-2" or "ucs-4" is used, MNV internally uses utf-8.
 	You don't notice this while editing, but it does matter for the
-	|viminfo-file|.  And Vim expects the terminal to use utf-8 too.  Thus
+	|mnvinfo-file|.  And MNV expects the terminal to use utf-8 too.  Thus
 	setting 'encoding' to one of these values instead of utf-8 only has
 	effect for encoding used for files when 'fileencoding' is empty.
 
@@ -3510,7 +3510,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global or local to buffer |global-local|
 	External program to use for "=" command.  When this option is empty
 	the internal formatting functions are used; either 'lisp', 'cindent'
-	or 'indentexpr'.  When Vim was compiled without internal formatting,
+	or 'indentexpr'.  When MNV was compiled without internal formatting,
 	the "indent" program is used.
 	Environment variables are expanded |:set_env|.  See |option-backslash|
 	about including spaces and backslashes.
@@ -3551,7 +3551,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	(see |errorformat|).
 
 				     *'esckeys'* *'ek'* *'noesckeys'* *'noek'*
-'esckeys' 'ek'		boolean	(Vim default: on, Vi default: off)
+'esckeys' 'ek'		boolean	(MNV default: on, Vi default: off)
 			global
 	Function keys that start with an <Esc> are recognized in Insert
 	mode.  When this option is off, the cursor and function keys cannot be
@@ -3562,7 +3562,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	when 'esckeys' is off, you can still map anything, but the cursor keys
 	won't work by default.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 	NOTE: when this option is off then the |modifyOtherKeys| and
 	|xterm-bracketed-paste| functionality is disabled while in Insert mode
 	to avoid ending Insert mode with any key that has a modifier.
@@ -3645,12 +3645,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 		|TermResponse|,
 		|TermResponseAll|,
 		|User|,
-		|VimEnter|,
-		|VimLeave|,
-		|VimLeavePre|,
-		|VimResized|,
-		|VimResume|,
-		|VimSuspend|,
+		|MNVEnter|,
+		|MNVLeave|,
+		|MNVLeavePre|,
+		|MNVResized|,
+		|MNVResume|,
+		|MNVSuspend|,
 		|WinNew|,
 		|WinNewPre|
 
@@ -3668,18 +3668,18 @@ A jump table for the options with a short description can be found at |Q_op|.
 					*'exrc'* *'ex'* *'noexrc'* *'noex'*
 'exrc' 'ex'		boolean (default off)
 			global
-	Enables the reading of .vimrc, .exrc and .gvimrc in the current
+	Enables the reading of .mnvrc, .exrc and .gmnvrc in the current
 	directory.
 
 	Setting this option is a potential security leak.  E.g., consider
-	unpacking a package or fetching files from github, a .vimrc in there
+	unpacking a package or fetching files from github, a .mnvrc in there
 	might be a trojan horse.  BETTER NOT SET THIS OPTION!
-	Instead, define an autocommand in your .vimrc to set options for a
+	Instead, define an autocommand in your .mnvrc to set options for a
 	matching directory.
 
 	If you do switch this option on you should also consider setting the
 	'secure' option (see |initialization|).
-	Also see |.vimrc| and |gui-init|.
+	Also see |.mnvrc| and |gui-init|.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
 
@@ -3732,7 +3732,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 							*'fe'*
 	NOTE: Before version 6.0 this option specified the encoding for the
-	whole of Vim, this was a mistake.  Now use 'encoding' instead.  The
+	whole of MNV, this was a mistake.  Now use 'encoding' instead.  The
 	old short name was 'fe', which is no longer used.
 
 					*'fileencodings'* *'fencs'*
@@ -3741,7 +3741,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 				    'encoding' is set to a Unicode value)
 			global
 	This is a list of character encodings considered when starting to edit
-	an existing file.  When a file is read, Vim tries to use the first
+	an existing file.  When a file is read, MNV tries to use the first
 	mentioned character encoding.  If an error is detected, the next one
 	in the list is tried.  When an encoding is found that works,
 	'fileencoding' is set to it.  If all fail, 'fileencoding' is set to
@@ -3773,7 +3773,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	(Byte Order Mark) at the start of the file.  It must not be preceded
 	by "utf-8" or another Unicode encoding for this to work properly.
 	An entry for an 8-bit encoding (e.g., "latin1") should be the last,
-	because Vim cannot detect an error, thus the encoding is always
+	because MNV cannot detect an error, thus the encoding is always
 	accepted.
 	The special value "default" can be used for the encoding from the
 	environment.  On MS-Windows this is the system encoding.  Otherwise
@@ -3817,8 +3817,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 					*'fileformats'* *'ffs'*
 'fileformats' 'ffs'	string (default:
-				Vim+Vi	MS-Windows: "dos,unix",
-				Vim	Unix: "unix,dos",
+				MNV+Vi	MS-Windows: "dos,unix",
+				MNV	Unix: "unix,dos",
 				Vi	Cygwin: "unix,dos",
 				Vi	others: "")
 			global
@@ -3854,11 +3854,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  file only, the option is not changed.
 	When 'binary' is set, the value of 'fileformats' is not used.
 
-	When Vim starts up with an empty buffer the first item is used.  You
-	can overrule this by setting 'fileformat' in your .vimrc.
+	When MNV starts up with an empty buffer the first item is used.  You
+	can overrule this by setting 'fileformat' in your .mnvrc.
 
 	For systems with a Dos-like <EOL> (<CR><NL>), when reading files that
-	are ":source"ed and for vimrc files, automatic <EOL> detection may be
+	are ":source"ed and for mnvrc files, automatic <EOL> detection may be
 	done:
 	- When 'fileformats' is empty, there is no automatic detection.  Dos
 	  format will be used.
@@ -3871,7 +3871,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	string or one format (no comma is included), 'textauto' is reset,
 	otherwise 'textauto' is set.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 		*'fileignorecase'* *'fic'* *'nofileignorecase'* *'nofic'*
 'fileignorecase' 'fic'	boolean	(default on for systems where case in file
@@ -3881,7 +3881,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	This option is on by default on systems where the filesystem is
 	traditionally case-insensitive (for example MS-Windows and macOS).
-	However, Vim cannot determine at runtime whether a particular
+	However, MNV cannot determine at runtime whether a particular
 	filesystem is case-sensitive or case-insensitive.
 
 	See 'wildignorecase' for only ignoring case when doing completion.
@@ -3899,11 +3899,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Setting this option to a different value is most useful in a modeline,
 	for a file for which the file type is not automatically recognized.
 	Example, for in an IDL file:
-		/* vim: set filetype=idl : */ ~
+		/* mnv: set filetype=idl : */ ~
 	|FileType| |filetypes|
 	When a dot appears in the value then this separates two filetype
 	names, it should therefore not be used for a filetype.  Example:
-		/* vim: set filetype=c.doxygen : */ ~
+		/* mnv: set filetype=c.doxygen : */ ~
 	This will use the "c" filetype first, then the "doxygen" filetype.
 	This works both for filetype plugins and for syntax files.  More than
 	one dot may appear.
@@ -4236,7 +4236,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Example: >
 		:set formatexpr=mylang#Format()
 <	This will invoke the mylang#Format() function in the
-	autoload/mylang.vim file in 'runtimepath'. |autoload|
+	autoload/mylang.mnv file in 'runtimepath'. |autoload|
 
 	The advantage of using a function call without arguments is that it is
 	faster, see |expr-option-function|.
@@ -4247,7 +4247,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	same spot relative to the text then!  The |mode()| function will
 	return "i" or "R" in this situation.
 
-	When the expression evaluates to non-zero Vim will fall back to using
+	When the expression evaluates to non-zero MNV will fall back to using
 	the internal format mechanism.
 
 	If the expression starts with s: or |<SID>|, then it is replaced with
@@ -4277,7 +4277,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	character and white space.
 
 					*'formatoptions'* *'fo'*
-'formatoptions' 'fo'	string (Vim default: "tcq", Vi default: "vt")
+'formatoptions' 'fo'	string (MNV default: "tcq", Vi default: "vt")
 			local to buffer
 	This is a sequence of letters which describes how automatic
 	formatting is to be done.
@@ -4287,7 +4287,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	To avoid problems with flags that are added in the future, use the
 	"+=" and "-=" feature of ":set" |add-option-flags|.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'formatprg'* *'fp'*
 'formatprg' 'fp'	string (default "")
@@ -4340,7 +4340,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Setting this option may break plugins that rely on the default
 	behavior of the 'g' flag.  This will also make the 'g' flag have the
 	opposite effect of that documented in |:s_g|.
-	This option is not used in |Vim9| script.
+	This option is not used in |MNV9| script.
 
 						*'grepformat'* *'gfm'*
 'grepformat' 'gfm'	string	(default "%f:%l:%m,%f:%l%m,%f  %l%m")
@@ -4364,8 +4364,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	also work well with a single file: >
 		:set grepprg=grep\ -nH
 <	Special value: When 'grepprg' is set to "internal" the |:grep| command
-	works like |:vimgrep|, |:lgrep| like |:lvimgrep|, |:grepadd| like
-	|:vimgrepadd| and |:lgrepadd| like |:lvimgrepadd|.
+	works like |:mnvgrep|, |:lgrep| like |:lmnvgrep|, |:grepadd| like
+	|:mnvgrepadd| and |:lgrepadd| like |:lmnvgrepadd|.
 	See also the section |:make_makeprg|, since most of the comments there
 	apply equally to 'grepprg'.
 	For Win32, the default is "findstr /n" if "findstr.exe" can be found,
@@ -4387,7 +4387,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with GUI enabled, and
 			for Win32 console}
-	This option tells Vim what the cursor should look like in different
+	This option tells MNV what the cursor should look like in different
 	modes.  It fully works in the GUI.  In a Win32 console, only the
 	height of the cursor can be changed.  This can be done by specifying a
 	block cursor, or a percentage for a vertical or horizontal cursor.
@@ -4427,7 +4427,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			These numbers are used for a missing entry.  This
 			means that blinking is enabled by default.  To switch
 			blinking off you can use "blinkon0".  The cursor only
-			blinks when Vim is waiting for input, not while
+			blinks when MNV is waiting for input, not while
 			executing a command.
 			To make the cursor blink in an xterm, see
 			|xterm-blink|.
@@ -4463,7 +4463,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'guifont' 'gfn'		string	(default "")
 			global
 			{only available when compiled with GUI enabled}
-	This is a list of fonts which will be used for the GUI version of Vim.
+	This is a list of fonts which will be used for the GUI version of MNV.
 	In its simplest form the value is just one font name.
 	See |gui-font| for the details.
 
@@ -4492,7 +4492,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{only for GTK and X11 GUI}
 	The number of pixels subtracted from the screen height when fitting
 	the GUI window on the screen.  Set this before the GUI is started,
-	e.g., in your |gvimrc| file.  When zero, the whole screen height will
+	e.g., in your |gmnvrc| file.  When zero, the whole screen height will
 	be used by the window.  When positive, the specified number of pixel
 	lines will be left for window decorations and other items on the
 	screen.  Set it to a negative value to allow windows taller than the
@@ -4512,12 +4512,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 						*'guioptions'* *'go'*
 'guioptions' 'go'	string	(default "egmrLtT"   (MS-Windows,
-					   "t" is removed in |defaults.vim|),
+					   "t" is removed in |defaults.mnv|),
 					 "aegimrLtT" (GTK and Motif),
 					 )
 			global
 			{only available when compiled with GUI enabled}
-	This option only has an effect in the GUI version of Vim.  It is a
+	This option only has an effect in the GUI version of MNV.  It is a
 	sequence of letters which describes what components and options of the
 	GUI should be used.
 	To avoid problems with flags that are added in the future, use the
@@ -4533,16 +4533,16 @@ A jump table for the options with a short description can be found at |Q_op|.
 		upwards as needed.
 								*'go-a'*
 	  'a'	Autoselect:  If present, then whenever VISUAL mode is started,
-		or the Visual area extended, Vim tries to become the owner of
+		or the Visual area extended, MNV tries to become the owner of
 		the windowing system's global selection.  This means that the
 		Visually highlighted text is available for pasting into other
-		applications as well as into Vim itself.  When the Visual mode
+		applications as well as into MNV itself.  When the Visual mode
 		ends, possibly due to an operation on the text, or when an
 		application wants to paste the selection, the highlighted text
 		is automatically yanked into the "* selection register.
 		Thus the selection is still available for pasting into other
 		applications after the VISUAL mode has ended.
-		    If not present, then Vim won't become the owner of the
+		    If not present, then MNV won't become the owner of the
 		windowing system's global selection unless explicitly told to
 		by a yank or delete operation for the "* register.
 		The same applies to the modeless selection.
@@ -4581,20 +4581,20 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  'f'	Foreground: Don't use fork() to detach the GUI from the shell
 		where it was started.  Use this for programs that wait for the
 		editor to finish (e.g., an e-mail program).  Alternatively you
-		can use "gvim -f" or ":gui -f" to start the GUI in the
+		can use "gmnv -f" or ":gui -f" to start the GUI in the
 		foreground.  |gui-fork|
-		Note: Set this option in the vimrc file.  The forking may have
-		happened already when the |gvimrc| file is read.
+		Note: Set this option in the mnvrc file.  The forking may have
+		happened already when the |gmnvrc| file is read.
 								*'go-i'*
-	  'i'	Use a Vim icon.  For GTK with KDE it is used in the left-upper
+	  'i'	Use a MNV icon.  For GTK with KDE it is used in the left-upper
 		corner of the window.  It's black&white on non-GTK, because of
 		limitations of X11.  For a color icon, see |X11-icon|.
 								*'go-m'*
 	  'm'	Menu bar is present.
 								*'go-M'*
-	  'M'	The system menu "$VIMRUNTIME/menu.vim" is not sourced.  Note
-		that this flag must be added in the .vimrc file, before
-		switching on syntax or filetype recognition (when the |gvimrc|
+	  'M'	The system menu "$MNVRUNTIME/menu.mnv" is not sourced.  Note
+		that this flag must be added in the .mnvrc file, before
+		switching on syntax or filetype recognition (when the |gmnvrc|
 		file is sourced the system menu has already been loaded; the
 		`:syntax on` and `:filetype on` commands load the menu too).
 								*'go-g'*
@@ -4641,7 +4641,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  'p'	Use Pointer callbacks for X11 GUI.  This is required for some
 		window managers.  If the cursor is not blinking or hollow at
 		the right moment, try adding this flag.  This must be done
-		before starting the GUI.  Set it in your |gvimrc|.  Adding or
+		before starting the GUI.  Set it in your |gmnvrc|.  Adding or
 		removing it after the GUI has started has no effect.
 								*'go-F'*
 	  'F'	Add a footer.  Only for Motif.  See |gui-footer|.
@@ -4649,7 +4649,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  'k'	Keep the GUI window size when adding/removing a scrollbar, or
 		toolbar, tabline, etc.  Instead, the behavior is similar to
 		when the window is maximized and will adjust 'lines' and
-		'columns' to fit to the window.  Without the 'k' flag Vim will
+		'columns' to fit to the window.  Without the 'k' flag MNV will
 		try to keep 'lines' and 'columns' the same when adding and
 		removing GUI components.
 
@@ -4665,7 +4665,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with GUI enabled}
 	When non-empty describes the text to use in a label of the GUI tab
-	pages line.  When empty and when the result is empty Vim will use a
+	pages line.  When empty and when the result is empty MNV will use a
 	default label.  See |setting-guitablabel| for more info.
 
 	The format of this option is like that of 'statusline'.
@@ -4683,7 +4683,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with GUI enabled}
 	When non-empty describes the text to use in a tooltip for the GUI tab
-	pages line.  When empty Vim will use a default tooltip.
+	pages line.  When empty MNV will use a default tooltip.
 	This option is otherwise just like 'guitablabel' above.
 	You can include a line break.  Simplest method is to use |:let|: >
 		:let &guitabtooltip = "line one\nline two"
@@ -4691,15 +4691,15 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This option cannot be set in a modeline when 'modelineexpr' is off.
 
 						*'helpfile'* *'hf'*
-'helpfile' 'hf'		string	(default (MS-Windows) "$VIMRUNTIME\doc\help.txt"
-					 (others) "$VIMRUNTIME/doc/help.txt")
+'helpfile' 'hf'		string	(default (MS-Windows) "$MNVRUNTIME\doc\help.txt"
+					 (others) "$MNVRUNTIME/doc/help.txt")
 			global
 	Name of the main help file.  All distributed help files should be
 	placed together in one directory.  Additionally, all "doc" directories
 	in 'runtimepath' will be used.
 	Environment variables are expanded |:set_env|.  For example:
-	"$VIMRUNTIME/doc/help.txt".  If $VIMRUNTIME is not set, $VIM is also
-	tried.  Also see |$VIMRUNTIME| and |option-backslash| about including
+	"$MNVRUNTIME/doc/help.txt".  If $MNVRUNTIME is not set, $MNV is also
+	tried.  Also see |$MNVRUNTIME| and |option-backslash| about including
 	spaces and backslashes.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
@@ -4718,7 +4718,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with the |+multi_lang|
 			feature}
-	Comma-separated list of languages.  Vim will use the first language
+	Comma-separated list of languages.  MNV will use the first language
 	for which the desired help can be found.  The English help will always
 	be used as a last resort.  You can add "en" to prefer English over
 	another language, but that will only find tags that exist in that
@@ -4727,7 +4727,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		:set helplang=de,it
 <	This will first search German, then Italian and finally English help
 	files.
-	When using |CTRL-]| and ":help!" in a non-English help file Vim will
+	When using |CTRL-]| and ":help!" in a non-English help file MNV will
 	try to find the tag in the current language before using this option.
 	See |help-translated|.
 
@@ -4806,7 +4806,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	|hl-Title|	 t  Titles for output from ":set all", ":autocmd" etc.
 	|hl-VertSplit|	 c  column used to separate vertically split windows
 	|hl-Visual|	 v  Visual mode
-	|hl-VisualNOS|	 V  Visual mode when Vim is "Not Owning the
+	|hl-VisualNOS|	 V  Visual mode when MNV is "Not Owning the
 			    Selection" Only X11 Gui's |gui-x11|,
 			    |xterm-clipboard| and |wayland-selections|
 	|hl-WarningMsg|	 w  warning messages
@@ -4866,7 +4866,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	See |highlight-default| for the default highlight groups.
 
 						*'history'* *'hi'*
-'history' 'hi'		number	(Vim default: 200, Vi default: 0)
+'history' 'hi'		number	(MNV default: 200, Vi default: 0)
 			global
 	A history of ":" commands, and a history of previous search patterns
 	is remembered.  This option decides how many entries may be stored in
@@ -4874,7 +4874,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	the number of messages to remember).
 	The maximum value is 10000.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 					 *'hkmap'* *'hk'* *'nohkmap'* *'nohk'*
 'hkmap' 'hk'		boolean (default off)
@@ -4912,13 +4912,13 @@ A jump table for the options with a short description can be found at |Q_op|.
 	off with |:nohlsearch|.  This does not change the option value, as
 	soon as you use a search command, the highlighting comes back.
 	'redrawtime' specifies the maximum time spent on finding matches.
-	When the search pattern can match an end-of-line, Vim will try to
+	When the search pattern can match an end-of-line, MNV will try to
 	highlight all of the matched text.  However, this depends on where the
 	search starts.  This will be the first line in the window or the first
 	line below a closed fold.  A match in a previous line which is not
 	drawn may not continue in a newly drawn line.
 	You can specify whether the highlight status is restored on startup
-	with the 'h' flag in 'viminfo' |viminfo-h|.
+	with the 'h' flag in 'mnvinfo' |mnvinfo-h|.
 	NOTE: This option is reset when 'compatible' is set.
 
 						*'icon'* *'noicon'*
@@ -4932,7 +4932,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	only X11 GUI and terminals with a non-empty 't_IS' option - these are
 	Unix xterm and iris-ansi by default, where 't_IS' is taken from the
 	builtin termcap).
-	When Vim was compiled with HAVE_X11 defined, the original icon will be
+	When MNV was compiled with HAVE_X11 defined, the original icon will be
 	restored if possible |X11|.  See |X11-icon| for changing the icon on
 	X11.
 	For MS-Windows the icon can be changed, see |windows-icon|.
@@ -4945,7 +4945,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Only works if the terminal supports setting window icon text
 	(currently only X11 GUI and terminals with a non-empty 't_IS' option).
 	Does not work for MS-Windows.
-	When Vim was compiled with HAVE_X11 defined, the original icon will be
+	When MNV was compiled with HAVE_X11 defined, the original icon will be
 	restored if possible |X11|.
 	When this option contains printf-style '%' items, they will be
 	expanded according to the rules used for 'statusline'.  See
@@ -4957,7 +4957,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'ignorecase' 'ic'	boolean	(default off)
 			global
 	Ignore case in search patterns, |cmdline-completion|, when
-	searching in the tags file, non-|Vim9| |expr-==| and for Insert-mode
+	searching in the tags file, non-|MNV9| |expr-==| and for Insert-mode
 	completion |ins-completion|.
 	Also see 'smartcase' and 'tagcase'.
 	Can be overruled by using "\c" or "\C" in the pattern, see
@@ -4991,10 +4991,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{only available when compiled with |+xim| and
 			|+GUI_GTK|}				*E599*
 	Specifies the key that your Input Method in X-Windows uses for
-	activation.  When this is specified correctly, vim can fully control
+	activation.  When this is specified correctly, mnv can fully control
 	IM with 'imcmdline', 'iminsert' and 'imsearch'.
 	You can't use this option to change the activation key, the option
-	tells Vim what the key is.
+	tells MNV what the key is.
 	Format:
 		[MODIFIER_FLAG-]KEY_STRING
 
@@ -5054,7 +5054,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	methods.  Use 'imdisable' to disable XIM then.
 
 	You can set 'imactivatefunc' and 'imstatusfunc' to handle IME/XIM
-	via external command if Vim is not compiled with the |+xim|,
+	via external command if MNV is not compiled with the |+xim|,
 	|+multi_byte_ime| or |global-ime|.
 
 						*'imsearch'* *'ims'*
@@ -5105,7 +5105,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	See: |xim-input-style|
 
 	For a long time on-the-spot style had been used in the GTK version of
-	vim, however, it is known that it causes troubles when using mappings,
+	mnv, however, it is known that it causes troubles when using mappings,
 	|single-repeat|, etc.  Therefore over-the-spot style becomes the
 	default now.  This should work fine for most people, however if you
 	have any problem with it, try using on-the-spot style.
@@ -5165,7 +5165,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	evaluating 'includeexpr' |textlock|.
 
 				 *'incsearch'* *'is'* *'noincsearch'* *'nois'*
-'incsearch' 'is'	boolean	(default off, set in |defaults.vim| if the
+'incsearch' 'is'	boolean	(default off, set in |defaults.mnv| if the
 					    |+reltime| feature is supported)
 			global
 			{not available when compiled without the
@@ -5176,24 +5176,24 @@ A jump table for the options with a short description can be found at |Q_op|.
 	often, this is only useful on fast terminals.
 	Also applies to the pattern in commands: >
 		:global
-		:lvimgrep
-		:lvimgrepadd
+		:lmnvgrep
+		:lmnvgrepadd
 		:smagic
 		:snomagic
 		:sort
 		:substitute
 		:vglobal
-		:vimgrep
-		:vimgrepadd
+		:mnvgrep
+		:mnvgrepadd
 <	Note that the match will be shown, but the cursor will return to its
 	original position when no match is found and when pressing <Esc>.  You
 	still need to finish the search command with <Enter> to move the
 	cursor to the match.
 	You can use the CTRL-G and CTRL-T keys to move to the next and
 	previous match. |c_CTRL-G| |c_CTRL-T|
-	When compiled with the |+reltime| feature Vim only searches for about
+	When compiled with the |+reltime| feature MNV only searches for about
 	half a second.  With a complicated pattern and/or a lot of text the
-	match may not be found.  This is to avoid that Vim hangs while you
+	match may not be found.  This is to avoid that MNV hangs while you
 	are typing the pattern.
 	The highlighting can be set with the 'i' flag in 'highlight'.
 	When 'hlsearch' is on, all matched strings are highlighted too while
@@ -5201,7 +5201,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	If you don't want to turn 'hlsearch' on, but want to highlight all
 	matches while searching, you can turn on and off 'hlsearch' with
 	autocmd.  Example: >
-		augroup vimrc-incsearch-highlight
+		augroup mnvrc-incsearch-highlight
 		  autocmd!
 		  autocmd CmdlineEnter [\/\?] :set hlsearch
 		  autocmd CmdlineLeave [\/\?] :set nohlsearch
@@ -5286,8 +5286,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 			*'insertmode'* *'im'* *'noinsertmode'* *'noim'*
 'insertmode' 'im'	boolean	(default off)
 			global
-	Makes Vim work in a way that Insert mode is the default mode.  Useful
-	if you want to use Vim as a modeless editor.  Used for |evim|.
+	Makes MNV work in a way that Insert mode is the default mode.  Useful
+	if you want to use MNV as a modeless editor.  Used for |emnv|.
 	These Insert mode commands will be useful:
 	- Use the cursor keys to move around.
 	- Use CTRL-O to execute one Normal mode command |i_CTRL-O|.  When
@@ -5298,11 +5298,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  left, like <Esc> does when 'insertmode' isn't set.  |i_CTRL-L|
 
 	These items change when 'insertmode' is set:
-	- when starting to edit of a file, Vim goes to Insert mode.
+	- when starting to edit of a file, MNV goes to Insert mode.
 	- <Esc> in Insert mode is a no-op and beeps.
-	- <Esc> in Normal mode makes Vim go to Insert mode.
+	- <Esc> in Normal mode makes MNV go to Insert mode.
 	- CTRL-L in Insert mode is a command, it is not inserted.
-	- CTRL-Z in Insert mode suspends Vim, see |CTRL-Z|.	*i_CTRL-Z*
+	- CTRL-Z in Insert mode suspends MNV, see |CTRL-Z|.	*i_CTRL-Z*
 	However, when <Esc> is used inside a mapping, it behaves like
 	'insertmode' was not set.  This was done to be able to use the same
 	mappings with 'insertmode' set or not set.
@@ -5325,14 +5325,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	characters up to 255 are specified with this option.
 	For UTF-8 the characters 0xa0 to 0xff are included as well.
 	Think twice before adding white space to this option.  Although a
-	space may appear inside a file name, the effect will be that Vim
+	space may appear inside a file name, the effect will be that MNV
 	doesn't know where a file name starts or ends when doing completion.
 	It most likely works better without a space in 'isfname'.
 
-	Note that on systems using a backslash as path separator, Vim tries to
+	Note that on systems using a backslash as path separator, MNV tries to
 	do its best to make it work as you would expect.  That is a bit
 	tricky, since Vi originally used the backslash to escape special
-	characters.  Vim will not remove a backslash in front of a normal file
+	characters.  MNV will not remove a backslash in front of a normal file
 	name character on these systems, but it will on Unix and alikes.  The
 	'&' and '^' are not included by default, because these are special for
 	cmd.exe.
@@ -5375,11 +5375,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	|pattern|.  See 'isfname' for a description of the format of this
 	option.  For '@' only characters up to 255 are used.
 	Careful: If you change this option, it might break expanding
-	environment variables.  E.g., when '/' is included and Vim tries to
-	expand "$HOME/.viminfo".  Maybe you should change 'iskeyword' instead.
+	environment variables.  E.g., when '/' is included and MNV tries to
+	expand "$HOME/.mnvinfo".  Maybe you should change 'iskeyword' instead.
 
 						*'iskeyword'* *'isk'*
-'iskeyword' 'isk'	string (Vim default for Win32:
+'iskeyword' 'isk'	string (MNV default for Win32:
 					    "@,48-57,_,128-167,224-235"
 				   otherwise:  "@,48-57,_,192-255"
 				Vi default: "@,48-57,_")
@@ -5403,7 +5403,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This option also influences syntax highlighting, unless the syntax
 	uses |:syn-iskeyword|.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'isprint'* *'isp'*
 'isprint' 'isp'	string	(default for Win32 and VMS:
@@ -5554,12 +5554,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 								  VMS: "help")
 			global or local to buffer |global-local|
 	Program to use for the |K| command.  Environment variables are
-	expanded |:set_env|.  ":help" may be used to access the Vim internal
+	expanded |:set_env|.  ":help" may be used to access the MNV internal
 	help.  (Note that previously setting the global option to the empty
 	value did this, which is now deprecated.)
-	When the first character is ":", the command is invoked as a Vim
+	When the first character is ":", the command is invoked as a MNV
 	Ex command with [count] added as an argument if it is not zero.
-	When "man", "man -s" or an Ex command is used, Vim will automatically
+	When "man", "man -s" or an Ex command is used, MNV will automatically
 	translate a count for the "K" command and pass it as the first
 	argument.  For "man -s" the "-s" is removed when there is no count.
 	See |option-backslash| about including spaces and backslashes.
@@ -5601,9 +5601,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Special characters need to be preceded with a backslash.  These are
 	";", ',', '"', '|' and backslash itself.
 
-	This will allow you to activate vim actions without having to switch
+	This will allow you to activate mnv actions without having to switch
 	back and forth between the languages.  Your language characters will
-	be understood as normal vim English characters (according to the
+	be understood as normal mnv English characters (according to the
 	langmap mappings) in the following cases:
 	 o Normal/Visual mode (commands, buffer/register names, user mappings)
 	 o Insert/Replace Mode: Register names after CTRL-R
@@ -5620,7 +5620,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			|+multi_lang| features}
 	Language to use for menu translation.  Tells which file is loaded
 	from the "lang" directory in 'runtimepath': >
-		"lang/menu_" .. &langmenu .. ".vim"
+		"lang/menu_" .. &langmenu .. ".mnv"
 <	(without the spaces).  For example, to always use the Dutch menus, no
 	matter what $LANG is set to: >
 		:set langmenu=nl_NL.ISO_8859-1
@@ -5632,13 +5632,13 @@ A jump table for the options with a short description can be found at |Q_op|.
 <	This option must be set before loading menus, switching on filetype
 	detection or syntax highlighting.  Once the menus are defined setting
 	this option has no effect.  But you could do this: >
-		:source $VIMRUNTIME/delmenu.vim
+		:source $MNVRUNTIME/delmenu.mnv
 		:set langmenu=de_DE.ISO_8859-1
-		:source $VIMRUNTIME/menu.vim
+		:source $MNVRUNTIME/menu.mnv
 <	Warning: This deletes all menus that you defined yourself!
 
 			*'langnoremap'* *'lnr'* *'nolangnoremap'* *'nolnr'*
-'langnoremap' 'lnr'	boolean (default off, set in |defaults.vim|)
+'langnoremap' 'lnr'	boolean (default off, set in |defaults.mnv|)
 			global
 			{only available when compiled with the |+langmap|
 			feature}
@@ -5647,7 +5647,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'langnoremap' is set to the inverted value, and the other way around.
 
 			*'langremap'* *'lrm'* *'nolangremap'* *'nolrm'*
-'langremap' 'lrm'	boolean (default on, set to off in |defaults.vim|)
+'langremap' 'lrm'	boolean (default on, set to off in |defaults.mnv|)
 			global
 			{only available when compiled with the |+langmap|
 			feature}
@@ -5696,7 +5696,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			local to window
 			{not available when compiled without the |+linebreak|
 			feature}
-	If on, Vim will wrap long lines at a character in 'breakat' rather
+	If on, MNV will wrap long lines at a character in 'breakat' rather
 	than at the last character that fits on the screen.  Unlike
 	'wrapmargin' and 'textwidth', this does not insert <EOL>s in the file,
 	it only affects the way the file is displayed, not its contents.
@@ -5709,18 +5709,18 @@ A jump table for the options with a short description can be found at |Q_op|.
 						*'lines'* *E593*
 'lines'			number	(default 24 or terminal height)
 			global
-	Number of lines of the Vim window.
+	Number of lines of the MNV window.
 	Normally you don't need to set this.  It is done automatically by the
 	terminal initialization code.  Also see |posix-screen-size|.
-	When Vim is running in the GUI or in a resizable window, setting this
+	When MNV is running in the GUI or in a resizable window, setting this
 	option will cause the window size to be changed.  When you only want
-	to use the size for the GUI, put the command in your |gvimrc| file.
-	Vim limits the number of lines to what fits on the screen.  You can
+	to use the size for the GUI, put the command in your |gmnvrc| file.
+	MNV limits the number of lines to what fits on the screen.  You can
 	use this command to get the tallest window possible: >
 		:set lines=999
 <	Minimum value is 2, maximum value is 1000.
 	If you get fewer lines than expected, check the 'guiheadroom' option.
-	When you set this option and Vim is unable to change the physical
+	When you set this option and MNV is unable to change the physical
 	number of lines of the display, the display may be messed up.
 
 						*'linespace'* *'lsp'*
@@ -5892,7 +5892,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'loadplugins' 'lpl'	boolean	(default on)
 			global
 	When on the plugin scripts are loaded when starting up |load-plugins|.
-	This option can be reset in your |vimrc| file to disable the loading
+	This option can be reset in your |mnvrc| file to disable the loading
 	of plugins.
 	Note that using the "-u NONE", "-u DEFAULTS" and "--noplugin" command
 	line arguments reset this option.  See |-u| and |--noplugin|.
@@ -5924,7 +5924,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Only switch it off when working with old Vi scripts.  In any other
 	situation write patterns that work when 'magic' is on.  Include "\M"
 	when you want to |/\M|.
-	In |Vim9| script the value of 'magic' is ignored, patterns behave like
+	In |MNV9| script the value of 'magic' is ignored, patterns behave like
 	it is always set.
 
 						*'makeef'* *'mef'*
@@ -5995,8 +5995,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	assignment, useful for languages like C and Java: >
 		:au FileType c,cpp,java set mps+==:;
 
-<	For a more advanced way of using "%", see the matchit.vim plugin in
-	the $VIMRUNTIME/pack/dist/opt/matchit directory. |add-local-help|
+<	For a more advanced way of using "%", see the matchit.mnv plugin in
+	the $MNVRUNTIME/pack/dist/opt/matchit directory. |add-local-help|
 
 						*'matchtime'* *'mat'*
 'matchtime' 'mat'	number	(default 5)
@@ -6060,14 +6060,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Maximum amount of memory (in Kbyte) to use for pattern matching.
 	The maximum value is about 2000000.  Use this to work without a limit.
 							*E363*
-	When Vim runs into the limit it gives an error message and mostly
+	When MNV runs into the limit it gives an error message and mostly
 	behaves like CTRL-C was typed.
 	Running into the limit often means that the pattern is very
 	inefficient or too complex.  This may already happen with the pattern
 	"\(.\)*" on a very long line.  ".*" works much better.
 	Might also happen on redraw, when syntax rules try to match a complex
 	text structure.
-	Vim may run out of memory before hitting the 'maxmempattern' limit, in
+	MNV may run out of memory before hitting the 'maxmempattern' limit, in
 	which case you get an "Out of memory" error instead.
 
 						*'maxmemtot'* *'mmt'*
@@ -6090,7 +6090,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'maxsearchcount' 'msc'	number	(default 99)
 			global
 	Maximum number of matches shown for the search count status |shm-S|
-	When the number of matches exceeds this value, Vim shows ">" instead
+	When the number of matches exceeds this value, MNV shows ">" instead
 	of the exact count to keep searching fast.
 	Note: larger values may impact performance.
 	The value must be between 1 and 9999.  See also the |searchcount()|
@@ -6145,7 +6145,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	For most languages the uncompressed word tree fits in memory.  {start}
 	gives the amount of memory in Kbyte that can be used before any
 	compression is done.  It should be a bit smaller than the amount of
-	memory that is available to Vim.
+	memory that is available to MNV.
 
 	When going over the {start} limit the {inc} number specifies the
 	amount of memory in Kbyte that can be allocated before another
@@ -6170,7 +6170,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	security reasons.
 
 				   *'modeline'* *'ml'* *'nomodeline'* *'noml'*
-'modeline' 'ml'		boolean	(Vim default: on (off for root),
+'modeline' 'ml'		boolean	(MNV default: on (off for root),
 				 Vi default: off)
 			local to buffer
 	If 'modeline' is on 'modelines' gives the number of lines that is
@@ -6193,7 +6193,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	checked for set commands.  If 'modeline' is off or 'modelines' is zero
 	no lines are checked.  See |modeline|.
 	NOTE: 'modeline' is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 				*'modifiable'* *'ma'* *'nomodifiable'* *'noma'*
 				*E21*
@@ -6221,7 +6221,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   Similarly for 'eol' and 'bomb'.
 	This option is not set when a change is made to the buffer as the
 	result of a BufNewFile, BufRead/BufReadPost, BufWritePost,
-	FileAppendPost or VimLeave autocommand event.  See |gzip-example| for
+	FileAppendPost or MNVLeave autocommand event.  See |gzip-example| for
 	an explanation.
 	When 'buftype' is "nowrite" or "nofile" this option may be set, but
 	will be ignored.
@@ -6229,17 +6229,17 @@ A jump table for the options with a short description can be found at |Q_op|.
 	when using "rA" on an "A".
 
 						*'more'* *'nomore'*
-'more'			boolean	(Vim default: on, Vi default: off)
+'more'			boolean	(MNV default: on, Vi default: off)
 			global
 	When on, listings pause when the whole screen is filled.  You will get
 	the |more-prompt|.  When this option is off there are no pauses, the
 	listing continues until finished.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'mouse'*
 'mouse'			string	(default "", "a" for GUI and Win32,
-					set to "a" or "nvi" in |defaults.vim|)
+					set to "a" or "nvi" in |defaults.mnv|)
 			global
 	Enable the use of the mouse.  Works for most terminals (xterm, Win32
 	|win32-mouse|, QNX pterm, *BSD console with sysmouse and Linux console
@@ -6258,8 +6258,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	application, use: >
 		:set mouse=nvi
 <	Then you can press ":", select text for the system, and press Esc to
-	go back to Vim using the mouse events.
-	In |defaults.vim| "nvi" is used if the 'term' option is not matching
+	go back to MNV using the mouse events.
+	In |defaults.mnv| "nvi" is used if the 'term' option is not matching
 	"xterm".
 
 	When the mouse is not enabled, the GUI will still use the mouse for
@@ -6345,7 +6345,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only available when compiled with the |+mouseshape|
 			feature}
-	This option tells Vim what the mouse pointer should look like in
+	This option tells MNV what the mouse pointer should look like in
 	different modes.  The option is a comma-separated list of parts, much
 	like used for 'guicursor'.  Each part consists of a mode/location-list
 	and an argument-list:
@@ -6419,7 +6419,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			feature}
 	The number of milliseconds between polls for MzScheme threads.
 	Negative or zero value means no thread scheduling.
-	NOTE: This option is set to the Vim default value when 'compatible'
+	NOTE: This option is set to the MNV default value when 'compatible'
 	is reset.
 
 						*'mzschemedll'*
@@ -6430,7 +6430,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Specifies the name of the MzScheme shared library.  The default is
 	DYNAMIC_MZSCH_DLL which was specified at compile time.
 	Environment variables are expanded |:set_env|.
-	The value must be set in the |vimrc| script or earlier.  In the
+	The value must be set in the |mnvrc| script or earlier.  In the
 	startup, before the |load-plugins| step.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
@@ -6449,9 +6449,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 							*'nrformats'* *'nf'*
 'nrformats' 'nf'	string	(default "bin,octal,hex",
-					   set to "bin,hex" in |defaults.vim|)
+					   set to "bin,hex" in |defaults.mnv|)
 			local to buffer
-	This defines what bases Vim will consider for numbers when using the
+	This defines what bases MNV will consider for numbers when using the
 	CTRL-A and CTRL-X commands for adding to and subtracting from a number
 	respectively; see |CTRL-A| for more info on these commands.
 	alpha	If included, single alphabetical characters will be
@@ -6518,7 +6518,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	    |there          |  4 there      |  1 there      |  1 there
 
 						*'numberwidth'* *'nuw'*
-'numberwidth' 'nuw'	number	(Vim default: 4  Vi default: 8)
+'numberwidth' 'nuw'	number	(MNV default: 4  Vi default: 8)
 			local to window
 			{only available when compiled with the |+linebreak|
 			feature}
@@ -6529,11 +6529,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	The value is the minimum width.  A bigger width is used when needed to
 	fit the highest line number in the buffer respectively the number of
 	rows in the window, depending on whether 'number' or 'relativenumber'
-	is set.  Thus with the Vim default of 4 there is room for a line
+	is set.  Thus with the MNV default of 4 there is room for a line
 	number up to 999.  When the buffer has 1000 lines five columns will be
 	used.  The minimum value is 1, the maximum value is 20.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'omnifunc'* *'ofu'*
 'omnifunc' 'ofu'	string	(default: empty)
@@ -6555,7 +6555,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'opendevice' 'odev'	boolean	(default off)
 			global
 			{only for MS-Windows}  *E796*
-	Enable reading and writing from devices.  This may get Vim stuck on a
+	Enable reading and writing from devices.  This may get MNV stuck on a
 	device that can be opened but doesn't actually do the I/O.  Therefore
 	it is off by default.
 	Note that on MS-Windows editing "aux.h", "lpt1.txt" and the like also
@@ -6575,7 +6575,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 					*'osctimeoutlen'* *'ost'* *E1568*
 'osctimeoutlen' 'ost'	number (default 1000)
 			global
-	This option specifies the timeout in milliseconds Vim should wait
+	This option specifies the timeout in milliseconds MNV should wait
 	until it receives an OSC terminator after receiving the beginning of
 	an OSC command response.  See the |TermResponseAll| autocommand event
 	and |v:termosc| for more information.
@@ -6601,16 +6601,16 @@ A jump table for the options with a short description can be found at |Q_op|.
 						*'paste'* *'nopaste'*
 'paste'			boolean	(default off)
 			global
-	Put Vim in Paste mode.  This is useful if you want to cut or copy
-	some text from one window and paste it in Vim.  This will avoid
+	Put MNV in Paste mode.  This is useful if you want to cut or copy
+	some text from one window and paste it in MNV.  This will avoid
 	unexpected effects.
-	Setting this option is useful when using Vim in a terminal, where Vim
+	Setting this option is useful when using MNV in a terminal, where MNV
 	cannot distinguish between typed text and pasted text.  In the GUI,
-	Vim knows about pasting and will mostly do the right thing without
-	'paste' being set.  The same is true for a terminal where Vim handles
+	MNV knows about pasting and will mostly do the right thing without
+	'paste' being set.  The same is true for a terminal where MNV handles
 	the mouse clicks itself.
 	This option is reset when starting the GUI.  Thus if you set it in
-	your .vimrc it will work in a terminal, but not in the GUI.  Setting
+	your .mnvrc it will work in a terminal, but not in the GUI.  Setting
 	'paste' in the GUI has side effects: e.g., the Paste toolbar button
 	will no longer work in Insert mode, because it uses a mapping.
 	When the 'paste' option is switched on (also when it was already on):
@@ -6722,8 +6722,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 		:set path=,,
 <	- A directory name may end in a ':' or '/'.
 	- Environment variables are expanded |:set_env|.
-	- When using |netrw.vim| URLs can be used.  For example, adding
-	  "http://www.vim.org" will make ":find index.html" work.
+	- When using |netrw.mnv| URLs can be used.  For example, adding
+	  "http://www.mnv.org" will make ":find index.html" work.
 	- Search upwards and downwards in a directory tree using "*", "**" and
 	  ";".  See |file-searching| for info and syntax.
 	- Careful with '\' characters, type two to get one in the option: >
@@ -7006,7 +7006,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	sets to 2 if Python 2 is available.
 	See also: |has-pythonx|
 
-	If Vim is compiled with only |+python| or |+python3| setting
+	If MNV is compiled with only |+python| or |+python3| setting
 	'pyxversion' has no effect.  The pyx* functions and commands are
 	always the same as the compiled version.
 
@@ -7046,8 +7046,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 'readonly' 'ro'		boolean	(default off)
 			local to buffer  |local-noglobal|
 	If on, writes fail unless you use a '!'.  Protects you from
-	accidentally overwriting a file.  Default on when Vim is started
-	in read-only mode ("vim -R") or when the executable is called "view".
+	accidentally overwriting a file.  Default on when MNV is started
+	in read-only mode ("mnv -R") or when the executable is called "view".
 	When using ":w!" the 'readonly' option is reset for the current
 	buffer, unless the 'Z' flag is in 'cpoptions'.
 	When using the ":view" command the 'readonly' option is set for the
@@ -7066,7 +7066,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	matches will be highlighted.
 	For syntax highlighting the time applies per window.  When over the
 	limit syntax highlighting is disabled until |CTRL-L| is used.
-	This is used to avoid that Vim hangs when using a very complicated
+	This is used to avoid that MNV hangs when using a very complicated
 	pattern.
 
 						*'regexpengine'* *'re'*
@@ -7080,9 +7080,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Note that when using the NFA engine and the pattern contains something
 	that is not supported the pattern will not match.  This is only useful
 	for debugging the regexp engine.
-	Using automatic selection enables Vim to switch the engine, if the
+	Using automatic selection enables MNV to switch the engine, if the
 	default engine becomes too costly.  E.g., when the NFA engine uses too
-	many states.  This should prevent Vim from hanging on a combination of
+	many states.  This should prevent MNV from hanging on a combination of
 	a complex pattern with long text.
 
 		*'relativenumber'* *'rnu'* *'norelativenumber'* *'nornu'*
@@ -7112,7 +7112,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 	Allows for mappings to work recursively.  If you do not want this for
 	a single entry, use the :noremap[!] command.
-	NOTE: To avoid portability problems with Vim scripts, always keep
+	NOTE: To avoid portability problems with MNV scripts, always keep
 	this option at the default "on".  Only switch it off when working with
 	old Vi scripts.
 
@@ -7130,7 +7130,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Currently, only one optional renderer is available.
 
 	render	behavior    ~
-	directx	Vim will draw text using DirectX (DirectWrite).  It makes
+	directx	MNV will draw text using DirectX (DirectWrite).  It makes
 		drawn glyphs more beautiful than default GDI.
 		It requires 'encoding' is "utf-8", and only works on
 		MS-Windows Vista or newer version.
@@ -7226,11 +7226,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 'restorescreen' 'rs'	boolean	(default on)
 			global
 			{only in MS-Windows console version}
-	When set, the screen contents is restored when exiting Vim.  This also
+	When set, the screen contents is restored when exiting MNV.  This also
 	happens when executing external commands.
 
-	For non-Windows Vim: You can set or reset the 't_ti' and 't_te'
-	options in your .vimrc.  To disable restoring:
+	For non-Windows MNV: You can set or reset the 't_ti' and 't_te'
+	options in your .mnvrc.  To disable restoring:
 		set t_ti= t_te=
 	To enable restoring (for an xterm):
 		set t_ti=^[7^[[r^[[?47h t_te=^[[?47l^[8
@@ -7288,7 +7288,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	security reasons.
 
 					 *'ruler'* *'ru'* *'noruler'* *'noru'*
-'ruler' 'ru'		boolean	(Vim default: on, Vi default: off)
+'ruler' 'ru'		boolean	(MNV default: on, Vi default: off)
 			global
 	Show the line and column number of the cursor position, separated by a
 	comma.  When there is room, the relative position of the displayed
@@ -7329,39 +7329,39 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Example: >
 		:set rulerformat=%15(%c%V\ %p%%%)
 <
-				*'runtimepath'* *'rtp'* *vimfiles*
+				*'runtimepath'* *'rtp'* *mnvfiles*
 'runtimepath' 'rtp'	string	(default:
-					Unix:  "$HOME/.vim or
-						$XDG_CONFIG_HOME/vim,
-						$VIM/vimfiles,
-						$VIMRUNTIME,
-						$VIM/vimfiles/after,
-						$HOME/.vim/after"
-					Amiga: "home:vimfiles,
-						$VIM/vimfiles,
-						$VIMRUNTIME,
-						$VIM/vimfiles/after,
-						home:vimfiles/after"
-					MS-Windows: "$HOME/vimfiles,
-						$VIM/vimfiles,
-						$VIMRUNTIME,
-						$VIM/vimfiles/after,
-						$HOME/vimfiles/after"
-					Haiku: "$BE_USER_SETTINGS/vim,
-						$VIM/vimfiles,
-						$VIMRUNTIME,
-						$VIM/vimfiles/after,
-						$BE_USER_SETTINGS/vim/after"
-					VMS:   "sys$login:vimfiles,
-						$VIM/vimfiles,
-						$VIMRUNTIME,
-						$VIM/vimfiles/after,
-						sys$login:vimfiles/after")
+					Unix:  "$HOME/.mnv or
+						$XDG_CONFIG_HOME/mnv,
+						$MNV/mnvfiles,
+						$MNVRUNTIME,
+						$MNV/mnvfiles/after,
+						$HOME/.mnv/after"
+					Amiga: "home:mnvfiles,
+						$MNV/mnvfiles,
+						$MNVRUNTIME,
+						$MNV/mnvfiles/after,
+						home:mnvfiles/after"
+					MS-Windows: "$HOME/mnvfiles,
+						$MNV/mnvfiles,
+						$MNVRUNTIME,
+						$MNV/mnvfiles/after,
+						$HOME/mnvfiles/after"
+					Haiku: "$BE_USER_SETTINGS/mnv,
+						$MNV/mnvfiles,
+						$MNVRUNTIME,
+						$MNV/mnvfiles/after,
+						$BE_USER_SETTINGS/mnv/after"
+					VMS:   "sys$login:mnvfiles,
+						$MNV/mnvfiles,
+						$MNVRUNTIME,
+						$MNV/mnvfiles/after,
+						sys$login:mnvfiles/after")
 			global
 	This is a list of directories which will be searched for runtime
 	files:
-	  filetype.vim	filetypes by file name |new-filetype|
-	  scripts.vim	filetypes by file contents |new-filetype-scripts|
+	  filetype.mnv	filetypes by file name |new-filetype|
+	  scripts.mnv	filetypes by file contents |new-filetype-scripts|
 	  autoload/	automatically loaded scripts |autoload-functions|
 	  colors/	color scheme files |:colorscheme|
 	  compiler/	compiler files |:compiler|
@@ -7371,28 +7371,28 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  indent/	indent scripts |indent-expression|
 	  keymap/	key mapping files |mbyte-keymap|
 	  lang/		message translations |:menutrans| and |multi-lang|
-	  menu.vim	GUI menus |menu.vim|
+	  menu.mnv	GUI menus |menu.mnv|
 	  pack/		packages |:packadd|
 	  plugin/	plugin scripts |write-plugin|
 	  print/	files for printing |postscript-print-encoding|
 	  spell/	spell checking files |spell|
 	  syntax/	syntax files |mysyntaxfile|
-	  tutor/	files for vimtutor |tutor|
+	  tutor/	files for mnvtutor |tutor|
 
 	And any other file searched for with the |:runtime| command.
 
 	For $XDG_CONFIG_HOME see |xdg-base-dir|.
 
 	The defaults for most systems are setup to search five locations:
-	1. In your $MYVIMDIR directory, for your personal preferences.
-	2. In a system-wide Vim directory, for preferences from the system
+	1. In your $MYMNVDIR directory, for your personal preferences.
+	2. In a system-wide MNV directory, for preferences from the system
 	   administrator.
-	3. In $VIMRUNTIME, for files distributed with Vim.
+	3. In $MNVRUNTIME, for files distributed with MNV.
 							*after-directory*
-	4. In the "after" directory in the system-wide Vim directory.  This is
+	4. In the "after" directory in the system-wide MNV directory.  This is
 	   for the system administrator to overrule or add to the distributed
 	   defaults (rarely needed)
-	5. In the "after" directory in your $MYVIMDIR directory.  This is for
+	5. In the "after" directory in your $MYMNVDIR directory.  This is for
 	   personal preferences to overrule or add to the distributed defaults
 	   or system-wide settings (rarely needed).
 
@@ -7406,17 +7406,17 @@ A jump table for the options with a short description can be found at |Q_op|.
 	wildcards.
 	See |:runtime|.
 	Example: >
-		:set runtimepath=~/vimruntime,/mygroup/vim,$VIMRUNTIME
-<	This will use the directory "~/vimruntime" first (containing your
-	personal Vim runtime files), then "/mygroup/vim" (shared between a
-	group of people) and finally "$VIMRUNTIME" (the distributed runtime
+		:set runtimepath=~/mnvruntime,/mygroup/mnv,$MNVRUNTIME
+<	This will use the directory "~/mnvruntime" first (containing your
+	personal MNV runtime files), then "/mygroup/mnv" (shared between a
+	group of people) and finally "$MNVRUNTIME" (the distributed runtime
 	files).
-	You probably should always include $VIMRUNTIME somewhere, to use the
-	distributed runtime files.  You can put a directory before $VIMRUNTIME
+	You probably should always include $MNVRUNTIME somewhere, to use the
+	distributed runtime files.  You can put a directory before $MNVRUNTIME
 	to find files which replace a distributed runtime files.  You can put
-	a directory after $VIMRUNTIME to find files which add to distributed
+	a directory after $MNVRUNTIME to find files which add to distributed
 	runtime files.
-	When Vim is started with |--clean| the home directory entries are not
+	When MNV is started with |--clean| the home directory entries are not
 	included.
 	Environment variables are expanded |:set_env|.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
@@ -7469,7 +7469,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	NOTE: This option is set to 1 when 'compatible' is set.
 
 						*'scrolloff'* *'so'*
-'scrolloff' 'so'	number	(default 0, set to 5 in |defaults.vim|)
+'scrolloff' 'so'	number	(default 0, set to 5 in |defaults.mnv|)
 			global or local to window |global-local|
 	Minimal number of screen lines to keep above and below the cursor.
 	This will make some context visible around where you are working.  If
@@ -7525,12 +7525,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 'secure'		boolean	(default off)
 			global
 	When on, ":autocmd", shell and write commands are not allowed in
-	".vimrc" and ".exrc" in the current directory and map commands are
+	".mnvrc" and ".exrc" in the current directory and map commands are
 	displayed.  Switch it off only if you know that you will not run into
 	problems, or when the 'exrc' option is off.  On Unix this option is
-	only used if the ".vimrc" or ".exrc" is not owned by you.  This can be
+	only used if the ".mnvrc" or ".exrc" is not owned by you.  This can be
 	dangerous if the systems allows users to do a "chown".  You better set
-	'secure' at the end of your ~/.vimrc then.
+	'secure' at the end of your ~/.mnvrc then.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
 
@@ -7559,7 +7559,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  cannot include the last character of a line, when starting in Normal
 	  mode and 'virtualedit' empty.
 	- when "exclusive" is used with a single character visual selection,
-	  Vim will behave as if the 'selection' is inclusive (in other words,
+	  MNV will behave as if the 'selection' is inclusive (in other words,
 	  you cannot visually select an empty region).
 
 	The 'selection' option is set by the |:behave| command.
@@ -7600,7 +7600,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   options	all options and mappings (also global values for local
 			options)
 	   skiprtp	exclude 'runtimepath' and 'packpath' from the options
-	   resize	size of the Vim window: 'lines' and 'columns'
+	   resize	size of the MNV window: 'lines' and 'columns'
 	   sesdir	the directory in which the session file is located
 			will become the current directory (useful with
 			projects accessed over a network from different
@@ -7614,7 +7614,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			restored
 	   unix		with Unix end-of-line format (single <NL>), even when
 			on Windows or DOS
-	   winpos	position of the whole Vim window
+	   winpos	position of the whole MNV window
 	   winsize	window sizes
 
 	Don't include both "curdir" and "sesdir".
@@ -7623,8 +7623,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	If you leave out "options" many things won't work well after restoring
 	the session.
 	"slash" and "unix" are useful on Windows when sharing session files
-	with Unix.  The Unix version of Vim cannot source dos format scripts,
-	but the Windows version of Vim can source unix format scripts.
+	with Unix.  The Unix version of MNV cannot source dos format scripts,
+	but the Windows version of MNV can source unix format scripts.
 
 						*'shell'* *'sh'* *E91*
 'shell' 'sh'		string	(default $SHELL or "sh", Win32: "cmd.exe")
@@ -7645,9 +7645,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 <	Note the backslash before each quote (to avoid starting a comment) and
 	each space (to avoid ending the option value).  Also note that the
 	"-f" is not inside the quotes, because it is not part of the command
-	name.  Vim automagically recognizes the backslashes that are path
+	name.  MNV automagically recognizes the backslashes that are path
 	separators.
-	Example with escaped space (Vim will do this when initializing the
+	Example with escaped space (MNV will do this when initializing the
 	option from $SHELL): >
 		:set shell=/bin/with\\\ space/sh
 <	The resulting value of 'shell' is "/bin/with\ space/sh", two
@@ -7706,7 +7706,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	path is removed, thus "/bin/sh" uses "sh".
 	For Unix and MS-Windows, when the 'shell' option is "pwsh" the default
 	becomes ">%s 2>&1" and the output is not echoed to the screen.
-	The initialization of this option is done after reading the ".vimrc"
+	The initialization of this option is done after reading the ".mnvrc"
 	and the other initializations, so that when the 'shell' option is set
 	there, the 'shellpipe' option changes automatically, unless it was
 	explicitly set before.
@@ -7755,7 +7755,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	and "powershell" is checked for which makes the default
 	"2>&1 | Out-File -Encoding default" (see |dos-powershell|).  Also, the
 	same names with ".exe" appended are checked for.
-	The initialization of this option is done after reading the ".vimrc"
+	The initialization of this option is done after reading the ".mnvrc"
 	and the other initializations, so that when the 'shell' option is set
 	there, the 'shellredir' option changes automatically unless it was
 	explicitly set before.
@@ -7771,7 +7771,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	When set, a forward slash is used when expanding file names.  This is
 	useful when a Unix-like shell is used instead of cmd.exe, pwsh.exe, or
 	powershell.exe.  Backward slashes can still be typed, but they are
-	changed to forward slashes by Vim.
+	changed to forward slashes by MNV.
 	Note that setting or resetting this option has no effect for some
 	existing file names, thus this option needs to be set before opening
 	any file for best results.  This might change in the future.
@@ -7781,7 +7781,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 <	Also see 'completeslash'.
 
 			*'shelltemp'* *'stmp'* *'noshelltemp'* *'nostmp'*
-'shelltemp' 'stmp'	boolean	(Vi default off, Vim default on)
+'shelltemp' 'stmp'	boolean	(Vi default off, MNV default on)
 			global
 	When on, use temp files for shell commands.  When off use a pipe.
 	When using a pipe is not possible temp files are used anyway.
@@ -7797,7 +7797,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'shelltemp' is off.
 	The `system()` function does not respect this option and always uses
 	temp files.
-	NOTE: This option is set to the Vim default value when 'compatible'
+	NOTE: This option is set to the MNV default value when 'compatible'
 	is reset.
 
 						*'shelltype'* *'st'*
@@ -7863,11 +7863,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 			local to buffer
 	Number of columns that make up one level of (auto)indentation.  Used
 	by 'cindent', |<<|, |>>|, etc.
-	If set to 0, Vim uses the current 'tabstop' value.  Use |shiftwidth()|
+	If set to 0, MNV uses the current 'tabstop' value.  Use |shiftwidth()|
 	to obtain the effective value in scripts.
 
 						*'shortmess'* *'shm'*
-'shortmess' 'shm'	string	(Vim default "filnxtToOS", Vi default: "S",
+'shortmess' 'shm'	string	(MNV default "filnxtToOS", Vi default: "S",
 							POSIX default: "AS")
 			global					*E1336*
 	This option helps to avoid all the |hit-enter| prompts caused by file
@@ -7905,7 +7905,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  W	don't give "written" or "[w]" when writing a file	*shm-W*
 	  A	don't give the "ATTENTION" message when an existing	*shm-A*
 		swap file is found
-	  I	don't give the intro message when starting Vim,		*shm-I*
+	  I	don't give the intro message when starting MNV,		*shm-I*
 		see |:intro|
 	  c	don't give |ins-completion-menu| messages; for		*shm-c*
 		example, "-- XXX completion (YYY)", "match 1 of 2", "The only
@@ -7935,7 +7935,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	    shm=at	Abbreviation, and truncate message when necessary.
 
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 				 *'shortname'* *'sn'* *'noshortname'* *'nosn'*
 'shortname' 'sn'	boolean	(default off)
@@ -7971,7 +7971,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 		:setlocal showbreak=NONE
 <
 				     *'showcmd'* *'sc'* *'noshowcmd'* *'nosc'*
-'showcmd' 'sc'		boolean	(Vim default: on, Vi default: off)
+'showcmd' 'sc'		boolean	(MNV default: on, Vi default: off)
 			global
 	Show (partial) command in the last line of the screen.  Set this
 	option off if your terminal is slow.
@@ -7985,7 +7985,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	This information can be displayed in an alternative location using the
 	'showcmdloc' option.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 			*'showcmdloc'* *'sloc'*
 'showcmdloc' 'sloc'	string	(default "last")
@@ -8036,7 +8036,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Note: Use of the short form is rated PG.
 
 				 *'showmode'* *'smd'* *'noshowmode'* *'nosmd'*
-'showmode' 'smd'	boolean	(Vim default: on, Vi default: off)
+'showmode' 'smd'	boolean	(MNV default: on, Vi default: off)
 			global
 	If in Insert, Replace or Visual mode put a message on the last line.
 	Use the 'M' flag in 'highlight' to set the type of highlighting for
@@ -8045,7 +8045,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	doesn't mean XIM is really active, especially when 'imactivatekey' is
 	not set.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'showtabline'* *'stal'*
 'showtabline' 'stal'	number	(default 1)
@@ -8168,7 +8168,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	off.
 	NOTE: in most cases, using 'softtabstop' is a better option.  Have a
 	look at section |30.5| of the user guide for detailed
-	explanations on how Vim works with tabs and spaces.
+	explanations on how MNV works with tabs and spaces.
 
 			*'smoothscroll'* *'sms'* *'nosmoothscroll'* *'nosms'*
 'smoothscroll' 'sms'	boolean  (default off)
@@ -8187,12 +8187,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Create soft tab stops, separated by 'softtabstop' number of columns.
 	In Insert mode, pressing the <Tab> key will move the cursor to the
 	next soft tab stop, instead of inserting a literal tab.  <BS> behaves
-	similarly in reverse.  Vim inserts a minimal mix of tab and space
+	similarly in reverse.  MNV inserts a minimal mix of tab and space
 	characters to produce the visual effect.
 
 	This setting does not affect the display of existing tab characters.
 
-	A value of 0 disables this behaviour.  A negative value makes Vim use
+	A value of 0 disables this behaviour.  A negative value makes MNV use
 	'shiftwidth'.  If you plan to use 'sts' and 'shiftwidth' with
 	different values, you might consider setting 'smarttab'.
 
@@ -8203,7 +8203,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	enabled.  See also |ins-expandtab| and user manual section |30.5| for
 	in-depth explanations.
 
-	If Vim is compiled with the |+vartabs| feature then the value of
+	If MNV is compiled with the |+vartabs| feature then the value of
 	'softtabstop' will be ignored if 'varsofttabstop' is set to anything
 	other than an empty string.
 
@@ -8243,7 +8243,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	It may also be a comma-separated list of names.  A count before the
 	|zg| and |zw| commands can be used to access each.  This allows using
 	a personal word list file and a project word list file.
-	When a word is added while this option is empty Vim will set it for
+	When a word is added while this option is empty MNV will set it for
 	you: Using the first directory in 'runtimepath' that is writable.  If
 	there is no "spell" directory yet it will be created.  For the file
 	name the first language name that appears in 'spelllang' is used,
@@ -8288,18 +8288,18 @@ A jump table for the options with a short description can be found at |Q_op|.
 	first "_xx" in the name is removed and used as the region name
 	(_xx is an underscore, two letters and followed by a non-letter).
 	This is mainly for testing purposes.  You must make sure the correct
-	encoding is used, Vim doesn't check it.
+	encoding is used, MNV doesn't check it.
 	When 'encoding' is set the word lists are reloaded.  Thus it's a good
 	idea to set 'spelllang' after setting 'encoding' to avoid loading the
 	files twice.
 	How the related spell files are found is explained here: |spell-load|.
 
-	If the |spellfile.vim| plugin is active and you use a language name
-	for which Vim cannot find the .spl file in 'runtimepath' the plugin
+	If the |spellfile.mnv| plugin is active and you use a language name
+	for which MNV cannot find the .spl file in 'runtimepath' the plugin
 	will ask you if you want to download the file.
 
-	After this option has been set successfully, Vim will source the files
-	"spell/LANG.vim" in 'runtimepath'.  "LANG" is the value of 'spelllang'
+	After this option has been set successfully, MNV will source the files
+	"spell/LANG.mnv" in 'runtimepath'.  "LANG" is the value of 'spelllang'
 	up to the first character that is not an ASCII letter or number and
 	not a dash.  Also see |set-spc-auto|.
 
@@ -8381,7 +8381,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	Only one of "best", "double" or "fast" may be used.  The others may
 	appear several times in any order.  Example: >
-		:set sps=file:~/.vim/sugg,best,expr:MySuggest()
+		:set sps=file:~/.mnv/sugg,best,expr:MySuggest()
 <	Environment variables are expanded |:set_env|.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
@@ -8496,8 +8496,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	H F   Help buffer flag, text is ",HLP".
 	w F   Preview window flag, text is "[Preview]".
 	W F   Preview window flag, text is ",PRV".
-	y F   Type of file in the buffer, e.g., "[vim]".  See 'filetype'.
-	Y F   Type of file in the buffer, e.g., ",VIM".  See 'filetype'.
+	y F   Type of file in the buffer, e.g., "[mnv]".  See 'filetype'.
+	Y F   Type of file in the buffer, e.g., ",MNV".  See 'filetype'.
 	q S   "[Quickfix List]", "[Location List]" or empty.
 	k S   Value of "b:keymap_name" or 'keymap' when |:lmap| mappings are
 	      being used: "<keymap>"
@@ -8566,7 +8566,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	@ -   Inserts a newline.  This only takes effect when the "maxheight"
 	      value of 'statuslineopt' is greater than 1, or for |tabpanel|.
 
-	When displaying a flag, Vim removes the leading comma, if any, when
+	When displaying a flag, MNV removes the leading comma, if any, when
 	that flag comes right after plaintext.  This will make a nice display
 	when flags are used like in the examples below.
 
@@ -8600,9 +8600,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Otherwise the result is taken as flag text and applied to the rules
 	described above.
 
-	Watch out for errors in expressions.  They may render Vim unusable!
+	Watch out for errors in expressions.  They may render MNV unusable!
 	If you are stuck, hold down ':' or 'Q' to get a prompt, then quit and
-	edit your .vimrc or whatever with "vim --clean" to get it right.
+	edit your .mnvrc or whatever with "mnv --clean" to get it right.
 
 	Examples:
 	Emulate standard status line with 'ruler' set >
@@ -8655,7 +8655,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			    window is used.
 			    Note: When the applied value differs from {n}, the
 			    option is updated to reflect it.
-			    Example of updated options: >vim
+			    Example of updated options: >mnv
 				:set statuslineopt=maxheight:999,fixedheight
 				" Only 20 lines could be applied, so
 				" maxheight is updated to 20.
@@ -8718,7 +8718,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	writing to it.  This takes some time, especially on busy unix systems.
 	When this option is empty parts of the swap file may be in memory and
 	not written to disk.  When the system crashes you may lose more work.
-	On Unix the system does a sync now and then without Vim asking for it,
+	On Unix the system does a sync now and then without MNV asking for it,
 	so the disadvantage of setting this option off is small.  On some
 	systems the swap file will not be written at all.  For a unix system
 	setting it to "sync" will use the sync() call instead of the default
@@ -8779,10 +8779,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 	b:current_syntax variable does).
 	This option is most useful in a modeline, for a file which syntax is
 	not automatically recognized.  Example, in an IDL file:
-		/* vim: set syntax=idl : */ ~
+		/* mnv: set syntax=idl : */ ~
 	When a dot appears in the value then this separates two filetype
 	names.  Example:
-		/* vim: set syntax=c.doxygen : */ ~
+		/* mnv: set syntax=c.doxygen : */ ~
 	This will use the "c" syntax first, then the "doxygen" syntax.
 	Note that the second one must be prepared to be loaded as an addition,
 	otherwise it will be skipped.  More than one dot may appear.
@@ -8801,7 +8801,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'tabclose' 'tcl'	string	(default "")
 			global
 	This option controls the behavior when closing tab pages (e.g., using
-	|:tabclose|).  When empty Vim goes to the next (right) tab page.
+	|:tabclose|).  When empty MNV goes to the next (right) tab page.
 
 	Possible values (comma-separated list):
 	   left		If included, go to the previous tab page instead of
@@ -8814,7 +8814,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'tabline' 'tal'		string	(default empty)
 			global
 	When non-empty, this option determines the content of the tab pages
-	line at the top of the Vim window.  When empty Vim will use a default
+	line at the top of the MNV window.  When empty MNV will use a default
 	tab pages line.  See |setting-tabline| for more info.
 
 	The tab pages line only appears as specified with the 'showtabline'
@@ -8866,7 +8866,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	|(1)        |
 	|  ~/aaa.txt|
 	|(2)        |
-	|  ~/.vimrc |
+	|  ~/.mnvrc |
 	|           |
 	|           |
 	|           |
@@ -8911,7 +8911,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	character (ASCII 9); a Horizontal Tab always advances to the next tab
 	stop.
 	The value must be at least 1 and at most 9999.
-	If Vim was compiled with |+vartabs| and 'vartabstop' is set, this
+	If MNV was compiled with |+vartabs| and 'vartabstop' is set, this
 	option is ignored.
 	Leave it at 8 unless you have a strong reason (see usr |30.5|).
 
@@ -8919,20 +8919,20 @@ A jump table for the options with a short description can be found at |Q_op|.
 			*'tagbsearch'* *'tbs'* *'notagbsearch'* *'notbs'*
 'tagbsearch' 'tbs'	boolean	(default on)
 			global
-	When searching for a tag (e.g., for the |:ta| command), Vim can either
+	When searching for a tag (e.g., for the |:ta| command), MNV can either
 	use a binary search or a linear search in a tags file.  Binary
 	searching makes searching for a tag a LOT faster, but a linear search
 	will find more tags if the tags file wasn't properly sorted.
-	Vim normally assumes that your tags files are sorted, or indicate that
+	MNV normally assumes that your tags files are sorted, or indicate that
 	they are not sorted.  Only when this is not the case does the
 	'tagbsearch' option need to be switched off.
 
 	When 'tagbsearch' is on, binary searching is first used in the tags
-	files.  In certain situations, Vim will do a linear search instead for
+	files.  In certain situations, MNV will do a linear search instead for
 	certain files, or retry all files with a linear search.  When
 	'tagbsearch' is off, only a linear search is done.
 
-	Linear searching is done anyway, for one file, when Vim finds a line
+	Linear searching is done anyway, for one file, when MNV finds a line
 	at the start of the file indicating that it's not sorted: >
    !_TAG_FILE_SORTED	0	/some comment/
 <	[The whitespace before and after the '0' must be a single <Tab>]
@@ -8979,7 +8979,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   match	Match case
 	   smart	Ignore case unless an upper case letter is used
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 							*'tagfunc'* *'tfu'*
 'tagfunc' 'tfu'		string	(default: empty)
@@ -9002,12 +9002,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 	If non-zero, tags are significant up to this number of characters.
 
 			*'tagrelative'* *'tr'* *'notagrelative'* *'notr'*
-'tagrelative' 'tr'	boolean	(Vim default: on, Vi default: off)
+'tagrelative' 'tr'	boolean	(MNV default: on, Vi default: off)
 			global
 	If on and using a tags file in another directory, file names in that
 	tags file are relative to the directory where the tags file is.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'tags'* *'tag'* *E433*
 'tags' 'tag'		string	(default "./tags,tags", when compiled with
@@ -9027,7 +9027,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	files called "tags?".
 	The |tagfiles()| function can be used to get a list of the file names
 	actually used.
-	If Vim was compiled with the |+emacs_tags| feature, Emacs-style tag
+	If MNV was compiled with the |+emacs_tags| feature, Emacs-style tag
 	files are also supported.  They are automatically recognized.  The
 	default value becomes "./tags,./TAGS,tags,TAGS", unless case
 	differences are ignored (MS-Windows).  |emacs-tags|
@@ -9131,13 +9131,13 @@ A jump table for the options with a short description can be found at |Q_op|.
 	For Win32 console, Windows 10 version 1703 (Creators Update) or later
 	is required.  Use this check to find out: >
 		if has('vcon')
-<	This requires Vim to be built with the |+vtp| feature, see also
+<	This requires MNV to be built with the |+vtp| feature, see also
 	|win32-term-colors|.
 
 	Note that the "cterm" attributes are still used, not the "gui" ones.
 
-	When using Vim with Windows Terminal, the background of Windows
-	Terminal is normally filled with the Vim background color.  Setting
+	When using MNV with Windows Terminal, the background of Windows
+	Terminal is normally filled with the MNV background color.  Setting
 	'termguicolors' and the guibg of the Normal highlight group to NONE
 	will make the background transparent: >
 		:hi Normal guibg=NONE
@@ -9158,7 +9158,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	The SIGWINCH handler is always available.  If set to "inband" and the
 	terminal does not support in-band window resize events, then the
 	SIGWINCH handler will be used instead as a fallback.  If set to ""
-	(empty option), then "inband" will be used if Vim detects that the
+	(empty option), then "inband" will be used if MNV detects that the
 	terminal supports it, otherwise "sigwinch".
 
 
@@ -9168,8 +9168,8 @@ A jump table for the options with a short description can be found at |Q_op|.
 	If the host terminal supports it, buffer all screen updates made
 	during a redraw cycle so that each screen is displayed in the terminal
 	all at once.  This can prevent tearing or flickering when the terminal
-	updates faster than Vim can redraw.  If the host terminal does not
-	support it or if Vim is running graphically, then this option does
+	updates faster than MNV can redraw.  If the host terminal does not
+	support it or if MNV is running graphically, then this option does
 	nothing.
 
 	The specification can be found at:
@@ -9227,7 +9227,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	  "20*0" uses at least 20 rows and the current window width.
 	  "0*40" uses the current window height and at least 40 columns.
 	Note that the command running in the terminal window may still change
-	the size of the terminal.  In that case the Vim window will be
+	the size of the terminal.  In that case the MNV window will be
 	adjusted to that size, if possible.
 
 						*'termwintype'* *'twt'*
@@ -9258,14 +9258,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	shortens a lot of messages}
 
 				   *'textauto'* *'ta'* *'notextauto'* *'nota'*
-'textauto' 'ta'		boolean	(Vim default: on, Vi default: off)
+'textauto' 'ta'		boolean	(MNV default: on, Vi default: off)
 			global
 	This option is obsolete.  Use 'fileformats'.
 	For backwards compatibility, when 'textauto' is set, 'fileformats' is
 	set to the default value for the current system.  When 'textauto' is
 	reset, 'fileformats' is made empty.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 				   *'textmode'* *'tx'* *'notextmode'* *'notx'*
 'textmode' 'tx'		boolean	(Win32: default on,
@@ -9332,7 +9332,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 
 						*'ttimeout'* *'nottimeout'*
-'ttimeout'		boolean (default off, set in |defaults.vim|)
+'ttimeout'		boolean (default off, set in |defaults.mnv|)
 			global
 	These two options together determine the behavior when part of a
 	mapped key sequence or keyboard code has been received:
@@ -9342,17 +9342,17 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   on		on or off	time out on :mappings and key codes
 	   off		on		time out on key codes
 
-	If both options are off, Vim will wait until either the complete
+	If both options are off, MNV will wait until either the complete
 	mapping or key sequence has been received, or it is clear that there
 	is no mapping or key sequence for the received characters.  For
-	example: if you have mapped "vl" and Vim has received 'v', the next
+	example: if you have mapped "vl" and MNV has received 'v', the next
 	character is needed to see if the 'v' is followed by an 'l'.
-	When one of the options is on, Vim will wait for about 1 second for
+	When one of the options is on, MNV will wait for about 1 second for
 	the next character to arrive.  After that the already received
 	characters are interpreted as single characters.  The waiting time can
 	be changed with the 'timeoutlen' option.
 	On slow terminals or very busy systems timing out may cause
-	malfunctioning cursor keys.  If both options are off, Vim waits
+	malfunctioning cursor keys.  If both options are off, MNV waits
 	forever after an entered <Esc> if there are key codes that start
 	with <Esc>.  You will have to type <Esc> twice.  If you do not have
 	problems with key codes, but would like to have :mapped key
@@ -9366,7 +9366,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 
 						*'ttimeoutlen'* *'ttm'*
-'ttimeoutlen' 'ttm'	number	(default -1, set to 100 in |defaults.vim|)
+'ttimeoutlen' 'ttm'	number	(default -1, set to 100 in |defaults.mnv|)
 			global
 	The time in milliseconds that is waited for a key code or mapped key
 	sequence to complete.  Also used for CTRL-\ CTRL-N and CTRL-\ CTRL-G
@@ -9390,7 +9390,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 	When on, the title of the window will be set to the value of
 	'titlestring' (if it is not empty), or to:
-		filename [+=-] (path) - VIM
+		filename [+=-] (path) - MNV
 	Where:
 		filename	the name of the file being edited
 		-		indicates the file cannot be modified, 'ma' off
@@ -9398,20 +9398,20 @@ A jump table for the options with a short description can be found at |Q_op|.
 		=		indicates the file is read-only
 		=+		indicates the file is read-only and modified
 		(path)		is the path of the file being edited
-		- VIM		the server name |v:servername| or "VIM"
+		- MNV		the server name |v:servername| or "MNV"
 	Only works if the terminal supports setting window titles
 	(currently Amiga console, Win32 console, all GUI versions and
 	terminals with a non-empty 't_ts' option - these are Unix xterm and
 	iris-ansi by default, where 't_ts' is taken from the builtin termcap).
 								*X11*
-	When Vim was compiled with HAVE_X11 defined, the original title will
+	When MNV was compiled with HAVE_X11 defined, the original title will
 	be restored if possible.  The output of ":version" will include "+X11"
 	when HAVE_X11 was defined, otherwise it will be "-X11".  This also
 	works for the icon name 'icon'.
-	But: When Vim was started with the |-X| argument, restoring the title
+	But: When MNV was started with the |-X| argument, restoring the title
 	will not work (except in the GUI).
 	If the title cannot be restored, it is set to the value of 'titleold'.
-	You might want to restore the title outside of Vim then.
+	You might want to restore the title outside of MNV then.
 	When using an xterm from a remote machine you can use this command: >
 
 	    rsh machine_name xterm -display $DISPLAY &
@@ -9419,7 +9419,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 <
 	then the WINDOWID environment variable should be inherited and the
 	title of the window should change back to what it should be after
-	exiting Vim.
+	exiting MNV.
 
 								*'titlelen'*
 'titlelen'		number	(default 85)
@@ -9435,9 +9435,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	'titlelen' is also used for the 'titlestring' option.
 
 						*'titleold'*
-'titleold'		string	(default "Thanks for flying Vim")
+'titleold'		string	(default "Thanks for flying MNV")
 			global
-	This option will be used for the window title when exiting Vim if the
+	This option will be used for the window title when exiting MNV if the
 	original title cannot be restored.  Only happens if 'title' is on or
 	'titlestring' is not empty.
 	This option cannot be set from a |modeline| or in the |sandbox|, for
@@ -9450,7 +9450,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Only works if the terminal supports setting window titles (currently
 	Amiga console, Win32 console, all GUI versions and terminals with a
 	non-empty 't_ts' option).
-	When Vim was compiled with HAVE_X11 defined, the original title will
+	When MNV was compiled with HAVE_X11 defined, the original title will
 	be restored if possible, see |X11|.
 
 	When this option contains printf-style '%' items, they will be
@@ -9568,7 +9568,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			mouse position while the mouse is dragged.  This works
 			much faster and more precise.  Your xterm must at
 			least at patchlevel 88 / XFree 3.3.3 for this to
-			work.  See below for how Vim detects this
+			work.  See below for how MNV detects this
 			automatically.
 							*netterm-mouse*
 	   netterm	NetTerm mouse handling.  A left mouse click generates
@@ -9611,11 +9611,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	If the terminfo/termcap entry "XM" exists and the first number is
 	"1006" then 'ttymouse' will be set to "sgr".  This works for many
 	modern terminals.
-	Additionally, if vim is compiled with the |+termresponse| feature and
+	Additionally, if mnv is compiled with the |+termresponse| feature and
 	|t_RV| is set to the escape sequence to request the xterm version
 	number, more intelligent detection is done.
 	The "xterm2" value will be set if the xterm version is reported to be
-	from 95 to 276.  The "sgr" value will be set if Vim detects Mac
+	from 95 to 276.  The "sgr" value will be set if MNV detects Mac
 	Terminal.app, iTerm2 or mintty, and when the xterm version is 277 or
 	higher.
 	If you do not want 'ttymouse' to be set to "xterm2" or "sgr"
@@ -9660,7 +9660,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'undofile' 'udf'	boolean	(default off)
 			local to buffer
 			{only when compiled with the |+persistent_undo| feature}
-	When on, Vim automatically saves undo history to an undo file when
+	When on, MNV automatically saves undo history to an undo file when
 	writing a buffer to a file, and restores undo history from the same
 	file on buffer read.
 	The directory where the undo file is stored is specified by 'undodir'.
@@ -9696,7 +9696,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 	Save the whole buffer for undo when reloading it.  This applies to the
 	":e!" command and reloading for when the buffer changed outside of
-	Vim. |FileChangedShell|
+	MNV. |FileChangedShell|
 	The save only happens when this option is negative or when the number
 	of lines is smaller than the value of this option.
 	Set this option to zero to disable undo for a reload.
@@ -9712,7 +9712,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	After typing this many characters the swap file will be written to
 	disk.  When zero, no swap file will be created at all (see chapter on
 	recovery |crash-recovery|).  'updatecount' is set to zero by starting
-	Vim with the "-n" option, see |startup|.  When editing in readonly
+	MNV with the "-n" option, see |startup|.  When editing in readonly
 	mode this option will be initialized to 10000.
 	The swapfile can be disabled per buffer with 'swapfile'.
 	When 'updatecount' is set from zero to non-zero, swap files are
@@ -9747,7 +9747,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	Note: this setting overrides 'softtabstop'.
 	See section |30.5| of the user manual for detailed explanations on how
-	Vim works with tabs and spaces.
+	MNV works with tabs and spaces.
 
 						*'vartabstop'* *'vts'*
 'vartabstop' 'vts'	string	(default "")
@@ -9767,14 +9767,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 	On UNIX, it is recommended to keep the default tabstop value of 8.
 	Consider setting 'varsofttabstop' instead.
 	See section |30.5| of the user manual for detailed explanations on how
-	Vim works with tabs and spaces.
+	MNV works with tabs and spaces.
 
 						*'verbose'* *'vbs'*
 'verbose' 'vbs'		number	(default 0)
 			global
-	When bigger than zero, Vim will give messages about what it is doing.
+	When bigger than zero, MNV will give messages about what it is doing.
 	Currently, these messages are given:
-	>= 1	When the viminfo file is read or written.
+	>= 1	When the mnvinfo file is read or written.
 	>= 2	When a file is ":source"'ed.
 	>= 4	Shell commands.
 	>= 5	Every searched tags file and include file.
@@ -9799,7 +9799,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 	When not empty all messages are written in a file with this name.
 	When the file exists messages are appended.
-	Writing to the file ends when Vim exits or when 'verbosefile' is made
+	Writing to the file ends when MNV exits or when 'verbosefile' is made
 	empty.  Writes are buffered, thus may not show up for some time.
 	Setting 'verbosefile' to a new value is like making it empty first.
 	The difference with |:redir| is that verbose messages are not
@@ -9809,11 +9809,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	security reasons.
 
 						*'viewdir'* *'vdir'*
-'viewdir' 'vdir'	string	(default for Amiga: "home:vimfiles/view",
-					 for Win32: "$HOME/vimfiles/view",
-					 for Unix: "$HOME/.vim/view" or
-					           "$XDG_CONFIG_HOME/vim/view"
-					 for VMS: "sys$login:vimfiles/view")
+'viewdir' 'vdir'	string	(default for Amiga: "home:mnvfiles/view",
+					 for Win32: "$HOME/mnvfiles/view",
+					 for Unix: "$HOME/.mnv/view" or
+					           "$XDG_CONFIG_HOME/mnv/view"
+					 for VMS: "sys$login:mnvfiles/view")
 			global
 			{not available when compiled without the |+mksession|
 			feature}
@@ -9844,19 +9844,19 @@ A jump table for the options with a short description can be found at |Q_op|.
 	   curdir	the window-local directory, if set with `:lcd`
 
 	"slash" and "unix" are useful on MS-Windows when sharing view files
-	with Unix.  The Unix version of Vim cannot source dos format scripts,
-	but the MS-Windows version of Vim can source unix format scripts.
+	with Unix.  The Unix version of MNV cannot source dos format scripts,
+	but the MS-Windows version of MNV can source unix format scripts.
 
-				*'viminfo'* *'vi'* *E526* *E527* *E528*
-'viminfo' 'vi'		string	(Vi default: "", Vim default for
+				*'mnvinfo'* *'vi'* *E526* *E527* *E528*
+'mnvinfo' 'vi'		string	(Vi default: "", MNV default for
 				   MS-Windows: '100,<50,s10,h,rA:,rB:,
 				   for Amiga: '100,<50,s10,h,rdf0:,rdf1:,rdf2:
 				   for others: '100,<50,s10,h)
 			global
-			{not available when compiled without the |+viminfo|
+			{not available when compiled without the |+mnvinfo|
 			feature}
-	When non-empty, the viminfo file is read upon startup and written
-	when exiting Vim (see |viminfo-file|).  Except when 'viminfofile' is
+	When non-empty, the mnvinfo file is read upon startup and written
+	when exiting MNV (see |mnvinfo-file|).  Except when 'mnvinfofile' is
 	"NONE".
 	The string should be a comma-separated list of parameters, each
 	consisting of a single character identifying the particular parameter,
@@ -9865,69 +9865,69 @@ A jump table for the options with a short description can be found at |Q_op|.
 	value is used for that parameter.  The following is a list of the
 	identifying characters and the effect of their value.
 	CHAR	VALUE	~
-							*viminfo-!*
+							*mnvinfo-!*
 	!	When included, save and restore global variables that start
 		with an uppercase letter, and don't contain a lowercase
 		letter.  Thus "KEEPTHIS and "K_L_M" are stored, but "KeepThis"
 		and "_K_L_M" are not.  Nested List and Dict items may not be
 		read back correctly, you end up with an empty item.
-							*viminfo-quote*
+							*mnvinfo-quote*
 	"	Maximum number of lines saved for each register.  Old name of
 		the '<' item, with the disadvantage that you need to put a
 		backslash before the ", otherwise it will be recognized as the
 		start of a comment!
-							*viminfo-%*
-	%	When included, save and restore the buffer list.  If Vim is
+							*mnvinfo-%*
+	%	When included, save and restore the buffer list.  If MNV is
 		started with a file name argument, the buffer list is not
-		restored.  If Vim is started without a file name argument, the
-		buffer list is restored from the viminfo file.  Quickfix
+		restored.  If MNV is started without a file name argument, the
+		buffer list is restored from the mnvinfo file.  Quickfix
 		('buftype'), unlisted ('buflisted'), unnamed and buffers on
-		removable media (|viminfo-r|) are not saved.
+		removable media (|mnvinfo-r|) are not saved.
 		When followed by a number, the number specifies the maximum
 		number of buffers that are stored.  Without a number all
 		buffers are stored.
-							*viminfo-'*
+							*mnvinfo-'*
 	'	Maximum number of previously edited files for which the marks
 		are remembered.  This parameter must always be included when
-		'viminfo' is non-empty.
+		'mnvinfo' is non-empty.
 		Including this item also means that the |jumplist| and the
-		|changelist| are stored in the viminfo file.
-							*viminfo-/*
+		|changelist| are stored in the mnvinfo file.
+							*mnvinfo-/*
 	/	Maximum number of items in the search pattern history to be
 		saved.  If non-zero, then the previous search and substitute
 		patterns are also saved.  When not included, the value of
 		'history' is used.
-							*viminfo-:*
+							*mnvinfo-:*
 	:	Maximum number of items in the command-line history to be
 		saved.  When not included, the value of 'history' is used.
-							*viminfo-<*
+							*mnvinfo-<*
 	<	Maximum number of lines saved for each register.  If zero then
 		registers are not saved.  When not included, all lines are
 		saved.  '"' is the old name for this item.
 		Also see the 's' item below: limit specified in Kbyte.
-							*viminfo-@*
+							*mnvinfo-@*
 	@	Maximum number of items in the input-line history to be
 		saved.  When not included, the value of 'history' is used.
-							*viminfo-c*
-	c	When included, convert the text in the viminfo file from the
+							*mnvinfo-c*
+	c	When included, convert the text in the mnvinfo file from the
 		'encoding' used when writing the file to the current
-		'encoding'.  See |viminfo-encoding|.
-							*viminfo-f*
+		'encoding'.  See |mnvinfo-encoding|.
+							*mnvinfo-f*
 	f	Whether file marks need to be stored.  If zero, file marks ('0
 		to '9, 'A to 'Z) are not stored.  When not present or when
 		non-zero, they are all stored.  '0 is used for the current
-		cursor position (when exiting or when doing ":wviminfo").
-							*viminfo-h*
-	h	Disable the effect of 'hlsearch' when loading the viminfo
+		cursor position (when exiting or when doing ":wmnvinfo").
+							*mnvinfo-h*
+	h	Disable the effect of 'hlsearch' when loading the mnvinfo
 		file.  When not included, it depends on whether ":nohlsearch"
 		has been used since the last search command.
-							*viminfo-n*
-	n	Name of the viminfo file.  The name must immediately follow
+							*mnvinfo-n*
+	n	Name of the mnvinfo file.  The name must immediately follow
 		the 'n'.  Must be at the end of the option!  If the
-		'viminfofile' option is set, that file name overrides the one
-		given here with 'viminfo'.  Environment variables are
+		'mnvinfofile' option is set, that file name overrides the one
+		given here with 'mnvinfo'.  Environment variables are
 		expanded when opening the file, not when setting the option.
-							*viminfo-r*
+							*mnvinfo-r*
 	r	Removable media.  The argument is a string (up to the next
 		',').  This parameter can be given several times.  Each
 		specifies the start of a path for which no marks will be
@@ -9936,14 +9936,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 		also use it for temp files, e.g., for Unix: "r/tmp".  Case is
 		ignored.  Maximum length of each 'r' argument is 50
 		characters.
-							*viminfo-s*
+							*mnvinfo-s*
 	s	Maximum size of an item in Kbyte.  If zero then registers are
 		not saved.  Currently only applies to registers.  The default
 		"s10" will exclude registers with more than 10 Kbyte of text.
 		Also see the '<' item above: line count limit.
 
 	Example: >
-	    :set viminfo='50,<1000,s100,:0,n~/vim/viminfo
+	    :set mnvinfo='50,<1000,s100,:0,n~/mnv/mnvinfo
 <
 	'50		Marks will be remembered for the last 50 files you
 			edited.
@@ -9951,28 +9951,28 @@ A jump table for the options with a short description can be found at |Q_op|.
 			remembered.
 	s100		Registers with more than 100 Kbyte text are skipped.
 	:0		Command-line history will not be saved.
-	n~/vim/viminfo	The name of the file to use is "~/vim/viminfo".
+	n~/mnv/mnvinfo	The name of the file to use is "~/mnv/mnvinfo".
 	no /		Since '/' is not specified, the default will be used,
 			that is, save all of the search history, and also the
 			previous search and substitute patterns.
 	no %		The buffer list will not be saved nor read back.
 	no h		'hlsearch' highlighting will be restored.
 
-	When setting 'viminfo' from an empty value you can use |:rviminfo| to
+	When setting 'mnvinfo' from an empty value you can use |:rmnvinfo| to
 	load the contents of the file, this is not done automatically.
 
 	This option cannot be set from a |modeline| or in the |sandbox|, for
 	security reasons.
-	NOTE: This option is set to the Vim default value when 'compatible'
+	NOTE: This option is set to the MNV default value when 'compatible'
 	is reset.
 
-				*'viminfofile'* *'vif'*
-'viminfofile' 'vif'	string	(default: "")
+				*'mnvinfofile'* *'vif'*
+'mnvinfofile' 'vif'	string	(default: "")
 			global
-			{not available when compiled without the |+viminfo|
+			{not available when compiled without the |+mnvinfo|
 			feature}
-	When non-empty, overrides the file name used for viminfo.
-	When equal to "NONE" no viminfo file will be read or written.
+	When non-empty, overrides the file name used for mnvinfo.
+	When equal to "NONE" no mnvinfo file will be read or written.
 	This option can be set with the |-i| command line flag.  The |--clean|
 	command line flag sets it to "NONE".
 	Environment variables are expanded |:set_env|.
@@ -10000,7 +10000,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	after the last character of the line.  This makes some commands more
 	consistent.  Previously the cursor was always past the end of the line
 	if the line was empty.  But it is far from Vi compatible.  It may also
-	break some plugins or Vim scripts.  For example because |l| can move
+	break some plugins or MNV scripts.  For example because |l| can move
 	the cursor after the last character.  Use with care!
 	Using the `$` command will move to the last character in the line, not
 	past it.  This may actually move the cursor to the left!
@@ -10022,7 +10022,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 <	Here $<100> specifies the time, you can use a smaller or bigger value
 	to get a shorter or longer flash.
 
-	Note: Vim will limit the bell to once per half a second.  This avoids
+	Note: MNV will limit the bell to once per half a second.  This avoids
 	having to wait for the flashing to finish when there are lots of
 	bells, e.g. on key repeat.  This also happens without 'visualbell'
 	set.
@@ -10032,7 +10032,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	where 40 is the time in msec.
 
 	Note: When the GUI starts, 't_vb' is reset to its default value.  You
-	might want to set it again in your |gvimrc|.
+	might want to set it again in your |gmnvrc|.
 
 	Does not work on the Amiga, you always get a screen flash.
 	Also see 'errorbells'.
@@ -10052,7 +10052,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	vice versa.  Has no effect when the GUI is running.
 
 						*'whichwrap'* *'ww'*
-'whichwrap' 'ww'	string	(Vim default: "b,s", Vi default: "")
+'whichwrap' 'ww'	string	(MNV default: "b,s", Vi default: "")
 			global
 	Allow specified keys that move the cursor left/right to move to the
 	previous/next line when the cursor is on the first/last character in
@@ -10081,10 +10081,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 	line (not an empty line) then it will not move to the next line.  This
 	makes "dl", "cl", "yl" etc. work normally.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'wildchar'* *'wc'*
-'wildchar' 'wc'		number	(Vim default: <Tab>, Vi default: CTRL-E)
+'wildchar' 'wc'		number	(MNV default: <Tab>, Vi default: CTRL-E)
 			global
 	Character you have to type to start wildcard expansion in the
 	command-line, as specified with 'wildmode'.
@@ -10102,11 +10102,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 		:set wc=^I
 		:set wc=<Tab>
 <	'wildchar' also enables completion in search pattern contexts such as
-	|/|, |?|, |:s|, |:g|, |:v|, and |:vim|.  To insert a literal <Tab>
+	|/|, |?|, |:s|, |:g|, |:v|, and |:mnv|.  To insert a literal <Tab>
 	instead of triggering completion, type <C-V><Tab> or "\t".
 	See also 'wildoptions' and |wildtrigger()|.
 	NOTE: This option is set to the Vi default value when 'compatible' is
-	set and to the Vim default value when 'compatible' is reset.
+	set and to the MNV default value when 'compatible' is reset.
 
 						*'wildcharm'* *'wcm'*
 'wildcharm' 'wcm'	number	(default: none (0))
@@ -10118,7 +10118,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	just use it in mappings that automatically invoke completion mode,
 	e.g.: >
 		:set wcm=<C-Z>
-		:cnoremap ss so $vim/sessions/*.vim<C-Z>
+		:cnoremap ss so $mnv/sessions/*.mnv<C-Z>
 <	Then after typing :ss you can use CTRL-P & CTRL-N.
 
 						*'wildignore'* *'wig'*
@@ -10204,7 +10204,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	|hl-WildMenu|.
 
 						*'wildmode'* *'wim'*
-'wildmode' 'wim'	string	(Vim default: "full")
+'wildmode' 'wim'	string	(MNV default: "full")
 			global
 	Completion mode used for the character specified with 'wildchar'.
 	This option is a comma-separated list of up to four parts,
@@ -10274,14 +10274,14 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	The following values are supported:
 	  exacttext	When this flag is present, search pattern completion
-			(e.g., in |/|, |?|, |:s|, |:g|, |:v|, and |:vim|)
+			(e.g., in |/|, |?|, |:s|, |:g|, |:v|, and |:mnv|)
 			shows exact buffer text as menu items, without
 			preserving regex artifacts like position
 			anchors (e.g., |/\<|).  This provides more intuitive
 			menu items that match the actual buffer text.
 			However, searches may be less accurate since the
 			pattern is not preserved exactly.
-			By default, Vim preserves the typed pattern (with
+			By default, MNV preserves the typed pattern (with
 			anchors) and appends the matched word.  This preserves
 			search correctness, especially when using regular
 			expressions or with 'smartcase' enabled.  However, the
@@ -10331,7 +10331,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'wincolor' 'wcr' string (default empty)
 			local to window
 	DEPRECATED: Use 'winhighlight' if possible, this option uses
-	'winhighlight' internally by setting it to: >vim
+	'winhighlight' internally by setting it to: >mnv
 	    set winhighlight=!(:HighlightGroup
 <	If this option is set and 'winhighlight' is changed, then it will not
 	update the option value.  For example, if 'wincolor' is set to "A" and
@@ -10352,9 +10352,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 	will scroll 'window' minus two lines, with a minimum of one.
 	When 'window' is equal to 'lines' minus one CTRL-F and CTRL-B scroll
 	in a much smarter way, taking care of wrapping lines.
-	When resizing the Vim window, and the value is smaller than 1 or more
+	When resizing the MNV window, and the value is smaller than 1 or more
 	than or equal to 'lines' it will be set to 'lines' minus 1.
-	Note: Do not confuse this with the height of the Vim window, use
+	Note: Do not confuse this with the height of the MNV window, use
 	'lines' for that.
 
 						*'winfixbuf'* *'wfb'*
@@ -10385,16 +10385,16 @@ A jump table for the options with a short description can be found at |Q_op|.
 'winheight' 'wh'	number	(default 1)
 			global
 	Minimal number of lines for the current window.  This is not a hard
-	minimum, Vim will use fewer lines if there is not enough room.  If the
+	minimum, MNV will use fewer lines if there is not enough room.  If the
 	focus goes to a window that is smaller, its size is increased, at the
 	cost of the height of other windows.
 	Set 'winheight' to a small number for normal editing.
 	Set it to 999 to make the current window fill most of the screen.
 	Other windows will be only 'winminheight' high.  This has the drawback
-	that ":all" will create only two windows.  To avoid "vim -o 1 2 3 4"
+	that ":all" will create only two windows.  To avoid "mnv -o 1 2 3 4"
 	to create only two windows, set the option after startup is done,
-	using the |VimEnter| event: >
-		au VimEnter * set winheight=999
+	using the |MNVEnter| event: >
+		au MNVEnter * set winheight=999
 <	Minimum value is 1.
 	The height is not adjusted after one of the commands that change the
 	height of the current window.
@@ -10412,9 +10412,9 @@ A jump table for the options with a short description can be found at |Q_op|.
 
 	If a highlight group name starts with "!", then it is assumed to map
 	to a value in 'highlight'.  For example, this will override the
-	visual mode setting: >vim
+	visual mode setting: >mnv
 	    set winhighlight=!v:SomeHighlightGroup
-<	This will map the occasion "v" to occasion "l" >vim
+<	This will map the occasion "v" to occasion "l" >mnv
 	    set winhighlight=!v:!l
 <
 	Highlights of vertical separators are determined by the window to the
@@ -10426,7 +10426,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	When handling highlight group links, if a highlight group (which may
 	be a link as well) is overridden by 'winhighlight', then all highlight
 	groups that link to it will be affected.  For example, if highlight
-	group C links to B which links to A, then >vim
+	group C links to B which links to A, then >mnv
 	    set winhighlight=B:SomeHighlightGroup
 <	will make SomeHighlightGroup override groups B and C, but not A.
 
@@ -10463,7 +10463,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			{only available when compiled with the |terminal|
 			feature on MS-Windows}
 	Specifies the name of the winpty shared library, used for the
-	|:terminal| command.  The default depends on whether Vim was built as
+	|:terminal| command.  The default depends on whether MNV was built as
 	a 32-bit or 64-bit executable.  If not found, "winpty.dll" is tried as
 	a fallback.
 	Environment variables are expanded |:set_env|.
@@ -10474,7 +10474,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 'winwidth' 'wiw'	number	(default 20)
 			global
 	Minimal number of columns for the current window.  This is not a hard
-	minimum, Vim will use fewer columns if there is not enough room.  If
+	minimum, MNV will use fewer columns if there is not enough room.  If
 	the current window is smaller, its size is increased, at the cost of
 	the width of other windows.  Set it to 999 to make the current window
 	always fill the screen.  Set it to a small number for normal editing.
@@ -10490,7 +10490,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Specifies the Wayland seat to use for Wayland functionality,
 	specifically the clipboard.  If the seat does not exist, then the
 	option will still be set to the new value, with the Wayland clipboard
-	being unavailable as a result.  If an empty value is passed then Vim
+	being unavailable as a result.  If an empty value is passed then MNV
 	will attempt to use the first seat found available.  Updating this
 	option will also update |v:clipmethod|.
 
@@ -10499,7 +10499,7 @@ A jump table for the options with a short description can be found at |Q_op|.
 			global
 			{only when the |+wayland_focus_steal| feature is
 			included}
-	When enabled, then allow Vim to steal focus by creating a temporary
+	When enabled, then allow MNV to steal focus by creating a temporary
 	surface, in order to access the clipboard.  For more information see
 	|wayland-focus-steal|.
 
@@ -10507,10 +10507,10 @@ A jump table for the options with a short description can be found at |Q_op|.
 'wltimeoutlen' 'wtm'	number	(default 500)
 			global
 			{only when the |+wayland| feature is included}
-	The timeout in milliseconds before Vim gives up on waiting for the
-	Wayland compositor.  While Vim waits on the compositor, it is
+	The timeout in milliseconds before MNV gives up on waiting for the
+	Wayland compositor.  While MNV waits on the compositor, it is
 	unresponsive to input and does not update the screen.  Therefore
-	setting this to a lower value may make Vim feel more responsive in
+	setting this to a lower value may make MNV feel more responsive in
 	some cases.  On the other hand, it may also mean you receive errors
 	when the compositor takes more time to respond than usual.
 
@@ -10581,11 +10581,11 @@ A jump table for the options with a short description can be found at |Q_op|.
 	Make a backup before overwriting a file.  The backup is removed after
 	the file was successfully written, unless the 'backup' option is
 	also on.
-	WARNING: Switching this option off means that when Vim fails to write
-	your buffer correctly and then, for whatever reason, Vim exits, you
+	WARNING: Switching this option off means that when MNV fails to write
+	your buffer correctly and then, for whatever reason, MNV exits, you
 	lose both the original file and what you were writing.  Only reset
 	this option if your file system is almost full and it makes the write
-	fail (and make sure not to exit Vim until the write was successful).
+	fail (and make sure not to exit MNV until the write was successful).
 	See |backup-table| for another explanation.
 	When the 'backupskip' pattern matches, a backup is not made anyway.
 	Depending on 'backupcopy' the backup is a new file or the original
@@ -10604,12 +10604,12 @@ A jump table for the options with a short description can be found at |Q_op|.
 'xtermcodes'		boolean	(default on)
 			global
 	When detecting xterm patchlevel 141 or higher with the termresponse
-	mechanism and this option is set, Vim will request the actual terminal
+	mechanism and this option is set, MNV will request the actual terminal
 	key codes and number of colors from the terminal.  This takes care of
 	various configuration options of the terminal that cannot be obtained
 	from the termlib/terminfo entry, see |xterm-codes|.
-	A side effect may be that t_Co changes and Vim will redraw the
+	A side effect may be that t_Co changes and MNV will redraw the
 	display.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

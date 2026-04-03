@@ -1,0 +1,22 @@
+" MNV9 legacy script header
+" MNV_TEST_SETUP let g:mnvsyn_folding = "H"
+" MNV_TEST_SETUP setl fdc=2 fdl=99 fdm=syntax
+
+
+" comment
+
+if !has('mnv9script')
+  # 42 " comment
+  source foo.mnv
+  finish
+endif
+
+" comment
+
+mnv9script noclear
+
+# comment
+
+ # string only recognised with leading char
+ "useless string"
+

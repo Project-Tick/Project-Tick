@@ -1,9 +1,9 @@
-README_os390.txt for version 9.2 of Vim: Vi IMproved.
+README_os390.txt for version 9.2 of MNV: MNV is not Vim.
 
-This readme explains how to build Vim on z/OS.  Formerly called OS/390.
-See "README.txt" for general information about Vim.
+This readme explains how to build MNV on z/OS.  Formerly called OS/390.
+See "README.txt" for general information about MNV.
 
-Most likely there are not many users out there using Vim on z/OS. So chances
+Most likely there are not many users out there using MNV on z/OS. So chances
 are good, that some bugs are still undiscovered.
 
 Getting the source to z/OS:
@@ -19,9 +19,9 @@ z/OS Unix you might have the command "jar" from java to uncompress a zip. Use:
         jar xvf <zip file name>
 
 Unpack the tar file on z/OS with 
-        pax -o from=ISO8859-1,to=IBM-1047 -rf vim.tar
+        pax -o from=ISO8859-1,to=IBM-1047 -rf mnv.tar
 
-Note: The Vim source contains a few bitmaps etc which will be destroyed by
+Note: The MNV source contains a few bitmaps etc which will be destroyed by
 this command, but these files are not needed on zOS (at least not for the
 console version).
 
@@ -29,17 +29,17 @@ console version).
 Compiling:
 ==========
 
-Vim can be compiled with or without GUI support. For 7.4 only the compilation
+MNV can be compiled with or without GUI support. For 7.4 only the compilation
 without GUI was tested. Below is a section about compiling with X11 but this
-is from an earlier version of Vim.
+is from an earlier version of MNV.
 
 Console only:
 -------------
 
-If you build VIM without X11 support, compiling and building is nearly
+If you build MNV without X11 support, compiling and building is nearly
 straightforward. 
 
-Change to the vim directory and do:
+Change to the mnv directory and do:
 
     # Don't use c89!
     # Allow intermixing of compiler options and files.
@@ -60,7 +60,7 @@ Change to the vim directory and do:
       This will produce lots of garbage on your screen (including error
       messages). Don't worry.
 
-      If the test stops at one point in vim (might happen in test 11), just
+      If the test stops at one point in mnv (might happen in test 11), just
       press :q!
 
       Expected test failures:
@@ -78,9 +78,9 @@ Change to the vim directory and do:
 With X11:
 ---------
 
-WARNING: This instruction was not tested with Vim 7.4 or later.
+WARNING: This instruction was not tested with MNV 7.4 or later.
 
-There are two ways for building VIM with X11 support. The first way is simple
+There are two ways for building MNV with X11 support. The first way is simple
 and results in a big executable (~13 Mb), the second needs a few additional
 steps and results in a much smaller executable (~4.5 Mb). These examples
 assume you want Motif.
@@ -92,10 +92,10 @@ assume you want Motif.
     $ cd src
     $ make
 
-    With this VIM is linked statically with the X11 libraries.
+    With this MNV is linked statically with the X11 libraries.
 
   The smarter way:
-    Make VIM as described above. Then create a file named 'link.sed' with the
+    Make MNV as described above. Then create a file named 'link.sed' with the
     following content (see src/link.390):
 
 	s/-lXext  *//g
@@ -107,10 +107,10 @@ assume you want Motif.
 	s/-lICE  */\/usr\/lib\/ICE.x /g
 
     Then do:
-    $ rm vim
+    $ rm mnv
     $ make
 
-    Now Vim is linked with the X11-DLLs.
+    Now MNV is linked with the X11-DLLs.
 
     See the Makefile and the file link.sh on how link.sed is used.
 

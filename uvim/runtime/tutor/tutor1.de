@@ -1,17 +1,17 @@
 ===============================================================================
-=      W i l l k o m m e n   im   V I M   T u t o r    -    Version 1.7.de.1  =
+=      W i l l k o m m e n   im   M N V   T u t o r    -    Version 1.7.de.1  =
 ===============================================================================
 
-   Vim ist ein sehr mächtiger Editor, der viele Befehle bereitstellt; zu viele,
+   MNV ist ein sehr mächtiger Editor, der viele Befehle bereitstellt; zu viele,
    um alle in einem Tutor wie diesem zu erklären.  Dieser Tutor ist so
    gestaltet, um genug Befehle vorzustellen, dass Du die Fähigkeit erlangst,
-   Vim mit Leichtigkeit als einen Allzweck-Editor zu verwenden.
+   MNV mit Leichtigkeit als einen Allzweck-Editor zu verwenden.
    Die Zeit für das Durcharbeiten dieses Tutors beträgt ca. 25-30 Minuten,
    abhängig davon, wie viel Zeit Du mit Experimentieren verbringst.
 
    ACHTUNG:
    Die in den Lektionen angewendeten Kommandos werden den Text modifizieren.
-   Erstelle eine Kopie dieser Datei, in der Du üben willst (falls Du "vimtutor"
+   Erstelle eine Kopie dieser Datei, in der Du üben willst (falls Du "mnvtutor"
    aufgerufen hast, ist dies bereits eine Kopie).
 
    Es ist wichtig, sich zu vergegenwärtigen, dass dieser Tutor für das Anwenden
@@ -45,7 +45,7 @@ Anmerkung: Die Cursor-Tasten sollten ebenfalls funktionieren. Aber wenn Du
 	   hjkl benutzt, wirst Du in der Lage sein, Dich sehr viel schneller
 	   umherzubewegen, wenn Du Dich einmal daran gewöhnt hast. Wirklich!
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			    Lektion 1.1.2: VIM BEENDEN
+			    Lektion 1.1.2: MNV BEENDEN
 
 
   !! Hinweis: Bevor Du einen der unten aufgeführten Schritte ausführst, lies
@@ -57,7 +57,7 @@ Anmerkung: Die Cursor-Tasten sollten ebenfalls funktionieren. Aber wenn Du
      Dies beendet den Editor und VERWIRFT alle Änderungen, die Du gemacht hast.
 
   3. Wenn Du die Eingabeaufforderung siehst, gib das Kommando ein, das Dich zu
-     diesem Tutor geführt hat. Dies wäre:	vimtutor <ENTER>
+     diesem Tutor geführt hat. Dies wäre:	mnvtutor <ENTER>
 
   4. Wenn Du Dir diese Schritte eingeprägt hast und Du Dich sicher fühlst,
      führe Schritte 1 bis 3 aus, um den Editor zu verlassen und wieder
@@ -139,7 +139,7 @@ Anmerkung: Während Du durch diesen Tutor gehst, versuche nicht, auswendig zu
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		       Lektion 1.1.6: EINE DATEI EDITIEREN
 
-		 ** Benutze  :wq  , um eine Datei zu speichern und Vim zu verlassen. **
+		 ** Benutze  :wq  , um eine Datei zu speichern und MNV zu verlassen. **
 
   !! Hinweis: Bevor Du einen der unten aufgeführten Schritte ausführst, lies
      diese gesamte Lektion!!
@@ -148,16 +148,16 @@ Anmerkung: Während Du durch diesen Tutor gehst, versuche nicht, auswendig zu
 	   Oder, falls Du Zugriff zu einem anderen Terminal hast, führe das 
 		 Folgende dort aus.
 
-  2. Gib dieses Kommando in die Eingabeaufforderung ein:  vim tutor <ENTER>
-     'vim' ist der Aufruf des Editors, 'tutor' ist die zu editierende Datei.
+  2. Gib dieses Kommando in die Eingabeaufforderung ein:  mnv tutor <ENTER>
+     'mnv' ist der Aufruf des Editors, 'tutor' ist die zu editierende Datei.
      Benutze eine Datei, die geändert werden darf.
 
   3. Füge Text ein oder lösche ihn, wie Du in den vorangehenden Lektionen 
      gelernt hast.
 
-  4. Speichere die geänderte Datei und verlasse Vim mit:  :wq  <ENTER>
+  4. Speichere die geänderte Datei und verlasse MNV mit:  :wq  <ENTER>
 
-  5. Falls Du in Schritt 1 den vimtutor beendet hast, starte vimtutor neu und
+  5. Falls Du in Schritt 1 den mnvtutor beendet hast, starte mnvtutor neu und
 	   bewege Dich abwärts bis zur folgenden Zusammenfassung.
 
   6. Nachdem Du obige Schritte gelesen und verstanden hast: führe sie durch.
@@ -168,9 +168,9 @@ Anmerkung: Während Du durch diesen Tutor gehst, versuche nicht, auswendig zu
   1. Der Cursor wird mit den Pfeiltasten oder den Tasten hjkl bewegt.
 	 h (links)     j (unten)     k (aufwärts)    l (rechts)
 
-  2. Um Vim aus der Eingabeaufforderung zu starten, tippe: vim DATEI <ENTER>
+  2. Um MNV aus der Eingabeaufforderung zu starten, tippe: mnv DATEI <ENTER>
 
-  3. Um Vim zu verlassen und alle Änderungen zu verwerfen, tippe:
+  3. Um MNV zu verlassen und alle Änderungen zu verwerfen, tippe:
 		<ESC>  :q!  <ENTER> .
 
   4. Um das Zeichen unter dem Cursor zu löschen, tippe:  x
@@ -198,7 +198,7 @@ Anmerkung: Drücken von <ESC> bringt Dich in den Normalmodus oder bricht ein
   4. Tippe  dw  , um das Wort zu entfernen.
 
   Anmerkung: Der Buchstabe  d  erscheint auf der untersten Zeile des Schirms,
-        wenn Du ihn eingibst. Vim wartet darauf, dass Du  w  eingibst. Falls Du
+        wenn Du ihn eingibst. MNV wartet darauf, dass Du  w  eingibst. Falls Du
         ein anderes Zeichen als  d  siehst, hast Du etwas Falsches getippt;
         drücke <ESC> und beginne noch einmal.
 
@@ -374,7 +374,7 @@ Anmerkung:  Die Eingabe lediglich des Bewegungsteils im Normalmodus bewegt den
 
   1. Bewege den Cursor zur ersten unten stehenden mit ---> markierten Zeile.
 
-  2. Tippe  dd  , um die Zeile zu löschen und sie in einem Vim-Register zu
+  2. Tippe  dd  , um die Zeile zu löschen und sie in einem MNV-Register zu
      speichern.
 
   3. Bewege den Cursor zur Zeile c), ÜBER derjenigen, wo die gelöschte Zeile
@@ -633,11 +633,11 @@ Anmerkung:  Alle  :  Kommandos müssen durch Eingabe von <ENTER>
 
   3. Nun tippe:  :w TEST   (wobei TEST der gewählte Dateiname ist).
 
-  4. Dies speichert die ganze Datei (den Vim Tutor) unter dem Namen TEST.
+  4. Dies speichert die ganze Datei (den MNV Tutor) unter dem Namen TEST.
      Um dies zu überprüfen, tippe nochmals  :!ls  bzw.  !dir, um deinen
      Verzeichnisinhalt zu sehen.
 
-Anmerkung: Würdest Du Vim jetzt beenden und danach wieder mit vim TEST
+Anmerkung: Würdest Du MNV jetzt beenden und danach wieder mit mnv TEST
     starten, dann wäre diese Datei eine exakte Kopie des Tutors zu dem
     Zeitpunkt, als Du ihn gespeichert hast.
 
@@ -658,7 +658,7 @@ Anmerkung: Würdest Du Vim jetzt beenden und danach wieder mit vim TEST
   4. Tippe  w TEST  , wobei TEST ein noch nicht vorhandener Dateiname ist.
      Vergewissere Dich, dass Du  :'<,'>w TEST  siehst, bevor Du <ENTER> drückst.
 
-  5. Vim schreibt die ausgewählten Zeilen in die Datei TEST. Benutze  :!dir
+  5. MNV schreibt die ausgewählten Zeilen in die Datei TEST. Benutze  :!dir
      oder  :!ls , um sie zu sehen. Lösche sie noch nicht! Wir werden sie in
      der nächsten Lektion benutzen.
 
@@ -701,7 +701,7 @@ Anmerkung: Du kannst auch die Ausgabe eines externen Kommandos einlesen. Zum
 	 :!dir		   :!ls		   -  zeigt eine Verzeichnisauflistung.
 	 :!del DATEINAME   :!rm DATEINAME  -  entfernt Datei DATEINAME.
 
-  2. :w DATEINAME  speichert die aktuelle Vim-Datei unter dem Namen  DATEINAME.
+  2. :w DATEINAME  speichert die aktuelle MNV-Datei unter dem Namen  DATEINAME.
 
   3. v  Bewegung  :w DATEINAME  schreibt die Visuell ausgewählten Zeilen in
      die Datei DATEINAME.
@@ -857,7 +857,7 @@ Anmerkung: Um die Schreibweise für eine einzige Suche zu ignorieren, benutze \c
 
 		     ** Nutze das eingebaute Hilfesystem **
 
-  Vim besitzt ein umfassendes eingebautes Hilfesystem.  Für den Anfang probiere
+  MNV besitzt ein umfassendes eingebautes Hilfesystem.  Für den Anfang probiere
   eins der drei folgenden Dinge aus:
 	- Drücke die <Hilfe> - Taste (falls Du eine besitzt)
 	- Drücke die <F1> Taste (falls Du eine besitzt)
@@ -878,45 +878,45 @@ Anmerkung: Um die Schreibweise für eine einzige Suche zu ignorieren, benutze \c
 		     Lektion 1.7.2: ERSTELLE EIN START-SKRIPT
 
 
-	          **  Aktiviere die Features von Vim **
+	          **  Aktiviere die Features von MNV **
 
-  Vim besitzt viele Funktionalitäten, die über Vi hinausgehen, aber die meisten
+  MNV besitzt viele Funktionalitäten, die über Vi hinausgehen, aber die meisten
   von ihnen sind standardmäßig deaktiviert. Um mehr Funktionalitäten zu nutzen,
-  musst Du eine "vimrc" - Datei erstellen.
+  musst Du eine "mnvrc" - Datei erstellen.
 
-  1. Starte das Editieren der "vimrc"-Datei, abhängig von deinem System:
-	:e ~/.vimrc		für Unix
-	:e ~/_vimrc		für MS-Windows
+  1. Starte das Editieren der "mnvrc"-Datei, abhängig von deinem System:
+	:e ~/.mnvrc		für Unix
+	:e ~/_mnvrc		für MS-Windows
 
-  2. Nun lies den Inhalt der Beispiel-"vimrc"-Datei ein:
-	:r $VIMRUNTIME/vimrc_example.vim
+  2. Nun lies den Inhalt der Beispiel-"mnvrc"-Datei ein:
+	:r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Speichere die Datei mit:
 	:w
 
-  Beim nächsten Start von Vim wird die Syntaxhervorhebung aktiviert sein.
-  Du kannst all deine bevorzugten Optionen zu dieser "vimrc"-Datei zufügen.
-  Für mehr Informationen tippe  :help vimrc-intro
+  Beim nächsten Start von MNV wird die Syntaxhervorhebung aktiviert sein.
+  Du kannst all deine bevorzugten Optionen zu dieser "mnvrc"-Datei zufügen.
+  Für mehr Informationen tippe  :help mnvrc-intro
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			 Lektion 1.7.3: VERVOLLSTÄNDIGEN
 
 
 	   ** Kommandozeilenvervollständigung mit CTRL-D und <TAB> **
 
-  1. Stelle sicher, dass Vim nicht im Vi-Kompatibilitätsmodus ist:  :set nocp
+  1. Stelle sicher, dass MNV nicht im Vi-Kompatibilitätsmodus ist:  :set nocp
 
   2. Siehe nach, welche Dateien im Verzeichnis existieren:  :!ls  oder  :!dir
 
   3. Tippe den Beginn eines Kommandos:  :e
 
-  4. Drücke  CTRL-D  und Vim zeigt eine Liste mit "e" beginnender Kommandos.
+  4. Drücke  CTRL-D  und MNV zeigt eine Liste mit "e" beginnender Kommandos.
 
-  5. Drücke  <TAB>  und Vim vervollständigt den Kommandonamen zu ":edit".
+  5. Drücke  <TAB>  und MNV vervollständigt den Kommandonamen zu ":edit".
 
   6. Nun füge ein Leerzeichen und den Anfang einer existierenden Datei an:
      :edit DAT
 
-  7. Drücke <TAB>. Vim vervollständigt den Namen (falls er eindeutig ist).
+  7. Drücke <TAB>. MNV vervollständigt den Namen (falls er eindeutig ist).
 
 Anmerkung: Vervollständigung funktioniert für viele Kommandos. Probiere
      einfach CTRL-D und <TAB>.  Dies ist insbesondere nützlich für  :help .
@@ -932,7 +932,7 @@ Anmerkung: Vervollständigung funktioniert für viele Kommandos. Probiere
 
   4. Tippe  :q  , um das Hilfefenster zu schließen.
 
-  5. Erstelle ein vimrc - Startskript mit deinen bevorzugter Einstellungen.
+  5. Erstelle ein mnvrc - Startskript mit deinen bevorzugter Einstellungen.
 
   6. Drücke CTRL-D nach dem Tippen eines  :  Kommandos, um mögliche
      Vervollständigungen anzusehen.
@@ -945,28 +945,28 @@ Anmerkung: Vervollständigung funktioniert für viele Kommandos. Probiere
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Damit ist der Vim Tutor beendet.  Seine Intention war, einen kurzen und
-  bündigen Überblick über den Vim Editor zu geben; gerade genug, um relativ
-  leicht mit ihm umgehen zu können.  Der Vim Tutor hat nicht den geringsten
-  Anspruch auf Vollständigkeit; Vim hat noch weitaus mehr Kommandos. Lies als
+  Damit ist der MNV Tutor beendet.  Seine Intention war, einen kurzen und
+  bündigen Überblick über den MNV Editor zu geben; gerade genug, um relativ
+  leicht mit ihm umgehen zu können.  Der MNV Tutor hat nicht den geringsten
+  Anspruch auf Vollständigkeit; MNV hat noch weitaus mehr Kommandos. Lies als
   nächstes das User Manual: ":help user-manual".
 
   Für weiteres Lesen und Lernen ist folgendes Buch empfehlenswert :
-	Vim - Vi Improved - von Steve Oualline
+	MNV - MNV is not Vim - von Steve Oualline
 	Verlag: New Riders
-  Das erste Buch, welches durchgängig Vim gewidmet ist.  Besonders nützlich
+  Das erste Buch, welches durchgängig MNV gewidmet ist.  Besonders nützlich
   für Anfänger.  Viele Beispiele und Bilder sind enthalten.
   Siehe https://iccf-holland.org/click5.html
 
-  Folgendes Buch ist älter und mehr über Vi als Vim, aber auch empfehlenswert:
+  Folgendes Buch ist älter und mehr über Vi als MNV, aber auch empfehlenswert:
 	Textbearbeitung mit dem Vi-Editor  -  von Linda Lamb und Arnold Robbins
 	Verlag O'Reilly - ISBN: 3897211262
   In diesem Buch kann man fast alles finden, was man mit Vi tun möchte.
-  Die sechste Ausgabe enthält auch Informationen über Vim.
+  Die sechste Ausgabe enthält auch Informationen über MNV.
 
   Als aktuelle Referenz für Version 6.2 und knappe Einführung dient das
   folgende Buch:
-	vim ge-packt von Reinhard Wobst
+	mnv ge-packt von Reinhard Wobst
 	mitp-Verlag, ISBN 3-8266-1425-9
   Trotz der kompakten Darstellung ist es durch viele nützliche Beispiele auch
   für Einsteiger empfehlenswert.  Probekapitel und die Beispielskripte sind
@@ -976,7 +976,7 @@ Anmerkung: Vervollständigung funktioniert für viele Kommandos. Probiere
   Colorado School of Mines. Es benutzt Ideen, die Charles Smith, Colorado State
   University, zur Verfügung stellte.  E-Mail: bware@mines.colorado.edu.
 
-  Bearbeitet für Vim von Bram Moolenaar.
+  Bearbeitet für MNV von Bram Moolenaar.
   Deutsche Übersetzung von Joachim Hofmann 2015.  E-Mail: Joachim.Hof@gmx.de
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

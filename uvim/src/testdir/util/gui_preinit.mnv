@@ -1,0 +1,7 @@
+" mnvrc for test_gui_init.mnv
+
+" Note that this flag must be added in the .mnvrc file, before switching on
+" syntax or filetype recognition (when the |gmnvrc| file is sourced the system
+" menu has already been loaded; the ":syntax on" and ":filetype on" commands
+" load the menu too).
+set guioptions+=M

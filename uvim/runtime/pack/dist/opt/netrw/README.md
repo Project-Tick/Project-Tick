@@ -1,13 +1,13 @@
-# Netrw.vim
+# Netrw.mnv
 
-netrw.vim plugin from vim (upstream repository)
+netrw.mnv plugin from mnv (upstream repository)
 
 The upstream maintained netrw plugin. The original has been created and
-maintained by Charles E Campbell and maintained by the vim project until
+maintained by Charles E Campbell and maintained by the mnv project until
 v9.1.0988.
 
-Every major version a snapshot from here will be sent to the main [Vim][1]
-upstream for distribution with Vim.
+Every major version a snapshot from here will be sent to the main [MNV][1]
+upstream for distribution with MNV.
 
 # License
 
@@ -18,46 +18,46 @@ repository.
 
 Below are stated the contribution made in the past to netrw.
 
-Changes made to `autoload/netrw.vim`:
-- 2023 Nov 21 by Vim Project: ignore wildignore when expanding $COMSPEC (v173a)
-- 2023 Nov 22 by Vim Project: fix handling of very long filename on longlist style (v173a)
-- 2024 Feb 19 by Vim Project: (announce adoption)
-- 2024 Feb 29 by Vim Project: handle symlinks in tree mode correctly
-- 2024 Apr 03 by Vim Project: detect filetypes for remote edited files
-- 2024 May 08 by Vim Project: cleanup legacy Win9X checks
-- 2024 May 09 by Vim Project: remove hard-coded private.ppk
-- 2024 May 10 by Vim Project: recursively delete directories by default
-- 2024 May 13 by Vim Project: prefer scp over pscp
-- 2024 Jun 04 by Vim Project: set bufhidden if buffer changed, nohidden is set and buffer shall be switched (#14915)
-- 2024 Jun 13 by Vim Project: glob() on Windows fails when a directory name contains [] (#14952)
-- 2024 Jun 23 by Vim Project: save and restore registers when liststyle = WIDELIST (#15077, #15114)
-- 2024 Jul 22 by Vim Project: avoid endless recursion (#15318)
-- 2024 Jul 23 by Vim Project: escape filename before trying to delete it (#15330)
-- 2024 Jul 30 by Vim Project: handle mark-copy to same target directory (#12112)
-- 2024 Aug 02 by Vim Project: honor g:netrw_alt{o,v} for :{S,H,V}explore (#15417)
-- 2024 Aug 15 by Vim Project: style changes, prevent E121 (#15501)
-- 2024 Aug 22 by Vim Project: fix mf-selection highlight (#15551)
-- 2024 Aug 22 by Vim Project: adjust echo output of mx command (#15550)
-- 2024 Sep 15 by Vim Project: more strict confirmation dialog (#15680)
-- 2024 Sep 19 by Vim Project: mf-selection highlight uses wrong pattern (#15700)
-- 2024 Sep 21 by Vim Project: remove extraneous closing bracket (#15718)
-- 2024 Oct 21 by Vim Project: remove netrwFileHandlers (#15895)
-- 2024 Oct 27 by Vim Project: clean up gx mapping (#15721)
-- 2024 Oct 30 by Vim Project: fix filetype detection for remote files (#15961)
-- 2024 Oct 30 by Vim Project: fix x mapping on cygwin (#13687)
-- 2024 Oct 31 by Vim Project: add netrw#Launch() and netrw#Open() (#15962)
-- 2024 Oct 31 by Vim Project: fix E874 when browsing remote dir (#15964)
-- 2024 Nov 07 by Vim Project: use keeppatterns to prevent polluting the search history
-- 2024 Nov 07 by Vim Project: fix a few issues with netrw tree listing (#15996)
-- 2024 Nov 10 by Vim Project: directory symlink not resolved in tree view (#16020)
-- 2024 Nov 14 by Vim Project: small fixes to netrw#BrowseX (#16056)
-- 2024 Nov 23 by Vim Project: update decompress defaults (#16104)
-- 2024 Nov 23 by Vim Project: fix powershell escaping issues (#16094)
-- 2024 Dec 04 by Vim Project: do not detach for gvim (#16168)
-- 2024 Dec 08 by Vim Project: check the first arg of netrw_browsex_viewer for being executable (#16185)
-- 2024 Dec 12 by Vim Project: do not pollute the search history (#16206)
-- 2024 Dec 19 by Vim Project: change style (#16248)
-- 2024 Dec 20 by Vim Project: change style continued (#16266), fix escaping of # in :Open command (#16265)
+Changes made to `autoload/netrw.mnv`:
+- 2023 Nov 21 by MNV Project: ignore wildignore when expanding $COMSPEC (v173a)
+- 2023 Nov 22 by MNV Project: fix handling of very long filename on longlist style (v173a)
+- 2024 Feb 19 by MNV Project: (announce adoption)
+- 2024 Feb 29 by MNV Project: handle symlinks in tree mode correctly
+- 2024 Apr 03 by MNV Project: detect filetypes for remote edited files
+- 2024 May 08 by MNV Project: cleanup legacy Win9X checks
+- 2024 May 09 by MNV Project: remove hard-coded private.ppk
+- 2024 May 10 by MNV Project: recursively delete directories by default
+- 2024 May 13 by MNV Project: prefer scp over pscp
+- 2024 Jun 04 by MNV Project: set bufhidden if buffer changed, nohidden is set and buffer shall be switched (#14915)
+- 2024 Jun 13 by MNV Project: glob() on Windows fails when a directory name contains [] (#14952)
+- 2024 Jun 23 by MNV Project: save and restore registers when liststyle = WIDELIST (#15077, #15114)
+- 2024 Jul 22 by MNV Project: avoid endless recursion (#15318)
+- 2024 Jul 23 by MNV Project: escape filename before trying to delete it (#15330)
+- 2024 Jul 30 by MNV Project: handle mark-copy to same target directory (#12112)
+- 2024 Aug 02 by MNV Project: honor g:netrw_alt{o,v} for :{S,H,V}explore (#15417)
+- 2024 Aug 15 by MNV Project: style changes, prevent E121 (#15501)
+- 2024 Aug 22 by MNV Project: fix mf-selection highlight (#15551)
+- 2024 Aug 22 by MNV Project: adjust echo output of mx command (#15550)
+- 2024 Sep 15 by MNV Project: more strict confirmation dialog (#15680)
+- 2024 Sep 19 by MNV Project: mf-selection highlight uses wrong pattern (#15700)
+- 2024 Sep 21 by MNV Project: remove extraneous closing bracket (#15718)
+- 2024 Oct 21 by MNV Project: remove netrwFileHandlers (#15895)
+- 2024 Oct 27 by MNV Project: clean up gx mapping (#15721)
+- 2024 Oct 30 by MNV Project: fix filetype detection for remote files (#15961)
+- 2024 Oct 30 by MNV Project: fix x mapping on cygwin (#13687)
+- 2024 Oct 31 by MNV Project: add netrw#Launch() and netrw#Open() (#15962)
+- 2024 Oct 31 by MNV Project: fix E874 when browsing remote dir (#15964)
+- 2024 Nov 07 by MNV Project: use keeppatterns to prevent polluting the search history
+- 2024 Nov 07 by MNV Project: fix a few issues with netrw tree listing (#15996)
+- 2024 Nov 10 by MNV Project: directory symlink not resolved in tree view (#16020)
+- 2024 Nov 14 by MNV Project: small fixes to netrw#BrowseX (#16056)
+- 2024 Nov 23 by MNV Project: update decompress defaults (#16104)
+- 2024 Nov 23 by MNV Project: fix powershell escaping issues (#16094)
+- 2024 Dec 04 by MNV Project: do not detach for gmnv (#16168)
+- 2024 Dec 08 by MNV Project: check the first arg of netrw_browsex_viewer for being executable (#16185)
+- 2024 Dec 12 by MNV Project: do not pollute the search history (#16206)
+- 2024 Dec 19 by MNV Project: change style (#16248)
+- 2024 Dec 20 by MNV Project: change style continued (#16266), fix escaping of # in :Open command (#16265)
 
 General changes made to netrw:
 
@@ -80,21 +80,21 @@ General changes made to netrw:
 				  in netrw#ErrorMsg (lacygoill). Apparently
 				  popup_beval doesn't reliably close the
 				  popup when the mouse is moved.
-				* VimEnter() now using win_execute to examine
+				* MNVEnter() now using win_execute to examine
 				  buffers for an attempt to open a directory.
 				  Avoids issues with popups/terminal from
 				  command line. (lacygoill)
 		Jun 28, 2021	* (zeertzjq) provided a patch for use of
 				  xmap,xno instead of vmap,vno in
-				  netrwPlugin.vim. Avoids entanglement with
+				  netrwPlugin.mnv. Avoids entanglement with
 				  select mode.
 		Jul 14, 2021	* Fixed problem addressed by tst976; opening
 				  a file using tree mode, going up a
 				  directory, and opening a file there was
 				  opening the file in the wrong directory.
 		Jul 28, 2021	* (Ingo Karkat) provided a patch fixing an
-				  E488 error with netrwPlugin.vim
-				  (occurred for vim versions < 8.02)
+				  E488 error with netrwPlugin.mnv
+				  (occurred for mnv versions < 8.02)
 	v170:	Mar 11, 2020	* (reported by Reiner Herrmann) netrw+tree
 				  would not hide with the ^\..* pattern
 				  correctly.
@@ -293,8 +293,8 @@ General changes made to netrw:
 				  extension
 		Mar 28, 2015	* (requested by Matt Brooks) netrw has a lot
 				  of buffer-local mappings; however, some
-				  plugins (such as vim-surround) set up
-				  conflicting mappings that cause vim to wait.
+				  plugins (such as mnv-surround) set up
+				  conflicting mappings that cause mnv to wait.
 				  The "<nowait>" modifier has been included
 				  with most of netrw's mappings to avoid that
 				  delay.
@@ -372,7 +372,7 @@ General changes made to netrw:
 				  keepj
 		Jul 09, 2014	* fixing bugs due to previous update
 		Jul 21, 2014	* (Bruno Sutic) provided an updated
-				  netrw_gitignore.vim
+				  netrw_gitignore.mnv
 		Jul 30, 2014	* (Yavuz Yetim) reported that editing two
 				  remote files of the same name caused the
 				  second instance to have a "temporary"
@@ -387,7 +387,7 @@ General changes made to netrw:
 				  |g:netrw_file_cmd| (typically elinks or links)
 		Dec 02, 2014	* began work on having mc (|netrw-mc|) copy
 				  directories.  Works for linux machines,
-				  cygwin+vim, but not for windows+gvim.
+				  cygwin+mnv, but not for windows+gmnv.
 		Dec 02, 2014	* in tree mode, netrw was not opening
 				  directories via symbolic links.
 		Dec 02, 2014	* added resolved link information to
@@ -395,7 +395,7 @@ General changes made to netrw:
 		Dec 30, 2014	* (issue#231) |:ls| was not showing
 				  remote-file buffers reliably.  Fixed.
 	v152:	Apr 08, 2014	* uses the |'noswapfile'| option (requires {{{2
-				  vim 7.4 with patch 213)
+				  mnv 7.4 with patch 213)
 				* (Enno Nagel) turn |'rnu'| off in netrw
 				  buffers.
 				* (Quinn Strahl) suggested that netrw
@@ -432,7 +432,7 @@ General changes made to netrw:
 				  using a directory name containing spaces
 				  did not work.  Fixed with a retry in
 				  netrw#Explore() which removes the
-				  backslashes vim inserted.
+				  backslashes mnv inserted.
 		Feb 26, 2014	* :Rexplore now records the current file
 				   using w:netrw_rexfile when returning via
 				  |:Rexplore|
@@ -452,7 +452,7 @@ General changes made to netrw:
 				  the browser with ftp on a directory,
 				  and selecting a gzipped txt file, that
 				  an E19 occurred (which was issued by
-				  gzip.vim).  Fixed.
+				  gzip.mnv).  Fixed.
 		Mar 14, 2014	* Implemented :MF and :MT (see |netrw-:MF|
 				  and |netrw-:MT|, respectively)
 		Mar 17, 2014	* |:Ntree| [dir] wasn't working properly; fixed
@@ -529,8 +529,8 @@ General changes made to netrw:
 				  what names the files should be copied under
 		Apr 29, 2013	* Trying Benzinger's problem again.  Seems
 				  that commenting out the BufEnter and
-				  installing VimEnter (only) works.  Weird
-				  problem!  (tree listing, vim -O Dir1 Dir2)
+				  installing MNVEnter (only) works.  Weird
+				  problem!  (tree listing, mnv -O Dir1 Dir2)
 		May 01, 2013	* :Explore ftp://... wasn't working.  Fixed.
 		May 02, 2013	* introduced |g:netrw_bannerbackslash| as
 				  requested by Paul Domaskis.
@@ -541,4 +541,4 @@ General changes made to netrw:
 				  sorting style
 ```
 
-[1]: https://github.com/vim/vim
+[1]: https://github.com/Project-Tick/Project-Tick

@@ -4,7 +4,7 @@ The original can be found:
 - on the original site (tar archive and Bazaar repository):
 	http://www.leonerd.org.uk/code/libvterm/
 - cloned on Github:
-	https://github.com/neovim/libvterm
+	https://github.com/neomnv/libvterm
 
 Modifications:
 - revisions up to 839 have been included
@@ -12,7 +12,7 @@ Modifications:
 - use TRUE and FALSE instead of true and false
 - use int or unsigned int instead of bool
 - Converted some code from C99 to C90.
-- Other changes to support embedding in Vim.
+- Other changes to support embedding in MNV.
 
 To get the latest version of libvterm you need the "bzr" command and do:
    bzr co http://bazaar.leonerd.org.uk/c/libvterm/
@@ -24,7 +24,7 @@ patch number:
 To merge in changes from Github, do this:
 - Commit any pending changes.
 - Setup the merge tool:
-    git config merge.tool vimdiff
+    git config merge.tool mnvdiff
     git config merge.conflictstyle diff3
     git config mergetool.prompt false
 - Run the merge tool:

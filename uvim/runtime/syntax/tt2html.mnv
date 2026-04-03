@@ -1,0 +1,22 @@
+" MNV syntax file
+" Language:      TT2 embedded with HTML
+" Maintainer:    mnv-perl <mnv-perl@googlegroups.com> (need to be subscribed to post)
+" Author:        Moriki, Atsushi <4woods+mnv@gmail.com>
+" Homepage:      https://github.com/mnv-perl/mnv-perl
+" Bugs/requests: https://github.com/mnv-perl/mnv-perl/issues
+" License:       MNV License (see :help license)
+" Last Change:   2018 Mar 28
+
+if exists("b:current_syntax")
+    finish
+endif
+
+runtime! syntax/html.mnv
+unlet b:current_syntax
+
+runtime! syntax/tt2.mnv
+unlet b:current_syntax
+
+syn cluster htmlPreProc add=@tt2_top_cluster
+
+let b:current_syntax = "tt2html"

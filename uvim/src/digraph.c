@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * digraph.c: code for digraphs
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_DIGRAPHS)
 
@@ -118,152 +118,152 @@ static digr_T digraphdefault[] = {
 	{'N', 'S', 0xa0},
 # define DG_START_LATIN 0xa1
 	{'!', 'I', 0xa1},
-	{'~', '!', 0xa1},	// ¡ Vim 5.x compatible
+	{'~', '!', 0xa1},	// ¡ MNV 5.x compatible
 	{'C', 't', 0xa2},
-	{'c', '|', 0xa2},	// ¢ Vim 5.x compatible
+	{'c', '|', 0xa2},	// ¢ MNV 5.x compatible
 	{'P', 'd', 0xa3},
-	{'$', '$', 0xa3},	// £ Vim 5.x compatible
+	{'$', '$', 0xa3},	// £ MNV 5.x compatible
 	{'C', 'u', 0xa4},
-	{'o', 'x', 0xa4},	// ¤ Vim 5.x compatible
+	{'o', 'x', 0xa4},	// ¤ MNV 5.x compatible
 	{'Y', 'e', 0xa5},
-	{'Y', '-', 0xa5},	// ¥ Vim 5.x compatible
+	{'Y', '-', 0xa5},	// ¥ MNV 5.x compatible
 	{'B', 'B', 0xa6},
-	{'|', '|', 0xa6},	// ¦ Vim 5.x compatible
+	{'|', '|', 0xa6},	// ¦ MNV 5.x compatible
 	{'S', 'E', 0xa7},
 	{'\'', ':', 0xa8},
 	{'C', 'o', 0xa9},
-	{'c', 'O', 0xa9},	// © Vim 5.x compatible
+	{'c', 'O', 0xa9},	// © MNV 5.x compatible
 	{'-', 'a', 0xaa},
 	{'<', '<', 0xab},
 	{'N', 'O', 0xac},
-	{'-', ',', 0xac},	// ¬ Vim 5.x compatible
+	{'-', ',', 0xac},	// ¬ MNV 5.x compatible
 	{'-', '-', 0xad},
 	{'R', 'g', 0xae},
 	{'\'', 'm', 0xaf},
-	{'-', '=', 0xaf},	// ¯ Vim 5.x compatible
+	{'-', '=', 0xaf},	// ¯ MNV 5.x compatible
 	{'D', 'G', 0xb0},
-	{'~', 'o', 0xb0},	// ° Vim 5.x compatible
+	{'~', 'o', 0xb0},	// ° MNV 5.x compatible
 	{'+', '-', 0xb1},
 	{'2', 'S', 0xb2},
-	{'2', '2', 0xb2},	// ² Vim 5.x compatible
+	{'2', '2', 0xb2},	// ² MNV 5.x compatible
 	{'3', 'S', 0xb3},
-	{'3', '3', 0xb3},	// ³ Vim 5.x compatible
+	{'3', '3', 0xb3},	// ³ MNV 5.x compatible
 	{'\'', '\'', 0xb4},
 	{'M', 'y', 0xb5},
 	{'P', 'I', 0xb6},
-	{'p', 'p', 0xb6},	// ¶ Vim 5.x compatible
+	{'p', 'p', 0xb6},	// ¶ MNV 5.x compatible
 	{'.', 'M', 0xb7},
-	{'~', '.', 0xb7},	// · Vim 5.x compatible
+	{'~', '.', 0xb7},	// · MNV 5.x compatible
 	{'\'', ',', 0xb8},
 	{'1', 'S', 0xb9},
-	{'1', '1', 0xb9},	// ¹ Vim 5.x compatible
+	{'1', '1', 0xb9},	// ¹ MNV 5.x compatible
 	{'-', 'o', 0xba},
 	{'>', '>', 0xbb},
 	{'1', '4', 0xbc},
 	{'1', '2', 0xbd},
 	{'3', '4', 0xbe},
 	{'?', 'I', 0xbf},
-	{'~', '?', 0xbf},	// ¿ Vim 5.x compatible
+	{'~', '?', 0xbf},	// ¿ MNV 5.x compatible
 	{'A', '!', 0xc0},
-	{'A', '`', 0xc0},	// À Vim 5.x compatible
+	{'A', '`', 0xc0},	// À MNV 5.x compatible
 	{'A', '\'', 0xc1},
 	{'A', '>', 0xc2},
-	{'A', '^', 0xc2},	// Â Vim 5.x compatible
+	{'A', '^', 0xc2},	// Â MNV 5.x compatible
 	{'A', '?', 0xc3},
-	{'A', '~', 0xc3},	// Ã Vim 5.x compatible
+	{'A', '~', 0xc3},	// Ã MNV 5.x compatible
 	{'A', ':', 0xc4},
-	{'A', '"', 0xc4},	// Ä Vim 5.x compatible
+	{'A', '"', 0xc4},	// Ä MNV 5.x compatible
 	{'A', 'A', 0xc5},
-	{'A', '@', 0xc5},	// Å Vim 5.x compatible
+	{'A', '@', 0xc5},	// Å MNV 5.x compatible
 	{'A', 'E', 0xc6},
 	{'C', ',', 0xc7},
 	{'E', '!', 0xc8},
-	{'E', '`', 0xc8},	// È Vim 5.x compatible
+	{'E', '`', 0xc8},	// È MNV 5.x compatible
 	{'E', '\'', 0xc9},
 	{'E', '>', 0xca},
-	{'E', '^', 0xca},	// Ê Vim 5.x compatible
+	{'E', '^', 0xca},	// Ê MNV 5.x compatible
 	{'E', ':', 0xcb},
-	{'E', '"', 0xcb},	// Ë Vim 5.x compatible
+	{'E', '"', 0xcb},	// Ë MNV 5.x compatible
 	{'I', '!', 0xcc},
-	{'I', '`', 0xcc},	// Ì Vim 5.x compatible
+	{'I', '`', 0xcc},	// Ì MNV 5.x compatible
 	{'I', '\'', 0xcd},
 	{'I', '>', 0xce},
-	{'I', '^', 0xce},	// Î Vim 5.x compatible
+	{'I', '^', 0xce},	// Î MNV 5.x compatible
 	{'I', ':', 0xcf},
-	{'I', '"', 0xcf},	// Ï Vim 5.x compatible
+	{'I', '"', 0xcf},	// Ï MNV 5.x compatible
 	{'D', '-', 0xd0},
 	{'N', '?', 0xd1},
-	{'N', '~', 0xd1},	// Ñ Vim 5.x compatible
+	{'N', '~', 0xd1},	// Ñ MNV 5.x compatible
 	{'O', '!', 0xd2},
-	{'O', '`', 0xd2},	// Ò Vim 5.x compatible
+	{'O', '`', 0xd2},	// Ò MNV 5.x compatible
 	{'O', '\'', 0xd3},
 	{'O', '>', 0xd4},
-	{'O', '^', 0xd4},	// Ô Vim 5.x compatible
+	{'O', '^', 0xd4},	// Ô MNV 5.x compatible
 	{'O', '?', 0xd5},
-	{'O', '~', 0xd5},	// Õ Vim 5.x compatible
+	{'O', '~', 0xd5},	// Õ MNV 5.x compatible
 	{'O', ':', 0xd6},
 	{'*', 'X', 0xd7},
-	{'/', '\\', 0xd7},	// × Vim 5.x compatible
+	{'/', '\\', 0xd7},	// × MNV 5.x compatible
 	{'O', '/', 0xd8},
 	{'U', '!', 0xd9},
-	{'U', '`', 0xd9},	// Ù Vim 5.x compatible
+	{'U', '`', 0xd9},	// Ù MNV 5.x compatible
 	{'U', '\'', 0xda},
 	{'U', '>', 0xdb},
-	{'U', '^', 0xdb},	// Û Vim 5.x compatible
+	{'U', '^', 0xdb},	// Û MNV 5.x compatible
 	{'U', ':', 0xdc},
 	{'Y', '\'', 0xdd},
 	{'T', 'H', 0xde},
-	{'I', 'p', 0xde},	// Þ Vim 5.x compatible
+	{'I', 'p', 0xde},	// Þ MNV 5.x compatible
 	{'s', 's', 0xdf},
 	{'a', '!', 0xe0},
-	{'a', '`', 0xe0},	// à Vim 5.x compatible
+	{'a', '`', 0xe0},	// à MNV 5.x compatible
 	{'a', '\'', 0xe1},
 	{'a', '>', 0xe2},
-	{'a', '^', 0xe2},	// â Vim 5.x compatible
+	{'a', '^', 0xe2},	// â MNV 5.x compatible
 	{'a', '?', 0xe3},
-	{'a', '~', 0xe3},	// ã Vim 5.x compatible
+	{'a', '~', 0xe3},	// ã MNV 5.x compatible
 	{'a', ':', 0xe4},
-	{'a', '"', 0xe4},	// ä Vim 5.x compatible
+	{'a', '"', 0xe4},	// ä MNV 5.x compatible
 	{'a', 'a', 0xe5},
-	{'a', '@', 0xe5},	// å Vim 5.x compatible
+	{'a', '@', 0xe5},	// å MNV 5.x compatible
 	{'a', 'e', 0xe6},
 	{'c', ',', 0xe7},
 	{'e', '!', 0xe8},
-	{'e', '`', 0xe8},	// è Vim 5.x compatible
+	{'e', '`', 0xe8},	// è MNV 5.x compatible
 	{'e', '\'', 0xe9},
 	{'e', '>', 0xea},
-	{'e', '^', 0xea},	// ê Vim 5.x compatible
+	{'e', '^', 0xea},	// ê MNV 5.x compatible
 	{'e', ':', 0xeb},
-	{'e', '"', 0xeb},	// ë Vim 5.x compatible
+	{'e', '"', 0xeb},	// ë MNV 5.x compatible
 	{'i', '!', 0xec},
-	{'i', '`', 0xec},	// ì Vim 5.x compatible
+	{'i', '`', 0xec},	// ì MNV 5.x compatible
 	{'i', '\'', 0xed},
 	{'i', '>', 0xee},
-	{'i', '^', 0xee},	// î Vim 5.x compatible
+	{'i', '^', 0xee},	// î MNV 5.x compatible
 	{'i', ':', 0xef},
 	{'d', '-', 0xf0},
 	{'n', '?', 0xf1},
-	{'n', '~', 0xf1},	// ñ Vim 5.x compatible
+	{'n', '~', 0xf1},	// ñ MNV 5.x compatible
 	{'o', '!', 0xf2},
-	{'o', '`', 0xf2},	// ò Vim 5.x compatible
+	{'o', '`', 0xf2},	// ò MNV 5.x compatible
 	{'o', '\'', 0xf3},
 	{'o', '>', 0xf4},
-	{'o', '^', 0xf4},	// ô Vim 5.x compatible
+	{'o', '^', 0xf4},	// ô MNV 5.x compatible
 	{'o', '?', 0xf5},
-	{'o', '~', 0xf5},	// õ Vim 5.x compatible
+	{'o', '~', 0xf5},	// õ MNV 5.x compatible
 	{'o', ':', 0xf6},
 	{'-', ':', 0xf7},
 	{'o', '/', 0xf8},
 	{'u', '!', 0xf9},
-	{'u', '`', 0xf9},	// ù Vim 5.x compatible
+	{'u', '`', 0xf9},	// ù MNV 5.x compatible
 	{'u', '\'', 0xfa},
 	{'u', '>', 0xfb},
-	{'u', '^', 0xfb},	// û Vim 5.x compatible
+	{'u', '^', 0xfb},	// û MNV 5.x compatible
 	{'u', ':', 0xfc},
 	{'y', '\'', 0xfd},
 	{'t', 'h', 0xfe},
 	{'y', ':', 0xff},
-	{'y', '"', 0xff},	// x XX  Vim 5.x compatible
+	{'y', '"', 0xff},	// x XX  MNV 5.x compatible
 
 # define USE_UNICODE_DIGRAPHS
 
@@ -1480,7 +1480,7 @@ get_digraph_for_char(int val_arg)
     if (!enc_utf8)
     {
 	char_u	    buf[6], *to;
-	vimconv_T   vc;
+	mnvconv_T   vc;
 
 	// convert the character from 'encoding' to Unicode
 	i = mb_char2bytes(val, buf);
@@ -1492,7 +1492,7 @@ get_digraph_for_char(int val_arg)
 	    if (to != NULL)
 	    {
 		val = utf_ptr2char(to);
-		vim_free(to);
+		mnv_free(to);
 	    }
 	    (void)convert_setup(&vc, NULL, NULL);
 	}
@@ -1613,7 +1613,7 @@ getexactdigraph(int char1, int char2, int meta_char)
     if (retval != 0 && !enc_utf8)
     {
 	char_u	    buf[6], *to;
-	vimconv_T   vc;
+	mnvconv_T   vc;
 
 	/*
 	 * Convert the Unicode digraph to 'encoding'.
@@ -1628,7 +1628,7 @@ getexactdigraph(int char1, int char2, int meta_char)
 	    if (to != NULL)
 	    {
 		retval = (*mb_ptr2char)(to);
-		vim_free(to);
+		mnv_free(to);
 	    }
 	    (void)convert_setup(&vc, NULL, NULL);
 	}
@@ -1744,7 +1744,7 @@ putdigraph(char_u *str)
 	    return;
 
 	str = skipwhite(str);
-	if (!VIM_ISDIGIT(*str))
+	if (!MNV_ISDIGIT(*str))
 	{
 	    emsg(_(e_number_expected));
 	    return;
@@ -1848,7 +1848,7 @@ digraph_getlist_appendpair(digr_T *dp, list_T *l)
     buf[0] = dp->char1;
     buf[1] = dp->char2;
     buf[2] = NUL;
-    li2->li_tv.vval.v_string = vim_strsave(&buf[0]);
+    li2->li_tv.vval.v_string = mnv_strsave(&buf[0]);
 
     li2 = listitem_alloc();
     if (li2 == NULL)
@@ -1864,7 +1864,7 @@ digraph_getlist_appendpair(digr_T *dp, list_T *l)
 	*p++ = (char_u)dp->result;
     *p = NUL;
 
-    li2->li_tv.vval.v_string = vim_strsave(buf);
+    li2->li_tv.vval.v_string = mnv_strsave(buf);
 }
 
     static void
@@ -1999,7 +1999,7 @@ printdigraph(digr_T *dp, result_T *previous)
     p = buf;
     if (char2cells(dp->result) == 1)
 	*p++ = ' ';
-    vim_snprintf((char *)p, sizeof(buf) - (p - buf), " %3d", dp->result);
+    mnv_snprintf((char *)p, sizeof(buf) - (p - buf), " %3d", dp->result);
     msg_outtrans(buf);
 }
 
@@ -2081,7 +2081,7 @@ f_digraph_get(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;  // Return empty string for failure
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     digraphs = tv_get_string_chk(&argvars[0]);
@@ -2103,7 +2103,7 @@ f_digraph_get(typval_T *argvars, typval_T *rettv)
 	buf[1] = NUL;
     }
 
-    rettv->vval.v_string = vim_strsave(buf);
+    rettv->vval.v_string = mnv_strsave(buf);
 # else
     emsg(_(e_no_digraphs_version));
 # endif
@@ -2146,7 +2146,7 @@ f_digraph_set(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_BOOL;
     rettv->vval.v_number = VVAL_FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -2258,21 +2258,21 @@ keymap_init(void)
 	if (buf == NULL)
 	    return e_out_of_memory;
 
-	// try finding "keymap/'keymap'_'encoding'.vim"  in 'runtimepath'
-	vim_snprintf((char *)buf, buflen, "keymap/%s_%s.vim",
+	// try finding "keymap/'keymap'_'encoding'.mnv"  in 'runtimepath'
+	mnv_snprintf((char *)buf, buflen, "keymap/%s_%s.mnv",
 						   curbuf->b_p_keymap, p_enc);
 	if (source_runtime(buf, 0) == FAIL)
 	{
-	    // try finding "keymap/'keymap'.vim" in 'runtimepath'
-	    vim_snprintf((char *)buf, buflen, "keymap/%s.vim",
+	    // try finding "keymap/'keymap'.mnv" in 'runtimepath'
+	    mnv_snprintf((char *)buf, buflen, "keymap/%s.mnv",
 							  curbuf->b_p_keymap);
 	    if (source_runtime(buf, 0) == FAIL)
 	    {
-		vim_free(buf);
+		mnv_free(buf);
 		return N_(e_keymap_file_not_found);
 	    }
 	}
-	vim_free(buf);
+	mnv_free(buf);
     }
 
     return NULL;
@@ -2324,10 +2324,10 @@ ex_loadkeymap(exarg_T *eap)
 	{
 	    kp = (kmap_T *)curbuf->b_kmap_ga.ga_data + curbuf->b_kmap_ga.ga_len;
 	    s = skiptowhite(p);
-	    kp->from = vim_strnsave(p, s - p);
+	    kp->from = mnv_strnsave(p, s - p);
 	    p = skipwhite(s);
 	    s = skiptowhite(p);
-	    kp->to = vim_strnsave(p, s - p);
+	    kp->to = mnv_strnsave(p, s - p);
 
 	    if (kp->from == NULL || kp->to == NULL
 		    || STRLEN(kp->from) + STRLEN(kp->to) >= KMAP_LLEN
@@ -2335,13 +2335,13 @@ ex_loadkeymap(exarg_T *eap)
 	    {
 		if (kp->to != NULL && *kp->to == NUL)
 		    emsg(_(e_empty_keymap_entry));
-		vim_free(kp->from);
-		vim_free(kp->to);
+		mnv_free(kp->from);
+		mnv_free(kp->to);
 	    }
 	    else
 		++curbuf->b_kmap_ga.ga_len;
 	}
-	vim_free(line);
+	mnv_free(line);
     }
 
     /*
@@ -2349,7 +2349,7 @@ ex_loadkeymap(exarg_T *eap)
      */
     for (i = 0; i < curbuf->b_kmap_ga.ga_len; ++i)
     {
-	vim_snprintf((char *)buf, sizeof(buf), "<buffer> %s %s",
+	mnv_snprintf((char *)buf, sizeof(buf), "<buffer> %s %s",
 				((kmap_T *)curbuf->b_kmap_ga.ga_data)[i].from,
 				 ((kmap_T *)curbuf->b_kmap_ga.ga_data)[i].to);
 	(void)do_map(MAPTYPE_NOREMAP, buf, MODE_LANGMAP, FALSE);
@@ -2382,7 +2382,7 @@ keymap_unload(void)
     kp = (kmap_T *)curbuf->b_kmap_ga.ga_data;
     for (i = 0; i < curbuf->b_kmap_ga.ga_len; ++i)
     {
-	vim_snprintf((char *)buf, sizeof(buf), "<buffer> %s", kp[i].from);
+	mnv_snprintf((char *)buf, sizeof(buf), "<buffer> %s", kp[i].from);
 	(void)do_map(MAPTYPE_UNMAP, buf, MODE_LANGMAP, FALSE);
     }
     keymap_clear(&curbuf->b_kmap_ga);
@@ -2402,8 +2402,8 @@ keymap_clear(garray_T *kmap)
 
     for (i = 0; i < kmap->ga_len; ++i)
     {
-	vim_free(kp[i].from);
-	vim_free(kp[i].to);
+	mnv_free(kp[i].from);
+	mnv_free(kp[i].to);
     }
 }
 #endif // FEAT_KEYMAP

@@ -1,0 +1,14 @@
+" Menu Translations:	Russian
+
+if ('utf-8' ==? &enc) && filereadable(expand('<sfile>:p:h') . '/menu_ru_ru.utf-8.mnv')
+    source <sfile>:p:h/menu_ru_ru.utf-8.mnv
+elseif ('cp1251' ==? &enc) && filereadable(expand('<sfile>:p:h') . '/menu_ru_ru.cp1251.mnv')
+    source <sfile>:p:h/menu_ru_ru.cp1251.mnv
+" elseif ('cp866' ==? &enc) && filereadable(expand('<sfile>:p:h') . '/menu_ru_ru.cp866.mnv')
+"    source <sfile>:p:h/menu_ru_ru.cp866.mnv
+elseif ('koi8-r' ==? &enc) && filereadable(expand('<sfile>:p:h') . '/menu_ru_ru.koi8-r.mnv')
+    source <sfile>:p:h/menu_ru_ru.koi8-r.mnv
+else
+    echomsg 'Could not find the menu file matching the current encoding'
+endif
+

@@ -1,5 +1,5 @@
 #
-# Makefile to run all tests for Vim, on Dos-like machines
+# Makefile to run all tests for MNV, on Dos-like machines
 # with sh.exe or zsh.exe in the path or not.
 #
 # Author: Bill McCarthy
@@ -15,21 +15,21 @@ MV = move /y
 CP = copy /y
 CAT = type
 
-VIMPROG = ..\\vim
+MNVPROG = ..\\mnv
 
 default: nongui
 
 include Make_all.mak
 
 # Explicit dependencies.
-test_options_all.res: opt_test.vim
+test_options_all.res: opt_test.mnv
 
 TEST_OUTFILES = $(SCRIPTS_TINY_OUT)
 DOSTMP = dostmp
 # Keep $(DOSTMP)/*.in
 .PRECIOUS: $(patsubst %.out, $(DOSTMP)/%.in, $(TEST_OUTFILES))
 
-.SUFFIXES: .in .out .res .vim
+.SUFFIXES: .in .out .res .mnv
 
 # Add --gui-dialog-file to avoid getting stuck in a dialog.
 COMMON_ARGS = $(NO_INITS) --gui-dialog-file guidialog
@@ -46,7 +46,7 @@ report:
 	@rem without the +eval feature test_result.log is a copy of test.log
 	@if exist test.log ( copy /y test.log test_result.log > nul ) \
 		else ( echo No failures reported > test_result.log )
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S util\summarize.vim messages
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S util\summarize.mnv messages
 	-if exist starttime del starttime
 	@echo.
 	@echo Test results:
@@ -62,7 +62,7 @@ $(NEW_TESTS):
 	-if exist test.log del test.log
 	-if exist messages del messages
 	-if exist starttime del starttime
-	@$(MAKE) -f Make_ming.mak $@.res VIMPROG=$(VIMPROG) --no-print-directory
+	@$(MAKE) -f Make_ming.mak $@.res MNVPROG=$(MNVPROG) --no-print-directory
 	@type messages
 	@if exist test.log exit 1
 
@@ -81,13 +81,13 @@ clean:
 	-@if exist XfakeHOME $(DELDIR) XfakeHOME
 	-@if exist X* $(DEL) X*
 	-@for /d %%i in (X*) do @rd /s/q %%i
-	-@if exist viminfo $(DEL) viminfo
+	-@if exist mnvinfo $(DEL) mnvinfo
 	-@if exist test.log $(DEL) test.log
 	-@if exist test_result.log del test_result.log
 	-@if exist messages $(DEL) messages
 	-@if exist starttime $(DEL) starttime
 	-@if exist benchmark.out del benchmark.out
-	-@if exist opt_test.vim $(DEL) opt_test.vim
+	-@if exist opt_test.mnv $(DEL) opt_test.mnv
 	-@if exist gen_opt_test.log $(DEL) gen_opt_test.log
 	-@if exist guidialog $(DEL) guidialog
 	-@if exist guidialogfile $(DEL) guidialogfile
@@ -106,7 +106,7 @@ tinytests: $(SCRIPTS_TINY_OUT)
 $(DOSTMP)/%.in : %.in
 	if not exist $(DOSTMP)\nul mkdir $(DOSTMP)
 	if exist $(DOSTMP)\$< $(DEL) $(DOSTMP)\$<
-	$(VIMPROG) -u util\dos.vim $(COMMON_ARGS) "+set ff=dos|f $@|wq" $<
+	$(MNVPROG) -u util\dos.mnv $(COMMON_ARGS) "+set ff=dos|f $@|wq" $<
 
 # For each input file dostmp/test99.in run the tests.
 # This moves test99.in to test99.in.bak temporarily.
@@ -116,7 +116,7 @@ $(DOSTMP)/%.in : %.in
 	$(MV) $(notdir $<) $(notdir $<).bak > NUL
 	$(CP) $(DOSTMP)\$(notdir $<) $(notdir $<) > NUL
 	$(CP) $(basename $@).ok test.ok > NUL
-	$(VIMPROG) -u util\dos.vim $(COMMON_ARGS) -s dotest.in $(notdir $<)
+	$(MNVPROG) -u util\dos.mnv $(COMMON_ARGS) -s dotest.in $(notdir $<)
 	-@if exist test.out $(MV) test.out $(DOSTMP)\$@ > NUL
 	-@if exist $(notdir $<).bak $(MV) $(notdir $<).bak $(notdir $<) > NUL
 	-@if exist test.ok $(DEL) test.ok
@@ -124,8 +124,8 @@ $(DOSTMP)/%.in : %.in
 	-@if exist Xfind $(DELDIR) Xfind
 	-@if exist XfakeHOME $(DELDIR) XfakeHOME
 	-@del X*
-	-@if exist viminfo del viminfo
-	$(VIMPROG) -u util\dos.vim $(COMMON_ARGS) "+set ff=unix|f test.out|wq" \
+	-@if exist mnvinfo del mnvinfo
+	$(MNVPROG) -u util\dos.mnv $(COMMON_ARGS) "+set ff=unix|f test.out|wq" \
 		$(DOSTMP)\$@
 	@diff test.out $(basename $@).ok & if errorlevel 1 \
 		( $(MV) test.out $(basename $@).failed > NUL \
@@ -134,7 +134,7 @@ $(DOSTMP)/%.in : %.in
 		else ( $(MV) test.out $(basename $@).out > NUL )
 
 
-# New style of tests uses Vim script with assert calls.  These are easier
+# New style of tests uses MNV script with assert calls.  These are easier
 # to write and a lot easier to read and debug.
 # Limitation: Only works with the +eval feature.
 
@@ -143,28 +143,28 @@ newtests: newtestssilent
 
 newtestssilent: $(NEW_TESTS_RES)
 
-.vim.res:
-	@echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S runtest.vim $*.vim
-	@$(DEL) vimcmd
+.mnv.res:
+	@echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S runtest.mnv $*.mnv
+	@$(DEL) mnvcmd
 
-test_gui.res: test_gui.vim
-	@echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S runtest.vim $<
-	@$(DEL) vimcmd
+test_gui.res: test_gui.mnv
+	@echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S runtest.mnv $<
+	@$(DEL) mnvcmd
 
-test_gui_init.res: test_gui_init.vim
-	@echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u util\gui_preinit.vim -U util\gui_init.vim $(NO_PLUGINS) -S runtest.vim $<
-	@$(DEL) vimcmd
+test_gui_init.res: test_gui_init.mnv
+	@echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u util\gui_preinit.mnv -U util\gui_init.mnv $(NO_PLUGINS) -S runtest.mnv $<
+	@$(DEL) mnvcmd
 
-opt_test.vim: util/gen_opt_test.vim ../optiondefs.h ../../runtime/doc/options.txt
-	$(VIMPROG) -e -s -u NONE $(COMMON_ARGS) --nofork -S $^
+opt_test.mnv: util/gen_opt_test.mnv ../optiondefs.h ../../runtime/doc/options.txt
+	$(MNVPROG) -e -s -u NONE $(COMMON_ARGS) --nofork -S $^
 	@if exist gen_opt_test.log ( type gen_opt_test.log & exit /b 1 )
 
-test_bench_regexp.res: test_bench_regexp.vim
+test_bench_regexp.res: test_bench_regexp.mnv
 	-$(DEL) benchmark.out
-	@echo $(VIMPROG) > vimcmd
-	$(VIMPROG) -u NONE $(COMMON_ARGS) -S runtest.vim $*.vim
-	@$(DEL) vimcmd
+	@echo $(MNVPROG) > mnvcmd
+	$(MNVPROG) -u NONE $(COMMON_ARGS) -S runtest.mnv $*.mnv
+	@$(DEL) mnvcmd
 	$(CAT) benchmark.out

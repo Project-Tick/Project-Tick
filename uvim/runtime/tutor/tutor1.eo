@@ -1,10 +1,10 @@
 ==============================================================================
-=  B o n v e n o n   al   la   I n s t r u i l o  de  V I M  -  Versio 1.7   =
+=  B o n v e n o n   al   la   I n s t r u i l o  de  M N V  -  Versio 1.7   =
 ==============================================================================
 
-   Vim estas tre potenca redaktilo, kiu havas multajn komandojn, tro da ili
+   MNV estas tre potenca redaktilo, kiu havas multajn komandojn, tro da ili
    por ĉion klarigi en instruilo kiel ĉi tiu. Ĉi tiu instruilo estas
-   fasonita por priskribi sufiĉajn komandojn, por ke vi kapablu uzi Vim
+   fasonita por priskribi sufiĉajn komandojn, por ke vi kapablu uzi MNV
    kun sufiĉa facileco.
 
    La tempo bezonata por plenumi la kurson estas 30 minutoj, kaj dependas
@@ -12,7 +12,7 @@
 
    ATENTU:
    La komandoj en la lecionoj ŝanĝos la tekston. Kopiu tiun ĉi dosieron
-   por ekzerci vin (se vi lanĉis "vimtutor", tiam estas jam kopio).
+   por ekzerci vin (se vi lanĉis "mnvtutor", tiam estas jam kopio).
 
    Gravas memori, ke ĉi tiu instruilo estas organizata por instrui per
    la uzo. Tio signifas, ke vi devas plenumi la komandojn por bone lerni
@@ -46,7 +46,7 @@ RIMARKO: La klavoj de la kursoro devus ankaŭ funkcii. Sed uzante hjkl,
          vi kapablos moviĝi pli rapide post kiam vi kutimiĝos.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                           Leciono 1.1.2:  ELIRI EL VIM
+                           Leciono 1.1.2:  ELIRI EL MNV
 
 
   !! RIMARKO: Antaŭ ol plenumi iujn subajn paŝojn ajn, legu la tutan lecionon!!
@@ -57,7 +57,7 @@ RIMARKO: La klavoj de la kursoro devus ankaŭ funkcii. Sed uzante hjkl,
      Tio eliras el la rekdaktilo, SEN konservi la ŝanĝojn, kiujn vi faris.
 
   3. Kiam vi vidas la ŝelinviton, tajpu la komandon kiun vi uzis por eniri
-     en ĉi tiu instruilo. Tio estus:   vimtutor <Enenklavo>
+     en ĉi tiu instruilo. Tio estus:   mnvtutor <Enenklavo>
 
   4. Se vi memoris tiujn paŝojn kaj sentas vin memfida, plenumu la paŝojn
      1 ĝis 3 por eliri kaj reeniri la redaktilon.
@@ -151,17 +151,17 @@ RIMARKO: Trairante la instruilon, ne provu memori, lernu per la uzo.
   1. Eliru el la instruilo kiel vi faris en la leciono 1.1.2:  :q!
      Aŭ, se vi havas atingon al alia terminalo, faru tion, kio sekvas tie.
 
-  2. Ĉe la ŝelinvito, tajpu ĉi tiun komandon:  vim tutor <Enenklavo>
-     'vim' estas la komando por lanĉi la redaktilon Vim, 'tutor' estas la
+  2. Ĉe la ŝelinvito, tajpu ĉi tiun komandon:  mnv tutor <Enenklavo>
+     'mnv' estas la komando por lanĉi la redaktilon MNV, 'tutor' estas la
      dosiernomo de la dosiero, kiun vi volas redakti.  Uzu dosieron, kiu
      ŝanĝeblas.
 
   3. Enmetu kaj forviŝu tekston, kiel vi lernis en la antaŭaj lecionoj.
 
-  4. Konservu la dosieron kun ŝanĝoj kaj eliru el Vim per:  :wq  <Enenklavo>
+  4. Konservu la dosieron kun ŝanĝoj kaj eliru el MNV per:  :wq  <Enenklavo>
 
-  5. Se vi eliris el la instruilo vimtutor en paŝo 1, restartigu la instruilon
-     vimtutor kaj moviĝu suben al la sekvanta resumo.
+  5. Se vi eliris el la instruilo mnvtutor en paŝo 1, restartigu la instruilon
+     mnvtutor kaj moviĝu suben al la sekvanta resumo.
 
   6. Post kiam vi legis la suprajn paŝojn, kaj komprenis ilin: faru ilin.
 
@@ -173,9 +173,9 @@ RIMARKO: Trairante la instruilon, ne provu memori, lernu per la uzo.
   1. La kursoro moviĝas aŭ per la sagoklavoj, aŭ per la klavoj hjkl.
         h (liven)     j (suben)      k (supren)     l (dekstren)
 
-  2. Por lanĉi Vim el la ŝelinvito, tajpu:  vim DOSIERNOMO <Enenklavo>
+  2. Por lanĉi MNV el la ŝelinvito, tajpu:  mnv DOSIERNOMO <Enenklavo>
 
-  3. Por eliri el Vim, tajpu:  <ESK>  :q! <Enenklavo>  por rezigni la ŝanĝojn
+  3. Por eliri el MNV, tajpu:  <ESK>  :q! <Enenklavo>  por rezigni la ŝanĝojn
 
   4. Por forviŝi la signojn ĉe la pozicio de la kursoro, tajpu:  x
 
@@ -207,7 +207,7 @@ Nun daŭrigu al la leciono 2.
   4. Tajpu   dw   por forviŝi la vorton.
 
   RIMARKO: La litero  d  aperos en la lasta linio sur la ekrano kiam vi
-           tajpas ĝin. Vim atendas ĝis kiam vi tajpas  w .  Se vi vidas
+           tajpas ĝin. MNV atendas ĝis kiam vi tajpas  w .  Se vi vidas
            alian signon ol  d  vi tajpis ion mise; premu  <ESK>  kaj
            rekomencu.
 
@@ -381,7 +381,7 @@ RIMARKO: Premo de nur la movo en Normala reĝimo sen operatoro movos
 
   1. Movu la kursoron ĉe la unua suba linio markita per --->.
 
-  2. Tajpu  dd  por forviŝi la linion kaj konservi ĝin ene de reĝistro de Vim.
+  2. Tajpu  dd  por forviŝi la linion kaj konservi ĝin ene de reĝistro de MNV.
 
   3. Movu la kursoron ĉe la linio c), SUPER kie la forviŝita linio devus esti.
 
@@ -644,11 +644,11 @@ RIMARKO: Ĉiuj  :  komandoj devas finiĝi per tajpo de <Enenklavo>
 
   3. Nun tajpu:   :w TESTO   (kie TESTO estas la elektita dosiernomo)
 
-  4. Tio konservas la tutan dosieron (instruilon de Vim) kun la nomo TESTO.
+  4. Tio konservas la tutan dosieron (instruilon de MNV) kun la nomo TESTO.
      Por kontroli tion, tajpu   :!dir   aŭ   :!ls   denove por vidigi vian
      dosierujon.
 
-RIMARKO: Se vi volus eliri el Vim kaj restartigi ĝin denove per  vim TESTO,
+RIMARKO: Se vi volus eliri el MNV kaj restartigi ĝin denove per  mnv TESTO,
          la dosiero estus precize same kiel kopio de la instruilo kiam vi
          konservis ĝin.
 
@@ -672,7 +672,7 @@ RIMARKO: Se vi volus eliri el Vim kaj restartigi ĝin denove per  vim TESTO,
   4. Tajpu  w TESTO  , kie TESTO estas dosiernomo, kiu ankoraŭ ne ekzistas.
      Kontrolu, ke vi vidas  :'<,'>w TESTO  antaŭ ol premi <Enenklavo>.
 
-  5. Vim konservos la apartigitajn liniojn al la dosiero TESTO.  Uzu  :dir
+  5. MNV konservos la apartigitajn liniojn al la dosiero TESTO.  Uzu  :dir
      aŭ  :!ls  por vidigi ĝin.  Ne forviŝu ĝin.  Ni uzos ĝin en la sekvanta
      leciono.
 
@@ -717,7 +717,7 @@ RIMARKO: Vi nun povas legi la eliron de ekstera komando. Ekzemple,
          :!dir              :!ls            - listigas dosierujon
          :!del DOSIERNOMO   :!rm DOSIERNOMO - forviŝas la dosieron DOSIERNOMO
 
-  2.  :w DOSIERNOMO  konservas la nunan dosieron de Vim al disko kun la
+  2.  :w DOSIERNOMO  konservas la nunan dosieron de MNV al disko kun la
       nomo DOSIERNOMO.
 
   3.  v  movo  :w DOSIERNOMO  konservas la Viduman apartigon de linioj en
@@ -884,7 +884,7 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
 
                           ** Uzu la helpan sistemon **
 
-  Vim havas ampleksan helpan sistemon. Por komenciĝi, provu unu el la tiuj
+  MNV havas ampleksan helpan sistemon. Por komenciĝi, provu unu el la tiuj
   tri:
         - premu la klavon <HELPO> (se vi havas ĝin)
         - premu la klavon <F1> (se vi havas ĝin)
@@ -907,24 +907,24 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
                        Leciono 1.7.2: KREI STARTAN SKRIPTON
 
 
-                         ** Ebligu kapablojn de Vim **
+                         ** Ebligu kapablojn de MNV **
 
-  Vim havas multe pli da kapabloj ol Vi, sed la plej multaj estas defaŭlte
-  malŝaltitaj.  Por ekuzi la kapablojn, vi devas krei dosieron "vimrc".
+  MNV havas multe pli da kapabloj ol Vi, sed la plej multaj estas defaŭlte
+  malŝaltitaj.  Por ekuzi la kapablojn, vi devas krei dosieron "mnvrc".
 
-  1. Ekredaktu la dosieron "vimrc".  Tio dependas de via sistemo:
-      :e ~/.vimrc          por Unikso
-      :e ~/_vimrc          por Vindozo
+  1. Ekredaktu la dosieron "mnvrc".  Tio dependas de via sistemo:
+      :e ~/.mnvrc          por Unikso
+      :e ~/_mnvrc          por Vindozo
 
-  2. Nun legu la enhavon de la ekzempla "vimrc"
-      :r $VIMRUNTIME/vimrc_example.vim
+  2. Nun legu la enhavon de la ekzempla "mnvrc"
+      :r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Konservu la dosieron per:
       :w
 
-  La sekvantan fojon, kiam vi lanĉas Vim, ĝi uzos sintaksan emfazon.
-  Vi povas aldoni ĉiujn viajn preferatajn agordojn al tiu dosiero "vimrc".
-  Por pli da informoj, tajpu  :help vimrc-intro
+  La sekvantan fojon, kiam vi lanĉas MNV, ĝi uzos sintaksan emfazon.
+  Vi povas aldoni ĉiujn viajn preferatajn agordojn al tiu dosiero "mnvrc".
+  Por pli da informoj, tajpu  :help mnvrc-intro
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -933,19 +933,19 @@ RIMARKO: Se vi deziras ignori usklecon por nur unu serĉa komando, uzu  \c
 
              ** Kompletigo de komanda linio per CTRL-D kaj <TAB> **
 
-  1. Certigu ke Vim estas en kongrua reĝimo:  :set nocp
+  1. Certigu ke MNV estas en kongrua reĝimo:  :set nocp
 
   2. Rigardu tiujn dosierojn, kiuj ekzistas en la dosierujo:  :!ls  aŭ  :!dir
 
   3. Tajpu la komencon de komando:  :e
 
-  4. Premu  CTRL-D  kaj Vim montros liston de komandoj, kiuj komencas per "e".
+  4. Premu  CTRL-D  kaj MNV montros liston de komandoj, kiuj komencas per "e".
 
-  5. Premu d<TAB>  kaj Vim kompletigos la nomon de la komando al ":edit".
+  5. Premu d<TAB>  kaj MNV kompletigos la nomon de la komando al ":edit".
 
   6. Nun aldonu spaceton kaj la komencon de ekzistanta nomo:  :edit DOSI
 
-  7. Premu d<TAB>.  Vim kompletigos la nomon (se ĝi estas unika)
+  7. Premu d<TAB>.  MNV kompletigos la nomon (se ĝi estas unika)
 
 RIMARKO: Kompletigo funkcias por multaj komandoj. Nur provu premi CTRL-D kaj
          <TAB>.  Estas aparte utila por  :help .
@@ -962,7 +962,7 @@ RIMARKO: Kompletigo funkcias por multaj komandoj. Nur provu premi CTRL-D kaj
 
   4. Tajpu  :q  to fermi la helpan fenestron.
 
-  5. Kreu komencan skripton vimrc por konservi viajn agordojn.
+  5. Kreu komencan skripton mnvrc por konservi viajn agordojn.
 
   6. Kiam vi tajpas  :  komandon, premu CTRL-D por vidi ĉiujn kompleteblojn.
      Premu <TAB> por uzi unu kompletigon.
@@ -970,9 +970,9 @@ RIMARKO: Kompletigo funkcias por multaj komandoj. Nur provu premi CTRL-D kaj
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Tio konkludas la instruilon de Vim.  Ĝi celis doni mallongan superrigardon
-  de la redaktilo Vim, nur tion kio sufiĉas por ebligi al vi facilan uzon de
-  la redaktilo. Estas nepre nekompleta, ĉar Vim havas multajn multajn pliajn
+  Tio konkludas la instruilon de MNV.  Ĝi celis doni mallongan superrigardon
+  de la redaktilo MNV, nur tion kio sufiĉas por ebligi al vi facilan uzon de
+  la redaktilo. Estas nepre nekompleta, ĉar MNV havas multajn multajn pliajn
   komandojn. Legu la manlibron: ":help user-manual".
 
   Tiu instruilo estis verkita de Michael C. Pierce kaj Robert K. Ware,
@@ -982,7 +982,7 @@ RIMARKO: Kompletigo funkcias por multaj komandoj. Nur provu premi CTRL-D kaj
 
   Retpoŝto: bware@mines.colorado.edu.
 
-  Modifita por Vim de Bram Moolenaar.
+  Modifita por MNV de Bram Moolenaar.
 
   Esperantigita fare de Dominique Pellé, 2008-04-01
   Retpoŝto: dominique.pelle@gmail.com

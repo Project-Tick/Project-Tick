@@ -1,7 +1,7 @@
-*userfunc.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*userfunc.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Defining and using functions.
@@ -41,7 +41,7 @@ used instead of "s:" when the mapping is expanded outside of the script.
 There are only script-local functions, no buffer-local or window-local
 functions.
 
-In |Vim9| script functions are local to the script by default, prefix "g:" to
+In |MNV9| script functions are local to the script by default, prefix "g:" to
 define a global function.
 
 				*:fu* *:function* *E128* *E129* *E123* *E454*
@@ -69,7 +69,7 @@ last defined.  Example: >
 
     :verbose function SetFileTypeSH
 	function SetFileTypeSH(name)
-	    Last set from /usr/share/vim/vim-7.0/filetype.vim
+	    Last set from /usr/share/mnv/mnv-7.0/filetype.mnv
 <
 See |:verbose-cmd| for more information.
 
@@ -107,7 +107,7 @@ See |:verbose-cmd| for more information.
 			NOTE: Use ! wisely.  If used without care it can cause
 			an existing function to be replaced unexpectedly,
 			which is hard to debug.
-			NOTE: In Vim9 script script-local functions cannot be
+			NOTE: In MNV9 script script-local functions cannot be
 			deleted or redefined.
 
 			For the {arguments} see |function-argument|.
@@ -169,7 +169,7 @@ See |:verbose-cmd| for more information.
 				" comment	always ignored
 				anything else	ignored, warning given when
 						'verbose' is non-zero
-			The support for a following command was added in Vim
+			The support for a following command was added in MNV
 			8.0.0654, before that any argument was silently
 			ignored.
 
@@ -332,7 +332,7 @@ This function can then be called with: >
 		Call a function.  The name of the function and its arguments
 		are as specified with `:function`.  Up to 20 arguments can be
 		used.  The returned value is discarded.
-		In |Vim9| script using `:call` is optional, these two lines do
+		In |MNV9| script using `:call` is optional, these two lines do
 		the same thing: >
 			call SomeFunc(arg)
 			SomeFunc(arg)
@@ -374,7 +374,7 @@ This function can then be called with: >
 								*E117*
 When a function cannot be found the error "E117: Unknown function" will be
 given.  If the function was using an autoload path or an autoload import and
-the script is a |Vim9| script, this may also be caused by the function not
+the script is a |MNV9| script, this may also be caused by the function not
 being exported.
 
 								*E132*
@@ -466,7 +466,7 @@ When using many or large functions, it's possible to automatically define them
 only when they are used.  There are two methods: with an autocommand and with
 the "autoload" directory in 'runtimepath'.
 
-In |Vim9| script there is also an autoload mechanism for imported scripts, see
+In |MNV9| script there is also an autoload mechanism for imported scripts, see
 |import-autoload|.
 
 
@@ -474,17 +474,17 @@ Using an autocommand ~
 
 This is introduced in the user manual, section |51.4|.
 
-The autocommand is useful if you have a plugin that is a long Vim script file.
+The autocommand is useful if you have a plugin that is a long MNV script file.
 You can define the autocommand and quickly quit the script with `:finish`.
-That makes Vim startup faster.  The autocommand should then load the same file
+That makes MNV startup faster.  The autocommand should then load the same file
 again, setting a variable to skip the `:finish` command.
 
 Use the FuncUndefined autocommand event with a pattern that matches the
 function(s) to be defined.  Example: >
 
-	:au FuncUndefined BufNet* source ~/vim/bufnetfuncs.vim
+	:au FuncUndefined BufNet* source ~/mnv/bufnetfuncs.mnv
 
-The file "~/vim/bufnetfuncs.vim" should then define functions that start with
+The file "~/mnv/bufnetfuncs.mnv" should then define functions that start with
 "BufNet".  Also see |FuncUndefined|.
 
 
@@ -498,25 +498,25 @@ like this: >
 
 	:call filename#funcname()
 
-These functions are always global, in Vim9 script "g:" needs to be used: >
+These functions are always global, in MNV9 script "g:" needs to be used: >
 	:call g:filename#funcname()
 
-When such a function is called, and it is not defined yet, Vim will search the
+When such a function is called, and it is not defined yet, MNV will search the
 "autoload" directories in 'runtimepath' for a script file called
-"filename.vim".  For example "~/.vim/autoload/filename.vim".  That file should
+"filename.mnv".  For example "~/.mnv/autoload/filename.mnv".  That file should
 then define the function like this: >
 
 	function filename#funcname()
 	   echo "Done!"
 	endfunction
 
-If the file doesn't exist, Vim will also search in 'packpath' (under "start")
-to allow calling packages' functions from your .vimrc when the packages have
+If the file doesn't exist, MNV will also search in 'packpath' (under "start")
+to allow calling packages' functions from your .mnvrc when the packages have
 not been added to 'runtimepath' yet (see |packages|).
 
 The file name and the name used before the # in the function must match
 exactly, and the defined function must have the name exactly as it will be
-called.  In Vim9 script the "g:" prefix must be used: >
+called.  In MNV9 script the "g:" prefix must be used: >
 	function g:filename#funcname()
 
 or for a compiled function: >
@@ -527,7 +527,7 @@ a path separator.  Thus when calling a function: >
 
 	:call foo#bar#func()
 
-Vim will look for the file "autoload/foo/bar.vim" in 'runtimepath'.
+MNV will look for the file "autoload/foo/bar.mnv" in 'runtimepath'.
 
 This also works when reading a variable that has not been set yet: >
 
@@ -546,18 +546,18 @@ Note that when you make a mistake and call a function that is supposed to be
 defined in an autoload script, but the script doesn't actually define the
 function, you will get an error message for the missing function.  If you fix
 the autoload script it won't be automatically loaded again.  Either restart
-Vim or manually source the script.
+MNV or manually source the script.
 
 Also note that if you have two script files, and one calls a function in the
 other and vice versa, before the used function is defined, it won't work.
 Avoid using the autoload functionality at the toplevel.
 
-In |Vim9| script you will get error *E1263* if you define a function with
+In |MNV9| script you will get error *E1263* if you define a function with
 a "#" character in the name.  You should use a name without "#" and use
 `:export`.
 
 Hint: If you distribute a bunch of scripts you can pack them together with the
-|vimball| utility.  Also read the user manual |distribute-script|.
+|mnvball| utility.  Also read the user manual |distribute-script|.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * ex_eval.c: functions for Ex command line for the +eval feature.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -52,11 +52,11 @@ static char	*get_end_emsg(cstack_T *cstack);
  */
 #if 0
 // Expressions used for testing during the development phase.
-# define THROW_ON_ERROR		(!eval_to_number("$VIMNOERRTHROW"))
-# define THROW_ON_INTERRUPT	(!eval_to_number("$VIMNOINTTHROW"))
+# define THROW_ON_ERROR		(!eval_to_number("$MNVNOERRTHROW"))
+# define THROW_ON_INTERRUPT	(!eval_to_number("$MNVNOINTTHROW"))
 # define THROW_TEST
 #else
-// Values used for the Vim release.
+// Values used for the MNV release.
 # define THROW_ON_ERROR		TRUE
 # define THROW_ON_ERROR_TRUE
 # define THROW_ON_INTERRUPT	TRUE
@@ -259,10 +259,10 @@ cause_errthrow(
 	    }
 	    else
 	    {
-		elem->msg = (char *)vim_strsave(mesg);
+		elem->msg = (char *)mnv_strsave(mesg);
 		if (elem->msg == NULL)
 		{
-		    vim_free(elem);
+		    mnv_free(elem);
 		    suppress_errthrow = TRUE;
 		    emsg(_(e_out_of_memory));
 		}
@@ -275,12 +275,12 @@ cause_errthrow(
 		    {
 			char	    *tmsg;
 
-			// Skip the extra "Vim " prefix for message "E458".
+			// Skip the extra "MNV " prefix for message "E458".
 			tmsg = elem->msg;
-			if (STRNCMP(tmsg, "Vim E", 5) == 0
-				&& VIM_ISDIGIT(tmsg[5])
-				&& VIM_ISDIGIT(tmsg[6])
-				&& VIM_ISDIGIT(tmsg[7])
+			if (STRNCMP(tmsg, "MNV E", 5) == 0
+				&& MNV_ISDIGIT(tmsg[5])
+				&& MNV_ISDIGIT(tmsg[6])
+				&& MNV_ISDIGIT(tmsg[7])
 				&& tmsg[8] == ':'
 				&& tmsg[9] == ' ')
 			    (*msg_list)->throw_msg = &tmsg[4];
@@ -312,9 +312,9 @@ free_msglist(msglist_T *l)
     while (messages != NULL)
     {
 	next = messages->next;
-	vim_free(messages->msg);
-	vim_free(messages->sfile);
-	vim_free(messages);
+	mnv_free(messages->msg);
+	mnv_free(messages->sfile);
+	mnv_free(messages);
 	messages = next;
     }
 }
@@ -410,7 +410,7 @@ do_intthrow(cstack_T *cstack)
 	    // An interrupt exception replaces any user or error exception.
 	    discard_current_exception();
 	}
-	if (throw_exception("Vim:Interrupt", ET_INTERRUPT, NULL) != FAIL)
+	if (throw_exception("MNV:Interrupt", ET_INTERRUPT, NULL) != FAIL)
 	    do_throw(cstack);
     }
 
@@ -439,7 +439,7 @@ get_exception_string(
 	if (cmdname != NULL && *cmdname != NUL)
 	{
 	    cmdlen = (int)STRLEN(cmdname);
-	    ret = (char *)vim_strnsave((char_u *)"Vim(",
+	    ret = (char *)mnv_strnsave((char_u *)"MNV(",
 						4 + cmdlen + 2 + STRLEN(mesg));
 	    if (ret == NULL)
 		return ret;
@@ -449,7 +449,7 @@ get_exception_string(
 	}
 	else
 	{
-	    ret = (char *)vim_strnsave((char_u *)"Vim:", 4 + STRLEN(mesg));
+	    ret = (char *)mnv_strnsave((char_u *)"MNV:", 4 + STRLEN(mesg));
 	    if (ret == NULL)
 		return ret;
 	    val = ret + 4;
@@ -462,11 +462,11 @@ get_exception_string(
 	{
 	    if (*p == NUL
 		    || (*p == 'E'
-			&& VIM_ISDIGIT(p[1])
+			&& MNV_ISDIGIT(p[1])
 			&& (p[2] == ':'
-			    || (VIM_ISDIGIT(p[2])
+			    || (MNV_ISDIGIT(p[2])
 				&& (p[3] == ':'
-				    || (VIM_ISDIGIT(p[3])
+				    || (MNV_ISDIGIT(p[3])
 					&& p[4] == ':'))))))
 	    {
 		if (*p == NUL || p == mesg)
@@ -517,11 +517,11 @@ throw_exception(void *value, except_type_T type, char_u *cmdname)
      */
     if (type == ET_USER)
     {
-	if (STRNCMP((char_u *)value, "Vim", 3) == 0
+	if (STRNCMP((char_u *)value, "MNV", 3) == 0
 		&& (((char_u *)value)[3] == NUL || ((char_u *)value)[3] == ':'
 		    || ((char_u *)value)[3] == '('))
 	{
-	    emsg(_(e_cannot_throw_exceptions_with_vim_prefix));
+	    emsg(_(e_cannot_throw_exceptions_with_mnv_prefix));
 	    goto fail;
 	}
     }
@@ -532,7 +532,7 @@ throw_exception(void *value, except_type_T type, char_u *cmdname)
 
     if (type == ET_ERROR)
 	// Store the original message and prefix the exception value with
-	// "Vim:" or, if a command name is given, "Vim(cmdname):".
+	// "MNV:" or, if a command name is given, "MNV(cmdname):".
 	excp->messages = (msglist_T *)value;
 
     excp->value = get_exception_string(value, type, cmdname, &should_free);
@@ -552,11 +552,11 @@ throw_exception(void *value, except_type_T type, char_u *cmdname)
     {
 	excp->throw_name = estack_sfile(ESTACK_NONE);
 	if (excp->throw_name == NULL)
-	    excp->throw_name = vim_strsave((char_u *)"");
+	    excp->throw_name = mnv_strsave((char_u *)"");
 	if (excp->throw_name == NULL)
 	{
 	    if (should_free)
-		vim_free(excp->value);
+		mnv_free(excp->value);
 	    goto nomem;
 	}
 	excp->throw_lnum = SOURCING_LNUM;
@@ -594,7 +594,7 @@ throw_exception(void *value, except_type_T type, char_u *cmdname)
     return OK;
 
 nomem:
-    vim_free(excp);
+    mnv_free(excp);
     suppress_errthrow = TRUE;
     emsg(_(e_out_of_memory));
 fail:
@@ -623,7 +623,7 @@ discard_exception(except_T *excp, int was_finished)
     {
 	int	save_msg_silent = msg_silent;
 
-	saved_IObuff = vim_strsave(IObuff);
+	saved_IObuff = mnv_strsave(IObuff);
 	if (debug_break_level > 0)
 	    msg_silent = FALSE;		// display messages
 	else
@@ -644,15 +644,15 @@ discard_exception(except_T *excp, int was_finished)
 	else
 	    verbose_leave();
 	STRCPY(IObuff, saved_IObuff);
-	vim_free(saved_IObuff);
+	mnv_free(saved_IObuff);
     }
     if (excp->type != ET_INTERRUPT)
-	vim_free(excp->value);
+	mnv_free(excp->value);
     if (excp->type == ET_ERROR)
 	free_msglist(excp->messages);
-    vim_free(excp->throw_name);
+    mnv_free(excp->throw_name);
     list_unref(excp->stacktrace);
-    vim_free(excp);
+    mnv_free(excp);
 }
 
 /*
@@ -675,22 +675,22 @@ catch_exception(except_T *excp)
 {
     excp->caught = caught_stack;
     caught_stack = excp;
-    set_vim_var_string(VV_EXCEPTION, (char_u *)excp->value, -1);
-    set_vim_var_list(VV_STACKTRACE, excp->stacktrace);
+    set_mnv_var_string(VV_EXCEPTION, (char_u *)excp->value, -1);
+    set_mnv_var_list(VV_STACKTRACE, excp->stacktrace);
     if (*excp->throw_name != NUL)
     {
 	size_t	IObufflen;
 
 	if (excp->throw_lnum != 0)
-	    IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE, _("%s, line %ld"),
+	    IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE, _("%s, line %ld"),
 				    excp->throw_name, (long)excp->throw_lnum);
 	else
-	    IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE, "%s", excp->throw_name);
-	set_vim_var_string(VV_THROWPOINT, IObuff, (int)IObufflen);
+	    IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE, "%s", excp->throw_name);
+	set_mnv_var_string(VV_THROWPOINT, IObuff, (int)IObufflen);
     }
     else
 	// throw_name not set on an exception from a command that was typed.
-	set_vim_var_string(VV_THROWPOINT, NULL, -1);
+	set_mnv_var_string(VV_THROWPOINT, NULL, -1);
 
     if (p_verbose >= 13 || debug_break_level > 0)
     {
@@ -728,31 +728,31 @@ finish_exception(except_T *excp)
     caught_stack = caught_stack->caught;
     if (caught_stack != NULL)
     {
-	set_vim_var_string(VV_EXCEPTION, (char_u *)caught_stack->value, -1);
-	set_vim_var_list(VV_STACKTRACE, caught_stack->stacktrace);
+	set_mnv_var_string(VV_EXCEPTION, (char_u *)caught_stack->value, -1);
+	set_mnv_var_list(VV_STACKTRACE, caught_stack->stacktrace);
 	if (*caught_stack->throw_name != NUL)
 	{
 	    size_t  IObufflen;
 
 	    if (caught_stack->throw_lnum != 0)
-		IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE,
+		IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE,
 			_("%s, line %ld"), caught_stack->throw_name,
 			(long)caught_stack->throw_lnum);
 	    else
-		IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE, "%s",
+		IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE, "%s",
 						    caught_stack->throw_name);
-	    set_vim_var_string(VV_THROWPOINT, IObuff, (int)IObufflen);
+	    set_mnv_var_string(VV_THROWPOINT, IObuff, (int)IObufflen);
 	}
 	else
 	    // throw_name not set on an exception from a command that was
 	    // typed.
-	    set_vim_var_string(VV_THROWPOINT, NULL, -1);
+	    set_mnv_var_string(VV_THROWPOINT, NULL, -1);
     }
     else
     {
-	set_vim_var_string(VV_EXCEPTION, NULL, -1);
-	set_vim_var_string(VV_THROWPOINT, NULL, -1);
-	set_vim_var_list(VV_STACKTRACE, NULL);
+	set_mnv_var_string(VV_EXCEPTION, NULL, -1);
+	set_mnv_var_string(VV_THROWPOINT, NULL, -1);
+	set_mnv_var_list(VV_STACKTRACE, NULL);
     }
 
     // Discard the exception, but use the finish message for 'verbose'.
@@ -859,8 +859,8 @@ report_pending(int action, int pending, void *value)
 	default:
 	    if (pending & CSTP_THROW)
 	    {
-		vim_snprintf((char *)IObuff, IOSIZE, mesg, _("Exception"));
-		mesg = (char *)vim_strnsave(IObuff, STRLEN(IObuff) + 4);
+		mnv_snprintf((char *)IObuff, IOSIZE, mesg, _("Exception"));
+		mesg = (char *)mnv_strnsave(IObuff, STRLEN(IObuff) + 4);
 		STRCAT(mesg, ": %s");
 		s = (char *)((except_T *)value)->value;
 	    }
@@ -885,9 +885,9 @@ report_pending(int action, int pending, void *value)
 	msg_silent = save_msg_silent;
 
     if (pending == CSTP_RETURN)
-	vim_free(s);
+	mnv_free(s);
     else if (pending & CSTP_THROW)
-	vim_free(mesg);
+	mnv_free(mesg);
 }
 
 /*
@@ -982,7 +982,7 @@ cmd_is_name_only(char_u *arg)
 	(void)get_name_len(&p, &alias, FALSE, FALSE);
     }
     name_only = ends_excmd2(arg, skipwhite(p));
-    vim_free(alias);
+    mnv_free(alias);
     return name_only;
 }
 
@@ -997,7 +997,7 @@ ex_eval(exarg_T *eap)
     int		name_only = FALSE;
     long	lnum = SOURCING_LNUM;
 
-    if (in_vim9script())
+    if (in_mnv9script())
 	name_only = cmd_is_name_only(eap->arg);
 
     fill_evalarg_from_eap(&evalarg, eap, eap->skip);
@@ -1005,7 +1005,7 @@ ex_eval(exarg_T *eap)
     if (eval0(eap->arg, &tv, eap, &evalarg) == OK)
     {
 	clear_tv(&tv);
-	if (in_vim9script() && name_only
+	if (in_mnv9script() && name_only
 		&& (evalarg.eval_tofree == NULL
 		    || ends_excmd2(evalarg.eval_tofree,
 					      skipwhite(evalarg.eval_tofree))))
@@ -1026,7 +1026,7 @@ ex_eval(exarg_T *eap)
 enter_block(cstack_T *cstack)
 {
     ++cstack->cs_idx;
-    if (in_vim9script() && current_sctx.sc_sid > 0)
+    if (in_mnv9script() && current_sctx.sc_sid > 0)
     {
 	scriptitem_T *si = SCRIPT_ITEM(current_sctx.sc_sid);
 
@@ -1036,7 +1036,7 @@ enter_block(cstack_T *cstack)
     }
     else
     {
-	// Just in case in_vim9script() does not return the same value when the
+	// Just in case in_mnv9script() does not return the same value when the
 	// block ends.
 	cstack->cs_script_var_len[cstack->cs_idx] = 0;
 	cstack->cs_block_id[cstack->cs_idx] = 0;
@@ -1046,7 +1046,7 @@ enter_block(cstack_T *cstack)
     static void
 leave_block(cstack_T *cstack)
 {
-    if (in_vim9script() && SCRIPT_ID_VALID(current_sctx.sc_sid))
+    if (in_mnv9script() && SCRIPT_ID_VALID(current_sctx.sc_sid))
     {
 	scriptitem_T	*si = SCRIPT_ITEM(current_sctx.sc_sid);
 	int		i;
@@ -1282,7 +1282,7 @@ ex_while(exarg_T *eap)
 	}
 	else
 	{
-	    if (in_vim9script() && SCRIPT_ID_VALID(current_sctx.sc_sid))
+	    if (in_mnv9script() && SCRIPT_ID_VALID(current_sctx.sc_sid))
 	    {
 		scriptitem_T	*si = SCRIPT_ITEM(current_sctx.sc_sid);
 		int		i;
@@ -1568,7 +1568,7 @@ ex_endwhile(exarg_T *eap)
 }
 
 /*
- * "{" start of a block in Vim9 script
+ * "{" start of a block in MNV9 script
  */
     void
 ex_block(exarg_T *eap)
@@ -1585,7 +1585,7 @@ ex_block(exarg_T *eap)
 }
 
 /*
- * "}" end of a block in Vim9 script
+ * "}" end of a block in MNV9 script
  */
     void
 ex_endblock(exarg_T *eap)
@@ -1655,7 +1655,7 @@ ex_throw(exarg_T *eap)
     if (!eap->skip && value != NULL)
     {
 	if (throw_exception(value, ET_USER, NULL) == FAIL)
-	    vim_free(value);
+	    mnv_free(value);
 	else
 	    do_throw(eap->cstack);
     }
@@ -1928,7 +1928,7 @@ ex_catch(exarg_T *eap)
 		// Disable error messages, it will make current_exception
 		// invalid.
 		++emsg_off;
-		regmatch.regprog = vim_regcomp(pat, RE_MAGIC + RE_STRING);
+		regmatch.regprog = mnv_regcomp(pat, RE_MAGIC + RE_STRING);
 		--emsg_off;
 		regmatch.rm_ic = FALSE;
 		if (end != NULL)
@@ -1945,10 +1945,10 @@ ex_catch(exarg_T *eap)
 		     */
 		    prev_got_int = got_int;
 		    got_int = FALSE;
-		    caught = vim_regexec_nl(&regmatch,
+		    caught = mnv_regexec_nl(&regmatch,
 			       (char_u *)current_exception->value, (colnr_T)0);
 		    got_int |= prev_got_int;
-		    vim_regfree(regmatch.regprog);
+		    mnv_regfree(regmatch.regprog);
 		}
 	    }
 	}
@@ -2202,7 +2202,7 @@ ex_endtry(exarg_T *eap)
 	idx = cstack->cs_idx;
 
 	// Check the flags only when not in a skipped block.
-	if (!skip && in_vim9script()
+	if (!skip && in_mnv9script()
 		     && (cstack->cs_flags[idx] & (CSF_CATCH|CSF_FINALLY)) == 0)
 	{
 	    // try/endtry without any catch or finally: give an error and
@@ -2617,7 +2617,7 @@ cleanup_conditionals(
 	    elem = cstack->cs_emsg_silent_list;
 	    cstack->cs_emsg_silent_list = elem->next;
 	    emsg_silent = elem->saved_emsg_silent;
-	    vim_free(elem);
+	    mnv_free(elem);
 	    cstack->cs_flags[idx] &= ~CSF_SILENT;
 	}
 	if (stop)

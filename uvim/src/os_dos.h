@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -13,65 +13,65 @@
  * Some of these may have been defined in the makefile or feature.h.
  */
 
-#ifndef SYS_VIMRC_FILE
-# define SYS_VIMRC_FILE		"$VIM\\vimrc"
+#ifndef SYS_MNVRC_FILE
+# define SYS_MNVRC_FILE		"$MNV\\mnvrc"
 #endif
-#ifndef USR_VIMRC_FILE
-# define USR_VIMRC_FILE		"$HOME\\_vimrc"
+#ifndef USR_MNVRC_FILE
+# define USR_MNVRC_FILE		"$HOME\\_mnvrc"
 #endif
-#ifndef USR_VIMRC_FILE2
-# define USR_VIMRC_FILE2	"$HOME\\vimfiles\\vimrc"
+#ifndef USR_MNVRC_FILE2
+# define USR_MNVRC_FILE2	"$HOME\\mnvfiles\\mnvrc"
 #endif
-#ifndef USR_VIMRC_FILE3
-# define USR_VIMRC_FILE3	"$VIM\\_vimrc"
+#ifndef USR_MNVRC_FILE3
+# define USR_MNVRC_FILE3	"$MNV\\_mnvrc"
 #endif
-#ifndef VIM_DEFAULTS_FILE
-# define VIM_DEFAULTS_FILE	"$VIMRUNTIME\\defaults.vim"
+#ifndef MNV_DEFAULTS_FILE
+# define MNV_DEFAULTS_FILE	"$MNVRUNTIME\\defaults.mnv"
 #endif
-#ifndef EVIM_FILE
-# define EVIM_FILE		"$VIMRUNTIME\\evim.vim"
+#ifndef EMNV_FILE
+# define EMNV_FILE		"$MNVRUNTIME\\emnv.mnv"
 #endif
 
 #ifndef USR_EXRC_FILE
 # define USR_EXRC_FILE		"$HOME\\_exrc"
 #endif
 #ifndef USR_EXRC_FILE2
-# define USR_EXRC_FILE2		"$VIM\\_exrc"
+# define USR_EXRC_FILE2		"$MNV\\_exrc"
 #endif
 
 #ifdef FEAT_GUI
-# ifndef SYS_GVIMRC_FILE
-#  define SYS_GVIMRC_FILE	"$VIM\\gvimrc"
+# ifndef SYS_GMNVRC_FILE
+#  define SYS_GMNVRC_FILE	"$MNV\\gmnvrc"
 # endif
-# ifndef USR_GVIMRC_FILE
-#  define USR_GVIMRC_FILE	"$HOME\\_gvimrc"
+# ifndef USR_GMNVRC_FILE
+#  define USR_GMNVRC_FILE	"$HOME\\_gmnvrc"
 # endif
-# ifndef USR_GVIMRC_FILE2
-#  define USR_GVIMRC_FILE2	"$HOME\\vimfiles\\gvimrc"
+# ifndef USR_GMNVRC_FILE2
+#  define USR_GMNVRC_FILE2	"$HOME\\mnvfiles\\gmnvrc"
 # endif
-# ifndef USR_GVIMRC_FILE3
-#  define USR_GVIMRC_FILE3	"$VIM\\_gvimrc"
+# ifndef USR_GMNVRC_FILE3
+#  define USR_GMNVRC_FILE3	"$MNV\\_gmnvrc"
 # endif
 # ifndef SYS_MENU_FILE
-#  define SYS_MENU_FILE		"$VIMRUNTIME\\menu.vim"
+#  define SYS_MENU_FILE		"$MNVRUNTIME\\menu.mnv"
 # endif
 #endif
 
 #ifndef SYS_OPTWIN_FILE
-# define SYS_OPTWIN_FILE	"$VIMRUNTIME\\optwin.vim"
+# define SYS_OPTWIN_FILE	"$MNVRUNTIME\\optwin.mnv"
 #endif
 
-#ifdef FEAT_VIMINFO
-# ifndef VIMINFO_FILE
-#  define VIMINFO_FILE		"$HOME\\_viminfo"
+#ifdef FEAT_MNVINFO
+# ifndef MNVINFO_FILE
+#  define MNVINFO_FILE		"$HOME\\_mnvinfo"
 # endif
-# ifndef VIMINFO_FILE2
-#  define VIMINFO_FILE2		"$VIM\\_viminfo"
+# ifndef MNVINFO_FILE2
+#  define MNVINFO_FILE2		"$MNV\\_mnvinfo"
 # endif
 #endif
 
-#ifndef VIMRC_FILE
-# define VIMRC_FILE	"_vimrc"
+#ifndef MNVRC_FILE
+# define MNVRC_FILE	"_mnvrc"
 #endif
 
 #ifndef EXRC_FILE
@@ -79,17 +79,17 @@
 #endif
 
 #ifdef FEAT_GUI
-# ifndef GVIMRC_FILE
-#  define GVIMRC_FILE	"_gvimrc"
+# ifndef GMNVRC_FILE
+#  define GMNVRC_FILE	"_gmnvrc"
 # endif
 #endif
 
 #ifndef DFLT_HELPFILE
-# define DFLT_HELPFILE	"$VIMRUNTIME\\doc\\help.txt"
+# define DFLT_HELPFILE	"$MNVRUNTIME\\doc\\help.txt"
 #endif
 
 #ifndef SYNTAX_FNAME
-# define SYNTAX_FNAME	"$VIMRUNTIME\\syntax\\%s.vim"
+# define SYNTAX_FNAME	"$MNVRUNTIME\\syntax\\%s.mnv"
 #endif
 
 #ifndef DFLT_BDIR
@@ -97,7 +97,7 @@
 #endif
 
 #ifndef DFLT_VDIR
-# define DFLT_VDIR	"$HOME/vimfiles/view"	// default for 'viewdir'
+# define DFLT_VDIR	"$HOME/mnvfiles/view"	// default for 'viewdir'
 #endif
 
 #ifndef DFLT_DIR
@@ -105,8 +105,8 @@
 #endif
 
 #define DFLT_ERRORFILE		"errors.err"
-#define DFLT_RUNTIMEPATH	"$HOME/vimfiles,$VIM/vimfiles,$VIMRUNTIME,$HOME/vimfiles/after,$VIM/vimfiles/after"
-#define CLEAN_RUNTIMEPATH	"$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after"
+#define DFLT_RUNTIMEPATH	"$HOME/mnvfiles,$MNV/mnvfiles,$MNVRUNTIME,$HOME/mnvfiles/after,$MNV/mnvfiles/after"
+#define CLEAN_RUNTIMEPATH	"$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after"
 
 #define CASE_INSENSITIVE_FILENAME   // ignore case when comparing file names
 #define SPACE_IN_FILENAME

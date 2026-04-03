@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * optionstr.c: Functions related to string options
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static char_u shm_buf[SHM_LEN];
 static int set_shm_recursive = 0;
@@ -220,7 +220,7 @@ trigger_optionset_string(
 {
     // Don't do this recursively.
     if (oldval == NULL || newval == NULL
-				    || *get_vim_var_str(VV_OPTION_TYPE) != NUL)
+				    || *get_mnv_var_str(VV_OPTION_TYPE) != NUL)
 	return;
 
     char_u buf_type[7];
@@ -228,31 +228,31 @@ trigger_optionset_string(
     size_t oldvallen;
 
     oldvallen = STRLEN(oldval);
-    set_vim_var_string(VV_OPTION_OLD, oldval, (int)oldvallen);
-    set_vim_var_string(VV_OPTION_NEW, newval, -1);
-    buf_typelen = vim_snprintf_safelen((char *)buf_type, sizeof(buf_type),
+    set_mnv_var_string(VV_OPTION_OLD, oldval, (int)oldvallen);
+    set_mnv_var_string(VV_OPTION_NEW, newval, -1);
+    buf_typelen = mnv_snprintf_safelen((char *)buf_type, sizeof(buf_type),
 	"%s", (opt_flags & OPT_LOCAL) ? "local" : "global");
-    set_vim_var_string(VV_OPTION_TYPE, buf_type, (int)buf_typelen);
+    set_mnv_var_string(VV_OPTION_TYPE, buf_type, (int)buf_typelen);
     if (opt_flags & OPT_LOCAL)
     {
-	set_vim_var_string(VV_OPTION_COMMAND, (char_u *)"setlocal", STRLEN_LITERAL("setlocal"));
-	set_vim_var_string(VV_OPTION_OLDLOCAL, oldval, (int)oldvallen);
+	set_mnv_var_string(VV_OPTION_COMMAND, (char_u *)"setlocal", STRLEN_LITERAL("setlocal"));
+	set_mnv_var_string(VV_OPTION_OLDLOCAL, oldval, (int)oldvallen);
     }
     if (opt_flags & OPT_GLOBAL)
     {
-	set_vim_var_string(VV_OPTION_COMMAND, (char_u *)"setglobal", STRLEN_LITERAL("setglobal"));
-	set_vim_var_string(VV_OPTION_OLDGLOBAL, oldval, (int)oldvallen);
+	set_mnv_var_string(VV_OPTION_COMMAND, (char_u *)"setglobal", STRLEN_LITERAL("setglobal"));
+	set_mnv_var_string(VV_OPTION_OLDGLOBAL, oldval, (int)oldvallen);
     }
     if ((opt_flags & (OPT_LOCAL | OPT_GLOBAL)) == 0)
     {
-	set_vim_var_string(VV_OPTION_COMMAND, (char_u *)"set", STRLEN_LITERAL("set"));
-	set_vim_var_string(VV_OPTION_OLDLOCAL, oldval_l, -1);
-	set_vim_var_string(VV_OPTION_OLDGLOBAL, oldval_g, -1);
+	set_mnv_var_string(VV_OPTION_COMMAND, (char_u *)"set", STRLEN_LITERAL("set"));
+	set_mnv_var_string(VV_OPTION_OLDLOCAL, oldval_l, -1);
+	set_mnv_var_string(VV_OPTION_OLDGLOBAL, oldval_g, -1);
     }
     if (opt_flags & OPT_MODELINE)
     {
-	set_vim_var_string(VV_OPTION_COMMAND, (char_u *)"modeline", STRLEN_LITERAL("modeline"));
-	set_vim_var_string(VV_OPTION_OLDLOCAL, oldval, (int)oldvallen);
+	set_mnv_var_string(VV_OPTION_COMMAND, (char_u *)"modeline", STRLEN_LITERAL("modeline"));
+	set_mnv_var_string(VV_OPTION_OLDLOCAL, oldval, (int)oldvallen);
     }
     apply_autocmds(EVENT_OPTIONSET,
 	    get_option_fullname(opt_idx), NULL, FALSE,
@@ -266,7 +266,7 @@ illegal_char(char *errbuf, size_t errbuflen, int c)
 {
     if (errbuf == NULL)
 	return "";
-    vim_snprintf(errbuf, errbuflen, _(e_illegal_character_str),
+    mnv_snprintf(errbuf, errbuflen, _(e_illegal_character_str),
 		    (char *)transchar(c));
     return errbuf;
 }
@@ -276,7 +276,7 @@ illegal_char_after_chr(char *errbuf, size_t errbuflen, int c)
 {
     if (errbuf == NULL)
 	return "";
-    vim_snprintf(errbuf, errbuflen, _(e_illegal_character_after_chr), c);
+    mnv_snprintf(errbuf, errbuflen, _(e_illegal_character_after_chr), c);
     return errbuf;
 }
 
@@ -382,7 +382,7 @@ check_buf_options(buf_T *buf)
 /*
  * Free the string allocated for an option.
  * Checks for the string being empty_option. This may happen if we're out of
- * memory, vim_strsave() returned NULL, which was replaced by empty_option by
+ * memory, mnv_strsave() returned NULL, which was replaced by empty_option by
  * check_options().
  * Does NOT check for P_ALLOCED flag!
  */
@@ -390,14 +390,14 @@ check_buf_options(buf_T *buf)
 free_string_option(char_u *p)
 {
     if (p != empty_option)
-	vim_free(p);
+	mnv_free(p);
 }
 
     void
 clear_string_option(char_u **pp)
 {
     if (*pp != empty_option)
-	vim_free(*pp);
+	mnv_free(*pp);
     *pp = empty_option;
 }
 
@@ -425,7 +425,7 @@ set_string_option_global(
 	p = (char_u **)get_option_var(opt_idx);
     if (!is_global_option(opt_idx)
 	    && p != varp
-	    && (s = vim_strsave(*varp)) != NULL)
+	    && (s = mnv_strsave(*varp)) != NULL)
     {
 	free_string_option(*p);
 	*p = s;
@@ -467,7 +467,7 @@ set_string_option_direct(
     if (is_hidden_option(idx))		// can't set hidden option
 	return;
 
-    s = vim_strsave(val);
+    s = mnv_strsave(val);
     if (s == NULL)
 	return;
 
@@ -589,7 +589,7 @@ set_string_option(
     if (is_hidden_option(opt_idx))	// don't set hidden option
 	return NULL;
 
-    s = vim_strsave(value == NULL ? (char_u *)"" : value);
+    s = mnv_strsave(value == NULL ? (char_u *)"" : value);
     if (s == NULL)
 	return NULL;
 
@@ -616,11 +616,11 @@ set_string_option(
        )
     {
 	if (oldval_l != NULL)
-	    saved_oldval_l = vim_strsave(oldval_l);
+	    saved_oldval_l = mnv_strsave(oldval_l);
 	if (oldval_g != NULL)
-	    saved_oldval_g = vim_strsave(oldval_g);
-	saved_oldval = vim_strsave(oldval);
-	saved_newval = vim_strsave(s);
+	    saved_oldval_g = mnv_strsave(oldval_g);
+	saved_oldval = mnv_strsave(oldval);
+	saved_newval = mnv_strsave(s);
     }
 #endif
     if ((errmsg = did_set_string_option(opt_idx, varp, oldval, value, errbuf,
@@ -633,10 +633,10 @@ set_string_option(
 	trigger_optionset_string(opt_idx, opt_flags,
 		saved_oldval, saved_oldval_l,
 		saved_oldval_g, saved_newval);
-    vim_free(saved_oldval);
-    vim_free(saved_oldval_l);
-    vim_free(saved_oldval_g);
-    vim_free(saved_newval);
+    mnv_free(saved_oldval);
+    mnv_free(saved_oldval_l);
+    mnv_free(saved_oldval_g);
+    mnv_free(saved_newval);
 #endif
     return errmsg;
 }
@@ -690,14 +690,14 @@ check_stl_option(char_u *s)
 	}
 	if (*s == '-')
 	    s++;
-	while (VIM_ISDIGIT(*s))
+	while (MNV_ISDIGIT(*s))
 	    s++;
 	if (*s == STL_USER_HL)
 	    continue;
 	if (*s == '.')
 	{
 	    s++;
-	    while (*s && VIM_ISDIGIT(*s))
+	    while (*s && MNV_ISDIGIT(*s))
 		s++;
 	}
 	if (*s == '(')
@@ -705,7 +705,7 @@ check_stl_option(char_u *s)
 	    groupdepth++;
 	    continue;
 	}
-	if (vim_strchr(STL_ALL, *s) == NULL)
+	if (mnv_strchr(STL_ALL, *s) == NULL)
 	{
 	    return illegal_char(errbuf, errbuflen, *s);
 	}
@@ -737,10 +737,10 @@ check_stl_option(char_u *s)
 check_illegal_path_names(int opt_idx, char_u **varp)
 {
     return (((get_option_flags(opt_idx) & P_NFNAME)
-		&& vim_strpbrk(*varp, (char_u *)(secure
+		&& mnv_strpbrk(*varp, (char_u *)(secure
 			? "/\\*?[|;&<>\r\n" : "/\\*?[<>\r\n")) != NULL)
 	    || ((get_option_flags(opt_idx) & P_NDNAME)
-		&& vim_strpbrk(*varp, (char_u *)"*?[|;&<>\r\n") != NULL));
+		&& mnv_strpbrk(*varp, (char_u *)"*?[|;&<>\r\n") != NULL));
 }
 
 /*
@@ -779,7 +779,7 @@ did_set_option_listflag(
     char_u	*s;
 
     for (s = val; *s; ++s)
-	if (vim_strchr(flags, *s) == NULL)
+	if (mnv_strchr(flags, *s) == NULL)
 	    return illegal_char(errbuf, errbuflen, *s);
 
     return NULL;
@@ -812,10 +812,10 @@ expand_set_opt_string(
 
     if (include_orig_val && *option_val != NUL)
     {
-	p = vim_strsave(option_val);
+	p = mnv_strsave(option_val);
 	if (p == NULL)
 	{
-	    VIM_CLEAR(*matches);
+	    MNV_CLEAR(*matches);
 	    return FAIL;
 	}
 	(*matches)[count++] = p;
@@ -828,14 +828,14 @@ expand_set_opt_string(
 	    if (STRCMP((char_u*)*val, option_val) == 0)
 		continue;
 	}
-	if (vim_regexec(regmatch, (char_u*)(*val), (colnr_T)0))
+	if (mnv_regexec(regmatch, (char_u*)(*val), (colnr_T)0))
 	{
-	    p = vim_strsave((char_u*)*val);
+	    p = mnv_strsave((char_u*)*val);
 	    if (p == NULL)
 	    {
 		if (count == 0)
 		{
-		    VIM_CLEAR(*matches);
+		    MNV_CLEAR(*matches);
 		    return FAIL;
 		}
 		else
@@ -846,7 +846,7 @@ expand_set_opt_string(
     }
     if (count == 0)
     {
-	VIM_CLEAR(*matches);
+	MNV_CLEAR(*matches);
 	return FAIL;
     }
     *numMatches = count;
@@ -927,17 +927,17 @@ expand_set_opt_callback_cb(char_u *val)
 	return OK;
 
     if (xp->xp_pattern[0] != NUL &&
-	    !vim_regexec(regmatch, val, (colnr_T)0))
+	    !mnv_regexec(regmatch, val, (colnr_T)0))
 	return OK;
 
-    str = vim_strsave_escaped(val, (char_u *)" \t\\");
+    str = mnv_strsave_escaped(val, (char_u *)" \t\\");
 
     if (str == NULL)
 	return FAIL;
 
     if (ga_grow(ga, 1) == FAIL)
     {
-	vim_free(str);
+	mnv_free(str);
 	return FAIL;
     }
 
@@ -970,12 +970,12 @@ expand_set_opt_callback(
 
     if (include_orig_val && *option_val != NUL)
     {
-	char_u *p = vim_strsave(option_val);
+	char_u *p = mnv_strsave(option_val);
 	if (p == NULL)
 	    return FAIL;
 	if (ga_grow(&ga, 1) == FAIL)
 	{
-	    vim_free(p);
+	    mnv_free(p);
 	    return FAIL;
 	}
 	((char_u **)ga.ga_data)[ga.ga_len] = p;
@@ -1023,10 +1023,10 @@ expand_set_opt_listflag(
 
     if (include_orig_val)
     {
-	p = vim_strsave(option_val);
+	p = mnv_strsave(option_val);
 	if (p == NULL)
 	{
-	    VIM_CLEAR(*matches);
+	    MNV_CLEAR(*matches);
 	    return FAIL;
 	}
 	(*matches)[count++] = p;
@@ -1034,10 +1034,10 @@ expand_set_opt_listflag(
 
     for (char_u *flag = flags; *flag != NUL; flag++)
     {
-	if (append && vim_strchr(option_val, *flag) != NULL)
+	if (append && mnv_strchr(option_val, *flag) != NULL)
 	    continue;
 
-	if (vim_strchr(cmdline_val, *flag) == NULL)
+	if (mnv_strchr(cmdline_val, *flag) == NULL)
 	{
 	    if (include_orig_val
 		    && option_val[1] == NUL
@@ -1047,12 +1047,12 @@ expand_set_opt_listflag(
 		// existing flag. Just skip it to avoid duplicate.
 		continue;
 	    }
-	    p = vim_strnsave(flag, 1);
+	    p = mnv_strnsave(flag, 1);
 	    if (p == NULL)
 	    {
 		if (count == 0)
 		{
-		    VIM_CLEAR(*matches);
+		    MNV_CLEAR(*matches);
 		    return FAIL;
 		}
 		else
@@ -1064,7 +1064,7 @@ expand_set_opt_listflag(
 
     if (count == 0)
     {
-	VIM_CLEAR(*matches);
+	MNV_CLEAR(*matches);
 	return FAIL;
     }
     *numMatches = count;
@@ -1122,7 +1122,7 @@ did_set_background(optset_T *args)
 	// scheme and set the colors again.
 	do_unlet((char_u *)"g:colors_name", TRUE);
 	free_string_option(p_bg);
-	p_bg = vim_strsave((char_u *)(dark ? "dark" : "light"));
+	p_bg = mnv_strsave((char_u *)(dark ? "dark" : "light"));
 	check_string_option(&p_bg);
 	init_highlight(FALSE, FALSE);
     }
@@ -1151,7 +1151,7 @@ expand_set_background(optexpand_T *args, int *numMatches, char_u ***matches)
     char *
 did_set_backspace(optset_T *args UNUSED)
 {
-    if (VIM_ISDIGIT(*p_bs))
+    if (MNV_ISDIGIT(*p_bs))
     {
 	if (*p_bs > '3' || p_bs[1] != NUL)
 	    return e_invalid_argument;
@@ -1437,7 +1437,7 @@ expand_set_clipmethod(optexpand_T *args, int *numMatches, char_u ***matches)
     char	**values;
     int		count, pos = 0, start = 0;
 # ifdef FEAT_EVAL
-    dict_T	*providers = get_vim_var_dict(VV_CLIPPROVIDERS);
+    dict_T	*providers = get_mnv_var_dict(VV_CLIPPROVIDERS);
 # else
     dict_T	*providers = NULL;
 # endif
@@ -1470,7 +1470,7 @@ expand_set_clipmethod(optexpand_T *args, int *numMatches, char_u ***matches)
 	    hashitem_T	*hi = ht->ht_array + i;
 
 	    if (!HASHITEM_EMPTY(hi))
-		values[pos++] = (char *)vim_strsave(hi->hi_key);
+		values[pos++] = (char *)mnv_strsave(hi->hi_key);
 	}
     values[pos++] = NULL;
 
@@ -1482,8 +1482,8 @@ expand_set_clipmethod(optexpand_T *args, int *numMatches, char_u ***matches)
 	    matches);
 
     for (int i = start; i < count; i++)
-	vim_free(values[i]);
-    vim_free(values);
+	mnv_free(values[i]);
+    mnv_free(values);
 
     return result;
 }
@@ -1619,8 +1619,8 @@ did_set_comments(optset_T *args)
     {
 	while (*s && *s != ':')
 	{
-	    if (vim_strchr((char_u *)COM_ALL, *s) == NULL
-		    && !VIM_ISDIGIT(*s) && *s != '-')
+	    if (mnv_strchr((char_u *)COM_ALL, *s) == NULL
+		    && !MNV_ISDIGIT(*s) && *s != '-')
 	    {
 		errmsg = illegal_char(args->os_errbuf, args->os_errbuflen, *s);
 		break;
@@ -1674,7 +1674,7 @@ did_set_complete(optset_T *args)
 
     for (p = *varp; *p; )
     {
-	vim_memset(buffer, 0, LSIZE);
+	mnv_memset(buffer, 0, LSIZE);
 	buf_ptr = buffer;
 	escape = 0;
 
@@ -1695,16 +1695,16 @@ did_set_complete(optset_T *args)
 	}
 	*buf_ptr = NUL;
 
-	if (vim_strchr((char_u *)".wbuksid]tUFo", *buffer) == NULL)
+	if (mnv_strchr((char_u *)".wbuksid]tUFo", *buffer) == NULL)
 	    return illegal_char(args->os_errbuf, args->os_errbuflen, *buffer);
 
-	if (vim_strchr((char_u *)"ksF", *buffer) == NULL && *(buffer + 1) != NUL
+	if (mnv_strchr((char_u *)"ksF", *buffer) == NULL && *(buffer + 1) != NUL
 		&& *(buffer + 1) != '^')
 	    char_before = *buffer;
 	else
 	{
 	    // Test for a number after '^'
-	    if ((t = vim_strchr(buffer, '^')) != NULL)
+	    if ((t = mnv_strchr(buffer, '^')) != NULL)
 	    {
 		*t++ = NUL;
 		if (!*t)
@@ -1713,7 +1713,7 @@ did_set_complete(optset_T *args)
 		{
 		    for (; *t; t++)
 		    {
-			if (!vim_isdigit(*t))
+			if (!mnv_isdigit(*t))
 			{
 			    char_before = '^';
 			    break;
@@ -1995,7 +1995,7 @@ did_set_cryptmethod(optset_T *args)
     if (*p_cm == NUL)
     {
 	free_string_option(p_cm);
-	p_cm = vim_strsave((char_u *)"zip");
+	p_cm = mnv_strsave((char_u *)"zip");
     }
     // When using ":set cm=name" the local value is going to be empty.
     // Do that here, otherwise the crypt functions will still use the
@@ -2061,9 +2061,9 @@ did_set_cscopequickfix(optset_T *args UNUSED)
     p = p_csqf;
     while (*p != NUL)
     {
-	if (vim_strchr((char_u *)CSQF_CMDS, *p) == NULL
+	if (mnv_strchr((char_u *)CSQF_CMDS, *p) == NULL
 		|| p[1] == NUL
-		|| vim_strchr((char_u *)CSQF_FLAGS, p[1]) == NULL
+		|| mnv_strchr((char_u *)CSQF_FLAGS, p[1]) == NULL
 		|| (p[2] != NUL && p[2] != ','))
 	    return e_invalid_argument;
 	else if (p[2] == NUL)
@@ -2256,7 +2256,7 @@ did_set_encoding(optset_T *args)
     {
 	if (!curbuf->b_p_ma && args->os_flags != OPT_GLOBAL)
 	    errmsg = e_cannot_make_changes_modifiable_is_off;
-	else if (vim_strchr(*varp, ',') != NULL)
+	else if (mnv_strchr(*varp, ',') != NULL)
 	    // No comma allowed in 'fileencoding'; catches confusing it
 	    // with 'fileencodings'.
 	    errmsg = e_invalid_argument;
@@ -2274,7 +2274,7 @@ did_set_encoding(optset_T *args)
 	p = enc_canonize(*varp);
 	if (p != NULL)
 	{
-	    vim_free(*varp);
+	    mnv_free(*varp);
 	    *varp = p;
 	}
 	if (varp == &p_enc)
@@ -2317,11 +2317,11 @@ did_set_encoding(optset_T *args)
 	}
 
 #if defined(MSWIN)
-	// $HOME, $VIM and $VIMRUNTIME may have characters in active code page.
+	// $HOME, $MNV and $MNVRUNTIME may have characters in active code page.
 	if (varp == &p_enc)
 	{
 	    init_homedir();
-	    init_vimdir();
+	    init_mnvdir();
 	}
 #endif
     }
@@ -2530,7 +2530,7 @@ did_set_foldmarker(optset_T *args)
     char_u	**varp = (char_u **)args->os_varp;
     char_u	*p;
 
-    p = vim_strchr(*varp, ',');
+    p = mnv_strchr(*varp, ',');
     if (p == NULL)
 	return e_comma_required;
     else if (p == *varp || p[1] == NUL)
@@ -2640,7 +2640,7 @@ did_set_guifont(optset_T *args UNUSED)
 	{
 	    p = gui_mch_font_dialog(args->os_oldval.string);
 	    free_string_option(p_guifont);
-	    p_guifont = (p != NULL) ? p : vim_strsave(args->os_oldval.string);
+	    p_guifont = (p != NULL) ? p : mnv_strsave(args->os_oldval.string);
 	}
 # endif
 	if (p != NULL && gui_init_font(p_guifont, FALSE) != OK)
@@ -2651,7 +2651,7 @@ did_set_guifont(optset_T *args UNUSED)
 		// Dialog was cancelled: Keep the old value without giving
 		// an error message.
 		free_string_option(p_guifont);
-		p_guifont = vim_strsave(args->os_oldval.string);
+		p_guifont = mnv_strsave(args->os_oldval.string);
 	    }
 	    else
 # endif
@@ -2774,11 +2774,11 @@ did_set_guitablabel(optset_T *args UNUSED)
     char *
 did_set_helpfile(optset_T *args UNUSED)
 {
-    // May compute new values for $VIM and $VIMRUNTIME
-    if (didset_vim)
-	vim_unsetenv_ext((char_u *)"VIM");
-    if (didset_vimruntime)
-	vim_unsetenv_ext((char_u *)"VIMRUNTIME");
+    // May compute new values for $MNV and $MNVRUNTIME
+    if (didset_mnv)
+	mnv_unsetenv_ext((char_u *)"MNV");
+    if (didset_mnvruntime)
+	mnv_unsetenv_ext((char_u *)"MNVRUNTIME");
     return NULL;
 }
 
@@ -2838,10 +2838,10 @@ expand_hl_occasions(
     // We still want to return the full option if it's requested.
     if (args->oe_include_orig_val)
     {
-	p = vim_strsave(args->oe_opt_value);
+	p = mnv_strsave(args->oe_opt_value);
 	if (p == NULL)
 	{
-	    VIM_CLEAR(*matches);
+	    MNV_CLEAR(*matches);
 	    return FAIL;
 	}
 	(*matches)[count++] = p;
@@ -2854,7 +2854,7 @@ expand_hl_occasions(
 	{
 	    if (count == 0)
 	    {
-		VIM_CLEAR(*matches);
+		MNV_CLEAR(*matches);
 		return FAIL;
 	    }
 	    else
@@ -2869,7 +2869,7 @@ expand_hl_occasions(
 
     if (count == 0)
     {
-	VIM_CLEAR(*matches);
+	MNV_CLEAR(*matches);
 	return FAIL;
     }
     *numMatches = count;
@@ -2922,7 +2922,7 @@ expand_set_highlight(optexpand_T *args, int *numMatches, char_u ***matches)
     for (i = 0; i < num_hl_modes; i++)
     {
 	// Don't allow duplicates as these are unique flags
-	char_u *dup = vim_strchr(xp->xp_pattern + 1, p_hl_mode_values[i]);
+	char_u *dup = mnv_strchr(xp->xp_pattern + 1, p_hl_mode_values[i]);
 	if (dup != NULL && (int)(dup - xp->xp_pattern) < pattern_len)
 	    continue;
 
@@ -2930,12 +2930,12 @@ expand_set_highlight(optexpand_T *args, int *numMatches, char_u ***matches)
 	if (pattern_len > 1 && p_hl_mode_values[i] == ':')
 	    continue;
 
-	p = vim_strnsave(xp->xp_pattern, pattern_len + 1);
+	p = mnv_strnsave(xp->xp_pattern, pattern_len + 1);
 	if (p == NULL)
 	{
 	    if (i == 0)
 	    {
-		VIM_CLEAR(*matches);
+		MNV_CLEAR(*matches);
 		return FAIL;
 	    }
 	    else
@@ -2947,7 +2947,7 @@ expand_set_highlight(optexpand_T *args, int *numMatches, char_u ***matches)
     }
     if (count == 0)
     {
-	VIM_CLEAR(*matches);
+	MNV_CLEAR(*matches);
 	return FAIL;
     }
     *numMatches = count;
@@ -2965,7 +2965,7 @@ parse_titleiconstring(optset_T *args UNUSED, int flagval UNUSED)
     char_u	**varp = (char_u **)args->os_varp;
 
     // NULL => statusline syntax
-    if (vim_strchr(*varp, '%') && check_stl_option(*varp) == NULL)
+    if (mnv_strchr(*varp, '%') && check_stl_option(*varp) == NULL)
 	stl_syntax |= flagval;
     else
 	stl_syntax &= ~flagval;
@@ -3132,8 +3132,8 @@ did_set_keymodel(optset_T *args UNUSED)
     if (check_opt_strings(p_km, p_km_values, TRUE) != OK)
 	return e_invalid_argument;
 
-    km_stopsel = (vim_strchr(p_km, 'o') != NULL);
-    km_startsel = (vim_strchr(p_km, 'a') != NULL);
+    km_stopsel = (mnv_strchr(p_km, 'o') != NULL);
+    km_startsel = (mnv_strchr(p_km, 'a') != NULL);
     return NULL;
 }
 
@@ -3557,11 +3557,11 @@ did_set_printencoding(optset_T *args UNUSED)
 {
     char_u	*s, *p;
 
-    // Canonize 'printencoding' if VIM standard one
+    // Canonize 'printencoding' if MNV standard one
     p = enc_canonize(p_penc);
     if (p != NULL)
     {
-	vim_free(p_penc);
+	mnv_free(p_penc);
 	p_penc = p;
     }
     else
@@ -3723,13 +3723,13 @@ did_set_pumborder(optset_T *args)
     for (p = *varp; p != NULL && *p != NUL; )
     {
 	// end of token is either ',' or NUL
-	char_u *comma = vim_strchr(p, ',');
+	char_u *comma = mnv_strchr(p, ',');
 	if (comma != NULL)
 	    len = (int)(comma - p);
 	else
 	    len = (int)STRLEN(p);
 
-	token = vim_strnsave(p, len);
+	token = mnv_strnsave(p, len);
 	if (token == NULL)
 	    goto error;
 
@@ -3742,7 +3742,7 @@ did_set_pumborder(optset_T *args)
 	    if (have_border)
 	    {
 		// multiple border styles not allowed
-		vim_free(token);
+		mnv_free(token);
 		goto error;
 	    }
 	    have_border = TRUE;
@@ -3791,11 +3791,11 @@ did_set_pumborder(optset_T *args)
 	}
 	else
 	{
-	    vim_free(token);
+	    mnv_free(token);
 	    goto error;
 	}
 
-	vim_free(token);
+	mnv_free(token);
 
 	if (comma != NULL)
 	    p = comma + 1; // move to next token (skip comma)
@@ -4286,7 +4286,7 @@ update_stlo_maxheight(char_u **varp, int actual_stlh)
 		// Replace the last occurrence with the actual value.
 		if (need_comma)
 		    buf[len++] = ',';
-		len += vim_snprintf((char *)buf + len,
+		len += mnv_snprintf((char *)buf + len,
 			bufsize - len, "maxheight:%d", actual_stlh);
 		need_comma = true;
 	    }
@@ -4531,7 +4531,7 @@ did_set_term_option(optset_T *args)
 	    t_colors = colors;
 	    if (t_colors <= 1)
 	    {
-		vim_free(T_CCO);
+		mnv_free(T_CCO);
 		T_CCO = empty_option;
 	    }
 #if defined(FEAT_VTP) && defined(FEAT_TERMGUICOLORS)
@@ -4550,11 +4550,11 @@ did_set_term_option(optset_T *args)
     {
 	out_str(T_ME);
 	redraw_later(UPD_CLEAR);
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
 	// Since t_me has been set, this probably means that the user
 	// wants to use this as default colors.  Need to reset default
 	// background/foreground colors.
-# ifdef VIMDLL
+# ifdef MNVDLL
 	if (!gui.in_use && !gui.starting)
 # endif
 	    mch_set_normal_colors();
@@ -4785,12 +4785,12 @@ did_set_varsofttabstop(optset_T *args)
     char_u *cp;
 
     if (!((*varp)[0]) || ((*varp)[0] == '0' && !((*varp)[1])))
-	VIM_CLEAR(curbuf->b_p_vsts_array);
+	MNV_CLEAR(curbuf->b_p_vsts_array);
     else
     {
 	for (cp = *varp; *cp; ++cp)
 	{
-	    if (vim_isdigit(*cp))
+	    if (mnv_isdigit(*cp))
 		continue;
 	    if (*cp == ',' && cp > *varp && *(cp-1) != ',')
 		continue;
@@ -4801,7 +4801,7 @@ did_set_varsofttabstop(optset_T *args)
 	if (tabstop_set(*varp, &(curbuf->b_p_vsts_array)) == OK)
 	{
 	    if (oldarray)
-		vim_free(oldarray);
+		mnv_free(oldarray);
 	}
 	else
 	    return e_invalid_argument;
@@ -4820,12 +4820,12 @@ did_set_vartabstop(optset_T *args)
     char_u *cp;
 
     if (!((*varp)[0]) || ((*varp)[0] == '0' && !((*varp)[1])))
-	VIM_CLEAR(curbuf->b_p_vts_array);
+	MNV_CLEAR(curbuf->b_p_vts_array);
     else
     {
 	for (cp = *varp; *cp; ++cp)
 	{
-	    if (vim_isdigit(*cp))
+	    if (mnv_isdigit(*cp))
 		continue;
 	    if (*cp == ',' && cp > *varp && *(cp-1) != ',')
 		continue;
@@ -4836,7 +4836,7 @@ did_set_vartabstop(optset_T *args)
 
 	if (tabstop_set(*varp, &(curbuf->b_p_vts_array)) == OK)
 	{
-	    vim_free(oldarray);
+	    mnv_free(oldarray);
 # ifdef FEAT_FOLDING
 	    if (foldmethodIsIndent(curwin))
 		foldUpdateAll(curwin);
@@ -4874,20 +4874,20 @@ did_set_viewoptions(optset_T *args UNUSED)
 }
 #endif
 
-#if defined(FEAT_VIMINFO)
+#if defined(FEAT_MNVINFO)
 /*
- * The 'viminfo' option is changed.
+ * The 'mnvinfo' option is changed.
  */
     char *
-did_set_viminfo(optset_T *args)
+did_set_mnvinfo(optset_T *args)
 {
     char_u	*s;
     char	*errmsg = NULL;
 
-    for (s = p_viminfo; *s;)
+    for (s = p_mnvinfo; *s;)
     {
 	// Check it's a valid character
-	if (vim_strchr((char_u *)"!\"%'/:<@cfhnrs", *s) == NULL)
+	if (mnv_strchr((char_u *)"!\"%'/:<@cfhnrs", *s) == NULL)
 	{
 	    errmsg = illegal_char(args->os_errbuf, args->os_errbuflen, *s);
 	    break;
@@ -4902,21 +4902,21 @@ did_set_viminfo(optset_T *args)
 	else if (*s == '%')
 	{
 	    // optional number
-	    while (vim_isdigit(*++s))
+	    while (mnv_isdigit(*++s))
 		;
 	}
 	else if (*s == '!' || *s == 'h' || *s == 'c')
 	    ++s;		// no extra chars
 	else		// must have a number
 	{
-	    while (vim_isdigit(*++s))
+	    while (mnv_isdigit(*++s))
 		;
 
-	    if (!VIM_ISDIGIT(*(s - 1)))
+	    if (!MNV_ISDIGIT(*(s - 1)))
 	    {
 		if (args->os_errbuf != NULL)
 		{
-		    vim_snprintf(args->os_errbuf, args->os_errbuflen,
+		    mnv_snprintf(args->os_errbuf, args->os_errbuflen,
 			    _(e_missing_number_after_angle_str_angle),
 			    transchar_byte(*(s - 1)));
 		    errmsg = args->os_errbuf;
@@ -4937,7 +4937,7 @@ did_set_viminfo(optset_T *args)
 	    break;
 	}
     }
-    if (*p_viminfo && errmsg == NULL && get_viminfo_parameter('\'') < 0)
+    if (*p_mnvinfo && errmsg == NULL && get_mnvinfo_parameter('\'') < 0)
 	errmsg = e_must_specify_a_value;
 
     return errmsg;
@@ -5130,7 +5130,7 @@ expand_set_winhighlight(optexpand_T *args, int *numMatches, char_u ***matches)
 		    matches);
     }
 
-    VIM_CLEAR(*matches);
+    MNV_CLEAR(*matches);
     return FAIL;
 }
 
@@ -5197,7 +5197,7 @@ do_filetype_autocmd(char_u **varp, int opt_flags, int value_changed)
 
 #ifdef FEAT_SPELL
 /*
- * When the 'spelllang' option is set, source the spell/LANG.vim file in
+ * When the 'spelllang' option is set, source the spell/LANG.mnv file in
  * 'runtimepath'.
  */
     static void
@@ -5218,7 +5218,7 @@ do_spelllang_source(void)
 	    break;
     if (p > q)
     {
-	vim_snprintf((char *)fname, 200, "spell/%.*s.vim",
+	mnv_snprintf((char *)fname, 200, "spell/%.*s.mnv",
 		(int)(p - q), q);
 	source_runtime(fname, DIP_ALL);
     }
@@ -5353,7 +5353,7 @@ did_set_string_option(
 
     if (varp == &p_rtp)
     {
-	export_myvimdir();
+	export_mymnvdir();
 #if defined(FEAT_LUA)
 	update_package_paths_in_lua();
 #endif
@@ -5508,15 +5508,15 @@ restore_shm_value(void)
     if (--set_shm_recursive == 0)
     {
 	set_option_value_give_err((char_u *)"shm", 0L, shm_buf, 0);
-	vim_memset(shm_buf, 0, SHM_LEN);
+	mnv_memset(shm_buf, 0, SHM_LEN);
     }
 }
 
 /*
- * Export the environment variable $MYVIMDIR to the first item in runtimepath
+ * Export the environment variable $MYMNVDIR to the first item in runtimepath
  */
     void
-export_myvimdir(void)
+export_mymnvdir(void)
 {
     int		dofree = FALSE;
     char_u	*p;
@@ -5529,7 +5529,7 @@ export_myvimdir(void)
 
     buf.length = (size_t)copy_option_part(&q, buf.string, MAXPATHL, ",");
 
-    p = vim_getenv((char_u *)"MYVIMDIR", &dofree);
+    p = mnv_getenv((char_u *)"MYMNVDIR", &dofree);
 
     if (p == NULL || STRCMP(p, buf.string) != 0)
     {
@@ -5541,9 +5541,9 @@ export_myvimdir(void)
 	    if (*q == '/')
 		*q = '\\';
 #endif
-	vim_setenv((char_u *)"MYVIMDIR", buf.string);
+	mnv_setenv((char_u *)"MYMNVDIR", buf.string);
     }
     if (dofree)
-	vim_free(p);
-    vim_free(buf.string);
+	mnv_free(p);
+    mnv_free(buf.string);
 }

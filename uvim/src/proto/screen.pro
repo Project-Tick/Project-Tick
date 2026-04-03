@@ -60,4 +60,4 @@ char *set_listchars_option(win_T *wp, char_u *val, int apply, char *errbuf, size
 char_u *get_fillchars_name(expand_T *xp, int idx);
 char_u *get_listchars_name(expand_T *xp, int idx);
 char *check_chars_options(void);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

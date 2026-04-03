@@ -1,7 +1,7 @@
-*index.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*index.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 								*index*
@@ -26,7 +26,7 @@ to look for deleting something, use: "/delete".
 
 For an overview of options see |option-list|.
 For an overview of built-in functions see |functions|.
-For a list of Vim variables see |vim-variable|.
+For a list of MNV variables see |mnv-variable|.
 For a complete listing of all help items see |help-tags|.
 
 ==============================================================================
@@ -99,7 +99,7 @@ tag		char		action in Insert mode	~
 |i_CTRL-W|	CTRL-W		delete word before the cursor
 |i_CTRL-X|	CTRL-X {mode}	enter CTRL-X sub mode, see |i_CTRL-X_index|
 |i_CTRL-Y|	CTRL-Y		insert the character which is above the cursor
-|i_CTRL-Z|	CTRL-Z		when 'insertmode' set: suspend Vim
+|i_CTRL-Z|	CTRL-Z		when 'insertmode' set: suspend MNV
 |i_<Esc>|	<Esc>		end insert mode (unless 'insertmode' set)
 |i_CTRL-[|	CTRL-[		same as <Esc>
 |i_CTRL-\_CTRL-N| CTRL-\ CTRL-N	go to Normal mode
@@ -759,7 +759,7 @@ tag		char	      note action in Normal mode	~
 				   search pattern and Visually select it
 |gP|		["x]gP		2  put the text [from register x] before the
 				   cursor N times, leave the cursor after it
-|gQ|		gQ		   switch to "Ex" mode with Vim editing
+|gQ|		gQ		   switch to "Ex" mode with MNV editing
 |gR|		gR		2  enter Virtual Replace mode
 |gT|		gT		   go to the previous tab page
 |gU|		gU{motion}	2  make Nmove text uppercase
@@ -1186,7 +1186,7 @@ tag		command		action ~
 |:abbreviate|	:ab[breviate]	enter abbreviation
 |:abclear|	:abc[lear]	remove all abbreviations
 |:aboveleft|	:abo[veleft]	make split window appear left or above
-|:abstract|	:abstract	declare a Vim9 abstract class
+|:abstract|	:abstract	declare a MNV9 abstract class
 |:all|		:al[l]		open a window for each file in the argument
 				list
 |:amenu|	:am[enu]	enter new menu item for all modes
@@ -1290,7 +1290,7 @@ tag		command		action ~
 |:copen|	:cope[n]	open quickfix window
 |:cprevious|	:cp[revious]	go to previous error
 |:cpfile|	:cpf[ile]	go to last error in previous file
-|:cquit|	:cq[uit]	quit Vim with an error code
+|:cquit|	:cq[uit]	quit MNV with an error code
 |:crewind|	:cr[ewind]	go to the specified error, default first one
 |:cscope|	:cs[cope]	execute cscope command
 |:cstag|	:cst[ag]	use cscope to jump to a tag
@@ -1301,8 +1301,8 @@ tag		command		action ~
 |:delete|	:d[elete]	delete lines
 |:debug|	:deb[ug]	run a command in debugging mode
 |:debuggreedy|	:debugg[reedy]	read debug mode commands from normal input
-|:def|		:def		define a Vim9 user function
-|:defcompile|	:defc[ompile]	compile Vim9 user functions in current script
+|:def|		:def		define a MNV9 user function
+|:defcompile|	:defc[ompile]	compile MNV9 user functions in current script
 |:defer|	:defe[r]	call function when current function is done
 |:delcommand|	:delc[ommand]	delete user-defined command
 |:delfunction|	:delf[unction]	delete a user function
@@ -1316,7 +1316,7 @@ tag		command		action ~
 |:diffthis|	:difft[his]	make current window a diff window
 |:digraphs|	:dig[raphs]	show or enter digraphs
 |:display|	:di[splay]	display registers
-|:disassemble|	:disa[ssemble]	disassemble Vim9 user function
+|:disassemble|	:disa[ssemble]	disassemble MNV9 user function
 |:djump|	:dj[ump]	jump to #define
 |:dl|		:dl		short for |:delete| with the 'l' flag
 |:dlist|	:dli[st]	list #defines
@@ -1354,16 +1354,16 @@ tag		command		action ~
 |:ex|		:ex		same as ":edit"
 |:execute|	:exe[cute]	execute result of expressions
 |:exit|		:exi[t]		same as ":xit"
-|:export|	:exp[ort]	Vim9: export an item from a script
+|:export|	:exp[ort]	MNV9: export an item from a script
 |:exusage|	:exu[sage]	overview of Ex commands
 |:file|		:f[ile]		show or set the current file name
 |:files|	:files		list all files in the buffer list
 |:filetype|	:filet[ype]	switch file type detection on/off
 |:filter|	:filt[er]	filter output of following command
 |:find|		:fin[d]		find file in 'path' and edit it
-|:final|	:final		declare an immutable variable in Vim9
+|:final|	:final		declare an immutable variable in MNV9
 |:finally|	:fina[lly]	part of a :try command
-|:finish|	:fini[sh]	quit sourcing a Vim script
+|:finish|	:fini[sh]	quit sourcing a MNV script
 |:first|	:fir[st]	go to the first file in the argument list
 |:fixdel|	:fix[del]	set key code of <Del>
 |:fold|		:fo[ld]		create a fold
@@ -1378,7 +1378,7 @@ tag		command		action ~
 |:grep|		:gr[ep]		run 'grepprg' and jump to first match
 |:grepadd|	:grepa[dd]	like :grep, but append to current list
 |:gui|		:gu[i]		start the GUI
-|:gvim|		:gv[im]		start the GUI
+|:gmnv|		:gv[im]		start the GUI
 |:hardcopy|	:ha[rdcopy]	send text to the printer
 |:help|		:h[elp]		open a help window
 |:helpclose|	:helpc[lose]	close one help window
@@ -1398,7 +1398,7 @@ tag		command		action ~
 |:imap|		:im[ap]		like ":map" but for Insert mode
 |:imapclear|	:imapc[lear]	like ":mapclear" but for Insert mode
 |:imenu|	:ime[nu]	add menu for Insert mode
-|:import|	:imp[ort]	Vim9: import an item from another script
+|:import|	:imp[ort]	MNV9: import an item from another script
 |:inoremap|	:ino[remap]	like ":noremap" but for Insert mode
 |:inoreabbrev|	:inorea[bbrev]	like ":noreabbrev" but for Insert mode
 |:inoremenu|	:inoreme[nu]	like ":noremenu" but for Insert mode
@@ -1481,8 +1481,8 @@ tag		command		action ~
 |:lua|		:lua		execute |Lua| command
 |:luado|	:luad[o]	execute Lua command for each line
 |:luafile|	:luaf[ile]	execute |Lua| script file
-|:lvimgrep|	:lv[imgrep]	search for pattern in files
-|:lvimgrepadd|	:lvimgrepa[dd]	like :vimgrep, but append to current list
+|:lmnvgrep|	:lv[imgrep]	search for pattern in files
+|:lmnvgrepadd|	:lmnvgrepa[dd]	like :mnvgrep, but append to current list
 |:lwindow|	:lw[indow]	open or close location window
 |:move|		:m[ove]		move lines
 |:mark|		:ma[rk]		set a mark
@@ -1498,7 +1498,7 @@ tag		command		action ~
 |:mkexrc|	:mk[exrc]	write current mappings and settings to a file
 |:mksession|	:mks[ession]	write session info to a file
 |:mkspell|	:mksp[ell]	produce .spl spell file
-|:mkvimrc|	:mkv[imrc]	write current mappings and settings to a file
+|:mkmnvrc|	:mkv[imrc]	write current mappings and settings to a file
 |:mkview|	:mkvie[w]	write view of current window to a file
 |:mode|		:mod[e]		show or change the screen mode
 |:mzscheme|	:mz[scheme]	execute MzScheme command
@@ -1524,7 +1524,7 @@ tag		command		action ~
 |:number|	:nu[mber]	print lines with line number
 |:nunmap|	:nun[map]	like ":unmap" but for Normal mode
 |:nunmenu|	:nunme[nu]	remove menu for Normal mode
-|:oldfiles|	:ol[dfiles]	list files that have marks in the viminfo file
+|:oldfiles|	:ol[dfiles]	list files that have marks in the mnvinfo file
 |:open|		:o[pen]		start open mode (not implemented)
 |:omap|		:om[ap]		like ":map" but for Operator-pending mode
 |:omapclear|	:omapc[lear]	remove all mappings for Operator-pending mode
@@ -1577,9 +1577,9 @@ tag		command		action ~
 |:pythonx|	:pythonx	same as :pyx
 |:pyxdo|	:pyxd[o]	execute |python_x| command for each line
 |:pyxfile|	:pyxf[ile]	execute |python_x| script file
-|:quit|		:q[uit]		quit current window (when one window quit Vim)
-|:quitall|	:quita[ll]	quit Vim
-|:qall|		:qa[ll]		quit Vim
+|:quit|		:q[uit]		quit current window (when one window quit MNV)
+|:quitall|	:quita[ll]	quit MNV
+|:qall|		:qa[ll]		quit MNV
 |:read|		:r[ead]		read file into the text
 |:recover|	:rec[over]	recover a file from a swap file
 |:redo|		:red[o]		redo one undone change
@@ -1599,8 +1599,8 @@ tag		command		action ~
 |:rubydo|	:rubyd[o]	execute Ruby command for each line
 |:rubyfile|	:rubyf[ile]	execute Ruby script file
 |:rundo|	:rund[o]	read undo information from a file
-|:runtime|	:ru[ntime]	source vim scripts in 'runtimepath'
-|:rviminfo|	:rv[iminfo]	read from viminfo file
+|:runtime|	:ru[ntime]	source mnv scripts in 'runtimepath'
+|:rmnvinfo|	:rv[iminfo]	read from mnvinfo file
 |:substitute|	:s[ubstitute]	find and replace text
 |:sNext|	:sN[ext]	split window and go to previous file in
 				argument list
@@ -1626,9 +1626,9 @@ tag		command		action ~
 				buffer list
 |:sbrewind|	:sbr[ewind]	split window and go to first file in the
 				buffer list
-|:scriptnames|	:scr[iptnames]	list names of all sourced Vim scripts
-|:scriptencoding| :scripte[ncoding]  encoding used in sourced Vim script
-|:scriptversion|  :scriptv[ersion]   version of Vim script used
+|:scriptnames|	:scr[iptnames]	list names of all sourced MNV scripts
+|:scriptencoding| :scripte[ncoding]  encoding used in sourced MNV script
+|:scriptversion|  :scriptv[ersion]   version of MNV script used
 |:scscope|	:scs[cope]	split window and execute cscope command
 |:set|		:se[t]		show or set options
 |:setfiletype|	:setf[iletype]	set 'filetype', unless it was set already
@@ -1657,7 +1657,7 @@ tag		command		action ~
 |:snoremap|	:snor[emap]	like ":noremap" but for Select mode
 |:snoremenu|	:snoreme[nu]	like ":noremenu" but for Select mode
 |:sort|		:sor[t]		sort lines
-|:source|	:so[urce]	read Vim or Ex commands from a file
+|:source|	:so[urce]	read MNV or Ex commands from a file
 |:spelldump|	:spelld[ump]	split window and fill with all correct words
 |:spellgood|	:spe[llgood]	add good word for spelling
 |:spellinfo|	:spelli[nfo]	show info about loaded spell files
@@ -1751,14 +1751,14 @@ tag		command		action ~
 |:unsilent|	:uns[ilent]	run a command not silently
 |:update|	:up[date]	write buffer if modified
 |:vglobal|	:v[global]	execute commands for not matching lines
-|:var|		:var		variable declaration in Vim9
+|:var|		:var		variable declaration in MNV9
 |:version|	:ve[rsion]	print version number and other info
 |:verbose|	:verb[ose]	execute command with 'verbose' set
 |:vertical|	:vert[ical]	make following command split vertically
-|:vim9cmd|	:vim9[cmd]	make following command use Vim9 script syntax
-|:vim9script|	:vim9s[cript]	indicates Vim9 script file
-|:vimgrep|	:vim[grep]	search for pattern in files
-|:vimgrepadd|	:vimgrepa[dd]	like :vimgrep, but append to current list
+|:mnv9cmd|	:mnv9[cmd]	make following command use MNV9 script syntax
+|:mnv9script|	:mnv9s[cript]	indicates MNV9 script file
+|:mnvgrep|	:mnv[grep]	search for pattern in files
+|:mnvgrepadd|	:mnvgrepa[dd]	like :mnvgrep, but append to current list
 |:visual|	:vi[sual]	same as ":edit", but turns off "Ex" mode
 |:viusage|	:viu[sage]	overview of Normal mode commands
 |:view|		:vie[w]		edit a file read-only
@@ -1785,10 +1785,10 @@ tag		command		action ~
 				argument list
 |:wprevious|	:wp[revious]	write to a file and go to previous file in
 				argument list
-|:wq|		:wq		write to a file and quit window or Vim
-|:wqall|	:wqa[ll]	write all changed buffers and quit Vim
+|:wq|		:wq		write to a file and quit window or MNV
+|:wqall|	:wqa[ll]	write all changed buffers and quit MNV
 |:wundo|	:wu[ndo]	write undo information to a file
-|:wviminfo|	:wv[iminfo]	write to viminfo file
+|:wmnvinfo|	:wv[iminfo]	write to mnvinfo file
 |:xit|		:x[it]		write if buffer changed and close window
 |:xall|		:xa[ll]		same as ":wqall"
 |:xmapclear|	:xmapc[lear]	remove all mappings for Visual mode
@@ -1804,4 +1804,4 @@ tag		command		action ~
 |:~|		:~		repeat last ":substitute"
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

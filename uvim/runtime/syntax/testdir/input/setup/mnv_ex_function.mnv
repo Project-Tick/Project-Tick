@@ -1,0 +1,2 @@
+highlight link mnvVar Identifier
+highlight link mnvFunctionScope Special

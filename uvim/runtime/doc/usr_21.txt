@@ -1,20 +1,20 @@
-*usr_21.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_21.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			   Go away and come back
 
 
-This chapter goes into mixing the use of other programs with Vim.  Either by
-executing program from inside Vim or by leaving Vim and coming back later.
-Furthermore, this is about the ways to remember the state of Vim and restore
+This chapter goes into mixing the use of other programs with MNV.  Either by
+executing program from inside MNV or by leaving MNV and coming back later.
+Furthermore, this is about the ways to remember the state of MNV and restore
 it later.
 
 |21.1|	Suspend and resume
 |21.2|	Executing shell commands
-|21.3|	Remembering information; viminfo
+|21.3|	Remembering information; mnvinfo
 |21.4|	Sessions
 |21.5|	Views
 |21.6|	Modelines
@@ -26,37 +26,37 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *21.1*	Suspend and resume
 
-Like most Unix programs Vim can be suspended by pressing CTRL-Z.  This stops
-Vim and takes you back to the shell it was started in.  You can then do any
-other commands until you are bored with them.  Then bring back Vim with the
+Like most Unix programs MNV can be suspended by pressing CTRL-Z.  This stops
+MNV and takes you back to the shell it was started in.  You can then do any
+other commands until you are bored with them.  Then bring back MNV with the
 "fg" command. >
 
 	CTRL-Z
 	{any sequence of shell commands}
 	fg
 
-You are right back where you left Vim, nothing has changed.
+You are right back where you left MNV, nothing has changed.
    In case pressing CTRL-Z doesn't work, you can also use ":suspend".
-Don't forget to bring Vim back to the foreground, you would lose any changes
+Don't forget to bring MNV back to the foreground, you would lose any changes
 that you made!
 
-Only Unix has support for this.  On other systems Vim will start a shell for
+Only Unix has support for this.  On other systems MNV will start a shell for
 you.  This also has the functionality of being able to execute shell commands.
-But it's a new shell, not the one that you started Vim from.
-   When you are running the GUI you can't go back to the shell where Vim was
-started.  CTRL-Z will minimize the Vim window instead.
+But it's a new shell, not the one that you started MNV from.
+   When you are running the GUI you can't go back to the shell where MNV was
+started.  CTRL-Z will minimize the MNV window instead.
 
 ==============================================================================
 *21.2*	Executing shell commands
 
-To execute a single shell command from Vim use ":!{command}".  For example, to
+To execute a single shell command from MNV use ":!{command}".  For example, to
 see a directory listing: >
 
 	:!ls
 	:!dir
 
 The first one is for Unix, the second one for MS-Windows.
-   Vim will execute the program.  When it ends you will get a prompt to hit
+   MNV will execute the program.  When it ends you will get a prompt to hit
 <Enter>.  This allows you to have a look at the output from the command before
 returning to the text you were editing.
    The "!" is also used in other places where a program is run.  Let's take
@@ -76,24 +76,24 @@ better at it.  You can start a new shell this way: >
 
 	:shell
 
-This is similar to using CTRL-Z to suspend Vim.  The difference is that a new
+This is similar to using CTRL-Z to suspend MNV.  The difference is that a new
 shell is started.
 
-When using the GUI the shell will be using the Vim window for its input and
-output.  Since Vim is not a terminal emulator, this will not work perfectly.
+When using the GUI the shell will be using the MNV window for its input and
+output.  Since MNV is not a terminal emulator, this will not work perfectly.
 If you have trouble, try toggling the 'guipty' option.  If this still doesn't
 work well enough, start a new terminal to run the shell in.  For example with:
 >
 	:!xterm&
 
 ==============================================================================
-*21.3*	Remembering information; viminfo
+*21.3*	Remembering information; mnvinfo
 
 After editing for a while you will have text in registers, marks in various
 files, a command line history filled with carefully crafted commands.  When
-you exit Vim all of this is lost.  But you can get it back!
+you exit MNV all of this is lost.  But you can get it back!
 
-The viminfo file is designed to store status information:
+The mnvinfo file is designed to store status information:
 
 	Command-line and Search pattern history
 	Text in registers
@@ -101,38 +101,38 @@ The viminfo file is designed to store status information:
 	The buffer list
 	Global variables
 
-Each time you exit Vim it will store this information in a file, the viminfo
-file.  When Vim starts again, the viminfo file is read and the information
+Each time you exit MNV it will store this information in a file, the mnvinfo
+file.  When MNV starts again, the mnvinfo file is read and the information
 restored.
 
-The 'viminfo' option is set by default to restore a limited number of items.
+The 'mnvinfo' option is set by default to restore a limited number of items.
 You might want to set it to remember more information.  This is done through
 the following command: >
 
-	:set viminfo=string
+	:set mnvinfo=string
 
 The string specifies what to save.  The syntax of this string is an option
 character followed by an argument.  The option/argument pairs are separated by
 commas.
-   Take a look at how you can build up your own viminfo string.  First, the '
+   Take a look at how you can build up your own mnvinfo string.  First, the '
 option is used to specify how many files for which you save marks (a-z).  Pick
 a nice even number for this option (1000, for instance).  Your command now
 looks like this: >
 
-	:set viminfo='1000
+	:set mnvinfo='1000
 
 The f option controls whether global marks (A-Z and 0-9) are stored.  If this
 option is 0, none are stored.  If it is 1 or you do not specify an f option,
 the marks are stored.  You want this feature, so now you have this: >
 
-	:set viminfo='1000,f1
+	:set mnvinfo='1000,f1
 
 The < option controls how many lines are saved for each of the registers.  By
 default, all the lines are saved.  If 0, nothing is saved.  To avoid adding
-thousands of lines to your viminfo file (which might never get used and makes
-starting Vim slower) you use a maximum of 500 lines: >
+thousands of lines to your mnvinfo file (which might never get used and makes
+starting MNV slower) you use a maximum of 500 lines: >
 
-	:set viminfo='1000,f1,<500
+	:set mnvinfo='1000,f1,<500
 <
 Other options you might want to use:
 	:	number of lines to save from the command line history
@@ -143,28 +143,28 @@ Other options you might want to use:
 	!	global variables that start with an uppercase letter and
 		don't contain lowercase letters
 	h	disable 'hlsearch' highlighting when starting
-	%	the buffer list (only restored when starting Vim without file
+	%	the buffer list (only restored when starting MNV without file
 		arguments)
 	c	convert the text using 'encoding'
-	n	name used for the viminfo file (must be the last option)
+	n	name used for the mnvinfo file (must be the last option)
 
-See the 'viminfo' option and |viminfo-file| for more information.
+See the 'mnvinfo' option and |mnvinfo-file| for more information.
 
-When you run Vim multiple times, the last one exiting will store its
-information.  This may cause information that previously exiting Vims stored
+When you run MNV multiple times, the last one exiting will store its
+information.  This may cause information that previously exiting MNVs stored
 to be lost.  Each item can be remembered only once.
 
 
-GETTING BACK TO WHERE YOU STOPPED VIM
+GETTING BACK TO WHERE YOU STOPPED MNV
 
 You are halfway editing a file and it's time to leave for holidays.  You exit
-Vim and go enjoy yourselves, forgetting all about your work.  After a couple
-of weeks you start Vim, and type:
+MNV and go enjoy yourselves, forgetting all about your work.  After a couple
+of weeks you start MNV, and type:
 >
 	'0
 
-And you are right back where you left Vim.  So you can get on with your work.
-   Vim creates a mark each time you exit Vim.  The last one is '0.  The
+And you are right back where you left MNV.  So you can get on with your work.
+   MNV creates a mark each time you exit MNV.  The last one is '0.  The
 position that '0 pointed to is made '1.  And '1 is made to '2, and so forth.
 Mark '9 is lost.
    The |:marks| command is useful to find out where '0 to '9 will take you.
@@ -173,11 +173,11 @@ Mark '9 is lost.
 GETTING BACK TO SOME FILE
 
 If you want to go back to a file that you edited recently, but not when
-exiting Vim, there is a slightly more complicated way.  You can see a list of
+exiting MNV, there is a slightly more complicated way.  You can see a list of
 files by typing the command: >
 
 	:oldfiles
-<	1: ~/.viminfo ~
+<	1: ~/.mnvinfo ~
 	2: ~/text/resume.txt ~
 	3: /tmp/draft ~
 
@@ -197,7 +197,7 @@ That #<123 thing is a bit complicated when you just want to edit a file.
 Fortunately there is a simpler way: >
 
 	:browse oldfiles
-<	1: ~/.viminfo ~
+<	1: ~/.mnvinfo ~
 	2: ~/text/resume.txt ~
 	3: /tmp/draft ~
 	-- More --
@@ -214,12 +214,12 @@ list of files: >
 
 	:filter /resume/ :browse oldfiles
 <
-Since there is only one single matching filename, Vim will directly edit that
+Since there is only one single matching filename, MNV will directly edit that
 file without prompting.  If the filter matches several files, you'll get
 prompted for the list of matching files instead: >
 
 	:filter! /resume/ browse oldfiles
-<	1: ~/.viminfo ~
+<	1: ~/.mnvinfo ~
 	3: /tmp/draft ~
 	Type number and <Enter> (q or empty cancels): ~
 
@@ -229,27 +229,27 @@ Note: this time we filtered out all files NOT matching resume.
 More info at |:oldfiles|, |v:oldfiles| and |c_#<|.
 
 
-MOVE INFO FROM ONE VIM TO ANOTHER
+MOVE INFO FROM ONE MNV TO ANOTHER
 
-You can use the ":wviminfo" and ":rviminfo" commands to save and restore the
-information while still running Vim.  This is useful for exchanging register
-contents between two instances of Vim, for example.  In the first Vim do: >
+You can use the ":wmnvinfo" and ":rmnvinfo" commands to save and restore the
+information while still running MNV.  This is useful for exchanging register
+contents between two instances of MNV, for example.  In the first MNV do: >
 
-	:wviminfo! ~/tmp/viminfo
+	:wmnvinfo! ~/tmp/mnvinfo
 
-And in the second Vim do: >
+And in the second MNV do: >
 
-	:rviminfo! ~/tmp/viminfo
+	:rmnvinfo! ~/tmp/mnvinfo
 
 Obviously, the "w" stands for "write" and the "r" for "read".
-   The ! character is used by ":wviminfo" to forcefully overwrite an existing
+   The ! character is used by ":wmnvinfo" to forcefully overwrite an existing
 file.  When it is omitted, and the file exists, the information is merged into
 the file.
-   The ! character used for ":rviminfo" means that all the information is
+   The ! character used for ":rmnvinfo" means that all the information is
 used, this may overwrite existing information.  Without the ! only information
 that wasn't set is used.
    These commands can also be used to store info and use it again later.  You
-could make a directory full of viminfo files, each containing info for a
+could make a directory full of mnvinfo files, each containing info for a
 different purpose.
 
 ==============================================================================
@@ -258,25 +258,25 @@ different purpose.
 Suppose you are editing along, and it is the end of the day.  You want to quit
 work and pick up where you left off the next day.  You can do this by saving
 your editing session and restoring it the next day.
-   A Vim session contains all the information about what you are editing.
+   A MNV session contains all the information about what you are editing.
 This includes things such as the file list, window layout, global variables,
 options and other information.  (Exactly what is remembered is controlled by
 the 'sessionoptions' option, described below.)
    The following command creates a session file: >
 
-	:mksession vimbook.vim
+	:mksession mnvbook.mnv
 
 Later if you want to restore this session, you can use this command: >
 
-	:source vimbook.vim
+	:source mnvbook.mnv
 
-If you want to start Vim and restore a specific session, you can use the
+If you want to start MNV and restore a specific session, you can use the
 following command: >
 
-	vim -S vimbook.vim
+	mnv -S mnvbook.mnv
 
-This tells Vim to read a specific file on startup.  The 'S' stands for
-session (actually, you can source any Vim script with -S, thus it might as
+This tells MNV to read a specific file on startup.  The 'S' stands for
+session (actually, you can source any MNV script with -S, thus it might as
 well stand for "source").
 
 The windows that were open are restored, with the same position and size as
@@ -295,7 +295,7 @@ default value is:
 	winsize		window sizes
 	terminal	include terminal windows
 
-Change this to your liking.  To also restore the size of the Vim window, for
+Change this to your liking.  To also restore the size of the MNV window, for
 example, use: >
 
 	:set sessionoptions+=resize
@@ -304,13 +304,13 @@ example, use: >
 SESSION HERE, SESSION THERE
 
 The obvious way to use sessions is when working on different projects.
-Suppose you store your session files in the directory "~/.vim".  You are
+Suppose you store your session files in the directory "~/.mnv".  You are
 currently working on the "secret" project and have to switch to the "boring"
 project: >
 
 	:wall
-	:mksession! ~/.vim/secret.vim
-	:source ~/.vim/boring.vim
+	:mksession! ~/.mnv/secret.mnv
+	:source ~/.mnv/boring.mnv
 
 This first uses ":wall" to write all modified files.  Then the current session
 is saved, using ":mksession!".  This overwrites the previous session.  The
@@ -320,7 +320,7 @@ point.  And finally you load the new "boring" session.
 If you open help windows, split and close various windows, and generally mess
 up the window layout, you can go back to the last saved session: >
 
-	:source ~/.vim/boring.vim
+	:source ~/.mnv/boring.mnv
 
 Thus you have complete control over whether you want to continue next time
 where you are now, by saving the current setup in a session, or keep the
@@ -331,7 +331,7 @@ you want.
    For example, this is a nice layout to use:
 
 	+----------------------------------------+
-	|		   VIM - main help file  |
+	|		   MNV - main help file  |
 	|					 |
 	|Move around:  Use the cursor keys, or "h|
 	|help.txt================================|
@@ -347,10 +347,10 @@ you want.
 	+----------------------------------------+
 
 This has a help window at the top, so that you can read this text.  The narrow
-vertical window on the left contains a file explorer.  This is a Vim plugin
+vertical window on the left contains a file explorer.  This is a MNV plugin
 that lists the contents of a directory.  You can select files to edit there.
 More about this in the next chapter.
-   Create this from a just started Vim with: >
+   Create this from a just started MNV with: >
 
 	:help
 	CTRL-W w
@@ -358,11 +358,11 @@ More about this in the next chapter.
 
 You can resize the windows a bit to your liking.  Then save the session with:
 >
-	:mksession ~/.vim/mine.vim
+	:mksession ~/.mnv/mine.mnv
 
-Now you can start Vim with this layout: >
+Now you can start MNV with this layout: >
 
-	vim -S ~/.vim/mine.vim
+	mnv -S ~/.mnv/mine.mnv
 
 Hint: To open a file you see listed in the explorer window in the empty
 window, move the cursor to the filename and press "O".  Double clicking with
@@ -374,53 +374,53 @@ UNIX AND MS-WINDOWS
 Some people have to do work on MS-Windows systems one day and on Unix another
 day.  If you are one of them, consider adding "slash" and "unix" to
 'sessionoptions'.  The session files will then be written in a format that can
-be used on both systems.  This is the command to put in your vimrc file: >
+be used on both systems.  This is the command to put in your mnvrc file: >
 
 	:set sessionoptions+=unix,slash
 
-Vim will use the Unix format then, because the MS-Windows Vim can read and
-write Unix files, but Unix Vim can't read MS-Windows format session files.
-Similarly, MS-Windows Vim understands file names with / to separate names, but
-Unix Vim doesn't understand \.
+MNV will use the Unix format then, because the MS-Windows MNV can read and
+write Unix files, but Unix MNV can't read MS-Windows format session files.
+Similarly, MS-Windows MNV understands file names with / to separate names, but
+Unix MNV doesn't understand \.
 
 
-SESSIONS AND VIMINFO
+SESSIONS AND MNVINFO
 
 Sessions store many things, but not the position of marks, contents of
-registers and the command line history.  You need to use the viminfo feature
+registers and the command line history.  You need to use the mnvinfo feature
 for these things.
-   In most situations you will want to use sessions separately from viminfo.
+   In most situations you will want to use sessions separately from mnvinfo.
 This can be used to switch to another session, but keep the command line
 history.  And yank text into registers in one session, and paste it back in
 another session.
    You might prefer to keep the info with the session.  You will have to do
 this yourself then.  Example: >
 
-	:mksession! ~/.vim/secret.vim
-	:wviminfo! ~/.vim/secret.viminfo
+	:mksession! ~/.mnv/secret.mnv
+	:wmnvinfo! ~/.mnv/secret.mnvinfo
 
 And to restore this again: >
 
-	:source ~/.vim/secret.vim
-	:rviminfo! ~/.vim/secret.viminfo
+	:source ~/.mnv/secret.mnv
+	:rmnvinfo! ~/.mnv/secret.mnvinfo
 
 ==============================================================================
 *21.5*	Views
 
-A session stores the looks of the whole of Vim.  When you want to store the
+A session stores the looks of the whole of MNV.  When you want to store the
 properties for one window only, use a view.
    The use of a view is for when you want to edit a file in a specific way.
 For example, you have line numbers enabled with the 'number' option and
 defined a few folds.  Just like with sessions, you can remember this view on
 the file and restore it later.  Actually, when you store a session, it stores
 the view of each window.
-   There are two basic ways to use views.  The first is to let Vim pick a name
+   There are two basic ways to use views.  The first is to let MNV pick a name
 for the view file.  You can restore the view when you later edit the same
 file.  To store the view for the current window: >
 
 	:mkview
 
-Vim will decide where to store the view.  When you later edit the same file
+MNV will decide where to store the view.  When you later edit the same file
 you get the view back with this command: >
 
 	:loadview
@@ -445,17 +445,17 @@ and nine numbered 1 to 9.
 A VIEW WITH A NAME
 
 The second basic way to use views is by storing the view in a file with a name
-you choose.  This view can be loaded while editing another file.  Vim will
+you choose.  This view can be loaded while editing another file.  MNV will
 then switch to editing the file specified in the view.  Thus you can use this
 to quickly switch to editing another file, with all its options set as you
 saved them.
    For example, to save the view of the current file: >
 
-	:mkview ~/.vim/main.vim
+	:mkview ~/.mnv/main.mnv
 
 You can restore it with: >
 
-	:source ~/.vim/main.vim
+	:source ~/.mnv/main.mnv
 
 ==============================================================================
 *21.6*	Modelines
@@ -464,13 +464,13 @@ When editing a specific file, you might set options specifically for that
 file.  Typing these commands each time is boring.  Using a session or view for
 editing a file doesn't work when sharing the file between several people.
    The solution for this situation is adding a modeline to the file.  This is
-a line of text that tells Vim the values of options, to be used in this file
+a line of text that tells MNV the values of options, to be used in this file
 only.
    A typical example is a C program where you make indents by a multiple of 4
 spaces.  This requires setting the 'shiftwidth' option to 4.  This modeline
 will do that:
 
-	/* vim:set shiftwidth=4: */ ~
+	/* mnv:set shiftwidth=4: */ ~
 
 Put this line as one of the first or last five lines in the file.  When
 editing the file, you will notice that 'shiftwidth' will have been set to
@@ -492,21 +492,21 @@ trust the files you are editing: >
 
 Use this format for the modeline:
 
-	any-text vim:set {option}={value} ... : any-text ~
+	any-text mnv:set {option}={value} ... : any-text ~
 
 The "any-text" indicates that you can put any text before and after the part
-that Vim will use.  This allows making it look like a comment, like what was
+that MNV will use.  This allows making it look like a comment, like what was
 done above with /* and */.
-   The " vim:" part is what makes Vim recognize this line.  There must be
-white space before "vim", or "vim" must be at the start of the line.  Thus
-using something like "gvim:" will not work.
+   The " mnv:" part is what makes MNV recognize this line.  There must be
+white space before "mnv", or "mnv" must be at the start of the line.  Thus
+using something like "gmnv:" will not work.
    The part between the colons is a ":set" command.  It works the same way as
 typing the ":set" command, except that you need to insert a backslash before a
 colon (otherwise it would be seen as the end of the modeline).
 
 Another example:
 
-	// vim:set textwidth=72 dir=c\:\tmp:  use c:\tmp here ~
+	// mnv:set textwidth=72 dir=c\:\tmp:  use c:\tmp here ~
 
 There is an extra backslash before the first colon, so that it's included in
 the ":set" command.  The text after the second colon is ignored, thus a remark
@@ -518,4 +518,4 @@ For more details see |modeline|.
 
 Next chapter: |usr_22.txt|  Finding the file to edit
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

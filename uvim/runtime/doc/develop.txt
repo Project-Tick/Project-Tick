@@ -1,13 +1,13 @@
-*develop.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*develop.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Development of Vim.					*development*
+Development of MNV.					*development*
 
 This text is important for those who want to be involved in further developing
-Vim.
+MNV.
 
 1. Design goals		|design-goals|
 2. Design decisions	|design-decisions|
@@ -18,10 +18,10 @@ Vim.
 See the file README.txt in the "src" directory for an overview of the source
 code.
 
-Vim is open source software.  Everybody is encouraged to contribute to help
-improving Vim.  For sending patches a unified diff "diff -u" is preferred.
+MNV is open source software.  Everybody is encouraged to contribute to help
+improving MNV.  For sending patches a unified diff "diff -u" is preferred.
 You can create a pull request on github, but it's not required.
-Also see http://vim.wikia.com/wiki/How_to_make_and_submit_a_patch.
+Also see http://mnv.wikia.com/wiki/How_to_make_and_submit_a_patch.
 
 ==============================================================================
 1. Design goals						*design-goals*
@@ -32,20 +32,20 @@ Note that quite a few items are contradicting.  This is intentional.  A
 balance must be found between them.
 
 
-VIM IS... VI COMPATIBLE					*design-compatible*
+MNV IS... VI COMPATIBLE					*design-compatible*
 
-First of all, it should be possible to use Vim as a drop-in replacement for
-Vi.  When the user wants to, Vim can be used in compatible mode and hardly
+First of all, it should be possible to use MNV as a drop-in replacement for
+Vi.  When the user wants to, MNV can be used in compatible mode and hardly
 any differences with the original Vi will be noticed.
 
 Exceptions:
-- We don't reproduce obvious Vi bugs in Vim.
+- We don't reproduce obvious Vi bugs in MNV.
 - There are different versions of Vi.  I am using Version 3.7 (6/7/85) as a
   reference.  But support for other versions is also included when possible.
   The Vi part of POSIX is not considered a definitive source.
-- Vim adds new commands, you cannot rely on some command to fail because it
+- MNV adds new commands, you cannot rely on some command to fail because it
   didn't exist in Vi.
-- Vim will have a lot of features that Vi doesn't have.  Going back from Vim
+- MNV will have a lot of features that Vi doesn't have.  Going back from MNV
   to Vi will be a problem, this cannot be avoided.
 - Some things are hardly ever used (open mode, sending an e-mail when
   crashing, etc.).  Those will only be included when someone has a good reason
@@ -54,9 +54,9 @@ Exceptions:
   maintained.  There will be an option flag for these.
 
 
-VIM IS... IMPROVED					*design-improved*
+MNV IS... IMPROVED					*design-improved*
 
-The IMproved bits of Vim should make it a better Vi, without becoming a
+The IMproved bits of MNV should make it a better Vi, without becoming a
 completely different editor.  Extensions are done with a "Vi spirit".
 - Use the keyboard as much as feasible.  The mouse requires a third hand,
   which we don't have.  Many terminals don't have a mouse.
@@ -68,21 +68,21 @@ completely different editor.  Extensions are done with a "Vi spirit".
 - A feature that people do not know about is a useless feature.  Don't add
   obscure features, or at least add hints in documentation that they exist.
 - Minimize using CTRL and other modifiers, they are more difficult to type.
-- There are many first-time and inexperienced Vim users.  Make it easy for
-  them to start using Vim and learn more over time.
+- There are many first-time and inexperienced MNV users.  Make it easy for
+  them to start using MNV and learn more over time.
 - There is no limit to the features that can be added.  Selecting new features
   is one based on (1) what users ask for, (2) how much effort it takes to
   implement and (3) someone actually implementing it.
 
 
-VIM IS... MULTI PLATFORM				*design-multi-platform*
+MNV IS... MULTI PLATFORM				*design-multi-platform*
 
-Vim tries to help as many users on as many platforms as possible.
+MNV tries to help as many users on as many platforms as possible.
 - Support many kinds of terminals.  The minimal demands are cursor positioning
   and clear-screen.  Commands should only use key strokes that most keyboards
   have.  Support all the keys on the keyboard for mapping.
 - Support many platforms.  A condition is that there is someone willing to do
-  Vim development on that platform, and it doesn't mean messing up the code.
+  MNV development on that platform, and it doesn't mean messing up the code.
 - Support many compilers and libraries.  Not everybody is able or allowed to
   install another compiler or GUI library.
 - People switch from one platform to another, and from GUI to terminal
@@ -94,7 +94,7 @@ Vim tries to help as many users on as many platforms as possible.
   contradicts the previous item, these two must be balanced.]
 
 
-VIM IS... WELL DOCUMENTED				*design-documented*
+MNV IS... WELL DOCUMENTED				*design-documented*
 
 - A feature that isn't documented is a useless feature.  A patch for a new
   feature must include the documentation.
@@ -104,24 +104,24 @@ VIM IS... WELL DOCUMENTED				*design-documented*
   item is easier to find.
 
 
-VIM IS... HIGH SPEED AND SMALL IN SIZE			*design-speed-size*
+MNV IS... HIGH SPEED AND SMALL IN SIZE			*design-speed-size*
 
-Using Vim must not be a big attack on system resources.  Keep it small and
+Using MNV must not be a big attack on system resources.  Keep it small and
 fast.
-- Computers are becoming faster and bigger each year.  Vim can grow too, but
-  no faster than computers are growing.  Keep Vim usable on older systems.
-- Many users start Vim from a shell very often.  Startup time must be short.
+- Computers are becoming faster and bigger each year.  MNV can grow too, but
+  no faster than computers are growing.  Keep MNV usable on older systems.
+- Many users start MNV from a shell very often.  Startup time must be short.
 - Commands must work efficiently.  The time they consume must be as small as
   possible.  Useful commands may take longer.
-- Don't forget that some people use Vim over a slow connection.  Minimize the
+- Don't forget that some people use MNV over a slow connection.  Minimize the
   communication overhead.
 - Items that add considerably to the size and are not used by many people
   should be a feature that can be disabled.
-- Vim is a component among other components.  Don't turn it into a massive
+- MNV is a component among other components.  Don't turn it into a massive
   application, but have it work well together with other programs.
 
 
-VIM IS... MAINTAINABLE					*design-maintain*
+MNV IS... MAINTAINABLE					*design-maintain*
 
 - The source code should not become a mess.  It should be reliable code.
 - Use the same layout in all files to make it easy to read |coding-style|.
@@ -133,28 +133,28 @@ VIM IS... MAINTAINABLE					*design-maintain*
   knowledge spread to other parts of the code.
 
 
-VIM IS... FLEXIBLE					*design-flexible*
+MNV IS... FLEXIBLE					*design-flexible*
 
-Vim should make it easy for users to work in their preferred styles rather
+MNV should make it easy for users to work in their preferred styles rather
 than coercing its users into particular patterns of work.  This can be for
 items with a large impact (e.g., the 'compatible' option) or for details.  The
-defaults are carefully chosen such that most users will enjoy using Vim as it
-is.  Commands and options can be used to adjust Vim to the desire of the user
+defaults are carefully chosen such that most users will enjoy using MNV as it
+is.  Commands and options can be used to adjust MNV to the desire of the user
 and its environment.
 
 
-VIM IS... NOT						*design-not*
+MNV IS... NOT						*design-not*
 
-- Vim is not a shell or an Operating System.  It does provide a terminal
+- MNV is not a shell or an Operating System.  It does provide a terminal
   window, in which you can run a shell or debugger.  E.g. to be able to do
   this over an ssh connection.  But if you don't need a text editor with that
   it is out of scope (use something like screen or tmux instead).
-  A satirical way to say this: "Unlike Emacs, Vim does not attempt to include
+  A satirical way to say this: "Unlike Emacs, MNV does not attempt to include
   everything but the kitchen sink, but some people say that you can clean one
   with it.  ;-)"
-  To use Vim with gdb see |terminal-debugger|.  Other (older) tools can be
+  To use MNV with gdb see |terminal-debugger|.  Other (older) tools can be
   found at http://clewn.sf.net.
-- Vim is not a fancy GUI editor that tries to look nice at the cost of
+- MNV is not a fancy GUI editor that tries to look nice at the cost of
   being less consistent over all platforms.  But functional GUI features are
   welcomed.
 
@@ -176,32 +176,32 @@ in a buffer (buffer lines) and the text displayed in a window (logical lines).
 Naming the window
 
 The word "window" is commonly used for several things: A window on the screen,
-the xterm window, a window inside Vim to view a buffer.
+the xterm window, a window inside MNV to view a buffer.
 To avoid confusion, other items that are sometimes called window have been
 given another name.  Here is an overview of the related items:
 
 screen		The whole display.  For the GUI it's something like 1024x768
-		pixels.  The Vim shell can use the whole screen or part of it.
-shell		The Vim application.  This can cover the whole screen (e.g.,
+		pixels.  The MNV shell can use the whole screen or part of it.
+shell		The MNV application.  This can cover the whole screen (e.g.,
 		when running in a console) or part of it (xterm or GUI).
-window		View on a buffer.  There can be several windows in Vim,
+window		View on a buffer.  There can be several windows in MNV,
 		together with the command line, menubar, toolbar, etc. they
 		fit in the shell.
 
 
 Spell checking						*develop-spell*
 
-When spell checking was going to be added to Vim a survey was done over the
+When spell checking was going to be added to MNV a survey was done over the
 available spell checking libraries and programs.  Unfortunately, the result
 was that none of them provided sufficient capabilities to be used as the spell
-checking engine in Vim, for various reasons:
+checking engine in MNV, for various reasons:
 
 - Missing support for multibyte encodings.  At least UTF-8 must be supported,
   so that more than one language can be used in the same file.
   Doing on-the-fly conversion is not always possible (would require iconv
   support).
 - For the programs and libraries: Using them as-is would require installing
-  them separately from Vim.  That's mostly not impossible, but a drawback.
+  them separately from MNV.  That's mostly not impossible, but a drawback.
 - Performance: A few tests showed that it's possible to check spelling on the
   fly (while redrawing), just like syntax highlighting.  But the mechanisms
   used by other code are much slower.  Myspell uses a hashtable, for example.
@@ -291,7 +291,7 @@ displaying.  A hashtable is used to quickly find the word count.  The count is
 initialized from words listed in COMMON items in the affix file, so that it
 also works when starting a new file.
 
-This isn't ideal, because the longer Vim is running the higher the counts
+This isn't ideal, because the longer MNV is running the higher the counts
 become.  But in practice it is a noticeable improvement over not using the
 word count.
 
@@ -299,13 +299,13 @@ word count.
 3. Assumptions						*design-assumptions*
 
 The following sections define the portability and compatibility constraints
-that all Vim code and build tools must adhere to.
+that all MNV code and build tools must adhere to.
 
 
 MAKEFILES					*assumptions-makefiles*
 						*POSIX.1-2001*
 
-Vim's main Makefiles target maximum portability, relying solely on features
+MNV's main Makefiles target maximum portability, relying solely on features
 defined in POSIX.1-2001 `make` and ignoring later POSIX standards or GNU/BSD
 extensions.  In practical terms, avoid:
 
@@ -321,7 +321,7 @@ in a separate directory must have an explicit rule.  For example:
 	objects/evalbuffer.o: evalbuffer.c
 		$(CCC) -o $@ evalbuffer.c
 
-This verbosity ensures that the same Makefile builds Vim unchanged with the
+This verbosity ensures that the same Makefile builds MNV unchanged with the
 default `make` on Linux, *BSD, macOS, Solaris, AIX, HP-UX and virtually any
 Unix-like OS.
 
@@ -332,7 +332,7 @@ more advanced features when compatibility with basic make is not required.
 C COMPILER					*assumptions-C-compiler*
 						*ANSI-C* *C89* *C90* *C95* *C99*
 
-Vim strives for maximum portability (see |design-multi-platform|) and must
+MNV strives for maximum portability (see |design-multi-platform|) and must
 still build with Compaq C V6.4-005 on OpenVMS VAX V7.3.
 
 Therefore, the latest ISO C standard we follow is:
@@ -365,7 +365,7 @@ We follow POSIX.1-2001 (SUSv3) for type sizes, which in practice means:
 
 FUNCTION PROTOTYPES				*assumptions-prototypes*
 
-Vim does not use conventional header files (`.h`) for most internal function
+MNV does not use conventional header files (`.h`) for most internal function
 prototypes.  Instead, the current architecture uses individual `.pro` files in
 the `src/proto/` directory, with one `.pro` file per `.c` file.
 
@@ -380,7 +380,7 @@ python3-clang module.  Note that a few proto files are hand edited.
 ==============================================================================
 4. Coding style						*coding-style*
 
-These are the rules to use when making changes to the Vim source code.  Please
+These are the rules to use when making changes to the MNV source code.  Please
 stick to these rules, to keep the sources readable and maintainable.
 
 This list is not complete.  Look in the source code for more examples.
@@ -404,7 +404,7 @@ The basic steps to make changes to the code:
    regress in the future.
 6. Make a patch with "git diff".
 7. Make a note about what changed, preferably mentioning the problem and the
-   solution.  Send an email to the |vim-dev| maillist with an explanation and
+   solution.  Send an email to the |mnv-dev| maillist with an explanation and
    include the diff.
 
 For any non-trivial change, please always create a pull request on github,
@@ -416,7 +416,7 @@ logical, atomic changes in one PR.  This can also make longer PRs easier to
 review.  Be sure to describe the reasoning for your changes in each commit
 message, as this greatly helps with the review process.  In cases where each
 commit handles different logical changes, they will also be applied as
-separate patches in Vim's repository.
+separate patches in MNV's repository.
 
 							*style-clang-format*
 sound.c and sign.c can be (semi-) automatically formatted using the
@@ -442,7 +442,7 @@ For everything else use: >
 
 INDENTATION						*style-indentation*
 
-We use 4 space to indent the code.  If you are using Vim to edit the source,
+We use 4 space to indent the code.  If you are using MNV to edit the source,
 you don't need to do anything due to the |modeline|.
 
 For other editors an `.editorconfig` is provided at the root of the repo.
@@ -533,7 +533,7 @@ Wrong: >
 
 TYPES							    *style-types*
 
-Use descriptive types.  These are defined in src/vim.h, src/structs.h etc.
+Use descriptive types.  These are defined in src/mnv.h, src/structs.h etc.
 Note that all custom types are postfixed with "_T"
 
 Example: >
@@ -608,21 +608,21 @@ Give meaningful names to function parameters.
 
 USE OF COMMON FUNCTIONS				 *style-common-functions*
 
-Some functions that are common to use, have a special Vim version.  Always
-consider using the Vim version, because they were introduced with a reason.
+Some functions that are common to use, have a special MNV version.  Always
+consider using the MNV version, because they were introduced with a reason.
 
-NORMAL NAME	VIM NAME	DIFFERENCE OF VIM VERSION
-free()		vim_free()	Checks for freeing NULL
+NORMAL NAME	MNV NAME	DIFFERENCE OF MNV VERSION
+free()		mnv_free()	Checks for freeing NULL
 malloc()	alloc()		Checks for out of memory situation
 malloc()	lalloc()	Like alloc(), but has long argument
 strcpy()	STRCPY()	Includes cast to (char *), for char_u * args
-strchr()	vim_strchr()	Accepts special characters
-strrchr()	vim_strrchr()	Accepts special characters
-isspace()	vim_isspace()	Can handle characters > 128
-iswhite()	vim_iswhite()	Only TRUE for tab and space
+strchr()	mnv_strchr()	Accepts special characters
+strrchr()	mnv_strrchr()	Accepts special characters
+isspace()	mnv_isspace()	Can handle characters > 128
+iswhite()	mnv_iswhite()	Only TRUE for tab and space
 memcpy()	mch_memmove()	Handles overlapped copies
 bcopy()		mch_memmove()	Handles overlapped copies
-memset()	vim_memset()	Uniform for all systems
+memset()	mnv_memset()	Uniform for all systems
 
 
 NAMES							*style-names*
@@ -631,7 +631,7 @@ Function names can not be more than 31 characters long (because of VMS).
 
 Don't use "delete" or "this" as a variable name, C++ doesn't like it.
 
-Because of the requirement that Vim runs on as many systems as possible, we
+Because of the requirement that MNV runs on as many systems as possible, we
 need to avoid using names that are already defined by the system.  This is a
 list of names that are known to cause trouble.  The name is given as a regexp
 pattern.
@@ -745,7 +745,7 @@ allowed to change, but they must be settled before the cycle closes.
 
 Once a minor release has been made, features included in that release must not
 receive any backwards-incompatible changes.  Later patches are expected to
-preserve compatibility for the C core of Vim.  Runtime files are handled a bit
+preserve compatibility for the C core of MNV.  Runtime files are handled a bit
 more flexibly to give runtime files maintainers a chance to change old
 behaviour.
 
@@ -754,4 +754,4 @@ features can be disabled at compile time through an appropriate switch.  After
 a new release, deprecated features may be removed completely in a following
 cycle.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

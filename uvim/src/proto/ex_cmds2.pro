@@ -15,4 +15,4 @@ void ex_pyxfile(exarg_T *eap);
 void ex_pyx(exarg_T *eap);
 void ex_pyxdo(exarg_T *eap);
 void ex_checktime(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

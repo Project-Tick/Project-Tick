@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -63,7 +63,7 @@
  *   update_screen() called to redraw.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static void win_update(win_T *wp);
 #ifdef FEAT_STL_OPT
@@ -526,15 +526,15 @@ win_redr_status(win_T *wp, int ignore_pum UNUSED)
 	    *(p + plen) = NUL;		// NUL terminate the string
 	}
 	if (bt_help(wp->w_buffer))
-	    plen += vim_snprintf((char *)p + plen, MAXPATHL - plen, "%s", _("[Help]"));
+	    plen += mnv_snprintf((char *)p + plen, MAXPATHL - plen, "%s", _("[Help]"));
 #ifdef FEAT_QUICKFIX
 	if (wp->w_p_pvw)
-	    plen += vim_snprintf((char *)p + plen, MAXPATHL - plen, "%s", _("[Preview]"));
+	    plen += mnv_snprintf((char *)p + plen, MAXPATHL - plen, "%s", _("[Preview]"));
 #endif
 	if (bufIsChanged(wp->w_buffer) && !bt_terminal(wp->w_buffer))
-	    plen += vim_snprintf((char *)p + plen, MAXPATHL - plen, "%s", "[+]");
+	    plen += mnv_snprintf((char *)p + plen, MAXPATHL - plen, "%s", "[+]");
 	if (wp->w_buffer->b_p_ro)
-	    plen += vim_snprintf((char *)p + plen, MAXPATHL - plen, "%s", _("[RO]"));
+	    plen += mnv_snprintf((char *)p + plen, MAXPATHL - plen, "%s", _("[RO]"));
 
 	this_ru_col = ru_col - (cmdline_width - wp->w_width);
 	n = (wp->w_width + 1) / 2;
@@ -776,7 +776,7 @@ win_redr_ruler(win_T *wp, int always, int ignore_pum)
 	// row number, column number is appended
 	// l10n: leave as-is unless a space after the comma is preferred
 	// l10n: do not add any row/column label, due to the limited space
-	bufferlen = vim_snprintf((char *)buffer, RULER_BUF_LEN, _("%ld,"),
+	bufferlen = mnv_snprintf((char *)buffer, RULER_BUF_LEN, _("%ld,"),
 		(wp->w_buffer->b_ml.ml_flags & ML_EMPTY)
 		    ? 0L
 		    : (long)(wp->w_cursor.lnum));
@@ -790,7 +790,7 @@ win_redr_ruler(win_T *wp, int always, int ignore_pum)
 	 * screen up on some terminals).
 	 */
 	rel_poslen = get_rel_pos(wp, rel_pos, RULER_BUF_LEN);
-	n1 = bufferlen + vim_strsize(rel_pos);
+	n1 = bufferlen + mnv_strsize(rel_pos);
 	if (wp->w_status_height == 0)	// can't use last char of screen
 	    ++n1;
 
@@ -812,7 +812,7 @@ win_redr_ruler(win_T *wp, int always, int ignore_pum)
 		    buffer[bufferlen++] = fillchar;
 		++n1;
 	    }
-	    bufferlen += vim_snprintf((char *)buffer + bufferlen, RULER_BUF_LEN - bufferlen,
+	    bufferlen += mnv_snprintf((char *)buffer + bufferlen, RULER_BUF_LEN - bufferlen,
 			    "%s", rel_pos);
 	}
 	// Truncate at window boundary.
@@ -1028,7 +1028,7 @@ text_to_screenline(win_T *wp, char_u *text, int col)
     static void
 redraw_win_toolbar(win_T *wp)
 {
-    vimmenu_T	*menu;
+    mnvmenu_T	*menu;
     int		item_idx = 0;
     int		item_count = 0;
     int		col = 0;
@@ -1039,7 +1039,7 @@ redraw_win_toolbar(win_T *wp)
     int		fill_attr = syn_name2attr((char_u *)"ToolbarLine");
     int		button_attr = syn_name2attr((char_u *)"ToolbarButton");
 
-    vim_free(wp->w_winbar_items);
+    mnv_free(wp->w_winbar_items);
     FOR_ALL_CHILD_MENUS(wp->w_winbar, menu)
 	++item_count;
     wp->w_winbar_items = ALLOC_CLEAR_MULT(winbar_item_T, item_count + 1);
@@ -1108,7 +1108,7 @@ copy_text_attr(
 
     mch_memmove(ScreenLines + off, buf, (size_t)len);
     if (enc_utf8)
-	vim_memset(ScreenLinesUC + off, 0, sizeof(u8char_T) * (size_t)len);
+	mnv_memset(ScreenLinesUC + off, 0, sizeof(u8char_T) * (size_t)len);
     for (i = 0; i < len; ++i)
 	ScreenAttrs[off + i] = attr;
 }
@@ -1277,7 +1277,7 @@ fold_line(
 		}
 	    }
 
-	    vim_snprintf((char *)buf, sizeof(buf), fmt, w, num);
+	    mnv_snprintf((char *)buf, sizeof(buf), fmt, w, num);
 # ifdef FEAT_RIGHTLEFT
 	    if (wp->w_p_rl)
 		// the line number isn't reversed
@@ -1332,7 +1332,7 @@ fold_line(
     }
 
     if (text != buf)
-	vim_free(text);
+	mnv_free(text);
 
     // 6. set highlighting for the Visual area an other text.
     // If all folded lines are in the Visual area, highlight the line.
@@ -3135,16 +3135,16 @@ redraw_asap(int type)
 	}
     }
 
-    vim_free(screenline);
-    vim_free(screenattr);
+    mnv_free(screenline);
+    mnv_free(screenattr);
     if (enc_utf8)
     {
-	vim_free(screenlineUC);
+	mnv_free(screenlineUC);
 	for (i = 0; i < p_mco; ++i)
-	    vim_free(screenlineC[i]);
+	    mnv_free(screenlineC[i]);
     }
     if (enc_dbcs == DBCS_JPNU)
-	vim_free(screenline2);
+	mnv_free(screenline2);
 
     // Show the intro message when appropriate.
     maybe_intro_message();
@@ -3523,7 +3523,7 @@ f_redraw_listener_add(typval_T *argvars, typval_T *rettv)
 	if (cb.cb_name == NULL)
 	{
 	    clear_tv(&tv);
-	    vim_free(rln);
+	    mnv_free(rln);
 	    return;
 	}
 	copy_callback(&rln->rl_callbacks.on_start, &cb);
@@ -3540,7 +3540,7 @@ f_redraw_listener_add(typval_T *argvars, typval_T *rettv)
 	{
 	    clear_tv(&tv);
 	    free_callback(&rln->rl_callbacks.on_start);
-	    vim_free(rln);
+	    mnv_free(rln);
 	    return;
 	}
 	copy_callback(&rln->rl_callbacks.on_end, &cb);
@@ -3552,7 +3552,7 @@ f_redraw_listener_add(typval_T *argvars, typval_T *rettv)
     if (!got_one)
     {
 	emsg(_(e_no_redraw_listener_callbacks_defined));
-	vim_free(rln);
+	mnv_free(rln);
 	return;
     }
 
@@ -3572,7 +3572,7 @@ redraw_listener_free(redraw_listener_T *rln)
     free_callback(&rln->rl_callbacks.on_start);
     free_callback(&rln->rl_callbacks.on_end);
 
-    vim_free(rln);
+    mnv_free(rln);
 }
 
 

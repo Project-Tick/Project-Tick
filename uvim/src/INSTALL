@@ -1,7 +1,7 @@
-INSTALL - Installation of Vim on different machines.
+INSTALL - Installation of MNV on different machines.
 
-This file contains instructions for compiling Vim. If you already have an
-executable version of Vim, you don't need this.
+This file contains instructions for compiling MNV. If you already have an
+executable version of MNV, you don't need this.
 
 Contents:
 1. Generic
@@ -20,7 +20,7 @@ See ../runtime/doc/os_haiku.txt	for Haiku
 1. Generic
 ==========
 
-If you compile Vim without specifying anything, you will get the default
+If you compile MNV without specifying anything, you will get the default
 behaviour as is documented, which should be fine for most people.
 
 For features that you can't enable/disable in another way, you can edit the
@@ -35,26 +35,26 @@ Summary:
 2. make install		installation in /usr/local
 
 This will include the GUI and X11 libraries, if you have them.  If you want a
-version of Vim that is small and starts up quickly, see the Makefile for how
+version of MNV that is small and starts up quickly, see the Makefile for how
 to disable the GUI and X11.  If you don't have GUI libraries and/or X11, these
 features will be disabled automatically.
 
-To build Vim on Ubuntu from scratch on a clean system using git:
-	Install tools required to be able to get and build Vim:
+To build MNV on Ubuntu from scratch on a clean system using git:
+	Install tools required to be able to get and build MNV:
 	% sudo apt install git
 	% sudo apt install make
 	% sudo apt install clang
 	% sudo apt install libtool-bin
 
-	Build Vim with default features:
-	% git clone https://github.com/vim/vim.git
-	% cd vim/src
+	Build MNV with default features:
+	% git clone https://github.com/Project-Tick/Project-Tick.git
+	% cd mnv/src
 	% make
 
 	Run tests to check there are no problems:
 	% make test
 
-	Install Vim in /usr/local:
+	Install MNV in /usr/local:
 	% sudo make install
 
 	Add X windows clipboard support (also needed for GUI):
@@ -81,7 +81,7 @@ To build Vim on Ubuntu from scratch on a clean system using git:
 
 
 See the start of Makefile for more detailed instructions about how to compile
-Vim.
+MNV.
 
 If you need extra compiler and/or linker arguments, set $CFLAGS and/or $LIBS
 before starting configure.  Example:
@@ -92,14 +92,14 @@ This is only needed for things that configure doesn't offer a specific argument
 for or figures out by itself.  First try running configure without extra
 arguments.
 
-GNU Autoconf and a few other tools have been used to make Vim work on many
-different Unix systems.  The advantage of this is that Vim should compile
+GNU Autoconf and a few other tools have been used to make MNV work on many
+different Unix systems.  The advantage of this is that MNV should compile
 on most systems without any adjustments.  The disadvantage is that when
 adjustments are required, it takes some time to understand what is happening.
 
 If configure finds all library files and then complains when linking that some
 of them can't be found, your linker doesn't return an error code for missing
-libraries.  Vim should be linked fine anyway, mostly you can just ignore these
+libraries.  MNV should be linked fine anyway, mostly you can just ignore these
 errors.
 
 If you run configure by hand (not using the Makefile), remember that any
@@ -107,7 +107,7 @@ changes in the Makefile have no influence on configure.  This may be what you
 want, but maybe not!
 
 The advantage of running configure separately, is that you can write a script
-to build Vim, without changing the Makefile or feature.h.  Example (using sh):
+to build MNV, without changing the Makefile or feature.h.  Example (using sh):
 
 	CFLAGS=-DCOMPILER_FLAG ./configure --enable-gui=motif
 
@@ -115,7 +115,7 @@ One thing to watch out for: If the configure script itself changes, running
 "make" will execute it again, but without your arguments.  Do "make clean" and
 run configure again.
 
-If you are compiling Vim for several machines, for each machine:
+If you are compiling MNV for several machines, for each machine:
   a.    make shadow
   b.    mv shadow machine_name
   c.    cd machine_name
@@ -159,14 +159,14 @@ then you'd specify --enable-gui=motif.  Once you specify what you want, the
 --enable-{gtk,gtk2,kde,motif,athena}-check options are ignored.
 
 On Linux you usually need GUI "-devel" packages.  You may already have GTK
-libraries installed, but that doesn't mean you can compile Vim with GTK, you
+libraries installed, but that doesn't mean you can compile MNV with GTK, you
 also need the header files.
 
 For compiling with the GTK+ GUI, you need a recent version of glib and gtk+.
 Configure checks for at least version 1.1.16.  An older version is not selected
 automatically.  If you want to use it anyway, run configure with
 "--disable-gtktest".
-GTK requires an ANSI C compiler.  If you fail to compile Vim with GTK+ (it
+GTK requires an ANSI C compiler.  If you fail to compile MNV with GTK+ (it
 is the preferred choice), try selecting another one in the Makefile.
 If you are sure you have GTK installed, but for some reason configure says you
 do not, you may have left-over header files and/or library files from an older
@@ -174,16 +174,16 @@ do not, you may have left-over header files and/or library files from an older
 auto/config.log for any error messages that may give you a hint as to what's
 happening.
 
-There used to be a KDE version of Vim, using Qt libraries, but since it didn't
+There used to be a KDE version of MNV, using Qt libraries, but since it didn't
 work very well and there was no maintainer it was dropped.
 
 
-Unix: PUTTING vimrc IN /etc
+Unix: PUTTING mnvrc IN /etc
 
-Some Linux distributions prefer to put the global vimrc file in /etc, and the
-Vim runtime files in /usr.  This can be done with:
+Some Linux distributions prefer to put the global mnvrc file in /etc, and the
+MNV runtime files in /usr.  This can be done with:
 	./configure --prefix=/usr
-	make VIMRCLOC=/etc VIMRUNTIMEDIR=/usr/share/vim MAKE="make -e"
+	make MNVRCLOC=/etc MNVRUNTIMEDIR=/usr/share/mnv MAKE="make -e"
 
 Unix: LOCAL HEADERS AND LIBRARIES NOT IN /usr/local
 

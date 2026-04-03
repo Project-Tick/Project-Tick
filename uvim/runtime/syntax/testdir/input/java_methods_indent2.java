@@ -1,6 +1,6 @@
-// VIM_TEST_SETUP let g:java_highlight_functions = 'indent2'
-// VIM_TEST_SETUP let g:java_highlight_generics = 1
-// VIM_TEST_SETUP set encoding=utf-8 termencoding=utf-8
+// MNV_TEST_SETUP let g:java_highlight_functions = 'indent2'
+// MNV_TEST_SETUP let g:java_highlight_generics = 1
+// MNV_TEST_SETUP set encoding=utf-8 termencoding=utf-8
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 

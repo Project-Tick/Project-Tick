@@ -1,13 +1,13 @@
-*usr_42.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_42.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			      Add new menus
 
 
-By now you know that Vim is very flexible.  This includes the menus used in
+By now you know that MNV is very flexible.  This includes the menus used in
 the GUI.  You can define your own menu entries to make certain commands easily
 accessible.  This is for mouse-happy users only.
 
@@ -17,13 +17,13 @@ accessible.  This is for mouse-happy users only.
 |42.4|	Toolbar and popup menus
 
      Next chapter: |usr_43.txt|  Using filetypes
- Previous chapter: |usr_41.txt|  Write a Vim script
+ Previous chapter: |usr_41.txt|  Write a MNV script
 Table of contents: |usr_toc.txt|
 
 ==============================================================================
 *42.1*	Introduction
 
-The menus that Vim uses are defined in the file "$VIMRUNTIME/menu.vim".  If
+The menus that MNV uses are defined in the file "$MNVRUNTIME/menu.mnv".  If
 you want to write your own menus, you might first want to look through that
 file.
    To define a menu item, use the ":menu" command.  The basic form of this
@@ -56,7 +56,7 @@ you can use Alt-F to select "File" and S to select "Save".  (The 'winaltkeys'
 option may disable this though!).  Therefore, the {menu-item} looks like
 "&File.&Save".  The accelerator characters will be underlined in the menu.
    You must take care that each key is used only once in each menu.  Otherwise
-you will not know which of the two will actually be used.  Vim doesn't warn
+you will not know which of the two will actually be used.  MNV doesn't warn
 you for this.
 
 
@@ -162,8 +162,8 @@ To avoid that the commands of a menu item are being mapped, use the command
 USING :AMENU
 
 The ":amenu" command is a bit different.  It assumes that the {keys} you
-give are to be executed in Normal mode.  When Vim is in Visual or Insert mode
-when the menu is used, Vim first has to go back to Normal mode.  ":amenu"
+give are to be executed in Normal mode.  When MNV is in Visual or Insert mode
+when the menu is used, MNV first has to go back to Normal mode.  ":amenu"
 inserts a CTRL-C or CTRL-O for you.  For example, if you use this command:
 >
 	:amenu  90.100 Mine.Find\ Word  *
@@ -191,7 +191,7 @@ commands, put them in a function and call that function.  Example: >
 This menu entry goes to the next file in the argument list with ":next".  Then
 it searches for the line that starts with "Code".
    The <SID> before the function name is the script ID.  This makes the
-function local to the current Vim script file.  This avoids problems when a
+function local to the current MNV script file.  This avoids problems when a
 function with the same name is defined in another script file.  See |<SID>|.
 
 
@@ -307,7 +307,7 @@ option.
    The toolbar uses icons rather than text to represent the command.  For
 example, the {menu-item} named "ToolBar.New" causes the "New" icon to appear
 on the toolbar.
-   The Vim editor has 28 built-in icons.  You can find a table here:
+   The MNV editor has 28 built-in icons.  You can find a table here:
 |builtin-tools|.  Most of them are used in the default toolbar.  You can
 redefine what these items do (after the default menus are setup).
    You can add another bitmap for a toolbar item.  Or define a new toolbar
@@ -321,7 +321,7 @@ with the name "Compile.bmp".  For Unix XPM format is used, the file name is
 "Compile.xpm".  The size must be 18 by 18 pixels.  On MS-Windows other sizes
 can be used as well, but it will look ugly.
    Put the bitmap in the directory "bitmaps" in one of the directories from
-'runtimepath'.  E.g., for Unix "~/.vim/bitmaps/Compile.xpm".
+'runtimepath'.  E.g., for Unix "~/.mnv/bitmaps/Compile.xpm".
 
 You can define tooltips for the items in the toolbar.  A tooltip is a short
 text that explains what a toolbar item will do.  For example "Open file".  It
@@ -365,4 +365,4 @@ is...
 
 Next chapter: |usr_43.txt|  Using filetypes
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

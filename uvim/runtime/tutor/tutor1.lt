@@ -1,18 +1,18 @@
 ===============================================================================
-=          V I M   p r a d ž i a m o k s l i s    –    1.7 versija            =
+=          M N V   p r a d ž i a m o k s l i s    –    1.7 versija            =
 ===============================================================================
 
-     „Vim“ yra galingas tekstų redaktorius, turintis daug komandų – tiek daug,
+     „MNV“ yra galingas tekstų redaktorius, turintis daug komandų – tiek daug,
      kad tokiame pradžiamokslyje kaip šis jų visų aprašyti neįmanoma. Šio
      pradžiamokslio tikslas – aprašyti tas komandas, kurių pagalba lengvai
-     išmoksite naudotis „Vim“ kaip visaverčiu tekstų redaktoriumi.
+     išmoksite naudotis „MNV“ kaip visaverčiu tekstų redaktoriumi.
 
      Vidutiniškai šiam pradžiamoksliui praeiti užtrunkama apie 30 minučių,
      priklausomai nuo to, kiek laiko skiriama eksperimentams.
 
      SVARBU:
      Pamokėlių metu šis tekstas bus keičiamas, tad mokymuisi pasidarykite šio
-     failo kopiją (jei paleidote „vimtutor“ komandą, tai jau skaitote failo
+     failo kopiją (jei paleidote „mnvtutor“ komandą, tai jau skaitote failo
      kopiją).
 
      Neužmirškite, kad šis pradžiamokslis yra praktinis. Tai reiškia, kad
@@ -20,7 +20,7 @@
      išmokti. Jeigu tiktai skaitysite šį tekstą, komandas tiesiog užmiršite!
 
      VERTĖJO PASTABOS:
-     „Vim“ komandas dažnai sudaro raidės. Turėkite omenyje, jog šių raidžių
+     „MNV“ komandas dažnai sudaro raidės. Turėkite omenyje, jog šių raidžių
      registras (tai, ar jos didžiosios, ar mažosios) yra svarbus. Kai tekste
      matysite instrukciją, panašią į „spustelėkite klavišą x“, tai reikš, jog
      turėsite įvesti būtent mažąją raidę. Analogiškai, jei matysite
@@ -61,7 +61,7 @@ PASTABA: Žymeklį paprastai galima valdyti ir rodyklių klavišais, tačiau, į
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     1.1.2 pamoka: DARBO SU „VIM“ PABAIGA
+                     1.1.2 pamoka: DARBO SU „MNV“ PABAIGA
 
 
   !!   SVARBU: prieš bandydami toliau nurodytas komandas,   !!
@@ -75,7 +75,7 @@ PASTABA: Žymeklį paprastai galima valdyti ir rodyklių klavišais, tačiau, į
      atliktų pakeitimų.
 
   3. Sugrįžkite atgal į šį pradžiamokslį, pakartodami ankstesnę jį
-     iškvietusią komandą. Pavyzdžiui:  vimtutor <ENTER>.
+     iškvietusią komandą. Pavyzdžiui:  mnvtutor <ENTER>.
 
   4. Jei šiuos žingsnius įsiminėte, įvykdykite punktus nuo 1 iki 3, kad
      užbaigtumėte redaktoriaus darbą ir vėl jį atvertumėte.
@@ -88,7 +88,7 @@ PASTABA: komanda :q! <ENTER> užbaigia redaktoriaus darbą, atmesdama bet kokius
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                  1.1.3 pamoka: TEKSTO REDAGAVIMAS - ŠALINIMAS
+                  1.1.3 pamoka: TEKSTO REDAGAMNVAS - ŠALINIMAS
 
 
  ** Pašalinti ties žymekliu esantį rašmenį galite spustelėdami  x  klavišą. **
@@ -111,7 +111,7 @@ PASTABA: šiame pradžiamokslyje komandas stenkitės įsiminti ne tik skaitydami
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                  1.1.4 pamoka: TEKSTO REDAGAVIMAS – ĮTERPIMAS
+                  1.1.4 pamoka: TEKSTO REDAGAMNVAS – ĮTERPIMAS
 
 
        ** Įterpti tekstą galite, prieš tai spustelėję  i  raidę. **
@@ -133,7 +133,7 @@ PASTABA: šiame pradžiamokslyje komandas stenkitės įsiminti ne tik skaitydami
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-           1.1.5 pamoka: TEKSTO REDAGAVIMAS – PRIDĖJIMAS EILUTĖS GALE
+           1.1.5 pamoka: TEKSTO REDAGAMNVAS – PRIDĖJIMAS EILUTĖS GALE
 
 
    ** Pridėti teksto eilutės gale galite, prieš tai spustelėję  A  raidę. **
@@ -157,7 +157,7 @@ PASTABA: šiame pradžiamokslyje komandas stenkitės įsiminti ne tik skaitydami
   5. Išmokę pridėti teksto eilutės gale, keliaukite toliau į 1.1.6 pamoką.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     1.1.6 pamoka: FAILO REDAGAVIMAS
+                     1.1.6 pamoka: FAILO REDAGAMNVAS
 
 
     ** Komanda  :wq  įrašo atvertą failą ir užbaigia redaktoriaus darbą. **
@@ -168,16 +168,16 @@ PASTABA: šiame pradžiamokslyje komandas stenkitės įsiminti ne tik skaitydami
   1. Jei galite naudotis kitu terminalu, tolesnius veiksmus atlikite jame.
      Kitu atveju užverkite šį pradžiamokslį kaip ir 1.1.2 pamokoje:  :q!
 
-  2. Komandų eilutėje įveskite komandą:  vim failas.txt <ENTER>
-     Čia „vim“ – komanda „Vim“ redaktoriui paleisti, o „failas.txt“ – norimo
+  2. Komandų eilutėje įveskite komandą:  mnv failas.txt <ENTER>
+     Čia „mnv“ – komanda „MNV“ redaktoriui paleisti, o „failas.txt“ – norimo
      redaguoti failo vardas. Naudokite failo, kurį galėsite keisti, vardą.
 
   3. Pridėkite ir/ar pašalinkite tekstą, kaip išmokote ankstesnėse pamokose.
 
-  4. Įrašykite pakeistą failą ir užbaikite „Vim“ darbą:  :wq <ENTER>
+  4. Įrašykite pakeistą failą ir užbaikite „MNV“ darbą:  :wq <ENTER>
 
   5. Jei pirmajame žingsnyje užvėrėte pradžiamokslį, dabar jį vėl atverkite
-     komandos „vimtutor“ pagalba, tada keliaukite į pirmosios santrauką žemiau.
+     komandos „mnvtutor“ pagalba, tada keliaukite į pirmosios santrauką žemiau.
 
   6. Perskaitę ir įsiminę visus aukščiau aprašytus žingsnius, atlikite juos.
 
@@ -188,9 +188,9 @@ PASTABA: šiame pradžiamokslyje komandas stenkitės įsiminti ne tik skaitydami
   1. Žymeklis valdomas rodyklių arba hjkl klavišais.
          h (kairėn)        j (žemyn)        k (aukštyn)        l (dešinėn)
 
-  2. Iš komandinės eilutės „Vim“ paleidžiamas taip: vim FAILO_VARDAS <ENTER>
+  2. Iš komandinės eilutės „MNV“ paleidžiamas taip: mnv FAILO_VARDAS <ENTER>
 
-  3. Darbo su „Vim“ pabaiga:   <ESC>  :q!  <ENTER> – neįrašant jokių pakeitimų.
+  3. Darbo su „MNV“ pabaiga:   <ESC>  :q!  <ENTER> – neįrašant jokių pakeitimų.
                        arba:   <ESC>  :wq  <ENTER> – įrašant pakeitimus.
 
   4. Rašmens po žymekliu pašalinimas, esant „Normaliojoje“ veiksenoje:  x
@@ -220,7 +220,7 @@ Dabar keliaukite į 1.2 pamoką.
   4. Spustelėkite   dw   žodžio pašalinimui.
 
 PASTABA: Raidė d pasirodys apatinėje terminalo eilutėje, spustelėjus jos
-         klavišą. „Vim“ lauks, kol surinksite raidę  w . Jei terminalo apačioje
+         klavišą. „MNV“ lauks, kol surinksite raidę  w . Jei terminalo apačioje
          matote kitą raidę ar suklydote ją rinkdami – spustelėkite  <ESC>  ir
          rinkite komandą iš naujo.
 
@@ -254,7 +254,7 @@ PASTABA: Raidė d pasirodys apatinėje terminalo eilutėje, spustelėjus jos
                      1.2.3 pamoka: OPERATORIAI IR VEKTORIAI
 
 
-  Daugelį teksto redagavimo komandų sudaro operatorius ir vektorius.
+  Daugelį teksto redagamnvo komandų sudaro operatorius ir vektorius.
   Pavyzdžiui, šalinimo komandos su operatoriumi  d  formatas yra toks:
 
          d   vektorius
@@ -324,7 +324,7 @@ PASTABA: „Normaliojoje“ veiksenoje spustelėjus tik vektoriaus klavišą, be
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                1.2.6 pamoka: OPERAVIMAS VISOMIS EILUTĖMIS
+                1.2.6 pamoka: OPERAMNVAS VISOMIS EILUTĖMIS
 
 
              ** Spustelėkite  dd  visai eilutei pašalinti. **
@@ -345,7 +345,7 @@ PASTABA: „Normaliojoje“ veiksenoje spustelėjus tik vektoriaus klavišą, be
 --->  6)  Ilgas pasakas mažiemus
 --->  7)  Seka pirkioj vakarais.
 
-Operatoriaus dubliavimas, norint atlikti komandą su visa eilute, veikia ir su
+Operatoriaus dubliamnvas, norint atlikti komandą su visa eilute, veikia ir su
 kitais žemiau paminėtais operatoriais.
 
 
@@ -407,7 +407,7 @@ kitais žemiau paminėtais operatoriais.
   1. Perkelkite žymeklį į pirmąją eilutę žemiau, pažymėtą --->.
 
   2. Spustelėkite  dd  – taip pašalinsite einamąją eilutę ir patalpinsite jos
-     turinį į „Vim“ iškarpinę.
+     turinį į „MNV“ iškarpinę.
 
   3. Perkelkite žymeklį į c) eilutę, VIRŠ tos vietos, kurioje turėtų atsidurti
      pašalintoji eilutė.
@@ -554,7 +554,7 @@ PASTABA: žymeklio poziciją faile apatiniame dešiniajame redaktoriaus kampe
      ** Paieška vykdoma, spustelint  /  , tada surenkant ieškomą frazę. **
 
   1. Būdami „Normaliojoje“ veiksenoje, spustelėkite  /  klavišą. Šis ženklas ir
-     žymeklis atsiras „Vim“ sąsajos apačioje, lygiai kaip ir  :  komandos
+     žymeklis atsiras „MNV“ sąsajos apačioje, lygiai kaip ir  :  komandos
      atveju.
 
   2. Surinkite žodį „kllaidda“ (kabučių nereikia) ir spustelėkite <ENTER>.
@@ -693,8 +693,8 @@ Pastaba: Visos  :  komandos pradedamos vykdyti paspaudus <ENTER>
   4. Taip įrašysite visą failą (šį pradžiamokslį) vardu TESTAS.
      Patikrinkite tai, pakartodami  :!dir  ar  :!ls  komandą.
 
-PASTABA: jei po šio žingsnio baigtumėte „Vim“ darbą, o tada vėl paleistumėte
-         redaktorių komandos   vim TESTAS   pagalba, atvertas failas būtų
+PASTABA: jei po šio žingsnio baigtumėte „MNV“ darbą, o tada vėl paleistumėte
+         redaktorių komandos   mnv TESTAS   pagalba, atvertas failas būtų
          tiksli jūsų įrašyto pradžiamokslio kopija.
 
   5. Dabar pašalinkite failą, surinkdami tokią komandą:
@@ -719,7 +719,7 @@ PASTABA: jei po šio žingsnio baigtumėte „Vim“ darbą, o tada vėl paleist
      Prieš spustelėdami <ENTER>, įsitikinkite, jog redaktoriaus apačioje
      matote eilutę  :'<,'>w TESTAS .
 
-  5. Spustelėjus <ENTER>, „Vim“ įrašys pasirinktą tekstą į failą TESTAS.
+  5. Spustelėjus <ENTER>, „MNV“ įrašys pasirinktą tekstą į failą TESTAS.
      Įsitikinti, jog failas sukurtas, galite, įvykdę komandą  :!dir  ar  :!ls .
      Kol kas nepašalinkite šio failo, nes jį naudosime kitoje pamokoje.
 
@@ -777,7 +777,7 @@ PASTABA: Panašiai galite įterpti ir išorinės komandos išvestą tekstą.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      1.6.1 pamoka: NAUJOS EILUTĖS ĮTERPIMO IR REDAGAVIMO KOMANDA („OPEN“)
+      1.6.1 pamoka: NAUJOS EILUTĖS ĮTERPIMO IR REDAGAMNVO KOMANDA („OPEN“)
 
 
    ** Spustelėjus  o  , po žymekliu bus įterpta tuščia eilutė ir persijungta
@@ -846,7 +846,7 @@ PASTABA: Perrašymo veiksena yra analogiška Įterpimo veiksenai, tačiau
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                1.6.4 pamoka: TEKSTO KOPIJAVIMAS IR ĮKLIJAVIMAS
+                1.6.4 pamoka: TEKSTO KOPIJAMNVAS IR ĮKLIJAMNVAS
 
 
   ** Tekstas kopijuojamas  y  operatoriumi, o įterpiamas  p  operatoriumi. **
@@ -857,7 +857,7 @@ PASTABA: Perrašymo veiksena yra analogiška Įterpimo veiksenai, tačiau
   2. Įjunkite Vizualiojo žymėjimo veikseną (komanda  v ) ir perkelkite žymeklį
      iki pozicijos prieš pat žodį „pirmas“.
 
-  3. Spustelėkite  y  pažymėtam tekstui nukopijuoti į „Vim“ iškarpinę.
+  3. Spustelėkite  y  pažymėtam tekstui nukopijuoti į „MNV“ iškarpinę.
 
   4. Perkelkite žymeklį į kitos eilutės pabaigą:  j$
 
@@ -915,8 +915,8 @@ PASTABA: Jei norite raidžių registro nepaisyti tik vienos paieškos metu, fraz
 
   3. Spustelėjus  e , žymeklis perkeliamas į žodžio pabaigą.
 
-  4. Spustelėjus  y , pažymėtas tekstas nukopijuojamas į „Vim“ iškarpinę.
-     Spustelėjus  p , „Vim“ iškarpinėje esantis tekstas įterpiamas.
+  4. Spustelėjus  y , pažymėtas tekstas nukopijuojamas į „MNV“ iškarpinę.
+     Spustelėjus  p , „MNV“ iškarpinėje esantis tekstas įterpiamas.
 
   5. Spustelėjus  R , įjungiama Perrašymo („Replace“) veiksena, iš kurios
                     išeinama spustelint <ESC>.
@@ -932,12 +932,12 @@ PASTABA: Jei norite raidžių registro nepaisyti tik vienos paieškos metu, fraz
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     1.7.1 pamoka: VIM ŽINYNO KOMANDOS
+                     1.7.1 pamoka: MNV ŽINYNO KOMANDOS
 
 
-                  ** Naudokitės „Vim“ žinyno sistema. **
+                  ** Naudokitės „MNV“ žinyno sistema. **
 
-  „Vim“ turi išsamų žinyną. Pirmai pažinčiai su juo, išbandykite vieną iš šių
+  „MNV“ turi išsamų žinyną. Pirmai pažinčiai su juo, išbandykite vieną iš šių
   būdų:
         - spustelėkite <HELP> klavišą (jei turite klaviatūroje)
         - spustelėkite <F1> klavišą (jei turite klaviatūroje)
@@ -960,26 +960,26 @@ PASTABA: Jei norite raidžių registro nepaisyti tik vienos paieškos metu, fraz
                 1.7.2 pamoka: PALEISTIES SCENARIJAUS KŪRIMAS
 
 
-                    ** Išnaudokite „Vim“ privalumus **
+                    ** Išnaudokite „MNV“ privalumus **
 
-  „Vim“ turi platesnį funkcionalumą nei „Vi“, tačiau dauguma šių galimybių
+  „MNV“ turi platesnį funkcionalumą nei „Vi“, tačiau dauguma šių galimybių
   numatytuoju atveju išjungtos. Jei norite pradėti naudotis papildomomis
-  galimybėmis, pirmiausia susikurkite „vimrc“ failą.
+  galimybėmis, pirmiausia susikurkite „mnvrc“ failą.
 
-  1. Pradėkite redaguoti „vimrc“ failą. Komanda priklauso nuo jūsų naudojamos
+  1. Pradėkite redaguoti „mnvrc“ failą. Komanda priklauso nuo jūsų naudojamos
      platformos:
-        :e ~/.vimrc   – „Unix“ sistemose
-        :e ~/_vimrc   – „Windows“ sistemose
+        :e ~/.mnvrc   – „Unix“ sistemose
+        :e ~/_mnvrc   – „Windows“ sistemose
 
-  2. Įterpkite pavyzdinio „vimrc“ failo turinį:
-        :r $VIMRUNTIME/vimrc_example.vim
+  2. Įterpkite pavyzdinio „mnvrc“ failo turinį:
+        :r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Įrašykite redaguojamą failą:
         :w
 
-  Kitąkart paleidę „Vim“, jau galėsite mėgautis sintaksės paryškinimu.
-  Visas pageidaujamas parinktis galite pridėti į šį „vimrc“ failą.
-  Išsamesnė informacija apie paleisties scenarijų –  :help vimrc-intro .
+  Kitąkart paleidę „MNV“, jau galėsite mėgautis sintaksės paryškinimu.
+  Visas pageidaujamas parinktis galite pridėti į šį „mnvrc“ failą.
+  Išsamesnė informacija apie paleisties scenarijų –  :help mnvrc-intro .
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -988,7 +988,7 @@ PASTABA: Jei norite raidžių registro nepaisyti tik vienos paieškos metu, fraz
 
             ** Komandų užbaigimas naudojant CTRL+D ir <TAB> **
 
-  1. Įsitikinkite, jog „Vim“ nėra suderinamumo veiksenoje:  :set nocp
+  1. Įsitikinkite, jog „MNV“ nėra suderinamumo veiksenoje:  :set nocp
 
   2. Peržiūrėkite failų sąrašą aplanke:  :!ls   arba  :!dir
 
@@ -996,11 +996,11 @@ PASTABA: Jei norite raidžių registro nepaisyti tik vienos paieškos metu, fraz
 
   4. Nuspauskite  CTRL+D  – pamatysite komandų, prasidedančių raide „e“ sąrašą.
 
-  5. Įveskite  d<TAB> , kad „Vim“ užbaigtų komandos pavadinimą iki „:edit“.
+  5. Įveskite  d<TAB> , kad „MNV“ užbaigtų komandos pavadinimą iki „:edit“.
 
   6. Įveskite tarpą ir pradėkite vesti failo vardą:  :edit FAIL
 
-  7. Spustelėkite <TAB>. „Vim“ užbaigs failo vardą (jei failas taip
+  7. Spustelėkite <TAB>. „MNV“ užbaigs failo vardą (jei failas taip
      prasidedančiu vardu egzistuoja ir yra vienintelis).
 
 PASTABA: Automatinis užbaigimas veikia su daugeliu komandų. Jį išbandyti galite
@@ -1020,7 +1020,7 @@ PASTABA: Automatinis užbaigimas veikia su daugeliu komandų. Jį išbandyti gal
 
   4. Įveskite  :q  žinyno langui užverti.
 
-  5. Susikurkite „vimrc“ paleisties scenarijaus failą norimoms išlaikyti
+  5. Susikurkite „mnvrc“ paleisties scenarijaus failą norimoms išlaikyti
      parinktims įrašyti.
 
   6. Rinkdami  :  prasidedančią komandą, nuspauskite CTRL+D galimiems užbaigimo
@@ -1029,31 +1029,31 @@ PASTABA: Automatinis užbaigimas veikia su daugeliu komandų. Jį išbandyti gal
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Sveikiname, jūs pasiekėte „Vim“ pradžiamokslio pabaigą! Jo tikslas – pateikti
-  glaustą „Vim“ redaktoriaus apžvalgą, kurios pakaktų įgyti „Vim“ redaktoriaus
-  pagrindams. Tačiau tai toli gražu ne visos galimybės, kuriomis „Vim“
+  Sveikiname, jūs pasiekėte „MNV“ pradžiamokslio pabaigą! Jo tikslas – pateikti
+  glaustą „MNV“ redaktoriaus apžvalgą, kurios pakaktų įgyti „MNV“ redaktoriaus
+  pagrindams. Tačiau tai toli gražu ne visos galimybės, kuriomis „MNV“
   pasižymi. Toliau patariame perskaityti naudotojo vadovą:
      :help user-manual
 
   Dar nuodugnesniam mokymuisi rekomenduojame knygą:
-        Steve Oualline. Vim - Vi Improved
+        Steve Oualline. MNV - MNV is not Vim
         Leidėjas: New Riders
-  Tai – pirmoji knyga, skirta vien tik „Vim“ redaktoriui. Ypatingai naudinga
+  Tai – pirmoji knyga, skirta vien tik „MNV“ redaktoriui. Ypatingai naudinga
   pradedantiesiems. Knygoje nemažai pavyzdžių ir iliustracijų.
   Išsamiau – https://iccf-holland.org/click5.html
 
   Taip pat galime rekomenduoti šią senesnę knygą, nors ji ir skirta labiau
-  „Vi“, o ne „Vim“ redaktoriui:
+  „Vi“, o ne „MNV“ redaktoriui:
         Linda Lamb. "Learning the Vi Editor"
         Leidėjas: O'Reilly & Associates Inc.
   Tai – gera knyga, kurioje išnagrinėtos beveik visos „Vi“ redaktoriaus
-  galimybės. Šeštame leidime pateikiama informacija ir apie „Vim“.
+  galimybės. Šeštame leidime pateikiama informacija ir apie „MNV“.
 
   Šį pradžiamokslį parašė Michael C. Pierce ir Robert K. Ware, Colorado School
   of Mines, pasinaudodami Charles Smith, Colorado State University, idėjomis.
   El. paštas: bware@mines.colorado.edu.
 
-  „Vim“ redaktoriui pritaikė Bram Moolenaar.
+  „MNV“ redaktoriui pritaikė Bram Moolenaar.
 
   Į lietuvių kalbą išvertė Laurynas Stančikas (1.4 versiją)
   ir Rimas Kudelis (1.7 versiją).

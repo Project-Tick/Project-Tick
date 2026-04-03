@@ -43,15 +43,15 @@ char_u *gettail(char_u *fname);
 char_u *gettail_sep(char_u *fname);
 char_u *getnextcomp(char_u *fname);
 char_u *get_past_head(char_u *path);
-int vim_ispathsep(int c);
-int vim_ispathsep_nocolon(int c);
+int mnv_ispathsep(int c);
+int mnv_ispathsep_nocolon(int c);
 int dir_of_file_exists(char_u *fname);
-int vim_fnamecmp(char_u *x, char_u *y);
-int vim_fnamencmp(char_u *x, char_u *y, size_t len);
+int mnv_fnamecmp(char_u *x, char_u *y);
+int mnv_fnamencmp(char_u *x, char_u *y, size_t len);
 char_u *concat_fnames(char_u *fname1, char_u *fname2, int sep);
 void add_pathsep(char_u *p);
 char_u *FullName_save(char_u *fname, int force);
-int vim_fexists(char_u *fname);
+int mnv_fexists(char_u *fname);
 int expand_wildcards_eval(char_u **pat, int *num_file, char_u ***file, int flags);
 int expand_wildcards(int num_pat, char_u **pat, int *num_files, char_u ***files, int flags);
 int match_suffix(char_u *fname);
@@ -61,6 +61,6 @@ int gen_expand_wildcards(int num_pat, char_u **pat, int *num_file, char_u ***fil
 void addfile(garray_T *gap, char_u *f, int flags);
 void FreeWild(int count, char_u **files);
 int pathcmp(const char *p, const char *q, int maxlen);
-int vim_isAbsName(char_u *name);
-int vim_FullName(char_u *fname, char_u *buf, int len, int force);
-/* vim: set ft=c : */
+int mnv_isAbsName(char_u *name);
+int mnv_FullName(char_u *fname, char_u *buf, int len, int force);
+/* mnv: set ft=c : */

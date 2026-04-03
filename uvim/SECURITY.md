@@ -3,9 +3,9 @@
 ## Reporting a vulnerability
 
 If you want to report a security issue, please privately disclose the issue either via:
-- The vim-security mailing list: vim-security@googlegroups.com  
+- The mnv-security mailing list: mnv-security@googlegroups.com  
   This is a private list, read only by the maintainers, but anybody can post.
-- [GitHub Security Advisories](https://github.com/vim/vim/security/advisories/new)
+- [GitHub Security Advisories](https://github.com/Project-Tick/Project-Tick/security/advisories/new)
 
 **Please don't publicly disclose the issue until it has been addressed by us.**
 

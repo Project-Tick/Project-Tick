@@ -38,4 +38,4 @@ int switch_win(switchwin_T *switchwin, win_T *win, tabpage_T *tp, int no_display
 int switch_win_noblock(switchwin_T *switchwin, win_T *win, tabpage_T *tp, int no_display);
 void restore_win(switchwin_T *switchwin, int no_display);
 void restore_win_noblock(switchwin_T *switchwin, int no_display);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

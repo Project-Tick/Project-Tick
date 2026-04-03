@@ -1,5 +1,5 @@
 #
-# Makefile for Vim on OpenVMS
+# Makefile for MNV on OpenVMS
 #
 # Maintainer:   Zoltan Arpadffy <zoltan.arpadffy@gmail.com>
 # Last change:  2025-07-04  Steven M. Schweda <sms@antinode.info>
@@ -8,8 +8,8 @@
 # with MMS and MMK
 #
 # The following could be built:
-#	vim.exe:	standard (terminal, GUI/Motif, GUI/GTK)
-#	dvim.exe:	debug
+#	mnv.exe:	standard (terminal, GUI/Motif, GUI/GTK)
+#	dmnv.exe:	debug
 #
 ######################################################################
 #
@@ -41,7 +41,7 @@ MODEL = HUGE
 # GUI with GTK
 # If you have GTK installed you might want to enable this option.
 # NOTE: you will need to properly define GTK_DIR below
-# NOTE: since Vim 7.3 GTK 2+ is used that is not ported to VMS,
+# NOTE: since MNV 7.3 GTK 2+ is used that is not ported to VMS,
 #       therefore this option should not be used
 # GTK = YES
 
@@ -58,34 +58,34 @@ MODEL = HUGE
 CCVER = YES                     # Unreliable with VAX C.
 .ENDIF                          # VAXC_OR_FORCE_VAXC [ELSE]
 
-# Uncomment if want a debug version. Resulting executable is DVIM.EXE
+# Uncomment if want a debug version. Resulting executable is DMNV.EXE
 # Development purpose only! Normally, it should not be defined. !!!
 # DEBUG = YES
 
 # Languages support for Perl, Python, TCL etc.
 # If you don't need it really, leave them behind the comment.
 # You will need related libraries, include files etc.
-# VIM_TCL    = YES
-# VIM_PERL   = YES
-# VIM_PYTHON = YES
-# VIM_PYTHON3= YES
-# VIM_RUBY   = YES
-# VIM_LUA    = YES
+# MNV_TCL    = YES
+# MNV_PERL   = YES
+# MNV_PYTHON = YES
+# MNV_PYTHON3= YES
+# MNV_RUBY   = YES
+# MNV_LUA    = YES
 
 # X Input Method.  For entering special languages like chinese and
 # Japanese.
 # If you don't need it really, leave it behind the comment.
-# VIM_XIM = YES
+# MNV_XIM = YES
 
 # Allow any white space to separate the fields in a tags file
 # When not defined, only a TAB is allowed.
-# VIM_TAG_ANYWHITE = YES
+# MNV_TAG_ANYWHITE = YES
 
 # Allow FEATURE_MZSCHEME
-# VIM_MZSCHEME = YES
+# MNV_MZSCHEME = YES
 
 # Use ICONV
-# VIM_ICONV = YES
+# MNV_ICONV = YES
 
 # If you modified the source code and plan to distribute the build
 # please, let the users know that.
@@ -258,19 +258,19 @@ C_INC   = [.proto]
 
 .IFDEF DEBUG
 DEBUG_DEF = ,"DEBUG"
-TARGET    = [.$(DEST)]dvim.exe
+TARGET    = [.$(DEST)]dmnv.exe
 CFLAGS    = /debug/noopt$(PREFIX)$(FLOAT)$(LIST_OPT)
 LDFLAGS   = /debug $(MAP_OPT)
 .ELSE
-TARGET    = [.$(DEST)]vim.exe
+TARGET    = [.$(DEST)]mnv.exe
 CFLAGS    = $(OPTIMIZE)$(PREFIX)$(FLOAT)$(LIST_OPT)
 LDFLAGS   = $(MAP_OPT)
 .ENDIF
 
-# Predefined VIM directories
-# Please, use $VIM and $VIMRUNTIME logicals instead
-VIMLOC  = ""
-VIMRUN  = ""
+# Predefined MNV directories
+# Please, use $MNV and $MNVRUNTIME logicals instead
+MNVLOC  = ""
+MNVRUN  = ""
 
 CONFIG_H = os_vms_conf.h
 
@@ -355,7 +355,7 @@ DEFS	 = ,"HAVE_CONFIG_H"
 LIBS	 =
 .ENDIF
 
-.IFDEF VIM_PERL
+.IFDEF MNV_PERL
 # Perl related setup.
 PERL	 = perl
 PERL_DEF = ,"FEAT_PERL"
@@ -367,7 +367,7 @@ PERL_LIB = ,OS_VMS_PERL.OPT/OPT
 PERL_INC = ,dka0:[perlbuild.perl.lib.vms_axp.5_6_1.core]
 .ENDIF
 
-.IFDEF VIM_PYTHON
+.IFDEF MNV_PYTHON
 # Python related setup.
 PYTHON_DEF = ,"FEAT_PYTHON"
 PYTHON_SRC = if_python.c
@@ -376,7 +376,7 @@ PYTHON_LIB = ,OS_VMS_PYTHON.OPT/OPT
 PYTHON_INC = ,PYTHON_INCLUDE
 .ENDIF
 
-.IFDEF VIM_PYTHON3
+.IFDEF MNV_PYTHON3
 # Python related setup.
 PYTHON3_DEF = ,"FEAT_PYTHON3"
 PYTHON3_SRC = if_python3.c
@@ -386,7 +386,7 @@ PYTHON3_INC = ,PYTHON3_INCLUDE
 .ENDIF
 
 
-.IFDEF VIM_TCL
+.IFDEF MNV_TCL
 # TCL related setup.
 TCL_DEF = ,"FEAT_TCL"
 TCL_SRC = if_tcl.c
@@ -395,7 +395,7 @@ TCL_LIB = ,OS_VMS_TCL.OPT/OPT
 TCL_INC = ,dka0:[tcl80.generic]
 .ENDIF
 
-.IFDEF VIM_RUBY
+.IFDEF MNV_RUBY
 # RUBY related setup.
 RUBY_DEF = ,"FEAT_RUBY"
 RUBY_SRC = if_ruby.c
@@ -404,7 +404,7 @@ RUBY_LIB = ,OS_VMS_RUBY.OPT/OPT
 RUBY_INC =
 .ENDIF
 
-.IFDEF VIM_LUA
+.IFDEF MNV_LUA
 # LUA related setup.
 LUA_DEF = ,"FEAT_LUA"
 LUA_SRC = if_lua.c
@@ -413,21 +413,21 @@ LUA_LIB = ,OS_VMS_LUA.OPT/OPT
 LUA_INC = ,LUA$ROOT:[INCLUDE]
 .ENDIF
 
-.IFDEF VIM_XIM
+.IFDEF MNV_XIM
 # XIM related setup.
 .IFDEF GUI
 XIM_DEF = ,"FEAT_XIM"
 .ENDIF
 .ENDIF
 
-.IFDEF VIM_MZSCHEME
+.IFDEF MNV_MZSCHEME
 # MZSCHEME related setup
 MZSCHEME_DEF = ,"FEAT_MZSCHEME"
 MZSCHEME_SRC = if_mzsch.c
 MZSCHEME_OBJ = [.$(DEST)]if_mzsch.obj
 .ENDIF
 
-.IFDEF VIM_ICONV
+.IFDEF MNV_ICONV
 # ICONV related setup
 ICONV_DEF = ,"USE_ICONV"
 .ENDIF
@@ -458,8 +458,8 @@ DEF_MODIFIED = NO
 MODEL_DEF = "FEAT_$(MODEL)"
 
 # These go into pathdef.c
-VIMUSER = "''F$EDIT(F$GETJPI(" ","USERNAME"),"TRIM")'"
-VIMHOST = "''F$TRNLNM("SYS$NODE")'''F$TRNLNM("UCX$INET_HOST")'.''F$TRNLNM("UCX$INET_DOMAIN")'"
+MNVUSER = "''F$EDIT(F$GETJPI(" ","USERNAME"),"TRIM")'"
+MNVHOST = "''F$TRNLNM("SYS$NODE")'''F$TRNLNM("UCX$INET_HOST")'.''F$TRNLNM("UCX$INET_DOMAIN")'"
 
 .SUFFIXES : .obj .c     # Case problems with old MMS?  Ignore: %MMS-I-ALRINSUFFLST
 
@@ -602,16 +602,16 @@ SRC = \
  usercmd.c \
  userfunc.c \
  version.c \
- vim9class.c \
- vim9cmds.c \
- vim9compile.c \
- vim9execute.c \
- vim9expr.c \
- vim9instr.c \
- vim9generics.c \
- vim9script.c \
- vim9type.c \
- viminfo.c \
+ mnv9class.c \
+ mnv9cmds.c \
+ mnv9compile.c \
+ mnv9execute.c \
+ mnv9expr.c \
+ mnv9instr.c \
+ mnv9generics.c \
+ mnv9script.c \
+ mnv9type.c \
+ mnvinfo.c \
  window.c \
  $(GUI_SRC) \
  $(XDIFF_SRC) \
@@ -740,16 +740,16 @@ OBJ = \
  [.$(DEST)]usercmd.obj \
  [.$(DEST)]userfunc.obj \
  [.$(DEST)]version.obj \
- [.$(DEST)]vim9class.obj \
- [.$(DEST)]vim9cmds.obj \
- [.$(DEST)]vim9compile.obj \
- [.$(DEST)]vim9execute.obj \
- [.$(DEST)]vim9expr.obj \
- [.$(DEST)]vim9instr.obj \
- [.$(DEST)]vim9generics.obj \
- [.$(DEST)]vim9script.obj \
- [.$(DEST)]vim9type.obj \
- [.$(DEST)]viminfo.obj \
+ [.$(DEST)]mnv9class.obj \
+ [.$(DEST)]mnv9cmds.obj \
+ [.$(DEST)]mnv9compile.obj \
+ [.$(DEST)]mnv9execute.obj \
+ [.$(DEST)]mnv9expr.obj \
+ [.$(DEST)]mnv9instr.obj \
+ [.$(DEST)]mnv9generics.obj \
+ [.$(DEST)]mnv9script.obj \
+ [.$(DEST)]mnv9type.obj \
+ [.$(DEST)]mnvinfo.obj \
  [.$(DEST)]window.obj \
  $(GUI_OBJ) \
  $(XDIFF_OBJ) \
@@ -832,16 +832,16 @@ $(TARGET) : $(OBJ)
 	-@ write pd "/* This file is automatically created by MAKE_VMS.MMS"
 	-@ write pd " * Change the file MAKE_VMS.MMS Only. */"
 	-@ write pd "typedef unsigned char   char_u;"
-	-@ write pd "char_u *default_vim_dir = (char_u *)"$(VIMLOC)";"
-	-@ write pd "char_u *default_vimruntime_dir = (char_u *)"$(VIMRUN)";"
+	-@ write pd "char_u *default_mnv_dir = (char_u *)"$(MNVLOC)";"
+	-@ write pd "char_u *default_mnvruntime_dir = (char_u *)"$(MNVRUN)";"
 	-@ write pd "char_u *all_cflags = (char_u *)""$(CC_DEF)"""
 	-@ write pd " ""$(ALL_CFLAGS_VER1)"""
 	-@ write pd " ""$(ALL_CFLAGS_VER2)"";"
 	-@ write pd "char_u *all_lflags = (char_u *)""$(LD_DEF)$(LDFLAGS)"""
 	-@ write pd " ""/exe=$(TARGET) ALL_OBJS_LIST.OPT/OPT $(ALL_LIBS)"";"
 	-@ write pd "char_u *compiler_version = (char_u *) ""''CC_VER'"";"
-	-@ write pd "char_u *compiled_user = (char_u *) "$(VIMUSER)";"
-	-@ write pd "char_u *compiled_sys  = (char_u *) "$(VIMHOST)";"
+	-@ write pd "char_u *compiled_user = (char_u *) "$(MNVUSER)";"
+	-@ write pd "char_u *compiled_sys  = (char_u *) "$(MNVHOST)";"
 	-@ write pd "char_u *compiled_arch = (char_u *) ""$(MMSARCH_NAME)"";"
 	-@ write pd "char_u *compiled_vers = (char_u *) """ + -
             f$getsyi( "version")+ """;"
@@ -919,7 +919,7 @@ gtk_env :
 	-@ !
 .ENDIF
 
-.IFDEF VIM_PERL
+.IFDEF MNV_PERL
 perl_env :
 	-@ write sys$output "using PERL environment:"
 	-@ show logical PERLSHR
@@ -938,7 +938,7 @@ perl_env :
 	-@ !
 .ENDIF
 
-.IFDEF VIM_PYTHON
+.IFDEF MNV_PYTHON
 python_env :
 	-@ write sys$output "using PYTHON environment:"
 	-@ show logical PYTHON_INCLUDE
@@ -952,7 +952,7 @@ python_env :
 	-@ !
 .ENDIF
 
-.IFDEF VIM_PYTHON3
+.IFDEF MNV_PYTHON3
 python3_env :
 	-@ write sys$output "using PYTHON3 environment:"
 	-@ show logical PYTHON3_INCLUDE
@@ -966,7 +966,7 @@ python3_env :
 	-@ !
 .ENDIF
 
-.IFDEF VIM_TCL
+.IFDEF MNV_TCL
 tcl_env :
 	-@ write sys$output "using TCL environment:"
 	-@ show logical TCLSHR
@@ -980,7 +980,7 @@ tcl_env :
 	-@ !
 .ENDIF
 
-.IFDEF VIM_RUBY
+.IFDEF MNV_RUBY
 ruby_env :
 	-@ write sys$output "using RUBY environment:"
 	-@ write sys$output "    include path: ""$(RUBY_INC)"""
@@ -993,7 +993,7 @@ ruby_env :
 	-@ !
 .ENDIF
 
-.IFDEF VIM_LUA
+.IFDEF MNV_LUA
 lua_env :
 	-@ write sys$output "using LUA environment:"
 	-@ write sys$output "    include path: ""$(LUA_INC)"""
@@ -1006,475 +1006,475 @@ lua_env :
 	-@ !
 .ENDIF
 
-[.$(DEST)]alloc.obj : alloc.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]alloc.obj : alloc.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]arabic.obj : arabic.c vim.h
-[.$(DEST)]arglist.obj : arglist.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]autocmd.obj : autocmd.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]blowfish.obj : blowfish.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]blob.obj : blob.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]buffer.obj : buffer.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]arabic.obj : arabic.c mnv.h
+[.$(DEST)]arglist.obj : arglist.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]autocmd.obj : autocmd.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]blowfish.obj : blowfish.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]blob.obj : blob.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]buffer.obj : buffer.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]bufwrite.obj : bufwrite.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]bufwrite.obj : bufwrite.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]change.obj : change.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]change.obj : change.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]charset.obj : charset.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]charset.obj : charset.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]channel.obj : channel.c vim.h [.$(DEST)]config.h feature.h
-[.$(DEST)]cindent.obj : cindent.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]channel.obj : channel.c mnv.h [.$(DEST)]config.h feature.h
+[.$(DEST)]cindent.obj : cindent.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]clientserver.obj : clientserver.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]clientserver.obj : clientserver.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]clipboard.obj : clipboard.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]clipboard.obj : clipboard.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]cmdexpand.obj : cmdexpand.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]cmdexpand.obj : cmdexpand.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]cmdhist.obj : cmdhist.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]cmdhist.obj : cmdhist.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]crypt.obj : crypt.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]crypt.obj : crypt.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]crypt_zip.obj : crypt_zip.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]crypt_zip.obj : crypt_zip.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]debugger.obj : debugger.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]debugger.obj : debugger.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]dict.obj : dict.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]dict.obj : dict.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]diff.obj : diff.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]diff.obj : diff.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]digraph.obj : digraph.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]digraph.obj : digraph.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]drawline.obj : drawline.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]drawline.obj : drawline.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]drawscreen.obj : drawscreen.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]drawscreen.obj : drawscreen.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]edit.obj : edit.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]edit.obj : edit.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]eval.obj : eval.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]eval.obj : eval.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]evalbuffer.obj : evalbuffer.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]evalbuffer.obj : evalbuffer.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]evalfunc.obj : evalfunc.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]evalfunc.obj : evalfunc.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h version.h
-[.$(DEST)]evalvars.obj : evalvars.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]evalvars.obj : evalvars.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h version.h
-[.$(DEST)]evalwindow.obj : evalwindow.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]evalwindow.obj : evalwindow.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]ex_cmds.obj : ex_cmds.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]ex_cmds.obj : ex_cmds.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]ex_cmds2.obj : ex_cmds2.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]ex_cmds2.obj : ex_cmds2.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]ex_docmd.obj : ex_docmd.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]ex_docmd.obj : ex_docmd.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h ex_cmdidxs.h
-[.$(DEST)]ex_eval.obj : ex_eval.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]ex_eval.obj : ex_eval.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]ex_getln.obj : ex_getln.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]ex_getln.obj : ex_getln.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]fileio.obj : fileio.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]fileio.obj : fileio.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]filepath.obj : filepath.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]filepath.obj : filepath.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]findfile.obj : findfile.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]findfile.obj : findfile.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]float.obj : float.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]float.obj : float.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]fold.obj : fold.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]fold.obj : fold.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]fuzzy.obj : fuzzy.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]fuzzy.obj : fuzzy.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]getchar.obj : getchar.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]getchar.obj : getchar.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]gc.obj : gc.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gc.obj : gc.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]gui_xim.obj : gui_xim.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_xim.obj : gui_xim.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]hardcopy.obj : hardcopy.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]hardcopy.obj : hardcopy.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]hashtab.obj : hashtab.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]hashtab.obj : hashtab.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]help.obj : help.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]help.obj : help.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]highlight.obj : highlight.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]highlight.obj : highlight.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]if_cscope.obj : if_cscope.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_cscope.obj : if_cscope.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]if_xcmdsrv.obj : if_xcmdsrv.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_xcmdsrv.obj : if_xcmdsrv.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]if_mzsch.obj : if_mzsch.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_mzsch.obj : if_mzsch.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h ex_cmds.h proto.h \
  errors.h globals.h if_mzsch.h
-[.$(DEST)]indent.obj : indent.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]insexpand.obj : insexpand.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]job.obj : job.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]json.obj : json.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]indent.obj : indent.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]insexpand.obj : insexpand.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]job.obj : job.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]json.obj : json.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]linematch.obj : linematch.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]linematch.obj : linematch.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]list.obj : list.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]list.obj : list.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]locale.obj : locale.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]locale.obj : locale.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]logfile.obj : logfile.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]logfile.obj : logfile.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]main.obj : main.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]main.obj : main.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h \
  arabic.c
-[.$(DEST)]map.obj : map.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]map.obj : map.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]mark.obj : mark.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]mark.obj : mark.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]match.obj : match.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]match.obj : match.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]memfile.obj : memfile.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]memfile.obj : memfile.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]memline.obj : memline.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]memline.obj : memline.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]menu.obj : menu.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]menu.obj : menu.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]message.obj : message.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]message.obj : message.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]misc1.obj : misc1.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]misc1.obj : misc1.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h \
  version.h
-[.$(DEST)]misc2.obj : misc2.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]misc2.obj : misc2.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]mouse.obj : mouse.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]mouse.obj : mouse.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]move.obj : move.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]move.obj : move.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]mbyte.obj : mbyte.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]mbyte.obj : mbyte.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]normal.obj : normal.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]normal.obj : normal.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h nv_cmdidxs.h nv_cmds.h
-[.$(DEST)]ops.obj : ops.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]ops.obj : ops.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]option.obj : option.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]option.obj : option.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h optiondefs.h
-[.$(DEST)]optionstr.obj : optionstr.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]optionstr.obj : optionstr.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]os_unix.obj : os_unix.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]os_unix.obj : os_unix.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h os_unixx.h
-[.$(DEST)]os_vms.obj : os_vms.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]os_vms.obj : os_vms.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h os_unixx.h
-[.$(DEST)]pathdef.obj : [.$(DEST)]pathdef.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]pathdef.obj : [.$(DEST)]pathdef.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]popupmenu.obj : popupmenu.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]popupmenu.obj : popupmenu.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]popupwin.obj : popupwin.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]popupwin.obj : popupwin.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]pty.obj : pty.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]profiler.obj : profiler.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]pty.obj : pty.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]profiler.obj : profiler.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]quickfix.obj : quickfix.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]quickfix.obj : quickfix.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]regexp.obj : regexp.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]regexp.obj : regexp.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]register.obj : register.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]register.obj : register.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]scriptfile.obj : scriptfile.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]scriptfile.obj : scriptfile.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]screen.obj : screen.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]screen.obj : screen.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]search.obj : search.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]search.obj : search.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]session.obj : session.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]session.obj : session.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]sha256.obj : sha256.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]sha256.obj : sha256.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]sign.obj : sign.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]sign.obj : sign.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h regexp.h gui.h \
  beval.h alloc.h ex_cmds.h spell.h proto.h \
  errors.h globals.h
-[.$(DEST)]sound.obj : sound.c vim.h [.$(DEST)]config.h feature.h
-[.$(DEST)]spell.obj : spell.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]sound.obj : sound.c mnv.h [.$(DEST)]config.h feature.h
+[.$(DEST)]spell.obj : spell.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]spellfile.obj : spellfile.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]spellfile.obj : spellfile.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]spellsuggest.obj : spellsuggest.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]spellsuggest.obj : spellsuggest.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]strings.obj : strings.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]strings.obj : strings.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]syntax.obj : syntax.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]syntax.obj : syntax.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]tabpanel.obj : tabpanel.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]tabpanel.obj : tabpanel.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]tag.obj : tag.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]tag.obj : tag.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]term.obj : term.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]term.obj : term.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]terminal.obj : terminal.c vim.h [.$(DEST)]config.h feature.h os_unix.h
-[.$(DEST)]termlib.obj : termlib.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]terminal.obj : terminal.c mnv.h [.$(DEST)]config.h feature.h os_unix.h
+[.$(DEST)]termlib.obj : termlib.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]testing.obj : testing.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]testing.obj : testing.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]textformat.obj : textformat.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]textformat.obj : textformat.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]textobject.obj : textobject.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]textobject.obj : textobject.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]textprop.obj : textprop.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]textprop.obj : textprop.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]time.obj : time.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]time.obj : time.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]tuple.obj : tuple.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]tuple.obj : tuple.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]typval.obj : typval.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]typval.obj : typval.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]ui.obj : ui.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]ui.obj : ui.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]undo.obj : undo.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]undo.obj : undo.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]usercmd.obj : usercmd.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]usercmd.obj : usercmd.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]userfunc.obj : userfunc.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]userfunc.obj : userfunc.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h option.h structs.h \
  regexp.h gui.h beval.h alloc.h ex_cmds.h spell.h \
  proto.h errors.h globals.h
-[.$(DEST)]version.obj : version.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]version.obj : version.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]viminfo.obj : viminfo.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnvinfo.obj : mnvinfo.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9class.obj : vim9class.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9class.obj : mnv9class.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9cmds.obj : vim9cmds.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9cmds.obj : mnv9cmds.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9compile.obj : vim9compile.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9compile.obj : mnv9compile.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9execute.obj : vim9execute.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9execute.obj : mnv9execute.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9expr.obj : vim9expr.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9expr.obj : mnv9expr.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9instr.obj : vim9instr.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9instr.obj : mnv9instr.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9generics.obj : vim9generics.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9generics.obj : mnv9generics.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9script.obj : vim9script.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9script.obj : mnv9script.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]vim9type.obj : vim9type.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]mnv9type.obj : mnv9type.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]window.obj : window.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]window.obj : window.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]gui.obj : gui.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]gui.obj : gui.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]gui_gtk.obj : gui_gtk.c gui_gtk_f.h vim.h [.$(DEST)]config.h feature.h \
+[.$(DEST)]gui_gtk.obj : gui_gtk.c gui_gtk_f.h mnv.h [.$(DEST)]config.h feature.h \
  os_unix.h   ascii.h keymap.h termdefs.h macros.h structs.h \
  regexp.h gui.h beval.h option.h ex_cmds.h \
  proto.h errors.h globals.h [-.pixmaps]stock_icons.h
-[.$(DEST)]gui_gtk_f.obj : gui_gtk_f.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_gtk_f.obj : gui_gtk_f.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h gui_gtk_f.h
-[.$(DEST)]gui_motif.obj : gui_motif.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_motif.obj : gui_motif.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h [-.pixmaps]alert.xpm [-.pixmaps]error.xpm \
  [-.pixmaps]generic.xpm [-.pixmaps]info.xpm [-.pixmaps]quest.xpm
-[.$(DEST)]gui_athena.obj : gui_athena.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_athena.obj : gui_athena.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h gui_at_sb.h
-[.$(DEST)]gui_gtk_x11.obj : gui_gtk_x11.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_gtk_x11.obj : gui_gtk_x11.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
- errors.h globals.h gui_gtk_f.h [-.runtime]vim32x32_png.h \
- [-.runtime]vim16x16_png.h [-.runtime]vim48x48_png.h version.h
-[.$(DEST)]gui_x11.obj : gui_x11.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+ errors.h globals.h gui_gtk_f.h [-.runtime]mnv32x32_png.h \
+ [-.runtime]mnv16x16_png.h [-.runtime]mnv48x48_png.h version.h
+[.$(DEST)]gui_x11.obj : gui_x11.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
- errors.h globals.h [-.runtime]vim32x32.xpm \
- [-.runtime]vim16x16.xpm [-.runtime]vim48x48.xpm [-.pixmaps]tb_new.xpm \
+ errors.h globals.h [-.runtime]mnv32x32.xpm \
+ [-.runtime]mnv16x16.xpm [-.runtime]mnv48x48.xpm [-.pixmaps]tb_new.xpm \
  [-.pixmaps]tb_open.xpm [-.pixmaps]tb_close.xpm [-.pixmaps]tb_save.xpm \
  [-.pixmaps]tb_print.xpm [-.pixmaps]tb_cut.xpm [-.pixmaps]tb_copy.xpm \
  [-.pixmaps]tb_paste.xpm [-.pixmaps]tb_find.xpm \
@@ -1490,52 +1490,52 @@ lua_env :
  [-.pixmaps]tb_shell.xpm [-.pixmaps]tb_replace.xpm \
  [-.pixmaps]tb_vsplit.xpm [-.pixmaps]tb_maxwidth.xpm \
  [-.pixmaps]tb_minwidth.xpm
-[.$(DEST)]gui_at_sb.obj : gui_at_sb.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_at_sb.obj : gui_at_sb.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h gui_at_sb.h
-[.$(DEST)]gui_at_fs.obj : gui_at_fs.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_at_fs.obj : gui_at_fs.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h gui_at_sb.h
-[.$(DEST)]pty.obj : pty.c vim.h [.$(DEST)]config.h feature.h os_unix.h   \
+[.$(DEST)]pty.obj : pty.c mnv.h [.$(DEST)]config.h feature.h os_unix.h   \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h gui.h beval.h \
  option.h ex_cmds.h proto.h errors.h globals.h
-[.$(DEST)]if_perl.obj : [.auto]if_perl.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_perl.obj : [.auto]if_perl.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]if_python.obj : if_python.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_python.obj : if_python.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]if_tcl.obj : if_tcl.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_tcl.obj : if_tcl.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]if_ruby.obj : if_ruby.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_ruby.obj : if_ruby.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]if_lua.obj : if_lua.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]if_lua.obj : if_lua.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  errors.h globals.h version.h
-[.$(DEST)]beval.obj : beval.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]beval.obj : beval.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]gui_beval.obj : gui_beval.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]gui_beval.obj : gui_beval.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h
-[.$(DEST)]netbeans.obj : netbeans.c vim.h [.$(DEST)]config.h feature.h os_unix.h \
+[.$(DEST)]netbeans.obj : netbeans.c mnv.h [.$(DEST)]config.h feature.h os_unix.h \
  ascii.h keymap.h termdefs.h macros.h structs.h regexp.h \
  gui.h beval.h option.h ex_cmds.h proto.h \
  errors.h globals.h version.h
-[.$(DEST)]gui_xmdlg.obj : gui_xmdlg.c [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]gui_xmebw.obj : gui_xmebw.c [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]xdiffi.obj : [.xdiff]xdiffi.c [.xdiff]xinclude.h [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]xemit.obj : [.xdiff]xemit.c [.xdiff]xinclude.h [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]xprepare.obj : [.xdiff]xprepare.c [.xdiff]xinclude.h [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]xutils.obj : [.xdiff]xutils.c [.xdiff]xinclude.h [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]xhistogram.obj : [.xdiff]xhistogram.c [.xdiff]xinclude.h [.$(DEST)]config.h vim.h feature.h os_unix.h
-[.$(DEST)]xpatience.obj : [.xdiff]xpatience.c [.xdiff]xinclude.h [.$(DEST)]config.h vim.h feature.h os_unix.h
+[.$(DEST)]gui_xmdlg.obj : gui_xmdlg.c [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]gui_xmebw.obj : gui_xmebw.c [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]xdiffi.obj : [.xdiff]xdiffi.c [.xdiff]xinclude.h [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]xemit.obj : [.xdiff]xemit.c [.xdiff]xinclude.h [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]xprepare.obj : [.xdiff]xprepare.c [.xdiff]xinclude.h [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]xutils.obj : [.xdiff]xutils.c [.xdiff]xinclude.h [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]xhistogram.obj : [.xdiff]xhistogram.c [.xdiff]xinclude.h [.$(DEST)]config.h mnv.h feature.h os_unix.h
+[.$(DEST)]xpatience.obj : [.xdiff]xpatience.c [.xdiff]xinclude.h [.$(DEST)]config.h mnv.h feature.h os_unix.h

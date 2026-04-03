@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *				GUI support by Olaf "Rhialto" Seibert
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  *
  * Haiku GUI.
  *
@@ -24,28 +24,28 @@ struct BMenu;
 struct BMenuItem;
 struct BPictureButton;
 
-// Our own Vim-related classes
+// Our own MNV-related classes
 
-struct VimApp;
-struct VimFormView;
-struct VimTextAreaView;
-struct VimWindow;
-struct VimScrollBar;
+struct MNVApp;
+struct MNVFormView;
+struct MNVTextAreaView;
+struct MNVWindow;
+struct MNVScrollBar;
 
 // Locking functions
 
-extern int vim_lock_screen();
-extern void vim_unlock_screen();
+extern int mnv_lock_screen();
+extern void mnv_unlock_screen();
 
 #ifndef __cplusplus
 
 typedef struct BMenu BMenu;
 typedef struct BMenuItem BMenuItem;
 typedef struct BPictureButton BPictureButton;
-typedef struct VimWindow VimWindow;
-typedef struct VimFormView VimFormView;
-typedef struct VimTextAreaView VimTextAreaView;
-typedef struct VimApp VimApp;
-typedef struct VimScrollBar VimScrollBar;
+typedef struct MNVWindow MNVWindow;
+typedef struct MNVFormView MNVFormView;
+typedef struct MNVTextAreaView MNVTextAreaView;
+typedef struct MNVApp MNVApp;
+typedef struct MNVScrollBar MNVScrollBar;
 
 #endif

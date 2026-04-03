@@ -81,15 +81,15 @@ int iconv_enabled(int verbose);
 void iconv_end(void);
 void f_getimstatus(typval_T *argvars, typval_T *rettv);
 void f_iconv(typval_T *argvars, typval_T *rettv);
-int convert_setup(vimconv_T *vcp, char_u *from, char_u *to);
-int convert_setup_ext(vimconv_T *vcp, char_u *from, int from_unicode_is_utf8, char_u *to, int to_unicode_is_utf8);
+int convert_setup(mnvconv_T *vcp, char_u *from, char_u *to);
+int convert_setup_ext(mnvconv_T *vcp, char_u *from, int from_unicode_is_utf8, char_u *to, int to_unicode_is_utf8);
 int convert_input(char_u *ptr, int len, int maxlen);
 int convert_input_safe(char_u *ptr, int len, int maxlen, char_u **restp, int *restlenp);
-char_u *string_convert(vimconv_T *vcp, char_u *ptr, int *lenp);
-char_u *string_convert_ext(vimconv_T *vcp, char_u *ptr, int *lenp, int *unconvlenp);
+char_u *string_convert(mnvconv_T *vcp, char_u *ptr, int *lenp);
+char_u *string_convert_ext(mnvconv_T *vcp, char_u *ptr, int *lenp, int *unconvlenp);
 int get_cellwidth(int c);
 void f_setcellwidths(typval_T *argvars, typval_T *rettv);
 void f_getcellwidths(typval_T *argvars, typval_T *rettv);
 void f_charclass(typval_T *argvars, typval_T *rettv);
 char_u *get_encoding_name(expand_T *xp, int idx);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

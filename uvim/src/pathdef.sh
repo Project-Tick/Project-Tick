@@ -8,4 +8,4 @@ if test -s auto/link.sed; then
   rm -f auto/pathdef.tmp
 fi
 
-# vim:set sw=2 et:
+# mnv:set sw=2 et:

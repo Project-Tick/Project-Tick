@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * tabpanel.c:
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_TABPANEL)
 
@@ -79,7 +79,7 @@ tabpanelopt_changed(void)
 	    else
 		return FAIL;
 	}
-	else if (STRNCMP(p, "columns:", 8) == 0 && VIM_ISDIGIT(p[8]))
+	else if (STRNCMP(p, "columns:", 8) == 0 && MNV_ISDIGIT(p[8]))
 	{
 	    p += 8;
 	    new_columns = getdigits(&p);
@@ -273,8 +273,8 @@ screen_puts_len_for_tabpanel(
 	temp = transstr(buf);
 	if (temp != NULL)
 	{
-	    vim_strncpy(buf, temp, sizeof(buf) - 1);
-	    vim_free(temp);
+	    mnv_strncpy(buf, temp, sizeof(buf) - 1);
+	    mnv_free(temp);
 	}
 
 	if (has_mbyte)
@@ -333,7 +333,7 @@ draw_tabpanel_default(int tplmode, tabpanel_T *pargs)
     {
 	if (wincount > 1)
 	{
-	    vim_snprintf((char *)NameBuff, MAXPATHL, "%d", wincount);
+	    mnv_snprintf((char *)NameBuff, MAXPATHL, "%d", wincount);
 	    len = (int)STRLEN(NameBuff);
 	    screen_puts_len_for_tabpanel(tplmode, NameBuff, len,
 #if defined(FEAT_SYN_HL)
@@ -486,7 +486,7 @@ do_by_tplmode(
 	    args.wp = tp->tp_firstwin;
 	}
 
-	char_u	*usefmt = vim_strsave(p_tpl);
+	char_u	*usefmt = mnv_strsave(p_tpl);
 
 	if (usefmt != NULL && *usefmt != NUL)
 	{
@@ -530,7 +530,7 @@ do_by_tplmode(
 	    draw_tabpanel_default(tplmode, &args);
 	}
 
-	vim_free(usefmt);
+	mnv_free(usefmt);
 	do_unlet((char_u *)"g:actual_curtabpage", TRUE);
 
 	tp = tp->tp_next;

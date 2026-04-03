@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -13,7 +13,7 @@
  * lower level.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * Get the 'listchars' "extends" characters to use for "wp", or NUL if it
@@ -248,7 +248,7 @@ handle_foldcolumn(win_T *wp, winlinevars_T *wlv)
 	return;
 
     // Allocate a buffer, "wlv->extra[]" may already be in use.
-    vim_free(wlv->p_extra_free);
+    mnv_free(wlv->p_extra_free);
     wlv->p_extra_free = alloc(MAX_MCO * fdc + 1);
     if (wlv->p_extra_free == NULL)
 	return;
@@ -313,7 +313,7 @@ get_sign_display_info(
 	    if (nrcol)
 	    {
 		wlv->c_extra = NUL;
-		wlv->n_extra = vim_snprintf((char *)wlv->extra, sizeof(wlv->extra),
+		wlv->n_extra = mnv_snprintf((char *)wlv->extra, sizeof(wlv->extra),
 						"%-*c ", number_width(wp), SIGN_BYTE);
 		wlv->p_extra = wlv->extra;
 	    }
@@ -326,7 +326,7 @@ get_sign_display_info(
 		if (nrcol)
 		{
 		    wlv->c_extra = NUL;
-		    wlv->n_extra = vim_snprintf((char *)wlv->extra, sizeof(wlv->extra),
+		    wlv->n_extra = mnv_snprintf((char *)wlv->extra, sizeof(wlv->extra),
 						"%-*c ", number_width(wp), MULTISIGN_BYTE);
 		    wlv->p_extra = wlv->extra;
 		}
@@ -348,9 +348,9 @@ get_sign_display_info(
 		    {
 			int width = number_width(wp) - 2;
 
-			vim_memset(wlv->extra, ' ', width);
+			mnv_memset(wlv->extra, ' ', width);
 			wlv->n_extra = width;
-			wlv->n_extra += vim_snprintf((char *)wlv->extra + width,
+			wlv->n_extra += mnv_snprintf((char *)wlv->extra + width,
 				  sizeof(wlv->extra) - width, "%s ", wlv->p_extra);
 			wlv->p_extra = wlv->extra;
 		    }
@@ -382,7 +382,7 @@ handle_lnum_col(
 	int		sign_present UNUSED,
 	int		num_attr UNUSED)
 {
-    int has_cpo_n = vim_strchr(p_cpo, CPO_NUMCOL) != NULL;
+    int has_cpo_n = mnv_strchr(p_cpo, CPO_NUMCOL) != NULL;
     int lnum_row = wlv->startrow + wlv->filler_lines
 #ifdef FEAT_PROP_POPUP
 		      + wlv->text_prop_above_count
@@ -434,7 +434,7 @@ handle_lnum_col(
 		  }
 	      }
 
-	      vim_snprintf((char *)wlv->extra, sizeof(wlv->extra), fmt, number_width(wp), num);
+	      mnv_snprintf((char *)wlv->extra, sizeof(wlv->extra), fmt, number_width(wp), num);
 	      if (wp->w_skipcol > 0 && wlv->startrow == 0)
 		  for (wlv->p_extra = wlv->extra; *wlv->p_extra == ' ';
 			  ++wlv->p_extra)
@@ -693,7 +693,7 @@ text_prop_position(
     int	    after = 0;		// spaces after the text
     int	    n_used = *n_extra;
     char_u  *l = NULL;
-    int	    strsize = vim_strsize(*p_extra);
+    int	    strsize = mnv_strsize(*p_extra);
     int	    cells = wrap ? strsize : textprop_size_after_trunc(wp,
 			     tp->tp_flags, before, padding, *p_extra, &n_used);
 
@@ -759,14 +759,14 @@ text_prop_position(
 
 	    if (n_attr != NULL)
 	    {
-		vim_memset(l, ' ', before);
+		mnv_memset(l, ' ', before);
 		off += before;
 		if (padding > 0)
 		{
-		    vim_memset(l + off, ' ', padding);
+		    mnv_memset(l + off, ' ', padding);
 		    off += padding;
 		}
-		vim_strncpy(l + off, *p_extra, n_used);
+		mnv_strncpy(l + off, *p_extra, n_used);
 		off += n_used;
 	    }
 	    else
@@ -790,7 +790,7 @@ text_prop_position(
 			STRCPY(buf, "…");
 			if (!enc_utf8)
 			{
-			    vimconv_T	vc;
+			    mnvconv_T	vc;
 
 			    vc.vc_type = CONV_NONE;
 			    convert_setup(&vc, (char_u *)"utf-8", p_enc);
@@ -812,7 +812,7 @@ text_prop_position(
 			STRCPY(lp, cp);
 			n_used = lp - l + 3 - before - padding;
 			if (cp != buf)
-			    vim_free(cp);
+			    mnv_free(cp);
 		    }
 		    else
 			// change last character to '>'
@@ -820,7 +820,7 @@ text_prop_position(
 		}
 		else if (after > 0)
 		{
-		    vim_memset(l + off, ' ', after);
+		    mnv_memset(l + off, ' ', after);
 		    l[off + after] = NUL;
 		}
 
@@ -884,7 +884,7 @@ wlv_screen_line(win_T *wp, winlinevars_T *wlv, int clear_end)
 	if (wp->w_p_nu && wp->w_p_rnu)
 	    // Do not overwrite the line number, change "123 text" to
 	    // "123<<<xt".
-	    while (skip < wp->w_width && VIM_ISDIGIT(ScreenLines[off]))
+	    while (skip < wp->w_width && MNV_ISDIGIT(ScreenLines[off]))
 	    {
 		++off;
 		++skip;
@@ -1059,7 +1059,7 @@ win_line_start(win_T *wp UNUSED, winlinevars_T *wlv, int save_extra)
 	wlv->draw_state = WL_START;
 	wlv->saved_n_extra = wlv->n_extra;
 	wlv->saved_p_extra = wlv->p_extra;
-	vim_free(wlv->saved_p_extra_free);
+	mnv_free(wlv->saved_p_extra_free);
 	wlv->saved_p_extra_free = wlv->p_extra_free;
 	wlv->p_extra_free = NULL;
 	wlv->saved_extra_attr = wlv->extra_attr;
@@ -1101,7 +1101,7 @@ win_line_continue(winlinevars_T *wlv)
 	wlv->c_extra = wlv->saved_c_extra;
 	wlv->c_final = wlv->saved_c_final;
 	wlv->p_extra = wlv->saved_p_extra;
-	vim_free(wlv->p_extra_free);
+	mnv_free(wlv->p_extra_free);
 	wlv->p_extra_free = wlv->saved_p_extra_free;
 	wlv->saved_p_extra_free = NULL;
 	wlv->extra_attr = wlv->saved_extra_attr;
@@ -1589,7 +1589,7 @@ win_line(
 
 	// Get the start of the next line, so that words that wrap to the
 	// next line are found too: "et<line-break>al.".
-	// Trick: skip a few chars for C/shell/Vim comments
+	// Trick: skip a few chars for C/shell/MNV comments
 	nextline[SPWORDLEN] = NUL;
 	if (lnum < wp->w_buffer->b_ml.ml_line_count)
 	{
@@ -1656,7 +1656,7 @@ win_line(
 	if (wp->w_lcs_chars.trail)
 	{
 	    trailcol = ml_get_buf_len(wp->w_buffer, lnum);
-	    while (trailcol > (colnr_T)0 && VIM_ISWHITE(ptr[trailcol - 1]))
+	    while (trailcol > (colnr_T)0 && MNV_ISWHITE(ptr[trailcol - 1]))
 		--trailcol;
 	    trailcol += (colnr_T)(ptr - line);
 	}
@@ -1665,7 +1665,7 @@ win_line(
 	    wp->w_lcs_chars.leadtab1 != NUL)
 	{
 	    leadcol = 0;
-	    while (VIM_ISWHITE(ptr[leadcol]))
+	    while (MNV_ISWHITE(ptr[leadcol]))
 		++leadcol;
 	    if (ptr[leadcol] == NUL)
 		// in a line full of spaces all of them are treated as trailing
@@ -1704,7 +1704,7 @@ win_line(
 	// Allocate an array for the indexes.
 	text_prop_idxs = ALLOC_MULT(int, text_prop_count);
 	if (text_prop_idxs == NULL)
-	    VIM_CLEAR(text_props);
+	    MNV_CLEAR(text_props);
 
 	if (text_props != NULL)
 	{
@@ -1747,8 +1747,8 @@ win_line(
 	wlv.row += wlv.text_prop_above_count;
 	if (wlv.row >= endrow)
 	{
-	    vim_free(text_props);
-	    vim_free(text_prop_idxs);
+	    mnv_free(text_props);
+	    mnv_free(text_prop_idxs);
 	    return wlv.row;
 	}
 	wlv.screen_row += wlv.text_prop_above_count;
@@ -2320,12 +2320,12 @@ win_line(
 				if (wlv.p_extra != prev_p_extra)
 				{
 				    // wlv.p_extra was allocated
-				    vim_free(p_extra_free2);
+				    mnv_free(p_extra_free2);
 				    p_extra_free2 = wlv.p_extra;
 				}
 
 				if (above)
-				    wlv.vcol_off_tp += vim_strsize(wlv.p_extra);
+				    wlv.vcol_off_tp += mnv_strsize(wlv.p_extra);
 
 				if (lcs_eol_one < 0
 					&& wp->w_p_wrap
@@ -2848,7 +2848,7 @@ win_line(
 
 		    if ((mb_l == 1 && c >= 0x80)
 			    || (mb_l >= 1 && mb_c == 0)
-			    || (mb_l > 1 && (!vim_isprintc(mb_c))))
+			    || (mb_l > 1 && (!mnv_isprintc(mb_c))))
 		    {
 			// Illegal UTF-8 byte: display as <xx>.
 			// Non-BMP character : display as ? or fullwidth ?.
@@ -3096,13 +3096,13 @@ win_line(
 		// So only allow to linebreak, once we have found chars not in
 		// 'breakat' in the line.
 		if ( wp->w_p_lbr && !wlv.need_lbr && c != NUL &&
-			!VIM_ISBREAK((int)*ptr))
+			!MNV_ISBREAK((int)*ptr))
 		    wlv.need_lbr = TRUE;
 #endif
 #ifdef FEAT_LINEBREAK
 		// Found last space before word: check for line break.
 		if (wp->w_p_lbr && c0 == c && wlv.need_lbr
-				  && VIM_ISBREAK(c) && !VIM_ISBREAK((int)*ptr))
+				  && MNV_ISBREAK(c) && !MNV_ISBREAK((int)*ptr))
 		{
 		    int	    mb_off = has_mbyte ? (*mb_head_off)(line, ptr - 1)
 									   : 0;
@@ -3145,7 +3145,7 @@ win_line(
 		    if (wlv.n_extra > 0 && c != TAB)
 			in_linebreak = TRUE;
 # endif
-		    if (VIM_ISWHITE(c))
+		    if (MNV_ISWHITE(c))
 		    {
 # ifdef FEAT_CONCEAL
 			if (c == TAB)
@@ -3251,7 +3251,7 @@ win_line(
 	    }
 
 	    // Handling of non-printable characters.
-	    if (!vim_isprintc(c))
+	    if (!mnv_isprintc(c))
 	    {
 		// when getting a character from the file, we may have to
 		// turn it into something else on the way to putting it
@@ -3333,9 +3333,9 @@ win_line(
 				wlv.n_extra = 0;
 			    else
 			    {
-				vim_memset(p, ' ', len);
+				mnv_memset(p, ' ', len);
 				p[len] = NUL;
-				vim_free(wlv.p_extra_free);
+				mnv_free(wlv.p_extra_free);
 				wlv.p_extra_free = p;
 				for (i = 0; i < tab_len; i++)
 				{
@@ -3505,10 +3505,10 @@ win_line(
 			    wlv.n_extra = 0;
 			else
 			{
-			    vim_memset(p, ' ', wlv.n_extra);
+			    mnv_memset(p, ' ', wlv.n_extra);
 			    STRNCPY(p, wlv.p_extra + 1, STRLEN(wlv.p_extra) - 1);
 			    p[wlv.n_extra] = NUL;
-			    vim_free(wlv.p_extra_free);
+			    mnv_free(wlv.p_extra_free);
 			    wlv.p_extra_free = wlv.p_extra = p;
 			}
 		    }
@@ -3633,7 +3633,7 @@ win_line(
 						    || conceal_cursor_line(wp))
 		&& ((syntax_flags & HL_CONCEAL) != 0 || has_match_conc > 0)
 		&& !(lnum_in_visual_area
-				    && vim_strchr(wp->w_p_cocu, 'v') == NULL))
+				    && mnv_strchr(wp->w_p_cocu, 'v') == NULL))
 	    {
 		int syntax_conceal = (syntax_flags & HL_CONCEAL) != 0;
 		wlv.char_attr = conceal_attr;
@@ -3767,7 +3767,7 @@ win_line(
 
 #if defined(FEAT_XIM) && defined(FEAT_GUI_GTK)
 	// XIM don't send preedit_start and preedit_end, but they send
-	// preedit_changed and commit.  Thus Vim can't set "im_is_active", use
+	// preedit_changed and commit.  Thus MNV can't set "im_is_active", use
 	// im_is_preediting() here.
 	if (p_imst == IM_ON_THE_SPOT
 		&& xic != NULL
@@ -4501,12 +4501,12 @@ win_line(
 
     }	// for every character in the line
 #ifdef FEAT_PROP_POPUP
-    vim_free(text_props);
-    vim_free(text_prop_idxs);
-    vim_free(p_extra_free2);
+    mnv_free(text_props);
+    mnv_free(text_prop_idxs);
+    mnv_free(p_extra_free2);
 #endif
 
-    vim_free(wlv.p_extra_free);
-    vim_free(wlv.saved_p_extra_free);
+    mnv_free(wlv.p_extra_free);
+    mnv_free(wlv.saved_p_extra_free);
     return wlv.row;
 }

@@ -1,19 +1,19 @@
-*arabic.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*arabic.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Nadim Shaikli
+		  MNV REFERENCE MANUAL	  by Nadim Shaikli
 
 
-Arabic Language support (options & mappings) for Vim		*Arabic*
+Arabic Language support (options & mappings) for MNV		*Arabic*
 
 
 								*E800*
 In order to use right-to-left and Arabic mapping support, it is
-necessary to compile Vim with the |+arabic| feature.
+necessary to compile MNV with the |+arabic| feature.
 
 These functions have been created by Nadim Shaikli <nadim-at-arabeyes.org>
 
-It is best to view this file with these settings within Vim's GUI: >
+It is best to view this file with these settings within MNV's GUI: >
 
 	:set encoding=utf-8
 	:set arabicshape
@@ -41,7 +41,7 @@ the user interface remains the standard Vi interface.
 
 Highlights
 ----------
-o  Editing left-to-right files as in the original Vim hasn't changed.
+o  Editing left-to-right files as in the original MNV hasn't changed.
 
 o  Viewing and editing files in right-to-left windows.	 File
    orientation is per window, so it is possible to view the same
@@ -51,7 +51,7 @@ o  No special terminal with right-to-left capabilities is required.
    The right-to-left changes are completely hardware independent.
    Only Arabic fonts are necessary.
 
-o  Compatible with the original Vim.   Almost all features work in
+o  Compatible with the original MNV.   Almost all features work in
    right-to-left mode (there are liable to be bugs).
 
 o  Changing keyboard mapping and reverse insert modes using a single
@@ -65,14 +65,14 @@ o  While in Arabic mode, numbers are entered from left to right.  Upon
 
 o  Arabic keymapping on the command line in reverse insert mode.
 
-o  Proper Bidirectional functionality is possible given Vim is
+o  Proper Bidirectional functionality is possible given MNV is
    started within a Bidi capable terminal emulator.
 
 
 Arabic Fonts						*arabicfonts*
 ------------
 
-Vim requires monospaced fonts of which there are many out there.
+MNV requires monospaced fonts of which there are many out there.
 Arabic requires ISO-8859-6 as well as Presentation Form-B fonts
 (without Form-B, Arabic will _NOT_ be usable).	It is highly
 recommended that users search for so-called 'ISO-10646-1' fonts.
@@ -95,13 +95,13 @@ o  Installation of fonts for X Window systems (Unix/Linux)
 
 Usage
 -----
-Prior to the actual usage of Arabic within Vim, a number of settings
+Prior to the actual usage of Arabic within MNV, a number of settings
 need to be accounted for and invoked.
 
 o  Setting the Arabic fonts
 
-   +  For Vim GUI set the 'guifont' to your_ARABIC_FONT.  This is done
-      by entering the following command in the Vim window.
+   +  For MNV GUI set the 'guifont' to your_ARABIC_FONT.  This is done
+      by entering the following command in the MNV window.
 >
 		:set guifont=your_ARABIC_FONT
 <
@@ -109,12 +109,12 @@ o  Setting the Arabic fonts
 	    font name akin to that used in Linux/Unix systems.
 	    (e.g. -misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1)
 
-      You can append the 'guifont' set command to your .vimrc file
+      You can append the 'guifont' set command to your .mnvrc file
       in order to get the same above noted results.  In other words,
-      you can include ':set guifont=your_ARABIC_FONT' to your .vimrc
+      you can include ':set guifont=your_ARABIC_FONT' to your .mnvrc
       file.
 
-   +  Under the X Window environment, you can also start Vim with
+   +  Under the X Window environment, you can also start MNV with
       '-fn your_ARABIC_FONT' option.
 
 o  Setting the appropriate character Encoding
@@ -123,9 +123,9 @@ o  Setting the appropriate character Encoding
 >
 		:set encoding=utf-8
 <
-   to your .vimrc file (entering the command manually into your Vim
+   to your .mnvrc file (entering the command manually into your MNV
    window is highly discouraged).  In short, include ':set
-   encoding=utf-8' to your .vimrc file.
+   encoding=utf-8' to your .mnvrc file.
 
    Attempts to use Arabic without UTF-8 will result the following
    warning message,
@@ -136,11 +136,11 @@ o  Setting the appropriate character Encoding
 o  Enable Arabic settings [short-cut]
 
    In order to simplify and streamline things, you can either invoke
-   Vim with the command-line option,
+   MNV with the command-line option,
 
-     % vim -A my_utf8_arabic_file ...
+     % mnv -A my_utf8_arabic_file ...
 
-   or enable 'arabic' via the following command within Vim
+   or enable 'arabic' via the following command within MNV
 >
 		:set arabic
 <
@@ -154,7 +154,7 @@ o  Enable Arabic settings [short-cut]
      4. enable rightleftcmd mode (affecting the command-line)
      5. enable arabicshape  mode (do visual character alterations)
 
-   You may also append the command to your .vimrc file and simply
+   You may also append the command to your .mnvrc file and simply
    include ':set arabic' to it.
 
    You are also capable of disabling Arabic support via
@@ -195,9 +195,9 @@ o  Enable Arabic settings [short-cut]
 >
 		:set keymap=arabic
 <
-      in your Vim window.  You can also append the 'keymap' set command to
-      your .vimrc file.  In other words, you can include ':set keymap=arabic'
-      to your .vimrc file.
+      in your MNV window.  You can also append the 'keymap' set command to
+      your .mnvrc file.  In other words, you can include ':set keymap=arabic'
+      to your .mnvrc file.
 
       To turn toggle (or switch) your keymapping between Arabic and the
       default mapping (English), it is advised that users use the 'CTRL-^'
@@ -208,7 +208,7 @@ o  Enable Arabic settings [short-cut]
 
    +  Arabic deletion of a combined pair character
 
-      By default Vim has the 'delcombine' option disabled.  This option
+      By default MNV has the 'delcombine' option disabled.  This option
       allows the deletion of ALEF in a LAM_ALEF (LAA) combined character
       and still retain the LAM (i.e. it reverts to treating the combined
       character as its natural two characters form -- this also pertains
@@ -217,13 +217,13 @@ o  Enable Arabic settings [short-cut]
 >
 		:set delcombine
 <
-      in our Vim window.  You can also append the 'delcombine' set command
-      to your .vimrc file.  In other words, you can include ':set delcombine'
-      to your .vimrc file.
+      in our MNV window.  You can also append the 'delcombine' set command
+      to your .mnvrc file.  In other words, you can include ':set delcombine'
+      to your .mnvrc file.
 
    +  Arabic right-to-left Mode
 
-      By default Vim starts in Left-to-right mode.  'rightleft' is the
+      By default MNV starts in Left-to-right mode.  'rightleft' is the
       command that allows one to alter a window's orientation - that can
       be accomplished via,
 
@@ -233,7 +233,7 @@ o  Enable Arabic settings [short-cut]
       - While in Left-to-right mode, enter ':set rl' in the command line
 	('rl' is the abbreviation for rightleft).
 
-      - Put the ':set rl' line in your '.vimrc' file to start Vim in
+      - Put the ':set rl' line in your '.mnvrc' file to start MNV in
 	right-to-left mode permanently.
 
    +  Arabic right-to-left command-line Mode
@@ -259,15 +259,15 @@ o  Enable Arabic settings [short-cut]
 >
 		:set arabicshape
 <
-      in our Vim window.  You can also append the 'arabicshape' set
-      command to your .vimrc file.  In other words, you can include
-      ':set arabicshape' to your .vimrc file.
+      in our MNV window.  You can also append the 'arabicshape' set
+      command to your .mnvrc file.  In other words, you can include
+      ':set arabicshape' to your .mnvrc file.
 
 
 Keymap/Keyboard						*arabickeymap*
 ---------------
 
-The character/letter encoding used in Vim is the standard UTF-8.
+The character/letter encoding used in MNV is the standard UTF-8.
 It is widely discouraged that any other encoding be used or even
 attempted.
 
@@ -300,7 +300,7 @@ o  Keyboard
 Restrictions
 ------------
 
-o  Vim in its GUI form does not currently support Bi-directionality
+o  MNV in its GUI form does not currently support Bi-directionality
    (i.e. the ability to see both Arabic and Latin intermixed within
    the same line).
 
@@ -325,4 +325,4 @@ There is one known minor bug,
 
 No other bugs are known to exist.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

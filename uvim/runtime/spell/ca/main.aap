@@ -1,10 +1,10 @@
-# Aap recipe for Catelan (Spain) Vim spell files.
+# Aap recipe for Catelan (Spain) MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = ca_ES.aff ca_ES.dic
@@ -13,11 +13,11 @@ all: $SPELLDIR/ca.latin1.spl $SPELLDIR/ca.utf-8.spl ../README_ca.txt
 
 $SPELLDIR/ca.latin1.spl : $FILES
         :sys env LANG=ca_ES.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/ca ca_ES" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/ca ca_ES" -c q
 
 $SPELLDIR/ca.utf-8.spl : $FILES
         :sys env LANG=ca_ES.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/ca ca_ES" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/ca ca_ES" -c q
 
 ../README_ca.txt : README_ca_ES.txt
         :copy $source $target
@@ -36,8 +36,8 @@ ca_ES.aff ca_ES.dic: {buildcheck=}
         :fetch ca_ES.zip
         :sys $UNZIP ca_ES.zip
         :delete ca_ES.zip
-        :sys $VIM ca_ES.aff -u NONE -c "set ff=unix" -c "update" -c q
-        :sys $VIM ca_ES.dic -u NONE -c "set ff=unix" -c "update" -c q
+        :sys $MNV ca_ES.aff -u NONE -c "set ff=unix" -c "update" -c q
+        :sys $MNV ca_ES.dic -u NONE -c "set ff=unix" -c "update" -c q
         @if not os.path.exists('ca_ES.orig.aff'):
             :copy ca_ES.aff ca_ES.orig.aff
         @if not os.path.exists('ca_ES.orig.dic'):
@@ -47,7 +47,7 @@ ca_ES.aff ca_ES.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -78,4 +78,4 @@ check:
             :delete ca_ES.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

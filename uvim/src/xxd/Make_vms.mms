@@ -19,7 +19,7 @@
 ######################################################################
 # Configuration section.
 ######################################################################
-# Uncomment if want a debug version. Resulting executable is DVIM.EXE
+# Uncomment if want a debug version. Resulting executable is DMNV.EXE
 ######################################################################
 # DEBUG = YES
 

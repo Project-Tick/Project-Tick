@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 // Use PLURAL_MSG() for messages that are passed to ngettext(), so that the
@@ -29,8 +29,8 @@ EXTERN char e_backslash_should_be_followed_by[]
 	INIT(= N_("E10: \\ should be followed by /, ? or &"));
 EXTERN char e_invalid_in_cmdline_window[]
 	INIT(= N_("E11: Invalid in command-line window; :q<CR> closes the window"));
-EXTERN char e_command_not_allowed_from_vimrc_in_current_dir_or_tag_search[]
-	INIT(= N_("E12: Command not allowed from exrc/vimrc in current dir or tag search"));
+EXTERN char e_command_not_allowed_from_mnvrc_in_current_dir_or_tag_search[]
+	INIT(= N_("E12: Command not allowed from exrc/mnvrc in current dir or tag search"));
 EXTERN char e_file_exists[]
 	INIT(= N_("E13: File exists (add ! to override)"));
 // E14 unused
@@ -63,7 +63,7 @@ EXTERN char e_no_alternate_file[]
 	INIT(= N_("E23: No alternate file"));
 EXTERN char e_no_such_abbreviation[]
 	INIT(= N_("E24: No such abbreviation"));
-#if !defined(FEAT_GUI) || defined(VIMDLL)
+#if !defined(FEAT_GUI) || defined(MNVDLL)
 EXTERN char e_gui_cannot_be_used_not_enabled_at_compile_time[]
 	INIT(= N_("E25: GUI cannot be used: Not enabled at compile time"));
 #endif
@@ -321,13 +321,13 @@ EXTERN char e_cannot_move_range_of_lines_into_itself[]
 	INIT(= N_("E134: Cannot move a range of lines into itself"));
 EXTERN char e_filter_autocommands_must_not_change_current_buffer[]
 	INIT(= N_("E135: *Filter* Autocommands must not change current buffer"));
-#if defined(FEAT_VIMINFO)
-EXTERN char e_viminfo_too_many_errors_skipping_rest_of_file[]
-	INIT(= N_("E136: viminfo: Too many errors, skipping rest of file"));
-EXTERN char e_viminfo_file_is_not_writable_str[]
-	INIT(= N_("E137: Viminfo file is not writable: %s"));
-EXTERN char e_cant_write_viminfo_file_str[]
-	INIT(= N_("E138: Can't write viminfo file %s!"));
+#if defined(FEAT_MNVINFO)
+EXTERN char e_mnvinfo_too_many_errors_skipping_rest_of_file[]
+	INIT(= N_("E136: mnvinfo: Too many errors, skipping rest of file"));
+EXTERN char e_mnvinfo_file_is_not_writable_str[]
+	INIT(= N_("E137: MNVinfo file is not writable: %s"));
+EXTERN char e_cant_write_mnvinfo_file_str[]
+	INIT(= N_("E138: Can't write mnvinfo file %s!"));
 #endif
 EXTERN char e_file_is_loaded_in_another_buffer[]
 	INIT(= N_("E139: File is loaded in another buffer"));
@@ -341,8 +341,8 @@ EXTERN char e_autocommands_unexpectedly_deleted_new_buffer_str[]
 	INIT(= N_("E143: Autocommands unexpectedly deleted new buffer %s"));
 EXTERN char e_non_numeric_argument_to_z[]
 	INIT(= N_("E144: Non-numeric argument to :z"));
-EXTERN char e_shell_commands_and_some_functionality_not_allowed_in_rvim[]
-	INIT(= N_("E145: Shell commands and some functionality not allowed in rvim"));
+EXTERN char e_shell_commands_and_some_functionality_not_allowed_in_rmnv[]
+	INIT(= N_("E145: Shell commands and some functionality not allowed in rmnv"));
 EXTERN char e_regular_expressions_cant_be_delimited_by_letters[]
 	INIT(= N_("E146: Regular expressions can't be delimited by letters"));
 EXTERN char e_cannot_do_global_recursive_with_range[]
@@ -461,9 +461,9 @@ EXTERN char e_str_not_inside_function[]
 #endif
 EXTERN char e_no_alternate_file_name_to_substitute_for_hash[]
 	INIT(= N_("E194: No alternate file name to substitute for '#'"));
-#ifdef FEAT_VIMINFO
-EXTERN char e_cannot_open_viminfo_file_for_reading[]
-	INIT(= N_("E195: Cannot open viminfo file for reading"));
+#ifdef FEAT_MNVINFO
+EXTERN char e_cannot_open_mnvinfo_file_for_reading[]
+	INIT(= N_("E195: Cannot open mnvinfo file for reading"));
 #endif
 #ifndef FEAT_DIGRAPHS
 EXTERN char e_no_digraphs_version[]
@@ -614,8 +614,8 @@ EXTERN char e_fonts_for_the_following_charsets_are_missing_in_fontset[]
 	INIT(= N_("E250: Fonts for the following charsets are missing in fontset %s:"));
 #endif
 #ifdef FEAT_CLIENTSERVER
-EXTERN char e_vim_instance_registry_property_is_badly_formed_deleted[]
-	INIT(= N_("E251: VIM instance registry property is badly formed.  Deleted!"));
+EXTERN char e_mnv_instance_registry_property_is_badly_formed_deleted[]
+	INIT(= N_("E251: MNV instance registry property is badly formed.  Deleted!"));
 #endif
 #ifdef FEAT_GUI_X11
 EXTERN char e_fontsent_name_str_font_str_is_not_fixed_width[]
@@ -709,7 +709,7 @@ EXTERN char e_sorry_plusplusshell_not_supported_on_this_system[]
 #endif
 #ifdef FEAT_TCL
 EXTERN char e_tcl_fatal_error_reflist_corrupt_please_report_this[]
-	INIT(= "E280: TCL FATAL ERROR: reflist corrupt!? Please report this to vim-dev@vim.org");
+	INIT(= "E280: TCL FATAL ERROR: reflist corrupt!? Please report this to mnv-dev@mnv.org");
 #endif
 // E281 unused
 EXTERN char e_cannot_read_from_str_2[]
@@ -775,8 +775,8 @@ EXTERN char e_no_swap_file_found_for_str[]
 	INIT(= N_("E305: No swap file found for %s"));
 EXTERN char e_cannot_open_str[]
 	INIT(= N_("E306: Cannot open %s"));
-EXTERN char e_str_does_not_look_like_vim_swap_file[]
-	INIT(= N_("E307: %s does not look like a Vim swap file"));
+EXTERN char e_str_does_not_look_like_mnv_swap_file[]
+	INIT(= N_("E307: %s does not look like a MNV swap file"));
 EXTERN char e_warning_original_file_may_have_been_changed[]
 	INIT(= N_("E308: Warning: Original file may have been changed"));
 EXTERN char e_unable_to_read_block_one_from_str[]
@@ -1333,7 +1333,7 @@ EXTERN char e_missing_colon[]
 	INIT(= N_("E524: Missing colon"));
 EXTERN char e_zero_length_string[]
 	INIT(= N_("E525: Zero length string"));
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 EXTERN char e_missing_number_after_angle_str_angle[]
 	INIT(= N_("E526: Missing number after <%s>"));
 EXTERN char e_missing_comma[]
@@ -1465,7 +1465,7 @@ EXTERN char e_exit_code_nr[]
 EXTERN char e_invalid_server_id_used_str[]
 	INIT(= N_("E573: Invalid server id used: %s"));
 #endif
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 EXTERN char e_unknown_register_type_nr[]
 	INIT(= N_("E574: Unknown register type %d"));
 	// E575
@@ -1554,8 +1554,8 @@ EXTERN char e_finally_without_try[]
 	INIT(= N_("E606: :finally without :try"));
 EXTERN char e_multiple_finally[]
 	INIT(= N_("E607: Multiple :finally"));
-EXTERN char e_cannot_throw_exceptions_with_vim_prefix[]
-	INIT(= N_("E608: Cannot :throw exceptions with 'Vim' prefix"));
+EXTERN char e_cannot_throw_exceptions_with_mnv_prefix[]
+	INIT(= N_("E608: Cannot :throw exceptions with 'MNV' prefix"));
 #endif
 #ifdef FEAT_CSCOPE
 EXTERN char e_cscope_error_str[]
@@ -1750,8 +1750,8 @@ EXTERN char e_error_writing_temp_file[]
 EXTERN char e_invalid_character_after_str_2[]
 	INIT(= N_("E678: Invalid character after %s%%[dxouU]"));
 #ifdef FEAT_SYN_HL
-EXTERN char e_recursive_loop_loading_syncolor_vim[]
-	INIT(= N_("E679: Recursive loop loading syncolor.vim"));
+EXTERN char e_recursive_loop_loading_syncolor_mnv[]
+	INIT(= N_("E679: Recursive loop loading syncolor.mnv"));
 #endif
 EXTERN char e_buffer_nr_invalid_buffer_number[]
 	INIT(= N_("E680: <buffer=%d>: invalid buffer number"));
@@ -1964,8 +1964,8 @@ EXTERN char e_unsupported_section_in_spell_file[]
 	INIT(= N_("E770: Unsupported section in spell file"));
 EXTERN char e_old_spell_file_needs_to_be_updated[]
 	INIT(= N_("E771: Old spell file, needs to be updated"));
-EXTERN char e_spell_file_is_for_newer_version_of_vim[]
-	INIT(= N_("E772: Spell file is for newer version of Vim"));
+EXTERN char e_spell_file_is_for_newer_version_of_mnv[]
+	INIT(= N_("E772: Spell file is for newer version of MNV"));
 #endif
 EXTERN char e_symlink_loop_for_str[]
 	INIT(= N_("E773: Symlink loop for \"%s\""));
@@ -1989,8 +1989,8 @@ EXTERN char e_this_does_not_look_like_sug_file_str[]
 	INIT(= N_("E778: This does not look like a .sug file: %s"));
 EXTERN char e_old_sug_file_needs_to_be_updated_str[]
 	INIT(= N_("E779: Old .sug file, needs to be updated: %s"));
-EXTERN char e_sug_file_is_for_newer_version_of_vim_str[]
-	INIT(= N_("E780: .sug file is for newer version of Vim: %s"));
+EXTERN char e_sug_file_is_for_newer_version_of_mnv_str[]
+	INIT(= N_("E780: .sug file is for newer version of MNV: %s"));
 EXTERN char e_sug_file_doesnt_match_spl_file_str[]
 	INIT(= N_("E781: .sug file doesn't match .spl file: %s"));
 EXTERN char e_error_while_reading_sug_file_str[]
@@ -2149,18 +2149,18 @@ EXTERN char e_non_encrypted_file_has_encrypted_undo_file_str[]
 	INIT(= N_("E832: Non-encrypted file has encrypted undo file: %s"));
 # endif
 #else
-EXTERN char e_str_is_encrypted_and_this_version_of_vim_does_not_support_encryption[]
-	INIT(= N_("E833: %s is encrypted and this version of Vim does not support encryption"));
+EXTERN char e_str_is_encrypted_and_this_version_of_mnv_does_not_support_encryption[]
+	INIT(= N_("E833: %s is encrypted and this version of MNV does not support encryption"));
 #endif
 EXTERN char e_conflicts_with_value_of_listchars[]
 	INIT(= N_("E834: Conflicts with value of 'listchars'"));
 EXTERN char e_conflicts_with_value_of_fillchars[]
 	INIT(= N_("E835: Conflicts with value of 'fillchars'"));
 #ifdef DYNAMIC_PYTHON
-EXTERN char e_this_vim_cannot_execute_python_after_using_py3[]
-	INIT(= N_("E836: This Vim cannot execute :python after using :py3"));
-EXTERN char e_this_vim_cannot_execute_py3_after_using_python[]
-	INIT(= N_("E837: This Vim cannot execute :py3 after using :python"));
+EXTERN char e_this_mnv_cannot_execute_python_after_using_py3[]
+	INIT(= N_("E836: This MNV cannot execute :python after using :py3"));
+EXTERN char e_this_mnv_cannot_execute_py3_after_using_python[]
+	INIT(= N_("E837: This MNV cannot execute :py3 after using :python"));
 #endif
 #if defined(FEAT_NETBEANS_INTG) && defined(FEAT_GUI)
 EXTERN char e_netbeans_is_not_supported_with_this_GUI[]
@@ -2224,8 +2224,8 @@ EXTERN char e_dictionary_key_str_required[]
 #if defined(FEAT_PYTHON) || defined(FEAT_PYTHON3)
 EXTERN char e_eval_did_not_return_valid_python_object[]
 	INIT(= N_("E858: Eval did not return a valid python object"));
-EXTERN char e_failed_to_convert_returned_python_object_to_vim_value[]
-	INIT(= N_("E859: Failed to convert returned python object to a Vim value"));
+EXTERN char e_failed_to_convert_returned_python_object_to_mnv_value[]
+	INIT(= N_("E859: Failed to convert returned python object to a MNV value"));
 #endif
 #ifdef FEAT_PROP_POPUP
 EXTERN char e_need_id_and_type_or_types_with_both[]
@@ -2281,8 +2281,8 @@ EXTERN char e_nfa_regexp_too_many_z[]
 	INIT(= N_("E879: (NFA regexp) Too many \\z("));
 #endif
 #if defined(FEAT_PYTHON) || defined(FEAT_PYTHON3)
-EXTERN char e_cant_handle_systemexit_of_python_exception_in_vim[]
-	INIT(= N_("E880: Can't handle SystemExit of python exception in vim"));
+EXTERN char e_cant_handle_systemexit_of_python_exception_in_mnv[]
+	INIT(= N_("E880: Can't handle SystemExit of python exception in mnv"));
 #endif
 EXTERN char e_line_count_changed_unexpectedly[]
 	INIT(= N_("E881: Line count changed unexpectedly"));
@@ -2298,9 +2298,9 @@ EXTERN char e_function_name_cannot_contain_colon_str[]
 EXTERN char e_not_possible_to_change_sign_str[]
 	INIT(= N_("E885: Not possible to change sign %s"));
 #endif
-#ifdef FEAT_VIMINFO
-EXTERN char e_cant_rename_viminfo_file_to_str[]
-	INIT(= N_("E886: Can't rename viminfo file to %s!"));
+#ifdef FEAT_MNVINFO
+EXTERN char e_cant_rename_mnvinfo_file_to_str[]
+	INIT(= N_("E886: Can't rename mnvinfo file to %s!"));
 #endif
 #if defined(FEAT_PYTHON) || defined(FEAT_PYTHON3)
 EXTERN char e_sorry_this_command_is_disabled_python_site_module_could_not_be_loaded[]
@@ -2423,9 +2423,9 @@ EXTERN char e_invalid_action_str_1[]
 EXTERN char e_string_required[]
 	INIT(= N_("E928: String required"));
 #endif
-#ifdef FEAT_VIMINFO
-EXTERN char e_too_many_viminfo_temp_files_like_str[]
-	INIT(= N_("E929: Too many viminfo temp files, like %s!"));
+#ifdef FEAT_MNVINFO
+EXTERN char e_too_many_mnvinfo_temp_files_like_str[]
+	INIT(= N_("E929: Too many mnvinfo temp files, like %s!"));
 #endif
 #ifdef FEAT_EVAL
 EXTERN char e_cannot_use_redir_inside_execute[]
@@ -2577,8 +2577,8 @@ EXTERN char e_lowlevel_input_not_supported[]
 	INIT(= N_("E980: Lowlevel input not supported"));
 # endif
 #endif
-EXTERN char e_command_not_allowed_in_rvim[]
-	INIT(= N_("E981: Command not allowed in rvim"));
+EXTERN char e_command_not_allowed_in_rmnv[]
+	INIT(= N_("E981: Command not allowed in rmnv"));
 #if defined(FEAT_TERMINAL) && defined(MSWIN)
 EXTERN char e_conpty_is_not_available[]
 	INIT(= N_("E982: ConPTY is not available"));
@@ -2596,8 +2596,8 @@ EXTERN char e_invalid_return_value_from_tagfunc[]
 	INIT(= N_("E987: Invalid return value from tagfunc"));
 #endif
 #ifdef GUI_MAY_SPAWN
-EXTERN char e_gui_cannot_be_used_cannot_execute_gvim_exe[]
-	INIT(= N_("E988: GUI cannot be used. Cannot execute gvim.exe."));
+EXTERN char e_gui_cannot_be_used_cannot_execute_gmnv_exe[]
+	INIT(= N_("E988: GUI cannot be used. Cannot execute gmnv.exe."));
 #endif
 #ifdef FEAT_EVAL
 EXTERN char e_non_default_argument_follows_default_argument[]
@@ -2722,18 +2722,18 @@ EXTERN char e_char_requires_number_or_float_arguments[]
 	INIT(= N_("E1036: %c requires number or float arguments"));
 EXTERN char e_cannot_use_str_with_str[]
 	INIT(= N_("E1037: Cannot use \"%s\" with %s"));
-EXTERN char e_vim9script_can_only_be_used_in_script[]
-	INIT(= N_("E1038: \"vim9script\" can only be used in a script"));
-EXTERN char e_vim9script_must_be_first_command_in_script[]
-	INIT(= N_("E1039: \"vim9script\" must be the first command in a script"));
+EXTERN char e_mnv9script_can_only_be_used_in_script[]
+	INIT(= N_("E1038: \"mnv9script\" can only be used in a script"));
+EXTERN char e_mnv9script_must_be_first_command_in_script[]
+	INIT(= N_("E1039: \"mnv9script\" must be the first command in a script"));
 #endif
-EXTERN char e_cannot_use_scriptversion_after_vim9script[]
-	INIT(= N_("E1040: Cannot use :scriptversion after :vim9script"));
+EXTERN char e_cannot_use_scriptversion_after_mnv9script[]
+	INIT(= N_("E1040: Cannot use :scriptversion after :mnv9script"));
 #ifdef FEAT_EVAL
 EXTERN char e_redefining_script_item_str[]
 	INIT(= N_("E1041: Redefining script item: \"%s\""));
-EXTERN char e_export_can_only_be_used_in_vim9script[]
-	INIT(= N_("E1042: Export can only be used in vim9script"));
+EXTERN char e_export_can_only_be_used_in_mnv9script[]
+	INIT(= N_("E1042: Export can only be used in mnv9script"));
 EXTERN char e_invalid_command_after_export[]
 	INIT(= N_("E1043: Invalid command after :export"));
 EXTERN char e_export_with_invalid_argument[]
@@ -2819,8 +2819,8 @@ EXTERN char e_command_modifier_without_command[]
 #ifdef FEAT_EVAL
 EXTERN char e_missing_backtick[]
 	INIT(= N_("E1083: Missing backtick"));
-EXTERN char e_cannot_delete_vim9_script_function_str[]
-	INIT(= N_("E1084: Cannot delete Vim9 script function %s"));
+EXTERN char e_cannot_delete_mnv9_script_function_str[]
+	INIT(= N_("E1084: Cannot delete MNV9 script function %s"));
 EXTERN char e_not_callable_type_str[]
 	INIT(= N_("E1085: Not a callable type: %s"));
 // E1086 unused
@@ -2850,8 +2850,8 @@ EXTERN char e_string_list_or_blob_required[]
 	INIT(= N_("E1098: String, List or Blob required"));
 EXTERN char e_unknown_error_while_executing_str[]
 	INIT(= N_("E1099: Unknown error while executing %s"));
-EXTERN char e_command_not_supported_in_vim9_script_missing_var_str[]
-	INIT(= N_("E1100: Command not supported in Vim9 script (missing :var?): %s"));
+EXTERN char e_command_not_supported_in_mnv9_script_missing_var_str[]
+	INIT(= N_("E1100: Command not supported in MNV9 script (missing :var?): %s"));
 EXTERN char e_cannot_declare_script_variable_in_function_str[]
 	INIT(= N_("E1101: Cannot declare a script variable in a function: %s"));
 EXTERN char e_lambda_function_not_found_str[]
@@ -2899,12 +2899,12 @@ EXTERN char e_variable_is_locked_str[]
 	INIT(= N_("E1122: Variable is locked: %s"));
 EXTERN char e_missing_comma_before_argument_str[]
 	INIT(= N_("E1123: Missing comma before argument: %s"));
-EXTERN char e_str_cannot_be_used_in_legacy_vim_script[]
-	INIT(= N_("E1124: \"%s\" cannot be used in legacy Vim script"));
+EXTERN char e_str_cannot_be_used_in_legacy_mnv_script[]
+	INIT(= N_("E1124: \"%s\" cannot be used in legacy MNV script"));
 EXTERN char e_final_requires_a_value[]
 	INIT(= N_("E1125: Final requires a value"));
-EXTERN char e_cannot_use_let_in_vim9_script[]
-	INIT(= N_("E1126: Cannot use :let in Vim9 script"));
+EXTERN char e_cannot_use_let_in_mnv9_script[]
+	INIT(= N_("E1126: Cannot use :let in MNV9 script"));
 EXTERN char e_missing_name_after_dot[]
 	INIT(= N_("E1127: Missing name after dot"));
 EXTERN char e_endblock_without_block[]
@@ -2970,8 +2970,8 @@ EXTERN char e_cannot_change_arglist_recursively[]
 #ifdef FEAT_EVAL
 EXTERN char e_missing_return_type[]
 	INIT(= N_("E1157: Missing return type"));
-EXTERN char e_cannot_use_flatten_in_vim9_script[]
-	INIT(= N_("E1158: Cannot use flatten() in Vim9 script, use flattennew()"));
+EXTERN char e_cannot_use_flatten_in_mnv9_script[]
+	INIT(= N_("E1158: Cannot use flatten() in MNV9 script, use flattennew()"));
 #endif
 EXTERN char e_cannot_split_window_when_closing_buffer[]
 	INIT(= N_("E1159: Cannot split a window when closing the buffer"));
@@ -2987,8 +2987,8 @@ EXTERN char e_variable_nr_type_mismatch_expected_str_but_got_str[]
 EXTERN char e_variable_nr_type_mismatch_expected_str_but_got_str_in_str[]
 	INIT(= N_("E1163: Variable %d: type mismatch, expected %s but got %s in %s"));
 #endif
-EXTERN char e_vim9cmd_must_be_followed_by_command[]
-	INIT(= N_("E1164: vim9cmd must be followed by a command"));
+EXTERN char e_mnv9cmd_must_be_followed_by_command[]
+	INIT(= N_("E1164: mnv9cmd must be followed by a command"));
 #ifdef FEAT_EVAL
 EXTERN char e_cannot_use_range_with_assignment_str[]
 	INIT(= N_("E1165: Cannot use a range with an assignment: %s"));
@@ -3028,8 +3028,8 @@ EXTERN char e_variable_arguments_type_must_be_list_str[]
 	INIT(= N_("E1180: Variable arguments type must be a list: %s"));
 EXTERN char e_cannot_use_underscore_here[]
 	INIT(= N_("E1181: Cannot use an underscore here"));
-EXTERN char e_cannot_define_dict_func_in_vim9_script_str[]
-	INIT(= N_("E1182: Cannot define a dict function in Vim9 script: %s"));
+EXTERN char e_cannot_define_dict_func_in_mnv9_script_str[]
+	INIT(= N_("E1182: Cannot define a dict function in MNV9 script: %s"));
 EXTERN char e_cannot_use_range_with_assignment_operator_str[]
 	INIT(= N_("E1183: Cannot use a range with an assignment operator: %s"));
 #endif
@@ -3042,7 +3042,7 @@ EXTERN char e_expression_does_not_result_in_value_str[]
 	INIT(= N_("E1186: Expression does not result in a value: %s"));
 #endif
 EXTERN char e_failed_to_source_defaults[]
-	INIT(= N_("E1187: Failed to source defaults.vim"));
+	INIT(= N_("E1187: Failed to source defaults.mnv"));
 #if defined(FEAT_TERMINAL)
 EXTERN char e_cannot_open_terminal_from_command_line_window[]
 	INIT(= N_("E1188: Cannot open a terminal from the command line window"));
@@ -3063,7 +3063,7 @@ EXTERN char e_empty_function_name[]
 #ifdef FEAT_CRYPT
 # ifndef FEAT_SODIUM
 EXTERN char e_libsodium_not_built_in[]
-	INIT(= N_("E1193: cryptmethod xchacha20 not built into this Vim"));
+	INIT(= N_("E1193: cryptmethod xchacha20 not built into this MNV"));
 # else
 #  if 0
 EXTERN char e_libsodium_cannot_encrypt_header[]
@@ -3200,8 +3200,8 @@ EXTERN char e_ascii_code_not_in_range[]
 EXTERN char e_bad_color_string_str[]
 	INIT(= N_("E1244: Bad color string: %s"));
 # endif
-EXTERN char e_cannot_expand_sfile_in_vim9_function[]
-	INIT(= N_("E1245: Cannot expand <sfile> in a Vim9 function"));
+EXTERN char e_cannot_expand_sfile_in_mnv9_function[]
+	INIT(= N_("E1245: Cannot expand <sfile> in a MNV9 function"));
 EXTERN char e_cannot_find_variable_to_unlock_str[]
 	INIT(= N_("E1246: Cannot find variable to (un)lock: %s"));
 #endif
@@ -3230,20 +3230,20 @@ EXTERN char e_cmd_mapping_must_end_with_cr[]
 #ifdef FEAT_EVAL
 EXTERN char e_string_or_function_required_for_argument_nr[]
 	INIT(= N_("E1256: String or function required for argument %d"));
-EXTERN char e_imported_script_must_use_as_or_end_in_dot_vim_str[]
-	INIT(= N_("E1257: Imported script must use \"as\" or end in .vim: %s"));
+EXTERN char e_imported_script_must_use_as_or_end_in_dot_mnv_str[]
+	INIT(= N_("E1257: Imported script must use \"as\" or end in .mnv: %s"));
 EXTERN char e_no_dot_after_imported_name_str[]
 	INIT(= N_("E1258: No '.' after imported name: %s"));
 EXTERN char e_missing_name_after_imported_name_str[]
 	INIT(= N_("E1259: Missing name after imported name: %s"));
 EXTERN char e_cannot_unlet_imported_item_str[]
 	INIT(= N_("E1260: Cannot unlet an imported item: %s"));
-EXTERN char e_cannot_import_dot_vim_without_using_as[]
-	INIT(= N_("E1261: Cannot import .vim without using \"as\""));
+EXTERN char e_cannot_import_dot_mnv_without_using_as[]
+	INIT(= N_("E1261: Cannot import .mnv without using \"as\""));
 EXTERN char e_cannot_import_same_script_twice_str[]
 	INIT(= N_("E1262: Cannot import the same script twice: %s"));
-EXTERN char e_cannot_use_name_with_hash_in_vim9_script_use_export_instead[]
-	INIT(= N_("E1263: Cannot use name with # in Vim9 script, use export instead"));
+EXTERN char e_cannot_use_name_with_hash_in_mnv9_script_use_export_instead[]
+	INIT(= N_("E1263: Cannot use name with # in MNV9 script, use export instead"));
 EXTERN char e_autoload_import_cannot_use_absolute_or_relative_path[]
 	INIT(= N_("E1264: Autoload import cannot use absolute or relative path: %s"));
 EXTERN char e_cannot_use_partial_here[]
@@ -3256,13 +3256,13 @@ EXTERN char e_critical_error_in_python3_initialization_check_your_installation[]
 #ifdef FEAT_EVAL
 EXTERN char e_function_name_must_start_with_capital_str[]
 	INIT(= N_("E1267: Function name must start with a capital: %s"));
-EXTERN char e_cannot_use_s_colon_in_vim9_script_str[]
-	INIT(= N_("E1268: Cannot use s: in Vim9 script: %s"));
-EXTERN char e_cannot_create_vim9_script_variable_in_function_str[]
-	INIT(= N_("E1269: Cannot create a Vim9 script variable in a function: %s"));
+EXTERN char e_cannot_use_s_colon_in_mnv9_script_str[]
+	INIT(= N_("E1268: Cannot use s: in MNV9 script: %s"));
+EXTERN char e_cannot_create_mnv9_script_variable_in_function_str[]
+	INIT(= N_("E1269: Cannot create a MNV9 script variable in a function: %s"));
 #endif
-EXTERN char e_cannot_use_s_backslash_in_vim9_script[]
-	INIT(= N_("E1270: Cannot use :s\\/sub/ in Vim9 script"));
+EXTERN char e_cannot_use_s_backslash_in_mnv9_script[]
+	INIT(= N_("E1270: Cannot use :s\\/sub/ in MNV9 script"));
 #ifdef FEAT_EVAL
 EXTERN char e_compiling_closure_without_context_str[]
 	INIT(= N_("E1271: Compiling closure without context: %s"));
@@ -3388,8 +3388,8 @@ EXTERN char e_class_name_must_start_with_uppercase_letter_str[]
 	INIT(= N_("E1314: Class name must start with an uppercase letter: %s"));
 EXTERN char e_white_space_required_after_name_str[]
 	INIT(= N_("E1315: White space required after name: %s"));
-EXTERN char e_class_can_only_be_defined_in_vim9_script[]
-	INIT(= N_("E1316: Class can only be defined in Vim9 script"));
+EXTERN char e_class_can_only_be_defined_in_mnv9_script[]
+	INIT(= N_("E1316: Class can only be defined in MNV9 script"));
 EXTERN char e_invalid_object_variable_declaration_str[]
 	INIT(= N_("E1317: Invalid object variable declaration: %s"));
 EXTERN char e_not_valid_command_in_class_str[]
@@ -3438,8 +3438,8 @@ EXTERN char e_argument_already_declared_in_class_str[]
 	INIT(= N_("E1340: Argument already declared in the class: %s"));
 EXTERN char e_variable_already_declared_in_class_str[]
 	INIT(= N_("E1341: Variable already declared in the class: %s"));
-EXTERN char e_interface_can_only_be_defined_in_vim9_script[]
-	INIT(= N_("E1342: Interface can only be defined in Vim9 script"));
+EXTERN char e_interface_can_only_be_defined_in_mnv9_script[]
+	INIT(= N_("E1342: Interface can only be defined in MNV9 script"));
 EXTERN char e_interface_name_must_start_with_uppercase_letter_str[]
 	INIT(= N_("E1343: Interface name must start with an uppercase letter: %s"));
 EXTERN char e_cannot_initialize_variable_in_interface[]
@@ -3544,8 +3544,8 @@ EXTERN char e_cannot_lock_object_variable_str[]
 	INIT(= N_("E1391: Cannot (un)lock variable \"%s\" in class \"%s\""));
 EXTERN char e_cannot_lock_class_variable_str[]
 	INIT(= N_("E1392: Cannot (un)lock class variable \"%s\" in class \"%s\""));
-EXTERN char e_type_can_only_be_defined_in_vim9_script[]
-	INIT(= N_("E1393: Type can only be defined in Vim9 script"));
+EXTERN char e_type_can_only_be_defined_in_mnv9_script[]
+	INIT(= N_("E1393: Type can only be defined in MNV9 script"));
 EXTERN char e_type_name_must_start_with_uppercase_letter_str[]
 	INIT(= N_("E1394: Type name must start with an uppercase letter: %s"));
 EXTERN char e_using_null_class[]
@@ -3582,8 +3582,8 @@ EXTERN char e_builtin_object_method_str_not_supported[]
 	INIT(= N_("E1412: Builtin object method \"%s\" not supported"));
 EXTERN char e_builtin_class_method_not_supported[]
 	INIT(= N_("E1413: Builtin class method not supported"));
-EXTERN char e_enum_can_only_be_defined_in_vim9_script[]
-       INIT(= N_("E1414: Enum can only be defined in Vim9 script"));
+EXTERN char e_enum_can_only_be_defined_in_mnv9_script[]
+       INIT(= N_("E1414: Enum can only be defined in MNV9 script"));
 EXTERN char e_enum_name_must_start_with_uppercase_letter_str[]
 	INIT(= N_("E1415: Enum name must start with an uppercase letter: %s"));
 EXTERN char e_enum_cannot_extend_class[]
@@ -3631,7 +3631,7 @@ EXTERN char e_interface_can_only_be_used_in_script[]
 EXTERN char e_can_only_compare_object_with_object[]
 	INIT(= N_("E1437: Can only compare Object with Object"));
 #endif
-// E1438 - E1499 unused (reserved for Vim9 class support)
+// E1438 - E1499 unused (reserved for MNV9 class support)
 EXTERN char e_cannot_mix_positional_and_non_positional_str[]
 	INIT(= N_("E1500: Cannot mix positional and non-positional arguments: %s"));
 EXTERN char e_fmt_arg_nr_unused_str[]
@@ -3737,7 +3737,7 @@ EXTERN char e_no_quickfix_stack[]
 EXTERN char e_cannot_switch_to_a_closing_buffer[]
 	INIT(= N_("E1546: Cannot switch to a closing buffer"));
 EXTERN char e_cannot_not_support_redrawtabpanel[]
-	INIT(= N_("E1547: This version of Vim does support :redrawtabpanel"));
+	INIT(= N_("E1547: This version of MNV does support :redrawtabpanel"));
 #ifdef FEAT_WAYLAND
 EXTERN char e_wayland_connection_unavailable[]
 	INIT(= N_("E1548: Wayland connection is unavailable"));

@@ -3,9 +3,9 @@ README.txt for color scheme files
 These files are used for the `:colorscheme` command.  They appear in the
 "Edit/Color Scheme" menu in the GUI.
 
-The colorschemes were updated for the Vim 9 release.  If you don't like the
+The colorschemes were updated for the MNV 9 release.  If you don't like the
 changes you can find the old ones here:
-https://github.com/vim/colorschemes/tree/master/legacy_colors
+https://github.com/mnv/colorschemes/tree/master/legacy_colors
 
 
 Hints for writing a color scheme file:
@@ -35,7 +35,7 @@ There are two basic ways to define a color scheme:
 
 You can use `:highlight clear` to reset everything to the defaults, and then
 change the groups that you want differently.  This will also work for groups
-that are added in later versions of Vim.
+that are added in later versions of MNV.
 Note that `:highlight clear` uses the value of 'background', thus set it
 before this command.
 Some attributes (e.g., bold) might be set in the defaults that you want
@@ -45,7 +45,7 @@ attributes.
 In case you want to set 'background' depending on the colorscheme selected,
 this autocmd might be useful: >
 
-     autocmd SourcePre */colors/blue_sky.vim set background=dark
+     autocmd SourcePre */colors/blue_sky.mnv set background=dark
 
 Replace "blue_sky" with the name of the colorscheme.
 
@@ -62,11 +62,11 @@ autocommand event.  For example: >
 	  au ColorSchemePre * au! MyColorscheme
 	augroup END
 
-To customize a colorscheme use another name, e.g.  "~/.vim/colors/mine.vim",
+To customize a colorscheme use another name, e.g.  "~/.mnv/colors/mine.mnv",
 and use ":runtime" to load the original colorscheme: >
 
 	" load the "evening" colorscheme
-	runtime colors/evening.vim
+	runtime colors/evening.mnv
 	" change the color of statements
 	hi Statement ctermfg=Blue guifg=Blue
 
@@ -84,7 +84,7 @@ Search for "highlight_init".
 If you think you have a color scheme that is good enough to be used by others,
 please check the following items:
 
-- Source the $VIMRUNTIME/colors/tools/check_colors.vim script to check for
+- Source the $MNVRUNTIME/colors/tools/check_colors.mnv script to check for
   common mistakes.
 
 - Does it work in a color terminal as well as in the GUI? Is it consistent?
@@ -105,7 +105,7 @@ please check the following items:
 - In the GUI, is it easy to find the cursor, also in a file with lots of
   syntax highlighting?
 
-- In general, test your color scheme against as many filetypes, Vim features,
+- In general, test your color scheme against as many filetypes, MNV features,
   environments, etc. as possible.
 
 - Do not use hard coded escape sequences, these will not work in other
@@ -129,17 +129,17 @@ please check the following items:
 
   	colorscheme foobar
 
-The color schemes distributed with Vim are built with lifepillar/colortemplate
-(https://github.com/lifepillar/vim-colortemplate).  It is therefore highly
+The color schemes distributed with MNV are built with lifepillar/colortemplate
+(https://github.com/lifepillar/mnv-colortemplate).  It is therefore highly
 recommended.
 
-If you would like your color scheme to be distributed with Vim, make sure
+If you would like your color scheme to be distributed with MNV, make sure
 that:
 
 - it satisfies the guidelines above,
 - it was made with colortemplate,
 
-and join us at vim/colorschemes: (https://github.com/vim/colorschemes).
+and join us at mnv/colorschemes: (https://github.com/mnv/colorschemes).
 
 
-vim: set ft=help :
+mnv: set ft=help :

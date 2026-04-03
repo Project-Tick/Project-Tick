@@ -1,13 +1,13 @@
-*version4.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*version4.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-This document lists the incompatible differences between Vim 3.0 and Vim 4.0.
+This document lists the incompatible differences between MNV 3.0 and MNV 4.0.
 Although 4.0 is mentioned here, this is also for version 4.1, 4.2, etc..
 
-This file is important for everybody upgrading from Vim 3.0.  Read it
+This file is important for everybody upgrading from MNV 3.0.  Read it
 carefully to avoid unexpected problems.
 
 'backup' option default changed			|backup-changed|
@@ -36,7 +36,7 @@ being made when the original file was overwritten.
 
 Now the default for 'backup' is off.  As soon as the writing of the file has
 successfully finished, the backup file is deleted.  If you want to keep the
-backup file, set 'backup' on in your vimrc.  The reason for this change is
+backup file, set 'backup' on in your mnvrc.  The reason for this change is
 that many people complained that leaving a backup file behind is not
 Vi-compatible.						'backup'
 
@@ -58,7 +58,7 @@ If you prefer to use ".bak", you can set the 'backupext' option: >
 Structure of swap file changed				*swapfile-changed*
 ------------------------------
 
-The contents of the swap file were extended with several parameters.  Vim
+The contents of the swap file were extended with several parameters.  MNV
 stores the user name and other information about the edited file to make
 recovery more easy and to be able to know where the swap file comes from.  The
 first part of the swap file can now be understood on a machine with a
@@ -66,14 +66,14 @@ different byte order or sizeof(int).  When you try to recover a file on such a
 machine, you will get an error message that this is not possible.
 
 Because of this change, swap files cannot be exchanged between 3.0 and 4.0.
-If you have a swap file from a crashed session with 3.0, use Vim 3.0 to
+If you have a swap file from a crashed session with 3.0, use MNV 3.0 to
 recover the file---don't use 4.0.			|swap-file|
 
 
 "-w scriptout" argument changed				*scriptout-changed*
 -------------------------------
 
-"vim -w scriptout" used to append to the scriptout file.  Since this was
+"mnv -w scriptout" used to append to the scriptout file.  Since this was
 illogical, it now creates a new file.  An existing file is not overwritten
 (to avoid destroying an existing file for those who rely on the appending).
 [This was removed again later]					|-w|
@@ -95,7 +95,7 @@ who define the erase character according to the keyboard they are working on.
 							|<BS>| |i_<BS>|
 
 If you prefer backspace and delete in Insert mode to have the old behavior,
-put this line in your vimrc:
+put this line in your mnvrc:
 
 	inoremap ^? ^H
 
@@ -130,7 +130,7 @@ one-byte code was used to represent a key.  This caused problems with
 different characters sets that also used these codes.  In 4.0 a three-byte
 code is used that cannot be confused with a character.		|key-notation|
 
-If you have used the single-byte key codes in your vimrc for mappings, you
+If you have used the single-byte key codes in your mnvrc for mappings, you
 will have to replace them with the 4.0 codes.  Instead of using the three-byte
 code directly, you should use the symbolic representation for this in <>.  See
 the table below.  The table also lists the old name, as it was used in the 3.0
@@ -288,7 +288,7 @@ backslash.  Type two backslashes, because the ":set" command will eat one.
 The 'graphic' option was used to make the characters between <~> and 0xa0
 display directly on the screen.  Now the 'isprint' option takes care of this
 with many more possibilities.  The default setting is the same; you only need
-to look into this if you previously set the 'graphic' option in your vimrc.
+to look into this if you previously set the 'graphic' option in your mnvrc.
 							'isprint'
 
 
@@ -303,12 +303,12 @@ The 'yankendofline' option has been removed.  Instead you can just use
 ----------------------------------------
 
 The 'title' option is now only set by default if the original title can be
-restored.  Avoids "Thanks for flying Vim" titles.  If you want them anyway,
-put ":set title" in your vimrc.				'title'
+restored.  Avoids "Thanks for flying MNV" titles.  If you want them anyway,
+put ":set title" in your mnvrc.				'title'
 
 The default for 'icon' now depends on the possibility of restoring the
 original value, just like 'title'.  If you don't like your icon titles to be
-changed, add this line to your vimrc:			'icon'
+changed, add this line to your mnvrc:			'icon'
 	:set noicon
 
 
@@ -352,4 +352,4 @@ this and accidentally hit CTRL-B, it is very difficult to find out how to undo
 it.  Since hardly anybody uses this feature, it is disabled by default.  If
 you want to use it, define RIGHTLEFT in feature.h before compiling. 'revins'
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

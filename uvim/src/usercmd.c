@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * usercmd.c: User defined command support
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 typedef struct ucmd
 {
@@ -175,7 +175,7 @@ find_ucmd(
 	    k = 0;
 	    while (k < len && *np != NUL && *cp++ == *np++)
 		k++;
-	    if (k == len || (*np == NUL && vim_isdigit(eap->cmd[k])))
+	    if (k == len || (*np == NUL && mnv_isdigit(eap->cmd[k])))
 	    {
 		// If finding a second match, the command is ambiguous.  But
 		// not if a buffer-local command wasn't a full match and a
@@ -267,7 +267,7 @@ set_context_in_user_cmd(expand_T *xp, char_u *arg_in)
 	if (*p == NUL)
 	{
 	    // Cursor is still in the attribute
-	    p = vim_strchr(arg, '=');
+	    p = mnv_strchr(arg, '=');
 	    if (p == NULL)
 	    {
 		// No "=", so complete attribute names
@@ -513,7 +513,7 @@ cmdcomplete_type_to_str(int expand, char_u *compl_arg)
 	return buffer;
     }
 
-    return vim_strsave(cmd_compl);
+    return mnv_strsave(cmd_compl);
 }
 
 /*
@@ -660,14 +660,14 @@ uc_list(char_u *name, size_t name_len)
 		if (a & EX_COUNT)
 		{
 		    // -count=N
-		    len += vim_snprintf((char *)IObuff + len, IOSIZE - len, "%ldc", cmd->uc_def);
+		    len += mnv_snprintf((char *)IObuff + len, IOSIZE - len, "%ldc", cmd->uc_def);
 		}
 		else if (a & EX_DFLALL)
 		    IObuff[len++] = '%';
 		else if (cmd->uc_def >= 0)
 		{
 		    // -range=N
-		    len += vim_snprintf((char *)IObuff + len, IOSIZE - len, "%ld", cmd->uc_def);
+		    len += mnv_snprintf((char *)IObuff + len, IOSIZE - len, "%ld", cmd->uc_def);
 		}
 		else
 		    IObuff[len++] = '.';
@@ -790,7 +790,7 @@ parse_addr_type_arg(
 	    int i;
 	    char_u	*err = value;
 
-	    for (i = 0; err[i] != NUL && !VIM_ISWHITE(err[i]); i++)
+	    for (i = 0; err[i] != NUL && !MNV_ISWHITE(err[i]); i++)
 		;
 	    err[i] = NUL;
 	    semsg(_(e_invalid_address_type_value_str), err);
@@ -901,7 +901,7 @@ parse_compl_arg(
     }
 
     if (arg != NULL)
-	*compl_arg = vim_strnsave(arg, arglen);
+	*compl_arg = mnv_strnsave(arg, arglen);
 #endif
 
     return OK;
@@ -1101,7 +1101,7 @@ uc_add_command(
     if (rep_buf == NULL)
     {
 	// can't replace termcodes - try using the string as is
-	rep_buf = vim_strsave(rep);
+	rep_buf = mnv_strsave(rep);
 
 	// give up if out of memory
 	if (rep_buf == NULL)
@@ -1147,9 +1147,9 @@ uc_add_command(
 		goto fail;
 	    }
 
-	    VIM_CLEAR(cmd->uc_rep);
+	    MNV_CLEAR(cmd->uc_rep);
 #if defined(FEAT_EVAL)
-	    VIM_CLEAR(cmd->uc_compl_arg);
+	    MNV_CLEAR(cmd->uc_compl_arg);
 #endif
 	    break;
 	}
@@ -1164,7 +1164,7 @@ uc_add_command(
     {
 	if (ga_grow(gap, 1) == FAIL)
 	    goto fail;
-	if ((p = vim_strnsave(name, name_len)) == NULL)
+	if ((p = mnv_strnsave(name, name_len)) == NULL)
 	    goto fail;
 
 	cmd = USER_CMD_GA(gap, i);
@@ -1181,9 +1181,9 @@ uc_add_command(
     cmd->uc_def = def;
     cmd->uc_compl = compl;
     cmd->uc_script_ctx = current_sctx;
-    if (flags & UC_VIM9)
-	cmd->uc_script_ctx.sc_version = SCRIPT_VERSION_VIM9;
-    cmd->uc_flags = flags & UC_VIM9;
+    if (flags & UC_MNV9)
+	cmd->uc_script_ctx.sc_version = SCRIPT_VERSION_MNV9;
+    cmd->uc_flags = flags & UC_MNV9;
 #ifdef FEAT_EVAL
     cmd->uc_script_ctx.sc_lnum += SOURCING_LNUM;
     cmd->uc_compl_arg = compl_arg;
@@ -1193,9 +1193,9 @@ uc_add_command(
     return OK;
 
 fail:
-    vim_free(rep_buf);
+    mnv_free(rep_buf);
 #if defined(FEAT_EVAL)
-    vim_free(compl_arg);
+    mnv_free(compl_arg);
 #endif
     return FAIL;
 }
@@ -1226,7 +1226,7 @@ may_get_cmd_block(exarg_T *eap, char_u *p, char_u **tofree, int *flags)
 	    // here-doc constructs.
 	    for (;;)
 	    {
-		vim_free(line);
+		mnv_free(line);
 		if ((line = eap->ea_getline(':', eap->cookie,
 					   0, GETLINE_CONCAT_CONTBAR)) == NULL)
 		{
@@ -1238,10 +1238,10 @@ may_get_cmd_block(exarg_T *eap, char_u *p, char_u **tofree, int *flags)
 		if (*skipwhite(line) == '}')
 		    break;
 	    }
-	vim_free(line);
+	mnv_free(line);
 	retp = *tofree = ga_concat_strings(&ga, "\n");
 	ga_clear_strings(&ga);
-	*flags |= UC_VIM9;
+	*flags |= UC_MNV9;
     }
     return retp;
 }
@@ -1282,7 +1282,7 @@ ex_command(exarg_T *eap)
     if (ASCII_ISALPHA(*p))
 	while (ASCII_ISALNUM(*p))
 	    ++p;
-    if (!ends_excmd2(eap->arg, p) && !VIM_ISWHITE(*p))
+    if (!ends_excmd2(eap->arg, p) && !MNV_ISWHITE(*p))
     {
 	emsg(_(e_invalid_command_name));
 	goto theend;
@@ -1310,8 +1310,8 @@ ex_command(exarg_T *eap)
     else if (compl > 0 && (argt & EX_EXTRA) == 0)
     {
 	// Some plugins rely on silently ignoring the mistake, only make this
-	// an error in Vim9 script.
-	if (in_vim9script())
+	// an error in MNV9 script.
+	if (in_mnv9script())
 	    emsg(_(e_complete_used_without_allowing_arguments));
 	else
 	    give_warning_with_source(
@@ -1326,13 +1326,13 @@ ex_command(exarg_T *eap)
 
 	uc_add_command(name, end - name, p, argt, def, flags, compl, compl_arg,
 						  addr_type_arg, eap->forceit);
-	vim_free(tofree);
+	mnv_free(tofree);
 
 	return;  // success
     }
 
 theend:
-    vim_free(compl_arg);
+    mnv_free(compl_arg);
 }
 
 /*
@@ -1377,11 +1377,11 @@ uc_clear(garray_T *gap)
     for (i = 0; i < gap->ga_len; ++i)
     {
 	cmd = USER_CMD_GA(gap, i);
-	vim_free(cmd->uc_name);
+	mnv_free(cmd->uc_name);
 	cmd->uc_namelen = 0;
-	vim_free(cmd->uc_rep);
+	mnv_free(cmd->uc_rep);
 #if defined(FEAT_EVAL)
-	vim_free(cmd->uc_compl_arg);
+	mnv_free(cmd->uc_compl_arg);
 #endif
     }
     ga_clear(gap);
@@ -1400,7 +1400,7 @@ ex_delcommand(exarg_T *eap)
     char_u	*arg = eap->arg;
     int		buffer_only = FALSE;
 
-    if (STRNCMP(arg, "-buffer", 7) == 0 && VIM_ISWHITE(arg[7]))
+    if (STRNCMP(arg, "-buffer", 7) == 0 && MNV_ISWHITE(arg[7]))
     {
 	buffer_only = TRUE;
 	arg = skipwhite(arg + 7);
@@ -1432,10 +1432,10 @@ ex_delcommand(exarg_T *eap)
     if (is_ucmd_locked())
 	return;
 
-    vim_free(cmd->uc_name);
-    vim_free(cmd->uc_rep);
+    mnv_free(cmd->uc_name);
+    mnv_free(cmd->uc_rep);
 #if defined(FEAT_EVAL)
-    vim_free(cmd->uc_compl_arg);
+    mnv_free(cmd->uc_compl_arg);
 #endif
 
     --gap->ga_len;
@@ -1466,7 +1466,7 @@ uc_split_args(char_u *arg, size_t *lenp)
 	    len += 2;
 	    p += 2;
 	}
-	else if (p[0] == '\\' && VIM_ISWHITE(p[1]))
+	else if (p[0] == '\\' && MNV_ISWHITE(p[1]))
 	{
 	    len += 1;
 	    p += 2;
@@ -1476,7 +1476,7 @@ uc_split_args(char_u *arg, size_t *lenp)
 	    len += 2;
 	    p += 1;
 	}
-	else if (VIM_ISWHITE(*p))
+	else if (MNV_ISWHITE(*p))
 	{
 	    p = skipwhite(p);
 	    if (*p == NUL)
@@ -1510,7 +1510,7 @@ uc_split_args(char_u *arg, size_t *lenp)
 	    *q++ = '\\';
 	    p += 2;
 	}
-	else if (p[0] == '\\' && VIM_ISWHITE(p[1]))
+	else if (p[0] == '\\' && MNV_ISWHITE(p[1]))
 	{
 	    *q++ = p[1];
 	    p += 2;
@@ -1520,7 +1520,7 @@ uc_split_args(char_u *arg, size_t *lenp)
 	    *q++ = '\\';
 	    *q++ = *p++;
 	}
-	else if (VIM_ISWHITE(*p))
+	else if (MNV_ISWHITE(*p))
 	{
 	    p = skipwhite(p);
 	    if (*p == NUL)
@@ -1603,7 +1603,7 @@ add_win_cmd_modifiers(char_u *buf, cmdmod_T *cmod, int *multi_mods)
 	    char tab_buf[NUMBUFLEN + 3];
 	    size_t tab_buflen;
 
-	    tab_buflen = vim_snprintf(tab_buf, sizeof(tab_buf), "%dtab", tabnr);
+	    tab_buflen = mnv_snprintf(tab_buf, sizeof(tab_buf), "%dtab", tabnr);
 	    buflen += add_cmd_modifier(buf, buflen, tab_buf, tab_buflen, multi_mods);
 	}
     }
@@ -1697,7 +1697,7 @@ produce_cmdmods(char_u *buf, cmdmod_T *cmod, int quote)
 	    char verbose_buf[NUMBUFLEN];
 	    size_t verbose_buflen;
 
-	    verbose_buflen = vim_snprintf(verbose_buf, sizeof(verbose_buf), "%dverbose", verbose_value);
+	    verbose_buflen = mnv_snprintf(verbose_buf, sizeof(verbose_buf), "%dverbose", verbose_value);
 	    buflen += add_cmd_modifier(buf, buflen, verbose_buf, verbose_buflen, &multi_mods);
 	}
     }
@@ -1756,7 +1756,7 @@ uc_check_code(
 	ct_NONE
     } type = ct_NONE;
 
-    if ((vim_strchr((char_u *)"qQfF", *p) != NULL) && p[1] == '-')
+    if ((mnv_strchr((char_u *)"qQfF", *p) != NULL) && p[1] == '-')
     {
 	quote = (*p == 'q' || *p == 'Q') ? 1 : 2;
 	p += 2;
@@ -1885,7 +1885,7 @@ uc_check_code(
 		   (eap->addr_count > 0) ? eap->line2 : cmd->uc_def;
 	size_t num_len;
 
-	num_len = vim_snprintf(num_buf, sizeof(num_buf), "%ld", num);
+	num_len = mnv_snprintf(num_buf, sizeof(num_buf), "%ld", num);
 	result = num_len;
 
 	if (quote)
@@ -1985,9 +1985,9 @@ do_ucmd(exarg_T *eap)
 
 	for (;;)
 	{
-	    start = vim_strchr(p, '<');
+	    start = mnv_strchr(p, '<');
 	    if (start != NULL)
-		end = vim_strchr(start + 1, '>');
+		end = mnv_strchr(start + 1, '>');
 	    if (buf != NULL)
 	    {
 		for (ksp = p; *ksp != NUL && *ksp != K_SPECIAL; ++ksp)
@@ -2058,7 +2058,7 @@ do_ucmd(exarg_T *eap)
 	buf = alloc(totlen + 1);
 	if (buf == NULL)
 	{
-	    vim_free(split_buf);
+	    mnv_free(split_buf);
 	    return;
 	}
     }
@@ -2070,13 +2070,13 @@ do_ucmd(exarg_T *eap)
 	current_sctx.sc_version = cmd->uc_script_ctx.sc_version;
 #ifdef FEAT_EVAL
 	current_sctx.sc_sid = cmd->uc_script_ctx.sc_sid;
-	if (cmd->uc_flags & UC_VIM9)
+	if (cmd->uc_flags & UC_MNV9)
 	{
-	    // In a {} block variables use Vim9 script rules, even in a legacy
+	    // In a {} block variables use MNV9 script rules, even in a legacy
 	    // script.
 	    restore_script_version =
 				  SCRIPT_ITEM(current_sctx.sc_sid)->sn_version;
-	    SCRIPT_ITEM(current_sctx.sc_sid)->sn_version = SCRIPT_VERSION_VIM9;
+	    SCRIPT_ITEM(current_sctx.sc_sid)->sn_version = SCRIPT_VERSION_MNV9;
 	}
 #endif
     }
@@ -2095,6 +2095,6 @@ do_ucmd(exarg_T *eap)
 #endif
 	current_sctx = save_current_sctx;
     }
-    vim_free(buf);
-    vim_free(split_buf);
+    mnv_free(buf);
+    mnv_free(split_buf);
 }

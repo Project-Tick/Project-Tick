@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -25,7 +25,7 @@
  * The current implementation remembers all file names ever used.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 
 #ifdef FEAT_EVAL
@@ -356,10 +356,10 @@ open_buffer(
     // When reading stdin, the buffer contents always needs writing, so set
     // the changed flag.  Unless in readonly mode: "ls | gview -".
     // When interrupted and 'cpoptions' contains 'i' set changed flag.
-    if ((got_int && vim_strchr(p_cpo, CPO_INTMOD) != NULL)
+    if ((got_int && mnv_strchr(p_cpo, CPO_INTMOD) != NULL)
 		|| curbuf->b_modified_was_set	// autocmd did ":set modified"
 #ifdef FEAT_EVAL
-		|| (aborting() && vim_strchr(p_cpo, CPO_INTMOD) != NULL)
+		|| (aborting() && mnv_strchr(p_cpo, CPO_INTMOD) != NULL)
 #endif
        )
 	changed();
@@ -486,7 +486,7 @@ static hashtab_T buf_hashtab;
     static void
 buf_hashtab_add(buf_T *buf)
 {
-    vim_snprintf((char *)buf->b_key, sizeof(buf->b_key), "%x", buf->b_fnum);
+    mnv_snprintf((char *)buf->b_key, sizeof(buf->b_key), "%x", buf->b_fnum);
     if (hash_add(&buf_hashtab, buf->b_key, "create buffer") == FAIL)
 	emsg(_(e_buffer_cannot_be_registered));
 }
@@ -797,10 +797,10 @@ aucmd_abort:
 		((int *)buf_reuse.ga_data)[buf_reuse.ga_len++] = buf->b_fnum;
 	}
 	if (buf->b_sfname != buf->b_ffname)
-	    VIM_CLEAR(buf->b_sfname);
+	    MNV_CLEAR(buf->b_sfname);
 	else
 	    buf->b_sfname = NULL;
-	VIM_CLEAR(buf->b_ffname);
+	MNV_CLEAR(buf->b_ffname);
 	if (buf->b_prev == NULL)
 	    firstbuf = buf->b_next;
 	else
@@ -816,7 +816,7 @@ aucmd_abort:
 	if (del_buf)
 	{
 	    // Free all internal variables and reset option values, to make
-	    // ":bdel" compatible with Vim 5.7.
+	    // ":bdel" compatible with MNV 5.7.
 	    free_buffer_stuff(buf, TRUE);
 
 	    // Make it look like a new buffer.
@@ -1023,7 +1023,7 @@ free_buffer(buf_T *buf)
     free_terminal(buf);
 #endif
 #ifdef FEAT_JOB_CHANNEL
-    vim_free(buf->b_prompt_text);
+    mnv_free(buf->b_prompt_text);
     free_callback(&buf->b_prompt_callback);
     free_callback(&buf->b_prompt_interrupt);
 #endif
@@ -1041,7 +1041,7 @@ free_buffer(buf_T *buf)
     }
     else
     {
-	vim_free(buf);
+	mnv_free(buf);
 	if (curbuf == buf)
 	    curbuf = NULL;  // make clear it's not to be used
     }
@@ -1121,7 +1121,7 @@ free_buffer_stuff(
 #endif
     map_clear_mode(buf, MAP_ALL_MODES, TRUE, FALSE);  // clear local mappings
     map_clear_mode(buf, MAP_ALL_MODES, TRUE, TRUE);   // clear local abbrevs
-    VIM_CLEAR(buf->b_start_fenc);
+    MNV_CLEAR(buf->b_start_fenc);
 }
 
 /*
@@ -1137,7 +1137,7 @@ free_wininfo(wininfo_T *wip)
 	deleteFoldRecurse(&wip->wi_folds);
 #endif
     }
-    vim_free(wip);
+    mnv_free(wip);
 }
 
 /*
@@ -1814,7 +1814,7 @@ do_bufdel(
 		arg = skipwhite(arg);
 		if (*arg == NUL)
 		    break;
-		if (!VIM_ISDIGIT(*arg))
+		if (!MNV_ISDIGIT(*arg))
 		{
 		    p = skiptowhite_esc(arg);
 		    bnr = buflist_findpat(arg, p,
@@ -2065,8 +2065,8 @@ enter_buffer(buf_T *buf)
     if (!curbuf->b_help && curwin->w_p_spell && *curwin->w_s->b_p_spl != NUL)
 	(void)parse_spelllang(curwin);
 #endif
-#ifdef FEAT_VIMINFO
-    curbuf->b_last_used = vim_time();
+#ifdef FEAT_MNVINFO
+    curbuf->b_last_used = mnv_time();
 #endif
 
     redraw_later(UPD_NOT_VALID);
@@ -2082,7 +2082,7 @@ do_autochdir(void)
 {
     if ((starting == 0 || test_autochdir)
 	    && curbuf->b_ffname != NULL
-	    && vim_chdirfile(curbuf->b_ffname, "auto") == OK)
+	    && mnv_chdirfile(curbuf->b_ffname, "auto") == OK)
     {
 	shorten_fnames(TRUE);
 	last_chdir_reason = "autochdir";
@@ -2192,7 +2192,7 @@ buflist_new(
 #endif
 		) != NULL)
     {
-	vim_free(ffname);
+	mnv_free(ffname);
 	if (lnum != 0)
 	    buflist_setfpos(buf, (flags & BLN_NOCURWIN) ? NULL : curwin,
 						      lnum, (colnr_T)0, FALSE);
@@ -2240,7 +2240,7 @@ buflist_new(
 #ifdef FEAT_EVAL
 	if (aborting())		// autocmds may abort script processing
 	{
-	    vim_free(ffname);
+	    mnv_free(ffname);
 	    return NULL;
 	}
 #endif
@@ -2252,7 +2252,7 @@ buflist_new(
 	buf = ALLOC_CLEAR_ONE(buf_T);
 	if (buf == NULL)
 	{
-	    vim_free(ffname);
+	    mnv_free(ffname);
 	    return NULL;
 	}
 #ifdef FEAT_EVAL
@@ -2260,8 +2260,8 @@ buflist_new(
 	buf->b_vars = dict_alloc_id(aid_newbuf_bvars);
 	if (buf->b_vars == NULL)
 	{
-	    vim_free(ffname);
-	    vim_free(buf);
+	    mnv_free(ffname);
+	    mnv_free(buf);
 	    return NULL;
 	}
 	init_var_dict(buf->b_vars, &buf->b_bufvar, VAR_SCOPE);
@@ -2272,7 +2272,7 @@ buflist_new(
     if (ffname != NULL)
     {
 	buf->b_ffname = ffname;
-	buf->b_sfname = vim_strsave(sfname);
+	buf->b_sfname = mnv_strsave(sfname);
     }
 
     clear_wininfo(buf);
@@ -2282,10 +2282,10 @@ buflist_new(
 	    || buf->b_wininfo == NULL)
     {
 	if (buf->b_sfname != buf->b_ffname)
-	    VIM_CLEAR(buf->b_sfname);
+	    MNV_CLEAR(buf->b_sfname);
 	else
 	    buf->b_sfname = NULL;
-	VIM_CLEAR(buf->b_ffname);
+	MNV_CLEAR(buf->b_ffname);
 	if (buf != curbuf)
 	    free_buffer(buf);
 	return NULL;
@@ -2471,10 +2471,10 @@ free_buf_options(
     clear_string_option(&buf->b_p_isk);
 #ifdef FEAT_VARTABS
     clear_string_option(&buf->b_p_vsts);
-    VIM_CLEAR(buf->b_p_vsts_nopaste);
-    VIM_CLEAR(buf->b_p_vsts_array);
+    MNV_CLEAR(buf->b_p_vsts_nopaste);
+    MNV_CLEAR(buf->b_p_vsts_array);
     clear_string_option(&buf->b_p_vts);
-    VIM_CLEAR(buf->b_p_vts_array);
+    MNV_CLEAR(buf->b_p_vts_array);
 #endif
 #ifdef FEAT_KEYMAP
     clear_string_option(&buf->b_p_keymap);
@@ -2491,7 +2491,7 @@ free_buf_options(
 #ifdef FEAT_SPELL
     clear_string_option(&buf->b_s.b_p_spc);
     clear_string_option(&buf->b_s.b_p_spf);
-    vim_regfree(buf->b_s.b_cap_prog);
+    mnv_regfree(buf->b_s.b_cap_prog);
     buf->b_s.b_cap_prog = NULL;
     clear_string_option(&buf->b_s.b_p_spl);
     clear_string_option(&buf->b_s.b_p_spo);
@@ -2682,7 +2682,7 @@ buflist_findname_exp(char_u *fname)
     if (ffname != NULL)
     {
 	buf = buflist_findname(ffname);
-	vim_free(ffname);
+	mnv_free(ffname);
     }
     return buf;
 }
@@ -2752,7 +2752,7 @@ buflist_findpat(
 
     // "%" is current file, "%%" or "#" is alternate file
     if ((pattern_end == pattern + 1 && (*pattern == '%' || *pattern == '#'))
-	    || (in_vim9script() && pattern_end == pattern + 2
+	    || (in_mnv9script() && pattern_end == pattern + 2
 				    && pattern[0] == '%' && pattern[1] == '%'))
     {
 	if (*pattern == '#' || pattern_end == pattern + 2)
@@ -2797,14 +2797,14 @@ buflist_findpat(
 		p = pat;
 		if (*p == '^' && !(attempt & 1))	 // add/remove '^'
 		    ++p;
-		regmatch.regprog = vim_regcomp(p, magic_isset() ? RE_MAGIC : 0);
+		regmatch.regprog = mnv_regcomp(p, magic_isset() ? RE_MAGIC : 0);
 
 		FOR_ALL_BUFS_FROM_LAST(buf)
 		{
 		    if (regmatch.regprog == NULL)
 		    {
 			// invalid pattern, possibly after switching engine
-			vim_free(pat);
+			mnv_free(pat);
 			return -1;
 		    }
 		    if (buf->b_p_bl == find_listed
@@ -2834,7 +2834,7 @@ buflist_findpat(
 		    }
 		}
 
-		vim_regfree(regmatch.regprog);
+		mnv_regfree(regmatch.regprog);
 		if (match >= 0)			// found one match
 		    break;
 	    }
@@ -2846,7 +2846,7 @@ buflist_findpat(
 	    find_listed = FALSE;
 	}
 
-	vim_free(pat);
+	mnv_free(pat);
     }
 
     if (match == -2)
@@ -2856,7 +2856,7 @@ buflist_findpat(
     return match;
 }
 
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 typedef struct {
     buf_T   *buf;
     char_u  *match;
@@ -2880,7 +2880,7 @@ ExpandBufnames(
     int		round;
     char_u	*p;
     char_u	*patc = NULL;
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     bufmatch_T	*matches = NULL;
 #endif
     int		fuzzy;
@@ -2917,7 +2917,7 @@ ExpandBufnames(
 	    patc = (char_u *)"";
 	else
 	    patc = pat;
-	regmatch.regprog = vim_regcomp(patc, RE_MAGIC);
+	regmatch.regprog = mnv_regcomp(patc, RE_MAGIC);
     }
 
     // round == 1: Count the matches.
@@ -2943,7 +2943,7 @@ ExpandBufnames(
 		{
 		    // invalid pattern, possibly after recompiling
 		    if (to_free)
-			vim_free(patc);
+			mnv_free(patc);
 		    return FAIL;
 		}
 		p = buflist_match(&regmatch, buf, p_wic);
@@ -2976,7 +2976,7 @@ ExpandBufnames(
 	    if (options & WILD_HOME_REPLACE)
 		p = home_replace_save(buf, p);
 	    else
-		p = vim_strsave(p);
+		p = mnv_strsave(p);
 	    if (p == NULL)
 	    {
 		if (fuzzy && round == 2)
@@ -2986,7 +2986,7 @@ ExpandBufnames(
 
 	    if (!fuzzy)
 	    {
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 		if (matches != NULL)
 		{
 		    matches[count].buf = buf;
@@ -3014,12 +3014,12 @@ ExpandBufnames(
 		*file = ALLOC_MULT(char_u *, count);
 		if (*file == NULL)
 		{
-		    vim_regfree(regmatch.regprog);
+		    mnv_regfree(regmatch.regprog);
 		    if (to_free)
-			vim_free(patc);
+			mnv_free(patc);
 		    return FAIL;
 		}
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 		if (options & WILD_BUFLASTUSED)
 		    matches = ALLOC_MULT(bufmatch_T, count);
 #endif
@@ -3039,14 +3039,14 @@ ExpandBufnames(
 
     if (!fuzzy)
     {
-	vim_regfree(regmatch.regprog);
+	mnv_regfree(regmatch.regprog);
 	if (to_free)
-	    vim_free(patc);
+	    mnv_free(patc);
     }
 
     if (!fuzzy)
     {
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
 	if (matches != NULL)
 	{
 	    int i;
@@ -3064,7 +3064,7 @@ ExpandBufnames(
 		for (i = 0; i < count; i++)
 		    (*file)[i] = matches[i].match;
 	    }
-	    vim_free(matches);
+	    mnv_free(matches);
 	}
 #endif
     }
@@ -3118,15 +3118,15 @@ fname_match(
 
     // Ignore case when 'fileignorecase' or the argument is set.
     rmp->rm_ic = p_fic || ignore_case;
-    if (vim_regexec(rmp, name, (colnr_T)0))
+    if (mnv_regexec(rmp, name, (colnr_T)0))
 	match = name;
     else if (rmp->regprog != NULL)
     {
 	// Replace $(HOME) with '~' and try matching again.
 	p = home_replace_save(NULL, name);
-	if (p != NULL && vim_regexec(rmp, p, (colnr_T)0))
+	if (p != NULL && mnv_regexec(rmp, p, (colnr_T)0))
 	    match = name;
-	vim_free(p);
+	mnv_free(p);
     }
 
     return match;
@@ -3138,12 +3138,12 @@ fname_match(
     buf_T *
 buflist_findnr(int nr)
 {
-    char_u	key[VIM_SIZEOF_INT * 2 + 1];
+    char_u	key[MNV_SIZEOF_INT * 2 + 1];
     hashitem_T	*hi;
 
     if (nr == 0)
 	nr = curwin->w_alt_fnum;
-    vim_snprintf((char *)key, sizeof(key), "%x", nr);
+    mnv_snprintf((char *)key, sizeof(key), "%x", nr);
     hi = hash_find(&buf_hashtab, key);
 
     if (!HASHITEM_EMPTY(hi))
@@ -3434,11 +3434,11 @@ buflist_list(exarg_T *eap)
     int		job_none_open;
 #endif
 
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     garray_T	buflist;
     buf_T	**buflist_data = NULL, **p;
 
-    if (vim_strchr(eap->arg, 't'))
+    if (mnv_strchr(eap->arg, 't'))
     {
 	ga_init2(&buflist, sizeof(buf_T *), 50);
 	FOR_ALL_BUFFERS(buf)
@@ -3469,32 +3469,32 @@ buflist_list(exarg_T *eap)
 	job_none_open = term_none_open(buf->b_term);
 #endif
 	// skip unlisted buffers, unless ! was used
-	if ((!buf->b_p_bl && !eap->forceit && !vim_strchr(eap->arg, 'u'))
-		|| (vim_strchr(eap->arg, 'u') && buf->b_p_bl)
-		|| (vim_strchr(eap->arg, '+')
+	if ((!buf->b_p_bl && !eap->forceit && !mnv_strchr(eap->arg, 'u'))
+		|| (mnv_strchr(eap->arg, 'u') && buf->b_p_bl)
+		|| (mnv_strchr(eap->arg, '+')
 			&& ((buf->b_flags & BF_READERR) || !bufIsChanged(buf)))
-		|| (vim_strchr(eap->arg, 'a')
+		|| (mnv_strchr(eap->arg, 'a')
 			&& (buf->b_ml.ml_mfp == NULL || buf->b_nwindows == 0))
-		|| (vim_strchr(eap->arg, 'h')
+		|| (mnv_strchr(eap->arg, 'h')
 			&& (buf->b_ml.ml_mfp == NULL || buf->b_nwindows != 0))
 #ifdef FEAT_TERMINAL
-		|| (vim_strchr(eap->arg, 'R')
+		|| (mnv_strchr(eap->arg, 'R')
 			&& (!job_running || (job_running && job_none_open)))
-		|| (vim_strchr(eap->arg, '?')
+		|| (mnv_strchr(eap->arg, '?')
 			&& (!job_running || (job_running && !job_none_open)))
-		|| (vim_strchr(eap->arg, 'F')
+		|| (mnv_strchr(eap->arg, 'F')
 			&& (job_running || buf->b_term == NULL))
 #endif
-		|| (vim_strchr(eap->arg, '-') && buf->b_p_ma)
-		|| (vim_strchr(eap->arg, '=') && !buf->b_p_ro)
-		|| (vim_strchr(eap->arg, 'x') && !(buf->b_flags & BF_READERR))
-		|| (vim_strchr(eap->arg, '%') && buf != curbuf)
-		|| (vim_strchr(eap->arg, '#')
+		|| (mnv_strchr(eap->arg, '-') && buf->b_p_ma)
+		|| (mnv_strchr(eap->arg, '=') && !buf->b_p_ro)
+		|| (mnv_strchr(eap->arg, 'x') && !(buf->b_flags & BF_READERR))
+		|| (mnv_strchr(eap->arg, '%') && buf != curbuf)
+		|| (mnv_strchr(eap->arg, '#')
 		      && (buf == curbuf || curwin->w_alt_fnum != buf->b_fnum)))
 	    continue;
 	name = buf_spname(buf);
 	if (name != NULL)
-	    vim_strncpy(NameBuff, name, MAXPATHL - 1);
+	    mnv_strncpy(NameBuff, name, MAXPATHL - 1);
 	else
 	    home_replace(buf, buf->b_fname, NameBuff, MAXPATHL, TRUE);
 	if (message_filtered(NameBuff))
@@ -3519,7 +3519,7 @@ buflist_list(exarg_T *eap)
 	    ro_char = !buf->b_p_ma ? '-' : (buf->b_p_ro ? '=' : ' ');
 
 	msg_putchar('\n');
-	len = (int)vim_snprintf_safelen((char *)IObuff, IOSIZE - 20, "%3d%c%c%c%c%c \"%s\"",
+	len = (int)mnv_snprintf_safelen((char *)IObuff, IOSIZE - 20, "%3d%c%c%c%c%c \"%s\"",
 		buf->b_fnum,
 		buf->b_p_bl ? ' ' : 'u',
 		buf == curbuf ? '%' :
@@ -3531,16 +3531,16 @@ buflist_list(exarg_T *eap)
 		NameBuff);
 
 	// put "line 999" in column 40 or after the file name
-	i = 40 - vim_strsize(IObuff);
+	i = 40 - mnv_strsize(IObuff);
 	do
 	    IObuff[len++] = ' ';
 	while (--i > 0 && len < IOSIZE - 18);
-#ifdef FEAT_VIMINFO
-	if (vim_strchr(eap->arg, 't') && buf->b_last_used)
+#ifdef FEAT_MNVINFO
+	if (mnv_strchr(eap->arg, 't') && buf->b_last_used)
 	    add_time(IObuff + len, (size_t)(IOSIZE - len), buf->b_last_used);
 	else
 #endif
-	    vim_snprintf((char *)IObuff + len, (size_t)(IOSIZE - len),
+	    mnv_snprintf((char *)IObuff + len, (size_t)(IOSIZE - len),
 		    _("line %ld"), buf == curbuf ? curwin->w_cursor.lnum
 					       : (long)buflist_findlnum(buf));
 	msg_outtrans(IObuff);
@@ -3548,7 +3548,7 @@ buflist_list(exarg_T *eap)
 	ui_breakcheck();
     }
 
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     if (buflist_data)
 	ga_clear(&buflist);
 #endif
@@ -3603,10 +3603,10 @@ setfname(
     {
 	// Removing the name.
 	if (buf->b_sfname != buf->b_ffname)
-	    VIM_CLEAR(buf->b_sfname);
+	    MNV_CLEAR(buf->b_sfname);
 	else
 	    buf->b_sfname = NULL;
-	VIM_CLEAR(buf->b_ffname);
+	MNV_CLEAR(buf->b_ffname);
 #ifdef UNIX
 	st.st_dev = (dev_T)-1;
 #endif
@@ -3648,25 +3648,25 @@ setfname(
 	    {
 		if (message)
 		    emsg(_(e_buffer_with_this_name_already_exists));
-		vim_free(ffname);
+		mnv_free(ffname);
 		return FAIL;
 	    }
 	    // delete from the list
 	    close_buffer(NULL, obuf, DOBUF_WIPE, FALSE, FALSE, FALSE);
 	}
-	sfname = vim_strsave(sfname);
+	sfname = mnv_strsave(sfname);
 	if (ffname == NULL || sfname == NULL)
 	{
-	    vim_free(sfname);
-	    vim_free(ffname);
+	    mnv_free(sfname);
+	    mnv_free(ffname);
 	    return FAIL;
 	}
 #ifdef USE_FNAME_CASE
 	fname_case(sfname, 0);    // set correct case for short file name
 #endif
 	if (buf->b_sfname != buf->b_ffname)
-	    vim_free(buf->b_sfname);
-	vim_free(buf->b_ffname);
+	    mnv_free(buf->b_sfname);
+	mnv_free(buf->b_ffname);
 	buf->b_ffname = ffname;
 	buf->b_sfname = sfname;
     }
@@ -3702,9 +3702,9 @@ buf_set_name(int fnum, char_u *name)
 	return;
 
     if (buf->b_sfname != buf->b_ffname)
-	vim_free(buf->b_sfname);
-    vim_free(buf->b_ffname);
-    buf->b_ffname = vim_strsave(name);
+	mnv_free(buf->b_sfname);
+    mnv_free(buf->b_ffname);
+    buf->b_ffname = mnv_strsave(name);
     buf->b_sfname = NULL;
     // Allocate ffname and expand into full path.  Also resolves .lnk
     // files on Win32.
@@ -3936,13 +3936,13 @@ fileinfo(
 	return;
 
     if (fullname > 1)	    // 2 CTRL-G: include buffer number
-	bufferlen = vim_snprintf_safelen(buffer, IOSIZE, "buf %d: ", curbuf->b_fnum);
+	bufferlen = mnv_snprintf_safelen(buffer, IOSIZE, "buf %d: ", curbuf->b_fnum);
 
     buffer[bufferlen++] = '"';
 
     name = buf_spname(curbuf);
     if (name != NULL)
-	bufferlen += vim_snprintf_safelen(buffer + bufferlen,
+	bufferlen += mnv_snprintf_safelen(buffer + bufferlen,
 	    IOSIZE - bufferlen, "%s", name);
     else
     {
@@ -3955,7 +3955,7 @@ fileinfo(
 	bufferlen += STRLEN(buffer + bufferlen);
     }
 
-    bufferlen += vim_snprintf_safelen(
+    bufferlen += mnv_snprintf_safelen(
 	buffer + bufferlen,
 	IOSIZE - bufferlen,
 	"\"%s%s%s%s%s%s",
@@ -3971,11 +3971,11 @@ fileinfo(
 	    ? " " : "");
 
     if (curbuf->b_ml.ml_flags & ML_EMPTY)
-	bufferlen += vim_snprintf_safelen(buffer + bufferlen,
+	bufferlen += mnv_snprintf_safelen(buffer + bufferlen,
 	    IOSIZE - bufferlen, "%s", _(no_lines_msg));
     else if (p_ru)
 	// Current line and column are already on the screen -- webb
-	bufferlen += vim_snprintf_safelen(
+	bufferlen += mnv_snprintf_safelen(
 	    buffer + bufferlen,
 	    IOSIZE - bufferlen,
 	    NGETTEXT("%ld line --%d%%--", "%ld lines --%d%%--", curbuf->b_ml.ml_line_count),
@@ -3983,7 +3983,7 @@ fileinfo(
 	    calc_percentage(curwin->w_cursor.lnum, curbuf->b_ml.ml_line_count));
     else
     {
-	bufferlen += vim_snprintf_safelen(
+	bufferlen += mnv_snprintf_safelen(
 	    buffer + bufferlen,
 	    IOSIZE - bufferlen,
 	    _("line %ld of %ld --%d%%-- col "),
@@ -4023,7 +4023,7 @@ fileinfo(
 	    set_keep_msg((char_u *)p, 0);
     }
 
-    vim_free(buffer);
+    mnv_free(buffer);
 }
 
     int
@@ -4034,9 +4034,9 @@ col_print(
     int	    vcol)
 {
     if (col == vcol)
-	return (int)vim_snprintf_safelen((char *)buf, buflen, "%d", col);
+	return (int)mnv_snprintf_safelen((char *)buf, buflen, "%d", col);
 
-    return (int)vim_snprintf_safelen((char *)buf, buflen, "%d-%d", col, vcol);
+    return (int)mnv_snprintf_safelen((char *)buf, buflen, "%d-%d", col, vcol);
 }
 
 static char_u *lasttitle = NULL;
@@ -4095,33 +4095,33 @@ maketitle(void)
 
 	    // format: "<filename> [flags] <(path)> [argument info] <- servername>"
 	    // example:
-	    //	    buffer.c + (/home/vim/src) (1 of 2) - VIM
+	    //	    buffer.c + (/home/mnv/src) (1 of 2) - MNV
 
 	    // reserve some space for different parts of the title.
 	    // use sizeof() to introduce 'size_t' so we don't have to
 	    // cast sizes to it.
 #define SPACE_FOR_FNAME (sizeof(buf) - 100)
 #define SPACE_FOR_DIR   (sizeof(buf) - 20)
-#define SPACE_FOR_ARGNR (sizeof(buf) - 10)  // at least room for " - VIM"
+#define SPACE_FOR_ARGNR (sizeof(buf) - 10)  // at least room for " - MNV"
 
 	    // file name
 	    if (curbuf->b_fname == NULL)
-		buflen = vim_snprintf_safelen((char *)buf,
+		buflen = mnv_snprintf_safelen((char *)buf,
 		    SPACE_FOR_FNAME, "%s", _("[No Name]"));
 #ifdef FEAT_TERMINAL
 	    else if (curbuf->b_term != NULL)
-		buflen = vim_snprintf_safelen((char *)buf,
+		buflen = mnv_snprintf_safelen((char *)buf,
 		    SPACE_FOR_FNAME, "%s",
 		    term_get_status_text(curbuf->b_term));
 #endif
 	    else
 	    {
-		buflen = vim_snprintf_safelen((char *)buf,
+		buflen = mnv_snprintf_safelen((char *)buf,
 		    SPACE_FOR_FNAME, "%s",
 		    ((p = transstr(gettail(curbuf->b_fname))) != NULL)
 			? p
 			: (char_u *)"");
-		vim_free(p);
+		mnv_free(p);
 	    }
 
 	    // flags
@@ -4135,33 +4135,33 @@ maketitle(void)
 		{
 		    case 1:
 			// file was modified
-			buflen += vim_snprintf_safelen(
+			buflen += mnv_snprintf_safelen(
 			    (char *)buf + buflen,
 			    sizeof(buf) - buflen, " +");
 			break;
 		    case 2:
 			// file is readonly
-			buflen += vim_snprintf_safelen(
+			buflen += mnv_snprintf_safelen(
 			    (char *)buf + buflen,
 			    sizeof(buf) - buflen, " =");
 			break;
 		    case 3:
 			// file was modified and is readonly
-			buflen += vim_snprintf_safelen(
+			buflen += mnv_snprintf_safelen(
 			    (char *)buf + buflen,
 			    sizeof(buf) - buflen, " =+");
 			break;
 		    case 4:
 		    case 6:
 			// file cannot be modified
-			buflen += vim_snprintf_safelen(
+			buflen += mnv_snprintf_safelen(
 			    (char *)buf + buflen,
 			    sizeof(buf) - buflen, " -");
 			break;
 		    case 5:
 		    case 7:
 			// file cannot be modified but was modified
-			buflen += vim_snprintf_safelen(
+			buflen += mnv_snprintf_safelen(
 			    (char *)buf + buflen,
 			    sizeof(buf) - buflen, " -+");
 			break;
@@ -4178,7 +4178,7 @@ maketitle(void)
 		    )
 	    {
 		// Get path of file, replace home dir with ~
-		buflen += vim_snprintf_safelen((char *)buf + buflen,
+		buflen += mnv_snprintf_safelen((char *)buf + buflen,
 		    sizeof(buf) - buflen, " (");
 
 		home_replace(curbuf, curbuf->b_ffname,
@@ -4195,7 +4195,7 @@ maketitle(void)
 		if (p == buf + buflen)
 		{
 		    // help buffer
-		    buflen += vim_snprintf_safelen((char *)buf + buflen,
+		    buflen += mnv_snprintf_safelen((char *)buf + buflen,
 			SPACE_FOR_DIR - buflen, "%s)", _("help"));
 		}
 		else
@@ -4210,15 +4210,15 @@ maketitle(void)
 			// remove the file name
 			*p = NUL;
 
-			buflen += vim_snprintf_safelen((char *)buf + buflen,
+			buflen += mnv_snprintf_safelen((char *)buf + buflen,
 			    SPACE_FOR_DIR - buflen, "%s)",
 			    ((p = transstr(buf + buflen)) != NULL)
 				? p
 				: (char_u *)"");
-			vim_free(p);
+			mnv_free(p);
 		    }
 		    else
-			buflen += vim_snprintf_safelen((char *)buf + buflen,
+			buflen += mnv_snprintf_safelen((char *)buf + buflen,
 			    SPACE_FOR_ARGNR - buflen, "...)");
 		}
 	    }
@@ -4228,18 +4228,18 @@ maketitle(void)
 		SPACE_FOR_ARGNR - buflen, FALSE);
 
 	    // servername
-	    buflen += vim_snprintf_safelen((char *)buf + buflen,
+	    buflen += mnv_snprintf_safelen((char *)buf + buflen,
 		sizeof(buf) - buflen, " - %s",
 #if defined(FEAT_CLIENTSERVER)
 		(serverName != NULL)
 		    ? serverName :
 #endif
-		    (char_u *)"VIM");
+		    (char_u *)"MNV");
 
 	    if (maxlen > 0)
 	    {
 		// make it shorter by removing a bit in the middle
-		if (vim_strsize(buf) > maxlen)
+		if (mnv_strsize(buf) > maxlen)
 		    trunc_string(buf, buf, maxlen, sizeof(buf));
 	    }
 	}
@@ -4298,7 +4298,7 @@ value_changed(char_u *str, char_u **last)
     if ((str == NULL) != (*last == NULL)
 	    || (str != NULL && *last != NULL && STRCMP(str, *last) != 0))
     {
-	vim_free(*last);
+	mnv_free(*last);
 	if (str == NULL)
 	{
 	    *last = NULL;
@@ -4307,7 +4307,7 @@ value_changed(char_u *str, char_u **last)
 	}
 	else
 	{
-	    *last = vim_strsave(str);
+	    *last = mnv_strsave(str);
 	    return TRUE;
 	}
     }
@@ -4327,8 +4327,8 @@ resettitle(void)
     void
 free_titles(void)
 {
-    vim_free(lasttitle);
-    vim_free(lasticon);
+    mnv_free(lasttitle);
+    mnv_free(lasticon);
 }
 #endif
 
@@ -4613,29 +4613,29 @@ build_stl_str_hl_local(
 	    size_t	new_len = stl_items_len * 3 / 2;
 
 	    stl_item_T *new_items =
-			  vim_realloc(stl_items, sizeof(stl_item_T) * new_len);
+			  mnv_realloc(stl_items, sizeof(stl_item_T) * new_len);
 	    if (new_items == NULL)
 		break;
 	    stl_items = new_items;
 
 	    int *new_groupitem =
-			     vim_realloc(stl_groupitem, sizeof(int) * new_len);
+			     mnv_realloc(stl_groupitem, sizeof(int) * new_len);
 	    if (new_groupitem == NULL)
 		break;
 	    stl_groupitem = new_groupitem;
 
-	    stl_hlrec_T	*new_hlrec = vim_realloc(stl_hltab,
+	    stl_hlrec_T	*new_hlrec = mnv_realloc(stl_hltab,
 					  sizeof(stl_hlrec_T) * (new_len + 1));
 	    if (new_hlrec == NULL)
 		break;
 	    stl_hltab = new_hlrec;
-	    new_hlrec = vim_realloc(stl_tabtab,
+	    new_hlrec = mnv_realloc(stl_tabtab,
 					  sizeof(stl_hlrec_T) * (new_len + 1));
 	    if (new_hlrec == NULL)
 		break;
 	    stl_tabtab = new_hlrec;
 
-	    int *new_separator_locs = vim_realloc(stl_separator_locations,
+	    int *new_separator_locs = mnv_realloc(stl_separator_locations,
 					    sizeof(int) * new_len);
 	    if (new_separator_locs == NULL)
 		break;
@@ -4728,7 +4728,7 @@ build_stl_str_hl_local(
 
 	    t = stl_items[stl_groupitem[groupdepth]].stl_start;
 	    *p = NUL;
-	    l = vim_strsize(t);
+	    l = mnv_strsize(t);
 	    if (curitem > stl_groupitem[groupdepth] + 1
 		    && stl_items[stl_groupitem[groupdepth]].stl_minwid == 0)
 	    {
@@ -4845,7 +4845,7 @@ build_stl_str_hl_local(
 	    s++;
 	    l = -1;
 	}
-	if (VIM_ISDIGIT(*s))
+	if (MNV_ISDIGIT(*s))
 	{
 	    minwid = (int)getdigits(&s);
 	    if (minwid < 0)	// overflow
@@ -4890,7 +4890,7 @@ build_stl_str_hl_local(
 	if (*s == '.')
 	{
 	    s++;
-	    if (VIM_ISDIGIT(*s))
+	    if (MNV_ISDIGIT(*s))
 	    {
 		maxwid = (int)getdigits(&s);
 		if (maxwid <= 0)	// overflow
@@ -4918,7 +4918,7 @@ build_stl_str_hl_local(
 	    continue;
 	}
 # endif
-	if (vim_strchr(STL_ALL, *s) == NULL)
+	if (mnv_strchr(STL_ALL, *s) == NULL)
 	{
 	    if (*s == NUL)  // can happen with "%0"
 		break;
@@ -4944,7 +4944,7 @@ build_stl_str_hl_local(
 	    fillable = FALSE;	// don't change ' ' to fillchar
 	    name = buf_spname(wp->w_buffer);
 	    if (name != NULL)
-		vim_strncpy(NameBuff, name, MAXPATHL - 1);
+		mnv_strncpy(NameBuff, name, MAXPATHL - 1);
 	    else
 	    {
 		char_u	*t = (opt == STL_FULLPATH) ? wp->w_buffer->b_ffname
@@ -4959,7 +4959,7 @@ build_stl_str_hl_local(
 	    break;
 	}
 
-	case STL_VIM_EXPR: // '{'
+	case STL_MNV_EXPR: // '{'
 	{
 # ifdef FEAT_EVAL
 	    char_u  *block_start = s - 1;
@@ -4985,10 +4985,10 @@ build_stl_str_hl_local(
 		*p = NUL;
 	    p = t;
 # ifdef FEAT_EVAL
-	    vim_snprintf((char *)buf_tmp, sizeof(buf_tmp),
+	    mnv_snprintf((char *)buf_tmp, sizeof(buf_tmp),
 							 "%d", curbuf->b_fnum);
 	    set_internal_string_var((char_u *)"g:actual_curbuf", buf_tmp);
-	    vim_snprintf((char *)buf_tmp, sizeof(buf_tmp), "%d", curwin->w_id);
+	    mnv_snprintf((char *)buf_tmp, sizeof(buf_tmp), "%d", curwin->w_id);
 	    set_internal_string_var((char_u *)"g:actual_curwin", buf_tmp);
 
 	    save_curbuf = curbuf;
@@ -5013,7 +5013,7 @@ build_stl_str_hl_local(
 		if (*skipdigits(str) == NUL)
 		{
 		    num = atoi((char *)str);
-		    VIM_CLEAR(str);
+		    MNV_CLEAR(str);
 		    itemisflag = FALSE;
 		}
 	    }
@@ -5046,8 +5046,8 @@ build_stl_str_hl_local(
 		    new_fmt_p = NULL;
 
 		    if (usefmt != fmt)
-			vim_free(usefmt);
-		    VIM_CLEAR(str);
+			mnv_free(usefmt);
+		    MNV_CLEAR(str);
 		    usefmt = new_fmt;
 		    s = usefmt + parsed_usefmt;
 		    evaldepth++;
@@ -5165,7 +5165,7 @@ build_stl_str_hl_local(
 	    if (*wp->w_buffer->b_p_ft != NUL
 		    && STRLEN(wp->w_buffer->b_p_ft) < TMPLEN - 3)
 	    {
-		vim_snprintf((char *)buf_tmp, sizeof(buf_tmp), "[%s]",
+		mnv_snprintf((char *)buf_tmp, sizeof(buf_tmp), "[%s]",
 							wp->w_buffer->b_p_ft);
 		str = buf_tmp;
 	    }
@@ -5178,7 +5178,7 @@ build_stl_str_hl_local(
 	    {
 		char_u	*t;
 
-		vim_snprintf((char *)buf_tmp, sizeof(buf_tmp), ",%s",
+		mnv_snprintf((char *)buf_tmp, sizeof(buf_tmp), ",%s",
 							wp->w_buffer->b_p_ft);
 		for (t = buf_tmp; *t != 0; t++)
 		    *t = TOUPPER_LOC(*t);
@@ -5252,7 +5252,7 @@ build_stl_str_hl_local(
 		    t++;
 		prevchar_isflag = TRUE;
 	    }
-	    l = vim_strsize(t);
+	    l = mnv_strsize(t);
 	    if (l > 0)
 		prevchar_isitem = TRUE;
 	    if (l > maxwid)
@@ -5274,7 +5274,7 @@ build_stl_str_hl_local(
 		for (; l < minwid && p + 1 < out + outlen; l++)
 		{
 		    // Don't put a "-" in front of a digit.
-		    if (l + 1 == minwid && fillchar == '-' && VIM_ISDIGIT(*t))
+		    if (l + 1 == minwid && fillchar == '-' && MNV_ISDIGIT(*t))
 			*p++ = ' ';
 		    else
 			MB_CHAR2BYTES(fillchar, p);
@@ -5288,7 +5288,7 @@ build_stl_str_hl_local(
 		// Change a space by fillchar, unless fillchar is '-' and a
 		// digit follows.
 		if (fillable && *t == ' '
-				&& (!VIM_ISDIGIT(*(t + 1)) || fillchar != '-'))
+				&& (!MNV_ISDIGIT(*(t + 1)) || fillchar != '-'))
 		    MB_CHAR2BYTES(fillchar, p);
 		else
 		    *p++ = *t;
@@ -5332,11 +5332,11 @@ build_stl_str_hl_local(
 		*t++ = '%';
 		*t = t[-3];
 		*++t = NUL;
-		p += vim_snprintf_safelen((char *)p, outlen - (p - out),
+		p += mnv_snprintf_safelen((char *)p, outlen - (p - out),
 		    (char *)nstr, 0, num, n);
 	    }
 	    else
-		p += vim_snprintf_safelen((char *)p, outlen - (p - out),
+		p += mnv_snprintf_safelen((char *)p, outlen - (p - out),
 		    (char *)nstr, minwid, num);
 	}
 	else
@@ -5345,8 +5345,8 @@ build_stl_str_hl_local(
 	if (num >= 0 || (!itemisflag && str != NULL && *str != NUL))
 	    prevchar_isflag = FALSE;	    // Item not NULL, but not a flag
 					    //
-	if (opt == STL_VIM_EXPR)
-	    vim_free(str);
+	if (opt == STL_MNV_EXPR)
+	    mnv_free(str);
 	curitem++;
     }
 # ifdef ENABLE_STL_MODE_MULTI_NL
@@ -5371,7 +5371,7 @@ find_linebreak:
 	// caller's next iteration.
 # ifdef FEAT_EVAL
 	if (usefmt != fmt)
-	    vim_free(fmt);
+	    mnv_free(fmt);
 # endif
 	size_t fmt_remain_len = strlen((char *)s);
 
@@ -5385,7 +5385,7 @@ find_linebreak:
 	// Free the eval result if "%!" was used.
 # ifdef FEAT_EVAL
 	if (usefmt != fmt)
-	    vim_free(usefmt);
+	    mnv_free(usefmt);
 # endif
     }
 
@@ -5396,7 +5396,7 @@ find_linebreak:
 	return 0;
     }
 
-    width = vim_strsize(out);
+    width = mnv_strsize(out);
     if (maxwidth > 0 && width > maxwidth)
     {
 	// Result is too long, must truncate somewhere.
@@ -5420,7 +5420,7 @@ find_linebreak:
 	    }
 	}
 
-	if (width - vim_strsize(s) >= maxwidth)
+	if (width - mnv_strsize(s) >= maxwidth)
 	{
 	    // Truncation mark is beyond max length
 	    if (has_mbyte)
@@ -5608,18 +5608,18 @@ get_rel_pos(
 #endif
     below = wp->w_buffer->b_ml.ml_line_count - wp->w_botline + 1;
     if (below <= 0)
-	return (int)vim_snprintf_safelen((char *)buf, buflen,
+	return (int)mnv_snprintf_safelen((char *)buf, buflen,
 	    "%s", (above == 0) ? _("All") : _("Bot"));
 
     if (above <= 0)
-	return (int)vim_snprintf_safelen((char *)buf, buflen,
+	return (int)mnv_snprintf_safelen((char *)buf, buflen,
 	    "%s", _("Top"));
 
     int perc = calc_percentage(above, above + below);
     char tmp[8];
     // localized percentage value
-    vim_snprintf(tmp, sizeof(tmp), _("%d%%"), perc);
-    return (int)vim_snprintf_safelen((char *)buf, buflen, _("%3s"), tmp);
+    mnv_snprintf(tmp, sizeof(tmp), _("%d%%"), perc);
+    return (int)mnv_snprintf_safelen((char *)buf, buflen, _("%3s"), tmp);
 }
 
 /*
@@ -5645,7 +5645,7 @@ append_arg_number(
 	case 3: msg = _(" (file (%d) of %d)"); break;
     }
 
-    return (int)vim_snprintf_safelen((char *)buf, buflen, msg,
+    return (int)mnv_snprintf_safelen((char *)buf, buflen, msg,
 						  wp->w_arg_idx + 1, ARGCOUNT);
 }
 
@@ -5668,21 +5668,21 @@ fix_fname(char_u  *fname)
 #ifdef UNIX
     return FullName_save(fname, TRUE);
 #else
-    if (!vim_isAbsName(fname)
+    if (!mnv_isAbsName(fname)
 	    || strstr((char *)fname, "..") != NULL
 	    || strstr((char *)fname, "//") != NULL
 # ifdef BACKSLASH_IN_FILENAME
 	    || strstr((char *)fname, "\\\\") != NULL
 # endif
 # if defined(MSWIN)
-	    || vim_strchr(fname, '~') != NULL
+	    || mnv_strchr(fname, '~') != NULL
 	    || fname[0] == '/'
 	    || fname[0] == '\\'
 # endif
 	    )
 	return FullName_save(fname, FALSE);
 
-    fname = vim_strsave(fname);
+    fname = mnv_strsave(fname);
 
 # ifdef USE_FNAME_CASE
     if (fname != NULL)
@@ -5722,7 +5722,7 @@ fname_expand(
 	rfname = mch_resolve_path(*ffname, FALSE);
 	if (rfname != NULL)
 	{
-	    vim_free(*ffname);
+	    mnv_free(*ffname);
 	    *ffname = rfname;
 	    *sfname = rfname;
 	}
@@ -6000,12 +6000,12 @@ chk_modeline(
     line_end = s + ml_get_len(lnum);
     for (; *s != NUL; ++s)
     {
-	if (prev == -1 || vim_isspace(prev))
+	if (prev == -1 || mnv_isspace(prev))
 	{
 	    if ((prev != -1 && STRNCMP(s, "ex:", (size_t)3) == 0)
 		    || STRNCMP(s, "vi:", (size_t)3) == 0)
 		break;
-	    // Accept both "vim" and "Vim".
+	    // Accept both "mnv" and "MNV".
 	    if ((s[0] == 'v' || s[0] == 'V') && s[1] == 'i' && s[2] == 'm')
 	    {
 		int vers;
@@ -6019,10 +6019,10 @@ chk_modeline(
 			&& (s[0] != 'V'
 				  || STRNCMP(skipwhite(e + 1), "set", 3) == 0)
 			&& (s[3] == ':'
-			    || (VIM_VERSION_100 >= vers && SAFE_isdigit(s[3]))
-			    || (VIM_VERSION_100 < vers && s[3] == '<')
-			    || (VIM_VERSION_100 > vers && s[3] == '>')
-			    || (VIM_VERSION_100 == vers && s[3] == '=')))
+			    || (MNV_VERSION_100 >= vers && SAFE_isdigit(s[3]))
+			    || (MNV_VERSION_100 < vers && s[3] == '<')
+			    || (MNV_VERSION_100 > vers && s[3] == '>')
+			    || (MNV_VERSION_100 == vers && s[3] == '=')))
 		    break;
 	    }
 	}
@@ -6035,14 +6035,14 @@ chk_modeline(
 	char_u	*linecopy;		// local copy of any modeline found
 	int	end;
 
-	do				// skip over "ex:", "vi:" or "vim:"
+	do				// skip over "ex:", "vi:" or "mnv:"
 	    ++s;
 	while (s[-1] != ':');
 
 	len = (size_t)(line_end - s);		// remember the line length
 						// so we can restore 'line_end'
 						// after the copy
-	s = linecopy = vim_strnsave(s, len);	// copy the line, it will change
+	s = linecopy = mnv_strnsave(s, len);	// copy the line, it will change
 	if (linecopy == NULL)
 	    return FAIL;
 
@@ -6117,7 +6117,7 @@ chk_modeline(
 
 	ESTACK_CHECK_NOW;
 	estack_pop();
-	vim_free(linecopy);
+	mnv_free(linecopy);
     }
     return retval;
 }
@@ -6396,7 +6396,7 @@ buf_contents_changed(buf_T *buf)
 		}
 	}
     }
-    vim_free(ea.cmd);
+    mnv_free(ea.cmd);
 
     // restore curwin/curbuf and a few other things
     aucmd_restbuf(&aco);

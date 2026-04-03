@@ -1,0 +1,13 @@
+" Test for options
+
+" opt_test.mnv is generated from src/optiondefs.h and runtime/doc/options.txt
+" using util/gen_opt_test.mnv
+if filereadable('opt_test.mnv')
+  source opt_test.mnv
+else
+  func Test_set_values()
+    throw 'Skipped: opt_test.mnv does not exist'
+  endfunc
+endif
+
+" mnv: shiftwidth=2 sts=2 expandtab

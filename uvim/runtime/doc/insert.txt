@@ -1,7 +1,7 @@
-*insert.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*insert.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 						*Insert* *Insert-mode*
@@ -647,7 +647,7 @@ Completion can be done for:
 6. tags							|i_CTRL-X_CTRL-]|
 7. file names						|i_CTRL-X_CTRL-F|
 8. definitions or macros				|i_CTRL-X_CTRL-D|
-9. Vim command-line					|i_CTRL-X_CTRL-V|
+9. MNV command-line					|i_CTRL-X_CTRL-V|
 10. User defined completion				|i_CTRL-X_CTRL-U|
 11. omni completion					|i_CTRL-X_CTRL-O|
 12. Spelling suggestions				|i_CTRL-X_s|
@@ -881,9 +881,9 @@ Other uses include translation between two languages, or grouping API
 functions by keyword.
 
 An English word list was added to this github issue:
-https://github.com/vim/vim/issues/629#issuecomment-443293282
+https://github.com/Project-Tick/Project-Tick/issues/629#issuecomment-443293282
 Unpack thesaurus_pkg.zip, put the thesaurus.txt file somewhere, e.g.
-~/.vim/thesaurus/english.txt, and the 'thesaurus' option to this file name.
+~/.mnv/thesaurus/english.txt, and the 'thesaurus' option to this file name.
 
 
 Completing keywords with 'thesaurusfunc'		*compl-thesaurusfunc*
@@ -1004,11 +1004,11 @@ CTRL-X CTRL-D		Search in the current and included files for the
 			unless a double CTRL-X is used.
 
 
-Completing Vim commands					*compl-vim*
+Completing MNV commands					*compl-mnv*
 
 Completion is context-sensitive.  It works like on the Command-line.  It
 completes an Ex command as well as its arguments.  This is useful when writing
-a Vim script.
+a MNV script.
 
 							*i_CTRL-X_CTRL-V*
 CTRL-X CTRL-V		Guess what kind of item is in front of the cursor and
@@ -1023,7 +1023,7 @@ CTRL-X CTRL-V		Guess what kind of item is in front of the cursor and
 			replaces the previous one.
 
 	CTRL-X CTRL-V	Further use of CTRL-X CTRL-V will do the same as
-			CTRL-V.  This allows mapping a key to do Vim command
+			CTRL-V.  This allows mapping a key to do MNV command
 			completion, for example: >
 				:imap <Tab> <C-X><C-V>
 
@@ -1071,7 +1071,7 @@ Completion is done by a function that can be defined by the user with the
 
 See below for how the function is called and an example |complete-functions|.
 For remarks about specific filetypes see |compl-omni-filetypes|.
-More completion scripts will appear, check www.vim.org.  Currently there is a
+More completion scripts will appear, check www.mnv.org.  Currently there is a
 first version for C++.
 
 							*i_CTRL-X_CTRL-O*
@@ -1139,11 +1139,11 @@ CTRL-X CTRL-Z		Stop completion without changing the text.
 
 AUTOCOMPLETION						*ins-autocompletion*
 
-Vim can display a completion menu as you type, similar to using |i_CTRL-N|,
+MNV can display a completion menu as you type, similar to using |i_CTRL-N|,
 but triggered automatically.  See 'autocomplete'.  The menu items are
 collected from the sources listed in the 'complete' option, in order.
 
-A decaying timeout keeps Vim responsive.  Sources earlier in the 'complete'
+A decaying timeout keeps MNV responsive.  Sources earlier in the 'complete'
 list get more time (higher priority), but all sources receive at least a small
 time slice.
 
@@ -1384,7 +1384,7 @@ The same, but now pretending searching for matches is slow: >
 
 INSERT COMPLETION POPUP MENU				*ins-completion-menu*
 							*popupmenu-completion*
-Vim can display the matches in a simplistic popup menu.
+MNV can display the matches in a simplistic popup menu.
 
 The menu is used when:
 - The 'completeopt' option contains "menu" or "menuone".
@@ -1488,8 +1488,8 @@ See |:map-<expr>| for more info.
 
 FILETYPE-SPECIFIC REMARKS FOR OMNI COMPLETION	    *compl-omni-filetypes*
 
-The file used for {filetype} should be autoload/{filetype}complete.vim
-in 'runtimepath'.  Thus for "java" it is autoload/javacomplete.vim.
+The file used for {filetype} should be autoload/{filetype}complete.mnv
+in 'runtimepath'.  Thus for "java" it is autoload/javacomplete.mnv.
 
 
 C							*ft-c-omni*
@@ -1504,30 +1504,30 @@ Universal Ctags is preferred, Exuberant Ctags is no longer being developed.
 
 For Exuberant ctags, version 5.6 or later is recommended.  For version 5.5.4
 you should add a patch that adds the "typename:" field:
-	https://ftp.nluug.nl/pub/vim/unstable/patches/ctags-5.5.4.patch
+	https://ftp.nluug.nl/pub/mnv/unstable/patches/ctags-5.5.4.patch
 A compiled .exe for MS-Windows can be found at:
 	http://ctags.sourceforge.net/
 	https://github.com/universal-ctags/ctags-win32
 
 If you want to complete system functions you can do something like this.  Use
 ctags to generate a tags file for all the system header files: >
-	% ctags -R -f ~/.vim/systags /usr/include /usr/local/include
-In your vimrc file add this tags file to the 'tags' option: >
-	set tags+=~/.vim/systags
+	% ctags -R -f ~/.mnv/systags /usr/include /usr/local/include
+In your mnvrc file add this tags file to the 'tags' option: >
+	set tags+=~/.mnv/systags
 
 When using CTRL-X CTRL-O after a name without any "." or "->" it is completed
 from the tags file directly.  This works for any identifier, also function
 names.  If you want to complete a local variable name, which does not appear
 in the tags file, use CTRL-P instead.
 
-When using CTRL-X CTRL-O after something that has "." or "->" Vim will attempt
+When using CTRL-X CTRL-O after something that has "." or "->" MNV will attempt
 to recognize the type of the variable and figure out what members it has.
 This means only members valid for the variable will be listed.
 
 When a member name already was complete, CTRL-X CTRL-O will add a "." or
 "->" for composite types.
 
-Vim doesn't include a C compiler, only the most obviously formatted
+MNV doesn't include a C compiler, only the most obviously formatted
 declarations are recognized.  Preprocessor stuff may cause confusion.
 When the same structure name appears in multiple places all possible members
 are included.
@@ -1577,7 +1577,7 @@ choose DOCTYPE and the appropriate data file will be loaded and used for all
 next completions.
 
 More about format of data file in |xml-omni-datafile|.  Some of the data files
-may be found on the Vim website (|www|).
+may be found on the MNV website (|www|).
 
 Note that b:html_omni_flavor may point to a file with any XML data.  This
 makes possible to mix PHP (|ft-php-omni|) completion with any XML dialect
@@ -1655,7 +1655,7 @@ Script completes:
 - class names after "new" declaration
 
 
-Note: when doing completion first time Vim will load all necessary data into
+Note: when doing completion first time MNV will load all necessary data into
 memory.  It may take several seconds.  After next use of completion delay
 should not be noticeable.
 
@@ -1666,7 +1666,7 @@ original HTML files completion of tags (and only tags) isn't context aware.
 
 RUBY							*ft-ruby-omni*
 
-Completion of Ruby code requires that vim be built with |+ruby|.
+Completion of Ruby code requires that mnv be built with |+ruby|.
 
 Ruby completion will parse your buffer on demand in order to provide a list of
 completions.  These completions will be drawn from modules loaded by 'require'
@@ -1686,27 +1686,27 @@ The completions provided by CTRL-X CTRL-O are sensitive to the context:
  4. After ':' or ':foo'		     Symbol name (beginning with 'foo')
 
 Notes:
- - Vim will load/evaluate code in order to provide completions.  This may
+ - MNV will load/evaluate code in order to provide completions.  This may
    cause some code execution, which may be a concern.  This is no longer
    enabled by default, to enable this feature add >
      let g:rubycomplete_buffer_loading = 1
-<- In context 1 above, Vim can parse the entire buffer to add a list of
+<- In context 1 above, MNV can parse the entire buffer to add a list of
    classes to the completion results.  This feature is turned off by default,
    to enable it add >
      let g:rubycomplete_classes_in_global = 1
-<  to your vimrc
+<  to your mnvrc
  - In context 2 above, anonymous classes are not supported.
- - In context 3 above, Vim will attempt to determine the methods supported by
+ - In context 3 above, MNV will attempt to determine the methods supported by
    the object.
- - Vim can detect and load the Rails environment for files within a rails
+ - MNV can detect and load the Rails environment for files within a rails
    project.  The feature is disabled by default, to enable it add >
      let g:rubycomplete_rails = 1
-<  to your vimrc
+<  to your mnvrc
 
 
-VIM							*ft-vim-omni*
+MNV							*ft-mnv-omni*
 
-Simple completion of Vim script and Vim9 script languages.
+Simple completion of MNV script and MNV9 script languages.
 
 Complete:
 
@@ -1736,18 +1736,18 @@ Notes
 
 SYNTAX							*ft-syntax-omni*
 
-Vim has the ability to color syntax highlight nearly 500 languages.  Part of
+MNV has the ability to color syntax highlight nearly 500 languages.  Part of
 this highlighting includes knowing what keywords are part of a language.  Many
 filetypes already have custom completion scripts written for them, the
 syntaxcomplete plugin provides basic completion for all other filetypes.  It
-does this by populating the omni completion list with the text Vim already
+does this by populating the omni completion list with the text MNV already
 knows how to color highlight.  It can be used for any filetype and provides a
 minimal language-sensitive completion.
 
 To enable syntax code completion you can run: >
     setlocal omnifunc=syntaxcomplete#Complete
 
-You can automate this by placing the following in your |.vimrc| (after any
+You can automate this by placing the following in your |.mnvrc| (after any
 ":filetype" command): >
     if has("autocmd") && exists("+omnifunc")
 	autocmd Filetype *
@@ -1775,7 +1775,7 @@ phpFunctions.
 
 If you wish non-filetype syntax items to also be included, you can use a
 regular expression syntax (added in version 13.0 of
-autoload/syntaxcomplete.vim) to add items.  Looking at the output from
+autoload/syntaxcomplete.mnv) to add items.  Looking at the output from
 ":syntax list" while editing a PHP file I can see some of these entries: >
     htmlArg,htmlTag,htmlTagName,javaScriptStatement,javaScriptGlobalObjects
 
@@ -1797,7 +1797,7 @@ items.  There are two ways to prune this list (if necessary).  If you find
 certain syntax groups you do not wish displayed you can use two different
 methods to identify these groups.  The first specifically lists the syntax
 groups by name.  The second uses a regular expression to identify both
-syntax groups.  Simply add one the following to your vimrc: >
+syntax groups.  Simply add one the following to your mnvrc: >
     let g:omni_syntax_group_exclude_php = 'phpCoreConstant,phpConstant'
     let g:omni_syntax_group_exclude_php = 'php\w*Constant'
 
@@ -1814,7 +1814,7 @@ include the "-", call-with-output-file.  Depending on your filetype, this may
 not provide the words you are expecting.  Setting the
 g:omni_syntax_use_iskeyword option to 0 will force the syntax plugin to break
 on word characters.   This can be controlled adding the following to your
-vimrc: >
+mnvrc: >
     let g:omni_syntax_use_iskeyword = 0
 
 For plugin developers, the plugin exposes a public function OmniSyntaxList.
@@ -1868,7 +1868,7 @@ PHP code and SQL code at the same time.
 
 XML							*ft-xml-omni*
 
-Vim 7 provides a mechanism for context aware completion of XML files.  It
+MNV 7 provides a mechanism for context aware completion of XML files.  It
 depends on a special |xml-omni-datafile| and two commands: |:XMLns| and
 |:XMLent|.  Features are:
 
@@ -1883,10 +1883,10 @@ depends on a special |xml-omni-datafile| and two commands: |:XMLns| and
 Format of XML data file					*xml-omni-datafile*
 
 XML data files are stored in the "autoload/xml" directory in 'runtimepath'.
-Vim distribution provides examples of data files in the
-"$VIMRUNTIME/autoload/xml" directory.  They have a meaningful name which will
+MNV distribution provides examples of data files in the
+"$MNVRUNTIME/autoload/xml" directory.  They have a meaningful name which will
 be used in commands.  It should be a unique name which will not create
-conflicts.  For example, the name xhtml10s.vim means it is the data file for
+conflicts.  For example, the name xhtml10s.mnv means it is the data file for
 XHTML 1.0 Strict.
 
 Each file contains a variable with a name like g:xmldata_xhtml10s .  It is
@@ -1905,8 +1905,8 @@ of possible children.  The second element is a |Dictionary| with the names of
 attributes as keys and the possible values of attributes as values.  Example: >
 
     let g:xmldata_crippled = {
-    \ "vimxmlentities": ["amp", "lt", "gt", "apos", "quot"],
-    \ 'vimxmlroot': ['tag1'],
+    \ "mnvxmlentities": ["amp", "lt", "gt", "apos", "quot"],
+    \ 'mnvxmlroot': ['tag1'],
     \ 'tag1':
     \ [ ['childoftag1a', 'childoftag1b'], {'attroftag1a': [],
     \ 'attroftag1b': ['valueofattr1', 'valueofattr2']}],
@@ -1914,12 +1914,12 @@ attributes as keys and the possible values of attributes as values.  Example: >
     \ [ [], {'attrofchild': ['attrofchild']}],
     \ 'childoftag1b':
     \ [ ['childoftag1a'], {'attrofchild': []}],
-    \ "vimxmltaginfo": {
+    \ "mnvxmltaginfo": {
     \ 'tag1': ['Menu info', 'Long information visible in preview window']},
-    \ 'vimxmlattrinfo': {
+    \ 'mnvxmlattrinfo': {
     \ 'attrofchild': ['Menu info', 'Long information visible in preview window']}}
 
-This example would be put in the "autoload/xml/crippled.vim" file and could
+This example would be put in the "autoload/xml/crippled.mnv" file and could
 help to write this file: >
 
     <tag1 attroftag1b="valueofattr1">
@@ -1935,30 +1935,30 @@ help to write this file: >
 
 In the example four special elements are visible:
 
-1. "vimxmlentities" - a special key with List containing entities of this XML
+1. "mnvxmlentities" - a special key with List containing entities of this XML
    dialect.
 2. If the list containing possible values of attributes has one element and
    this element is equal to the name of the attribute this attribute will be
    treated as boolean and inserted as 'attrname' and not as 'attrname="'
-3. "vimxmltaginfo" - a special key with a Dictionary containing tag
+3. "mnvxmltaginfo" - a special key with a Dictionary containing tag
    names as keys and two element List as values, for additional menu info and
    the long description.
-4. "vimxmlattrinfo" - special key with Dictionary containing attribute names
+4. "mnvxmlattrinfo" - special key with Dictionary containing attribute names
    as keys and two element List as values, for additional menu info and long
    description.
 
 Note: Tag names in the data file MUST not contain a namespace description.
-Check xsl.vim for an example.
+Check xsl.mnv for an example.
 Note: All data and functions are publicly available as global
 variables/functions and can be used for personal editing functions.
 
 
-DTD -> Vim							*dtd2vim*
+DTD -> MNV							*dtd2mnv*
 
-On |www| is the script |dtd2vim| which parses DTD and creates an XML data file
-for Vim XML omni completion.
+On |www| is the script |dtd2mnv| which parses DTD and creates an XML data file
+for MNV XML omni completion.
 
-    dtd2vim: http://www.vim.org/scripts/script.php?script_id=1462
+    dtd2mnv: http://www.mnv.org/scripts/script.php?script_id=1462
 
 Check the beginning of that file for usage details.
 The script requires perl and:
@@ -1970,7 +1970,7 @@ Commands
 
 :XMLns {name} [{namespace}]					*:XMLns*
 
-Vim has to know which data file should be used and with which namespace.  For
+MNV has to know which data file should be used and with which namespace.  For
 loading of the data file and connecting data with the proper namespace use
 |:XMLns| command.  The first (obligatory) argument is the name of the data
 (xhtml10s, xsl).  The second argument is the code of namespace (h, xsl).  When
@@ -2003,7 +2003,7 @@ Will complete to an appropriate XHTML tag, and in this situation: >
 Will complete to an appropriate XSL tag.
 
 
-The script xmlcomplete.vim, provided through the |autoload| mechanism,
+The script xmlcomplete.mnv, provided through the |autoload| mechanism,
 has the xmlcomplete#GetLastOpenTag() function which can be used in XML files
 to get the name of the last open tag (b:unaryTagsStack has to be defined): >
 
@@ -2088,7 +2088,7 @@ too long when appending characters a line break is automatically inserted.
 			inserted after the current line.
 			Adding [!] toggles 'autoindent' for the time this
 			command is executed.
-			This command is not supported in |Vim9| script,
+			This command is not supported in |MNV9| script,
 			because it is too easily confused with a variable
 			name.
 
@@ -2098,7 +2098,7 @@ too long when appending characters a line break is automatically inserted.
 			inserted before the current line.
 			Adding [!] toggles 'autoindent' for the time this
 			command is executed.
-			This command is not supported in |Vim9| script,
+			This command is not supported in |MNV9| script,
 			because it is too easily confused with a variable
 			name.
 
@@ -2219,7 +2219,7 @@ If 'fileformat' is "mac", a <NL> in the file is internally represented by a
 <CR>.  This is to avoid confusion with a <NL> which is used to represent a
 <NUL>.  See |CR-used-for-NL|.
 
-If the 'fileformats' option is not empty Vim tries to recognize the type of
+If the 'fileformats' option is not empty MNV tries to recognize the type of
 <EOL> (see |file-formats|).  However, the 'fileformat' option will not be
 changed, the detected format is only used while reading the file.
 A similar thing happens with 'fileencodings'.
@@ -2238,7 +2238,7 @@ buffer.  Useful when you are editing e-mail and want to include a binary
 file.
 
 							*read-messages*
-When reading a file Vim will display a message with information about the read
+When reading a file MNV will display a message with information about the read
 file.  In the table is an explanation for some of the items.  The others are
 self explanatory.  Using the long or the short version depends on the
 'shortmess' option.
@@ -2262,4 +2262,4 @@ self explanatory.  Using the long or the short version depends on the
 	[READ ERRORS]			not all of the file could be read
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

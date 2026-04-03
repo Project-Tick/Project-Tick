@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# italian.nsi : Italian language strings for gvim NSIS installer.
+# italian.nsi : Italian language strings for gmnv NSIS installer.
 #
 # Locale ID    : 1040
 # Locale Name  : it
@@ -27,14 +27,14 @@ LicenseLangString page_lic_file ${LANG_ITALIAN} "..\lang\LICENSE.it.nsis.txt"
 # Translated README.txt file, which is opened after installation          {{{1
 ##############################################################################
 
-LangString vim_readme_file ${LANG_ITALIAN} "README.it.txt"
+LangString mnv_readme_file ${LANG_ITALIAN} "README.it.txt"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_ITALIAN} \
-#    "Cartella installazione (il percorso deve finire con $\"vim$\")"
+#    "Cartella installazione (il percorso deve finire con $\"mnv$\")"
 
 LangString str_show_readme          ${LANG_ITALIAN} \
     "Visualizza file README a fine installazione"
@@ -57,33 +57,33 @@ LangString str_type_full            ${LANG_ITALIAN} \
 LangString str_section_old_ver      ${LANG_ITALIAN} \
     "Disinstalla versioni esistenti"
 LangString str_desc_old_ver         ${LANG_ITALIAN} \
-    "Disinstalla versioni esistenti di Vim."
+    "Disinstalla versioni esistenti di MNV."
 
 LangString str_section_exe          ${LANG_ITALIAN} \
-    "GUI e file supporto Vim"
+    "GUI e file supporto MNV"
 LangString str_desc_exe             ${LANG_ITALIAN} \
-    "GUI programmi e file di supporto Vim.  Questa componente è indispensabile."
+    "GUI programmi e file di supporto MNV.  Questa componente è indispensabile."
 
 LangString str_section_console      ${LANG_ITALIAN} \
-    "Console Vim (vim.exe per MS-DOS)"
+    "Console MNV (mnv.exe per MS-DOS)"
 LangString str_desc_console         ${LANG_ITALIAN} \
-    "Versione console di Vim (vim.exe)."
+    "Versione console di MNV (mnv.exe)."
 
 LangString str_section_batch        ${LANG_ITALIAN} \
     "Crea file .bat"
 LangString str_desc_batch           ${LANG_ITALIAN} \
-    "Crea file .bat per varianti di Vim nella cartella \
+    "Crea file .bat per varianti di MNV nella cartella \
      di Windows, per utilizzo da riga di comando."
 
 LangString str_group_icons          ${LANG_ITALIAN} \
-    "Crea icone Vim"
+    "Crea icone MNV"
 LangString str_desc_icons           ${LANG_ITALIAN} \
-    "Crea icone Vim per rendere facile l'accesso."
+    "Crea icone MNV per rendere facile l'accesso."
 
 LangString str_section_desktop      ${LANG_ITALIAN} \
     "Icone sul Desktop"
 LangString str_desc_desktop         ${LANG_ITALIAN} \
-    "Crea icone programma gVim sul desktop."
+    "Crea icone programma gMNV sul desktop."
 
 LangString str_section_start_menu   ${LANG_ITALIAN} \
     "Gruppo programmi menù START"
@@ -93,45 +93,45 @@ LangString str_desc_start_menu      ${LANG_ITALIAN} \
 #LangString str_section_quick_launch ${LANG_ITALIAN} \
 #    "Barra avvio veloce"
 #LangString str_desc_quick_launch    ${LANG_ITALIAN} \
-#    "Aggiunge un collegamento a Vim nella barra di avvio veloce."
+#    "Aggiunge un collegamento a MNV nella barra di avvio veloce."
 
 LangString str_section_edit_with    ${LANG_ITALIAN} \
-    "Aggiungi Vim al menù contestuale"
+    "Aggiungi MNV al menù contestuale"
 LangString str_desc_edit_with       ${LANG_ITALIAN} \
-    "Aggiunge Vim al menu contestuale $\"Apri con...$\"."
+    "Aggiunge MNV al menu contestuale $\"Apri con...$\"."
 
 #LangString str_section_edit_with32  ${LANG_ITALIAN} \
 #    "Versione a 32 bit"
 #LangString str_desc_edit_with32     ${LANG_ITALIAN} \
-#    "Aggiungi Vim al menu contestuale $\"Apri con...$\" \
+#    "Aggiungi MNV al menu contestuale $\"Apri con...$\" \
 #     per applicazioni a 32 bit."
 
 #LangString str_section_edit_with64  ${LANG_ITALIAN} \
 #    "Versione a 64 bit"
 #LangString str_desc_edit_with64     ${LANG_ITALIAN} \
-#    "Aggiunge Vim al menu contestuale $\"Apri con...$\" \
+#    "Aggiunge MNV al menu contestuale $\"Apri con...$\" \
 #     per applicazioni a 64 bit."
 
-LangString str_section_vim_rc       ${LANG_ITALIAN} \
+LangString str_section_mnv_rc       ${LANG_ITALIAN} \
     "Crea configurazione predefinita"
-LangString str_desc_vim_rc          ${LANG_ITALIAN} \
-    "Crea, se non ne esiste già uno, un file configurazione predefinito (_vimrc) ."
+LangString str_desc_mnv_rc          ${LANG_ITALIAN} \
+    "Crea, se non ne esiste già uno, un file configurazione predefinito (_mnvrc) ."
 
 LangString str_group_plugin         ${LANG_ITALIAN} \
     "Crea cartella plugin"
 LangString str_desc_plugin          ${LANG_ITALIAN} \
     "Crea cartella plugin.  I plugin consentono di aggiungere funzionalità \
-     a Vim copiando i relativi file in una di queste cartelle."
+     a MNV copiando i relativi file in una di queste cartelle."
 
 LangString str_section_plugin_home  ${LANG_ITALIAN} \
     "Privata"
 LangString str_desc_plugin_home     ${LANG_ITALIAN} \
     "Crea cartella plugin nella cartella HOME."
 
-LangString str_section_plugin_vim   ${LANG_ITALIAN} \
+LangString str_section_plugin_mnv   ${LANG_ITALIAN} \
     "Condivisa"
-LangString str_desc_plugin_vim      ${LANG_ITALIAN} \
-    "Crea cartella plugin nella cartella di installazione di Vim \
+LangString str_desc_plugin_mnv      ${LANG_ITALIAN} \
+    "Crea cartella plugin nella cartella di installazione di MNV \
      per uso da parte di tutti gli utenti di questo sistema."
 
 LangString str_section_nls          ${LANG_ITALIAN} \
@@ -140,14 +140,14 @@ LangString str_desc_nls             ${LANG_ITALIAN} \
     "Installa i file per il supporto nativo multilingua."
 
 LangString str_unsection_register   ${LANG_ITALIAN} \
-    "Rimuovi Vim dal registro"
+    "Rimuovi MNV dal registro"
 LangString str_desc_unregister      ${LANG_ITALIAN} \
-    "Rimuove Vim dal registro di configurazione sistema."
+    "Rimuove MNV dal registro di configurazione sistema."
 
 LangString str_unsection_exe        ${LANG_ITALIAN} \
-    "Elimina programmi/file di supporto Vim"
+    "Elimina programmi/file di supporto MNV"
 LangString str_desc_rm_exe          ${LANG_ITALIAN} \
-    "Elimina tutti i programmi/file di supporto di Vim."
+    "Elimina tutti i programmi/file di supporto di MNV."
 
 LangString str_ungroup_plugin       ${LANG_ITALIAN} \
     "Elimina cartelle plugin"
@@ -159,15 +159,15 @@ LangString str_unsection_plugin_home ${LANG_ITALIAN} \
 LangString str_desc_rm_plugin_home  ${LANG_ITALIAN} \
     "Elimina cartelle plugin nella cartella HOME."
 
-LangString str_unsection_plugin_vim ${LANG_ITALIAN} \
+LangString str_unsection_plugin_mnv ${LANG_ITALIAN} \
     "Condivise"
-LangString str_desc_rm_plugin_vim   ${LANG_ITALIAN} \
-    "Elimina cartelle plugin nella cartella di installazione di Vim."
+LangString str_desc_rm_plugin_mnv   ${LANG_ITALIAN} \
+    "Elimina cartelle plugin nella cartella di installazione di MNV."
 
 LangString str_unsection_rootdir    ${LANG_ITALIAN} \
-    "Elimina la cartella di installazione di Vim"
+    "Elimina la cartella di installazione di MNV"
 LangString str_desc_rm_rootdir      ${LANG_ITALIAN} \
-    "Elimina la cartella di installazione di Vim. Contiene i file di configurazione!"
+    "Elimina la cartella di installazione di MNV. Contiene i file di configurazione!"
 
 
 ##############################################################################
@@ -175,30 +175,30 @@ LangString str_desc_rm_rootdir      ${LANG_ITALIAN} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_ITALIAN} \
-#    "Rilevate nel sistema $vim_old_ver_count versioni di Vim.$\r$\n\
+#    "Rilevate nel sistema $mnv_old_ver_count versioni di MNV.$\r$\n\
 #     Questo programma di installazione può gestire solo \
-#     ${VIM_MAX_OLD_VER} versioni.$\r$\n\
+#     ${MNV_MAX_OLD_VER} versioni.$\r$\n\
 #     Disinstalla qualche versione precedente e ricomincia."
 
 #LangString str_msg_invalid_root  ${LANG_ITALIAN} \
-#    "Nome cartella di installazione non valida: $vim_install_root!$\r$\n\
-#     Dovrebbe terminare con $\"vim$\"."
+#    "Nome cartella di installazione non valida: $mnv_install_root!$\r$\n\
+#     Dovrebbe terminare con $\"mnv$\"."
 
 #LangString str_msg_bin_mismatch  ${LANG_ITALIAN} \
 #    "Conflitto nella cartella di installazione!$\r$\n$\r$\n\
-#     La cartella di installazione dev'essere $\"$vim_bin_path$\",$\r$\n\
+#     La cartella di installazione dev'essere $\"$mnv_bin_path$\",$\r$\n\
 #     ma il sistema indica che il percorso è $\"$INSTDIR$\"."
 
-#LangString str_msg_vim_running   ${LANG_ITALIAN} \
-#    "Vim è ancora in esecuzione nel sistema.$\r$\n\
-#     Per continuare chiudi tutte le sessioni attive di Vim."
+#LangString str_msg_mnv_running   ${LANG_ITALIAN} \
+#    "MNV è ancora in esecuzione nel sistema.$\r$\n\
+#     Per continuare chiudi tutte le sessioni attive di MNV."
 
 #LangString str_msg_register_ole  ${LANG_ITALIAN} \
-#    "Tentativo di registrazione di Vim con OLE. \
+#    "Tentativo di registrazione di MNV con OLE. \
 #     Non ci sono messaggi che indicano se l'operazione è riuscita."
 
 #LangString str_msg_unreg_ole     ${LANG_ITALIAN} \
-#    "Tentativo di rimozione di VIM dal registro via OLE. \
+#    "Tentativo di rimozione di MNV dal registro via OLE. \
 #     Non ci sono messaggi che indicano se l'operazione è riuscita."
 
 #LangString str_msg_rm_start      ${LANG_ITALIAN} \
@@ -233,39 +233,39 @@ LangString str_msg_rm_exe_fail   ${LANG_ITALIAN} \
      I file vanno rimossi manualmente."
 
 #LangString str_msg_rm_root_fail  ${LANG_ITALIAN} \
-#    "AVVISO: impossibile eliminare $\"$vim_install_root$\", non è vuota!"
+#    "AVVISO: impossibile eliminare $\"$mnv_install_root$\", non è vuota!"
 
 LangString str_msg_uninstalling  ${LANG_ITALIAN} \
-    "Disinstallazione vecchia versione Vim..."
+    "Disinstallazione vecchia versione MNV..."
 
 LangString str_msg_registering   ${LANG_ITALIAN} \
-    "Aggiunta di Vim al registro..."
+    "Aggiunta di MNV al registro..."
 
 LangString str_msg_unregistering ${LANG_ITALIAN} \
-    "Rimozione di Vim dal registro..."
+    "Rimozione di MNV dal registro..."
 
 
 ##############################################################################
 # Dialog Box                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_ITALIAN} \
-    "Scelta impostazioni _vimrc"
-LangString str_vimrc_page_subtitle ${LANG_ITALIAN} \
+LangString str_mnvrc_page_title    ${LANG_ITALIAN} \
+    "Scelta impostazioni _mnvrc"
+LangString str_mnvrc_page_subtitle ${LANG_ITALIAN} \
     "Scelta impostazioni funzionalità aggiuntive, tastiera e mouse."
 
 LangString str_msg_compat_title    ${LANG_ITALIAN} \
-    " Comportamento come Vi / Vim "
+    " Comportamento come Vi / MNV "
 LangString str_msg_compat_desc     ${LANG_ITALIAN} \
     "&Compatibilità e funzionalità"
 LangString str_msg_compat_vi       ${LANG_ITALIAN} \
     "Compatibile Vi"
-LangString str_msg_compat_vim      ${LANG_ITALIAN} \
-    "Vim originale"
+LangString str_msg_compat_mnv      ${LANG_ITALIAN} \
+    "MNV originale"
 LangString str_msg_compat_defaults ${LANG_ITALIAN} \
-    "Vim con alcune funzionalità aggiuntive (defaults.vim)"
+    "MNV con alcune funzionalità aggiuntive (defaults.mnv)"
 LangString str_msg_compat_all      ${LANG_ITALIAN} \
-    "Vim con tutte le funzionalità aggiuntive (vimrc_example.vim) (predefinito)"
+    "MNV con tutte le funzionalità aggiuntive (mnvrc_example.mnv) (predefinito)"
 
 LangString str_msg_keymap_title   ${LANG_ITALIAN} \
     " Mappature tastiera "

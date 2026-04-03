@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# german.nsi : German language strings for gvim NSIS installer.
+# german.nsi : German language strings for gmnv NSIS installer.
 #
 # Locale ID    : 1031
 # Locale Name  : de
@@ -28,15 +28,15 @@ LicenseLangString page_lic_file 0 "..\lang\LICENSE.nsis.txt"
 # Translated README.txt file, which is opened after installation          {{{1
 ##############################################################################
 
-LangString vim_readme_file 0 "README.txt"
-#LangString vim_readme_file ${LANG_GERMAN} "README.de.txt"
+LangString mnv_readme_file 0 "README.txt"
+#LangString mnv_readme_file ${LANG_GERMAN} "README.de.txt"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_GERMAN} \
-#    "Zielverzeichnis auswählen (muss auf $\"vim$\" enden)"
+#    "Zielverzeichnis auswählen (muss auf $\"mnv$\" enden)"
 
 LangString str_show_readme          ${LANG_GERMAN} \
     "README-Datei nach der Installation anzeigen"
@@ -62,68 +62,68 @@ LangString str_desc_old_ver         ${LANG_GERMAN} \
     "Vorherige installierte Versionen auf diesem System deinstallieren."
 
 LangString str_section_exe          ${LANG_GERMAN} \
-    "Vim GUI"
+    "MNV GUI"
 LangString str_desc_exe             ${LANG_GERMAN} \
-    "Vim (Anwendung) und Laufzeitdateien (Dieser Teil ist zwingend \
+    "MNV (Anwendung) und Laufzeitdateien (Dieser Teil ist zwingend \
      erforderlich)."
 
 LangString str_section_console      ${LANG_GERMAN} \
-    "Vim Konsolenanwendung"
+    "MNV Konsolenanwendung"
 LangString str_desc_console         ${LANG_GERMAN} \
-    "Konsolenversion von Vim."
+    "Konsolenversion von MNV."
 
 LangString str_section_batch        ${LANG_GERMAN} \
     ".bat-Dateien erstellen"
 LangString str_desc_batch           ${LANG_GERMAN} \
-    ".bat-Dateien erstellen, um Vim in der Konsole auszuführen."
+    ".bat-Dateien erstellen, um MNV in der Konsole auszuführen."
 
 LangString str_group_icons          ${LANG_GERMAN} \
-    "Vim-Verknüpfungen erstellen"
+    "MNV-Verknüpfungen erstellen"
 LangString str_desc_icons           ${LANG_GERMAN} \
-    "Verknüpfungen mit Vim für einfachen Aufruf erstellen."
+    "Verknüpfungen mit MNV für einfachen Aufruf erstellen."
 
 LangString str_section_desktop      ${LANG_GERMAN} \
     "Auf dem Desktop"
 LangString str_desc_desktop         ${LANG_GERMAN} \
-    "Icons für GVim auf dem Desktop erstellen."
+    "Icons für GMNV auf dem Desktop erstellen."
 
 LangString str_section_start_menu   ${LANG_GERMAN} \
     "Im Startmenü"
 LangString str_desc_start_menu      ${LANG_GERMAN} \
-    "Vim im Programmverzeichnis des Startmenüs hinzufügen."
+    "MNV im Programmverzeichnis des Startmenüs hinzufügen."
 
 #LangString str_section_quick_launch ${LANG_GERMAN} \
 #    "In der Schnellstartleiste"
 #LangString str_desc_quick_launch    ${LANG_GERMAN} \
-#    "Verknüpfung zu Vim in der Schnellstartleiste ablegen."
+#    "Verknüpfung zu MNV in der Schnellstartleiste ablegen."
 
 LangString str_section_edit_with    ${LANG_GERMAN} \
-    "Vim zum Kontextmenü hinzufügen"
+    "MNV zum Kontextmenü hinzufügen"
 LangString str_desc_edit_with       ${LANG_GERMAN} \
-    "Vim in das $\"Öffnen mit...$\"-Kontextmenü einfügen."
+    "MNV in das $\"Öffnen mit...$\"-Kontextmenü einfügen."
 
 #LangString str_section_edit_with32  ${LANG_GERMAN} \
 #    "32-Bit-Version"
 #LangString str_desc_edit_with32     ${LANG_GERMAN} \
-#    "Vim in das $\"Öffnen mit...$\"-Kontextmenü \
+#    "MNV in das $\"Öffnen mit...$\"-Kontextmenü \
 #     für 32-Bit-Anwendungen integrieren."
 
 #LangString str_section_edit_with64  ${LANG_GERMAN} \
 #    "64-Bit-Version"
 #LangString str_desc_edit_with64     ${LANG_GERMAN} \
-#    "Vim in das $\"Öffnen mit...$\"-Kontextmenü \
+#    "MNV in das $\"Öffnen mit...$\"-Kontextmenü \
 #     für 64-Bit-Anwendungen integrieren."
 
-LangString str_section_vim_rc       ${LANG_GERMAN} \
+LangString str_section_mnv_rc       ${LANG_GERMAN} \
     "Standard-Konfigurationsdatei erstellen"
-LangString str_desc_vim_rc          ${LANG_GERMAN} \
-    "Eine Standard-Konfigurationsdatei (_vimrc) erstellen, \
+LangString str_desc_mnv_rc          ${LANG_GERMAN} \
+    "Eine Standard-Konfigurationsdatei (_mnvrc) erstellen, \
      falls noch keine existiert."
 
 LangString str_group_plugin         ${LANG_GERMAN} \
     "Plugin-Verzeichnisse anlegen"
 LangString str_desc_plugin          ${LANG_GERMAN} \
-    "Plugin-Verzeichnisse anlegen. Plugins erlauben es, Vim \
+    "Plugin-Verzeichnisse anlegen. Plugins erlauben es, MNV \
      um zusätzliche Funktionen zu erweitern."
 
 LangString str_section_plugin_home  ${LANG_GERMAN} \
@@ -131,10 +131,10 @@ LangString str_section_plugin_home  ${LANG_GERMAN} \
 LangString str_desc_plugin_home     ${LANG_GERMAN} \
     "Erstelle Plugin-Verzeichnis im HOME Benutzerverzeichnis."
 
-LangString str_section_plugin_vim   ${LANG_GERMAN} \
+LangString str_section_plugin_mnv   ${LANG_GERMAN} \
     "Freigegeben"
-LangString str_desc_plugin_vim      ${LANG_GERMAN} \
-    "Plugin-Verzeichnisse im Vim-Installationsverzeichnis erstellen. Diese werden \
+LangString str_desc_plugin_mnv      ${LANG_GERMAN} \
+    "Plugin-Verzeichnisse im MNV-Installationsverzeichnis erstellen. Diese werden \
      für alle Benutzer dieses Systems genutzt."
 
 LangString str_section_nls          ${LANG_GERMAN} \
@@ -143,14 +143,14 @@ LangString str_desc_nls             ${LANG_GERMAN} \
     "Dateien zur Unterstützung anderer Sprachen als Englisch installieren."
 
 LangString str_unsection_register   ${LANG_GERMAN} \
-    "Vim deinstallieren"
+    "MNV deinstallieren"
 LangString str_desc_unregister      ${LANG_GERMAN} \
-    "Vim vom System entfernen."
+    "MNV vom System entfernen."
 
 LangString str_unsection_exe        ${LANG_GERMAN} \
-    "Vim-Anwendung und Laufzeitdateien entfernen"
+    "MNV-Anwendung und Laufzeitdateien entfernen"
 LangString str_desc_rm_exe          ${LANG_GERMAN} \
-    "Alle Vim-Anwendungen und Laufzeitdateien von diesem System entfernen."
+    "Alle MNV-Anwendungen und Laufzeitdateien von diesem System entfernen."
 
 LangString str_ungroup_plugin       ${LANG_GERMAN} \
     "Entferne Plugin-Verzeichnisse"
@@ -162,15 +162,15 @@ LangString str_unsection_plugin_home ${LANG_GERMAN} \
 LangString str_desc_rm_plugin_home  ${LANG_GERMAN} \
     "Entfernt die Plugin-Verzeichnisse aus dem HOME Benutzerverzeichnis."
 
-LangString str_unsection_plugin_vim ${LANG_GERMAN} \
+LangString str_unsection_plugin_mnv ${LANG_GERMAN} \
     "Freigegeben"
-LangString str_desc_rm_plugin_vim   ${LANG_GERMAN} \
-    "Entfernt das Plugin-Verzeichnis aus dem Vim-Installationsverzeichnis."
+LangString str_desc_rm_plugin_mnv   ${LANG_GERMAN} \
+    "Entfernt das Plugin-Verzeichnis aus dem MNV-Installationsverzeichnis."
 
 LangString str_unsection_rootdir    ${LANG_GERMAN} \
-    "Entferne Vim Installationsverzeichnis"
+    "Entferne MNV Installationsverzeichnis"
 LangString str_desc_rm_rootdir      ${LANG_GERMAN} \
-    "Entfernt das Vim Installationsverzeichnis. Es enthält die Vim Konfigurationsdateien!"
+    "Entfernt das MNV Installationsverzeichnis. Es enthält die MNV Konfigurationsdateien!"
 
 
 ##############################################################################
@@ -178,23 +178,23 @@ LangString str_desc_rm_rootdir      ${LANG_GERMAN} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_GERMAN} \
-#    "$vim_old_ver_count Vim-Versionen auf diesem System gefunden..$\r$\n\
-#     Dieser Installer kann maximal ${VIM_MAX_OLD_VER} Versionen \
+#    "$mnv_old_ver_count MNV-Versionen auf diesem System gefunden..$\r$\n\
+#     Dieser Installer kann maximal ${MNV_MAX_OLD_VER} Versionen \
 #     handhaben.$\r$\n\
 #     Bitte alte Versionen entfernen und noch einmal probieren."
 
 #LangString str_msg_invalid_root  ${LANG_GERMAN} \
-#    "Nicht gültiges Installationsverzeichnis: $vim_install_root!$\r$\n\
-#     Der Pfad muss auf $\"vim$\" enden."
+#    "Nicht gültiges Installationsverzeichnis: $mnv_install_root!$\r$\n\
+#     Der Pfad muss auf $\"mnv$\" enden."
 
 #LangString str_msg_bin_mismatch  ${LANG_GERMAN} \
 #    "Pfaddiskrepanz!$\r$\n$\r$\n\
-#     Erwarte Anwendungsverzeichnis $\"$vim_bin_path$\",$\r$\n\
+#     Erwarte Anwendungsverzeichnis $\"$mnv_bin_path$\",$\r$\n\
 #     aber fand Anwendungspfad $\"$INSTDIR$\" vor."
 
-#LangString str_msg_vim_running   ${LANG_GERMAN} \
-#    "Laufender Vim-Prozess erkannt.$\r$\n\
-#     Bitte alle laufenden Vim-Prozesse vor dem Fortfahren beenden."
+#LangString str_msg_mnv_running   ${LANG_GERMAN} \
+#    "Laufender MNV-Prozess erkannt.$\r$\n\
+#     Bitte alle laufenden MNV-Prozesse vor dem Fortfahren beenden."
 
 #LangString str_msg_register_ole  ${LANG_GERMAN} \
 #    "Versuche OLE-Registrierung durchzuführen."
@@ -234,7 +234,7 @@ LangString str_msg_rm_exe_fail   ${LANG_GERMAN} \
      Diese Dateien müssen manuell gelöscht werden."
 
 #LangString str_msg_rm_root_fail  ${LANG_GERMAN} \
-#    "Achtung: Kann Verzeichnis $\"$vim_install_root$\" nicht entfernen, \
+#    "Achtung: Kann Verzeichnis $\"$mnv_install_root$\" nicht entfernen, \
 #     weil es nicht leer ist!"
 
 LangString str_msg_uninstalling  ${LANG_GERMAN} \
@@ -251,23 +251,23 @@ LangString str_msg_unregistering ${LANG_GERMAN} \
 # Dialog Box                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_GERMAN} \
-    "Wähle _vimrc Konfigurationsoptionen"
-LangString str_vimrc_page_subtitle ${LANG_GERMAN} \
+LangString str_mnvrc_page_title    ${LANG_GERMAN} \
+    "Wähle _mnvrc Konfigurationsoptionen"
+LangString str_mnvrc_page_subtitle ${LANG_GERMAN} \
     "Wähle Einstellungen zur Kompatibilität, Tastatur und Maus."
 
 LangString str_msg_compat_title    ${LANG_GERMAN} \
-    " Vi / Vim Verhalten "
+    " Vi / MNV Verhalten "
 LangString str_msg_compat_desc     ${LANG_GERMAN} \
     "&Kompatibilität und Erweiterungen"
 LangString str_msg_compat_vi       ${LANG_GERMAN} \
     "Vi-kompatibel"
-LangString str_msg_compat_vim      ${LANG_GERMAN} \
-    "Vim Original"
+LangString str_msg_compat_mnv      ${LANG_GERMAN} \
+    "MNV Original"
 LangString str_msg_compat_defaults ${LANG_GERMAN} \
-    "Vim mit einigen Erweiterungen (Lädt defaults.vim)"
+    "MNV mit einigen Erweiterungen (Lädt defaults.mnv)"
 LangString str_msg_compat_all      ${LANG_GERMAN} \
-    "Vim mit allen Erweiterungen (Lädt vimrc_example.vim) (Standard)"
+    "MNV mit allen Erweiterungen (Lädt mnvrc_example.mnv) (Standard)"
 
 LangString str_msg_keymap_title   ${LANG_GERMAN} \
     " Mappings für Windows Standard Tastenkombinationen "

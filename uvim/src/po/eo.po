@@ -1,7 +1,7 @@
-# Esperanto Translation for Vim
+# Esperanto Translation for MNV
 #
-# Do ":help uganda"  in Vim to read copying and usage conditions.
-# Do ":help credits" in Vim to see a list of people who contributed.
+# Do ":help uganda"  in MNV to read copying and usage conditions.
+# Do ":help credits" in MNV to see a list of people who contributed.
 #
 # UNUA TRADUKISTO Dominique PELLE   <dominique.pelle ĉe gmail.com>
 # PROVLEGANTO(J)  Felipe CASTRO     <fefcas ĉe gmail.com>
@@ -15,7 +15,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim\n"
+"Project-Id-Version: MNV\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-20 21:53+0100\n"
 "PO-Revision-Date: 2021-11-20 22:50+0100\n"
@@ -759,7 +759,7 @@ msgid "E544: Keymap file not found"
 msgstr "E544: Dosiero de klavmapo ne troveblas"
 
 msgid "E105: Using :loadkeymap not in a sourced file"
-msgstr "E105: Uzo de \":loadkeymap\" nur eblas en vim-skripto"
+msgstr "E105: Uzo de \":loadkeymap\" nur eblas en mnv-skripto"
 
 msgid "E791: Empty keymap entry"
 msgstr "E791: Malplena rikordo en klavmapo"
@@ -871,7 +871,7 @@ msgid "E990: Missing end marker '%s'"
 msgstr "E990: Mankas fina markilo '%s'"
 
 msgid "E985: .= is not supported with script version >= 2"
-msgstr "E985: .= ne estas subtenata kun versio >= 2 de vim-skripto"
+msgstr "E985: .= ne estas subtenata kun versio >= 2 de mnv-skripto"
 
 msgid "E687: Less targets than List items"
 msgstr "E687: Malpli da celoj ol Listeroj"
@@ -1039,8 +1039,8 @@ msgstr "E143: Aŭtokomandoj neatendite forviŝis novan bufron %s"
 msgid "E144: Non-numeric argument to :z"
 msgstr "E144: nenumera argumento de :z"
 
-msgid "E145: Shell commands and some functionality not allowed in rvim"
-msgstr "E145: Ŝelkomandoj kaj alia funkciaro nepermeseblaj en rvim"
+msgid "E145: Shell commands and some functionality not allowed in rmnv"
+msgstr "E145: Ŝelkomandoj kaj alia funkciaro nepermeseblaj en rmnv"
 
 msgid "E146: Regular expressions can't be delimited by letters"
 msgstr "E146: Ne eblas limigi regulesprimon per literoj"
@@ -1150,8 +1150,8 @@ msgstr "E605: Escepto nekaptita: %s"
 msgid "E492: Not an editor command"
 msgstr "E492: Ne estas redaktila komando"
 
-msgid "E981: Command not allowed in rvim"
-msgstr "E981: Nepermesebla komando en rvim"
+msgid "E981: Command not allowed in rmnv"
+msgstr "E981: Nepermesebla komando en rmnv"
 
 msgid "E493: Backwards range given"
 msgstr "E493: Inversa amplekso donita"
@@ -1192,8 +1192,8 @@ msgstr "nekonata"
 msgid "E185: Cannot find color scheme '%s'"
 msgstr "E185: Ne eblas trovi agordaron de koloroj '%s'"
 
-msgid "Greetings, Vim user!"
-msgstr "Bonvenon, uzanto de Vim!"
+msgid "Greetings, MNV user!"
+msgstr "Bonvenon, uzanto de MNV!"
 
 msgid "E784: Cannot close last tab page"
 msgstr "E784: Ne eblas fermi lastan langeton"
@@ -1309,8 +1309,8 @@ msgstr "E500: Liveras malplenan ĉenon"
 msgid "Untitled"
 msgstr "Sen titolo"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: Ne eblas lanĉi (:throw) escepton kun prefikso 'Vim'"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: Ne eblas lanĉi (:throw) escepton kun prefikso 'MNV'"
 
 #, c-format
 msgid "Exception thrown: %s"
@@ -1431,8 +1431,8 @@ msgstr "E200: La aŭtokomandoj *ReadPre igis la dosieron nelegebla"
 msgid "E201: *ReadPre autocommands must not change current buffer"
 msgstr "E201: La aŭtokomandoj *ReadPre ne rajtas ŝanĝi la aktualan bufron"
 
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: Legado el stdin...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: Legado el stdin...\n"
 
 msgid "Reading from stdin..."
 msgstr "Legado el stdin..."
@@ -1532,10 +1532,10 @@ msgstr "E211: Dosiero \"%s\" ne plu haveblas"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as "
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as "
 "well"
 msgstr ""
-"W12: Averto: Dosiero \"%s\" ŝanĝiĝis kaj la bufro estis ŝanĝita ankaŭ en Vim"
+"W12: Averto: Dosiero \"%s\" ŝanĝiĝis kaj la bufro estis ŝanĝita ankaŭ en MNV"
 
 msgid "See \":help W12\" for more info."
 msgstr "Vidu \":help W12\" por pliaj informoj."
@@ -1702,17 +1702,17 @@ msgid "<cannot open> "
 msgstr "<ne eblas malfermi> "
 
 #, c-format
-msgid "E616: vim_SelFile: can't get font %s"
-msgstr "E616: vim_SelFile: ne eblas akiri tiparon %s"
+msgid "E616: mnv_SelFile: can't get font %s"
+msgstr "E616: mnv_SelFile: ne eblas akiri tiparon %s"
 
-msgid "E614: vim_SelFile: can't return to current directory"
-msgstr "E614: vim_SelFile: ne eblas reveni al la aktuala dosierujo"
+msgid "E614: mnv_SelFile: can't return to current directory"
+msgstr "E614: mnv_SelFile: ne eblas reveni al la aktuala dosierujo"
 
 msgid "Pathname:"
 msgstr "Serĉvojo:"
 
-msgid "E615: vim_SelFile: can't get current directory"
-msgstr "E615: vim_SelFile: ne eblas akiri aktualan dosierujon"
+msgid "E615: mnv_SelFile: can't get current directory"
+msgstr "E615: mnv_SelFile: ne eblas akiri aktualan dosierujon"
 
 msgid "OK"
 msgstr "Bone"
@@ -1724,8 +1724,8 @@ msgid "Scrollbar Widget: Could not get geometry of thumb pixmap."
 msgstr ""
 "Fenestraĵo de rulumskalo: Ne eblis akiri geometrion de reduktita rastrumbildo"
 
-msgid "Vim dialog"
-msgstr "Vim dialogo"
+msgid "MNV dialog"
+msgstr "MNV dialogo"
 
 msgid "E232: Cannot create BalloonEval with both message and callback"
 msgstr "E232: Ne eblas krei BalloonEval kun ambaŭ mesaĝo kaj reagfunkcio"
@@ -1761,11 +1761,11 @@ msgstr "Ne"
 msgid "Input _Methods"
 msgstr "Enigaj _metodoj"
 
-msgid "VIM - Search and Replace..."
-msgstr "VIM - Serĉi kaj anstataŭigi..."
+msgid "MNV - Search and Replace..."
+msgstr "MNV - Serĉi kaj anstataŭigi..."
 
-msgid "VIM - Search..."
-msgstr "VIM- Serĉi..."
+msgid "MNV - Search..."
+msgstr "MNV- Serĉi..."
 
 msgid "Find what:"
 msgstr "Serĉi kion:"
@@ -1800,8 +1800,8 @@ msgstr "Anstataŭigi ĉiujn"
 msgid "_Close"
 msgstr "_Fermi"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: Ricevis peton \"die\" (morti) el la seanca administrilo\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: Ricevis peton \"die\" (morti) el la seanca administrilo\n"
 
 msgid "Close tab"
 msgstr "Fermi langeton"
@@ -1812,8 +1812,8 @@ msgstr "Nova langeto"
 msgid "Open Tab..."
 msgstr "Malfermi langeton..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: Ĉefa fenestro neatendite detruiĝis\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: Ĉefa fenestro neatendite detruiĝis\n"
 
 msgid "&Filter"
 msgstr "&Filtri"
@@ -1874,15 +1874,15 @@ msgstr "E671: Ne eblas trovi titolon de fenestro \"%s\""
 msgid "E243: Argument not supported: \"-%s\"; Use the OLE version."
 msgstr "E243: Ne subtenata argumento: \"-%s\"; Uzu la version OLE."
 
-msgid "E988: GUI cannot be used. Cannot execute gvim.exe."
-msgstr "E988: Grafika interfaco ne uzeblas. Ne eblas plenumi gvim.exe"
+msgid "E988: GUI cannot be used. Cannot execute gmnv.exe."
+msgstr "E988: Grafika interfaco ne uzeblas. Ne eblas plenumi gmnv.exe"
 
 msgid "E672: Unable to open window inside MDI application"
 msgstr "E672: Ne eblas malfermi fenestron interne de aplikaĵo MDI"
 
-msgid "Vim E458: Cannot allocate colormap entry, some colors may be incorrect"
+msgid "MNV E458: Cannot allocate colormap entry, some colors may be incorrect"
 msgstr ""
-"Vim E458: Ne eblas disponigi rikordon de kolormapo, iuj koloroj estas eble "
+"MNV E458: Ne eblas disponigi rikordon de kolormapo, iuj koloroj estas eble "
 "neĝustaj"
 
 #, c-format
@@ -1951,8 +1951,8 @@ msgstr "&Forlasi"
 msgid "no specific match"
 msgstr "Neniu specifa kongruo"
 
-msgid "Vim - Font Selector"
-msgstr "Vim - Elektilo de tiparo"
+msgid "MNV - Font Selector"
+msgstr "MNV - Elektilo de tiparo"
 
 msgid "Name:"
 msgstr "Nomo:"
@@ -2110,8 +2110,8 @@ msgid "E150: Not a directory: %s"
 msgstr "E150: Ne estas dosierujo: %s"
 
 # TODO: Capitalise first word of message?
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: rekursia buklo dum ŝargo de syncolor.vim"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: rekursia buklo dum ŝargo de syncolor.mnv"
 
 # TODO: Capitalise first word of message?
 msgid "E414: Group has settings, highlight link ignored"
@@ -2404,14 +2404,14 @@ msgstr "ne eblas enmeti linion"
 msgid "string cannot contain newlines"
 msgstr "ĉeno ne rajtas enhavi liniavancojn"
 
-msgid "error converting Scheme values to Vim"
-msgstr "eraro dum konverto de Scheme-valoro al Vim"
+msgid "error converting Scheme values to MNV"
+msgstr "eraro dum konverto de Scheme-valoro al MNV"
 
-msgid "Vim error: ~a"
-msgstr "Eraro de Vim: ~a"
+msgid "MNV error: ~a"
+msgstr "Eraro de MNV: ~a"
 
-msgid "Vim error"
-msgstr "Eraro de Vim"
+msgid "MNV error"
+msgstr "Eraro de MNV"
 
 msgid "buffer is invalid"
 msgstr "bufro estas nevalida"
@@ -2422,11 +2422,11 @@ msgstr "fenestro estas nevalida"
 msgid "linenr out of range"
 msgstr "numero de linio ekster limoj"
 
-msgid "not allowed in the Vim sandbox"
-msgstr "nepermesebla en sabloludejo de Vim"
+msgid "not allowed in the MNV sandbox"
+msgstr "nepermesebla en sabloludejo de MNV"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
-msgstr "E836: Vim ne povas plenumi :python post uzo de :py3"
+msgid "E836: This MNV cannot execute :python after using :py3"
+msgstr "E836: MNV ne povas plenumi :python post uzo de :py3"
 
 msgid ""
 "E263: Sorry, this command is disabled, the Python library could not be "
@@ -2445,8 +2445,8 @@ msgstr ""
 msgid "E659: Cannot invoke Python recursively"
 msgstr "E659: Ne eblas alvoki Pitonon rekursie"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
-msgstr "E837: Vim ne povas plenumi :py3 post uzo de :python"
+msgid "E837: This MNV cannot execute :py3 after using :python"
+msgstr "E837: MNV ne povas plenumi :py3 post uzo de :python"
 
 msgid "E265: $_ must be an instance of String"
 msgstr "E265: $_ devas esti apero de Ĉeno"
@@ -2514,9 +2514,9 @@ msgstr "numero de linio ekster limoj"
 msgid "unknown flag: "
 msgstr "nekonata flago: "
 
-# DP: ĉu traduki vimOption
-msgid "unknown vimOption"
-msgstr "nekonata vimOption"
+# DP: ĉu traduki mnvOption
+msgid "unknown mnvOption"
+msgstr "nekonata mnvOption"
 
 msgid "keyboard interrupt"
 msgstr "klavara interrompo"
@@ -2530,10 +2530,10 @@ msgstr ""
 "ne eblas registri postalvokan komandon: bufro/fenestro estas jam forviŝiĝanta"
 
 msgid ""
-"E280: TCL FATAL ERROR: reflist corrupt!? Please report this to vim-dev@vim."
+"E280: TCL FATAL ERROR: reflist corrupt!? Please report this to mnv-dev@mnv."
 "org"
 msgstr ""
-"E280: NERIPAREBLA TCL-ERARO: reflist difekta!? Bv. retpoŝti al vim-dev@vim."
+"E280: NERIPAREBLA TCL-ERARO: reflist difekta!? Bv. retpoŝti al mnv-dev@mnv."
 "org"
 
 msgid "cannot register callback command: buffer/window reference not found"
@@ -2565,9 +2565,9 @@ msgstr "E248: Sendo de komando al cela programo malsukcesis"
 msgid "E573: Invalid server id used: %s"
 msgstr "E573: Nevalida identigilo de servilo uzita: %s"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
 msgstr ""
-"E251: Ecoj de registro de apero de VIM estas nevalide formata. Forviŝita!"
+"E251: Ecoj de registro de apero de MNV estas nevalide formata. Forviŝita!"
 
 #, c-format
 msgid "%ld lines to indent... "
@@ -2790,8 +2790,8 @@ msgstr "netbeans ne estas subtenata kun tiu grafika interfaco\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "'-nb' ne uzeblas: malŝaltita dum kompilado\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "Tiu Vim ne estis kompilita kun la kompara eblo."
+msgid "This MNV was not compiled with the diff feature."
+msgstr "Tiu MNV ne estis kompilita kun la kompara eblo."
 
 msgid "Attempt to open script file again: \""
 msgstr "Provas malfermi skriptan dosieron denove: \""
@@ -2802,20 +2802,20 @@ msgstr "Ne eblas malfermi en lega reĝimo: \""
 msgid "Cannot open for script output: \""
 msgstr "Ne eblas malfermi por eligo de skripto: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: Eraro: malsukcesis lanĉi gvim el NetBeans\n"
+msgid "MNV: Error: Failure to start gmnv from NetBeans\n"
+msgstr "MNV: Eraro: malsukcesis lanĉi gmnv el NetBeans\n"
 
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: Eraro: Tiu versio de Vim ne ruliĝas en terminalo Cygwin\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: Eraro: Tiu versio de MNV ne ruliĝas en terminalo Cygwin\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: Averto: Eligo ne estas al terminalo\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: Averto: Eligo ne estas al terminalo\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: Averto: Enigo ne estas el terminalo\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: Averto: Enigo ne estas el terminalo\n"
 
-msgid "pre-vimrc command line"
-msgstr "komanda linio pre-vimrc"
+msgid "pre-mnvrc command line"
+msgstr "komanda linio pre-mnvrc"
 
 #, c-format
 msgid "E282: Cannot read from \"%s\""
@@ -2823,12 +2823,12 @@ msgstr "E282: Ne eblas legi el \"%s\""
 
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"Pliaj informoj per: \"vim -h\"\n"
+"Pliaj informoj per: \"mnv -h\"\n"
 
-# DP: tajpu "vim --help" por testi tiujn mesaĝojn
+# DP: tajpu "mnv --help" por testi tiujn mesaĝojn
 msgid "[file ..]       edit specified file(s)"
 msgstr "[dosiero...]     redakti specifita(j)n dosiero(j)n"
 
@@ -2850,8 +2850,8 @@ msgstr ""
 "\n"
 "  uzo:"
 
-msgid " vim [arguments] "
-msgstr " vim [argumentoj] "
+msgid " mnv [arguments] "
+msgstr " mnv [argumentoj] "
 
 msgid ""
 "\n"
@@ -2882,14 +2882,14 @@ msgstr "--\t\t\tNur dosiernomoj post tio"
 msgid "--literal\t\tDon't expand wildcards"
 msgstr "--literal\t\tNe malvolvi ĵokerojn"
 
-msgid "-register\t\tRegister this gvim for OLE"
-msgstr "-register\t\tRegistri tiun gvim al OLE"
+msgid "-register\t\tRegister this gmnv for OLE"
+msgstr "-register\t\tRegistri tiun gmnv al OLE"
 
-msgid "-unregister\t\tUnregister gvim for OLE"
-msgstr "-unregister\t\tMalregistri gvim de OLE"
+msgid "-unregister\t\tUnregister gmnv for OLE"
+msgstr "-unregister\t\tMalregistri gmnv de OLE"
 
-msgid "-g\t\t\tRun using GUI (like \"gvim\")"
-msgstr "-g\t\t\tRuli per grafika interfaco (kiel \"gvim\")"
+msgid "-g\t\t\tRun using GUI (like \"gmnv\")"
+msgstr "-g\t\t\tRuli per grafika interfaco (kiel \"gmnv\")"
 
 msgid "-f  or  --nofork\tForeground: Don't fork when starting GUI"
 msgstr "-f  aŭ  --nofork\tMalfono: ne forki kiam lanĉas grafikan interfacon"
@@ -2906,17 +2906,17 @@ msgstr "-E\t\t\tPlibonigita Ex-reĝimo"
 msgid "-s\t\t\tSilent (batch) mode (only for \"ex\")"
 msgstr "-s\t\t\tSilenta (stapla) reĝimo (nur por \"ex\")"
 
-msgid "-d\t\t\tDiff mode (like \"vimdiff\")"
-msgstr "-d\t\t\tKompara reĝimo (kiel \"vimdiff\")"
+msgid "-d\t\t\tDiff mode (like \"mnvdiff\")"
+msgstr "-d\t\t\tKompara reĝimo (kiel \"mnvdiff\")"
 
-msgid "-y\t\t\tEasy mode (like \"evim\", modeless)"
-msgstr "-y\t\t\tFacila reĝimo (kiel \"evim\", senreĝima)"
+msgid "-y\t\t\tEasy mode (like \"emnv\", modeless)"
+msgstr "-y\t\t\tFacila reĝimo (kiel \"emnv\", senreĝima)"
 
 msgid "-R\t\t\tReadonly mode (like \"view\")"
 msgstr "-R\t\t\tNurlegebla reĝimo (kiel \"view\")"
 
-msgid "-Z\t\t\tRestricted mode (like \"rvim\")"
-msgstr "-Z\t\t\tLimigita reĝimo (kiel \"rvim\")"
+msgid "-Z\t\t\tRestricted mode (like \"rmnv\")"
+msgstr "-Z\t\t\tLimigita reĝimo (kiel \"rmnv\")"
 
 msgid "-m\t\t\tModifications (writing files) not allowed"
 msgstr "-m\t\t\tŜanĝoj (skribo al dosieroj) nepermeseblaj"
@@ -2977,11 +2977,11 @@ msgstr ""
 msgid "--ttyfail\t\tExit if input or output is not a terminal"
 msgstr "--ttyfail\t\tEliri se la eniro aŭ eliro ne estas terminalo"
 
-msgid "-u <vimrc>\t\tUse <vimrc> instead of any .vimrc"
-msgstr "-u <vimrc>\t\tUzi <vimrc> anstataŭ iun ajn .vimrc"
+msgid "-u <mnvrc>\t\tUse <mnvrc> instead of any .mnvrc"
+msgstr "-u <mnvrc>\t\tUzi <mnvrc> anstataŭ iun ajn .mnvrc"
 
-msgid "-U <gvimrc>\t\tUse <gvimrc> instead of any .gvimrc"
-msgstr "-U <gvimrc>\t\tUzi <gvimrc> anstataŭ iun ajn .gvimrc"
+msgid "-U <gmnvrc>\t\tUse <gmnvrc> instead of any .gmnvrc"
+msgstr "-U <gmnvrc>\t\tUzi <gmnvrc> anstataŭ iun ajn .gmnvrc"
 
 msgid "--noplugin\t\tDon't load plugin scripts"
 msgstr "--noplugin\t\tNe ŝargi kromaĵajn skriptojn"
@@ -3001,9 +3001,9 @@ msgstr "+\t\t\tKomenci ĉe la fino de la dosiero"
 msgid "+<lnum>\t\tStart at line <lnum>"
 msgstr "+<numL>\t\tKomenci ĉe linio <numL>"
 
-msgid "--cmd <command>\tExecute <command> before loading any vimrc file"
+msgid "--cmd <command>\tExecute <command> before loading any mnvrc file"
 msgstr ""
-"--cmd <komando>\tPlenumi <komando>-n antaŭ ol ŝargi iun ajn dosieron vimrc"
+"--cmd <komando>\tPlenumi <komando>-n antaŭ ol ŝargi iun ajn dosieron mnvrc"
 
 msgid "-c <command>\t\tExecute <command> after loading the first file"
 msgstr "-c <komando>\t\tPlenumi <komando>-n post kiam la unua dosiero ŝargiĝis"
@@ -3027,14 +3027,14 @@ msgstr ""
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\tRedakti ĉifradan dosieron"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
-msgstr "-display <ekrano>\tKonekti Vim al tiu X-servilo"
+msgid "-display <display>\tConnect MNV to this particular X-server"
+msgstr "-display <ekrano>\tKonekti MNV al tiu X-servilo"
 
 msgid "-X\t\t\tDo not connect to X server"
 msgstr "-X\t\t\tNe konekti al X-servilo"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
-msgstr "--remote <dosieroj>\tRedakti <dosieroj>-n en Vim-servilo se eblas"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
+msgstr "--remote <dosieroj>\tRedakti <dosieroj>-n en MNV-servilo se eblas"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr "--remote-silent <dosieroj>  Same, sed ne plendi se ne estas servilo"
@@ -3056,28 +3056,28 @@ msgstr ""
 "--remote-tab[-wait][-silent] <dosieroj> Kiel --remote sed uzi langeton por "
 "ĉiu dosiero"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
-msgstr "--remote-send <klavoj> Sendi <klavoj>-n al Vim-servilo kaj eliri"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
+msgstr "--remote-send <klavoj> Sendi <klavoj>-n al MNV-servilo kaj eliri"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
-msgstr "--remote-expr <espr>\tKomputi <espr> en Vim-servilo kaj afiŝi rezulton"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
+msgstr "--remote-expr <espr>\tKomputi <espr> en MNV-servilo kaj afiŝi rezulton"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
-msgstr "--serverlist\t\tListigi haveblajn nomojn de Vim-serviloj kaj eliri"
+msgid "--serverlist\t\tList available MNV server names and exit"
+msgstr "--serverlist\t\tListigi haveblajn nomojn de MNV-serviloj kaj eliri"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
-msgstr "--servername <nomo>\tSendu al/iĝi la Vim-servilo <nomo>"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
+msgstr "--servername <nomo>\tSendu al/iĝi la MNV-servilo <nomo>"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
 msgstr ""
 "--startuptime <dosiero>  Skribi mesaĝojn de komenca tempomezurado al "
 "<dosiero>"
 
-msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
-msgstr "-i <viminfo>\t\tUzi <viminfo> anstataŭ .viminfo"
+msgid "-i <mnvinfo>\t\tUse <mnvinfo> instead of .mnvinfo"
+msgstr "-i <mnvinfo>\t\tUzi <mnvinfo> anstataŭ .mnvinfo"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
-msgstr "--clean\t\t'nocompatible', defaŭltaj agordoj de Vim, neniu viminfo"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no mnvinfo"
+msgstr "--clean\t\t'nocompatible', defaŭltaj agordoj de MNV, neniu mnvinfo"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h  aŭ  --help\tAfiŝi Helpon (tiun mesaĝon) kaj eliri"
@@ -3087,30 +3087,30 @@ msgstr "--version\t\tAfiŝi informon de versio kaj eliri"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Motif version):\n"
+"Arguments recognised by gmnv (Motif version):\n"
 msgstr ""
 "\n"
-"Argumentoj agnoskitaj de gvim (versio Motif):\n"
+"Argumentoj agnoskitaj de gmnv (versio Motif):\n"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (neXtaw version):\n"
+"Arguments recognised by gmnv (neXtaw version):\n"
 msgstr ""
 "\n"
-"Argumentoj agnoskitaj de gvim (versio neXtaw):\n"
+"Argumentoj agnoskitaj de gmnv (versio neXtaw):\n"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (Athena version):\n"
+"Arguments recognised by gmnv (Athena version):\n"
 msgstr ""
 "\n"
-"Argumentoj agnoskitaj de gvim (versio Athena):\n"
+"Argumentoj agnoskitaj de gmnv (versio Athena):\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <ekrano>\tLanĉi Vim sur <ekrano>"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <ekrano>\tLanĉi MNV sur <ekrano>"
 
-msgid "-iconic\t\tStart Vim iconified"
-msgstr "-iconic\t\tLanĉi Vim piktograme"
+msgid "-iconic\t\tStart MNV iconified"
+msgstr "-iconic\t\tLanĉi MNV piktograme"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
 msgstr "-background <koloro>\tUzi <koloro>-n por la fona koloro (ankaŭ: -bg)"
@@ -3153,28 +3153,28 @@ msgstr "-xrm <rimedo>\tAgordi la specifitan <rimedo>-n"
 
 msgid ""
 "\n"
-"Arguments recognised by gvim (GTK+ version):\n"
+"Arguments recognised by gmnv (GTK+ version):\n"
 msgstr ""
 "\n"
-"Argumentoj agnoskitaj de gvim (versio GTK+):\n"
+"Argumentoj agnoskitaj de gmnv (versio GTK+):\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <ekrano>\tLanĉi Vim sur tiu <ekrano> (ankaŭ: --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <ekrano>\tLanĉi MNV sur tiu <ekrano> (ankaŭ: --display)"
 
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr "--role <rolo>\tDoni unikan rolon por identigi la ĉefan fenestron"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\tMalfermi Vim en alia GTK fenestraĵo"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\tMalfermi MNV en alia GTK fenestraĵo"
 
-msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
-msgstr "--echo-wid\t\tIgas gvim afiŝi la identigilon de fenestro sur stdout"
+msgid "--echo-wid\t\tMake gmnv echo the Window ID on stdout"
+msgstr "--echo-wid\t\tIgas gmnv afiŝi la identigilon de fenestro sur stdout"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
-msgstr "-P <gepatra titolo>\tMalfermi Vim en gepatra aplikaĵo"
+msgid "-P <parent title>\tOpen MNV inside parent application"
+msgstr "-P <gepatra titolo>\tMalfermi MNV en gepatra aplikaĵo"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\tMalfermi Vim en alia win32 fenestraĵo"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\tMalfermi MNV en alia win32 fenestraĵo"
 
 #, c-format
 # TODO: Capitalise first word of message?
@@ -3332,20 +3332,20 @@ msgstr "Ne eblas legi blokon 0 de "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"Eble neniu ŝanĝo estis farita aŭ Vim ne ĝisdatigis la permutodosieron .swp."
+"Eble neniu ŝanĝo estis farita aŭ MNV ne ĝisdatigis la permutodosieron .swp."
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " ne uzeblas per tiu versio de vim.\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " ne uzeblas per tiu versio de mnv.\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "Uzu version 3.0 de Vim\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "Uzu version 3.0 de MNV\n"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s ne aspektas kiel permutodosiero .swp de Vim"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s ne aspektas kiel permutodosiero .swp de MNV"
 
 msgid " cannot be used on this computer.\n"
 msgstr " ne uzeblas per tiu komputilo.\n"
@@ -3362,8 +3362,8 @@ msgstr ""
 
 #, c-format
 msgid ""
-"E833: %s is encrypted and this version of Vim does not support encryption"
-msgstr "E833: %s estas ĉifrita kaj tiu versio de Vim ne subtenas ĉifradon"
+"E833: %s is encrypted and this version of MNV does not support encryption"
+msgstr "E833: %s estas ĉifrita kaj tiu versio de MNV ne subtenas ĉifradon"
 
 msgid " has been damaged (page size is smaller than minimum value).\n"
 msgstr " difektiĝis (paĝa grando pli malgranda ol minimuma valoro).\n"
@@ -3514,11 +3514,11 @@ msgstr "    dato: "
 msgid "             dated: "
 msgstr "              dato: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [de Vim versio 3.0]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [de MNV versio 3.0]"
 
-msgid "         [does not look like a Vim swap file]"
-msgstr "         [ne aspektas kiel permutodosiero .swp de Vim]"
+msgid "         [does not look like a MNV swap file]"
+msgstr "         [ne aspektas kiel permutodosiero .swp de MNV]"
 
 msgid "         file name: "
 msgstr "        dosiernomo: "
@@ -3565,10 +3565,10 @@ msgstr " (ANKORAŬ RULIĜAS)"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [ne uzebla per tiu versio de Vim]"
+"         [ne uzebla per tiu versio de MNV]"
 
 msgid ""
 "\n"
@@ -3684,8 +3684,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) Redakta seanco de tiu dosiero kolapsis.\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    Se veras, uzu \":recover\" aŭ \"vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    Se veras, uzu \":recover\" aŭ \"mnv -r "
 
 msgid ""
 "\"\n"
@@ -3713,13 +3713,13 @@ msgstr "Permutodosiero .swp \""
 msgid "\" already exists!"
 msgstr "\" jam ekzistas!"
 
-msgid "VIM - ATTENTION"
-msgstr "VIM - ATENTO"
+msgid "MNV - ATTENTION"
+msgstr "MNV - ATENTO"
 
 msgid "Swap file already exists!"
 msgstr "Permutodosiero .swp jam ekzistas!"
 
-# AM: ĉu Vim konvertos la unuliterajn respondojn de la uzulo?
+# AM: ĉu MNV konvertos la unuliterajn respondojn de la uzulo?
 # DP: jes, la '&' respondoj bone funkcias (mi kontrolis)
 msgid ""
 "&Open Read-Only\n"
@@ -3814,7 +3814,7 @@ msgstr "linio %4ld:"
 msgid "E354: Invalid register name: '%s'"
 msgstr "E354: Nevalida nomo de reĝistro: '%s'"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "Flegado de mesaĝoj: Dominique PELLÉ <dominique.pelle@gmail.com>"
 
 msgid "Interrupt: "
@@ -3843,7 +3843,7 @@ msgstr ""
 "&Jes\n"
 "&Ne"
 
-# AM: ĉu Vim konvertos unuliterajn respondojn?
+# AM: ĉu MNV konvertos unuliterajn respondojn?
 # DP: jes, '&' bone funkcias (mi kontrolis)
 msgid ""
 "&Yes\n"
@@ -3950,13 +3950,13 @@ msgstr "E662: Ĉe komenco de ŝanĝlisto"
 msgid "E663: At end of changelist"
 msgstr "E663: Ĉe fino de ŝanĝlisto"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
 msgstr ""
 "Tajpu  :qa!  kaj premu <Enenklavon> por forlasi ĉiujn ŝanĝojn kaj eliri el "
-"Vim"
+"MNV"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "Tajpu  :qa!  kaj premu <Enenklavon> por eliri el Vim"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "Tajpu  :qa!  kaj premu <Enenklavon> por eliri el MNV"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -4190,8 +4190,8 @@ msgstr "E537: 'commentstring' devas esti malplena aŭ enhavi %s"
 msgid "cannot open "
 msgstr "ne eblas malfermi "
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: Ne eblas malfermi fenestron!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: Ne eblas malfermi fenestron!\n"
 
 msgid "Need Amigados version 2.04 or later\n"
 msgstr "Bezonas version 2.04 de Amigados aŭ pli novan\n"
@@ -4207,8 +4207,8 @@ msgid "Cannot create "
 msgstr "Ne eblas krei "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vim eliras kun %d\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNV eliras kun %d\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "ne eblas ŝanĝi reĝimon de konzolo?!\n"
@@ -4274,10 +4274,10 @@ msgstr "Malfermo de vidigo X daŭris %ld msek"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: Alvenis X eraro\n"
+"MNV: Alvenis X eraro\n"
 
 #, c-format
 msgid "restoring display %s"
@@ -4382,8 +4382,8 @@ msgstr "Ĉe linio"
 
 # DP: la eventoj estas tiuj, kiuj estas en la sekvantaj ĉenoj
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: Kaptis eventon %s\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: Kaptis eventon %s\n"
 
 msgid "close"
 msgstr "fermo"
@@ -4398,16 +4398,16 @@ msgid "E371: Command not found"
 msgstr "E371: Netrovebla komando"
 
 msgid ""
-"VIMRUN.EXE not found in your $PATH.\n"
+"MNVRUN.EXE not found in your $PATH.\n"
 "External commands will not pause after completion.\n"
-"See  :help win32-vimrun  for more information."
+"See  :help win32-mnvrun  for more information."
 msgstr ""
-"VIMRUN.EXE ne troveblas en via $PATH.\n"
+"MNVRUN.EXE ne troveblas en via $PATH.\n"
 "Eksteraj komandoj ne paŭzos post kompletigo.\n"
-"Vidu  :help win32-vimrun  por pliaj informoj."
+"Vidu  :help win32-mnvrun  por pliaj informoj."
 
-msgid "Vim Warning"
-msgstr "Averto de Vim"
+msgid "MNV Warning"
+msgstr "Averto de MNV"
 
 #, c-format
 msgid "shell returned %d"
@@ -4784,8 +4784,8 @@ msgstr "Serĉado de \"%s\""
 msgid "not found in '%s': \"%s\""
 msgstr "ne trovita en '%s: \"%s\""
 
-msgid "Source Vim script"
-msgstr "Ruli Vim-skripton"
+msgid "Source MNV script"
+msgstr "Ruli MNV-skripton"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -5030,8 +5030,8 @@ msgstr "E757: Tio ne ŝajnas esti literuma dosiero"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: Malnova literuma dosiero, ĝisdatigo bezonata"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: Literuma dosiero estas por pli nova versio de Vim"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: Literuma dosiero estas por pli nova versio de MNV"
 
 msgid "E770: Unsupported section in spell file"
 msgstr "E770: Nesubtenata sekcio en literuma dosiero"
@@ -5045,8 +5045,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: Malnova dosiero .sug, bezonas ĝisdatigon: %s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: Dosiero .sug estas por pli nova versio de Vim: %s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: Dosiero .sug estas por pli nova versio de MNV: %s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -5860,8 +5860,8 @@ msgstr "E115: Mankas citilo: %s"
 msgid "new shell started\n"
 msgstr "nova ŝelo lanĉita\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: Eraro dum legado de eniro, elironta...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: Eraro dum legado de eniro, elironta...\n"
 
 msgid "E881: Line count changed unexpectedly"
 msgstr "E881: Nombro de linioj ŝanĝiĝis neatendite"
@@ -6349,17 +6349,17 @@ msgstr "sen grafika interfaco."
 msgid "  Features included (+) or not (-):\n"
 msgstr "  Ebloj inkluzivitaj (+) aŭ ne (-):\n"
 
-msgid "   system vimrc file: \""
-msgstr "          sistema dosiero vimrc: \""
+msgid "   system mnvrc file: \""
+msgstr "          sistema dosiero mnvrc: \""
 
-msgid "     user vimrc file: \""
-msgstr "        dosiero vimrc de uzanto: \""
+msgid "     user mnvrc file: \""
+msgstr "        dosiero mnvrc de uzanto: \""
 
-msgid " 2nd user vimrc file: \""
-msgstr "    2-a dosiero vimrc de uzanto: \""
+msgid " 2nd user mnvrc file: \""
+msgstr "    2-a dosiero mnvrc de uzanto: \""
 
-msgid " 3rd user vimrc file: \""
-msgstr "    3-a dosiero vimrc de uzanto: \""
+msgid " 3rd user mnvrc file: \""
+msgstr "    3-a dosiero mnvrc de uzanto: \""
 
 msgid "      user exrc file: \""
 msgstr "         dosiero exrc de uzanto: \""
@@ -6367,17 +6367,17 @@ msgstr "         dosiero exrc de uzanto: \""
 msgid "  2nd user exrc file: \""
 msgstr "     2-a dosiero exrc de uzanto: \""
 
-msgid "  system gvimrc file: \""
-msgstr "         sistema dosiero gvimrc: \""
+msgid "  system gmnvrc file: \""
+msgstr "         sistema dosiero gmnvrc: \""
 
-msgid "    user gvimrc file: \""
-msgstr "       dosiero gvimrc de uzanto: \""
+msgid "    user gmnvrc file: \""
+msgstr "       dosiero gmnvrc de uzanto: \""
 
-msgid "2nd user gvimrc file: \""
-msgstr "   2-a dosiero gvimrc de uzanto: \""
+msgid "2nd user gmnvrc file: \""
+msgstr "   2-a dosiero gmnvrc de uzanto: \""
 
-msgid "3rd user gvimrc file: \""
-msgstr "   3-a dosiero gvimrc de uzanto: \""
+msgid "3rd user gmnvrc file: \""
+msgstr "   3-a dosiero gmnvrc de uzanto: \""
 
 msgid "       defaults file: \""
 msgstr "           dosiero de defaŭltoj: \""
@@ -6385,11 +6385,11 @@ msgstr "           dosiero de defaŭltoj: \""
 msgid "    system menu file: \""
 msgstr "       dosiero de sistema menuo: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "               defaŭlto de $VIM: \""
+msgid "  fall-back for $MNV: \""
+msgstr "               defaŭlto de $MNV: \""
 
-msgid " f-b for $VIMRUNTIME: \""
-msgstr "         defaŭlto de VIMRUNTIME: \""
+msgid " f-b for $MNVRUNTIME: \""
+msgstr "         defaŭlto de MNVRUNTIME: \""
 
 msgid "Compilation: "
 msgstr "Kompilado: "
@@ -6403,8 +6403,8 @@ msgstr "Ligado: "
 msgid "  DEBUG BUILD"
 msgstr "  SENCIMIGA MUNTO"
 
-msgid "VIM - Vi IMproved"
-msgstr "VIM - Vi plibonigita"
+msgid "MNV - MNV is not Vim"
+msgstr "MNV - Vi plibonigita"
 
 msgid "version "
 msgstr "versio "
@@ -6413,8 +6413,8 @@ msgstr "versio "
 msgid "by Bram Moolenaar et al."
 msgstr "de Bram Moolenaar kaj aliuloj"
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim estas libera programo kaj disdoneblas libere"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV estas libera programo kaj disdoneblas libere"
 
 msgid "Help poor children in Uganda!"
 msgstr "Helpu malriĉajn infanojn en Ugando!"
@@ -6439,8 +6439,8 @@ msgid "Running in Vi compatible mode"
 msgstr "Ruliĝas en reĝimo kongrua kun Vi"
 
 # DP: atentu al la spacetoj: ĉiuj ĉenoj devas havi la saman longon
-msgid "type  :set nocp<Enter>        for Vim defaults"
-msgstr "tajpu :set nocp<Enenklavo>        por Vim defaŭltoj    "
+msgid "type  :set nocp<Enter>        for MNV defaults"
+msgstr "tajpu :set nocp<Enenklavo>        por MNV defaŭltoj    "
 
 # DP: atentu al la spacetoj: ĉiuj ĉenoj devas havi la saman longon
 msgid "type  :help cp-default<Enter> for info on this"
@@ -6467,14 +6467,14 @@ msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "menuo Redakti->Mallokaj Agordoj->Baskuligi Reĝimon Kongruan kun Vi"
 
 # DP: atentu al la spacetoj: ĉiuj ĉenoj devas havi la saman longon
-msgid "                              for Vim defaults   "
-msgstr "                                  por defaŭltoj de Vim "
+msgid "                              for MNV defaults   "
+msgstr "                                  por defaŭltoj de MNV "
 
-msgid "Sponsor Vim development!"
-msgstr "Subtenu la programadon de Vim!"
+msgid "Sponsor MNV development!"
+msgstr "Subtenu la programadon de MNV!"
 
-msgid "Become a registered Vim user!"
-msgstr "Iĝu registrita uzanto de Vim!"
+msgid "Become a registered MNV user!"
+msgstr "Iĝu registrita uzanto de MNV!"
 
 # DP: atentu al la spacetoj: ĉiuj ĉenoj devas havi la saman longon
 msgid "type  :help sponsor<Enter>    for information "
@@ -6541,11 +6541,11 @@ msgstr ""
 "# Linioj komencantaj per |, kopiitaj sen ŝanĝo:\n"
 
 #, c-format
-msgid "%sviminfo: %s in line: "
-msgstr "%sviminfo: %s en linio: "
+msgid "%smnvinfo: %s in line: "
+msgstr "%smnvinfo: %s en linio: "
 
-msgid "E136: viminfo: Too many errors, skipping rest of file"
-msgstr "E136: viminfo: Tro da eraroj, nun ignoras la reston de la dosiero"
+msgid "E136: mnvinfo: Too many errors, skipping rest of file"
+msgstr "E136: mnvinfo: Tro da eraroj, nun ignoras la reston de la dosiero"
 
 msgid ""
 "\n"
@@ -6618,8 +6618,8 @@ msgid "Illegal starting char"
 msgstr "Nevalida eka signo"
 
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# Tiu dosiero viminfo estis kreita de Vim %s.\n"
+msgid "# This mnvinfo file was generated by MNV %s.\n"
+msgstr "# Tiu dosiero mnvinfo estis kreita de MNV %s.\n"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -6632,8 +6632,8 @@ msgid "# Value of 'encoding' when this file was written\n"
 msgstr "# Valoro de 'encoding' kiam tiu dosiero estis kreita\n"
 
 #, c-format
-msgid "Reading viminfo file \"%s\"%s%s%s%s"
-msgstr "Legado de dosiero viminfo \"%s\"%s%s%s%s"
+msgid "Reading mnvinfo file \"%s\"%s%s%s%s"
+msgstr "Legado de dosiero mnvinfo \"%s\"%s%s%s%s"
 
 msgid " info"
 msgstr " informo"
@@ -6648,27 +6648,27 @@ msgid " FAILED"
 msgstr " MALSUKCESIS"
 
 #, c-format
-msgid "E137: Viminfo file is not writable: %s"
-msgstr "E137: Dosiero viminfo ne skribeblas: %s"
+msgid "E137: MNVinfo file is not writable: %s"
+msgstr "E137: Dosiero mnvinfo ne skribeblas: %s"
 
 #, c-format
-msgid "E929: Too many viminfo temp files, like %s!"
-msgstr "E929: Tro da provizoraj dosieroj viminfo, kiel %s!"
+msgid "E929: Too many mnvinfo temp files, like %s!"
+msgstr "E929: Tro da provizoraj dosieroj mnvinfo, kiel %s!"
 
 #, c-format
-msgid "E138: Can't write viminfo file %s!"
-msgstr "E138: Ne eblas skribi dosieron viminfo %s!"
+msgid "E138: Can't write mnvinfo file %s!"
+msgstr "E138: Ne eblas skribi dosieron mnvinfo %s!"
 
 #, c-format
-msgid "Writing viminfo file \"%s\""
-msgstr "Skribas dosieron viminfo \"%s\""
+msgid "Writing mnvinfo file \"%s\""
+msgstr "Skribas dosieron mnvinfo \"%s\""
 
 #, c-format
-msgid "E886: Can't rename viminfo file to %s!"
-msgstr "E886: Ne eblas renomi dosieron viminfo al %s!"
+msgid "E886: Can't rename mnvinfo file to %s!"
+msgstr "E886: Ne eblas renomi dosieron mnvinfo al %s!"
 
-msgid "E195: Cannot open viminfo file for reading"
-msgstr "E195: Ne eblas malfermi dosieron viminfo en lega reĝimo"
+msgid "E195: Cannot open mnvinfo file for reading"
+msgstr "E195: Ne eblas malfermi dosieron mnvinfo en lega reĝimo"
 
 msgid "Already only one window"
 msgstr "Jam nur unu fenestro"
@@ -6713,32 +6713,32 @@ msgid "E299: Perl evaluation forbidden in sandbox without the Safe module"
 msgstr ""
 "E299: Plenumo de Perl esprimoj malpermesata en sabloludejo sen la modulo Safe"
 
-msgid "Edit with Vim using &tabpages"
-msgstr "Redakti per Vim kun &langetoj"
+msgid "Edit with MNV using &tabpages"
+msgstr "Redakti per MNV kun &langetoj"
 
-msgid "Edit with single &Vim"
-msgstr "Redakti per unuopa &Vim"
+msgid "Edit with single &MNV"
+msgstr "Redakti per unuopa &MNV"
 
-msgid "Diff with Vim"
-msgstr "Kompari per Vim"
+msgid "Diff with MNV"
+msgstr "Kompari per MNV"
 
-msgid "Edit with &Vim"
-msgstr "Redakti per &Vim"
+msgid "Edit with &MNV"
+msgstr "Redakti per &MNV"
 
-msgid "Edit with existing Vim"
-msgstr "Redakti per ekzistanta Vim"
+msgid "Edit with existing MNV"
+msgstr "Redakti per ekzistanta MNV"
 
-msgid "Edit with existing Vim - "
-msgstr "Redakti per ekzistanta Vim - "
+msgid "Edit with existing MNV - "
+msgstr "Redakti per ekzistanta MNV - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "Redakti la apartigita(j)n dosiero(j)n per Vim"
+msgid "Edits the selected file(s) with MNV"
+msgstr "Redakti la apartigita(j)n dosiero(j)n per MNV"
 
-msgid "Error creating process: Check if gvim is in your path!"
-msgstr "Eraro dum kreo de procezo: Kontrolu ĉu gvim estas en via serĉvojo!"
+msgid "Error creating process: Check if gmnv is in your path!"
+msgstr "Eraro dum kreo de procezo: Kontrolu ĉu gmnv estas en via serĉvojo!"
 
-msgid "gvimext.dll error"
-msgstr "Eraro de gvimext.dll"
+msgid "gmnvext.dll error"
+msgstr "Eraro de gmnvext.dll"
 
 msgid "E10: \\ should be followed by /, ? or &"
 msgstr "E10: \\ devus esti sekvita de /, ? aŭ &"
@@ -6747,9 +6747,9 @@ msgid "E11: Invalid in command-line window; <CR> executes, CTRL-C quits"
 msgstr ""
 "E11: Nevalida en fenestro de komanda linio; <CR> plenumas, CTRL-C eliras"
 
-msgid "E12: Command not allowed from exrc/vimrc in current dir or tag search"
+msgid "E12: Command not allowed from exrc/mnvrc in current dir or tag search"
 msgstr ""
-"E12: Nepermesebla komando el exrc/vimrc en aktuala dosierujo aŭ etikeda serĉo"
+"E12: Nepermesebla komando el exrc/mnvrc en aktuala dosierujo aŭ etikeda serĉo"
 
 msgid "E13: File exists (add ! to override)"
 msgstr "E13: Dosiero ekzistas (aldonu ! por transpasi)"
@@ -6961,8 +6961,8 @@ msgid "E909: Cannot index a special variable"
 msgstr "E909: Ne eblas indeksi specialan variablon"
 
 #, c-format
-msgid "E1100: Command not supported in Vim9 script (missing :var?): %s"
-msgstr "E1100: Nesubtenata komando en Vim9-skripto (mankas :var?): %s"
+msgid "E1100: Command not supported in MNV9 script (missing :var?): %s"
+msgstr "E1100: Nesubtenata komando en MNV9-skripto (mankas :var?): %s"
 
 #, c-format
 msgid "E1001: Variable not found: %s"
@@ -7105,21 +7105,21 @@ msgstr "E1036: %c bezonas numera aŭ glitpunktnombran argumentojn"
 msgid "E1037: Cannot use \"%s\" with %s"
 msgstr "E1037: Ne eblas uzi \"%s\" kun %s"
 
-msgid "E1038: \"vim9script\" can only be used in a script"
-msgstr "E1038: \":vim9script\" nur uzeblas en skripto"
+msgid "E1038: \"mnv9script\" can only be used in a script"
+msgstr "E1038: \":mnv9script\" nur uzeblas en skripto"
 
-msgid "E1039: \"vim9script\" must be the first command in a script"
-msgstr "E1039: \":vim9script\" devas esti la unua komando en skripto"
+msgid "E1039: \"mnv9script\" must be the first command in a script"
+msgstr "E1039: \":mnv9script\" devas esti la unua komando en skripto"
 
-msgid "E1040: Cannot use :scriptversion after :vim9script"
-msgstr "E1040: Ne eblas uzi :scriptversion post :vim9script"
+msgid "E1040: Cannot use :scriptversion after :mnv9script"
+msgstr "E1040: Ne eblas uzi :scriptversion post :mnv9script"
 
 #, c-format
 msgid "E1041: Redefining script item %s"
 msgstr "E1041: Redifino de skriptero %s"
 
-msgid "E1042: Export can only be used in vim9script"
-msgstr "E1042: Eksporto nur uzeblas en vim9script"
+msgid "E1042: Export can only be used in mnv9script"
+msgstr "E1042: Eksporto nur uzeblas en mnv9script"
 
 msgid "E1043: Invalid command after :export"
 msgstr "E1043: Nevalida komando post :export"
@@ -7232,8 +7232,8 @@ msgstr "E1074: Neniu spaceto permesebla post punkto"
 msgid "E1075: Namespace not supported: %s"
 msgstr "E1075: Nomspaco nesubtenata: %s"
 
-msgid "E1076: This Vim is not compiled with float support"
-msgstr "E1076: Tiu Vim ne estis kompilita kun glitpunktnombra eblo"
+msgid "E1076: This MNV is not compiled with float support"
+msgstr "E1076: Tiu MNV ne estis kompilita kun glitpunktnombra eblo"
 
 #, c-format
 msgid "E1077: Missing argument type for %s"
@@ -7251,8 +7251,8 @@ msgid "E1083: Missing backtick"
 msgstr "E1083: Mankas malapostrofo"
 
 #, c-format
-msgid "E1084: Cannot delete Vim9 script function %s"
-msgstr "E1084: Ne eblas forviŝi funkcion de Vim9-skripto: %s"
+msgid "E1084: Cannot delete MNV9 script function %s"
+msgstr "E1084: Ne eblas forviŝi funkcion de MNV9-skripto: %s"
 
 #, c-format
 msgid "E1085: Not a callable type: %s"
@@ -7379,11 +7379,11 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: Mankas komo antaŭ argumento: %s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: \"%s\" ne uzeblas en malnova vim-skripto"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: \"%s\" ne uzeblas en malnova mnv-skripto"
 
-msgid "E1126: Cannot use :let in Vim9 script"
-msgstr "E1126: Ne eblas uzi :let en Vim8-skripto"
+msgid "E1126: Cannot use :let in MNV9 script"
+msgstr "E1126: Ne eblas uzi :let en MNV8-skripto"
 
 msgid "E1127: Missing name after dot"
 msgstr "E1127: Mankas nomo post punkto"
@@ -7483,8 +7483,8 @@ msgstr "E1156: Ne eblas ŝanĝi la liston de argumentoj rekursie"
 msgid "E1157: Missing return type"
 msgstr "E1157: Mankas tipo de revenordono"
 
-msgid "E1158: Cannot use flatten() in Vim9 script"
-msgstr "E1158: Ne eblas uzi flatten() en Vim9-skripto"
+msgid "E1158: Cannot use flatten() in MNV9 script"
+msgstr "E1158: Ne eblas uzi flatten() en MNV9-skripto"
 
 msgid "E1159: Cannot split a window when closing the buffer"
 msgstr "E1159: Ne eblas dividi fenestron dum fermo de bufro"
@@ -7509,8 +7509,8 @@ msgid "E1163: Variable %d: type mismatch, expected %s but got %s in %s"
 msgstr ""
 "E1163: Variablo %d: miskongruo de tipo, atendis %s sed ricevis %s en %s"
 
-msgid "E1164: vim9cmd must be followed by a command"
-msgstr "E1164: vim9cmd devas esti sekvita per komando"
+msgid "E1164: mnv9cmd must be followed by a command"
+msgstr "E1164: mnv9cmd devas esti sekvita per komando"
 
 #, c-format
 msgid "E1165: Cannot use a range with an assignment: %s"
@@ -7585,8 +7585,8 @@ msgstr "E1185: Mankas \":redir END\""
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: Esprimo ne liveras valoron: %s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: Rulado de defaults.vim malsukcesis"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: Rulado de defaults.mnv malsukcesis"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: Ne eblas malfermi terminalon ekde fenestro de komanda linio"
@@ -7609,8 +7609,8 @@ msgstr "E1191: Alvoko de funkcio, kiu estis malsukcese tradukita: %s"
 msgid "E1192: Empty function name"
 msgstr "E1192: Malplena nomo de funkcio"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
-msgstr "E1193: metodo de ĉifrado xchacha20 ne haveblas en tiu Vim"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
+msgstr "E1193: metodo de ĉifrado xchacha20 ne haveblas en tiu MNV"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: Ne blas ĉifri kapon, nesufiĉa spaco"
@@ -8320,8 +8320,8 @@ msgstr "atendis 3-opon kiel rezulto de imp.find_module(), sed ricevis %d-opon"
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "interna eraro: imp.find_module liveris opon kun NULL"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "ne eblas forviŝi atributojn de 'vim.Dictionary'"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "ne eblas forviŝi atributojn de 'mnv.Dictionary'"
 
 msgid "cannot modify fixed dictionary"
 msgstr "ne eblas ŝanĝi fiksan vortaron"
@@ -8344,8 +8344,8 @@ msgid "list index out of range"
 msgstr "indekso de listo ekster limoj"
 
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "interna eraro: obteno de vim-a listero %d malsukcesis"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "interna eraro: obteno de mnv-a listero %d malsukcesis"
 
 msgid "slice step cannot be zero"
 msgstr "paŝo de sekco ne povas esti nul"
@@ -8355,8 +8355,8 @@ msgid "attempt to assign sequence of size greater than %d to extended slice"
 msgstr "provis valorizi sekvencon kun pli ol %d eroj en etendita sekco"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "interna eraro: neniu vim-a listero %d"
+msgid "internal error: no MNV list item %d"
+msgstr "interna eraro: neniu mnv-a listero %d"
 
 msgid "internal error: not enough list items"
 msgstr "interna eraro: n sufiĉaj listeroj"
@@ -8371,8 +8371,8 @@ msgstr "provis valorizi sekvencon kun %d eroj al etendita sekco kun %d eroj"
 msgid "failed to add item to list"
 msgstr "aldono de listero malsukcesis"
 
-msgid "cannot delete vim.List attributes"
-msgstr "ne eblas forviŝi atributojn de 'vim.List'"
+msgid "cannot delete mnv.List attributes"
+msgstr "ne eblas forviŝi atributojn de 'mnv.List'"
 
 msgid "cannot modify fixed list"
 msgstr "ne eblas ŝanĝi fiksan liston"
@@ -8434,16 +8434,16 @@ msgid "mark name must be a single character"
 msgstr "nomo de marko devas esti unuopa signo"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "atendis objekton vim.Buffer, sed ricevis %s"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "atendis objekton mnv.Buffer, sed ricevis %s"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "salto al la bufro %d malsukcesis"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "atendis objekton vim.window, sed ricevis %s"
+msgid "expected mnv.Window object, but got %s"
+msgstr "atendis objekton mnv.window, sed ricevis %s"
 
 msgid "failed to find window in the current tab page"
 msgstr "malsukcesis trovi fenestron en la nuna langeto"
@@ -8452,8 +8452,8 @@ msgid "did not switch to the specified window"
 msgstr "ne saltis al la specifita fenestro"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "atendis objekton vim.TabPage, sed ricevis %s"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "atendis objekton mnv.TabPage, sed ricevis %s"
 
 msgid "did not switch to the specified tab page"
 msgstr "ne saltis al la specifita langeto"
@@ -8464,20 +8464,20 @@ msgstr "malsukcesis ruli la kodon"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: Eval ne revenis kun valida python-objekto"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: Konverto de revena python-objekto al vim-valoro malsukcesis"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: Konverto de revena python-objekto al mnv-valoro malsukcesis"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "ne povis konverti %s al vim-vortaro"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "ne povis konverti %s al mnv-vortaro"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "ne povis konverti %s al vim-listo"
+msgid "unable to convert %s to a MNV list"
+msgstr "ne povis konverti %s al mnv-listo"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "ne povis konverti %s al vim-strukturo"
+msgid "unable to convert %s to a MNV structure"
+msgstr "ne povis konverti %s al mnv-strukturo"
 
 msgid "internal error: NULL reference passed"
 msgstr "interna eraro: NULL-referenco argumento"
@@ -8488,26 +8488,26 @@ msgstr "interna eraro: nevalida tipo de valoro"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.MNV_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "Valorizo de sys.path_hooks malsukcesis: sys.path_hooks ne estas listo\n"
 "Vi nun devas fari tion:\n"
-"- postaldoni vim.path_hook al sys.path_hooks\n"
-"- postaldoni vim.VIM_SPECIAL_PATH al sys.path\n"
+"- postaldoni mnv.path_hook al sys.path_hooks\n"
+"- postaldoni mnv.MNV_SPECIAL_PATH al sys.path\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.MNV_SPECIAL_PATH to sys.path"
 msgstr ""
 "Agordo de serĉvojo malsukcesis: sys.path ne estas listo\n"
-"Vi nun devas aldoni vim.VIM_SPECIAL_PATH al sys.path"
+"Vi nun devas aldoni mnv.MNV_SPECIAL_PATH al sys.path"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Dosierioj de vim-makrooj (*.vim)\t*.vim\n"
+"Dosierioj de mnv-makrooj (*.mnv)\t*.mnv\n"
 "Ĉiuj dosieroj (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -8518,19 +8518,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Ĉiuj dosieroj (*.*)\t*.*\n"
 "Dosieroj C (*.c, *.h)\t*.c;*.h\n"
 "Dosieroj C++ (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "Fonto VB (*.bas, *.frm)\t.bas;*.frm\n"
-"Dosieroj Vim (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"Dosieroj MNV (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Dosierioj de vim-makrooj (*.vim)\t*.vim\n"
+"Dosierioj de mnv-makrooj (*.mnv)\t*.mnv\n"
 "Ĉiuj dosieroj (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -8540,15 +8540,15 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 msgstr ""
 "Ĉiuj dosieroj (*)\t*\n"
 "Dosieroj C (*.c, *.h)\t*.c;*.h\n"
 "Dosieroj C++ (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Dosieroj Vim (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"Dosieroj MNV (*.mnv, _mnvrc, _gmnvrc)\t*.mnv;_mnvrc;_gmnvrc\n"
 
-msgid "GVim"
-msgstr "GVim"
+msgid "GMNV"
+msgstr "GMNV"
 
 msgid "Text Editor"
 msgstr "Tekstoredaktilo"
@@ -8559,11 +8559,11 @@ msgstr "Redakti tekstajn dosierojn"
 msgid "Text;editor;"
 msgstr "Teksto;redaktilo;"
 
-msgid "gvim"
-msgstr "gvim"
+msgid "gmnv"
+msgstr "gmnv"
 
-msgid "Vim"
-msgstr "Vim"
+msgid "MNV"
+msgstr "MNV"
 
 msgid "(local to window)"
 msgstr "(loka en fenestro)"

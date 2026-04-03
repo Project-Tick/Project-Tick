@@ -1,0 +1,8 @@
+;gmnvdef.def : Declares the module parameters for the DLL.
+
+LIBRARY      gmnvext
+; DESCRIPTION  'MNV Shell Extension'
+
+EXPORTS
+    DllCanUnloadNow private
+    DllGetClassObject private

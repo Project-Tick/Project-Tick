@@ -1,10 +1,10 @@
-# Aap recipe for Romanian Vim spell files.
+# Aap recipe for Romanian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = ro_RO.aff ro_RO.dic
@@ -15,17 +15,17 @@ all: $SPELLDIR/ro.utf-8.spl \
         ../README_ro.txt
 
 $SPELLDIR/ro.utf-8.spl : $FILES
-        :sys env LANG=ro_RO.utf8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/ro ro_RO" -c q
+        :sys env LANG=ro_RO.utf8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/ro ro_RO" -c q
 
 # Note: this generates conversion errors, because not all characters can be
 # represented in iso-8859-2.
 $SPELLDIR/ro.iso-8859-2.spl : $FILES
-        :sys env LANG=ro_RO.iso88592 $VIM -u NONE -e -c "mkspell! $SPELLDIR/ro ro_RO" -c q
+        :sys env LANG=ro_RO.iso88592 $MNV -u NONE -e -c "mkspell! $SPELLDIR/ro ro_RO" -c q
 
 # Note: this generates conversion errors, because not all characters can be
 # represented in cp1250.
 $SPELLDIR/ro.cp1250.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/ro ro_RO" -c q
+        :sys $MNV -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/ro ro_RO" -c q
 
 ../README_ro.txt: README
         :copy $source $target
@@ -55,7 +55,7 @@ ro_RO.aff ro_RO.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -98,4 +98,4 @@ clean:
         :delete COPYING.MPL
         :delete README
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

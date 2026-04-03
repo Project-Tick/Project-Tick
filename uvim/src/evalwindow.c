@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * evalwindow.c: Window related builtin functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -284,7 +284,7 @@ get_framelayout(frame_T *fr, list_T *l, int outer)
 	    return;
 	if (list_append_list(l, fr_list) == FAIL)
 	{
-	    vim_free(fr_list);
+	    mnv_free(fr_list);
 	    return;
 	}
     }
@@ -309,7 +309,7 @@ get_framelayout(frame_T *fr, list_T *l, int outer)
 	    return;
 	if (list_append_list(fr_list, win_list) == FAIL)
 	{
-	    vim_free(win_list);
+	    mnv_free(win_list);
 	    return;
 	}
 
@@ -490,7 +490,7 @@ f_gettabinfo(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -529,7 +529,7 @@ f_getwininfo(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -589,7 +589,7 @@ f_getwinpos(typval_T *argvars UNUSED, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
 # if defined(FEAT_GUI) \
@@ -657,7 +657,7 @@ f_tabpagenr(typval_T *argvars UNUSED, typval_T *rettv)
     int		nr = 1;
     char_u	*arg;
 
-    if (in_vim9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -689,7 +689,7 @@ f_tabpagewinnr(typval_T *argvars UNUSED, typval_T *rettv)
     int		nr = 1;
     tabpage_T	*tp;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL))
 	return;
@@ -717,7 +717,7 @@ f_win_execute(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_string_or_list_arg(argvars, 1) == FAIL
 		|| check_for_opt_string_arg(argvars, 2) == FAIL))
@@ -758,7 +758,7 @@ f_win_execute(typval_T *argvars, typval_T *rettv)
     if (cwd_status == OK && p_acd)
     {
 	if (curbuf->b_sfname != NULL && curbuf->b_fname == curbuf->b_sfname)
-	    save_sfname = vim_strsave(curbuf->b_sfname);
+	    save_sfname = mnv_strsave(curbuf->b_sfname);
 	do_autochdir();
 	apply_acd = mch_dirname(autocwd, MAXPATHL) == OK
 	    && STRCMP(cwd, autocwd) == 0;
@@ -774,7 +774,7 @@ f_win_execute(typval_T *argvars, typval_T *rettv)
 # ifdef FEAT_AUTOCHDIR
     if (apply_acd)
     {
-	vim_free(save_sfname);
+	mnv_free(save_sfname);
 	do_autochdir();
     }
     else
@@ -785,7 +785,7 @@ f_win_execute(typval_T *argvars, typval_T *rettv)
 # ifdef FEAT_AUTOCHDIR
 	    if (save_sfname != NULL)
 	    {
-		vim_free(curbuf->b_sfname);
+		mnv_free(curbuf->b_sfname);
 		curbuf->b_sfname = save_sfname;
 		curbuf->b_fname = curbuf->b_sfname;
 	    }
@@ -809,7 +809,7 @@ f_win_execute(typval_T *argvars, typval_T *rettv)
     void
 f_win_findbuf(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (rettv_list_alloc(rettv) == OK)
@@ -822,7 +822,7 @@ f_win_findbuf(typval_T *argvars, typval_T *rettv)
     void
 f_win_getid(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_opt_number_arg(argvars, 0) == FAIL
 		|| (argvars[0].v_type != VAR_UNKNOWN
 		    && check_for_opt_number_arg(argvars, 1) == FAIL)))
@@ -841,7 +841,7 @@ f_win_gotoid(typval_T *argvars, typval_T *rettv)
     tabpage_T   *tp;
     int		id;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = tv_get_number(&argvars[0]);
@@ -879,7 +879,7 @@ f_win_gotoid(typval_T *argvars, typval_T *rettv)
     void
 f_win_id2tabwin(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (rettv_list_alloc(rettv) == OK)
@@ -892,7 +892,7 @@ f_win_id2tabwin(typval_T *argvars, typval_T *rettv)
     void
 f_win_id2win(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->vval.v_number = win_id2win(argvars);
@@ -909,7 +909,7 @@ f_win_move_separator(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL))
 	return;
@@ -939,7 +939,7 @@ f_win_move_statusline(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL))
 	return;
@@ -969,7 +969,7 @@ f_win_screenpos(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     wp = find_win_by_nr_or_id(&argvars[0]);
@@ -989,7 +989,7 @@ f_win_splitmove(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_opt_dict_arg(argvars, 2) == FAIL))
@@ -1053,7 +1053,7 @@ f_win_gettype(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -1061,25 +1061,25 @@ f_win_gettype(typval_T *argvars, typval_T *rettv)
 	wp = find_win_by_nr_or_id(&argvars[0]);
 	if (wp == NULL)
 	{
-	    rettv->vval.v_string = vim_strsave((char_u *)"unknown");
+	    rettv->vval.v_string = mnv_strsave((char_u *)"unknown");
 	    return;
 	}
     }
     if (is_aucmd_win(wp))
-	rettv->vval.v_string = vim_strsave((char_u *)"autocmd");
+	rettv->vval.v_string = mnv_strsave((char_u *)"autocmd");
 # if defined(FEAT_QUICKFIX)
     else if (wp->w_p_pvw)
-	rettv->vval.v_string = vim_strsave((char_u *)"preview");
+	rettv->vval.v_string = mnv_strsave((char_u *)"preview");
 # endif
 # ifdef FEAT_PROP_POPUP
     else if (WIN_IS_POPUP(wp))
-	rettv->vval.v_string = vim_strsave((char_u *)"popup");
+	rettv->vval.v_string = mnv_strsave((char_u *)"popup");
 # endif
     else if (wp == cmdwin_win)
-	rettv->vval.v_string = vim_strsave((char_u *)"command");
+	rettv->vval.v_string = mnv_strsave((char_u *)"command");
 # ifdef FEAT_QUICKFIX
     else if (bt_quickfix(wp->w_buffer))
-	rettv->vval.v_string = vim_strsave((char_u *)
+	rettv->vval.v_string = mnv_strsave((char_u *)
 		(wp->w_llist_ref != NULL ? "loclist" : "quickfix"));
 # endif
 
@@ -1109,7 +1109,7 @@ f_winbufnr(typval_T *argvars, typval_T *rettv)
 {
     win_T	*wp;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     wp = find_win_by_nr_or_id(&argvars[0]);
@@ -1137,7 +1137,7 @@ f_winheight(typval_T *argvars, typval_T *rettv)
 {
     win_T	*wp;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     wp = find_win_by_nr_or_id(&argvars[0]);
@@ -1158,7 +1158,7 @@ f_winlayout(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_number_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type == VAR_UNKNOWN)
@@ -1191,7 +1191,7 @@ f_winnr(typval_T *argvars UNUSED, typval_T *rettv)
 {
     int		nr = 1;
 
-    if (in_vim9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
 	return;
 
     nr = get_winnr(curtab, &argvars[0]);
@@ -1220,10 +1220,10 @@ f_winrestcmd(typval_T *argvars UNUSED, typval_T *rettv)
 	{
 	    size_t  buflen;
 
-	    buflen = vim_snprintf_safelen((char *)buf, sizeof(buf),
+	    buflen = mnv_snprintf_safelen((char *)buf, sizeof(buf),
 		":%dresize %d|", winnr, wp->w_height);
 	    ga_concat_len(&ga, buf, buflen);
-	    buflen = vim_snprintf_safelen((char *)buf, sizeof(buf),
+	    buflen = mnv_snprintf_safelen((char *)buf, sizeof(buf),
 		"vert :%dresize %d|", winnr, wp->w_width);
 	    ga_concat_len(&ga, buf, buflen);
 	    ++winnr;
@@ -1318,7 +1318,7 @@ f_winwidth(typval_T *argvars, typval_T *rettv)
 {
     win_T	*wp;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     wp = find_win_by_nr_or_id(&argvars[0]);

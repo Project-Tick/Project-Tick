@@ -1,9 +1,9 @@
-INSTALLmac.txt - Installation of Vim on Apple MacOS
+INSTALLmac.txt - Installation of MNV on Apple MacOS
 
-This file contains instructions for compiling Vim. If you already have an
-executable version of Vim, you don't need this.
+This file contains instructions for compiling MNV. If you already have an
+executable version of MNV, you don't need this.
 
-MacOS Classic is no longer supported.  If you really want it use Vim 6.4.
+MacOS Classic is no longer supported.  If you really want it use MNV 6.4.
 Only '/' is supported as path separator.
 
 
@@ -22,17 +22,17 @@ If not installed yet a window pops up instructing you to install the developer
 tools.
 
 If you don't have the source yet, best is to use git (which you need to
-install first), see http://www.vim.org/git.php
+install first), see http://www.mnv.org/git.php
 Or you can download and unpack the Unix tar archive, see
-   http://www.vim.org/download.php
+   http://www.mnv.org/download.php
 
 
 ----------------------------------------------------------------------------
 Build and install the terminal version.
 ----------------------------------------------------------------------------
 
-You can compile vim with the standard Unix routine:
-   cd vim/src
+You can compile mnv with the standard Unix routine:
+   cd mnv/src
    make
    make test
    sudo make install

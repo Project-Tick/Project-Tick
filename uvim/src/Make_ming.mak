@@ -1,5 +1,5 @@
 #
-# Makefile for VIM on Win32, using MinGW
+# Makefile for MNV on Win32, using MinGW
 #
 # Also read INSTALLpc.txt!
 #
@@ -24,7 +24,7 @@
 # uncomment 'PYTHON' if you want a python-enabled version
 # Put the path to the python distro here.  If cross compiling from Linux, you
 # will also need to convert the header files to unix instead of dos format:
-#   for fil in *.h ; do vim -e -c 'set ff=unix|w|q' $fil
+#   for fil in *.h ; do mnv -e -c 'set ff=unix|w|q' $fil
 # and also, you will need to make a mingw32 'libpython20.a' to link with:
 #   cd $PYTHON/libs
 #   pexports python20.dll > python20.def
@@ -48,4 +48,4 @@
 UNDER_CYGWIN = no
 include Make_cyg_ming.mak
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=0:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=0:

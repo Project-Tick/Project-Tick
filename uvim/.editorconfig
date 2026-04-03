@@ -20,11 +20,11 @@ indent_size = 2
 # https://spec.commonmark.org/0.31.2/#hard-line-breaks
 trim_trailing_whitespace = false
 
-[*.vim]
+[*.mnv]
 indent_style = space
 indent_size = 2
 
-[runtime/pack/dist/opt/{comment,nohlsearch}/**.vim]
+[runtime/pack/dist/opt/{comment,nohlsearch}/**.mnv]
 indent_style = space
 indent_size = 4
 
@@ -32,7 +32,7 @@ indent_size = 4
 # It can mess up some documentation by trying to strip trailing whitespaces
 trim_trailing_whitespace = false
 
-[src/testdir/test*.vim]
+[src/testdir/test*.mnv]
 # Some tests need trailing whitespaces, for example `set showbreak=>>\ `
 trim_trailing_whitespace = false
 

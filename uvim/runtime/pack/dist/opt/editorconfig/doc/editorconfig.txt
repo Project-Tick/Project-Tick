@@ -1,9 +1,9 @@
-*editorconfig.txt*            EditorConfig plugin for vim.
+*editorconfig.txt*            EditorConfig plugin for mnv.
 
 File: editorconfig.txt
 Version: 1.1.1
 Maintainer: EditorConfig Team <http://editorconfig.org>
-Description: EditorConfig vim plugin
+Description: EditorConfig mnv plugin
 
 CONTENTS~
                                             *editorconfig-contents*
@@ -19,7 +19,7 @@ CONTENTS~
 OVERVIEW~
                                             *editorconfig-overview*
 ----------------------------------------------------------------------------
-This is the EditorConfig plugin for vim.
+This is the EditorConfig plugin for mnv.
 
 
 INSTALLATION~
@@ -44,19 +44,19 @@ SETTINGS~
 ----------------------------------------------------------------------------
                                             *g:EditorConfig_core_mode*
 Specify the mode of EditorConfig core. Generally it is OK to leave this option
-empty. Currently, the supported modes are "vim_core" (default) and
+empty. Currently, the supported modes are "mnv_core" (default) and
 "external_command".
 
-    vim_core:           Use the included Vim script EditorConfig Core.
+    mnv_core:           Use the included MNV script EditorConfig Core.
     external_command:   Run external EditorConfig Core.
 
 If "g:EditorConfig_core_mode" is not specified, this plugin will automatically
-choose "vim_core".
+choose "mnv_core".
 
 If you choose "external_command" mode, you must also set
 |g:EditorConfig_exec_path|.
 
-Changes to "g:EditorConfig_core_mode" will not take effect until Vim
+Changes to "g:EditorConfig_core_mode" will not take effect until MNV
 is restarted.
 
                                             *b:EditorConfig_disable*
@@ -85,16 +85,16 @@ Example: Avoid loading EditorConfig for any remote files over ssh
 
                                             *g:EditorConfig_exec_path*
 The file path to the EditorConfig core executable. You can set this value in
-your |vimrc| like this:
+your |mnvrc| like this:
 >
  let g:EditorConfig_exec_path = 'Path to your EditorConfig Core executable'
 <
 The default value is empty.
 
-If "g:EditorConfig_exec_path" is not set, the plugin will use the "vim_core"
+If "g:EditorConfig_exec_path" is not set, the plugin will use the "mnv_core"
 mode regardless of the setting of |g:EditorConfig_core_mode|.
 
-Changes to "g:EditorConfig_exec_path" will not take effect until Vim
+Changes to "g:EditorConfig_exec_path" will not take effect until MNV
 is restarted.
 
                                             *g:EditorConfig_max_line_indicator*
@@ -122,7 +122,7 @@ no max line indicator.
                      when you do not want any indicator to be shown, but any
                      value other than those listed above also work as "none".
 
-To set this option, add any of the following lines to your |vimrc| file:
+To set this option, add any of the following lines to your |mnvrc| file:
 >
  let g:EditorConfig_max_line_indicator = "line"
  let g:EditorConfig_max_line_indicator = "fill"
@@ -150,16 +150,16 @@ max_line_length is set:
 This option defaults to 0.
 
                                             *g:EditorConfig_softtabstop_space*
-When spaces are used for indent, Vim's 'softtabstop' feature will make the
+When spaces are used for indent, MNV's 'softtabstop' feature will make the
 backspace key delete one indent level. If you turn off that feature (by
 setting the option to 0), only a single space will be deleted.
 This option defaults to 1, which enables 'softtabstop' and uses the
 'shiftwidth' value for it. You can also set this to -1 to automatically follow
-the current 'shiftwidth' value (since Vim 7.3.693). Or set this to [] if
+the current 'shiftwidth' value (since MNV 7.3.693). Or set this to [] if
 EditorConfig should not touch 'softtabstop' at all.
 
                                             *g:EditorConfig_softtabstop_tab*
-When tabs are used for indent, Vim's 'softtabstop' feature only applies to
+When tabs are used for indent, MNV's 'softtabstop' feature only applies to
 backspacing over existing runs of spaces.
 This option defaults to 1, so backspace will delete one indent level worth of
 spaces; -1 does the same but automatically follows the current 'shiftwidth'
@@ -178,18 +178,18 @@ ADVANCED~
                                             *editorconfig-hook*
                                             *EditorConfig#AddNewHook()*
 While this plugin offers several builtin supported properties (as mentioned
-here: https://github.com/editorconfig/editorconfig-vim#supported-properties),
+here: https://github.com/editorconfig/editorconfig-mnv#supported-properties),
 we are also able to add our own hooks to support additional EditorConfig
 properties, including those not in the EditorConfig standard. For example, we
 are working on an Objective-C project, and all our "*.m" files should be
-Objective-C source files. However, vim sometimes detect "*.m" files as MATLAB
+Objective-C source files. However, mnv sometimes detect "*.m" files as MATLAB
 source files, which causes incorrect syntax highlighting, code indentation,
-etc. To solve the case, we could write the following code into the |vimrc|
+etc. To solve the case, we could write the following code into the |mnvrc|
 file:
 >
  function! FiletypeHook(config)
-     if has_key(a:config, 'vim_filetype')
-         let &filetype = a:config['vim_filetype']
+     if has_key(a:config, 'mnv_filetype')
+         let &filetype = a:config['mnv_filetype']
      endif
 
      return 0   " Return 0 to show no error happened
@@ -200,7 +200,7 @@ file:
 And add the following code to your .editorconfig file:
 >
  [*.m]
- vim_filetype = objc
+ mnv_filetype = objc
 <
 Then try to open an Objective-C file, you will find the |filetype| is set to
 "objc".
@@ -235,4 +235,4 @@ License:
    POSSIBILITY OF SUCH DAMAGE.
 
 
-vim:ft=help:tw=78:cc=
+mnv:ft=help:tw=78:cc=

@@ -1,0 +1,8 @@
+#!/usr/bin/env mnv -S
+mnv9script
+# MNV9 shebang line
+
+
+# just a line comment
+#!/usr/bin/env mnv -S
+

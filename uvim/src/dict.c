@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * dict.c: Dictionary support
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -155,7 +155,7 @@ dict_free_dict(dict_T *d)
 	d->dv_used_prev->dv_used_next = d->dv_used_next;
     if (d->dv_used_next != NULL)
 	d->dv_used_next->dv_used_prev = d->dv_used_prev;
-    vim_free(d);
+    mnv_free(d);
 }
 
     static void
@@ -282,7 +282,7 @@ dictitem_free(dictitem_T *item)
 {
     clear_tv(&item->di_tv);
     if (item->di_flags & DI_FLAGS_ALLOC)
-	vim_free(item);
+	mnv_free(item);
 }
 
 /*
@@ -331,7 +331,7 @@ dict_copy(dict_T *orig, int deep, int top, int copyID)
 		if (item_copy(&HI2DI(hi)->di_tv, &di->di_tv,
 			    deep, FALSE, copyID) == FAIL)
 		{
-		    vim_free(di);
+		    mnv_free(di);
 		    break;
 		}
 	    }
@@ -356,14 +356,14 @@ dict_copy(dict_T *orig, int deep, int top, int copyID)
 }
 
 /*
- * Check for adding a function to g: or s: (in Vim9 script) or l:.
+ * Check for adding a function to g: or s: (in MNV9 script) or l:.
  * If the name is wrong give an error message and return TRUE.
  */
     int
 dict_wrong_func_name(dict_T *d, typval_T *tv, char_u *name)
 {
     return (d == get_globvar_dict()
-		|| (in_vim9script() && SCRIPT_ID_VALID(current_sctx.sc_sid)
+		|| (in_mnv9script() && SCRIPT_ID_VALID(current_sctx.sc_sid)
 		   && d == &SCRIPT_ITEM(current_sctx.sc_sid)->sn_vars->sv_dict)
 		|| &d->dv_hashtab == get_funccal_local_ht())
 	    && (tv->v_type == VAR_FUNC || tv->v_type == VAR_PARTIAL)
@@ -457,9 +457,9 @@ dict_add_string_len(dict_T *d, char *key, char_u *str, int len)
     if (str != NULL)
     {
 	if (len == -1)
-	    val = vim_strsave(str);
+	    val = mnv_strsave(str);
 	else
-	    val = vim_strnsave(str, len);
+	    val = mnv_strnsave(str, len);
     }
     item->di_tv.vval.v_string = val;
     if (dict_add(d, item) == FAIL)
@@ -548,7 +548,7 @@ dict_add_func(dict_T *d, char *key, ufunc_T *fp)
     if (item == NULL)
 	return FAIL;
     item->di_tv.v_type = VAR_FUNC;
-    item->di_tv.vval.v_string = vim_strnsave(fp->uf_name, fp->uf_namelen);
+    item->di_tv.vval.v_string = mnv_strnsave(fp->uf_name, fp->uf_namelen);
     if (dict_add(d, item) == FAIL)
     {
 	dictitem_free(item);
@@ -661,7 +661,7 @@ dict_find(dict_T *d, char_u *key, int len)
 	akey = key;
     else if (len >= AKEYLEN)
     {
-	tofree = akey = vim_strnsave(key, len);
+	tofree = akey = mnv_strnsave(key, len);
 	if (akey == NULL)
 	    return NULL;
     }
@@ -674,7 +674,7 @@ dict_find(dict_T *d, char_u *key, int len)
     }
 
     hi = hash_find(&d->dv_hashtab, akey);
-    vim_free(tofree);
+    mnv_free(tofree);
     if (HASHITEM_EMPTY(hi))
 	return NULL;
     return HI2DI(hi);
@@ -722,7 +722,7 @@ dict_get_string(dict_T *d, char *key, int save)
 	return NULL;
     s = tv_get_string(&di->di_tv);
     if (save && s != NULL)
-	s = vim_strsave(s);
+	s = mnv_strsave(s);
     return s;
 }
 
@@ -824,14 +824,14 @@ dict2string(typval_T *tv, int copyID, int restore_copyID)
 	    if (tofree != NULL)
 	    {
 		ga_concat(&ga, tofree);
-		vim_free(tofree);
+		mnv_free(tofree);
 	    }
 	    GA_CONCAT_LITERAL(&ga, ": ");
 	    s = echo_string_core(&HI2DI(hi)->di_tv, &tofree, numbuf, copyID,
 						 FALSE, restore_copyID, TRUE);
 	    if (s != NULL)
 		ga_concat(&ga, s);
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	    if (s == NULL || did_echo_string_emsg)
 		break;
 	    line_breakcheck();
@@ -840,7 +840,7 @@ dict2string(typval_T *tv, int copyID, int restore_copyID)
     }
     if (todo > 0)
     {
-	vim_free(ga.ga_data);
+	mnv_free(ga.ga_data);
 	return NULL;
     }
 
@@ -875,14 +875,14 @@ get_literal_key_tv(char_u **arg, typval_T *tv)
     if (p == *arg)
 	return FAIL;
     tv->v_type = VAR_STRING;
-    tv->vval.v_string = vim_strnsave(*arg, p - *arg);
+    tv->vval.v_string = mnv_strnsave(*arg, p - *arg);
 
     *arg = p;
     return OK;
 }
 
 /*
- * Get a literal key for a Vim9 dict:
+ * Get a literal key for a MNV9 dict:
  * {"name": value},
  * {'name': value},
  * {name: value} use "name" as a literal key
@@ -916,7 +916,7 @@ get_literal_key(char_u **arg)
 	    semsg(_(e_invalid_key_str), *arg);
 	    return NULL;
 	}
-	key = vim_strnsave(*arg, end - *arg);
+	key = mnv_strnsave(*arg, end - *arg);
 	*arg = end;
     }
     return key;
@@ -940,7 +940,7 @@ eval_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int literal)
     dictitem_T	*item;
     char_u	*curly_expr = skipwhite(*arg + 1);
     char_u	buf[NUMBUFLEN];
-    int		vim9script = in_vim9script();
+    int		mnv9script = in_mnv9script();
     int		had_comma;
 
     // First check if it's not a curly-braces expression: {expr}.
@@ -949,7 +949,7 @@ eval_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int literal)
     // first item.
     // "{}" is an empty Dictionary.
     // "#{abc}" is never a curly-braces expression.
-    if (!vim9script
+    if (!mnv9script
 	    && *curly_expr != '}'
 	    && !literal
 	    && eval1(&curly_expr, &tv, NULL) == OK
@@ -968,14 +968,14 @@ eval_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int literal)
     *arg = skipwhite_and_linebreak(*arg + 1, evalarg);
     while (**arg != '}' && **arg != NUL)
     {
-	int	has_bracket = vim9script && **arg == '[';
+	int	has_bracket = mnv9script && **arg == '[';
 
 	if (literal)
 	{
 	    if (get_literal_key_tv(arg, &tvkey) == FAIL)
 		goto failret;
 	}
-	else if (vim9script && !has_bracket)
+	else if (mnv9script && !has_bracket)
 	{
 	    tvkey.vval.v_string = get_literal_key(arg);
 	    if (tvkey.vval.v_string == NULL)
@@ -1002,8 +1002,8 @@ eval_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int literal)
 	}
 
 	// the colon should come right after the key, but this wasn't checked
-	// previously, so only require it in Vim9 script.
-	if (!vim9script)
+	// previously, so only require it in MNV9 script.
+	if (!mnv9script)
 	    *arg = skipwhite(*arg);
 	if (**arg != ':')
 	{
@@ -1029,7 +1029,7 @@ eval_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int literal)
 		goto failret;
 	    }
 	}
-	if (vim9script && (*arg)[1] != NUL && !VIM_ISWHITE((*arg)[1]))
+	if (mnv9script && (*arg)[1] != NUL && !MNV_ISWHITE((*arg)[1]))
 	{
 	    semsg(_(e_white_space_required_after_str_str), ":", *arg);
 	    clear_tv(&tvkey);
@@ -1070,13 +1070,13 @@ eval_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg, int literal)
 	clear_tv(&tvkey);
 
 	// the comma should come right after the value, but this wasn't checked
-	// previously, so only require it in Vim9 script.
-	if (!vim9script)
+	// previously, so only require it in MNV9 script.
+	if (!mnv9script)
 	    *arg = skipwhite(*arg);
 	had_comma = **arg == ',';
 	if (had_comma)
 	{
-	    if (vim9script && !IS_WHITE_NL_OR_NUL((*arg)[1]))
+	    if (mnv9script && !IS_WHITE_NL_OR_NUL((*arg)[1]))
 	    {
 		semsg(_(e_white_space_required_after_str_str), ",", *arg);
 		goto failret;
@@ -1124,12 +1124,12 @@ failret:
     int
 eval_lit_dict(char_u **arg, typval_T *rettv, evalarg_T *evalarg)
 {
-    int		vim9script = in_vim9script();
+    int		mnv9script = in_mnv9script();
     int		ret = OK;
 
-    if (vim9script)
+    if (mnv9script)
     {
-	ret = vim9_bad_comment(*arg) ? FAIL : NOTDONE;
+	ret = mnv9_bad_comment(*arg) ? FAIL : NOTDONE;
     }
     else if ((*arg)[1] == '{')
     {
@@ -1451,9 +1451,9 @@ dict_filter_map(
 			|| var_check_ro(di->di_flags,
 			    arg_errmsg, TRUE)))
 		break;
-	    set_vim_var_string(VV_KEY, di->di_key, -1);
+	    set_mnv_var_string(VV_KEY, di->di_key, -1);
 	    r = filter_map_one(&di->di_tv, expr, filtermap, fc, &newtv, &rem);
-	    clear_tv(get_vim_var_tv(VV_KEY));
+	    clear_tv(get_mnv_var_tv(VV_KEY));
 	    if (r == FAIL || did_emsg)
 	    {
 		clear_tv(&newtv);
@@ -1584,7 +1584,7 @@ dict2list(typval_T *argvars, typval_T *rettv, dict2list_T what)
 		// keys()
 		li->li_tv.v_type = VAR_STRING;
 		li->li_tv.v_lock = 0;
-		li->li_tv.vval.v_string = vim_strsave(di->di_key);
+		li->li_tv.vval.v_string = mnv_strsave(di->di_key);
 	    }
 	    else if (what == DICT2LIST_VALUES)
 	    {
@@ -1662,7 +1662,7 @@ dict_set_items_ro(dict_T *di)
     void
 f_has_key(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_dict_arg(argvars, 0) == FAIL
 		|| check_for_string_or_number_arg(argvars, 1) == FAIL))
 	return;

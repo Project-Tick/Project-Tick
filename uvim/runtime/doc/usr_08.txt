@@ -1,7 +1,7 @@
-*usr_08.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_08.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			      Splitting windows
@@ -17,7 +17,7 @@ side by side.  All this is possible with split windows.
 |08.4|	Vertical splits
 |08.5|	Moving windows
 |08.6|	Commands for all windows
-|08.7|	Viewing differences with vimdiff
+|08.7|	Viewing differences with mnvdiff
 |08.8|	Various
 |08.9|	Tab pages
 
@@ -66,7 +66,7 @@ To close a window, use the command: >
 	:close
 
 Actually, any command that quits editing a file works, like ":quit" and "ZZ".
-But ":close" prevents you from accidentally exiting Vim when you close the
+But ":close" prevents you from accidentally exiting MNV when you close the
 last window.
 
 
@@ -144,7 +144,7 @@ count.
 
 USING THE MOUSE
 
-In Vim you can do many things very quickly from the keyboard.  Unfortunately,
+In MNV you can do many things very quickly from the keyboard.  Unfortunately,
 the window resizing commands require quite a bit of typing.  In this case,
 using the mouse is faster.  Position the mouse pointer on a status line.  Now
 press the left mouse button and drag.  The status line will move, thus making
@@ -157,7 +157,7 @@ The 'winheight' option can be set to a minimal desired height of a window and
 'winminheight' to a hard minimum height.
    Likewise, there is 'winwidth' for the minimal desired width and
 'winminwidth' for the hard minimum width.
-   The 'equalalways' option, when set, makes Vim equalize the windows sizes
+   The 'equalalways' option, when set, makes MNV equalize the windows sizes
 when a window is closed or opened.
 
 ==============================================================================
@@ -244,7 +244,7 @@ and then type this command: >
 This uses the uppercase letter K.  What happens is that the window is moved to
 the very top.  You will notice that K is again used for moving upwards.
    When you have vertical splits, CTRL-W K will move the current window to the
-top and make it occupy the full width of the Vim window.  If this is your
+top and make it occupy the full width of the MNV window.  If this is your
 layout:
 
 	+-------------------------------------------+
@@ -280,12 +280,12 @@ The other three similar commands (you can probably guess these now):
 ==============================================================================
 *08.6*	Commands for all windows
 
-When you have several windows open and you want to quit Vim, you can close
+When you have several windows open and you want to quit MNV, you can close
 each window separately.  A quicker way is using this command: >
 
 	:qall
 
-This stands for "quit all".  If any of the windows contain changes, Vim will
+This stands for "quit all".  If any of the windows contain changes, MNV will
 not exit.  The cursor will automatically be positioned in a window with
 changes.  You can then either use ":write" to save the changes, or ":quit!" to
 throw them away.
@@ -296,15 +296,15 @@ changes, use this command: >
 	:wall
 
 This stands for "write all".  But actually, it only writes files with
-changes.  Vim knows it doesn't make sense to write files that were not
+changes.  MNV knows it doesn't make sense to write files that were not
 changed.
    And then there is the combination of ":qall" and ":wall": the "write and
 quit all" command: >
 
 	:wqall
 
-This writes all modified files and quits Vim.
-   Finally, there is a command that quits Vim and throws away all changes: >
+This writes all modified files and quits MNV.
+   Finally, there is a command that quits MNV and throws away all changes: >
 
 	:qall!
 
@@ -313,9 +313,9 @@ Be careful, there is no way to undo this command!
 
 OPENING A WINDOW FOR ALL ARGUMENTS
 
-To make Vim open a window for each file, start it with the "-o" argument: >
+To make MNV open a window for each file, start it with the "-o" argument: >
 
-	vim -o one.txt two.txt three.txt
+	mnv -o one.txt two.txt three.txt
 
 This results in:
 
@@ -333,21 +333,21 @@ This results in:
 	+-------------------------------+
 
 The "-O" argument is used to get vertically split windows.
-   When Vim is already running, the ":all" command opens a window for each
+   When MNV is already running, the ":all" command opens a window for each
 file in the argument list.  ":vertical all" does it with vertical splits.
 
 ==============================================================================
-*08.7*	Viewing differences with vimdiff
+*08.7*	Viewing differences with mnvdiff
 
-There is a special way to start Vim, which shows the differences between two
+There is a special way to start MNV, which shows the differences between two
 files.  Let's take a file "main.c" and insert a few characters in one line.
 Write this file with the 'backup' option set, so that the backup file
 "main.c~" will contain the previous version of the file.
-   Type this command in a shell (not in Vim): >
+   Type this command in a shell (not in MNV): >
 
-	vimdiff main.c~ main.c
+	mnvdiff main.c~ main.c
 
-Vim will start, with two windows side by side.  You will only see the line
+MNV will start, with two windows side by side.  You will only see the line
 in which you added characters, and a few lines above and below it.
 
 	 VV		      VV
@@ -369,7 +369,7 @@ in which you added characters, and a few lines above and below it.
 	|					  |
 	+-----------------------------------------+
 
-(This picture doesn't show the highlighting, use the vimdiff command for a
+(This picture doesn't show the highlighting, use the mnvdiff command for a
 better look.)
 
 The lines that were not modified have been collapsed into one line.  This is
@@ -398,9 +398,9 @@ this -, the fold will close.
 "zo" to open a fold and "zc" to close it.
 
 
-DIFFING IN VIM
+DIFFING IN MNV
 
-Another way to start in diff mode can be done from inside Vim.  Edit the
+Another way to start in diff mode can be done from inside MNV.  Edit the
 "main.c" file, then make a split and show the differences: >
 
 	:edit main.c
@@ -410,7 +410,7 @@ The ":vertical" command is used to make the window split vertically.  If you
 omit this, you will get a horizontal split.
 
 If you have a patch or diff file, you can use the third way to start diff
-mode.  First edit the file to which the patch applies.  Then tell Vim the name
+mode.  First edit the file to which the patch applies.  Then tell MNV the name
 of the patch file: >
 
 	:edit main.c
@@ -419,13 +419,13 @@ of the patch file: >
 WARNING: The patch file must contain only one patch, for the file you are
 editing.  Otherwise you will get a lot of error messages, and some files might
 be patched unexpectedly.
-   The patching will only be done to the copy of the file in Vim.  The file on
+   The patching will only be done to the copy of the file in MNV.  The file on
 your harddisk will remain unmodified (until you decide to write the file).
 
 
 SCROLL BINDING
 
-When the files have more changes, you can scroll in the usual way.  Vim will
+When the files have more changes, you can scroll in the usual way.  MNV will
 try to keep both the windows start at the same position, so you can easily see
 the differences side by side.
    When you don't want this for a moment, use this command: >
@@ -451,7 +451,7 @@ change, and "3[c" jumps to the third previous change.
 REMOVING CHANGES
 
 You can move text from one window to the other.  This either removes
-differences or adds new ones.  Vim doesn't keep the highlighting updated in
+differences or adds new ones.  MNV doesn't keep the highlighting updated in
 all situations.  To update it use this command: >
 
 	:diffupdate
@@ -471,11 +471,11 @@ window, to the line where "changed" was inserted.  Now type this command: >
 	do
 
 The change will now be removed by getting the text from the other window.
-Since there are no changes left now, Vim puts all text in a closed fold.
+Since there are no changes left now, MNV puts all text in a closed fold.
 "do" stands for "diff obtain".  "dg" would have been better, but that already
 has a different meaning ("dgg" deletes from the cursor until the first line).
 
-For details about diff mode, see |vimdiff|.
+For details about diff mode, see |mnvdiff|.
 
 ==============================================================================
 *08.8*	Various
@@ -505,8 +505,8 @@ window is to appear:
 	:aboveleft {cmd}	idem
 	:rightbelow {cmd}	right or below the current window
 	:belowright {cmd}	idem
-	:topleft {cmd}		at the top or left of the Vim window
-	:botright {cmd}		at the bottom or right of the Vim window
+	:topleft {cmd}		at the top or left of the MNV window
+	:botright {cmd}		at the bottom or right of the MNV window
 
 
 ==============================================================================
@@ -519,7 +519,7 @@ Assume you are editing "thisfile".  To create a new tab page use this command: >
 
 	:tabedit thatfile
 
-This will edit the file "thatfile" in a window that occupies the whole Vim
+This will edit the file "thatfile" in a window that occupies the whole MNV
 window.  And you will notice a bar at the top with the two file names:
 
 	+----------------------------------+
@@ -601,4 +601,4 @@ For more information about tab pages see |tab-page|.
 
 Next chapter: |usr_09.txt|  Using the GUI
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

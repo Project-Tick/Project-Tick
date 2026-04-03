@@ -1,10 +1,10 @@
-*remote.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*remote.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Vim client-server communication				*client-server*
+MNV client-server communication				*client-server*
 
 1. Common functionality		|clientserver|
 2. X11 specific items		|x11-clientserver|
@@ -14,17 +14,17 @@ Vim client-server communication				*client-server*
 ==============================================================================
 1. Common functionality					*clientserver*
 
-When compiled with the |+clientserver| option, Vim can act as a command
+When compiled with the |+clientserver| option, MNV can act as a command
 server.  It accepts messages from a client and executes them.  At the same
-time, Vim can function as a client and send commands to a Vim server.
+time, MNV can function as a client and send commands to a MNV server.
 
 The following command line arguments are available:
 
     argument			meaning	~
 
    --remote [+{cmd}] {file} ...					*--remote*
-				Open the file list in a remote Vim.  When
-				there is no Vim server, execute locally.
+				Open the file list in a remote MNV.  When
+				there is no MNV server, execute locally.
 				There is one optional init command: +{cmd}.
 				This must be an Ex command that can be
 				followed by "|".
@@ -32,16 +32,16 @@ The following command line arguments are available:
 				file list.  Thus any non-file arguments must
 				come before this.
 				You cannot edit stdin this way |--|.
-				The remote Vim is raised.  If you don't want
+				The remote MNV is raised.  If you don't want
 				this use >
-				 vim --remote-send "<C-\><C-N>:n filename<CR>"
+				 mnv --remote-send "<C-\><C-N>:n filename<CR>"
 <
    --remote-silent [+{cmd}] {file} ...			*--remote-silent*
 				As above, but don't complain if there is no
 				server and the file is edited locally.
    --remote-wait [+{cmd}] {file} ...				*--remote-wait*
 				As --remote, but wait for files to complete
-				(unload) in remote Vim.
+				(unload) in remote MNV.
    --remote-wait-silent [+{cmd}] {file} ...		*--remote-wait-silent*
 				As --remote-wait, but don't complain if there
 				is no server.
@@ -86,58 +86,58 @@ The following command line arguments are available:
 
 Examples ~
 
-Edit "file.txt" in an already running GVIM server: >
-    gvim --remote file.txt
+Edit "file.txt" in an already running GMNV server: >
+    gmnv --remote file.txt
 
 Edit "file.txt" in an already running server called FOOBAR: >
-    gvim --servername FOOBAR --remote file.txt
+    gmnv --servername FOOBAR --remote file.txt
 
 Edit "file.txt" in server "FILES" if it exists, become server "FILES"
 otherwise: >
-    gvim --servername FILES --remote-silent file.txt
+    gmnv --servername FILES --remote-silent file.txt
 
 This doesn't work, all arguments after --remote will be used as file names: >
-    gvim --remote --servername FOOBAR file.txt
+    gmnv --remote --servername FOOBAR file.txt
 
 Edit file "+foo" in a remote server (note the use of "./" to avoid the special
 meaning of the leading plus): >
-    vim --remote ./+foo
+    mnv --remote ./+foo
 
 Tell the remote server "BLA" to write all files and exit: >
-    vim --servername BLA --remote-send '<C-\><C-N>:wqa<CR>'
+    mnv --servername BLA --remote-send '<C-\><C-N>:wqa<CR>'
 
 
 SERVER NAME						*client-server-name*
 
-By default Vim will try to register the name under which it was invoked (gvim,
-egvim ...).  This can be overridden with the --servername argument.  If the
+By default MNV will try to register the name under which it was invoked (gmnv,
+egmnv ...).  This can be overridden with the --servername argument.  If the
 specified name is not available, a postfix is applied until a free name is
-encountered, i.e. "gvim1" for the second invocation of gvim on a particular
+encountered, i.e. "gmnv1" for the second invocation of gmnv on a particular
 X-server.  The resulting name is available in the servername builtin variable
-|v:servername|.  The case of the server name is ignored, thus "gvim" and
-"GVIM" are considered equal.  Note if a socket server is being used, there are
+|v:servername|.  The case of the server name is ignored, thus "gmnv" and
+"GMNV" are considered equal.  Note if a socket server is being used, there are
 some differences, see |socketserver-differences|.
 
-When Vim is invoked with --remote, --remote-wait or --remote-send it will try
+When MNV is invoked with --remote, --remote-wait or --remote-send it will try
 to locate the server name determined by the invocation name and --servername
 argument as described above.  If an exact match is not available, the first
 server with the number postfix will be used.  If a name with the number
 postfix is specified with the --servername argument, it must match exactly.
 
-If no server can be located and --remote or --remote-wait was used, Vim will
+If no server can be located and --remote or --remote-wait was used, MNV will
 start up according to the rest of the command line and do the editing by
-itself.  This way it is not necessary to know whether gvim is already started
+itself.  This way it is not necessary to know whether gmnv is already started
 when sending command to it.
 
-The --serverlist argument will cause Vim to print a list of registered command
+The --serverlist argument will cause MNV to print a list of registered command
 servers on the standard output (stdout) and exit.  If a socket server is being
 used, there are caveats, see |socketserver-differences|.
 							*{server}*
 The {server} argument is used by several functions.  When this is an empty
-string then on Unix the default server name is used, which is "GVIM".  On
+string then on Unix the default server name is used, which is "GMNV".  On
 MS-Windows an empty string does not work.
 
-Win32 Note: Making the Vim server go to the foreground doesn't always work,
+Win32 Note: Making the MNV server go to the foreground doesn't always work,
 because MS-Windows doesn't allow it.  The client will move the server to the
 foreground when using the --remote or --remote-wait argument and the server
 name starts with "g".
@@ -149,7 +149,7 @@ The --remote argument will cause a |:drop| command to be constructed from the
 rest of the command line and sent as described above.
 The --remote-wait argument does the same thing and additionally sets up to
 wait for each of the files to have been edited.  This uses the BufUnload
-event, thus as soon as a file has been unloaded, Vim assumes you are done
+event, thus as soon as a file has been unloaded, MNV assumes you are done
 editing it.
 Note that the --remote and --remote-wait arguments will consume the rest of
 the command line.  I.e. all remaining arguments will be regarded as filenames.
@@ -158,7 +158,7 @@ You can not put options there!
 
 FUNCTIONS
 								*E240* *E573*
-There are a number of Vim functions for scripting the command server.  See
+There are a number of MNV functions for scripting the command server.  See
 the description in |builtin.txt| or use CTRL-] on the function name to jump to
 the full explanation.
 
@@ -181,42 +181,42 @@ The {serverid} for server2client() can be obtained with expand("<client>")
 				    *E247* *E248* *E251* *E258* *E277*
 
 The communication between client and server goes through the X server.  The
-display of the Vim server must be specified.  The usual protection of the X
+display of the MNV server must be specified.  The usual protection of the X
 server is used, you must be able to open a window on the X server for the
 communication to work.  It is possible to communicate between different
 systems.
 
-By default, a GUI Vim will register a name on the X-server by which it can be
-addressed for subsequent execution of injected strings.  Vim can also act as
-a client and send strings to other instances of Vim on the same X11 display.
+By default, a GUI MNV will register a name on the X-server by which it can be
+addressed for subsequent execution of injected strings.  MNV can also act as
+a client and send strings to other instances of MNV on the same X11 display.
 
-When an X11 GUI Vim (gvim) is started, it will try to register a send-server
-name on the 'VimRegistry' property on the root window.
+When an X11 GUI MNV (gmnv) is started, it will try to register a send-server
+name on the 'MNVRegistry' property on the root window.
 
-A non GUI Vim with access to the X11 display (|xterm-clipboard| enabled), can
+A non GUI MNV with access to the X11 display (|xterm-clipboard| enabled), can
 also act as a command server if a server name is explicitly given with the
---servername argument, or when Vim was built with the |+autoservername|
+--servername argument, or when MNV was built with the |+autoservername|
 feature.
 
 An empty --servername argument will cause the command server to be disabled.
 
-To send commands to a Vim server from another application, read the source
+To send commands to a MNV server from another application, read the source
 file src/if_xcmdsrv.c, it contains some hints about the protocol used.
 
 ==============================================================================
 3. Win32 specific items					*w32-clientserver*
 
-Every Win32 Vim can work as a server, also in the console.  You do not need a
+Every Win32 MNV can work as a server, also in the console.  You do not need a
 version compiled with OLE.  Windows messages are used, this works on any
 version of MS-Windows.  But only communication within one system is possible.
 
 Since MS-Windows messages are used, any other application should be able to
-communicate with a Vim server.  An alternative is using the OLE functionality
+communicate with a MNV server.  An alternative is using the OLE functionality
 |ole-interface|.
 
-When using gvim, the --remote-wait only works properly this way: >
+When using gmnv, the --remote-wait only works properly this way: >
 
-	start /w gvim --remote-wait file.txt
+	start /w gmnv --remote-wait file.txt
 <
 ==============================================================================
 4. Socket server specific items			    *socketserver-clientserver*
@@ -225,8 +225,8 @@ When using gvim, the --remote-wait only works properly this way: >
 The communication between client and server is done using Unix domain sockets.
 These sockets are either placed in these directories in the following order of
 availability:
-    1. "$XDG_RUTIME_DIR/vim" if $XDG_RUNTIME_DIR is set in the environment.
-    2. "$TMPDIR/vim-[uid]", where "[uid]" is the uid of the user.  This
+    1. "$XDG_RUTIME_DIR/mnv" if $XDG_RUNTIME_DIR is set in the environment.
+    2. "$TMPDIR/mnv-[uid]", where "[uid]" is the uid of the user.  This
        directory will have the access permissions set to 700 so only the user
        can read or write from/to it.  If $TMPDIR is not set, "/tmp" is used.
 
@@ -240,16 +240,16 @@ contain slashes "/" if it is taken as a path, so names such as "abc/dir" will
 be invalid.
 
 Socket server functionality is available in both GTK GUI and terminal versions
-of Vim.  Unless Vim is compiled with |+autoservername| feature, the socket
+of MNV.  Unless MNV is compiled with |+autoservername| feature, the socket
 server will have to started explicitly, just like X11, even in the GUI.
 
-If Vim crashes or does not exit cleanly, the socket server will not remove the
+If MNV crashes or does not exit cleanly, the socket server will not remove the
 socket file and it will be left around.  This is generally not a problem,
-because if a socket name is taken, Vim checks if the socket in its place is
+because if a socket name is taken, MNV checks if the socket in its place is
 dead (not attached to any process), and can replace it instead of finding a
 new name.
 
-To send commands to a Vim socket server from another application, read the
+To send commands to a MNV socket server from another application, read the
 source file src/os_unix.c, there is detailed description of the protocol used.
 
 						    *socketserver-differences*
@@ -266,16 +266,16 @@ the socket.  This can be seen via the |v:servername| variable.
 The |--serverlist| argument will act just like X11, however it only checks the
 given common directories above.  If a custom path is used for a socket, it
 will not be detected, such as a path either not in $XDG_RUNTIME_DIR or
-<$TMPDIR or /tmp>/vim of the |--serverlist| Vim process.
+<$TMPDIR or /tmp>/mnv of the |--serverlist| MNV process.
 
 If you have both |+socketserver| and |+X11| compiled, you will need to add
 |--clientserver| set to "socket" in combination with |--serverlist| to list
 the available servers.  You cannot list both types of backends in one command.
 
 						    *socketserver-x11*
-If Vim is compiled with both |+X11| and |+socketserver|, then deciding which
+If MNV is compiled with both |+X11| and |+socketserver|, then deciding which
 backend to use is done at startup time, via the |--clientserver| argument.  By
-default if it is not specified, then X11 will be used.  A Vim instance using a
+default if it is not specified, then X11 will be used.  A MNV instance using a
 socket server cannot communicate with one using X11.
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

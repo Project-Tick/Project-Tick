@@ -1,10 +1,10 @@
-# Aap recipe for Maori Vim spell files.
+# Aap recipe for Maori MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = mi_NZ.aff mi_NZ.dic
@@ -12,11 +12,11 @@ FILES    = mi_NZ.aff mi_NZ.dic
 all: $SPELLDIR/mi.iso-8859-4.spl $SPELLDIR/mi.utf-8.spl ../README_mi.txt
 
 $SPELLDIR/mi.iso-8859-4.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=iso-8859-4"
+        :sys $MNV -u NONE -e -c "set enc=iso-8859-4"
                 -c "mkspell! $SPELLDIR/mi mi_NZ" -c q
 
 $SPELLDIR/mi.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                 -c "mkspell! $SPELLDIR/mi mi_NZ" -c q
 
 ../README_mi.txt : README_mi_NZ.txt
@@ -46,7 +46,7 @@ mi_NZ.aff mi_NZ.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -77,4 +77,4 @@ check:
             :delete mi_NZ.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

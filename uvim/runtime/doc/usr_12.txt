@@ -1,13 +1,13 @@
-*usr_12.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_12.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 				Clever tricks
 
 
-By combining several commands you can make Vim do nearly everything.  In this
+By combining several commands you can make MNV do nearly everything.  In this
 chapter a number of useful combinations will be presented.  This uses the
 commands introduced in the previous chapters and a few more.
 
@@ -61,7 +61,7 @@ playback.
    Let's assume you have a directory with C++ files, all ending in ".cpp".
 There is a function called "GetResp" that you want to rename to "GetAnswer".
 
-	vim *.cpp		Start Vim, defining the argument list to
+	mnv *.cpp		Start MNV, defining the argument list to
 				contain all the C++ files.  You are now in the
 				first file.
 	qq			Start recording into the q register
@@ -204,7 +204,7 @@ type: >
 ==============================================================================
 *12.5*	Count words
 
-Sometimes you have to write a text with a maximum number of words.  Vim can
+Sometimes you have to write a text with a maximum number of words.  MNV can
 count the words for you.
    When the whole file is what you want to count the words in, use this
 command: >
@@ -239,18 +239,18 @@ simple way: Move the cursor to the word you want to find help on and press >
 
 	K
 
-Vim will run the external "man" program on the word.  If the man page is
+MNV will run the external "man" program on the word.  If the man page is
 found, it is displayed.  This uses the normal pager to scroll through the text
 (mostly the "more" program).  When you get to the end pressing <Enter> will
-get you back into Vim.
+get you back into MNV.
 
 A disadvantage is that you can't see the man page and the text you are working
-on at the same time.  There is a trick to make the man page appear in a Vim
+on at the same time.  There is a trick to make the man page appear in a MNV
 window.  First, load the man filetype plugin: >
 
-	:runtime! ftplugin/man.vim
+	:runtime! ftplugin/man.mnv
 
-Put this command in your vimrc file if you intend to do this often.  Now you
+Put this command in your mnvrc file if you intend to do this often.  Now you
 can use the ":Man" command to open a window on a man page: >
 
 	:Man csh
@@ -311,25 +311,25 @@ matches can be found.
 ==============================================================================
 *12.8*	Find where a word is used
 
-If you are a UNIX user, you can use a combination of Vim and the grep command
+If you are a UNIX user, you can use a combination of MNV and the grep command
 to edit all the files that contain a given word.  This is extremely useful if
 you are working on a program and want to view or edit all the files that
 contain a specific variable.
    For example, suppose you want to edit all the C program files that contain
 the word "frame_counter".  To do this you use the command: >
 
-	vim `grep -l frame_counter *.c`
+	mnv `grep -l frame_counter *.c`
 
 Let's look at this command in detail.  The grep command searches through a set
 of files for a given word.  Because the -l argument is specified, the command
 will only list the files containing the word and not print the matching lines.
 The word it is searching for is "frame_counter".  Actually, this can be any
 regular expression.  (Note: What grep uses for regular expressions is not
-exactly the same as what Vim uses.)
+exactly the same as what MNV uses.)
    The entire command is enclosed in backticks (`).  This tells the UNIX shell
 to run this command and pretend that the results were typed on the command
 line.  So what happens is that the grep command is run and produces a list of
-files, these files are put on the Vim command line.  This results in Vim
+files, these files are put on the MNV command line.  This results in MNV
 editing the file list that is the output of grep.  You can then use commands
 like ":next" and ":first" to browse through the files.
 
@@ -338,13 +338,13 @@ FINDING EACH LINE
 
 The above command only finds the files in which the word is found.  You still
 have to find the word within the files.
-   Vim has a built-in command that you can use to search a set of files for a
+   MNV has a built-in command that you can use to search a set of files for a
 given string.  If you want to find all occurrences of "error_string" in all C
 program files, for example, enter the following command: >
 
 	:grep error_string *.c
 
-This causes Vim to search for the string "error_string" in all the specified
+This causes MNV to search for the string "error_string" in all the specified
 files (*.c).  The editor will now open the first file where a match is found
 and position the cursor on the first matching line.  To go to the next
 matching line (no matter in what file it is), use the ":cnext" command.  To go
@@ -357,4 +357,4 @@ matches and where they are.
 
 Next chapter: |usr_20.txt|  Typing command-line commands quickly
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

@@ -1,27 +1,27 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  *
  * FIPS-180-2 compliant SHA-256 implementation
  * GPL by Christophe Devine, applies to older version.
  * Modified for md5deep, in public domain.
- * Modified For Vim, Mohsin Ahmed,
+ * Modified For MNV, Mohsin Ahmed,
  * (original link www.cs.albany.edu/~mosh no longer available)
- * Mohsin Ahmed states this work is distributed under the VIM License or GPL,
+ * Mohsin Ahmed states this work is distributed under the MNV License or GPL,
  * at your choice.
  *
- * Vim specific notes:
+ * MNV specific notes:
  * Functions exported by this file:
  *  1. sha256_key() hashes the password to 64 bytes char string.
  *  2. sha2_seed() generates a random header.
  *  sha256_self_test() is implicitly called once.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_CRYPT) || defined(FEAT_PERSISTENT_UNDO)
 
@@ -360,7 +360,7 @@ sha256_self_test(void)
 	else
 	{
 	    sha256_start(&ctx);
-	    vim_memset(buf, 'a', 1000);
+	    mnv_memset(buf, 'a', 1000);
 	    for (j = 0; j < 1000; j++)
 		sha256_update(&ctx, (char_u *)buf, 1000);
 	    sha256_finish(&ctx, sha256sum);

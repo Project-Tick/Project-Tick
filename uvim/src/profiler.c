@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
- * profiler.c: Vim script profiler
+ * profiler.c: MNV script profiler
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 # if defined(FEAT_PROFILE) || defined(FEAT_RELTIME)
@@ -194,7 +194,7 @@ profile_divide(proftime_T *tm, int count, proftime_T *tm2)
 								       / count;
 
 	tm2->tv_sec = floor(fsec / (float_T)TV_FSEC_SEC);
-	tm2->tv_fsec = vim_round(fsec - (tm2->tv_sec * (float_T)TV_FSEC_SEC));
+	tm2->tv_fsec = mnv_round(fsec - (tm2->tv_sec * (float_T)TV_FSEC_SEC));
 #  endif
     }
 }
@@ -373,7 +373,7 @@ profile_reset(void)
 	}
     }
 
-    VIM_CLEAR(profile_fname);
+    MNV_CLEAR(profile_fname);
 }
 
 /*
@@ -391,11 +391,11 @@ ex_profile(exarg_T *eap)
 
     if (len == 5 && STRNCMP(eap->arg, "start", 5) == 0 && *e != NUL)
     {
-	VIM_CLEAR(profile_fname);
+	MNV_CLEAR(profile_fname);
 	profile_fname = expand_env_save_opt(e, TRUE);
 	do_profiling = PROF_YES;
 	profile_zero(&prof_wait_time);
-	set_vim_var_nr(VV_PROFILING, 1L);
+	set_mnv_var_nr(VV_PROFILING, 1L);
     }
     else if (do_profiling == PROF_NONE)
 	emsg(_(e_first_use_profile_start_fname));
@@ -403,7 +403,7 @@ ex_profile(exarg_T *eap)
     {
 	profile_dump();
 	do_profiling = PROF_NONE;
-	set_vim_var_nr(VV_PROFILING, 0L);
+	set_mnv_var_nr(VV_PROFILING, 0L);
 	profile_reset();
     }
     else if (STRCMP(eap->arg, "pause") == 0)
@@ -845,7 +845,7 @@ func_dump_profile(FILE *fd)
 		    {
 			fprintf(fd, "    Defined: %s:%ld\n",
 					   p, (long)fp->uf_script_ctx.sc_lnum);
-			vim_free(p);
+			mnv_free(p);
 		    }
 		}
 		if (fp->uf_tm_count == 1)
@@ -880,7 +880,7 @@ func_dump_profile(FILE *fd)
 	prof_sort_list(fd, sorttab, st_len, "SELF", TRUE);
     }
 
-    vim_free(sorttab);
+    mnv_free(sorttab);
 }
 
 /*
@@ -956,7 +956,7 @@ script_dump_profile(FILE *fd)
 		// continuation lines are listed.
 		for (i = 0; ; ++i)
 		{
-		    if (vim_fgets(IObuff, IOSIZE, sfd))
+		    if (mnv_fgets(IObuff, IOSIZE, sfd))
 			break;
 		    // When a line has been truncated, append NL, taking care
 		    // of multi-byte characters .

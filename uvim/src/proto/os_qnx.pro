@@ -5,4 +5,4 @@ int clip_mch_own_selection(Clipboard_T *cbd);
 void clip_mch_lose_selection(Clipboard_T *cbd);
 void clip_mch_request_selection(Clipboard_T *cbd);
 void clip_mch_set_selection(Clipboard_T *cbd);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

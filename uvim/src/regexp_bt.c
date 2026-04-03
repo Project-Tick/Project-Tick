@@ -7,8 +7,8 @@
  * NOTICE:
  *
  * This is NOT the original regular expression code as written by Henry
- * Spencer.  This code has been modified specifically for use with the VIM
- * editor, and should not be used separately from Vim.  If you want a good
+ * Spencer.  This code has been modified specifically for use with the MNV
+ * editor, and should not be used separately from MNV.  If you want a good
  * regular expression library, get the original code.  The copyright notice
  * that follows is from the original.
  *
@@ -55,10 +55,10 @@
  * Regstart and reganch permit very fast decisions on suitable starting points
  * for a match, cutting down the work a lot.  Regmust permits fast rejection
  * of lines that cannot possibly match.  The regmust tests are costly enough
- * that vim_regcomp() supplies a regmust only if the r.e. contains something
+ * that mnv_regcomp() supplies a regmust only if the r.e. contains something
  * potentially expensive (at present, the only such thing detected is * or +
  * at the start of the r.e., which can involve a lot of backup).  Regmlen is
- * supplied because the test in vim_regexec() needs it and vim_regcomp() is
+ * supplied because the test in mnv_regexec() needs it and mnv_regcomp() is
  * computing it anyway.
  */
 
@@ -457,7 +457,7 @@ static int	regnarrate = 0;
     static void
 regcomp_start(
     char_u	*expr,
-    int		re_flags)	    // see vim_regcomp()
+    int		re_flags)	    // see mnv_regcomp()
 {
     initchr(expr);
     if (re_flags & RE_MAGIC)
@@ -1328,7 +1328,7 @@ regatom(int *flagp)
       case Magic('L'):
       case Magic('u'):
       case Magic('U'):
-	p = vim_strchr(classchars, no_Magic(c));
+	p = mnv_strchr(classchars, no_Magic(c));
 	if (p == NULL)
 	    EMSG_RET_NULL(_(e_invalid_use_of_underscore));
 
@@ -1589,7 +1589,7 @@ regatom(int *flagp)
 		case 'u':   // %uabcd hex 4
 		case 'U':   // %U1234abcd hex 8
 			  {
-			      vimlong_T i;
+			      mnvlong_T i;
 
 			      switch (c)
 			      {
@@ -1619,7 +1619,7 @@ regatom(int *flagp)
 			  }
 
 		default:
-			  if (VIM_ISDIGIT(c) || c == '<' || c == '>'
+			  if (MNV_ISDIGIT(c) || c == '<' || c == '>'
 						|| c == '\'' || c == '.')
 			  {
 			      long_u	n = 0;
@@ -1635,7 +1635,7 @@ regatom(int *flagp)
 				  cur = TRUE;
 				  c = getchr();
 			      }
-			      while (VIM_ISDIGIT(c))
+			      while (MNV_ISDIGIT(c))
 			      {
 				  got_digit = TRUE;
 				  n = n * 10 + (c - '0');
@@ -1795,15 +1795,15 @@ collection:
 			    startc = -1;
 			}
 		    }
-		    // Only "\]", "\^", "\]" and "\\" are special in Vi.  Vim
+		    // Only "\]", "\^", "\]" and "\\" are special in Vi.  MNV
 		    // accepts "\t", "\e", etc., but only when the 'l' flag in
 		    // 'cpoptions' is not included.
 		    // Posix doesn't recognize backslash at all.
 		    else if (*regparse == '\\'
 			    && !reg_cpo_bsl
-			    && (vim_strchr(REGEXP_INRANGE, regparse[1]) != NULL
+			    && (mnv_strchr(REGEXP_INRANGE, regparse[1]) != NULL
 				|| (!reg_cpo_lit
-				    && vim_strchr(REGEXP_ABBR,
+				    && mnv_strchr(REGEXP_ABBR,
 						       regparse[1]) != NULL)))
 		    {
 			regparse++;
@@ -1897,7 +1897,7 @@ collection:
 				break;
 			    case CLASS_DIGIT:
 				for (cu = 1; cu <= 127; cu++)
-				    if (VIM_ISDIGIT(cu))
+				    if (MNV_ISDIGIT(cu))
 					regmbc(cu);
 				break;
 			    case CLASS_GRAPH:
@@ -1913,7 +1913,7 @@ collection:
 				break;
 			    case CLASS_PRINT:
 				for (cu = 1; cu <= 255; cu++)
-				    if (vim_isprintc(cu))
+				    if (mnv_isprintc(cu))
 					regmbc(cu);
 				break;
 			    case CLASS_PUNCT:
@@ -1933,7 +1933,7 @@ collection:
 				break;
 			    case CLASS_XDIGIT:
 				for (cu = 1; cu <= 255; cu++)
-				    if (vim_isxdigit(cu))
+				    if (mnv_isxdigit(cu))
 					regmbc(cu);
 				break;
 			    case CLASS_TAB:
@@ -1950,7 +1950,7 @@ collection:
 				break;
 			    case CLASS_IDENT:
 				for (cu = 1; cu <= 255; cu++)
-				    if (vim_isIDc(cu))
+				    if (mnv_isIDc(cu))
 					regmbc(cu);
 				break;
 			    case CLASS_KEYWORD:
@@ -1960,7 +1960,7 @@ collection:
 				break;
 			    case CLASS_FNAME:
 				for (cu = 1; cu <= 255; cu++)
-				    if (vim_isfilec(cu))
+				    if (mnv_isfilec(cu))
 					regmbc(cu);
 				break;
 			}
@@ -2462,7 +2462,7 @@ reg(
  * This also means that we don't allocate space until we are sure that the
  * thing really will compile successfully, and we never have to move the
  * code and thus invalidate pointers into it.  (Note that it has to be in
- * one piece because vim_free() must be able to free it all.)
+ * one piece because mnv_free() must be able to free it all.)
  *
  * Whether upper/lower case is to be ignored is decided when executing the
  * program, it does not matter here.
@@ -2507,7 +2507,7 @@ bt_regcomp(char_u *expr, int re_flags)
     regc(REGMAGIC);
     if (reg(REG_NOPAREN, &flags) == NULL || reg_toolong)
     {
-	vim_free(r);
+	mnv_free(r);
 	if (reg_toolong)
 	    EMSG_RET_NULL(_(e_pattern_too_long));
 	return NULL;
@@ -2600,11 +2600,11 @@ bt_regcomp(char_u *expr, int re_flags)
 
 #if defined(FEAT_SYN_HL)
 /*
- * Check if during the previous call to vim_regcomp the EOL item "$" has been
+ * Check if during the previous call to mnv_regcomp the EOL item "$" has been
  * found.  This is messy, but it works fine.
  */
     int
-vim_regcomp_had_eol(void)
+mnv_regcomp_had_eol(void)
 {
     return had_eol;
 }
@@ -2617,7 +2617,7 @@ vim_regcomp_had_eol(void)
     static int
 coll_get_char(void)
 {
-    vimlong_T	nr = -1;
+    mnvlong_T	nr = -1;
 
     switch (*regparse++)
     {
@@ -2645,7 +2645,7 @@ coll_get_char(void)
     static void
 bt_regfree(regprog_T *prog)
 {
-    vim_free(prog);
+    mnv_free(prog);
 }
 
 #define ADVANCE_REGINPUT() MB_PTR_ADV(rex.input)
@@ -2792,7 +2792,7 @@ regrepeat(
       case SIDENT + ADD_NL:
 	while (count < maxcount)
 	{
-	    if (vim_isIDc(PTR2CHAR(scan)) && (testval || !VIM_ISDIGIT(*scan)))
+	    if (mnv_isIDc(PTR2CHAR(scan)) && (testval || !MNV_ISDIGIT(*scan)))
 	    {
 		MB_PTR_ADV(scan);
 	    }
@@ -2822,8 +2822,8 @@ regrepeat(
       case SKWORD + ADD_NL:
 	while (count < maxcount)
 	{
-	    if (vim_iswordp_buf(scan, rex.reg_buf)
-					  && (testval || !VIM_ISDIGIT(*scan)))
+	    if (mnv_iswordp_buf(scan, rex.reg_buf)
+					  && (testval || !MNV_ISDIGIT(*scan)))
 	    {
 		MB_PTR_ADV(scan);
 	    }
@@ -2853,7 +2853,7 @@ regrepeat(
       case SFNAME + ADD_NL:
 	while (count < maxcount)
 	{
-	    if (vim_isfilec(PTR2CHAR(scan)) && (testval || !VIM_ISDIGIT(*scan)))
+	    if (mnv_isfilec(PTR2CHAR(scan)) && (testval || !MNV_ISDIGIT(*scan)))
 	    {
 		MB_PTR_ADV(scan);
 	    }
@@ -2893,8 +2893,8 @@ regrepeat(
 		if (got_int)
 		    break;
 	    }
-	    else if (vim_isprintc(PTR2CHAR(scan)) == 1
-					  && (testval || !VIM_ISDIGIT(*scan)))
+	    else if (mnv_isprintc(PTR2CHAR(scan)) == 1
+					  && (testval || !MNV_ISDIGIT(*scan)))
 	    {
 		MB_PTR_ADV(scan);
 	    }
@@ -3488,8 +3488,8 @@ regmatch(
 	    }
 	    else
 	    {
-		if (!vim_iswordc_buf(c, rex.reg_buf) || (rex.input > rex.line
-				&& vim_iswordc_buf(rex.input[-1], rex.reg_buf)))
+		if (!mnv_iswordc_buf(c, rex.reg_buf) || (rex.input > rex.line
+				&& mnv_iswordc_buf(rex.input[-1], rex.reg_buf)))
 		    status = RA_NOMATCH;
 	    }
 	    break;
@@ -3510,9 +3510,9 @@ regmatch(
 	    }
 	    else
 	    {
-		if (!vim_iswordc_buf(rex.input[-1], rex.reg_buf)
+		if (!mnv_iswordc_buf(rex.input[-1], rex.reg_buf)
 			|| (rex.input[0] != NUL
-					   && vim_iswordc_buf(c, rex.reg_buf)))
+					   && mnv_iswordc_buf(c, rex.reg_buf)))
 		    status = RA_NOMATCH;
 	    }
 	    break; // Matched with EOW
@@ -3526,71 +3526,71 @@ regmatch(
 	    break;
 
 	  case IDENT:
-	    if (!vim_isIDc(c))
+	    if (!mnv_isIDc(c))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case SIDENT:
-	    if (VIM_ISDIGIT(*rex.input) || !vim_isIDc(c))
+	    if (MNV_ISDIGIT(*rex.input) || !mnv_isIDc(c))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case KWORD:
-	    if (!vim_iswordp_buf(rex.input, rex.reg_buf))
+	    if (!mnv_iswordp_buf(rex.input, rex.reg_buf))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case SKWORD:
-	    if (VIM_ISDIGIT(*rex.input)
-				    || !vim_iswordp_buf(rex.input, rex.reg_buf))
+	    if (MNV_ISDIGIT(*rex.input)
+				    || !mnv_iswordp_buf(rex.input, rex.reg_buf))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case FNAME:
-	    if (!vim_isfilec(c))
+	    if (!mnv_isfilec(c))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case SFNAME:
-	    if (VIM_ISDIGIT(*rex.input) || !vim_isfilec(c))
+	    if (MNV_ISDIGIT(*rex.input) || !mnv_isfilec(c))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case PRINT:
-	    if (!vim_isprintc(PTR2CHAR(rex.input)))
+	    if (!mnv_isprintc(PTR2CHAR(rex.input)))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case SPRINT:
-	    if (VIM_ISDIGIT(*rex.input) || !vim_isprintc(PTR2CHAR(rex.input)))
+	    if (MNV_ISDIGIT(*rex.input) || !mnv_isprintc(PTR2CHAR(rex.input)))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case WHITE:
-	    if (!VIM_ISWHITE(c))
+	    if (!MNV_ISWHITE(c))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
 	    break;
 
 	  case NWHITE:
-	    if (c == NUL || VIM_ISWHITE(c))
+	    if (c == NUL || MNV_ISWHITE(c))
 		status = RA_NOMATCH;
 	    else
 		ADVANCE_REGINPUT();
@@ -4868,7 +4868,7 @@ regtry(
 			&& reg_endzpos[i].lnum == reg_startzpos[i].lnum
 			&& reg_endzpos[i].col >= reg_startzpos[i].col)
 		    re_extmatch_out->matches[i] =
-			vim_strnsave(reg_getline(reg_startzpos[i].lnum)
+			mnv_strnsave(reg_getline(reg_startzpos[i].lnum)
 						       + reg_startzpos[i].col,
 				   reg_endzpos[i].col - reg_startzpos[i].col);
 	    }
@@ -4876,7 +4876,7 @@ regtry(
 	    {
 		if (reg_startzp[i] != NULL && reg_endzp[i] != NULL)
 		    re_extmatch_out->matches[i] =
-			    vim_strnsave(reg_startzp[i],
+			    mnv_strnsave(reg_startzp[i],
 						reg_endzp[i] - reg_startzp[i]);
 	    }
 	}
@@ -4974,14 +4974,14 @@ bt_regexec_both(
 	// This is used very often, esp. for ":global".  Use three versions of
 	// the loop to avoid overhead of conditions.
 	if (!rex.reg_ic && !has_mbyte)
-	    while ((s = vim_strbyte(s, c)) != NULL)
+	    while ((s = mnv_strbyte(s, c)) != NULL)
 	    {
 		if (cstrncmp(s, prog->regmust, &prog->regmlen) == 0)
 		    break;		// Found it.
 		++s;
 	    }
 	else if (!rex.reg_ic || (!enc_utf8 && mb_char2len(c) > 1))
-	    while ((s = vim_strchr(s, c)) != NULL)
+	    while ((s = mnv_strchr(s, c)) != NULL)
 	    {
 		if (cstrncmp(s, prog->regmust, &prog->regmlen) == 0)
 		    break;		// Found it.
@@ -5031,7 +5031,7 @@ bt_regexec_both(
 		// Skip until the char we know it must start with.
 		// Used often, do some work to avoid call overhead.
 		if (!rex.reg_ic && !has_mbyte)
-		    s = vim_strbyte(rex.line + col, prog->regstart);
+		    s = mnv_strbyte(rex.line + col, prog->regstart);
 		else
 		    s = cstrchr(rex.line + col, prog->regstart);
 		if (s == NULL)
@@ -5076,7 +5076,7 @@ theend:
     // Free "reg_tofree" when it's a bit big.
     // Free regstack and backpos if they are bigger than their initial size.
     if (reg_tofreelen > 400)
-	VIM_CLEAR(reg_tofree);
+	MNV_CLEAR(reg_tofree);
     if (regstack.ga_maxlen > REGSTACK_INITIAL)
 	ga_clear(&regstack);
     if (backpos.ga_maxlen > BACKPOS_INITIAL)
@@ -5115,7 +5115,7 @@ theend:
 
 /*
  * Match a regexp against a string.
- * "rmp->regprog" is a compiled regexp as returned by vim_regcomp().
+ * "rmp->regprog" is a compiled regexp as returned by mnv_regcomp().
  * Uses curbuf for line count and 'iskeyword'.
  * if "line_lbr" is TRUE  consider a "\n" in "line" to be a line break.
  *
@@ -5143,7 +5143,7 @@ bt_regexec_nl(
 
 /*
  * Match a regexp against multiple lines.
- * "rmp->regprog" is a compiled regexp as returned by vim_regcomp().
+ * "rmp->regprog" is a compiled regexp as returned by mnv_regcomp().
  * Uses curbuf for line count and 'iskeyword'.
  *
  * Return zero if there is no match.  Return number of lines contained in the

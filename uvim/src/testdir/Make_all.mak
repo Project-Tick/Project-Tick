@@ -37,40 +37,40 @@ SCRIPTS_TINY_OUT = \
 	test28.out \
 	test29.out
 
-# Tests for Vim9 script.
-TEST_VIM9 = \
-	test_vim9_assign \
-	test_vim9_builtin \
-	test_vim9_class \
-	test_vim9_cmd \
-	test_vim9_disassemble \
-	test_vim9_enum \
-	test_vim9_expr \
-	test_vim9_fails \
-	test_vim9_func \
-	test_vim9_generics \
-	test_vim9_import \
-	test_vim9_interface \
-	test_vim9_python3 \
-	test_vim9_script \
-	test_vim9_typealias
+# Tests for MNV9 script.
+TEST_MNV9 = \
+	test_mnv9_assign \
+	test_mnv9_builtin \
+	test_mnv9_class \
+	test_mnv9_cmd \
+	test_mnv9_disassemble \
+	test_mnv9_enum \
+	test_mnv9_expr \
+	test_mnv9_fails \
+	test_mnv9_func \
+	test_mnv9_generics \
+	test_mnv9_import \
+	test_mnv9_interface \
+	test_mnv9_python3 \
+	test_mnv9_script \
+	test_mnv9_typealias
 
-TEST_VIM9_RES = \
-	test_vim9_assign.res \
-	test_vim9_builtin.res \
-	test_vim9_class.res \
-	test_vim9_cmd.res \
-	test_vim9_disassemble.res \
-	test_vim9_enum.res \
-	test_vim9_expr.res \
-	test_vim9_fails.res \
-	test_vim9_func.res \
-	test_vim9_generics.res \
-	test_vim9_import.res \
-	test_vim9_interface.res \
-	test_vim9_python3.res \
-	test_vim9_script.res \
-	test_vim9_typealias.res
+TEST_MNV9_RES = \
+	test_mnv9_assign.res \
+	test_mnv9_builtin.res \
+	test_mnv9_class.res \
+	test_mnv9_cmd.res \
+	test_mnv9_disassemble.res \
+	test_mnv9_enum.res \
+	test_mnv9_expr.res \
+	test_mnv9_fails.res \
+	test_mnv9_func.res \
+	test_mnv9_generics.res \
+	test_mnv9_import.res \
+	test_mnv9_interface.res \
+	test_mnv9_python3.res \
+	test_mnv9_script.res \
+	test_mnv9_typealias.res
 
 # Benchmark scripts.
 SCRIPTS_BENCH = test_bench_regexp.res
@@ -349,9 +349,9 @@ NEW_TESTS = \
 	test_utf8_comparisons \
 	test_vartabs \
 	test_version \
-	$(TEST_VIM9) \
-	test_viminfo \
-	test_vimscript \
+	$(TEST_MNV9) \
+	test_mnvinfo \
+	test_mnvscript \
 	test_virtualedit \
 	test_visual \
 	test_wayland \
@@ -370,7 +370,7 @@ NEW_TESTS = \
 	test_alot_utf8 \
 	test_alot
 
-# Test targets that use runtest.vim.
+# Test targets that use runtest.mnv.
 # Keep test_alot*.res as the last one, sort the others.
 # test_largefile.res is omitted, it uses too much resources to run on CI.
 NEW_TESTS_RES = \
@@ -608,9 +608,9 @@ NEW_TESTS_RES = \
 	test_user_func.res \
 	test_usercommands.res \
 	test_vartabs.res \
-	$(TEST_VIM9_RES) \
-	test_viminfo.res \
-	test_vimscript.res \
+	$(TEST_MNV9_RES) \
+	test_mnvinfo.res \
+	test_mnvscript.res \
 	test_virtualedit.res \
 	test_visual.res \
 	test_wayland.res \

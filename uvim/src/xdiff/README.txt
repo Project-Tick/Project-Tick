@@ -12,9 +12,9 @@ The code is distributed under the GNU LGPL license.  It is included in the
 COPYING file.
 
 Changes in these files were made to avoid compiler warnings, replacing function
-calls into Git core with Vim ones, and removing unused code such as xmerge.
+calls into Git core with MNV ones, and removing unused code such as xmerge.
 
 The /* */ comments are kept to make syncing to a newer version easier, do not
 change them to // comments!
 
-The first work for including xdiff in Vim was done by Christian Brabandt.
+The first work for including xdiff in MNV was done by Christian Brabandt.

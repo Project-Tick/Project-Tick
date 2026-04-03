@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * locale.c: functions for language/locale configuration
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if (defined(HAVE_LOCALE_H) || defined(X_LOCALE)) \
 	&& (defined(FEAT_EVAL) || defined(FEAT_MULTI_LANG))
@@ -31,7 +31,7 @@ get_locale_val(int what)
 
 	// setocale() returns something like "LC_COLLATE=<name>;LC_..." when
 	// one of the values (e.g., LC_CTYPE) differs.
-	p = vim_strchr(loc, '=');
+	p = mnv_strchr(loc, '=');
 	if (p != NULL)
 	{
 	    loc = ++p;
@@ -159,7 +159,7 @@ get_mess_env(void)
 	return p;
 
     p = mch_getenv((char_u *)"LANG");
-    if (p != NULL && VIM_ISDIGIT(*p))
+    if (p != NULL && MNV_ISDIGIT(*p))
 	p = NULL;		// ignore something like "1043"
 # ifdef HAVE_GET_LOCALE_VAL
     if (p == NULL || *p == NUL)
@@ -186,7 +186,7 @@ set_lang_var(void)
     // setlocale() not supported: use the default value
     loc = (char_u *)"C";
 # endif
-    set_vim_var_string(VV_CTYPE, loc, -1);
+    set_mnv_var_string(VV_CTYPE, loc, -1);
 
     // When LC_MESSAGES isn't defined use the value from $LC_MESSAGES, fall
     // back to LC_CTYPE if it's empty.
@@ -195,12 +195,12 @@ set_lang_var(void)
 # else
     loc = get_mess_env();
 # endif
-    set_vim_var_string(VV_LANG, loc, -1);
+    set_mnv_var_string(VV_LANG, loc, -1);
 
 # ifdef HAVE_GET_LOCALE_VAL
     loc = get_locale_val(LC_TIME);
 # endif
-    set_vim_var_string(VV_LC_TIME, loc, -1);
+    set_mnv_var_string(VV_LC_TIME, loc, -1);
 
 # ifdef HAVE_GET_LOCALE_VAL
     loc = get_locale_val(LC_COLLATE);
@@ -208,7 +208,7 @@ set_lang_var(void)
     // setlocale() not supported: use the default value
     loc = (char_u *)"C";
 # endif
-    set_vim_var_string(VV_COLLATE, loc, -1);
+    set_mnv_var_string(VV_COLLATE, loc, -1);
 }
 #endif
 
@@ -247,16 +247,16 @@ init_locale(void)
 	dyn_libintl_init();
 #  endif
 	// expand_env() doesn't work yet, because g_chartab[] is not
-	// initialized yet, call vim_getenv() directly
-	p = vim_getenv((char_u *)"VIMRUNTIME", &mustfree);
+	// initialized yet, call mnv_getenv() directly
+	p = mnv_getenv((char_u *)"MNVRUNTIME", &mustfree);
 	if (p != NULL && *p != NUL)
 	{
-	    vim_snprintf((char *)NameBuff, MAXPATHL, "%s/lang", p);
-	    bindtextdomain(VIMPACKAGE, (char *)NameBuff);
+	    mnv_snprintf((char *)NameBuff, MAXPATHL, "%s/lang", p);
+	    bindtextdomain(MNVPACKAGE, (char *)NameBuff);
 	}
 	if (mustfree)
-	    vim_free(p);
-	textdomain(VIMPACKAGE);
+	    mnv_free(p);
+	textdomain(MNVPACKAGE);
     }
 # endif
 }
@@ -273,9 +273,9 @@ ex_language(exarg_T *eap)
     int		what = LC_ALL;
     char	*whatstr = "";
 # ifdef LC_MESSAGES
-#  define VIM_LC_MESSAGES LC_MESSAGES
+#  define MNV_LC_MESSAGES LC_MESSAGES
 # else
-#  define VIM_LC_MESSAGES 6789
+#  define MNV_LC_MESSAGES 6789
 # endif
 
     name = eap->arg;
@@ -284,11 +284,11 @@ ex_language(exarg_T *eap)
     // Allow abbreviation, but require at least 3 characters to avoid
     // confusion with a two letter language name "me" or "ct".
     p = skiptowhite(eap->arg);
-    if ((*p == NUL || VIM_ISWHITE(*p)) && p - eap->arg >= 3)
+    if ((*p == NUL || MNV_ISWHITE(*p)) && p - eap->arg >= 3)
     {
 	if (STRNICMP(eap->arg, "messages", p - eap->arg) == 0)
 	{
-	    what = VIM_LC_MESSAGES;
+	    what = MNV_LC_MESSAGES;
 	    name = skipwhite(p);
 	    whatstr = "messages ";
 	}
@@ -315,7 +315,7 @@ ex_language(exarg_T *eap)
     if (*name == NUL)
     {
 # ifndef LC_MESSAGES
-	if (what == VIM_LC_MESSAGES)
+	if (what == MNV_LC_MESSAGES)
 	    p = get_mess_env();
 	else
 # endif
@@ -327,7 +327,7 @@ ex_language(exarg_T *eap)
     else
     {
 # ifndef LC_MESSAGES
-	if (what == VIM_LC_MESSAGES)
+	if (what == MNV_LC_MESSAGES)
 	    loc = "";
 	else
 # endif
@@ -350,7 +350,7 @@ ex_language(exarg_T *eap)
 	    ++_nl_msg_cat_cntr;
 # endif
 	    // Reset $LC_ALL, otherwise it would overrule everything.
-	    vim_setenv((char_u *)"LC_ALL", (char_u *)"");
+	    mnv_setenv((char_u *)"LC_ALL", (char_u *)"");
 
 	    if (what != LC_TIME && what != LC_COLLATE)
 	    {
@@ -360,10 +360,10 @@ ex_language(exarg_T *eap)
 		// value.
 		if (what == LC_ALL)
 		{
-		    vim_setenv((char_u *)"LANG", name);
+		    mnv_setenv((char_u *)"LANG", name);
 
 		    // Clear $LANGUAGE because GNU gettext uses it.
-		    vim_setenv((char_u *)"LANGUAGE", (char_u *)"");
+		    mnv_setenv((char_u *)"LANGUAGE", (char_u *)"");
 # ifdef MSWIN
 		    // Apparently MS-Windows printf() may cause a crash when
 		    // we give it 8-bit text while it's expecting text in the
@@ -379,7 +379,7 @@ ex_language(exarg_T *eap)
 # else
 		    mname = name;
 # endif
-		    vim_setenv((char_u *)"LC_MESSAGES", mname);
+		    mnv_setenv((char_u *)"LC_MESSAGES", mname);
 # ifdef FEAT_MULTI_LANG
 		    set_helplang_default(mname);
 # endif
@@ -420,7 +420,7 @@ find_locales(void)
 						    NULL, SHELL_SILENT, NULL);
 # else
     // Find all available locales by examining the directories in
-    // $VIMRUNTIME/lang/
+    // $MNVRUNTIME/lang/
     {
 	int		options = WILD_SILENT|WILD_USE_NL|WILD_KEEP_ALL;
 	expand_T	xpc;
@@ -428,14 +428,14 @@ find_locales(void)
 
 	ExpandInit(&xpc);
 	xpc.xp_context = EXPAND_DIRECTORIES;
-	locale_list = ExpandOne(&xpc, (char_u *)"$VIMRUNTIME/lang/*",
+	locale_list = ExpandOne(&xpc, (char_u *)"$MNVRUNTIME/lang/*",
 						      NULL, options, WILD_ALL);
 	ExpandCleanup(&xpc);
 	if (locale_list == NULL)
 	    // Add a dummy input, that will be skipped lated but we need to
 	    // have something in locale_list so that the C locale is added at
 	    // the end.
-	    locale_list = vim_strsave((char_u *)".\n");
+	    locale_list = mnv_strsave((char_u *)".\n");
 	p = locale_list;
 	// find the last directory delimiter
 	while (p != NULL && *p != NUL)
@@ -464,7 +464,7 @@ find_locales(void)
 	if (len > 0)
 	    loc += len + 1;
 	// skip locales with a dot (which indicates the charset)
-	if (vim_strchr(loc, '.') != NULL)
+	if (mnv_strchr(loc, '.') != NULL)
 	    ignore = TRUE;
 # endif
 	if (!ignore)
@@ -472,7 +472,7 @@ find_locales(void)
 	    if (ga_grow(&locales_ga, 1) == FAIL)
 		break;
 
-	    loc = vim_strsave(loc);
+	    loc = mnv_strsave(loc);
 	    if (loc == NULL)
 		break;
 
@@ -485,10 +485,10 @@ find_locales(void)
     // Add the C locale
     if (ga_grow(&locales_ga, 1) == OK)
 	((char_u **)locales_ga.ga_data)[locales_ga.ga_len++] =
-						    vim_strsave((char_u *)"C");
+						    mnv_strsave((char_u *)"C");
 # endif
 
-    vim_free(locale_list);
+    mnv_free(locale_list);
     if (ga_grow(&locales_ga, 1) == FAIL)
     {
 	ga_clear(&locales_ga);
@@ -521,8 +521,8 @@ free_locales(void)
 	return;
 
     for (i = 0; locales[i] != NULL; i++)
-	vim_free(locales[i]);
-    VIM_CLEAR(locales);
+	mnv_free(locales[i]);
+    MNV_CLEAR(locales);
 }
 # endif
 

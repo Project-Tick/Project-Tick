@@ -1,11 +1,11 @@
-*help.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*help.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
-			VIM - main help file
+			MNV - main help file
 									 k
       Move around:  Use the cursor keys, or "h" to go left,	       h   l
 		    "j" to go down, "k" to go up, "l" to go right.	 j
 Close this window:  Use ":q<Enter>".
-   Get out of Vim:  Use ":qa!<Enter>" (careful, all changes are lost!).
+   Get out of MNV:  Use ":qa!<Enter>" (careful, all changes are lost!).
 
 Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
    With the mouse:  ":set mouse=a" to enable the mouse (in xterm or GUI).
@@ -22,7 +22,7 @@ Get specific help:  It is possible to go directly to whatever you want help
 		      Insert mode command	  i_	   :help i_<Esc>
 		      Command-line command	  :	   :help :quit
 		      Command-line editing	  c_	   :help c_<Del>
-		      Vim command argument	  -	   :help -r
+		      MNV command argument	  -	   :help -r
 		      Option			  '	   :help 'textwidth'
 		      Regular expression	  /	   :help /[
 		    See |help-summary| for more contexts and an explanation.
@@ -32,11 +32,11 @@ Get specific help:  It is possible to go directly to whatever you want help
 		    help entries for "word".
 		    Or use ":helpgrep word". |:helpgrep|
 
-  Getting started:  Do the Vim tutor, a 30-minute interactive course for the
-		    basic commands, see |vimtutor|.
+  Getting started:  Do the MNV tutor, a 30-minute interactive course for the
+		    basic commands, see |mnvtutor|.
 		    Read the user manual from start to end: |usr_01.txt|
 
-Vim stands for Vi IMproved.  Most of Vim was made by Bram Moolenaar, but only
+MNV stands for MNV is not Vim.  Most of MNV was made by Bram Moolenaar, but only
 through the help of many others.  See |credits|.
 ------------------------------------------------------------------------------
 						*doc-file-list* *Q_ct*
@@ -44,9 +44,8 @@ BASIC:
 |quickref|	Overview of the most common commands you will use
 |tutor|		30-minute interactive course for beginners
 |copying|	About copyrights
-|Kuwasha|	Helping poor children in Uganda
-|sponsor|	Sponsor Vim development, become a registered Vim user
-|www|		Vim on the World Wide Web
+|sponsor|	Sponsor MNV development, become a registered MNV user
+|www|		MNV on the World Wide Web
 |bugs|		Where to send bug reports
 
 USER MANUAL: These files explain how to accomplish an editing task.
@@ -55,7 +54,7 @@ USER MANUAL: These files explain how to accomplish an editing task.
 
 Getting Started ~
 |usr_01.txt|  About the manuals
-|usr_02.txt|  The first steps in Vim
+|usr_02.txt|  The first steps in MNV
 |usr_03.txt|  Moving around
 |usr_04.txt|  Making small changes
 |usr_05.txt|  Set your settings
@@ -82,48 +81,47 @@ Editing Effectively ~
 |usr_31.txt|  Exploiting the GUI
 |usr_32.txt|  The undo tree
 
-Tuning Vim ~
+Tuning MNV ~
 |usr_40.txt|  Make new commands
-|usr_41.txt|  Write a Vim script
+|usr_41.txt|  Write a MNV script
 |usr_42.txt|  Add new menus
 |usr_43.txt|  Using filetypes
 |usr_44.txt|  Your own syntax highlighted
 |usr_45.txt|  Select your language
 
-Writing Vim scripts ~
-|usr_50.txt|  Advanced Vim script writing
+Writing MNV scripts ~
+|usr_50.txt|  Advanced MNV script writing
 |usr_51.txt|  Create a plugin
-|usr_52.txt|  Write plugins using Vim9 script
+|usr_52.txt|  Write plugins using MNV9 script
 
-Making Vim Run ~
-|usr_90.txt|  Installing Vim
+Making MNV Run ~
+|usr_90.txt|  Installing MNV
 
-REFERENCE MANUAL: These files explain every detail of Vim.	*reference_toc*
+REFERENCE MANUAL: These files explain every detail of MNV.	*reference_toc*
 
 General subjects ~
-|intro.txt|	general introduction to Vim; notation used in help files
+|intro.txt|	general introduction to MNV; notation used in help files
 |help.txt|	overview and quick reference (this file)
 |helphelp.txt|	about using the help files
 |index.txt|	alphabetical index of all commands
 |help-tags|	all the tags you can jump to (index of tags)
 |howto.txt|	how to do the most common editing tasks
-|tips.txt|	various tips on using Vim
+|tips.txt|	various tips on using MNV
 |message.txt|	(error) messages and explanations
-|quotes.txt|	remarks from users of Vim
+|quotes.txt|	remarks from users of MNV
 |todo.txt|	known problems and desired extensions
-|develop.txt|	development of Vim
-|debug.txt|	debugging Vim itself
-|uganda.txt|	Vim distribution conditions and what to do with your money
+|develop.txt|	development of MNV
+|debug.txt|	debugging MNV itself
 
 Basic editing ~
-|starting.txt|	starting Vim, Vim command arguments, initialisation
+|starting.txt|	starting MNV, MNV command arguments, initialisation
 |editing.txt|	editing and writing files
 |motion.txt|	commands for moving around
 |scroll.txt|	scrolling the text in the window
 |insert.txt|	Insert and Replace mode
 |change.txt|	deleting and replacing text
 |undo.txt|	Undo and Redo
-|repeat.txt|	repeating commands, Vim scripts and debugging
+|repeat.txt|	repeating commands, MNV scripts and debugging
 |visual.txt|	using the Visual mode (selecting a text area)
 |various.txt|	various remaining commands
 |recover.txt|	recovering from a crash
@@ -146,14 +144,14 @@ Advanced editing ~
 |fold.txt|	hide (fold) ranges of lines
 
 Special issues ~
-|testing.txt|	testing Vim and Vim scripts
+|testing.txt|	testing MNV and MNV scripts
 |print.txt|	printing
-|remote.txt|	using Vim as a server or client
+|remote.txt|	using MNV as a server or client
 |term.txt|	using different terminals and mice
 |terminal.txt|	Terminal window support
 |popup.txt|	popup window support
-|vim9.txt|	using Vim9 script
-|vim9class.txt|	using Vim9 script classes
+|mnv9.txt|	using MNV9 script
+|mnv9class.txt|	using MNV9 script classes
 
 Programming language support ~
 |indent.txt|	automatic indenting for C and other languages
@@ -191,7 +189,7 @@ System Integration ~
 |wayland.txt|	Wayland protocol support
 
 Interfaces ~
-|if_cscop.txt|	using Cscope with Vim
+|if_cscop.txt|	using Cscope with MNV
 |if_lua.txt|	Lua interface
 |if_mzsch.txt|	MzScheme interface
 |if_perl.txt|	Perl interface
@@ -204,13 +202,13 @@ Interfaces ~
 |sign.txt|	debugging signs
 
 Versions ~
-|vi_diff.txt|	Main differences between Vim and Vi
-|version4.txt|	Differences between Vim version 3.0 and 4.x
-|version5.txt|	Differences between Vim version 4.6 and 5.x
-|version6.txt|	Differences between Vim version 5.7 and 6.x
-|version7.txt|	Differences between Vim version 6.4 and 7.x
-|version8.txt|	Differences between Vim version 7.4 and 8.x
-|version9.txt|	Differences between Vim version 8.2 and 9.0
+|vi_diff.txt|	Main differences between MNV and Vi
+|version4.txt|	Differences between MNV version 3.0 and 4.x
+|version5.txt|	Differences between MNV version 4.6 and 5.x
+|version6.txt|	Differences between MNV version 5.7 and 6.x
+|version7.txt|	Differences between MNV version 6.4 and 7.x
+|version8.txt|	Differences between MNV version 7.4 and 8.x
+|version9.txt|	Differences between MNV version 8.2 and 9.0
 						*sys-file-list*
 Remarks about specific systems ~
 |os_390.txt|	OS/390 Unix
@@ -229,15 +227,15 @@ Remarks about specific systems ~
 |os_win32.txt|	MS-Windows
 						*standard-plugin-list*
 Standard plugins ~
-|pi_getscript.txt| Downloading latest version of Vim scripts
+|pi_getscript.txt| Downloading latest version of MNV scripts
 |pi_gzip.txt|      Reading and writing compressed files
 |pi_logipat.txt|   Logical operators on patterns
 |pi_netrw.txt|     Reading and writing files over a network
 |pi_paren.txt|     Highlight matching parens
 |pi_spec.txt|      Filetype plugin to work with rpm spec files
 |pi_tar.txt|       Tar file explorer
-|pi_tutor.txt|     Interactive tutorial for Vim
-|pi_vimball.txt|   Create a self-installing Vim script
+|pi_tutor.txt|     Interactive tutorial for MNV
+|pi_mnvball.txt|   Create a self-installing MNV script
 |pi_zip.txt|       Zip archive explorer
 
 LOCAL ADDITIONS:				*local-additions*
@@ -251,9 +249,9 @@ CTRL-T, CTRL-O, g<RightMouse>, or <C-RightMouse> to go back to where you were.
 Note that tags are within | characters, but when highlighting is enabled these
 characters are hidden.  That makes it easier to read a command.
 
-Anyway, you can use CTRL-] on any word, also when it is not within |, and Vim
+Anyway, you can use CTRL-] on any word, also when it is not within |, and MNV
 will try to find help for it.  Especially for options in single quotes, e.g.
 'compatible'.
 
 ------------------------------------------------------------------------------
- vim:tw=78:isk=!-~,^*,^\|,^\":ts=8:noet:ft=help:norl:
+ mnv:tw=78:isk=!-~,^*,^\|,^\":ts=8:noet:ft=help:norl:

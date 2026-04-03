@@ -1,0 +1,5 @@
+mnv9script noclear
+
+import autoload '../autoload/helptoc.mnv'
+
+command -bar HelpToc helptoc.Open()

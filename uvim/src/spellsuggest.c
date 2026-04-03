@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * spellsuggest.c: functions for spelling suggestions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_SPELL)
 
@@ -417,11 +417,11 @@ spell_check_sps(void)
 	copy_option_part(&p, buf, MAXPATHL, ",");
 
 	f = 0;
-	if (VIM_ISDIGIT(*buf))
+	if (MNV_ISDIGIT(*buf))
 	{
 	    s = buf;
 	    sps_limit = getdigits(&s);
-	    if (*s != NUL && !VIM_ISDIGIT(*s))
+	    if (*s != NUL && !MNV_ISDIGIT(*s))
 		f = -1;
 	}
 	// Note: Keep this in sync with p_sps_values.
@@ -434,8 +434,8 @@ spell_check_sps(void)
 	else if (STRNCMP(buf, "expr:", 5) != 0
 		&& STRNCMP(buf, "file:", 5) != 0
 		&& (STRNCMP(buf, "timeout:", 8) != 0
-		    || (!VIM_ISDIGIT(buf[8])
-				  && !(buf[8] == '-' && VIM_ISDIGIT(buf[9])))))
+		    || (!MNV_ISDIGIT(buf[8])
+				  && !(buf[8] == '-' && MNV_ISDIGIT(buf[9])))))
 	    f = -1;
 
 	if (f == -1 || (sps_flags != 0 && f != 0))
@@ -497,7 +497,7 @@ spell_suggest(int count)
 	// a multi-line selection.
 	if (curwin->w_cursor.lnum != VIsual.lnum)
 	{
-	    vim_beep(BO_SPELL);
+	    mnv_beep(BO_SPELL);
 	    goto skip;
 	}
 	badlen = (int)curwin->w_cursor.col - (int)VIsual.col;
@@ -542,7 +542,7 @@ spell_suggest(int count)
 							curwin->w_cursor.col);
 
     // Make a copy of current line since autocommands may free the line.
-    line = vim_strnsave(ml_get_curline(), ml_get_curline_len());
+    line = mnv_strnsave(ml_get_curline(), ml_get_curline_len());
     if (line == NULL)
 	goto skip;
 
@@ -575,14 +575,14 @@ spell_suggest(int count)
 	msg_start();
 	msg_row = Rows - 1;	// for when 'cmdheight' > 1
 	lines_left = Rows;	// avoid more prompt
-	vim_snprintf((char *)IObuff, IOSIZE, _("Change \"%.*s\" to:"),
+	mnv_snprintf((char *)IObuff, IOSIZE, _("Change \"%.*s\" to:"),
 						sug.su_badlen, sug.su_badptr);
 #ifdef FEAT_RIGHTLEFT
 	if (cmdmsg_rl && STRNCMP(IObuff, "Change", 6) == 0)
 	{
 	    // And now the rabbit from the high hat: Avoid showing the
 	    // untranslated message rightleft.
-	    vim_snprintf((char *)IObuff, IOSIZE, ":ot \"%.*s\" egnahC",
+	    mnv_snprintf((char *)IObuff, IOSIZE, ":ot \"%.*s\" egnahC",
 						sug.su_badlen, sug.su_badptr);
 	}
 #endif
@@ -599,25 +599,25 @@ spell_suggest(int count)
 
 	    // The suggested word may replace only part of the bad word, add
 	    // the not replaced part.  But only when it's not getting too long.
-	    vim_strncpy(wcopy, stp->st_word, MAXWLEN);
+	    mnv_strncpy(wcopy, stp->st_word, MAXWLEN);
 	    el = sug.su_badlen - stp->st_orglen;
 	    if (el > 0 && stp->st_wordlen + el <= MAXWLEN)
-		vim_strncpy(wcopy + stp->st_wordlen,
+		mnv_strncpy(wcopy + stp->st_wordlen,
 					   sug.su_badptr + stp->st_orglen, el);
-	    vim_snprintf((char *)IObuff, IOSIZE, "%2d", i + 1);
+	    mnv_snprintf((char *)IObuff, IOSIZE, "%2d", i + 1);
 #ifdef FEAT_RIGHTLEFT
 	    if (cmdmsg_rl)
 		rl_mirror(IObuff);
 #endif
 	    msg_puts((char *)IObuff);
 
-	    vim_snprintf((char *)IObuff, IOSIZE, " \"%s\"", wcopy);
+	    mnv_snprintf((char *)IObuff, IOSIZE, " \"%s\"", wcopy);
 	    msg_puts((char *)IObuff);
 
 	    // The word may replace more than "su_badlen".
 	    if (sug.su_badlen < stp->st_orglen)
 	    {
-		vim_snprintf((char *)IObuff, IOSIZE, _(" < \"%.*s\""),
+		mnv_snprintf((char *)IObuff, IOSIZE, _(" < \"%.*s\""),
 					       stp->st_orglen, sug.su_badptr);
 		msg_puts((char *)IObuff);
 	    }
@@ -626,11 +626,11 @@ spell_suggest(int count)
 	    {
 		// Add the score.
 		if (sps_flags & (SPS_DOUBLE | SPS_BEST))
-		    vim_snprintf((char *)IObuff, IOSIZE, " (%s%d - %d)",
+		    mnv_snprintf((char *)IObuff, IOSIZE, " (%s%d - %d)",
 			stp->st_salscore ? "s " : "",
 			stp->st_score, stp->st_altscore);
 		else
-		    vim_snprintf((char *)IObuff, IOSIZE, " (%d)",
+		    mnv_snprintf((char *)IObuff, IOSIZE, " (%d)",
 			    stp->st_score);
 #ifdef FEAT_RIGHTLEFT
 		if (cmdmsg_rl)
@@ -659,25 +659,25 @@ spell_suggest(int count)
     if (selected > 0 && selected <= sug.su_ga.ga_len && u_save_cursor() == OK)
     {
 	// Save the from and to text for :spellrepall.
-	VIM_CLEAR(repl_from);
-	VIM_CLEAR(repl_to);
+	MNV_CLEAR(repl_from);
+	MNV_CLEAR(repl_to);
 
 	stp = &SUG(sug.su_ga, selected - 1);
 	if (sug.su_badlen > stp->st_orglen)
 	{
 	    // Replacing less than "su_badlen", append the remainder to
 	    // repl_to.
-	    repl_from = vim_strnsave(sug.su_badptr, sug.su_badlen);
-	    vim_snprintf((char *)IObuff, IOSIZE, "%s%.*s", stp->st_word,
+	    repl_from = mnv_strnsave(sug.su_badptr, sug.su_badlen);
+	    mnv_snprintf((char *)IObuff, IOSIZE, "%s%.*s", stp->st_word,
 		    sug.su_badlen - stp->st_orglen,
 					      sug.su_badptr + stp->st_orglen);
-	    repl_to = vim_strsave(IObuff);
+	    repl_to = mnv_strsave(IObuff);
 	}
 	else
 	{
 	    // Replacing su_badlen or more, use the whole word.
-	    repl_from = vim_strnsave(sug.su_badptr, stp->st_orglen);
-	    repl_to = vim_strsave(stp->st_word);
+	    repl_from = mnv_strnsave(sug.su_badptr, stp->st_orglen);
+	    repl_to = mnv_strsave(stp->st_word);
 	}
 
 	// Replace the word.
@@ -715,7 +715,7 @@ spell_suggest(int count)
 
     spell_find_cleanup(&sug);
 skip:
-    vim_free(line);
+    mnv_free(line);
     curwin->w_p_spell = wo_spell_save;
 }
 
@@ -809,7 +809,7 @@ spell_find_suggest(
 
     if (su->su_badlen >= MAXWLEN)
 	su->su_badlen = MAXWLEN - 1;	// just in case
-    vim_strncpy(su->su_badword, su->su_badptr, su->su_badlen);
+    mnv_strncpy(su->su_badword, su->su_badptr, su->su_badlen);
     (void)spell_casefold(curwin, su->su_badptr, su->su_badlen,
 						    su->su_fbadword, MAXWLEN);
     // TODO: make this work if the case-folded text is longer than the original
@@ -858,7 +858,7 @@ spell_find_suggest(
 	add_banned(su, su->su_badword);
 
     // Make a copy of 'spellsuggest', because the expression may change it.
-    sps_copy = vim_strsave(p_sps);
+    sps_copy = mnv_strsave(p_sps);
     if (sps_copy == NULL)
 	return;
     spell_suggest_timeout = 5000;
@@ -897,7 +897,7 @@ spell_find_suggest(
 	}
     }
 
-    vim_free(sps_copy);
+    mnv_free(sps_copy);
 
     if (do_combine)
 	// Combine the two list of suggestions.  This must be done last,
@@ -963,11 +963,11 @@ spell_suggest_file(suginfo_T *su, char_u *fname)
     }
 
     // Read it line by line.
-    while (!vim_fgets(line, MAXWLEN * 2, fd) && !got_int)
+    while (!mnv_fgets(line, MAXWLEN * 2, fd) && !got_int)
     {
 	line_breakcheck();
 
-	p = vim_strchr(line, '/');
+	p = mnv_strchr(line, '/');
 	if (p == NULL)
 	    continue;	    // No Tab found, just skip the line.
 	*p++ = NUL;
@@ -1090,10 +1090,10 @@ spell_find_cleanup(suginfo_T *su)
 
     // Free the suggestions.
     for (i = 0; i < su->su_ga.ga_len; ++i)
-	vim_free(SUG(su->su_ga, i).st_word);
+	mnv_free(SUG(su->su_ga, i).st_word);
     ga_clear(&su->su_ga);
     for (i = 0; i < su->su_sga.ga_len; ++i)
-	vim_free(SUG(su->su_sga, i).st_word);
+	mnv_free(SUG(su->su_sga, i).st_word);
     ga_clear(&su->su_sga);
 
     // Free the banned words.
@@ -1441,7 +1441,7 @@ suggest_trie_walk(
 
 	    fword_ends = (fword[sp->ts_fidx] == NUL
 			   || (soundfold
-			       ? VIM_ISWHITE(fword[sp->ts_fidx])
+			       ? MNV_ISWHITE(fword[sp->ts_fidx])
 			       : !spell_iswordp(fword + sp->ts_fidx, curwin)));
 	    tword[sp->ts_twordlen] = NUL;
 
@@ -1533,7 +1533,7 @@ suggest_trie_walk(
 
 		    compflags[sp->ts_complen] = ((unsigned)flags >> 24);
 		    compflags[sp->ts_complen + 1] = NUL;
-		    vim_strncpy(preword + sp->ts_prewordlen,
+		    mnv_strncpy(preword + sp->ts_prewordlen,
 			    tword + sp->ts_splitoff,
 			    sp->ts_twordlen - sp->ts_splitoff);
 
@@ -2903,7 +2903,7 @@ score_comp_sal(suginfo_T *su)
 		{
 		    // Add the suggestion.
 		    sstp = &SUG(su->su_sga, su->su_sga.ga_len);
-		    sstp->st_word = vim_strsave(stp->st_word);
+		    sstp->st_word = mnv_strsave(stp->st_word);
 		    if (sstp->st_word != NULL)
 		    {
 			sstp->st_wordlen = stp->st_wordlen;
@@ -3012,7 +3012,7 @@ score_combine(suginfo_T *su)
 		if (j == ga.ga_len)
 		    stp[ga.ga_len++] = SUG(*gap, i);
 		else
-		    vim_free(p);
+		    mnv_free(p);
 	    }
 	}
     }
@@ -3024,7 +3024,7 @@ score_combine(suginfo_T *su)
     if (ga.ga_len > su->su_maxcount)
     {
 	for (i = su->su_maxcount; i < ga.ga_len; ++i)
-	    vim_free(stp[i].st_word);
+	    mnv_free(stp[i].st_word);
 	ga.ga_len = su->su_maxcount;
     }
 
@@ -3064,7 +3064,7 @@ stp_sal_score(
 	// sounds like "t h" while "the" sounds like "@".  Avoid that by
 	// removing the space.  Don't do it when the good word also contains a
 	// space.
-	if (VIM_ISWHITE(su->su_badptr[su->su_badlen])
+	if (MNV_ISWHITE(su->su_badptr[su->su_badlen])
 					 && *skiptowhite(stp->st_word) == NUL)
 	    for (p = fword; *(p = skiptowhite(p)) != NUL; )
 		STRMOVE(p, p + 1);
@@ -3078,7 +3078,7 @@ stp_sal_score(
 	// Add part of the bad word to the good word, so that we soundfold
 	// what replaces the bad word.
 	STRCPY(goodword, stp->st_word);
-	vim_strncpy(goodword + stp->st_wordlen,
+	mnv_strncpy(goodword + stp->st_wordlen,
 			    su->su_badptr + su->su_badlen - lendiff, lendiff);
 	pgood = goodword;
     }
@@ -3187,7 +3187,7 @@ suggest_try_soundalike_finish(void)
 	    FOR_ALL_HASHTAB_ITEMS(&slang->sl_sounddone, hi, todo)
 		if (!HASHITEM_EMPTY(hi))
 		{
-		    vim_free(HI2SFT(hi));
+		    mnv_free(HI2SFT(hi));
 		    --todo;
 		}
 
@@ -3620,7 +3620,7 @@ add_suggestion(
     {
 	// Add a suggestion.
 	stp = &SUG(*gap, gap->ga_len);
-	stp->st_word = vim_strnsave(goodword, goodlen);
+	stp->st_word = mnv_strnsave(goodword, goodlen);
 	if (stp->st_word != NULL)
 	{
 	    stp->st_wordlen = goodlen;
@@ -3667,16 +3667,16 @@ check_suggestions(
     for (i = gap->ga_len - 1; i >= 0; --i)
     {
 	// Need to append what follows to check for "the the".
-	vim_strncpy(longword, stp[i].st_word, MAXWLEN);
+	mnv_strncpy(longword, stp[i].st_word, MAXWLEN);
 	len = stp[i].st_wordlen;
-	vim_strncpy(longword + len, su->su_badptr + stp[i].st_orglen,
+	mnv_strncpy(longword + len, su->su_badptr + stp[i].st_orglen,
 							       MAXWLEN - len);
 	attr = HLF_COUNT;
 	(void)spell_check(curwin, longword, &attr, NULL, FALSE);
 	if (attr != HLF_COUNT)
 	{
 	    // Remove this entry.
-	    vim_free(stp[i].st_word);
+	    mnv_free(stp[i].st_word);
 	    --gap->ga_len;
 	    if (i < gap->ga_len)
 		mch_memmove(stp + i, stp + i + 1,
@@ -3702,7 +3702,7 @@ add_banned(
     hi = hash_lookup(&su->su_banned, word, hash);
     if (!HASHITEM_EMPTY(hi))		// already present
 	return;
-    s = vim_strsave(word);
+    s = mnv_strsave(word);
     if (s != NULL)
 	hash_add_item(&su->su_banned, hi, s, hash);
 }
@@ -3805,7 +3805,7 @@ cleanup_suggestions(
 	suggest_T   *stp = &SUG(*gap, 0);
 
 	for (i = keep; i < gap->ga_len; ++i)
-	    vim_free(stp[i].st_word);
+	    mnv_free(stp[i].st_word);
 	gap->ga_len = keep;
 	if (keep >= 1)
 	    return stp[keep - 1].st_score;
@@ -4154,7 +4154,7 @@ spell_edit_score(
     }
 
     i = CNT(badlen - 1, goodlen - 1);
-    vim_free(cnt);
+    mnv_free(cnt);
     return i;
 }
 

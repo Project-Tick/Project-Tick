@@ -1,5 +1,5 @@
 dnl +----------------------------------------------------------------------+
-dnl   configure.ac: autoconf script for Vim
+dnl   configure.ac: autoconf script for MNV
 dnl +----------------------------------------------------------------------+
 dnl
 dnl   This file is processed by autoconf to generate the 'configure' script.
@@ -24,17 +24,17 @@ dnl Normally, AC_INIT([package],[version],[bug-report],[tarname],[url])
 dnl provides PACKAGE_* macros, used by Autoconf on UNIX to inject version
 dnl info into config.h, --version output, and "make dist".
 dnl
-dnl Vim does not rely on that: versioning is centralized in
+dnl MNV does not rely on that: versioning is centralized in
 dnl version.h/version.c, dnl which ensures a single cross-platform source of
 dnl truth for both UNIX and non-UNIX platforms.
 dnl
 dnl Therefore we call AC_INIT without arguments.
 AC_INIT
 
-dnl Use vim.h as the source-tree anchor: AC_CONFIG_SRCDIR verifies that
+dnl Use mnv.h as the source-tree anchor: AC_CONFIG_SRCDIR verifies that
 dnl configure is run in (or pointed to) the correct source directory.
-dnl vim.h is always present at the top level.
-AC_CONFIG_SRCDIR([vim.h])
+dnl mnv.h is always present at the top level.
+AC_CONFIG_SRCDIR([mnv.h])
 AC_CONFIG_HEADERS(auto/config.h:config.h.in)
 
 dnl Being able to run configure means the system is Unix (compatible).
@@ -60,10 +60,10 @@ if test -z "$PKG_CONFIG"; then
   AC_PATH_TOOL(PKG_CONFIG, pkg-config, no)
 fi
 
-dnl Check that the C99 features that Vim uses are supported:
+dnl Check that the C99 features that MNV uses are supported:
 if test x"$ac_cv_prog_cc_c99" = xno; then
   dnl If the compiler doesn't explicitly support C99, then check
-  dnl for the specific features Vim uses
+  dnl for the specific features MNV uses
 
   AC_TYPE_LONG_LONG_INT
   if test "$ac_cv_type_long_long_int" = no; then
@@ -195,34 +195,34 @@ fi
 
 OS_EXTRA_SRC=""; OS_EXTRA_OBJ=""
 
-dnl When cross-compiling set $vim_cv_uname_output, $vim_cv_uname_r_output and
-dnl $vim_cv_uname_m_output to the desired value for the target system
+dnl When cross-compiling set $mnv_cv_uname_output, $mnv_cv_uname_r_output and
+dnl $mnv_cv_uname_m_output to the desired value for the target system
 AC_MSG_CHECKING(uname)
-if test "x$vim_cv_uname_output" = "x" ; then
-  vim_cv_uname_output=`(uname) 2>/dev/null`
-  AC_MSG_RESULT($vim_cv_uname_output)
+if test "x$mnv_cv_uname_output" = "x" ; then
+  mnv_cv_uname_output=`(uname) 2>/dev/null`
+  AC_MSG_RESULT($mnv_cv_uname_output)
 else
-  AC_MSG_RESULT([$vim_cv_uname_output (cached)])
+  AC_MSG_RESULT([$mnv_cv_uname_output (cached)])
 fi
 
 AC_MSG_CHECKING(uname -r)
-if test "x$vim_cv_uname_r_output" = "x" ; then
-  vim_cv_uname_r_output=`(uname -r) 2>/dev/null`
-  AC_MSG_RESULT($vim_cv_uname_r_output)
+if test "x$mnv_cv_uname_r_output" = "x" ; then
+  mnv_cv_uname_r_output=`(uname -r) 2>/dev/null`
+  AC_MSG_RESULT($mnv_cv_uname_r_output)
 else
-  AC_MSG_RESULT([$vim_cv_uname_r_output (cached)])
+  AC_MSG_RESULT([$mnv_cv_uname_r_output (cached)])
 fi
 
 AC_MSG_CHECKING(uname -m)
-if test "x$vim_cv_uname_m_output" = "x" ; then
-  vim_cv_uname_m_output=`(uname -m) 2>/dev/null`
-  AC_MSG_RESULT($vim_cv_uname_m_output)
+if test "x$mnv_cv_uname_m_output" = "x" ; then
+  mnv_cv_uname_m_output=`(uname -m) 2>/dev/null`
+  AC_MSG_RESULT($mnv_cv_uname_m_output)
 else
-  AC_MSG_RESULT([$vim_cv_uname_m_output (cached)])
+  AC_MSG_RESULT([$mnv_cv_uname_m_output (cached)])
 fi
 
 AC_MSG_CHECKING(for Haiku)
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     Haiku) HAIKU=yes; AC_MSG_RESULT(yes);;
     *)     HAIKU=no; AC_MSG_RESULT(no);;
 esac
@@ -230,7 +230,7 @@ esac
 dnl If QNX is found, assume we don't want to use Xphoton
 dnl unless it was specifically asked for (--with-x)
 AC_MSG_CHECKING(for QNX)
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     QNX)	OS_EXTRA_SRC=os_qnx.c; OS_EXTRA_OBJ=objects/os_qnx.o
 		test -z "$with_x" && with_x=no
 		QNX=yes; AC_MSG_RESULT(yes);;
@@ -241,7 +241,7 @@ dnl Check for Darwin and MacOS X
 dnl We do a check for MacOS X in the very beginning because there
 dnl are a lot of other things we need to change besides GUI stuff
 AC_MSG_CHECKING([for Darwin (Mac OS X)])
-if test "$vim_cv_uname_output" = Darwin; then
+if test "$mnv_cv_uname_output" = Darwin; then
   AC_MSG_RESULT(yes)
   MACOS_X=yes
   CPPFLAGS="$CPPFLAGS -DMACOS_X"
@@ -393,11 +393,11 @@ if test "$cross_compiling" = no; then
   fi
 fi
 
-AC_MSG_CHECKING(--with-vim-name argument)
-AC_ARG_WITH(vim-name, [  --with-vim-name=NAME    what to call the Vim executable],
-	VIMNAME="$withval"; AC_MSG_RESULT($VIMNAME),
-	VIMNAME="vim"; AC_MSG_RESULT(Defaulting to $VIMNAME))
-AC_SUBST(VIMNAME)
+AC_MSG_CHECKING(--with-mnv-name argument)
+AC_ARG_WITH(mnv-name, [  --with-mnv-name=NAME    what to call the MNV executable],
+	MNVNAME="$withval"; AC_MSG_RESULT($MNVNAME),
+	MNVNAME="mnv"; AC_MSG_RESULT(Defaulting to $MNVNAME))
+AC_SUBST(MNVNAME)
 AC_MSG_CHECKING(--with-ex-name argument)
 AC_ARG_WITH(ex-name, [  --with-ex-name=NAME     what to call the Ex executable],
 	EXNAME="$withval"; AC_MSG_RESULT($EXNAME),
@@ -453,7 +453,7 @@ AC_SUBST(line_break)
 if test "$cf_cv_ebcdic" = "yes"; then
 dnl If we have EBCDIC we most likely have z/OS Unix, let's test it!
 AC_MSG_CHECKING(for z/OS Unix)
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     OS/390)	zOSUnix="yes";
 		dnl If using cc the environment variable _CC_CCMODE must be
 		dnl set to "1", so that some compiler extensions are enabled.
@@ -574,19 +574,19 @@ case "$features" in
   big)   features="normal" ;;
 esac
 
-dovimdiff=""
-dogvimdiff=""
+domnvdiff=""
+dogmnvdiff=""
 case "$features" in
   tiny)		AC_DEFINE(FEAT_TINY) ;;
-  normal)	AC_DEFINE(FEAT_NORMAL) dovimdiff="installvimdiff";
-			dogvimdiff="installgvimdiff" ;;
-  huge)		AC_DEFINE(FEAT_HUGE) dovimdiff="installvimdiff";
-			dogvimdiff="installgvimdiff" ;;
+  normal)	AC_DEFINE(FEAT_NORMAL) domnvdiff="installmnvdiff";
+			dogmnvdiff="installgmnvdiff" ;;
+  huge)		AC_DEFINE(FEAT_HUGE) domnvdiff="installmnvdiff";
+			dogmnvdiff="installgmnvdiff" ;;
   *)		AC_MSG_RESULT([Sorry, $features is not supported]) ;;
 esac
 
-AC_SUBST(dovimdiff)
-AC_SUBST(dogvimdiff)
+AC_SUBST(domnvdiff)
+AC_SUBST(dogmnvdiff)
 
 if test "x$features" = "xtiny"; then
   has_eval=no
@@ -718,7 +718,7 @@ if test "$enable_luainterp" = "yes" -o "$enable_luainterp" = "dynamic"; then
 	  AC_MSG_RESULT(no)
 
 	  # Detect moonjit:
-	  # https://groups.google.com/forum/#!topic/vim_use/O0vek60WuTk
+	  # https://groups.google.com/forum/#!topic/mnv_use/O0vek60WuTk
 	  lua_suf=/moonjit-2.3
 	  inc_path="$vi_cv_path_lua_pfx/include"
 	  for dir in "$inc_path"/moonjit-[[0-9]]* ; do
@@ -837,7 +837,7 @@ if test "$enable_luainterp" = "yes" -o "$enable_luainterp" = "dynamic"; then
     fi
     if test "X$LUA_CFLAGS$LUA_LIBS" != "X" && \
        test "x$MACOS_X" = "xyes" && test "x$vi_cv_with_luajit" != "xno" && \
-       test "$vim_cv_uname_m_output" = "x86_64"; then
+       test "$mnv_cv_uname_m_output" = "x86_64"; then
       dnl OSX/x64 requires these flags. See http://luajit.org/install.html
       LUA_LIBS="-pagezero_size 10000 -image_base 100000000 $LUA_LIBS"
     fi
@@ -1002,11 +1002,11 @@ if test "$enable_mzschemeinterp" = "yes"; then
 	    MZSCHEME_LIBS="-L${path} -lmzscheme -lmzgc"
 	  fi
 	  if test "$GCC" = yes; then
-	    dnl Make Vim remember the path to the library.  For when it's not in
+	    dnl Make MNV remember the path to the library.  For when it's not in
 	    dnl $LD_LIBRARY_PATH.
 	    MZSCHEME_LIBS="${MZSCHEME_LIBS} -Wl,-rpath -Wl,${path}"
-	  elif test "$vim_cv_uname_output" = SunOS &&
-			   echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+	  elif test "$mnv_cv_uname_output" = SunOS &&
+			   echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
 	    MZSCHEME_LIBS="${MZSCHEME_LIBS} -R ${path}"
 	  fi
 	fi
@@ -1414,7 +1414,7 @@ eof
 	    else
 	      vi_cv_path_python_plibs="-L${PYTHON_CONFDIR} -lpython${vi_cv_var_python_version}"
 	      dnl -- Check if the path contained in python_LINKFORSHARED is
-	      dnl    usable for vim build. If not, make and try other
+	      dnl    usable for mnv build. If not, make and try other
 	      dnl    candidates.
 	      if test -n "${python_LINKFORSHARED}" && test -n "${python_PYTHONFRAMEWORKPREFIX}"; then
 	        python_link_symbol=`echo ${python_LINKFORSHARED} | sed 's/\([[^ \t]][[^ \t]]*[[ \t]][[ \t]]*[[^ \t]][[^ \t]]*\)[[ \t]].*/\1/'`
@@ -1471,13 +1471,13 @@ eof
 	threadsafe_flag=
 	thread_lib=
 	dnl if test "x$MACOS_X" != "xyes"; then
-        if test "$vim_cv_uname_output" != Darwin; then
+        if test "$mnv_cv_uname_output" != Darwin; then
 	  test "$GCC" = yes && threadsafe_flag="-pthread"
-	  if test "$vim_cv_uname_output" = FreeBSD; then
+	  if test "$mnv_cv_uname_output" = FreeBSD; then
 	    threadsafe_flag="-D_THREAD_SAFE"
 	    thread_lib="-pthread"
 	  fi
-	  if test "$vim_cv_uname_output" = SunOS; then
+	  if test "$mnv_cv_uname_output" = SunOS; then
 	    threadsafe_flag="-pthreads"
 	  fi
 	fi
@@ -1732,13 +1732,13 @@ eof
         threadsafe_flag=
         thread_lib=
         dnl if test "x$MACOS_X" != "xyes"; then
-        if test "$vim_cv_uname_output" != Darwin; then
+        if test "$mnv_cv_uname_output" != Darwin; then
           test "$GCC" = yes && threadsafe_flag="-pthread"
-          if test "$vim_cv_uname_output" = FreeBSD; then
+          if test "$mnv_cv_uname_output" = FreeBSD; then
             threadsafe_flag="-D_THREAD_SAFE"
             thread_lib="-pthread"
           fi
-          if test "$vim_cv_uname_output" = SunOS; then
+          if test "$mnv_cv_uname_output" = SunOS; then
             threadsafe_flag="-pthreads"
           fi
         fi
@@ -1811,7 +1811,7 @@ if test "$python_ok" = yes && test "$python3_ok" = yes; then
     #include <dlfcn.h>
     /* If this program fails, then RTLD_GLOBAL is needed.
      * RTLD_GLOBAL will be used and then it is not possible to
-     * have both python versions enabled in the same vim instance.
+     * have both python versions enabled in the same mnv instance.
      * Only the first python version used will be switched on.
      */
 
@@ -1857,7 +1857,7 @@ if test "$python_ok" = yes && test "$python3_ok" = yes; then
     #include <wchar.h>
     /* If this program fails, then RTLD_GLOBAL is needed.
      * RTLD_GLOBAL will be used and then it is not possible to
-     * have both python versions enabled in the same vim instance.
+     * have both python versions enabled in the same mnv instance.
      * Only the first python version used will be switched on.
      */
 
@@ -2052,8 +2052,8 @@ if test "$enable_tclinterp" = "yes" -o "$enable_tclinterp" = "dynamic"; then
 		if test -f "$try/lib$trylib" ; then
 		  AC_MSG_RESULT($try/lib$trylib)
 		  TCL_LIBS="-L\"$try\" -ltcl$ver -ldl -lm"
-		  if test "$vim_cv_uname_output" = SunOS &&
-					 echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+		  if test "$mnv_cv_uname_output" = SunOS &&
+					 echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
 		    TCL_LIBS="$TCL_LIBS -R $try"
 		  fi
 		  break 3
@@ -2242,7 +2242,7 @@ if test "$enable_channel" = "yes"; then
 	AC_CHECK_LIB(nsl, gethostbyname)
   fi
 
-  AC_CACHE_CHECK([whether compiling with IPv6 networking is possible], [vim_cv_ipv6_networking],
+  AC_CACHE_CHECK([whether compiling with IPv6 networking is possible], [mnv_cv_ipv6_networking],
     [AC_LINK_IFELSE([AC_LANG_PROGRAM([
 #include <stdio.h>
 #include <stdlib.h>
@@ -2269,14 +2269,14 @@ if test "$enable_channel" = "yes"; then
 		  (void)connect(1, (struct sockaddr *)&server, sizeof(server));
 		(void)freeaddrinfo(res);
 	    ])],
-	[vim_cv_ipv6_networking="yes"],
-	[vim_cv_ipv6_networking="no"])])
+	[mnv_cv_ipv6_networking="yes"],
+	[mnv_cv_ipv6_networking="no"])])
 
-  if test "x$vim_cv_ipv6_networking" = "xyes"; then
+  if test "x$mnv_cv_ipv6_networking" = "xyes"; then
     AC_DEFINE(FEAT_IPV6)
     AC_CHECK_FUNCS(inet_ntop)
   else
-    AC_CACHE_CHECK([whether compiling with IPv4 networking is possible], [vim_cv_ipv4_networking],
+    AC_CACHE_CHECK([whether compiling with IPv4 networking is possible], [mnv_cv_ipv4_networking],
       [AC_LINK_IFELSE([AC_LANG_PROGRAM([
 #include <stdio.h>
 #include <stdlib.h>
@@ -2301,8 +2301,8 @@ if test "$enable_channel" = "yes"; then
 		if (errno == ECONNREFUSED)
 		  (void)connect(1, (struct sockaddr *)&server, sizeof(server));
 	    ])],
-	[vim_cv_ipv4_networking="yes"],
-	[vim_cv_ipv4_networking="no"; enable_netbeans="no"; enable_channel="no"])])
+	[mnv_cv_ipv4_networking="yes"],
+	[mnv_cv_ipv4_networking="no"; enable_netbeans="no"; enable_channel="no"])])
   fi
 fi
 if test "$enable_netbeans" = "yes"; then
@@ -2356,7 +2356,7 @@ fi
 
 AC_MSG_CHECKING(--enable-autoservername argument)
 AC_ARG_ENABLE(autoservername,
-	[  --enable-autoservername Automatically define servername at vim startup.], ,
+	[  --enable-autoservername Automatically define servername at mnv startup.], ,
 	[enable_autoservername="no"])
 AC_MSG_RESULT($enable_autoservername)
 if test "$enable_autoservername" = "yes"; then
@@ -2386,10 +2386,10 @@ AC_ARG_ENABLE(multibyte,
 AC_MSG_RESULT($enable_multibyte)
 if test "$enable_multibyte" != "yes"; then
   AC_MSG_ERROR([The multi-byte feature can no longer be disabled. If you have
-		a problem with this, discuss on the Vim mailing list.])
+		a problem with this, discuss on the MNV mailing list.])
 fi
 
-dnl Right-to-Left language support for Vim will be included with huge features,
+dnl Right-to-Left language support for MNV will be included with huge features,
 dnl unless ENABLE_RIGHTLEFT is undefined.
 AC_MSG_CHECKING(--disable-rightleft argument)
 AC_ARG_ENABLE(rightleft,
@@ -2402,7 +2402,7 @@ else
 	AC_DEFINE(DISABLE_RIGHTLEFT)
 fi
 
-dnl Arabic language support for Vim will be included with huge features,
+dnl Arabic language support for MNV will be included with huge features,
 dnl unless ENABLE_ARABIC is undefined.
 AC_MSG_CHECKING(--disable-arabic argument)
 AC_ARG_ENABLE(arabic,
@@ -2536,8 +2536,8 @@ else
     x_libraries=`echo "$x_includes" | sed s/include/lib/`
     AC_MSG_RESULT(Corrected X libraries to $x_libraries)
     X_LIBS="$X_LIBS -L$x_libraries"
-    if test "$vim_cv_uname_output" = SunOS &&
-					 echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+    if test "$mnv_cv_uname_output" = SunOS &&
+					 echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
       X_LIBS="$X_LIBS -R $x_libraries"
     fi
   fi
@@ -2932,7 +2932,7 @@ AC_DEFUN([GNOME_INIT_HOOK],
       dnl On FreeBSD we need -pthread but pkg-config doesn't include it.
       dnl This might not be the right way but it works for me...
       AC_MSG_CHECKING(for FreeBSD)
-      if test "$vim_cv_uname_output" = FreeBSD; then
+      if test "$mnv_cv_uname_output" = FreeBSD; then
 	AC_MSG_RESULT(yes, adding -pthread)
 	GNOME_INCLUDEDIR="$GNOME_INCLUDEDIR -D_THREAD_SAFE"
 	GNOME_LIBS="$GNOME_LIBS -pthread"
@@ -3165,8 +3165,8 @@ if test -z "$SKIP_MOTIF"; then
       else
 	if test -n "$GUI_LIB_LOC"; then
 	  AC_MSG_RESULT($GUI_LIB_LOC)
-	  if test "$vim_cv_uname_output" = SunOS &&
-					 echo $vim_cv_uname_r_output | grep '^5' >/dev/null; then
+	  if test "$mnv_cv_uname_output" = SunOS &&
+					 echo $mnv_cv_uname_r_output | grep '^5' >/dev/null; then
 	    GUI_LIB_LOC="$GUI_LIB_LOC -R $GUI_LIB_LOC"
 	  fi
 	fi
@@ -3369,7 +3369,7 @@ fi
 
 dnl Check for Cygwin, which needs an extra source file if not using X11
 AC_MSG_CHECKING(for CYGWIN or MSYS environment)
-case $vim_cv_uname_output in
+case $mnv_cv_uname_output in
     CYGWIN*|MSYS*)    CYGWIN=yes; AC_MSG_RESULT(yes)
                 AC_MSG_CHECKING(for CYGWIN clipboard support)
                 if test "x$with_x" = "xno" ; then
@@ -3385,7 +3385,7 @@ esac
 
 dnl Checks for libraries and include files.
 
-AC_CACHE_CHECK([whether toupper is broken], [vim_cv_toupper_broken],
+AC_CACHE_CHECK([whether toupper is broken], [mnv_cv_toupper_broken],
   [
     AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include "confdefs.h"
@@ -3396,15 +3396,15 @@ AC_CACHE_CHECK([whether toupper is broken], [vim_cv_toupper_broken],
 #endif
 int main() { exit(toupper('A') == 'A' && tolower('z') == 'z'); }
   ]])],[
-    vim_cv_toupper_broken=yes
+    mnv_cv_toupper_broken=yes
   ],[
-    vim_cv_toupper_broken=no
+    mnv_cv_toupper_broken=no
   ],[
-    vim_cv_toupper_broken=no
-    AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_toupper_broken')
+    mnv_cv_toupper_broken=no
+    AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_toupper_broken')
   ])])
 
-if test "x$vim_cv_toupper_broken" = "xyes" ; then
+if test "x$mnv_cv_toupper_broken" = "xyes" ; then
   AC_DEFINE(BROKEN_TOUPPER)
 fi
 
@@ -3585,7 +3585,7 @@ else
   dnl  Older versions of ncurses have bugs, get a new one!
   dnl  Digital Unix (OSF1) should use curses (Ronald Schild).
   dnl  On SCO Openserver should prefer termlib (Roger Cornelius).
-  case "$vim_cv_uname_output" in
+  case "$mnv_cv_uname_output" in
 	OSF1|SCO_SV)	tlibs="tinfo ncurses curses termlib termcap";;
 	*)	tlibs="tinfo ncurses termlib termcap curses";;
   esac
@@ -3628,7 +3628,7 @@ if test "x$olibs" = "x$LIBS"; then
       Or specify the name of the library with --with-tlib.]))
 fi
 
-AC_CACHE_CHECK([whether we talk terminfo], [vim_cv_terminfo],
+AC_CACHE_CHECK([whether we talk terminfo], [mnv_cv_terminfo],
   [
     AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include "confdefs.h"
@@ -3650,20 +3650,20 @@ AC_CACHE_CHECK([whether we talk terminfo], [vim_cv_terminfo],
 int main()
 {char *s; s=(char *)tgoto("%p1%d", 0, 1); exit(!!strcmp(s==0 ? "" : s, "1")); }
     ]])],[
-      vim_cv_terminfo=yes
+      mnv_cv_terminfo=yes
     ],[
-      vim_cv_terminfo=no
+      mnv_cv_terminfo=no
     ],[
-      vim_cv_terminfo=yes
-      AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_terminfo')
+      mnv_cv_terminfo=yes
+      AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_terminfo')
     ])
   ])
 
-if test "x$vim_cv_terminfo" = "xyes" ; then
+if test "x$mnv_cv_terminfo" = "xyes" ; then
   AC_DEFINE(TERMINFO)
 fi
 
-AC_CACHE_CHECK([what tgetent() returns for an unknown terminal], [vim_cv_tgetent],
+AC_CACHE_CHECK([what tgetent() returns for an unknown terminal], [mnv_cv_tgetent],
   [
     AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include "confdefs.h"
@@ -3677,16 +3677,16 @@ AC_CACHE_CHECK([what tgetent() returns for an unknown terminal], [vim_cv_tgetent
 int main()
 {char s[10000]; int res = tgetent(s, "thisterminaldoesnotexist"); exit(res != 0); }
     ]])],[
-      vim_cv_tgetent=zero
+      mnv_cv_tgetent=zero
     ],[
-      vim_cv_tgetent=non-zero
+      mnv_cv_tgetent=non-zero
     ],[
-      vim_cv_tgetent=zero
-      AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_tgetent')
+      mnv_cv_tgetent=zero
+      AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_tgetent')
     ])
   ])
 
-if test "x$vim_cv_tgetent" = "xzero" ; then
+if test "x$mnv_cv_tgetent" = "xzero" ; then
   AC_DEFINE(TGETENT_ZERO_ERR, 0)
 fi
 
@@ -3828,7 +3828,7 @@ int test_sig()
 
 dnl tricky stuff: try to find out if getcwd() is implemented with
 dnl system("sh -c pwd")
-AC_CACHE_CHECK([getcwd implementation is broken], [vim_cv_getcwd_broken],
+AC_CACHE_CHECK([getcwd implementation is broken], [mnv_cv_getcwd_broken],
   [
     AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include "confdefs.h"
@@ -3844,16 +3844,16 @@ int main()
   return getcwd(buffer, 500) ? 0 : 1;
 }
     ]])],[
-      vim_cv_getcwd_broken=no
+      mnv_cv_getcwd_broken=no
     ],[
-      vim_cv_getcwd_broken=yes
+      mnv_cv_getcwd_broken=yes
     ],[
-      vim_cv_getcwd_broken=no
-      AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_getcwd_broken')
+      mnv_cv_getcwd_broken=no
+      AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_getcwd_broken')
     ])
   ])
 
-if test "x$vim_cv_getcwd_broken" = "xyes" ; then
+if test "x$mnv_cv_getcwd_broken" = "xyes" ; then
   AC_DEFINE(BAD_GETCWD)
   AC_CHECK_FUNCS(getwd)
 fi
@@ -3983,44 +3983,44 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 	AC_MSG_RESULT(no))
 
 dnl Check for timer_create. It probably requires the 'rt' library.
-AC_CACHE_CHECK([for timer_create without -lrt], [vim_cv_timer_create], [
+AC_CACHE_CHECK([for timer_create without -lrt], [mnv_cv_timer_create], [
   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
   #include <time.h>
   ], [
     timer_create(CLOCK_MONOTONIC, NULL, NULL);
      ])],
-    vim_cv_timer_create=yes,
-    vim_cv_timer_create=no
+    mnv_cv_timer_create=yes,
+    mnv_cv_timer_create=no
   )])
 
 dnl If the previous failed, check for timer_create() and linking with -lrt.
-if test "x$vim_cv_timer_create" = "xno" ; then
+if test "x$mnv_cv_timer_create" = "xno" ; then
   save_LIBS="$LIBS"
   LIBS="$LIBS -lrt"
-  AC_CACHE_CHECK([for timer_create with -lrt], [vim_cv_timer_create_with_lrt], [
+  AC_CACHE_CHECK([for timer_create with -lrt], [mnv_cv_timer_create_with_lrt], [
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
     #include <time.h>
     ], [
       timer_create(CLOCK_MONOTONIC, NULL, NULL);
        ])],
-      vim_cv_timer_create_with_lrt=yes,
-      vim_cv_timer_create_with_lrt=no
+      mnv_cv_timer_create_with_lrt=yes,
+      mnv_cv_timer_create_with_lrt=no
     )])
   LIBS="$save_LIBS"
 else
-  vim_cv_timer_create_with_lrt=no
+  mnv_cv_timer_create_with_lrt=no
 fi
 
 dnl Run the program to find out if timer_create(CLOCK_MONOTONIC) actually
 dnl works, on Solaris timer_create() exists but fails at runtime.
-if test "x$vim_cv_timer_create" = "xyes" ||
-   test "x$vim_cv_timer_create_with_lrt" = "xyes"; then
+if test "x$mnv_cv_timer_create" = "xyes" ||
+   test "x$mnv_cv_timer_create_with_lrt" = "xyes"; then
   save_LIBS="$LIBS"
-  if test "x$vim_cv_timer_create_with_lrt" = "xyes" ; then
+  if test "x$mnv_cv_timer_create_with_lrt" = "xyes" ; then
     LIBS="$LIBS -lrt"
   fi
 
-  AC_CACHE_CHECK([if timer_create works], [vim_cv_timer_create_works], [
+  AC_CACHE_CHECK([if timer_create works], [mnv_cv_timer_create_works], [
     AC_RUN_IFELSE([AC_LANG_PROGRAM([
     #if STDC_HEADERS
     # include <stdlib.h>
@@ -4039,20 +4039,20 @@ if test "x$vim_cv_timer_create" = "xyes" ||
       if (timer_create(CLOCK_MONOTONIC, &action, &timer_id) < 0)
         exit(1);  // cannot create a monotonic timer
       ])],
-      vim_cv_timer_create_works=yes,
-      vim_cv_timer_create_works=no,
-      vim_cv_timer_create_works=yes
-      AC_MSG_WARN([cross-compiling: consider setting 'vim_cv_timer_create_works'])
+      mnv_cv_timer_create_works=yes,
+      mnv_cv_timer_create_works=no,
+      mnv_cv_timer_create_works=yes
+      AC_MSG_WARN([cross-compiling: consider setting 'mnv_cv_timer_create_works'])
     )])
 
-  if test "x$vim_cv_timer_create_works" = "xyes" ; then
+  if test "x$mnv_cv_timer_create_works" = "xyes" ; then
     AC_DEFINE(HAVE_TIMER_CREATE)
   else
     LIBS="$save_LIBS"
   fi
 fi
 
-AC_CACHE_CHECK([whether stat() ignores a trailing slash], [vim_cv_stat_ignores_slash],
+AC_CACHE_CHECK([whether stat() ignores a trailing slash], [mnv_cv_stat_ignores_slash],
   [
     AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include "confdefs.h"
@@ -4064,16 +4064,16 @@ AC_CACHE_CHECK([whether stat() ignores a trailing slash], [vim_cv_stat_ignores_s
 #include <sys/stat.h>
 int main() {struct stat st;  exit(stat("configure/", &st) != 0); }
     ]])],[
-      vim_cv_stat_ignores_slash=yes
+      mnv_cv_stat_ignores_slash=yes
     ],[
-      vim_cv_stat_ignores_slash=no
+      mnv_cv_stat_ignores_slash=no
     ],[
-      vim_cv_stat_ignores_slash=yes
-      AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_stat_ignores_slash')
+      mnv_cv_stat_ignores_slash=yes
+      AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_stat_ignores_slash')
     ])
   ])
 
-if test "x$vim_cv_stat_ignores_slash" = "xyes" ; then
+if test "x$mnv_cv_stat_ignores_slash" = "xyes" ; then
   AC_DEFINE(STAT_IGNORES_SLASH)
 fi
 
@@ -4419,8 +4419,8 @@ AC_CHECK_SIZEOF([time_t])
 AC_CHECK_SIZEOF([off_t])
 
 dnl Use different names to avoid clashing with other header files.
-AC_DEFINE_UNQUOTED(VIM_SIZEOF_INT, [$ac_cv_sizeof_int])
-AC_DEFINE_UNQUOTED(VIM_SIZEOF_LONG, [$ac_cv_sizeof_long])
+AC_DEFINE_UNQUOTED(MNV_SIZEOF_INT, [$ac_cv_sizeof_int])
+AC_DEFINE_UNQUOTED(MNV_SIZEOF_LONG, [$ac_cv_sizeof_long])
 
 dnl Make sure that uint32_t is really 32 bits unsigned.
 AC_MSG_CHECKING([uint32_t is 32 bits])
@@ -4466,52 +4466,52 @@ int main() {
   exit(0); /* libc version works properly.  */
 }']
 
-AC_CACHE_CHECK([whether memmove handles overlaps],[vim_cv_memmove_handles_overlap],
+AC_CACHE_CHECK([whether memmove handles overlaps],[mnv_cv_memmove_handles_overlap],
   [
     AC_RUN_IFELSE([AC_LANG_SOURCE([[#define mch_memmove(s,d,l) memmove(d,s,l) $bcopy_test_prog]])],
       [
-	vim_cv_memmove_handles_overlap=yes
+	mnv_cv_memmove_handles_overlap=yes
       ],[
-	vim_cv_memmove_handles_overlap=no
+	mnv_cv_memmove_handles_overlap=no
       ],[
-	vim_cv_memmove_handles_overlap=yes
-	AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_memmove_handles_overlap')
+	mnv_cv_memmove_handles_overlap=yes
+	AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_memmove_handles_overlap')
       ])
   ])
 
-if test "x$vim_cv_memmove_handles_overlap" = "xyes" ; then
+if test "x$mnv_cv_memmove_handles_overlap" = "xyes" ; then
   AC_DEFINE(USEMEMMOVE)
 else
-  AC_CACHE_CHECK([whether bcopy handles overlaps],[vim_cv_bcopy_handles_overlap],
+  AC_CACHE_CHECK([whether bcopy handles overlaps],[mnv_cv_bcopy_handles_overlap],
     [
       AC_RUN_IFELSE([AC_LANG_SOURCE([[#define mch_bcopy(s,d,l) bcopy(d,s,l) $bcopy_test_prog]])],
       [
-	vim_cv_bcopy_handles_overlap=yes
+	mnv_cv_bcopy_handles_overlap=yes
       ],[
-	vim_cv_bcopy_handles_overlap=no
+	mnv_cv_bcopy_handles_overlap=no
       ],[
-	vim_cv_bcopy_handles_overlap=yes
-	AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_bcopy_handles_overlap')
+	mnv_cv_bcopy_handles_overlap=yes
+	AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_bcopy_handles_overlap')
       ])
     ])
 
-  if test "x$vim_cv_bcopy_handles_overlap" = "xyes" ; then
+  if test "x$mnv_cv_bcopy_handles_overlap" = "xyes" ; then
     AC_DEFINE(USEBCOPY)
   else
-    AC_CACHE_CHECK([whether memcpy handles overlaps],[vim_cv_memcpy_handles_overlap],
+    AC_CACHE_CHECK([whether memcpy handles overlaps],[mnv_cv_memcpy_handles_overlap],
       [
 	AC_RUN_IFELSE([AC_LANG_SOURCE([[#define mch_memcpy(s,d,l) memcpy(d,s,l) $bcopy_test_prog]])],
 	  [
-	    vim_cv_memcpy_handles_overlap=yes
+	    mnv_cv_memcpy_handles_overlap=yes
 	  ],[
-	    vim_cv_memcpy_handles_overlap=no
+	    mnv_cv_memcpy_handles_overlap=no
 	  ],[
-	    vim_cv_memcpy_handles_overlap=yes
-	    AC_MSG_WARN(cross-compiling: consider setting 'vim_cv_memcpy_handles_overlap')
+	    mnv_cv_memcpy_handles_overlap=yes
+	    AC_MSG_WARN(cross-compiling: consider setting 'mnv_cv_memcpy_handles_overlap')
 	  ])
       ])
 
-    if test "x$vim_cv_memcpy_handles_overlap" = "xyes" ; then
+    if test "x$mnv_cv_memcpy_handles_overlap" = "xyes" ; then
       AC_DEFINE(USEMEMCPY)
     fi
   fi
@@ -4655,7 +4655,7 @@ if test "$enable_nls" = "yes"; then
 	  AC_MSG_RESULT([broken])
 	else
 	  AC_MSG_RESULT([yes])
-	  MSGFMT_DESKTOP="gvim.desktop vim.desktop"
+	  MSGFMT_DESKTOP="gmnv.desktop mnv.desktop"
 	fi
       else
 	AC_MSG_RESULT([no])
@@ -4779,7 +4779,7 @@ if `echo "$CFLAGS" | grep -v D_REENTRANT >/dev/null`; then
 fi
 
 dnl gcc 3.1 changed the meaning of -MM.  The only solution appears to be to
-dnl use "-isystem" instead of "-I" for all non-Vim include dirs.
+dnl use "-isystem" instead of "-I" for all non-MNV include dirs.
 dnl But only when making dependencies, cproto and lint don't take "-isystem".
 dnl Mac gcc returns "powerpc-apple-darwin8-gcc-4.0.1 (GCC)...", need to allow
 dnl the number before the version number.
@@ -4793,7 +4793,7 @@ if test "$GCC" = yes; then
   else
     AC_MSG_RESULT(no)
   fi
-  dnl -D_FORTIFY_SOURCE=2 crashes Vim on strcpy(buf, "000") when buf is
+  dnl -D_FORTIFY_SOURCE=2 crashes MNV on strcpy(buf, "000") when buf is
   dnl declared as char x[1] but actually longer.  Introduced in gcc 4.0.
   dnl Also remove duplicate _FORTIFY_SOURCE arguments.
   dnl And undefine it first to avoid a warning.
@@ -4811,7 +4811,7 @@ AC_SUBST(DEPEND_CFLAGS_FILTER)
 dnl On some systems AC_SYS_LARGEFILE determines that -D_FILE_OFFSET_BITS=64
 dnl isn't required, but the CFLAGS for some of the libraries we're using
 dnl include the define.  Since the define changes the size of some datatypes
-dnl (e.g. ino_t and off_t), all of Vim's modules must be compiled with a
+dnl (e.g. ino_t and off_t), all of MNV's modules must be compiled with a
 dnl consistent value.  It's therefore safest to force the use of the define
 dnl if it's present in any of the *_CFLAGS variables.
 AC_MSG_CHECKING(whether we need to force -D_FILE_OFFSET_BITS=64)
@@ -4854,4 +4854,4 @@ dnl write output files
 AC_CONFIG_FILES(auto/config.mk:config.mk.in)
 AC_OUTPUT
 
-dnl vim: set sw=2 sts=2 tw=78 fo+=l:
+dnl mnv: set sw=2 sts=2 tw=78 fo+=l:

@@ -1,20 +1,20 @@
-This is another proof that Vim is perfectly compatible with Vi.
+This is another proof that MNV is perfectly compatible with Vi.
 The URM macro package was written by Rudolf Koenig ("Rudi")
 (rudolf@koeniglich.de) for hpux-vi in August 1991.
 
 Getting started:
 
 type
-in your shell:	 vim urm<RETURN>
-in vim:		 :so urm.vim<RETURN>
-in vim:		 *	(to load the registers and boot the URM-machine :-)
-in vim:		 g	(for 'go') and watch the fun. Per default, 3 and 4
+in your shell:	 mnv urm<RETURN>
+in mnv:		 :so urm.mnv<RETURN>
+in mnv:		 *	(to load the registers and boot the URM-machine :-)
+in mnv:		 g	(for 'go') and watch the fun. Per default, 3 and 4
 			are multiplied. Watch the Program counter, it is
 			visible as a comma moving around.
 
 This is a "standard URM" (Universal register machine)  interpreter. The URM
 concept is used in theoretical computer science to aid in theorem proving.
-Here it proves that vim is a general problem solver (if you bring enough
+Here it proves that mnv is a general problem solver (if you bring enough
 patience).
 
 The interpreter begins with register 1 (not 0), without macros and more-lines

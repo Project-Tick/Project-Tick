@@ -1,10 +1,10 @@
-*gui_x11.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*gui_x11.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-Vim's Graphical User Interface				*gui-x11* *GUI-X11*
+MNV's Graphical User Interface				*gui-x11* *GUI-X11*
 							*Motif*
 1. Starting the X11 GUI		|gui-x11-start|
 2. GUI Resources		|gui-resources|
@@ -23,40 +23,40 @@ Other relevant documentation:
 ==============================================================================
 1. Starting the X11 GUI					*gui-x11-start* *E665*
 
-Then you can run the GUI version of Vim in either of these ways:
-    gvim [options] [files...]
-    vim -g [options] [files...]
+Then you can run the GUI version of MNV in either of these ways:
+    gmnv [options] [files...]
+    mnv -g [options] [files...]
 
-So if you call the executable "gvim", or make "gvim" a link to the executable,
+So if you call the executable "gmnv", or make "gmnv" a link to the executable,
 then the GUI version will automatically be used.  Additional characters may be
-added after "gvim", for example "gvim-5".
+added after "gmnv", for example "gmnv-5".
 
 You may also start up the GUI from within the terminal version by using one of
 these commands:
 	:gui [++opt] [+cmd] [-f|-b] [files...]			*:gu* *:gui*
-	:gvim [++opt] [+cmd] [-f|-b] [files...]			*:gv* *:gvim*
-The "-f" option runs Vim in the foreground.
-The "-b" option runs Vim in the background (this is the default).
+	:gmnv [++opt] [+cmd] [-f|-b] [files...]			*:gv* *:gmnv*
+The "-f" option runs MNV in the foreground.
+The "-b" option runs MNV in the background (this is the default).
 Also see |++opt| and |+cmd|.
 
 							*gui-fork*
 When the GUI is started, it does a fork() and exits the current process.
-When gvim was started from a shell this makes the shell accept further
-commands.  If you don't want this (e.g. when using gvim for a mail program
-that waits for gvim to exit), start gvim with "gvim -f", "vim -gf" or use
-":gui -f".  Don't use "vim -fg", because "-fg" specifies the foreground
+When gmnv was started from a shell this makes the shell accept further
+commands.  If you don't want this (e.g. when using gmnv for a mail program
+that waits for gmnv to exit), start gmnv with "gmnv -f", "mnv -gf" or use
+":gui -f".  Don't use "mnv -fg", because "-fg" specifies the foreground
 color.
 
-When using "vim -f" and then ":gui", Vim will run in the foreground.  The
-"-f" argument will be remembered.  To force running Vim in the background use
+When using "mnv -f" and then ":gui", MNV will run in the foreground.  The
+"-f" argument will be remembered.  To force running MNV in the background use
 ":gui -b".
 
-"gvim --nofork" does the same as "gvim -f".
+"gmnv --nofork" does the same as "gmnv -f".
 
-When there are running jobs Vim will not fork, because the processes would no
+When there are running jobs MNV will not fork, because the processes would no
 longer be child processes.
 								*E851* *E852*
-When starting the GUI fails Vim will try to continue running in the terminal.
+When starting the GUI fails MNV will try to continue running in the terminal.
 
 If you want the GUI to run in the foreground always, include the 'f'
 flag in 'guioptions'.  |-f|.
@@ -65,8 +65,8 @@ flag in 'guioptions'.  |-f|.
 2. GUI Resources			*gui-resources* *.Xdefaults*
 
 If using the Motif version of the GUI (not for the KDE, GTK+ or Win32
-version), a number of X resources are available.  You should use Vim's class
-"Vim" when setting these.  They are as follows:
+version), a number of X resources are available.  You should use MNV's class
+"MNV" when setting these.  They are as follows:
 
     Resource name	Meaning		~
 
@@ -92,7 +92,7 @@ version), a number of X resources are available.  You should use Vim's class
 			When compiled with the |+xfontset| feature this is a
 			fontset name.
 
-    geometry		Initial geometry to use for gvim's window (default
+    geometry		Initial geometry to use for gmnv's window (default
 			is same size as terminal that started it).
     scrollbarWidth	Thickness of scrollbars.
     borderWidth		Thickness of border around text area.
@@ -110,52 +110,52 @@ Note that the colors can also be set with the ":highlight" command, using the
 <
 							*font-sizes*
 Note: All fonts (except for the menu and tooltip) must be of the same size!!!
-If you don't do this, text will disappear or mess up the display.  Vim does
+If you don't do this, text will disappear or mess up the display.  MNV does
 not check the font sizes.  It's the size in screen pixels that must be the
 same.  Note that some fonts that have the same point size don't have the same
 pixel size!  Additionally, the positioning of the fonts must be the same
 (ascent and descent).  You can check this with "xlsfonts -l {fontname}".
 
-If any of these things are also set with Vim commands, e.g. with
+If any of these things are also set with MNV commands, e.g. with
 ":set guifont=Screen15", then this will override the X resources (currently
 'guifont' is the only option that is supported).
 
 Here is an example of what you might put in your ~/.Xdefaults file: >
 
-	Vim*useSchemes:			all
-	Vim*sgiMode:			true
-	Vim*useEnhancedFSB:		true
-	Vim.foreground:			Black
-	Vim.background:			Wheat
-	Vim*fontList:			7x13
+	MNV*useSchemes:			all
+	MNV*sgiMode:			true
+	MNV*useEnhancedFSB:		true
+	MNV.foreground:			Black
+	MNV.background:			Wheat
+	MNV*fontList:			7x13
 
 The first three of these are standard resources on Silicon Graphics machines
 which make Motif applications look even better, highly recommended!
 
-The "Vim*fontList" is to set the menu font for Motif.  Example: >
-	Vim*menuBar*fontList:	     -*-courier-medium-r-*-*-10-*-*-*-*-*-*-*
+The "MNV*fontList" is to set the menu font for Motif.  Example: >
+	MNV*menuBar*fontList:	     -*-courier-medium-r-*-*-10-*-*-*-*-*-*-*
 
 NOTE: A more portable, and indeed more correct, way to specify the menu font
 in Motif is through the resource: >
-	Vim.menuFont:	     -*-courier-medium-r-*-*-10-*-*-*-*-*-*-*
+	MNV.menuFont:	     -*-courier-medium-r-*-*-10-*-*-*-*-*-*-*
 Or, when compiled with the |+xfontset| feature: >
-	Vim.menuFontSet:     -*-courier-medium-r-*-*-10-*-*-*-*-*-*-*
+	MNV.menuFontSet:     -*-courier-medium-r-*-*-10-*-*-*-*-*-*-*
 
-Don't use "Vim*geometry" in the defaults.  This will break the menus.  Use
-"Vim.geometry" instead.
+Don't use "MNV*geometry" in the defaults.  This will break the menus.  Use
+"MNV.geometry" instead.
 
 If you get an error message "Cannot allocate colormap entry for "gray60",
-try adding this to your Vim resources (change the colors to your liking): >
+try adding this to your MNV resources (change the colors to your liking): >
 
-	Vim*scrollBackground:		Black
-	Vim*scrollForeground:		Blue
+	MNV*scrollBackground:		Black
+	MNV*scrollForeground:		Blue
 
-The resources can also be set with arguments to Vim:
+The resources can also be set with arguments to MNV:
 
     argument		meaning	~
 							*-gui*
-   -display {display}	Run vim on {display}		*-display*
-   -iconic		Start vim iconified		*-iconic*
+   -display {display}	Run mnv on {display}		*-display*
+   -iconic		Start mnv iconified		*-iconic*
    -background {color}	Use {color} for the background	*-background*
    -bg {color}		idem				*-bg*
    -foreground {color}	Use {color} for normal text	*-foreground*
@@ -185,16 +185,16 @@ The resources can also be set with arguments to Vim:
    +rv			idem				*-+rv*
    -xrm {resource}	Set the specified resource	*-xrm*
 
-Note about reverse video: Vim checks that the result is actually a light text
+Note about reverse video: MNV checks that the result is actually a light text
 on a dark background.  The reason is that some X11 versions swap the colors,
 and some don't.  These two examples will both give yellow text on a blue
 background:
-    gvim -fg Yellow -bg Blue -reverse
-    gvim -bg Yellow -fg Blue -reverse
+    gmnv -fg Yellow -bg Blue -reverse
+    gmnv -bg Yellow -fg Blue -reverse
 
 							*-geometry-example*
 An example for the geometry argument: >
-	gvim -geometry 80x63+8+100
+	gmnv -geometry 80x63+8+100
 This creates a window with 80 columns and 63 lines at position 8 pixels from
 the left and 100 pixels from the top of the screen.
 
@@ -213,7 +213,7 @@ The default is to use a pseudo-tty.  This should work best on most systems.
 Unfortunately, the implementation of the pseudo-tty is different on every Unix
 system.  And some systems require root permission.  To avoid running into
 problems with a pseudo-tty when you least expect it, test it when not editing
-a file.  Be prepared to "kill" the started command or Vim.  Commands like
+a file.  Be prepared to "kill" the started command or MNV.  Commands like
 ":r !cat" may hang!
 
 If using a pseudo-tty does not work for you, reset the 'guipty' option: >
@@ -251,8 +251,8 @@ For example: >
   :10vmenu File.Print :w !lpr -Php3
 <
 							*X11-icon*
-Vim uses a black&white icon by default when compiled with Motif.  A
-colored Vim icon is included as $VIMRUNTIME/vim32x32.xpm.  For GTK+, this is
+MNV uses a black&white icon by default when compiled with Motif.  A
+colored MNV icon is included as $MNVRUNTIME/mnv32x32.xpm.  For GTK+, this is
 the builtin icon used.  Unfortunately, how you should install it depends on
 your window manager.  When you use this, remove the 'i' flag from
 'guioptions', to remove the black&white icon: >
@@ -261,7 +261,7 @@ your window manager.  When you use this, remove the 'i' flag from
 If you use one of the fvwm* family of window managers simply add this line to
 your .fvwm2rc configuration file: >
 
-  Style "vim"		Icon vim32x32.xpm
+  Style "mnv"		Icon mnv32x32.xpm
 
 Make sure the icon file's location is consistent with the window manager's
 ImagePath statement.  Either modify the ImagePath from within your .fvwm2rc or
@@ -272,16 +272,16 @@ drop the icon into one the pre-defined directories: >
 Note: older versions of fvwm use "IconPath" instead of "ImagePath".
 
 For CDE "dtwm" (a derivative of Motif) add this line in the .Xdefaults: >
-   Dtwm*Vim*iconImage: /usr/local/share/vim/vim32x32.xpm
+   Dtwm*MNV*iconImage: /usr/local/share/mnv/mnv32x32.xpm
 
 For "mwm" (Motif window manager) the line would be: >
-   Mwm*Vim*iconImage: /usr/local/share/vim/vim32x32.xpm
+   Mwm*MNV*iconImage: /usr/local/share/mnv/mnv32x32.xpm
 
 
 Mouse Pointers Available in X11 ~
 						*X11_mouse_shapes*
 By using the 'mouseshape' option, the mouse pointer can be automatically
-changed whenever Vim enters one of its various modes (e.g., Insert or
+changed whenever MNV enters one of its various modes (e.g., Insert or
 Command).  Currently, the available pointers are:
 
 	arrow			an arrow pointing northwest
@@ -315,7 +315,7 @@ stuff like -bg, -fg, etc).  The ones that are supported are:
 
     command line argument   resource name	meaning ~
     -fn  or  -font	    .font		font name for the text
-    -geom  or  -geometry    .geometry		size of the gvim window
+    -geom  or  -geometry    .geometry		size of the gmnv window
     -rv  or  -reverse	    *reverseVideo	white text on black background
     -display					display to be used
     -fg -foreground {color}			foreground color
@@ -343,8 +343,8 @@ These arguments are ignored when the |+netbeans_intg| feature is used:
 	-xrm
 	-mf
 
-As for colors, Vim's color settings (for syntax highlighting) is still
-done the traditional Vim way.  See |:highlight| for more help.
+As for colors, MNV's color settings (for syntax highlighting) is still
+done the traditional MNV way.  See |:highlight| for more help.
 
 If you want to set the colors of remaining gui components (e.g., the
 menubar, scrollbar, whatever), those are GTK specific settings and you
@@ -353,7 +353,7 @@ to the GTK documentation, however little there is, on how to do this.
 See https://www.manpagez.com/html/gtk2/gtk2-2.24.24/gtk2-Resource-Files.php
 for more information.
 							*gtk3-slow*
-If you are using GTK3 and Vim appears to be slow, try setting the environment
+If you are using GTK3 and MNV appears to be slow, try setting the environment
 variable $GDK_RENDERING to "image".
 
 
@@ -407,7 +407,7 @@ GTK+ uses CSS for styling and layout of widgets.  In this subsection, we'll
 have a quick look at GTK+ CSS through simple, illustrative examples.
 
 You can usually edit the config with: >
-	vim $HOME/.config/gtk-3.0/gtk.css
+	mnv $HOME/.config/gtk-3.0/gtk.css
 
 
 Example 1.  Empty Space Adjustment ~
@@ -499,26 +499,26 @@ Example 3.  border color ~
 To eliminate borders when maximized: >
 
     @define-color bg_color #1B2B34;
-    #vim-main-window {
+    #mnv-main-window {
 	background-color: @bg_color;
     }
 
 
-Using Vim as a GTK+ plugin ~
+Using MNV as a GTK+ plugin ~
 							*gui-gtk-socketid*
-When the GTK+ version of Vim starts up normally, it creates its own top level
+When the GTK+ version of MNV starts up normally, it creates its own top level
 window (technically, a 'GtkWindow').  GTK+ provides an embedding facility with
 its GtkSocket and GtkPlug widgets.  If one GTK+ application creates a
 GtkSocket widget in one of its windows, an entirely different GTK+ application
 may embed itself into the first application by creating a top-level GtkPlug
 widget using the socket's ID.
 
-If you pass Vim the command-line option '--socketid' with a decimal or
-hexadecimal value, Vim will create a GtkPlug widget using that value instead
-of the normal GtkWindow.  This enables Vim to act as a GTK+ plugin.
+If you pass MNV the command-line option '--socketid' with a decimal or
+hexadecimal value, MNV will create a GtkPlug widget using that value instead
+of the normal GtkWindow.  This enables MNV to act as a GTK+ plugin.
 
 This really is a programmer's interface, and is of no use without a supporting
-application to spawn the Vim correctly.  For more details on GTK+ sockets, see
+application to spawn the MNV correctly.  For more details on GTK+ sockets, see
 https://www.gtk.org/docs/apis/index
 
 Note that this feature requires the latest GTK version.  GTK 1.2.10 still has
@@ -552,7 +552,7 @@ functionality mentioned above is consolidated in GTK+ 3.
 
 GNOME session support ~
 					*gui-gnome-session* *gnome-session*
-On logout, Vim shows the well-known exit confirmation dialog if any buffers
+On logout, MNV shows the well-known exit confirmation dialog if any buffers
 are modified.  Clicking [Cancel] will stop the logout process.  Otherwise the
 current session is stored to disk by using the |:mksession| command, and
 restored the next time you log in.
@@ -570,15 +570,15 @@ means in detail:
 - The internal variable |v:this_session| is not changed when storing the
   session.  Also, it is restored to its old value when logging in again.
 
-The position and size of the GUI window is not saved by Vim since doing so
-is the window manager's job.  But if compiled with GTK+ 2 support, Vim helps
+The position and size of the GUI window is not saved by MNV since doing so
+is the window manager's job.  But if compiled with GTK+ 2 support, MNV helps
 the WM to identify the window by restoring the window role (using the |--role|
 command line argument).
 
 ==============================================================================
-7. KDE version					*gui-kde* *kde* *KDE* *KVim*
+7. KDE version					*gui-kde* *kde* *KDE* *KMNV*
 							*gui-x11-kde*
-There is no KDE version of Vim.  There has been some work on a port using the
+There is no KDE version of MNV.  There has been some work on a port using the
 Qt toolkit, but it never worked properly and it has been abandoned.  Work
 continues on Yzis: https://github.com/chrizel/Yzis but it seems also
 abandoned.
@@ -586,14 +586,14 @@ abandoned.
 ==============================================================================
 8. Compiling						*gui-x11-compiling*
 
-If using X11, Vim's configure will by default first try to find the necessary
+If using X11, MNV's configure will by default first try to find the necessary
 GTK+ files on your system.  When both GTK+ 2 and GTK+ 3 are available, GTK+ 2
 will be chosen unless --enable-gui=gtk3 is passed explicitly to configure.
 
 If the GTK+ files cannot be found, then the Motif files will be searched for.
 If both fail, the GUI will be disabled.
 
-For GTK+, Vim's configuration process uses pkg-config(1) to check if the
+For GTK+, MNV's configuration process uses pkg-config(1) to check if the
 GTK+ required for a specified build is properly installed and usable.
 Accordingly, it is a good idea to make sure before running configure that
 your system has a working pkg-config together with the .pc file of the
@@ -623,7 +623,7 @@ of the directories.  Search for "GUI_INC_LOC" for an example to set
 the Motif directories.
 
 							*gui-x11-gtk*
-Currently, Vim supports both GTK+ 2 and GTK+ 3.
+Currently, MNV supports both GTK+ 2 and GTK+ 3.
 
 The GTK+ 2 GUI requires GTK+ 2.2 or later.
 
@@ -646,7 +646,7 @@ Support for the Athena GUI and neXtaw was removed in patch 8.2.4677.
 In general, do not try to mix files from different GTK+, Motif and X11
 versions.  This will cause problems.  For example, using header files for
 X11R5 with a library for X11R6 probably doesn't work (although the linking
-won't give an error message, Vim will crash later).
+won't give an error message, MNV will crash later).
 
 							*gui-wayland*
 Support for the Wayland display server protocol has landed in patch 9.1.0064.
@@ -658,13 +658,13 @@ functions won't work: |getwinpos()|, |getwinposx()|, |getwinposy()| and the
 ==============================================================================
 9. X11 selection mechanism				*x11-selection*
 
-If using X11, in either the GUI or an xterm with an X11-aware Vim, then Vim
+If using X11, in either the GUI or an xterm with an X11-aware MNV, then MNV
 provides varied access to the X11 selection and clipboard.  These are accessed
 by using the two selection registers "* and "+.
 
 X11 provides two basic types of global store, selections and cut-buffers,
 which differ in one important aspect: selections are "owned" by an
-application, and disappear when that application (e.g., Vim) exits, thus
+application, and disappear when that application (e.g., MNV) exits, thus
 losing the data, whereas cut-buffers, are stored within the X-server itself
 and remain until written over or the X-server exits (e.g., upon logging out).
 
@@ -678,37 +678,37 @@ application.
 
 							*quoteplus* *quote+*
 There are three documented X selections: PRIMARY (which is expected to
-represent the current visual selection - as in Vim's Visual mode), SECONDARY
+represent the current visual selection - as in MNV's Visual mode), SECONDARY
 (which is ill-defined) and CLIPBOARD (which is expected to be used for
 cut, copy and paste operations).
 
-Of these three, Vim uses PRIMARY when reading and writing the "* register
-(hence when the X11 selections are available, Vim sets a default value for
+Of these three, MNV uses PRIMARY when reading and writing the "* register
+(hence when the X11 selections are available, MNV sets a default value for
 'clipboard' of "autoselect"), and CLIPBOARD when reading and writing the "+
-register.  Vim does not access the SECONDARY selection.
+register.  MNV does not access the SECONDARY selection.
 
 This applies both to the GUI and the terminal version.  For non-X11 systems
 the plus and the star register both use the system clipboard.
 
 Examples: (assuming the default option values)
-- Select a URL in Visual mode in Vim.  Go to your browser and click the
+- Select a URL in Visual mode in MNV.  Go to your browser and click the
   middle mouse button in the URL text field.  The selected text will be
   inserted (hopefully!).  Note: in Firefox you can set the
   middlemouse.contentLoadURL preference to true in about:config, then the
   selected URL will be used when pressing middle mouse button in most places
   in the window.
-- Select some text in your browser by dragging with the mouse.  Go to Vim and
+- Select some text in your browser by dragging with the mouse.  Go to MNV and
   press the middle mouse button: The selected text is inserted.
-- Select some text in Vim and do "+y.  Go to your browser, select some text in
+- Select some text in MNV and do "+y.  Go to your browser, select some text in
   a textfield by dragging with the mouse.  Now use the right mouse button and
   select "Paste" from the popup menu.  The selected text is overwritten by the
-  text from Vim.
+  text from MNV.
 Note that the text in the "+ register remains available when making a Visual
 selection, which makes other text available in the "* register.  That allows
 overwriting selected text.
 
 								*W23*
-When you are yanking into the "* or "+ register and Vim cannot establish a
+When you are yanking into the "* or "+ register and MNV cannot establish a
 connection to the X11 selection (or clipboard), it will use register 0 and
 output a warning:
 
@@ -717,47 +717,47 @@ output a warning:
 Note: This also applies to the Wayland clipboard feature as well.
 
 								*W24*
-Vim comes in different flavors, from a tiny build, that just tries to be
+MNV comes in different flavors, from a tiny build, that just tries to be
 compatible to original Vi, to enhanced builds which include many improvements
-(like a GUI).  However, on servers and embedded systems, Vim is typically
+(like a GUI).  However, on servers and embedded systems, MNV is typically
 compiled without clipboard support, since this feature requires X11 libraries
 to be present.  Check the ":version" output for the flag |+clipboard| or
 -clipboard.  The former means clipboard support is present while the latter
-means your Vim does not contain clipboard support.
+means your MNV does not contain clipboard support.
 
-In the case when you are trying to access the "* or "+ register and Vim has
+In the case when you are trying to access the "* or "+ register and MNV has
 no clipboard support, you will see this warning:
 
   Warning: Clipboard register not available. See :h W24~
 
-If you have a vim with no clipboard support but would like to use the
-clipboard, try to install a more enhanced Vim package like vim-enhanced or
-vim-gtk3 (the gui packages usually also come with a terminal Vim that has
+If you have a mnv with no clipboard support but would like to use the
+clipboard, try to install a more enhanced MNV package like mnv-enhanced or
+mnv-gtk3 (the gui packages usually also come with a terminal MNV that has
 clipboard support included).
 
 							*x11-cut-buffer*
-There are, by default, 8 cut-buffers: CUT_BUFFER0 to CUT_BUFFER7.  Vim only
+There are, by default, 8 cut-buffers: CUT_BUFFER0 to CUT_BUFFER7.  MNV only
 uses CUT_BUFFER0, which is the one that xterm uses by default.
 
-Whenever Vim is about to become unavailable (either via exiting or becoming
+Whenever MNV is about to become unavailable (either via exiting or becoming
 suspended), and thus unable to respond to another application's selection
 request, it writes the contents of any owned selection to CUT_BUFFER0.  If the
-"+ CLIPBOARD selection is owned by Vim, then this is written in preference,
-otherwise if the "* PRIMARY selection is owned by Vim, then that is written.
+"+ CLIPBOARD selection is owned by MNV, then this is written in preference,
+otherwise if the "* PRIMARY selection is owned by MNV, then that is written.
 
-Similarly, when Vim tries to paste from "* or "+ (either explicitly, or, in
+Similarly, when MNV tries to paste from "* or "+ (either explicitly, or, in
 the case of the "* register, when the middle mouse button is clicked), if the
-requested X selection is empty or unavailable, Vim reverts to reading the
+requested X selection is empty or unavailable, MNV reverts to reading the
 current value of the CUT_BUFFER0.
 
 Note that when text is copied to CUT_BUFFER0 in this way, the type of
-selection (character, line or block) is always lost, even if it is a Vim which
+selection (character, line or block) is always lost, even if it is a MNV which
 later pastes it.
 
 Xterm, by default, always writes visible selections to both PRIMARY and
 CUT_BUFFER0.  When it pastes, it uses PRIMARY if this is available, or else
 falls back upon CUT_BUFFER0.  For this reason, when cutting and pasting
-between Vim and an xterm, you should use the "* register.  Xterm doesn't use
+between MNV and an xterm, you should use the "* register.  Xterm doesn't use
 CLIPBOARD, thus the "+ doesn't work with xterm.
 
 Most newer applications will provide their current selection via PRIMARY ("*)
@@ -765,4 +765,4 @@ and use CLIPBOARD ("+) for cut/copy/paste operations.  You thus have access to
 both by choosing to use either of the "* or "+ registers.
 
 
- vim:tw=78:sw=4:ts=8:noet:ft=help:norl:
+ mnv:tw=78:sw=4:ts=8:noet:ft=help:norl:

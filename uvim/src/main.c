@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 #define EXTERN
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef __CYGWIN__
 # include <cygwin/version.h>
@@ -17,7 +17,7 @@
 # include <limits.h>
 #endif
 
-#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+#if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
 # include "iscygpty.h"
 #endif
 
@@ -28,12 +28,12 @@
 #define EDIT_TAG    3	    // tag name argument given, use tagname
 #define EDIT_QF	    4	    // start in quickfix mode
 
-#if (defined(UNIX) || defined(VMS)) && !defined(NO_VIM_MAIN)
+#if (defined(UNIX) || defined(VMS)) && !defined(NO_MNV_MAIN)
 static int file_owned(char *fname);
 #endif
 static void mainerr(int, char_u *);
 static void early_arg_scan(mparm_T *parmp);
-#ifndef NO_VIM_MAIN
+#ifndef NO_MNV_MAIN
 static void usage(void);
 static void parse_command_name(mparm_T *parmp);
 static void command_line_scan(mparm_T *parmp);
@@ -80,18 +80,18 @@ static mparm_T	params;
 static void *s_vbuf = NULL;		// buffer for setvbuf()
 # endif
 
-# ifndef NO_VIM_MAIN	// skip this for unittests
+# ifndef NO_MNV_MAIN	// skip this for unittests
 
 static char_u *start_dir = NULL;	// current working dir on startup
 
 static int has_dash_c_arg = FALSE;
 
-#  ifdef VIMDLL
+#  ifdef MNVDLL
 __declspec(dllexport)
 #  endif
     int
 #  ifdef MSWIN
-VimMain
+MNVMain
 #  else
 main
 #  endif
@@ -132,16 +132,16 @@ main
 #  ifdef FEAT_RUBY
     {
 	int ruby_stack_start;
-	vim_ruby_init((void *)&ruby_stack_start);
+	mnv_ruby_init((void *)&ruby_stack_start);
     }
 #  endif
 
 #  ifdef FEAT_TCL
-    vim_tcl_init(params.argv[0]);
+    mnv_tcl_init(params.argv[0]);
 #  endif
 
 #  ifdef MEM_PROFILE
-    atexit(vim_mem_profile_dump);
+    atexit(mnv_mem_profile_dump);
 #  endif
 
     /*
@@ -158,7 +158,7 @@ main
 	if (STRICMP(argv[i], "--startuptime") == 0 && time_fd == NULL)
 	{
 	    time_fd = mch_fopen(argv[i + 1], "a");
-	    TIME_MSG("--- VIM STARTING ---");
+	    TIME_MSG("--- MNV STARTING ---");
 	}
 #   endif
 #   ifdef FEAT_EVAL
@@ -194,7 +194,7 @@ main
      */
     common_init_2(&params);
 
-#  ifdef VIMDLL
+#  ifdef MNVDLL
     // Check if the current executable file is for the GUI subsystem.
     gui.starting = mch_is_gui_executable();
 #  elif defined(FEAT_GUI_MSWIN)
@@ -204,14 +204,14 @@ main
 #  ifdef FEAT_CLIENTSERVER
     /*
      * Do the client-server stuff, unless "--servername ''" was used.
-     * This may exit Vim if the command was sent to the server.
+     * This may exit MNV if the command was sent to the server.
      */
     exec_on_server(&params);
 #  endif
 
     /*
      * Figure out the way to work from the command name argv[0].
-     * "vimdiff" starts diff mode, "rvim" sets "restricted", etc.
+     * "mnvdiff" starts diff mode, "rmnv" sets "restricted", etc.
      */
     parse_command_name(&params);
 
@@ -241,9 +241,9 @@ main
 	{
 	    gui.starting = FALSE;
 
-	    // When running "evim" or "gvim -y" we need the menus, exit if we
+	    // When running "emnv" or "gmnv -y" we need the menus, exit if we
 	    // don't have them.
-	    if (params.evim_mode)
+	    if (params.emnv_mode)
 		mch_exit(1);
 	}
     }
@@ -263,7 +263,7 @@ main
 		mch_dirname(start_dir, MAXPATHL);
 	    // Temporarily add '(' and ')' to 'isfname'.  These are valid
 	    // filename characters but are excluded from 'isfname' to make
-	    // "gf" work on a file name in parentheses (e.g.: see vim.h).
+	    // "gf" work on a file name in parentheses (e.g.: see mnv.h).
 	    do_cmdline_cmd((char_u *)":set isf+=(,)");
 	    alist_expand(NULL, 0);
 	    do_cmdline_cmd((char_u *)":set isf&");
@@ -291,7 +291,7 @@ main
 	 * Hint: to avoid this when typing a command use a forward slash.
 	 * If the cd fails, it doesn't matter.
 	 */
-	if (vim_chdirfile(params.fname, "drop") == OK)
+	if (mnv_chdirfile(params.fname, "drop") == OK)
 	    last_chdir_reason = "drop";
 	if (start_dir != NULL)
 	    mch_dirname(start_dir, MAXPATHL);
@@ -319,7 +319,7 @@ main
      * make sense to try using a terminal.
      */
 #  if defined(ALWAYS_USE_GUI) || defined(FEAT_GUI_X11) || defined(FEAT_GUI_GTK) \
-	|| defined(VIMDLL)
+	|| defined(MNVDLL)
     if (gui.starting
 #   ifdef FEAT_GUI_GTK
 	    && !isatty(2)
@@ -391,7 +391,7 @@ main
     ui_get_shellsize();		// inits Rows and Columns
     win_init_size();
 #  ifdef FEAT_DIFF
-    // Set the 'diff' option now, so that it can be checked for in a .vimrc
+    // Set the 'diff' option now, so that it can be checked for in a .mnvrc
     // file.  There is no buffer yet though.
     if (params.diff_mode)
 	diff_win_options(firstwin, FALSE);
@@ -425,9 +425,9 @@ main
 
     // Reset 'loadplugins' for "-u NONE" before "--cmd" arguments.
     // Allows for setting 'loadplugins' there.
-    if (params.use_vimrc != NULL
-	    && (STRCMP(params.use_vimrc, "NONE") == 0
-		|| STRCMP(params.use_vimrc, "DEFAULTS") == 0))
+    if (params.use_mnvrc != NULL
+	    && (STRCMP(params.use_mnvrc, "NONE") == 0
+		|| STRCMP(params.use_mnvrc, "DEFAULTS") == 0))
 	p_lpl = FALSE;
 
     // Execute --cmd arguments.
@@ -437,7 +437,7 @@ main
     source_startup_scripts(&params);
 
 #  ifdef FEAT_EVAL
-    set_vim_var_nr(VV_VIM_DID_INIT, 1L);
+    set_mnv_var_nr(VV_MNV_DID_INIT, 1L);
 #  endif
 
 #  ifdef FEAT_MZSCHEME
@@ -445,15 +445,15 @@ main
      * Newer version of MzScheme (Racket) require earlier (trampolined)
      * initialisation via scheme_main_setup.
      * Implement this by initialising it as early as possible
-     * and splitting off remaining Vim main into vim_main2().
+     * and splitting off remaining MNV main into mnv_main2().
      * Do source startup scripts, so that 'mzschemedll' can be set.
      */
     return mzscheme_main();
 #  else
-    return vim_main2();
+    return mnv_main2();
 #  endif
 }
-# endif // NO_VIM_MAIN
+# endif // NO_MNV_MAIN
 #endif // PROTO
 
 #if defined(FEAT_X11) && defined(FEAT_XCLIPBOARD) && defined(FEAT_CLIPBOARD)
@@ -487,14 +487,14 @@ x_restore_state(void)
 #endif
 
 /*
- * vim_main2() is needed for FEAT_MZSCHEME, but we define it always to keep
+ * mnv_main2() is needed for FEAT_MZSCHEME, but we define it always to keep
  * things simple.
- * It is also defined when NO_VIM_MAIN is defined, but then it's empty.
+ * It is also defined when NO_MNV_MAIN is defined, but then it's empty.
  */
     int
-vim_main2(void)
+mnv_main2(void)
 {
-#ifndef NO_VIM_MAIN
+#ifndef NO_MNV_MAIN
 # ifdef FEAT_EVAL
     /*
      * Read all the plugin files.
@@ -505,9 +505,9 @@ vim_main2(void)
 	char_u *rtp_copy = NULL;
 	char_u *plugin_pattern = (char_u *)
 #  if defined(VMS) || defined(AMIGA) // VMS and Amiga don't handle the "**".
-		"plugin/*.vim"
+		"plugin/*.mnv"
 #  else
-		"plugin/**/*.vim"
+		"plugin/**/*.mnv"
 #  endif
 		;
 
@@ -518,14 +518,14 @@ vim_main2(void)
 	// the pack directories.
 	if (!did_source_packages)
 	{
-	    rtp_copy = vim_strsave(p_rtp);
+	    rtp_copy = mnv_strsave(p_rtp);
 	    add_pack_start_dirs();
 	}
 
 	source_in_path(rtp_copy == NULL ? p_rtp : rtp_copy, plugin_pattern,
 		DIP_ALL | DIP_NOAFTER, NULL);
 	TIME_MSG("loading plugins");
-	vim_free(rtp_copy);
+	mnv_free(rtp_copy);
 
 	// Only source "start" packages if not done already with a :packloadall
 	// command.
@@ -539,7 +539,7 @@ vim_main2(void)
 # endif
 
 # ifdef FEAT_DIFF
-    // Decide about window layout for diff mode after reading vimrc.
+    // Decide about window layout for diff mode after reading mnvrc.
     if (params.diff_mode && params.window_layout == 0)
     {
 	if (diffopt_horizontal())
@@ -561,7 +561,7 @@ vim_main2(void)
     }
 
     /*
-     * Set a few option defaults after reading .vimrc files:
+     * Set a few option defaults after reading .mnvrc files:
      * 'title' and 'icon', Unix: 'shellpipe' and 'shellredir'.
      */
     set_init_3();
@@ -569,7 +569,7 @@ vim_main2(void)
 
     /*
      * "-n" argument: Disable swap file by setting 'updatecount' to 0.
-     * Note that this overrides anything from a vimrc file.
+     * Note that this overrides anything from a mnvrc file.
      */
     if (params.no_swap_file)
 	p_uc = 0;
@@ -578,7 +578,7 @@ vim_main2(void)
     if (gui.starting)
     {
 #  if defined(UNIX) || defined(VMS)
-	// When something caused a message from a vimrc script, need to output
+	// When something caused a message from a mnvrc script, need to output
 	// an extra newline before the shell prompt.
 	if (did_emsg || msg_didout)
 	    putchar('\n');
@@ -587,29 +587,29 @@ vim_main2(void)
 	gui_start(NULL);		// will set full_screen to TRUE
 	TIME_MSG("starting GUI");
 
-	// When running "evim" or "gvim -y" we need the menus, exit if we
+	// When running "emnv" or "gmnv -y" we need the menus, exit if we
 	// don't have them.
-	if (!gui.in_use && params.evim_mode)
+	if (!gui.in_use && params.emnv_mode)
 	    mch_exit(1);
 	firstwin->w_prev_height = firstwin->w_height; // may have changed
     }
 # endif
 
-# ifdef FEAT_VIMINFO
+# ifdef FEAT_MNVINFO
     /*
-     * Read in registers, history etc, but not marks, from the viminfo file.
+     * Read in registers, history etc, but not marks, from the mnvinfo file.
      * This is where v:oldfiles gets filled.
      */
-    if (*p_viminfo != NUL)
+    if (*p_mnvinfo != NUL)
     {
-	read_viminfo(NULL, VIF_WANT_INFO | VIF_GET_OLDFILES);
-	TIME_MSG("reading viminfo");
+	read_mnvinfo(NULL, VIF_WANT_INFO | VIF_GET_OLDFILES);
+	TIME_MSG("reading mnvinfo");
     }
 # endif
 # ifdef FEAT_EVAL
     // It's better to make v:oldfiles an empty list than NULL.
-    if (get_vim_var_list(VV_OLDFILES) == NULL)
-	set_vim_var_list(VV_OLDFILES, list_alloc());
+    if (get_mnv_var_list(VV_OLDFILES) == NULL)
+	set_mnv_var_list(VV_OLDFILES, list_alloc());
 # endif
 
 # ifdef FEAT_QUICKFIX
@@ -625,7 +625,7 @@ vim_main2(void)
 	if (params.use_ef != NULL)
 	    set_string_option_direct((char_u *)"ef", -1,
 					   params.use_ef, OPT_FREE, SID_CARG);
-	vim_snprintf((char *)IObuff, IOSIZE, "cfile %s", p_ef);
+	mnv_snprintf((char *)IObuff, IOSIZE, "cfile %s", p_ef);
 	if (qf_init(NULL, p_ef, p_efm, TRUE, IObuff, enc) < 0)
 	{
 	    out_char('\n');
@@ -650,7 +650,7 @@ vim_main2(void)
      * This seems to be required to make callbacks to be called now, instead
      * of after things have been put on the screen, which then may be deleted
      * when getting a resize callback.
-     * For the Mac this handles putting files dropped on the Vim icon to
+     * For the Mac this handles putting files dropped on the MNV icon to
      * global_alist.
      */
     if (gui.in_use)
@@ -680,7 +680,7 @@ vim_main2(void)
 # endif
 
 # ifdef FEAT_CLIENTSERVER
-    // Prepare for being a Vim server.
+    // Prepare for being a MNV server.
     prepare_server(&params);
 # endif
 
@@ -709,14 +709,14 @@ vim_main2(void)
      * If "-" argument given: Read file from stdin.
      * Do this before starting Raw mode, because it may change things that the
      * writing end of the pipe doesn't like, e.g., in case stdin and stderr
-     * are the same terminal: "cat | vim -".
+     * are the same terminal: "cat | mnv -".
      * Using autocommands here may cause trouble...
      */
     if (params.edit_type == EDIT_STDIN && !recoverymode)
 	read_stdin();
 
 # if defined(UNIX) || defined(VMS)
-    // When switching screens and something caused a message from a vimrc
+    // When switching screens and something caused a message from a mnvrc
     // script, need to output an extra newline on exit.
     if ((did_emsg || msg_didout) && *T_TI != NUL && params.edit_type != EDIT_STDIN)
 	newline_on_exit = TRUE;
@@ -786,7 +786,7 @@ vim_main2(void)
 
 # ifdef FEAT_EVAL
     // clear v:swapcommand
-    set_vim_var_string(VV_SWAPCOMMAND, NULL, -1);
+    set_mnv_var_string(VV_SWAPCOMMAND, NULL, -1);
 # endif
 
     // Ex starts at last line of the file
@@ -813,14 +813,14 @@ vim_main2(void)
      * windows.
      */
     edit_buffers(&params, start_dir);
-    vim_free(start_dir);
+    mnv_free(start_dir);
 
 # ifdef FEAT_DIFF
     if (params.diff_mode)
     {
 	win_T	*wp;
 
-	// set options in each window for "vimdiff".
+	// set options in each window for "mnvdiff".
 	FOR_ALL_WINDOWS(wp)
 	    diff_win_options(wp, TRUE);
     }
@@ -833,13 +833,13 @@ vim_main2(void)
 
     /*
      * Need to jump to the tag before executing the '-c command'.
-     * Makes "vim -c '/return' -t main" work.
+     * Makes "mnv -c '/return' -t main" work.
      */
     if (params.tagname != NULL)
     {
 	swap_exists_did_quit = FALSE;
 
-	vim_snprintf((char *)IObuff, IOSIZE, "ta %s", params.tagname);
+	mnv_snprintf((char *)IObuff, IOSIZE, "ta %s", params.tagname);
 	do_cmdline_cmd(IObuff);
 	TIME_MSG("jumping to tag");
 
@@ -888,13 +888,13 @@ vim_main2(void)
 
 # ifdef FEAT_TERMRESPONSE
     // Requesting the termresponse is postponed until here, so that a "-c q"
-    // argument doesn't make it appear in the shell Vim was started from.
+    // argument doesn't make it appear in the shell MNV was started from.
     may_req_termresponse();
 
     may_req_bg_color();
 # endif
     // Same reason for termresponse, don't want the terminal sending out the
-    // DECRPM response after Vim has exited.
+    // DECRPM response after MNV has exited.
     send_decrqm_modes();
 
     // start in insert mode
@@ -902,10 +902,10 @@ vim_main2(void)
 	need_start_insertmode = TRUE;
 
 # ifdef FEAT_EVAL
-    set_vim_var_nr(VV_VIM_DID_ENTER, 1L);
+    set_mnv_var_nr(VV_MNV_DID_ENTER, 1L);
 # endif
-    apply_autocmds(EVENT_VIMENTER, NULL, NULL, FALSE, curbuf);
-    TIME_MSG("VimEnter autocommands");
+    apply_autocmds(EVENT_MNVENTER, NULL, NULL, FALSE, curbuf);
+    TIME_MSG("MNVEnter autocommands");
 
 # if defined(FEAT_EVAL) && defined(FEAT_CLIPBOARD)
     // Adjust default register name for "unnamed" in 'clipboard'. Can only be
@@ -926,8 +926,8 @@ vim_main2(void)
     }
 # endif
 
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-#  ifdef VIMDLL
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+#  ifdef MNVDLL
     if (!gui.in_use)
 #  endif
 	mch_set_winsize_now();	    // Allow winsize changes from now on
@@ -979,7 +979,7 @@ vim_main2(void)
      */
     main_loop(FALSE, FALSE);
 
-#endif // NO_VIM_MAIN
+#endif // NO_MNV_MAIN
 
     return 0;
 }
@@ -1022,8 +1022,8 @@ common_init_2(mparm_T *paramp)
 #ifdef NBDEBUG
     // Wait a moment for debugging NetBeans.  Must be after allocating
     // NameBuff.
-    nbdebug_log_init("SPRO_GVIM_DEBUG", "SPRO_GVIM_DLEVEL");
-    nbdebug_wait(WT_ENV | WT_WAIT | WT_STOP, "SPRO_GVIM_WAIT", 20);
+    nbdebug_log_init("SPRO_GMNV_DEBUG", "SPRO_GMNV_DLEVEL");
+    nbdebug_wait(WT_ENV | WT_WAIT | WT_STOP, "SPRO_GMNV_WAIT", 20);
     TIME_MSG("NetBeans debug wait");
 #endif
 
@@ -1295,7 +1295,7 @@ work_pending(void)
 
 
 /*
- * Main loop: Execute Normal mode commands until exiting Vim.
+ * Main loop: Execute Normal mode commands until exiting MNV.
  * Also used to handle commands in the command-line window, until the window
  * is closed.
  * Also used to handle ":visual" command after ":global": execute Normal mode
@@ -1323,7 +1323,7 @@ main_loop(
     // Setup to catch a terminating error from the X server.  Just ignore
     // it, restore the state and continue.  This might not always work
     // properly, but at least we hopefully don't exit unexpectedly when the X
-    // server exits while Vim is running in a console.
+    // server exits while MNV is running in a console.
     if (!cmdwin && !noexmode && SETJMP(x_jump_env))
 	x_restore_state();
 #endif
@@ -1535,13 +1535,13 @@ main_loop(
 	    redraw_statuslines();
 	    if (need_maketitle)
 		maketitle();
-#ifdef FEAT_VIMINFO
-	    curbuf->b_last_used = vim_time();
+#ifdef FEAT_MNVINFO
+	    curbuf->b_last_used = mnv_time();
 #endif
 	    // display message after redraw
 	    if (keep_msg != NULL)
 	    {
-		char_u *p = vim_strsave(keep_msg);
+		char_u *p = mnv_strsave(keep_msg);
 
 		if (p != NULL)
 		{
@@ -1552,7 +1552,7 @@ main_loop(
 		    msg_hist_off = TRUE;
 		    msg_attr((char *)p, keep_msg_attr);
 		    msg_hist_off = FALSE;
-		    vim_free(p);
+		    mnv_free(p);
 		}
 	    }
 	    if (need_fileinfo)		// show file info after redraw
@@ -1578,7 +1578,7 @@ main_loop(
 	    if (time_fd != NULL)
 	    {
 		TIME_MSG("first screen update");
-		TIME_MSG("--- VIM STARTED ---");
+		TIME_MSG("--- MNV STARTED ---");
 		fclose(time_fd);
 		time_fd = NULL;
 	    }
@@ -1617,7 +1617,7 @@ main_loop(
 	{
 	    if (noexmode)   // End of ":global/path/visual" commands
 		goto theend;
-	    do_exmode(exmode_active == EXMODE_VIM);
+	    do_exmode(exmode_active == EXMODE_MNV);
 	}
 	else
 	{
@@ -1658,7 +1658,7 @@ getout_preserve_modified(int exitval)
 {
 # if defined(SIGHUP) && defined(SIG_IGN)
     // Ignore SIGHUP, because a dropped connection causes a read error, which
-    // makes Vim exit and then handling SIGHUP causes various reentrance
+    // makes MNV exit and then handling SIGHUP causes various reentrance
     // problems.
     mch_signal(SIGHUP, SIG_IGN);
 # endif
@@ -1666,13 +1666,13 @@ getout_preserve_modified(int exitval)
     ml_close_notmod();		    // close all not-modified buffers
     ml_sync_all(FALSE, FALSE);	    // preserve all swap files
     ml_close_all(FALSE);	    // close all memfiles, without deleting
-    getout(exitval);		    // exit Vim properly
+    getout(exitval);		    // exit MNV properly
 }
 #endif
 
 
 /*
- * Exit properly.  This is the only way to exit Vim after startup has
+ * Exit properly.  This is the only way to exit MNV after startup has
  * succeeded.  We are certain to exit here, no way to abort it.
  */
     void
@@ -1690,8 +1690,8 @@ getout(int exitval)
 	exitval += ex_exitval;
 
 #ifdef FEAT_EVAL
-    set_vim_var_type(VV_EXITING, VAR_NUMBER);
-    set_vim_var_nr(VV_EXITING, exitval);
+    set_mnv_var_type(VV_EXITING, VAR_NUMBER);
+    set_mnv_var_nr(VV_EXITING, exitval);
 #endif
 
     // Position the cursor on the last screen line, below all the text
@@ -1762,38 +1762,38 @@ getout(int exitval)
 	    }
 
 	// deathtrap() blocks autocommands, but we do want to trigger
-	// VimLeavePre.
+	// MNVLeavePre.
 	if (is_autocmd_blocked())
 	{
 	    unblock_autocmds();
 	    ++unblock;
 	}
-	apply_autocmds(EVENT_VIMLEAVEPRE, NULL, NULL, FALSE, curbuf);
+	apply_autocmds(EVENT_MNVLEAVEPRE, NULL, NULL, FALSE, curbuf);
 	if (unblock)
 	    block_autocmds();
     }
 
-#ifdef FEAT_VIMINFO
+#ifdef FEAT_MNVINFO
     if (
 # ifdef EXITFREE
 	    entered_free_all_mem == FALSE &&
 # endif
-	    *p_viminfo != NUL)
-	// Write out the registers, history, marks etc, to the viminfo file
-	write_viminfo(NULL, FALSE);
+	    *p_mnvinfo != NUL)
+	// Write out the registers, history, marks etc, to the mnvinfo file
+	write_mnvinfo(NULL, FALSE);
 #endif
 
     if (v_dying <= 1)
     {
 	int	unblock = 0;
 
-	// deathtrap() blocks autocommands, but we do want to trigger VimLeave.
+	// deathtrap() blocks autocommands, but we do want to trigger MNVLeave.
 	if (is_autocmd_blocked())
 	{
 	    unblock_autocmds();
 	    ++unblock;
 	}
-	apply_autocmds(EVENT_VIMLEAVE, NULL, NULL, FALSE, curbuf);
+	apply_autocmds(EVENT_MNVLEAVE, NULL, NULL, FALSE, curbuf);
 	if (unblock)
 	    block_autocmds();
     }
@@ -1974,9 +1974,9 @@ early_arg_scan(mparm_T *parmp UNUSED)
 #endif
 }
 
-#ifndef NO_VIM_MAIN
+#ifndef NO_MNV_MAIN
 /*
- * Get a (optional) count for a Vim argument.
+ * Get a (optional) count for a MNV argument.
  */
     static int
 get_number_arg(
@@ -1984,22 +1984,22 @@ get_number_arg(
     int		*idx,	    // index in argument, is incremented
     int		def)	    // default value
 {
-    if (vim_isdigit(p[*idx]))
+    if (mnv_isdigit(p[*idx]))
     {
 	def = atoi((char *)&(p[*idx]));
-	while (vim_isdigit(p[*idx]))
+	while (mnv_isdigit(p[*idx]))
 	    *idx = *idx + 1;
     }
     return def;
 }
 
 /*
- * Check for: [r][e][g][vi|vim|view][diff][ex[im]]  (sort of)
+ * Check for: [r][e][g][vi|mnv|view][diff][ex[im]]  (sort of)
  * If the executable name starts with "r" we disable shell commands.
  * If the next character is "e" we run in Easy mode.
  * If the next character is "g" we run the GUI version.
  * If the next characters are "view" we start in readonly mode.
- * If the next characters are "diff" or "vimdiff" we start in diff mode.
+ * If the next characters are "diff" or "mnvdiff" we start in diff mode.
  * If the next characters are "ex" we start in Ex mode.  If it's followed
  * by "im" use improved Ex mode.
  */
@@ -2011,7 +2011,7 @@ parse_command_name(mparm_T *parmp)
     initstr = gettail((char_u *)parmp->argv[0]);
 
 # ifdef FEAT_EVAL
-    set_vim_var_string(VV_PROGNAME, initstr, -1);
+    set_mnv_var_string(VV_PROGNAME, initstr, -1);
     set_progpath((char_u *)parmp->argv[0]);
 # endif
 
@@ -2021,7 +2021,7 @@ parse_command_name(mparm_T *parmp)
 	++initstr;
     }
 
-    // Use evim mode for "evim" and "egvim", not for "editor".
+    // Use emnv mode for "emnv" and "egmnv", not for "editor".
     if (TOLOWER_ASC(initstr[0]) == 'e'
 	    && (TOLOWER_ASC(initstr[1]) == 'v'
 		|| TOLOWER_ASC(initstr[1]) == 'g'))
@@ -2029,11 +2029,11 @@ parse_command_name(mparm_T *parmp)
 # ifdef FEAT_GUI
 	gui.starting = TRUE;
 # endif
-	parmp->evim_mode = TRUE;
+	parmp->emnv_mode = TRUE;
 	++initstr;
     }
 
-    // "gvim" starts the GUI.  Also accept "Gvim" for MS-Windows.
+    // "gmnv" starts the GUI.  Also accept "Gmnv" for MS-Windows.
     if (TOLOWER_ASC(initstr[0]) == 'g')
     {
 	main_start_gui();
@@ -2046,7 +2046,7 @@ parse_command_name(mparm_T *parmp)
     }
 # ifdef GUI_MAY_SPAWN
     else
-	gui.dospawn = TRUE;	// Not "gvim". Need to spawn gvim.exe.
+	gui.dospawn = TRUE;	// Not "gmnv". Need to spawn gmnv.exe.
 # endif
 
 
@@ -2057,27 +2057,27 @@ parse_command_name(mparm_T *parmp)
 	p_uc = 10000;			// don't update very often
 	initstr += 4;
     }
-    else if (STRNICMP(initstr, "vim", 3) == 0)
+    else if (STRNICMP(initstr, "mnv", 3) == 0)
 	initstr += 3;
 
-    // Catch "[r][g]vimdiff" and "[r][g]viewdiff".
+    // Catch "[r][g]mnvdiff" and "[r][g]viewdiff".
     if (STRICMP(initstr, "diff") == 0)
     {
 # ifdef FEAT_DIFF
 	parmp->diff_mode = TRUE;
 # else
-	mch_errmsg(_("This Vim was not compiled with the diff feature."));
+	mch_errmsg(_("This MNV was not compiled with the diff feature."));
 	mch_errmsg("\n");
 	mch_exit(2);
 # endif
     }
 
-    // Checking for "ex" here may catch some weird names, such as "vimex" or
+    // Checking for "ex" here may catch some weird names, such as "mnvex" or
     // "viewex", we assume the user knows that.
     if (STRNICMP(initstr, "ex", 2) == 0)
     {
 	if (STRNICMP(initstr + 2, "im", 2) == 0)
-	    exmode_active = EXMODE_VIM;
+	    exmode_active = EXMODE_MNV;
 	else
 	    exmode_active = EXMODE_NORMAL;
 	change_compatible(TRUE);	// set 'compatible'
@@ -2155,7 +2155,7 @@ command_line_scan(mparm_T *parmp)
 # endif /* defined( VMS) */
 	    switch (c)
 	    {
-	    case NUL:		// "vim -"  read from stdin
+	    case NUL:		// "mnv -"  read from stdin
 				// "ex -" silent mode
 		if (exmode_active)
 		    silent_mode = TRUE;
@@ -2181,14 +2181,14 @@ command_line_scan(mparm_T *parmp)
 				// "--gui-dialog-file fname" write dialog text
 				// "--ttyfail" exit if not a term
 				// "--noplugin[s]" skip plugins
-				// "--cmd <cmd>" execute cmd before vimrc
+				// "--cmd <cmd>" execute cmd before mnvrc
 		if (STRICMP(argv[0] + argv_idx, "help") == 0)
 		    usage();
 		else if (STRICMP(argv[0] + argv_idx, "version") == 0)
 		{
 		    cmdline_width = Columns = 80;   // need to init Columns
 		    info_message = TRUE; // use mch_msg(), not mch_errmsg()
-# if defined(FEAT_GUI) && !defined(ALWAYS_USE_GUI) && !defined(VIMDLL)
+# if defined(FEAT_GUI) && !defined(ALWAYS_USE_GUI) && !defined(MNVDLL)
 		    gui.starting = FALSE; // not starting GUI, will exit
 # endif
 		    list_version();
@@ -2198,9 +2198,9 @@ command_line_scan(mparm_T *parmp)
 		}
 		else if (STRNICMP(argv[0] + argv_idx, "clean", 5) == 0)
 		{
-		    parmp->use_vimrc = (char_u *)"DEFAULTS";
+		    parmp->use_mnvrc = (char_u *)"DEFAULTS";
 # ifdef FEAT_GUI
-		    use_gvimrc = (char_u *)"NONE";
+		    use_gmnvrc = (char_u *)"NONE";
 # endif
 		    parmp->clean = TRUE;
 		    set_option_value_give_err((char_u *)"vif",
@@ -2321,7 +2321,7 @@ command_line_scan(mparm_T *parmp)
 		break;
 
 	    case 'E':		// "-E" Improved Ex mode
-		exmode_active = EXMODE_VIM;
+		exmode_active = EXMODE_MNV;
 		break;
 
 	    case 'f':		// "-f"  GUI: run in foreground.  Amiga: open
@@ -2343,7 +2343,7 @@ command_line_scan(mparm_T *parmp)
 	    case '?':		// "-?" give help message (for MS-Windows)
 	    case 'h':		// "-h" give help message
 # ifdef FEAT_GUI_GNOME
-		// Tell usage() to exit for "gvim".
+		// Tell usage() to exit for "gmnv".
 		gui.starting = FALSE;
 # endif
 		usage();
@@ -2376,7 +2376,7 @@ command_line_scan(mparm_T *parmp)
 # ifdef FEAT_GUI
 		gui.starting = TRUE;	// start GUI a bit later
 # endif
-		parmp->evim_mode = TRUE;
+		parmp->emnv_mode = TRUE;
 		break;
 
 	    case 'N':		// "-N"  Nocompatible
@@ -2503,14 +2503,14 @@ command_line_scan(mparm_T *parmp)
 
 	    case 'v':		// "-v"  Vi-mode (as if called "vi")
 		exmode_active = 0;
-# if defined(FEAT_GUI) && !defined(VIMDLL)
+# if defined(FEAT_GUI) && !defined(MNVDLL)
 		gui.starting = FALSE;	// don't start GUI
 # endif
 		break;
 
 	    case 'w':		// "-w{number}"	set window height
 				// "-w {scriptout}"	write to script
-		if (vim_isdigit(((char_u *)argv[0])[argv_idx]))
+		if (mnv_isdigit(((char_u *)argv[0])[argv_idx]))
 		{
 		    n = get_number_arg((char_u *)argv[0], &argv_idx, 10);
 		    set_option_value_give_err((char_u *)"window", n, NULL, 0);
@@ -2552,14 +2552,14 @@ command_line_scan(mparm_T *parmp)
 		    break;
 		}
 		// FALLTHROUGH
-	    case 'S':		// "-S {file}" execute Vim script
-	    case 'i':		// "-i {viminfo}" use for viminfo
+	    case 'S':		// "-S {file}" execute MNV script
+	    case 'i':		// "-i {mnvinfo}" use for mnvinfo
 # ifndef FEAT_DIFF
 	    case 'd':		// "-d {device}" device (for Amiga)
 # endif
 	    case 'T':		// "-T {terminal}" terminal name
-	    case 'u':		// "-u {vimrc}" vim inits file
-	    case 'U':		// "-U {gvimrc}" gvim inits file
+	    case 'u':		// "-u {mnvrc}" mnv inits file
+	    case 'U':		// "-U {gmnvrc}" gmnv inits file
 	    case 'W':		// "-W {scriptout}" overwrite
 # ifdef FEAT_GUI_MSWIN
 	    case 'P':		// "-P {parent title}" MDI parent
@@ -2591,7 +2591,7 @@ command_line_scan(mparm_T *parmp)
 		switch (c)
 		{
 		case 'c':	// "-c {command}" execute command
-		case 'S':	// "-S {file}" execute Vim script
+		case 'S':	// "-S {file}" execute MNV script
 		    if (parmp->n_commands >= MAX_ARG_CMDS)
 			mainerr(ME_EXTRA_CMD, NULL);
 		    if (c == 'S')
@@ -2655,7 +2655,7 @@ command_line_scan(mparm_T *parmp)
 		    break;
 # endif
 
-		case 'i':	// "-i {viminfo}" use for viminfo
+		case 'i':	// "-i {mnvinfo}" use for mnvinfo
 		    set_option_value_give_err((char_u *)"vif",
 						     0L, (char_u *)argv[0], 0);
 		    break;
@@ -2700,19 +2700,19 @@ scripterror:
 			parmp->term = (char_u *)argv[0];
 		    break;
 
-		case 'u':	// "-u {vimrc}" vim inits file
-		    parmp->use_vimrc = (char_u *)argv[0];
+		case 'u':	// "-u {mnvrc}" mnv inits file
+		    parmp->use_mnvrc = (char_u *)argv[0];
 		    break;
 
-		case 'U':	// "-U {gvimrc}" gvim inits file
+		case 'U':	// "-U {gmnvrc}" gmnv inits file
 # ifdef FEAT_GUI
-		    use_gvimrc = (char_u *)argv[0];
+		    use_gmnvrc = (char_u *)argv[0];
 # endif
 		    break;
 
 		case 'w':	// "-w {nr}" 'window' value
 				// "-w {scriptout}" append to script file
-		    if (vim_isdigit(*((char_u *)argv[0])))
+		    if (mnv_isdigit(*((char_u *)argv[0])))
 		    {
 			argv_idx = 0;
 			n = get_number_arg((char_u *)argv[0], &argv_idx, 10);
@@ -2765,7 +2765,7 @@ scripterror:
 
 	    // Add the file to the global argument list.
 	    if (ga_grow(&global_alist.al_ga, 1) == FAIL
-		    || (p = vim_strsave((char_u *)argv[0])) == NULL)
+		    || (p = mnv_strsave((char_u *)argv[0])) == NULL)
 		mch_exit(2);
 # ifdef FEAT_DIFF
 	    if (parmp->diff_mode && mch_isdir(p) && GARGCOUNT > 0
@@ -2776,19 +2776,19 @@ scripterror:
 		r = concat_fnames(p, gettail(alist_name(&GARGLIST[0])), TRUE);
 		if (r != NULL)
 		{
-		    vim_free(p);
+		    mnv_free(p);
 		    p = r;
 		}
 	    }
 # endif
 # ifdef __CYGWIN__
 	    /*
-	     * If vim is invoked by non-Cygwin tools, convert away any
+	     * If mnv is invoked by non-Cygwin tools, convert away any
 	     * DOS paths, so things like .swp files are created correctly.
 	     * Look for evidence of non-Cygwin paths before we bother.
 	     * This is only for when using the Unix files.
 	     */
-	    if (vim_strpbrk(p, "\\:") != NULL && !path_with_url(p))
+	    if (mnv_strpbrk(p, "\\:") != NULL && !path_with_url(p))
 	    {
 		char posix_path[MAXPATHL];
 
@@ -2797,8 +2797,8 @@ scripterror:
 #  else
 		cygwin_conv_to_posix_path(p, posix_path);
 #  endif
-		vim_free(p);
-		p = vim_strsave((char_u *)posix_path);
+		mnv_free(p);
+		p = mnv_strsave((char_u *)posix_path);
 		if (p == NULL)
 		    mch_exit(2);
 	    }
@@ -2857,8 +2857,8 @@ scripterror:
 	if (p != NULL)
 	{
 	    sprintf((char *)p, ":%s\r", parmp->commands[0]);
-	    set_vim_var_string(VV_SWAPCOMMAND, p, (int)plen);
-	    vim_free(p);
+	    set_mnv_var_string(VV_SWAPCOMMAND, p, (int)plen);
+	    mnv_free(p);
 	}
     }
 # endif
@@ -2889,20 +2889,20 @@ check_tty(mparm_T *parmp)
 # ifdef NBDEBUG
 	/*
 	 * This shouldn't be necessary. But if I run netbeans with the log
-	 * output coming to the console and XOpenDisplay fails, I get vim
+	 * output coming to the console and XOpenDisplay fails, I get mnv
 	 * trying to start with input/output to my console tty.  This fills my
 	 * input buffer so fast I can't even kill the process in under 2
 	 * minutes (and it beeps continuously the whole time :-)
 	 */
 	if (netbeans_active() && (!stdout_isatty || !input_isatty))
 	{
-	    mch_errmsg(_("Vim: Error: Failure to start gvim from NetBeans\n"));
+	    mch_errmsg(_("MNV: Error: Failure to start gmnv from NetBeans\n"));
 	    exit(1);
 	}
 # endif
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
 	if (
-#  ifdef VIMDLL
+#  ifdef MNVDLL
 	    !gui.starting &&
 #  endif
 	    is_cygpty_used())
@@ -2919,17 +2919,17 @@ check_tty(mparm_T *parmp)
 	    tofree = s = (char *)enc_locale_env(NULL);
 	    if (s == NULL)
 		s = "utf-8";	// Use "utf-8" by default.
-	    (void)bind_textdomain_codeset(VIMPACKAGE, s);
-	    vim_free(tofree);
+	    (void)bind_textdomain_codeset(MNVPACKAGE, s);
+	    mnv_free(tofree);
 #  endif
-	    mch_errmsg(_("Vim: Error: This version of Vim does not run in a Cygwin terminal\n"));
+	    mch_errmsg(_("MNV: Error: This version of MNV does not run in a Cygwin terminal\n"));
 	    exit(1);
 	}
 # endif
 	if (!stdout_isatty)
-	    mch_errmsg(_("Vim: Warning: Output is not to a terminal\n"));
+	    mch_errmsg(_("MNV: Warning: Output is not to a terminal\n"));
 	if (!input_isatty)
-	    mch_errmsg(_("Vim: Warning: Input is not from a terminal\n"));
+	    mch_errmsg(_("MNV: Warning: Input is not from a terminal\n"));
 	out_flush();
 	if (parmp->tty_fail && (!stdout_isatty || !input_isatty))
 	    exit(1);
@@ -2968,7 +2968,7 @@ read_stdin(void)
     // work.
     // TODO: why is this needed, even though readfile() has done this?
     close(0);
-    vim_ignored = dup(2);
+    mnv_ignored = dup(2);
 # endif
 }
 
@@ -2991,7 +2991,7 @@ create_windows(mparm_T *parmp UNUSED)
 	parmp->window_count = GARGCOUNT;
     if (parmp->window_count > 1)
     {
-	// Don't change the windows if there was a command in .vimrc that
+	// Don't change the windows if there was a command in .mnvrc that
 	// already split some windows
 	if (parmp->window_layout == 0)
 	    parmp->window_layout = WIN_HOR;
@@ -3024,7 +3024,7 @@ create_windows(mparm_T *parmp UNUSED)
     {
 	/*
 	 * Open a buffer for windows that don't have one yet.
-	 * Commands in the .vimrc might have loaded a file or split the window.
+	 * Commands in the .mnvrc might have loaded a file or split the window.
 	 * Watch out for autocommands that delete a window.
 	 */
 	/*
@@ -3163,8 +3163,8 @@ edit_buffers(
 		{
 		    char buf[100];
 
-		    p_shm_save = vim_strsave(p_shm);
-		    vim_snprintf(buf, 100, "F%s", p_shm);
+		    p_shm_save = mnv_strsave(p_shm);
+		    mnv_snprintf(buf, 100, "F%s", p_shm);
 		    set_option_value_give_err((char_u *)"shm",
 							 0L, (char_u *)buf, 0);
 		}
@@ -3179,7 +3179,7 @@ edit_buffers(
 	advance = TRUE;
 
 	// Only open the file if there is no file in this window yet (that can
-	// happen when .vimrc contains ":sall").
+	// happen when .mnvrc contains ":sall").
 	if (curbuf == firstwin->w_buffer || curbuf->b_ffname == NULL)
 	{
 	    curwin->w_arg_idx = arg_idx;
@@ -3216,7 +3216,7 @@ edit_buffers(
     if (p_shm_save != NULL)
     {
 	set_option_value_give_err((char_u *)"shm", 0L, p_shm_save, 0);
-	vim_free(p_shm_save);
+	mnv_free(p_shm_save);
     }
 
     if (parmp->window_layout == WIN_TABS)
@@ -3260,7 +3260,7 @@ exe_pre_commands(mparm_T *parmp)
 	return;
 
     curwin->w_cursor.lnum = 0; // just in case..
-    estack_push(ETYPE_ARGS, (char_u *)_("pre-vimrc command line"), 0);
+    estack_push(ETYPE_ARGS, (char_u *)_("pre-mnvrc command line"), 0);
     ESTACK_CHECK_SETUP;
 # ifdef FEAT_EVAL
     current_sctx.sc_sid = SID_CMDARG;
@@ -3285,7 +3285,7 @@ exe_commands(mparm_T *parmp)
     ESTACK_CHECK_DECLARATION;
 
     /*
-     * We start commands on line 0, make "vim +/pat file" match a
+     * We start commands on line 0, make "mnv +/pat file" match a
      * pattern on line 1.  But don't move the cursor when an autocommand
      * with g`" was used.
      */
@@ -3302,7 +3302,7 @@ exe_commands(mparm_T *parmp)
     {
 	do_cmdline_cmd(parmp->commands[i]);
 	if (parmp->cmds_tofree[i])
-	    vim_free(parmp->commands[i]);
+	    mnv_free(parmp->commands[i]);
     }
     ESTACK_CHECK_NOW;
     estack_pop();
@@ -3332,39 +3332,39 @@ source_startup_scripts(mparm_T *parmp)
     int		i;
 
     /*
-     * For "evim" source evim.vim first of all, so that the user can overrule
+     * For "emnv" source emnv.mnv first of all, so that the user can overrule
      * any things he doesn't like.
      */
-    if (parmp->evim_mode)
+    if (parmp->emnv_mode)
     {
-	(void)do_source((char_u *)EVIM_FILE, FALSE, DOSO_NONE, NULL);
-	TIME_MSG("source evim file");
+	(void)do_source((char_u *)EMNV_FILE, FALSE, DOSO_NONE, NULL);
+	TIME_MSG("source emnv file");
     }
 
     /*
      * If -u argument given, use only the initializations from that file and
      * nothing else.
      */
-    if (parmp->use_vimrc != NULL)
+    if (parmp->use_mnvrc != NULL)
     {
-	if (STRCMP(parmp->use_vimrc, "DEFAULTS") == 0)
+	if (STRCMP(parmp->use_mnvrc, "DEFAULTS") == 0)
 	{
-	    if (do_source((char_u *)VIM_DEFAULTS_FILE, FALSE, DOSO_NONE, NULL)
+	    if (do_source((char_u *)MNV_DEFAULTS_FILE, FALSE, DOSO_NONE, NULL)
 									 != OK)
 		emsg(_(e_failed_to_source_defaults));
 	}
-	else if (STRCMP(parmp->use_vimrc, "NONE") == 0
-				     || STRCMP(parmp->use_vimrc, "NORC") == 0)
+	else if (STRCMP(parmp->use_mnvrc, "NONE") == 0
+				     || STRCMP(parmp->use_mnvrc, "NORC") == 0)
 	{
 # ifdef FEAT_GUI
-	    if (use_gvimrc == NULL)	    // don't load gvimrc either
-		use_gvimrc = parmp->use_vimrc;
+	    if (use_gmnvrc == NULL)	    // don't load gmnvrc either
+		use_gmnvrc = parmp->use_mnvrc;
 # endif
 	}
 	else
 	{
-	    if (do_source(parmp->use_vimrc, FALSE, DOSO_NONE, NULL) != OK)
-		semsg(_(e_cannot_read_from_str_2), parmp->use_vimrc);
+	    if (do_source(parmp->use_mnvrc, FALSE, DOSO_NONE, NULL) != OK)
+		semsg(_(e_cannot_read_from_str_2), parmp->use_mnvrc);
 	}
     }
     else if (!silent_mode)
@@ -3380,43 +3380,43 @@ source_startup_scripts(mparm_T *parmp)
 	/*
 	 * Get system wide defaults, if the file name is defined.
 	 */
-# ifdef SYS_VIMRC_FILE
-	(void)do_source((char_u *)SYS_VIMRC_FILE, FALSE, DOSO_NONE, NULL);
+# ifdef SYS_MNVRC_FILE
+	(void)do_source((char_u *)SYS_MNVRC_FILE, FALSE, DOSO_NONE, NULL);
 # endif
 # ifdef MACOS_X
-	(void)do_source((char_u *)"$VIMRUNTIME/macmap.vim", FALSE,
+	(void)do_source((char_u *)"$MNVRUNTIME/macmap.mnv", FALSE,
 							      DOSO_NONE, NULL);
 # endif
 
 	/*
 	 * Try to read initialization commands from the following places:
-	 * - environment variable VIMINIT
-	 * - user vimrc file (s:.vimrc for Amiga, ~/.vimrc otherwise)
-	 * - second user vimrc file ($VIM/.vimrc for Dos)
+	 * - environment variable MNVINIT
+	 * - user mnvrc file (s:.mnvrc for Amiga, ~/.mnvrc otherwise)
+	 * - second user mnvrc file ($MNV/.mnvrc for Dos)
 	 * - environment variable EXINIT
 	 * - user exrc file (s:.exrc for Amiga, ~/.exrc otherwise)
-	 * - second user exrc file ($VIM/.exrc for Dos)
+	 * - second user exrc file ($MNV/.exrc for Dos)
 	 * The first that exists is used, the rest is ignored.
 	 */
-	if (process_env((char_u *)"VIMINIT", TRUE) != OK)
+	if (process_env((char_u *)"MNVINIT", TRUE) != OK)
 	{
-	    if (do_source((char_u *)USR_VIMRC_FILE, TRUE,
-						      DOSO_VIMRC, NULL) == FAIL
-# ifdef USR_VIMRC_FILE2
-		&& do_source((char_u *)USR_VIMRC_FILE2, TRUE,
-						      DOSO_VIMRC, NULL) == FAIL
+	    if (do_source((char_u *)USR_MNVRC_FILE, TRUE,
+						      DOSO_MNVRC, NULL) == FAIL
+# ifdef USR_MNVRC_FILE2
+		&& do_source((char_u *)USR_MNVRC_FILE2, TRUE,
+						      DOSO_MNVRC, NULL) == FAIL
 # endif
-# ifdef XDG_VIMRC_FILE
-		&& do_source((char_u *)XDG_VIMRC_FILE, TRUE,
-						      DOSO_VIMRC, NULL) == FAIL
+# ifdef XDG_MNVRC_FILE
+		&& do_source((char_u *)XDG_MNVRC_FILE, TRUE,
+						      DOSO_MNVRC, NULL) == FAIL
 # endif
-# ifdef USR_VIMRC_FILE3
-		&& do_source((char_u *)USR_VIMRC_FILE3, TRUE,
-						      DOSO_VIMRC, NULL) == FAIL
+# ifdef USR_MNVRC_FILE3
+		&& do_source((char_u *)USR_MNVRC_FILE3, TRUE,
+						      DOSO_MNVRC, NULL) == FAIL
 # endif
-# ifdef USR_VIMRC_FILE4
-		&& do_source((char_u *)USR_VIMRC_FILE4, TRUE,
-						      DOSO_VIMRC, NULL) == FAIL
+# ifdef USR_MNVRC_FILE4
+		&& do_source((char_u *)USR_MNVRC_FILE4, TRUE,
+						      DOSO_MNVRC, NULL) == FAIL
 # endif
 		&& process_env((char_u *)"EXINIT", FALSE) == FAIL
 		&& do_source((char_u *)USR_EXRC_FILE, FALSE,
@@ -3427,47 +3427,47 @@ source_startup_scripts(mparm_T *parmp)
 # endif
 		&& !has_dash_c_arg)
 	    {
-		// When no .vimrc file was found: source defaults.vim.
-		if (do_source((char_u *)VIM_DEFAULTS_FILE, FALSE, DOSO_NONE,
+		// When no .mnvrc file was found: source defaults.mnv.
+		if (do_source((char_u *)MNV_DEFAULTS_FILE, FALSE, DOSO_NONE,
 								 NULL) == FAIL)
 		    emsg(_(e_failed_to_source_defaults));
 	    }
 	}
 
 	/*
-	 * Read initialization commands from ".vimrc" or ".exrc" in current
+	 * Read initialization commands from ".mnvrc" or ".exrc" in current
 	 * directory.  This is only done if the 'exrc' option is set.
 	 * Because of security reasons we disallow shell and write commands
 	 * now, except for Unix if the file is owned by the user or 'secure'
-	 * option has been reset in environment of global ".exrc" or ".vimrc".
-	 * Only do this if VIMRC_FILE is not the same as USR_VIMRC_FILE or
-	 * SYS_VIMRC_FILE.
+	 * option has been reset in environment of global ".exrc" or ".mnvrc".
+	 * Only do this if MNVRC_FILE is not the same as USR_MNVRC_FILE or
+	 * SYS_MNVRC_FILE.
 	 */
 	if (p_exrc)
 	{
 # if defined(UNIX) || defined(VMS)
-	    // If ".vimrc" file is not owned by user, set 'secure' mode.
-	    if (!file_owned(VIMRC_FILE))
+	    // If ".mnvrc" file is not owned by user, set 'secure' mode.
+	    if (!file_owned(MNVRC_FILE))
 # endif
 		secure = p_secure;
 
 	    i = FAIL;
-	    if (fullpathcmp((char_u *)USR_VIMRC_FILE,
-				(char_u *)VIMRC_FILE, FALSE, TRUE) != FPC_SAME
-# ifdef USR_VIMRC_FILE2
-		    && fullpathcmp((char_u *)USR_VIMRC_FILE2,
-				(char_u *)VIMRC_FILE, FALSE, TRUE) != FPC_SAME
+	    if (fullpathcmp((char_u *)USR_MNVRC_FILE,
+				(char_u *)MNVRC_FILE, FALSE, TRUE) != FPC_SAME
+# ifdef USR_MNVRC_FILE2
+		    && fullpathcmp((char_u *)USR_MNVRC_FILE2,
+				(char_u *)MNVRC_FILE, FALSE, TRUE) != FPC_SAME
 # endif
-# ifdef USR_VIMRC_FILE3
-		    && fullpathcmp((char_u *)USR_VIMRC_FILE3,
-				(char_u *)VIMRC_FILE, FALSE, TRUE) != FPC_SAME
+# ifdef USR_MNVRC_FILE3
+		    && fullpathcmp((char_u *)USR_MNVRC_FILE3,
+				(char_u *)MNVRC_FILE, FALSE, TRUE) != FPC_SAME
 # endif
-# ifdef SYS_VIMRC_FILE
-		    && fullpathcmp((char_u *)SYS_VIMRC_FILE,
-				(char_u *)VIMRC_FILE, FALSE, TRUE) != FPC_SAME
+# ifdef SYS_MNVRC_FILE
+		    && fullpathcmp((char_u *)SYS_MNVRC_FILE,
+				(char_u *)MNVRC_FILE, FALSE, TRUE) != FPC_SAME
 # endif
 				)
-		i = do_source((char_u *)VIMRC_FILE, TRUE, DOSO_VIMRC, NULL);
+		i = do_source((char_u *)MNVRC_FILE, TRUE, DOSO_MNVRC, NULL);
 
 	    if (i == FAIL)
 	    {
@@ -3496,7 +3496,7 @@ source_startup_scripts(mparm_T *parmp)
 	proc->pr_WindowPtr = save_winptr;
 # endif
     }
-    TIME_MSG("sourcing vimrc file(s)");
+    TIME_MSG("sourcing mnvrc file(s)");
 }
 
 /*
@@ -3514,7 +3514,7 @@ main_start_gui(void)
 # endif
 }
 
-#endif  // NO_VIM_MAIN
+#endif  // NO_MNV_MAIN
 
 /*
  * Get an environment variable and execute it as Ex commands.
@@ -3523,7 +3523,7 @@ main_start_gui(void)
     int
 process_env(
     char_u	*env,
-    int		is_viminit) // when TRUE, called for VIMINIT
+    int		is_mnvinit) // when TRUE, called for MNVINIT
 {
     char_u	*initstr;
     sctx_T	save_current_sctx;
@@ -3532,8 +3532,8 @@ process_env(
     if ((initstr = mch_getenv(env)) == NULL || *initstr == NUL)
 	return FAIL;
 
-    if (is_viminit)
-	vimrc_found(NULL, NULL);
+    if (is_mnvinit)
+	mnvrc_found(NULL, NULL);
     estack_push(ETYPE_ENV, env, 0);
     ESTACK_CHECK_SETUP;
     save_current_sctx = current_sctx;
@@ -3552,10 +3552,10 @@ process_env(
     return OK;
 }
 
-#if (defined(UNIX) || defined(VMS)) && !defined(NO_VIM_MAIN)
+#if (defined(UNIX) || defined(VMS)) && !defined(NO_MNV_MAIN)
 /*
  * Return TRUE if we are certain the user owns the file "fname".
- * Used for ".vimrc" and ".exrc".
+ * Used for ".mnvrc" and ".exrc".
  * Use both stat() and lstat() for extra security.
  */
     static int
@@ -3589,7 +3589,7 @@ mainerr(
 #endif
 
     // If this is a Windows GUI executable, show an error dialog box.
-#ifdef VIMDLL
+#ifdef MNVDLL
     gui.in_use = mch_is_gui_executable();
 #endif
 #ifdef FEAT_GUI_MSWIN
@@ -3606,7 +3606,7 @@ mainerr(
 	mch_errmsg((char *)str);
 	mch_errmsg("\"");
     }
-    mch_errmsg(_("\nMore info with: \"vim -h\"\n"));
+    mch_errmsg(_("\nMore info with: \"mnv -h\"\n"));
 
     mch_exit(1);
 }
@@ -3617,7 +3617,7 @@ mainerr_arg_missing(char_u *str)
     mainerr(ME_ARG_MISSING, str);
 }
 
-#ifndef NO_VIM_MAIN
+#ifndef NO_MNV_MAIN
 /*
  * print a message with three spaces prepended and '\n' appended.
  */
@@ -3630,7 +3630,7 @@ main_msg(char *s)
 }
 
 /*
- * Print messages for "vim -h" or "vim --help" and exit.
+ * Print messages for "mnv -h" or "mnv --help" and exit.
  */
     static void
 usage(void)
@@ -3655,7 +3655,7 @@ usage(void)
     mch_msg(_("\n\nUsage:"));
     for (i = 0; ; ++i)
     {
-	mch_msg(_(" vim [arguments] "));
+	mch_msg(_(" mnv [arguments] "));
 	mch_msg(_(use[i]));
 	if (i == ARRAY_LENGTH(use) - 1)
 	    break;
@@ -3672,11 +3672,11 @@ usage(void)
     main_msg(_("--literal\t\tDon't expand wildcards"));
 # endif
 # ifdef FEAT_OLE
-    main_msg(_("-register\t\tRegister this gvim for OLE"));
-    main_msg(_("-unregister\t\tUnregister gvim for OLE"));
+    main_msg(_("-register\t\tRegister this gmnv for OLE"));
+    main_msg(_("-unregister\t\tUnregister gmnv for OLE"));
 # endif
 # ifdef FEAT_GUI
-    main_msg(_("-g\t\t\tRun using GUI (like \"gvim\")"));
+    main_msg(_("-g\t\t\tRun using GUI (like \"gmnv\")"));
     main_msg(_("-f  or  --nofork\tForeground: Don't fork when starting GUI"));
 # endif
     main_msg(_("-v\t\t\tVi mode (like \"vi\")"));
@@ -3684,11 +3684,11 @@ usage(void)
     main_msg(_("-E\t\t\tImproved Ex mode"));
     main_msg(_("-s\t\t\tSilent (batch) mode (only for \"ex\")"));
 # ifdef FEAT_DIFF
-    main_msg(_("-d\t\t\tDiff mode (like \"vimdiff\")"));
+    main_msg(_("-d\t\t\tDiff mode (like \"mnvdiff\")"));
 # endif
-    main_msg(_("-y\t\t\tEasy mode (like \"evim\", modeless)"));
+    main_msg(_("-y\t\t\tEasy mode (like \"emnv\", modeless)"));
     main_msg(_("-R\t\t\tReadonly mode (like \"view\")"));
-    main_msg(_("-Z\t\t\tRestricted mode (like \"rvim\")"));
+    main_msg(_("-Z\t\t\tRestricted mode (like \"rmnv\")"));
     main_msg(_("-m\t\t\tModifications (writing files) not allowed"));
     main_msg(_("-M\t\t\tModifications in text not allowed"));
     main_msg(_("-b\t\t\tBinary mode"));
@@ -3719,9 +3719,9 @@ usage(void)
     main_msg(_("--gui-dialog-file {fname}  For testing: write dialog text"));
 # endif
     main_msg(_("--ttyfail\t\tExit if input or output is not a terminal"));
-    main_msg(_("-u <vimrc>\t\tUse <vimrc> instead of any .vimrc"));
+    main_msg(_("-u <mnvrc>\t\tUse <mnvrc> instead of any .mnvrc"));
 # ifdef FEAT_GUI
-    main_msg(_("-U <gvimrc>\t\tUse <gvimrc> instead of any .gvimrc"));
+    main_msg(_("-U <gmnvrc>\t\tUse <gmnvrc> instead of any .gmnvrc"));
 # endif
     main_msg(_("--noplugin\t\tDon't load plugin scripts"));
     main_msg(_("-p[N]\t\tOpen N tab pages (default: one for each file)"));
@@ -3729,7 +3729,7 @@ usage(void)
     main_msg(_("-O[N]\t\tLike -o but split vertically"));
     main_msg(_("+\t\t\tStart at end of file"));
     main_msg(_("+<lnum>\t\tStart at line <lnum>"));
-    main_msg(_("--cmd <command>\tExecute <command> before loading any vimrc file"));
+    main_msg(_("--cmd <command>\tExecute <command> before loading any mnvrc file"));
     main_msg(_("-c <command>\t\tExecute <command> after loading the first file"));
     main_msg(_("-S <session>\t\tSource file <session> after loading the first file"));
     main_msg(_("-s <scriptin>\tRead Normal mode commands from file <scriptin>"));
@@ -3740,7 +3740,7 @@ usage(void)
 # endif
 # if (defined(UNIX) || defined(VMS)) && defined(FEAT_X11)
 #  if defined(FEAT_GUI_X11) && !defined(FEAT_GUI_GTK)
-    main_msg(_("-display <display>\tConnect Vim to this particular X-server"));
+    main_msg(_("-display <display>\tConnect MNV to this particular X-server"));
 #  endif
     main_msg(_("-X\t\t\tDo not connect to X server"));
 # endif
@@ -3751,15 +3751,15 @@ usage(void)
 #  if defined(FEAT_X11) && defined(FEAT_SOCKETSERVER)
     main_msg(_("--clientserver <socket|x11> Backend for clientserver communication"));
 #  endif
-    main_msg(_("--remote <files>\tEdit <files> in a Vim server if possible"));
+    main_msg(_("--remote <files>\tEdit <files> in a MNV server if possible"));
     main_msg(_("--remote-silent <files>  Same, don't complain if there is no server"));
     main_msg(_("--remote-wait <files>  As --remote but wait for files to have been edited"));
     main_msg(_("--remote-wait-silent <files>  Same, don't complain if there is no server"));
     main_msg(_("--remote-tab[-wait][-silent] <files>  As --remote but use tab page per file"));
-    main_msg(_("--remote-send <keys>\tSend <keys> to a Vim server and exit"));
-    main_msg(_("--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"));
-    main_msg(_("--serverlist\t\tList available Vim server names and exit"));
-    main_msg(_("--servername <name>\tSend to/become the Vim server <name>"));
+    main_msg(_("--remote-send <keys>\tSend <keys> to a MNV server and exit"));
+    main_msg(_("--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"));
+    main_msg(_("--serverlist\t\tList available MNV server names and exit"));
+    main_msg(_("--servername <name>\tSend to/become the MNV server <name>"));
 # endif
 # ifdef STARTUPTIME
     main_msg(_("--startuptime <file>\tWrite startup timing messages to <file>"));
@@ -3767,19 +3767,19 @@ usage(void)
 # ifdef FEAT_JOB_CHANNEL
     main_msg(_("--log <file>\t\tStart logging to <file> early"));
 # endif
-# ifdef FEAT_VIMINFO
-    main_msg(_("-i <viminfo>\t\tUse <viminfo> instead of .viminfo"));
+# ifdef FEAT_MNVINFO
+    main_msg(_("-i <mnvinfo>\t\tUse <mnvinfo> instead of .mnvinfo"));
 # endif
-    main_msg(_("--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"));
+    main_msg(_("--clean\t\t'nocompatible', MNV defaults, no plugins, no mnvinfo"));
     main_msg(_("-h  or  --help\tPrint Help (this message) and exit"));
     main_msg(_("--version\t\tPrint version information and exit"));
 
 # ifdef FEAT_GUI_X11
 #  ifdef FEAT_GUI_MOTIF
-    mch_msg(_("\nArguments recognised by gvim (Motif version):\n"));
+    mch_msg(_("\nArguments recognised by gmnv (Motif version):\n"));
 #  endif
-    main_msg(_("-display <display>\tRun Vim on <display>"));
-    main_msg(_("-iconic\t\tStart Vim iconified"));
+    main_msg(_("-display <display>\tRun MNV on <display>"));
+    main_msg(_("-iconic\t\tStart MNV iconified"));
     main_msg(_("-background <color>\tUse <color> for the background (also: -bg)"));
     main_msg(_("-foreground <color>\tUse <color> for normal text (also: -fg)"));
     main_msg(_("-font <font>\t\tUse <font> for normal text (also: -fn)"));
@@ -3793,25 +3793,25 @@ usage(void)
     main_msg(_("-xrm <resource>\tSet the specified resource"));
 # endif // FEAT_GUI_X11
 # ifdef FEAT_GUI_GTK
-    mch_msg(_("\nArguments recognised by gvim (GTK+ version):\n"));
+    mch_msg(_("\nArguments recognised by gmnv (GTK+ version):\n"));
     main_msg(_("-background <color>\tUse <color> for the background (also: -bg)"));
     main_msg(_("-foreground <color>\tUse <color> for normal text (also: -fg)"));
     main_msg(_("-font <font>\t\tUse <font> for normal text (also: -fn)"));
     main_msg(_("-geometry <geom>\tUse <geom> for initial geometry (also: -geom)"));
-    main_msg(_("-iconic\t\tStart Vim iconified"));
+    main_msg(_("-iconic\t\tStart MNV iconified"));
     main_msg(_("-reverse\t\tUse reverse video (also: -rv)"));
-    main_msg(_("-display <display>\tRun Vim on <display> (also: --display)"));
+    main_msg(_("-display <display>\tRun MNV on <display> (also: --display)"));
     main_msg(_("--role <role>\tSet a unique role to identify the main window"));
-    main_msg(_("--socketid <xid>\tOpen Vim inside another GTK widget"));
-    main_msg(_("--echo-wid\t\tMake gvim echo the Window ID on stdout"));
+    main_msg(_("--socketid <xid>\tOpen MNV inside another GTK widget"));
+    main_msg(_("--echo-wid\t\tMake gmnv echo the Window ID on stdout"));
 # endif
 # ifdef FEAT_GUI_MSWIN
-#  ifdef VIMDLL
+#  ifdef MNVDLL
     if (gui.starting)
 #  endif
     {
-	main_msg(_("-P <parent title>\tOpen Vim inside parent application"));
-	main_msg(_("--windowid <HWND>\tOpen Vim inside another win32 widget"));
+	main_msg(_("-P <parent title>\tOpen MNV inside parent application"));
+	main_msg(_("--windowid <HWND>\tOpen MNV inside another win32 widget"));
     }
 # endif
 
@@ -3829,7 +3829,7 @@ usage(void)
 
 /*
  * Check the result of the ATTENTION dialog:
- * When "Quit" selected, exit Vim.
+ * When "Quit" selected, exit MNV.
  * When "Recover" selected, recover the file.
  */
     static void
@@ -3840,9 +3840,9 @@ check_swap_exists_action(void)
     handle_swap_exists(NULL);
 }
 
-#endif // NO_VIM_MAIN
+#endif // NO_MNV_MAIN
 
-#if !defined(NO_VIM_MAIN) && defined(FEAT_EVAL)
+#if !defined(NO_MNV_MAIN) && defined(FEAT_EVAL)
     static void
 set_progpath(char_u *argv0)
 {
@@ -3851,7 +3851,7 @@ set_progpath(char_u *argv0)
 # ifdef MSWIN
     // A relative path containing a "/" will become invalid when using ":cd",
     // turn it into a full path.
-    // On MS-Windows "vim" should be expanded to "vim.exe", thus always do
+    // On MS-Windows "mnv" should be expanded to "mnv.exe", thus always do
     // this.
     char_u *path = NULL;
 
@@ -3874,16 +3874,16 @@ set_progpath(char_u *argv0)
     if (!mch_isFullName(val))
     {
 	if (gettail(val) != val
-			   && vim_FullName(val, buf, MAXPATHL, TRUE) != FAIL)
+			   && mnv_FullName(val, buf, MAXPATHL, TRUE) != FAIL)
 	    val = buf;
     }
 # endif
 
-    set_vim_var_string(VV_PROGPATH, val, -1);
+    set_mnv_var_string(VV_PROGPATH, val, -1);
 
 # ifdef MSWIN
-    vim_free(path);
+    mnv_free(path);
 # endif
 }
 
-#endif // NO_VIM_MAIN
+#endif // NO_MNV_MAIN

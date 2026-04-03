@@ -1,5 +1,5 @@
-// VIM_TEST_SETUP let g:java_highlight_functions = 'style'
-// VIM_TEST_SETUP let g:java_highlight_generics = 1
+// MNV_TEST_SETUP let g:java_highlight_functions = 'style'
+// MNV_TEST_SETUP let g:java_highlight_generics = 1
 
 
 import java.lang.invoke.MethodHandle;

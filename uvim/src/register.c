@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * register.c: functions for managing registers
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * Registers:
@@ -38,7 +38,7 @@ static void	copy_yank_reg(yankreg_T *reg);
 #endif
 static void	dis_msg(char_u *p, int skip_esc);
 
-#if defined(FEAT_VIMINFO)
+#if defined(FEAT_MNVINFO)
     yankreg_T *
 get_y_regs(void)
 {
@@ -105,7 +105,7 @@ get_expr_register(void)
     if (new_line == NULL)
 	return NUL;
     if (*new_line == NUL)	// use previous line
-	vim_free(new_line);
+	mnv_free(new_line);
     else
 	set_expr_line(new_line, NULL);
     return '=';
@@ -120,7 +120,7 @@ get_expr_register(void)
     void
 set_expr_line(char_u *new_line, exarg_T *eap)
 {
-    vim_free(expr_line);
+    mnv_free(expr_line);
     expr_line = new_line;
     expr_eap = eap;
 }
@@ -141,7 +141,7 @@ get_expr_line(void)
 
     // Make a copy of the expression, because evaluating it may cause it to be
     // changed.
-    expr_copy = vim_strsave(expr_line);
+    expr_copy = mnv_strsave(expr_line);
     if (expr_copy == NULL)
 	return NULL;
 
@@ -153,7 +153,7 @@ get_expr_line(void)
     ++nested;
     rv = eval_to_string_eap(expr_copy, TRUE, expr_eap, FALSE);
     --nested;
-    vim_free(expr_copy);
+    mnv_free(expr_copy);
     return rv;
 }
 
@@ -165,7 +165,7 @@ get_expr_line_src(void)
 {
     if (expr_line == NULL)
 	return NULL;
-    return vim_strsave(expr_line);
+    return mnv_strsave(expr_line);
 }
 #endif // FEAT_EVAL
 
@@ -179,7 +179,7 @@ valid_yank_reg(
     int	    writing)	    // if TRUE check for writable registers
 {
     if (       (regname > 0 && ASCII_ISALNUM(regname))
-	    || (!writing && vim_strchr((char_u *)
+	    || (!writing && mnv_strchr((char_u *)
 #ifdef FEAT_EVAL
 				    "/.%:="
 #else
@@ -243,7 +243,7 @@ get_yank_register(int regname, int writing)
 	return ret;
     }
     i = regname;
-    if (VIM_ISDIGIT(i))
+    if (MNV_ISDIGIT(i))
 	i -= '0';
     else if (ASCII_ISLOWER(i))
 	i = CharOrdLow(i) + 10;
@@ -350,7 +350,7 @@ get_register(
 	{
 	    for (i = 0; i < reg->y_size; ++i)
 	    {
-		reg->y_array[i].string = vim_strnsave(y_current->y_array[i].string,
+		reg->y_array[i].string = mnv_strnsave(y_current->y_array[i].string,
 					    y_current->y_array[i].length);
 		reg->y_array[i].length = y_current->y_array[i].length;
 	    }
@@ -370,7 +370,7 @@ put_register(int name, void *reg)
     get_yank_register(name, 0);
     free_yank_all();
     *y_current = *(yankreg_T *)reg;
-    vim_free(reg);
+    mnv_free(reg);
 
 #ifdef FEAT_CLIPBOARD
     // Send text written to clipboard register to the clipboard.
@@ -387,7 +387,7 @@ free_register(void *reg)
     tmp = *y_current;
     *y_current = *(yankreg_T *)reg;
     free_yank_all();
-    vim_free(reg);
+    mnv_free(reg);
     *y_current = tmp;
 }
 #endif
@@ -445,7 +445,7 @@ do_record(int c)
 	else
 	{
 	    // Remove escaping for CSI and K_SPECIAL in multi-byte chars.
-	    vim_unescape_csi(p);
+	    mnv_unescape_csi(p);
 
 	    // We don't want to change the default register here, so save and
 	    // restore the current register name.
@@ -475,12 +475,12 @@ stuff_yank(int regname, char_u *p)
     // check for read-only register
     if (regname != 0 && !valid_yank_reg(regname, TRUE))
     {
-	vim_free(p);
+	mnv_free(p);
 	return FAIL;
     }
     if (regname == '_')		    // black hole: don't do anything
     {
-	vim_free(p);
+	mnv_free(p);
 	return OK;
     }
 
@@ -497,13 +497,13 @@ stuff_yank(int regname, char_u *p)
 	tmp = alloc(tmplen + 1);
 	if (tmp == NULL)
 	{
-	    vim_free(p);
+	    mnv_free(p);
 	    return FAIL;
 	}
 	STRCPY(tmp, pp->string);
 	STRCPY(tmp + pp->length, p);
-	vim_free(p);
-	vim_free(pp->string);
+	mnv_free(p);
+	mnv_free(pp->string);
 	pp->string = tmp;
 	pp->length = tmplen;
     }
@@ -512,15 +512,15 @@ stuff_yank(int regname, char_u *p)
 	free_yank_all();
 	if ((y_current->y_array = ALLOC_ONE(string_T)) == NULL)
 	{
-	    vim_free(p);
+	    mnv_free(p);
 	    return FAIL;
 	}
 	y_current->y_array[0].string = p;
 	y_current->y_array[0].length = plen;
 	y_current->y_size = 1;
 	y_current->y_type = MCHAR;  // used to be MLINE, why?
-#ifdef FEAT_VIMINFO
-	y_current->y_time_set = vim_time();
+#ifdef FEAT_MNVINFO
+	y_current->y_time_set = mnv_time();
 #endif
     }
     return OK;
@@ -531,7 +531,7 @@ stuff_yank(int regname, char_u *p)
  */
 static int execreg_lastc = NUL;
 
-#if defined(FEAT_VIMINFO)
+#if defined(FEAT_MNVINFO)
     int
 get_execreg_lastc(void)
 {
@@ -610,7 +610,7 @@ execreg_line_continuation(string_T *lines, long *idx)
 	}
     }
     ga_append(&ga, NUL);
-    str = vim_strnsave(ga.ga_data, ga.ga_len);
+    str = mnv_strnsave(ga.ga_data, ga.ga_len);
     ga_clear(&ga);
 
     *idx = cmd_start;
@@ -673,9 +673,9 @@ do_execreg(
 	    return FAIL;
 	}
 	// don't keep the cmdline containing @:
-	VIM_CLEAR(new_last_cmdline);
+	MNV_CLEAR(new_last_cmdline);
 	// Escape all control characters with a CTRL-V
-	p = vim_strsave_escaped_ext(last_cmdline,
+	p = mnv_strsave_escaped_ext(last_cmdline,
 		    (char_u *)"\001\002\003\004\005\006\007"
 			  "\010\011\012\013\014\015\016\017"
 			  "\020\021\022\023\024\025\026\027"
@@ -690,7 +690,7 @@ do_execreg(
 	    else
 		retval = put_in_typebuf(p, TRUE, TRUE, silent);
 	}
-	vim_free(p);
+	mnv_free(p);
     }
 #ifdef FEAT_EVAL
     else if (regname == '=')
@@ -699,7 +699,7 @@ do_execreg(
 	if (p == NULL)
 	    return FAIL;
 	retval = put_in_typebuf(p, TRUE, colon, silent);
-	vim_free(p);
+	mnv_free(p);
     }
 #endif
     else if (regname == '.')		// use last inserted text
@@ -711,7 +711,7 @@ do_execreg(
 	    return FAIL;
 	}
 	retval = put_in_typebuf(p, FALSE, colon, silent);
-	vim_free(p);
+	mnv_free(p);
     }
     else
     {
@@ -751,13 +751,13 @@ do_execreg(
 		    free_str = TRUE;
 		}
 	    }
-	    escaped = vim_strsave_escape_csi(str);
+	    escaped = mnv_strsave_escape_csi(str);
 	    if (free_str)
-		vim_free(str);
+		mnv_free(str);
 	    if (escaped == NULL)
 		return FAIL;
 	    retval = ins_typebuf(escaped, remap, 0, TRUE, silent);
-	    vim_free(escaped);
+	    mnv_free(escaped);
 	    if (retval == FAIL)
 		return FAIL;
 	    if (colon && ins_typebuf((char_u *)":", remap, 0, TRUE, silent)
@@ -820,7 +820,7 @@ put_in_typebuf(
 	char_u	*p;
 
 	if (esc)
-	    p = vim_strsave_escape_csi(s);
+	    p = mnv_strsave_escape_csi(s);
 	else
 	    p = s;
 	if (p == NULL)
@@ -829,7 +829,7 @@ put_in_typebuf(
 	    retval = ins_typebuf(p, esc ? REMAP_NONE : REMAP_YES,
 							     0, TRUE, silent);
 	if (esc)
-	    vim_free(p);
+	    mnv_free(p);
     }
     if (colon && retval == OK)
 	retval = ins_typebuf((char_u *)":", REMAP_NONE, 0, TRUE, silent);
@@ -880,7 +880,7 @@ insert_reg(
 	    return FAIL;
 	stuffescaped(arg, literally);
 	if (allocated)
-	    vim_free(arg);
+	    mnv_free(arg);
     }
     else				// name or number register
     {
@@ -995,7 +995,7 @@ get_spec_reg(
 		return FALSE;
 	    cnt = find_ident_under_cursor(argp, regname == Ctrl_W
 				   ?  (FIND_IDENT|FIND_STRING) : FIND_STRING);
-	    *argp = cnt ? vim_strnsave(*argp, cnt) : NULL;
+	    *argp = cnt ? mnv_strnsave(*argp, cnt) : NULL;
 	    *allocated = TRUE;
 	    return TRUE;
 
@@ -1123,7 +1123,7 @@ yank_do_autocmd(oparg_T *oap, yankreg_T *reg)
 	case MLINE: buf[0] = 'V'; break;
 	case MCHAR: buf[0] = 'v'; break;
 	case MBLOCK:
-		vim_snprintf((char *)buf, sizeof(buf), "%c%ld", Ctrl_V,
+		mnv_snprintf((char *)buf, sizeof(buf), "%c%ld", Ctrl_V,
 			     reglen + 1);
 		break;
     }
@@ -1186,8 +1186,8 @@ free_yank(long n)
     long	    i;
 
     for (i = n; --i >= 0; )
-	VIM_CLEAR_STRING(y_current->y_array[i]);
-    VIM_CLEAR(y_current->y_array);
+	MNV_CLEAR_STRING(y_current->y_array[i]);
+    MNV_CLEAR(y_current->y_array);
 }
 
     void
@@ -1269,8 +1269,8 @@ op_yank(oparg_T *oap, int deleting, int mess)
 	y_current = curr;
 	return FAIL;
     }
-#ifdef FEAT_VIMINFO
-    y_current->y_time_set = vim_time();
+#ifdef FEAT_MNVINFO
+    y_current->y_time_set = mnv_time();
 #endif
 
     y_idx = 0;
@@ -1299,10 +1299,10 @@ op_yank(oparg_T *oap, int deleting, int mess)
 	    case MLINE:
 		y_current->y_array[y_idx].length = ml_get_len(lnum);
 		if ((y_current->y_array[y_idx].string =
-					vim_strnsave(ml_get(lnum),
+					mnv_strnsave(ml_get(lnum),
 					y_current->y_array[y_idx].length)) == NULL)
 		{
-		    VIM_CLEAR_STRING(y_current->y_array[y_idx]);
+		    MNV_CLEAR_STRING(y_current->y_array[y_idx]);
 		    goto fail;
 		}
 		break;
@@ -1336,10 +1336,10 @@ op_yank(oparg_T *oap, int deleting, int mess)
 	    goto fail;
 	for (j = 0; j < curr->y_size; ++j)
 	    new_ptr[j] = curr->y_array[j];
-	vim_free(curr->y_array);
+	mnv_free(curr->y_array);
 	curr->y_array = new_ptr;
-#ifdef FEAT_VIMINFO
-	curr->y_time_set = vim_time();
+#ifdef FEAT_MNVINFO
+	curr->y_time_set = mnv_time();
 #endif
 
 	if (yanktype == MLINE)	// MLINE overrides MCHAR and MBLOCK
@@ -1347,7 +1347,7 @@ op_yank(oparg_T *oap, int deleting, int mess)
 
 	// Concatenate the last line of the old block with the first line of
 	// the new block, unless being Vi compatible.
-	if (curr->y_type == MCHAR && vim_strchr(p_cpo, CPO_REGAPPEND) == NULL)
+	if (curr->y_type == MCHAR && mnv_strchr(p_cpo, CPO_REGAPPEND) == NULL)
 	{
 	    pnew = alloc(curr->y_array[curr->y_size - 1].length + y_current->y_array[0].length + 1);
 	    if (pnew == NULL)
@@ -1359,11 +1359,11 @@ op_yank(oparg_T *oap, int deleting, int mess)
 	    --j;
 	    STRCPY(pnew, curr->y_array[j].string);
 	    STRCPY(pnew + curr->y_array[j].length, y_current->y_array[0].string);
-	    vim_free(curr->y_array[j].string);
+	    mnv_free(curr->y_array[j].string);
 	    curr->y_array[j].string = pnew;
 	    curr->y_array[j].length = curr->y_array[j].length + y_current->y_array[0].length;
 	    ++j;
-	    VIM_CLEAR_STRING(y_current->y_array[0]);
+	    MNV_CLEAR_STRING(y_current->y_array[0]);
 	    y_idx = 1;
 	}
 	else
@@ -1371,7 +1371,7 @@ op_yank(oparg_T *oap, int deleting, int mess)
 	while (y_idx < y_current->y_size)
 	    curr->y_array[j++] = y_current->y_array[y_idx++];
 	curr->y_size = j;
-	vim_free(y_current->y_array);
+	mnv_free(y_current->y_array);
 	y_current = curr;
     }
 
@@ -1389,7 +1389,7 @@ op_yank(oparg_T *oap, int deleting, int mess)
 	    if (oap->regname == NUL)
 		*namebuf = NUL;
 	    else
-		vim_snprintf(namebuf, sizeof(namebuf),
+		mnv_snprintf(namebuf, sizeof(namebuf),
 						_(" into \"%c"), oap->regname);
 
 	    // redisplay now, so message is not deleted
@@ -1510,17 +1510,17 @@ yank_copy_line(struct block_def *bd, long y_idx, int exclude_trailing_space)
 								      == NULL)
 	return FAIL;
     y_current->y_array[y_idx].string = pnew;
-    vim_memset(pnew, ' ', (size_t)bd->startspaces);
+    mnv_memset(pnew, ' ', (size_t)bd->startspaces);
     pnew += bd->startspaces;
     mch_memmove(pnew, bd->textstart, (size_t)bd->textlen);
     pnew += bd->textlen;
-    vim_memset(pnew, ' ', (size_t)bd->endspaces);
+    mnv_memset(pnew, ' ', (size_t)bd->endspaces);
     pnew += bd->endspaces;
     if (exclude_trailing_space)
     {
 	int s = bd->textlen + bd->endspaces;
 
-	while (s > 0 && VIM_ISWHITE(*(bd->textstart + s - 1)))
+	while (s > 0 && MNV_ISWHITE(*(bd->textstart + s - 1)))
 	{
 	    s = s - (*mb_head_off)(bd->textstart, bd->textstart + s - 1) - 1;
 	    pnew--;
@@ -1553,7 +1553,7 @@ copy_yank_reg(yankreg_T *reg)
     else
 	for (j = 0; j < y_current->y_size; ++j)
 	{
-	    if ((y_current->y_array[j].string = vim_strnsave(curr->y_array[j].string,
+	    if ((y_current->y_array[j].string = mnv_strnsave(curr->y_array[j].string,
 						curr->y_array[j].length)) == NULL)
 	    {
 		free_yank(j);
@@ -1677,7 +1677,7 @@ do_put(
 		    if (y_array != NULL)
 			y_array[y_size].string = ptr;
 		    ++y_size;
-		    tmp = vim_strchr(ptr, '\n');
+		    tmp = mnv_strchr(ptr, '\n');
 		    if (tmp == NULL)
 		    {
 			if (y_array != NULL)
@@ -1742,17 +1742,17 @@ do_put(
 	    plen = ml_get_cursor_len();
 	    if (dir == FORWARD && *p != NUL)
 		MB_PTR_ADV(p);
-	    ptr = vim_strnsave(p, plen - (size_t)(p - p_orig));
+	    ptr = mnv_strnsave(p, plen - (size_t)(p - p_orig));
 	    if (ptr == NULL)
 		goto end;
 	    ml_append(curwin->w_cursor.lnum, ptr, (colnr_T)0, FALSE);
-	    vim_free(ptr);
+	    mnv_free(ptr);
 
 	    oldp = ml_get_curline();
 	    p = oldp + curwin->w_cursor.col;
 	    if (dir == FORWARD && *p != NUL)
 		MB_PTR_ADV(p);
-	    ptr = vim_strnsave(oldp, (size_t)(p - oldp));
+	    ptr = mnv_strnsave(oldp, (size_t)(p - oldp));
 	    if (ptr == NULL)
 		goto end;
 	    ml_replace(curwin->w_cursor.lnum, ptr, FALSE);
@@ -1988,7 +1988,7 @@ do_put(
 	    ptr += bd.textcol;
 
 	    // may insert some spaces before the new text
-	    vim_memset(ptr, ' ', (size_t)bd.startspaces);
+	    mnv_memset(ptr, ' ', (size_t)bd.startspaces);
 	    ptr += bd.startspaces;
 
 	    // insert the new text
@@ -2000,7 +2000,7 @@ do_put(
 		// insert block's trailing spaces only if there's text behind
 		if ((j < count - 1 || !shortline) && spaces > 0)
 		{
-		    vim_memset(ptr, ' ', (size_t)spaces);
+		    mnv_memset(ptr, ' ', (size_t)spaces);
 		    ptr += spaces;
 		}
 		else
@@ -2008,7 +2008,7 @@ do_put(
 	    }
 
 	    // may insert some spaces after the new text
-	    vim_memset(ptr, ' ', (size_t)bd.endspaces);
+	    mnv_memset(ptr, ' ', (size_t)bd.endspaces);
 	    ptr += bd.endspaces;
 
 	    // move the text after the cursor to the end of the line.
@@ -2226,7 +2226,7 @@ do_put(
 		    // insert second line
 		    ml_append(lnum, newp, (colnr_T)0, FALSE);
 		    ++new_lnum;
-		    vim_free(newp);
+		    mnv_free(newp);
 
 		    oldp = ml_get(lnum);
 		    newp = alloc(col + yanklen + 1);
@@ -2383,9 +2383,9 @@ end:
 	curbuf->b_op_end = orig_end;
     }
     if (allocated)
-	vim_free(insert_string.string);
+	mnv_free(insert_string.string);
     if (regname == '=')
-	vim_free(y_array);
+	mnv_free(y_array);
 
     VIsual_active = FALSE;
 
@@ -2469,10 +2469,10 @@ ex_display(exarg_T *eap)
 	    case MCHAR: type = 'c'; break;
 	    default:	type = 'b'; break;
 	}
-	if (arg != NULL && vim_strchr(arg, name) == NULL
+	if (arg != NULL && mnv_strchr(arg, name) == NULL
 #ifdef ONE_CLIPBOARD
 		// Star register and plus register contain the same thing.
-		&& (name != '*' || vim_strchr(arg, '+') == NULL)
+		&& (name != '*' || mnv_strchr(arg, '+') == NULL)
 #endif
 		)
 	    continue;	    // did not ask for this register
@@ -2503,7 +2503,7 @@ ex_display(exarg_T *eap)
 
 #ifdef FEAT_EVAL
 	if (name == MB_TOLOWER(redir_reg)
-		|| (vim_strchr((char_u *)"\"*+", redir_reg) != NULL &&
+		|| (mnv_strchr((char_u *)"\"*+", redir_reg) != NULL &&
 		    (yb == y_previous || yb == &y_regs[0])))
 	    continue;	    // do not list register being written to, the
 			    // pointer can be freed
@@ -2553,7 +2553,7 @@ ex_display(exarg_T *eap)
     // display last inserted text
     insert = get_last_insert();
     if ((p = insert.string) != NULL
-		  && (arg == NULL || vim_strchr(arg, '.') != NULL) && !got_int
+		  && (arg == NULL || mnv_strchr(arg, '.') != NULL) && !got_int
 						      && !message_filtered(p))
     {
 	msg_puts("\n  c  \".   ");
@@ -2561,7 +2561,7 @@ ex_display(exarg_T *eap)
     }
 
     // display last command line
-    if (last_cmdline != NULL && (arg == NULL || vim_strchr(arg, ':') != NULL)
+    if (last_cmdline != NULL && (arg == NULL || mnv_strchr(arg, ':') != NULL)
 			       && !got_int && !message_filtered(last_cmdline))
     {
 	msg_puts("\n  c  \":   ");
@@ -2570,7 +2570,7 @@ ex_display(exarg_T *eap)
 
     // display current file name
     if (curbuf->b_fname != NULL
-	    && (arg == NULL || vim_strchr(arg, '%') != NULL) && !got_int
+	    && (arg == NULL || mnv_strchr(arg, '%') != NULL) && !got_int
 					&& !message_filtered(curbuf->b_fname))
     {
 	msg_puts("\n  c  \"%   ");
@@ -2578,7 +2578,7 @@ ex_display(exarg_T *eap)
     }
 
     // display alternate file name
-    if ((arg == NULL || vim_strchr(arg, '%') != NULL) && !got_int)
+    if ((arg == NULL || mnv_strchr(arg, '%') != NULL) && !got_int)
     {
 	char_u	    *fname;
 	linenr_T    dummy;
@@ -2593,7 +2593,7 @@ ex_display(exarg_T *eap)
 
     // display last search pattern
     if (last_search_pat() != NULL
-		 && (arg == NULL || vim_strchr(arg, '/') != NULL) && !got_int
+		 && (arg == NULL || mnv_strchr(arg, '/') != NULL) && !got_int
 				      && !message_filtered(last_search_pat()))
     {
 	msg_puts("\n  c  \"/   ");
@@ -2602,7 +2602,7 @@ ex_display(exarg_T *eap)
 
 #ifdef FEAT_EVAL
     // display last used expression
-    if (expr_line != NULL && (arg == NULL || vim_strchr(arg, '=') != NULL)
+    if (expr_line != NULL && (arg == NULL || mnv_strchr(arg, '=') != NULL)
 				  && !got_int && !message_filtered(expr_line))
     {
 	msg_puts("\n  c  \"=   ");
@@ -2783,7 +2783,7 @@ get_reg_contents(int regname, int flags)
 	    return NULL;
 	if (allocated)
 	    return getreg_wrap_one_line(retval, flags);
-	return getreg_wrap_one_line(vim_strsave(retval), flags);
+	return getreg_wrap_one_line(mnv_strsave(retval), flags);
     }
 
     get_yank_register(regname, FALSE);
@@ -2973,7 +2973,7 @@ write_reg_contents_ex(
     {
 	buf_T	*buf;
 
-	if (VIM_ISDIGIT(*str))
+	if (MNV_ISDIGIT(*str))
 	{
 	    int	num = atoi((char *)str);
 
@@ -2994,13 +2994,13 @@ write_reg_contents_ex(
     {
 	char_u	    *p, *s;
 
-	p = vim_strnsave(str, (size_t)len);
+	p = mnv_strnsave(str, (size_t)len);
 	if (p == NULL)
 	    return;
 	if (must_append && expr_line != NULL)
 	{
 	    s = concat_str(expr_line, p);
-	    vim_free(p);
+	    mnv_free(p);
 	    p = s;
 	}
 	set_expr_line(p, NULL);
@@ -3088,7 +3088,7 @@ str_to_reg(
     // Without any lines make the register empty.
     if (y_ptr->y_size + newlines == 0)
     {
-	VIM_CLEAR(y_ptr->y_array);
+	MNV_CLEAR(y_ptr->y_array);
 	return;
     }
 
@@ -3099,7 +3099,7 @@ str_to_reg(
 	return;
     for (lnum = 0; lnum < y_ptr->y_size; ++lnum)
 	pp[lnum] = y_ptr->y_array[lnum];
-    vim_free(y_ptr->y_array);
+    mnv_free(y_ptr->y_array);
     y_ptr->y_array = pp;
     maxlen = 0;
 
@@ -3109,7 +3109,7 @@ str_to_reg(
 	for (ss = (char_u **) str; *ss != NULL; ++ss, ++lnum)
 	{
 	    pp[lnum].length = STRLEN(*ss);
-	    pp[lnum].string = vim_strnsave(*ss, pp[lnum].length);
+	    pp[lnum].string = mnv_strnsave(*ss, pp[lnum].length);
 	    if (type == MBLOCK)
 	    {
 		int charlen = mb_string2cells(*ss, -1);
@@ -3153,7 +3153,7 @@ str_to_reg(
 	    if (extra)
 		mch_memmove(s, y_ptr->y_array[lnum].string, (size_t)extra);
 	    if (append)
-		vim_free(y_ptr->y_array[lnum].string);
+		mnv_free(y_ptr->y_array[lnum].string);
 	    if (i > 0)
 		mch_memmove(s + extra, str + start, (size_t)i);
 	    extra += i;
@@ -3176,8 +3176,8 @@ str_to_reg(
 	y_ptr->y_width = (blocklen < 0 ? maxlen - 1 : blocklen);
     else
 	y_ptr->y_width = 0;
-# ifdef FEAT_VIMINFO
-    y_ptr->y_time_set = vim_time();
+# ifdef FEAT_MNVINFO
+    y_ptr->y_time_set = mnv_time();
 # endif
 }
 #endif // FEAT_CLIPBOARD || FEAT_EVAL

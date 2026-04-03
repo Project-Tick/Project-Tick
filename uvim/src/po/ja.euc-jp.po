@@ -1,26 +1,26 @@
-# Japanese translation for Vim
+# Japanese translation for MNV
 #
-# Do ":help uganda"  in Vim to read copying and usage conditions.
-# Do ":help credits" in Vim to see a list of people who contributed.
+# Do ":help uganda"  in MNV to read copying and usage conditions.
+# Do ":help credits" in MNV to see a list of people who contributed.
 #
 # Copyright (C) 2001-2024 MURAOKA Taro <koron.kaoriya@gmail.com>,
-# 			  vim-jp <http://vim-jp.org/>
+# 			  mnv-jp <http://mnv-jp.org/>
 #
-# THIS FILE IS DISTRIBUTED UNDER THE VIM LICENSE.
+# THIS FILE IS DISTRIBUTED UNDER THE MNV LICENSE.
 #
-# Generated from ja.po, DO NOT EDIT.
+# Original translations.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Vim 9.2\n"
-"Report-Msgid-Bugs-To: vim-dev@vim.org\n"
+"Project-Id-Version: MNV 9.2\n"
+"Report-Msgid-Bugs-To: mnv-dev@mnv.org\n"
 "POT-Creation-Date: 2026-01-06 14:41+0000\n"
 "PO-Revision-Date: 2026-01-19 23:15+0900\n"
 "Last-Translator: MURAOKA Taro <koron.kaoriya@gmail.com>\n"
-"Language-Team: Japanese <https://github.com/vim-jp/lang-ja>\n"
+"Language-Team: Japanese <https://github.com/mnv-jp/lang-ja>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=EUC-JP\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
@@ -629,8 +629,8 @@ msgstr[0] "編集すべきファイルがあと %d 個ありますが、終了しますか?"
 msgid "unknown"
 msgstr "不明"
 
-msgid "Greetings, Vim user!"
-msgstr "Vim 使いさん、やあ!"
+msgid "Greetings, MNV user!"
+msgstr "MNV 使いさん、やあ!"
 
 msgid "Already only one tab page"
 msgstr "既にタブページは1つしかありません"
@@ -726,8 +726,8 @@ msgstr "[ファイル過大]"
 msgid "[Permission Denied]"
 msgstr "[権限がありません]"
 
-msgid "Vim: Reading from stdin...\n"
-msgstr "Vim: 標準入力から読込み中...\n"
+msgid "MNV: Reading from stdin...\n"
+msgstr "MNV: 標準入力から読込み中...\n"
 
 msgid "Reading from stdin..."
 msgstr "標準入力から読込み中..."
@@ -807,9 +807,9 @@ msgstr "[最終行が不完全]"
 
 #, c-format
 msgid ""
-"W12: Warning: File \"%s\" has changed and the buffer was changed in Vim as "
+"W12: Warning: File \"%s\" has changed and the buffer was changed in MNV as "
 "well"
-msgstr "W12: 警告: ファイル \"%s\" が変更されVimのバッファも変更されました"
+msgstr "W12: 警告: ファイル \"%s\" が変更されMNVのバッファも変更されました"
 
 msgid "See \":help W12\" for more info."
 msgstr "詳細は \":help W12\" を参照してください"
@@ -915,11 +915,11 @@ msgstr "キャンセル"
 msgid "Input _Methods"
 msgstr "インプットメソッド"
 
-msgid "VIM - Search and Replace..."
-msgstr "VIM - 検索と置換..."
+msgid "MNV - Search and Replace..."
+msgstr "MNV - 検索と置換..."
 
-msgid "VIM - Search..."
-msgstr "VIM - 検索..."
+msgid "MNV - Search..."
+msgstr "MNV - 検索..."
 
 msgid "Find what:"
 msgstr "検索文字列:"
@@ -954,8 +954,8 @@ msgstr "全て置換"
 msgid "_Close"
 msgstr "閉じる(_C)"
 
-msgid "Vim: Received \"die\" request from session manager\n"
-msgstr "Vim: セッションマネージャから \"die\" 要求を受け取りました\n"
+msgid "MNV: Received \"die\" request from session manager\n"
+msgstr "MNV: セッションマネージャから \"die\" 要求を受け取りました\n"
 
 msgid "Close tab"
 msgstr "タブページを閉じる"
@@ -966,8 +966,8 @@ msgstr "新規タブページ"
 msgid "Open Tab..."
 msgstr "タブページを開く..."
 
-msgid "Vim: Main window unexpectedly destroyed\n"
-msgstr "Vim: メインウィンドウが不意に破壊されました\n"
+msgid "MNV: Main window unexpectedly destroyed\n"
+msgstr "MNV: メインウィンドウが不意に破壊されました\n"
 
 msgid "&Filter"
 msgstr "フィルタ(&F)"
@@ -993,8 +993,8 @@ msgstr "&OK"
 msgid "Selection"
 msgstr "選択"
 
-msgid "Vim dialog"
-msgstr "Vim ダイアログ"
+msgid "MNV dialog"
+msgstr "MNV ダイアログ"
 
 msgid "Find &Next"
 msgstr "次を検索(&N)"
@@ -1052,8 +1052,8 @@ msgstr "却下する(&D)"
 msgid "no specific match"
 msgstr "マッチするものがありません"
 
-msgid "Vim - Font Selector"
-msgstr "Vim - フォント選択"
+msgid "MNV - Font Selector"
+msgstr "MNV - フォント選択"
 
 msgid "Name:"
 msgstr "名前:"
@@ -1238,14 +1238,14 @@ msgstr "行を挿入できません"
 msgid "string cannot contain newlines"
 msgstr "文字列には改行文字を含められません"
 
-msgid "error converting Scheme values to Vim"
-msgstr "Scheme値のVimへの変換エラー"
+msgid "error converting Scheme values to MNV"
+msgstr "Scheme値のMNVへの変換エラー"
 
-msgid "Vim error: ~a"
-msgstr "Vim エラー: ~a"
+msgid "MNV error: ~a"
+msgstr "MNV エラー: ~a"
 
-msgid "Vim error"
-msgstr "Vim エラー"
+msgid "MNV error"
+msgstr "MNV エラー"
 
 msgid "buffer is invalid"
 msgstr "バッファは無効です"
@@ -1256,7 +1256,7 @@ msgstr "ウィンドウは無効です"
 msgid "linenr out of range"
 msgstr "範囲外の行番号です"
 
-msgid "not allowed in the Vim sandbox"
+msgid "not allowed in the MNV sandbox"
 msgstr "サンドボックスでは許されません"
 
 msgid "invalid buffer number"
@@ -1485,8 +1485,8 @@ msgstr "netbeans はこのGUIでは利用できません\n"
 msgid "'-nb' cannot be used: not enabled at compile time\n"
 msgstr "'-nb' 使用不可能です: コンパイル時に無効にされています\n"
 
-msgid "This Vim was not compiled with the diff feature."
-msgstr "このVimにはdiff機能がありません(コンパイル時設定)。"
+msgid "This MNV was not compiled with the diff feature."
+msgstr "このMNVにはdiff機能がありません(コンパイル時設定)。"
 
 msgid "Attempt to open script file again: \""
 msgstr "スクリプトファイルを再び開こうとしました: \""
@@ -1497,28 +1497,28 @@ msgstr "読込み用として開けません: \""
 msgid "Cannot open for script output: \""
 msgstr "スクリプト出力用として開けません: \""
 
-msgid "Vim: Error: Failure to start gvim from NetBeans\n"
-msgstr "Vim: エラー: NetBeansからgvimをスタートできません\n"
+msgid "MNV: Error: Failure to start gvim from NetBeans\n"
+msgstr "MNV: エラー: NetBeansからgvimをスタートできません\n"
 
 # This message should be English to avoid mojibake.
-msgid "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
-msgstr "Vim: Error: This version of Vim does not run in a Cygwin terminal\n"
+msgid "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
+msgstr "MNV: Error: This version of MNV does not run in a Cygwin terminal\n"
 
-msgid "Vim: Warning: Output is not to a terminal\n"
-msgstr "Vim: 警告: 端末への出力ではありません\n"
+msgid "MNV: Warning: Output is not to a terminal\n"
+msgstr "MNV: 警告: 端末への出力ではありません\n"
 
-msgid "Vim: Warning: Input is not from a terminal\n"
-msgstr "Vim: 警告: 端末からの入力ではありません\n"
+msgid "MNV: Warning: Input is not from a terminal\n"
+msgstr "MNV: 警告: 端末からの入力ではありません\n"
 
 msgid "pre-vimrc command line"
 msgstr "vimrc前のコマンドライン"
 
 msgid ""
 "\n"
-"More info with: \"vim -h\"\n"
+"More info with: \"mnv -h\"\n"
 msgstr ""
 "\n"
-"より詳細な情報は: \"vim -h\"\n"
+"より詳細な情報は: \"mnv -h\"\n"
 
 msgid "[file ..]       edit specified file(s)"
 msgstr "[ファイル..]    指定されたファイルを編集する"
@@ -1541,8 +1541,8 @@ msgstr ""
 "\n"
 "使用法:"
 
-msgid " vim [arguments] "
-msgstr " vim [引数] "
+msgid " mnv [arguments] "
+msgstr " mnv [引数] "
 
 msgid ""
 "\n"
@@ -1724,7 +1724,7 @@ msgstr "-W <scriptout>\t入力した全コマンドをファイル <scriptout> に保存する"
 msgid "-x\t\t\tEdit encrypted files"
 msgstr "-x\t\t\t暗号化されたファイルを編集する"
 
-msgid "-display <display>\tConnect Vim to this particular X-server"
+msgid "-display <display>\tConnect MNV to this particular X-server"
 msgstr "-display <display>\tVimを指定した X サーバーに接続する"
 
 msgid "-X\t\t\tDo not connect to X server"
@@ -1736,8 +1736,8 @@ msgstr "-Y\t\t\tWayland コンポジタに接続しない"
 msgid "--clientserver <socket|x11> Backend for clientserver communication"
 msgstr "--clientserver <socket|x11> clientserver 通信のバックエンド"
 
-msgid "--remote <files>\tEdit <files> in a Vim server if possible"
-msgstr "--remote <files>\t可能ならばVimサーバーで <files> を編集する"
+msgid "--remote <files>\tEdit <files> in a MNV server if possible"
+msgstr "--remote <files>\t可能ならばMNVサーバーで <files> を編集する"
 
 msgid "--remote-silent <files>  Same, don't complain if there is no server"
 msgstr "--remote-silent <files>  同上、サーバーが無くても警告文を出力しない"
@@ -1757,16 +1757,16 @@ msgstr ""
 "--remote-tab[-wait][-silent] <files>  --remoteでファイル1つにつき1つのタブ"
 "ページを開く"
 
-msgid "--remote-send <keys>\tSend <keys> to a Vim server and exit"
+msgid "--remote-send <keys>\tSend <keys> to a MNV server and exit"
 msgstr "--remote-send <keys>\tVimサーバーに <keys> を送信して終了する"
 
-msgid "--remote-expr <expr>\tEvaluate <expr> in a Vim server and print result"
+msgid "--remote-expr <expr>\tEvaluate <expr> in a MNV server and print result"
 msgstr "--remote-expr <expr>\tサーバーで <expr> を実行して結果を表示する"
 
-msgid "--serverlist\t\tList available Vim server names and exit"
+msgid "--serverlist\t\tList available MNV server names and exit"
 msgstr "--serverlist\t\tVimサーバー名の一覧を表示して終了する"
 
-msgid "--servername <name>\tSend to/become the Vim server <name>"
+msgid "--servername <name>\tSend to/become the MNV server <name>"
 msgstr "--servername <name>\tVimサーバー <name> に送信/名前設定する"
 
 msgid "--startuptime <file>\tWrite startup timing messages to <file>"
@@ -1778,8 +1778,8 @@ msgstr "--log <file>\t\t早期に <file> へのロギングを開始する"
 msgid "-i <viminfo>\t\tUse <viminfo> instead of .viminfo"
 msgstr "-i <viminfo>\t\t.viminfoの代わりに <viminfo> を使う"
 
-msgid "--clean\t\t'nocompatible', Vim defaults, no plugins, no viminfo"
-msgstr "--clean\t\t'nocompatible'、Vimの既定、プラグインなし、viminfoなし"
+msgid "--clean\t\t'nocompatible', MNV defaults, no plugins, no viminfo"
+msgstr "--clean\t\t'nocompatible'、MNVの既定、プラグインなし、viminfoなし"
 
 msgid "-h  or  --help\tPrint Help (this message) and exit"
 msgstr "-h  or  --help\tヘルプ(このメッセージ)を表示し終了する"
@@ -1794,11 +1794,11 @@ msgstr ""
 "\n"
 "gvimによって解釈される引数(Motifバージョン):\n"
 
-msgid "-display <display>\tRun Vim on <display>"
-msgstr "-display <display>\t<display> でVimを実行する"
+msgid "-display <display>\tRun MNV on <display>"
+msgstr "-display <display>\t<display> でMNVを実行する"
 
-msgid "-iconic\t\tStart Vim iconified"
-msgstr "-iconic\t\t最小化した状態でVimを起動する"
+msgid "-iconic\t\tStart MNV iconified"
+msgstr "-iconic\t\t最小化した状態でMNVを起動する"
 
 msgid "-background <color>\tUse <color> for the background (also: -bg)"
 msgstr "-background <color>\t背景色に <color> を使う(同義: -bg)"
@@ -1841,23 +1841,23 @@ msgstr ""
 "\n"
 "gvimによって解釈される引数(GTK+バージョン):\n"
 
-msgid "-display <display>\tRun Vim on <display> (also: --display)"
-msgstr "-display <display>\t<display> でVimを実行する(同義: --display)"
+msgid "-display <display>\tRun MNV on <display> (also: --display)"
+msgstr "-display <display>\t<display> でMNVを実行する(同義: --display)"
 
 msgid "--role <role>\tSet a unique role to identify the main window"
 msgstr "--role <role>\tメインウィンドウを識別する一意な役割(role)を設定する"
 
-msgid "--socketid <xid>\tOpen Vim inside another GTK widget"
-msgstr "--socketid <xid>\t異なるGTK widgetの内部にVimを開く"
+msgid "--socketid <xid>\tOpen MNV inside another GTK widget"
+msgstr "--socketid <xid>\t異なるGTK widgetの内部にMNVを開く"
 
 msgid "--echo-wid\t\tMake gvim echo the Window ID on stdout"
 msgstr "--echo-wid\t\tウィンドウIDを標準出力に出力する"
 
-msgid "-P <parent title>\tOpen Vim inside parent application"
+msgid "-P <parent title>\tOpen MNV inside parent application"
 msgstr "-P <親のタイトル>\tVimを親アプリケーションの中で起動する"
 
-msgid "--windowid <HWND>\tOpen Vim inside another win32 widget"
-msgstr "--windowid <HWND>\t異なるWin32 widgetの内部にVimを開く"
+msgid "--windowid <HWND>\tOpen MNV inside another win32 widget"
+msgstr "--windowid <HWND>\t異なるWin32 widgetの内部にMNVを開く"
 
 msgid "Seen modifyOtherKeys: true\n"
 msgstr "modifyOtherKeys が検出されました: true\n"
@@ -1923,16 +1923,16 @@ msgstr "ブロック 0 を読込めません "
 
 msgid ""
 "\n"
-"Maybe no changes were made or Vim did not update the swap file."
+"Maybe no changes were made or MNV did not update the swap file."
 msgstr ""
 "\n"
-"恐らく変更がされていないかVimがスワップファイルを更新していません。"
+"恐らく変更がされていないかMNVがスワップファイルを更新していません。"
 
-msgid " cannot be used with this version of Vim.\n"
-msgstr " Vimのこのバージョンでは使用できません.\n"
+msgid " cannot be used with this version of MNV.\n"
+msgstr " MNVのこのバージョンでは使用できません.\n"
 
-msgid "Use Vim version 3.0.\n"
-msgstr "Vimのバージョン3.0を使用してください.\n"
+msgid "Use MNV version 3.0.\n"
+msgstr "MNVのバージョン3.0を使用してください.\n"
 
 msgid " cannot be used on this computer.\n"
 msgstr " このコンピュータでは使用できません.\n"
@@ -2077,11 +2077,11 @@ msgstr "   日付: "
 msgid "             dated: "
 msgstr "             日付: "
 
-msgid "         [from Vim version 3.0]"
-msgstr "         [from Vim version 3.0]"
+msgid "         [from MNV version 3.0]"
+msgstr "         [from MNV version 3.0]"
 
-msgid "         [does not look like a Vim swap file]"
-msgstr "         [Vimのスワップファイルではないようです]"
+msgid "         [does not look like a MNV swap file]"
+msgstr "         [MNVのスワップファイルではないようです]"
 
 msgid "         file name: "
 msgstr "        ファイル名: "
@@ -2128,10 +2128,10 @@ msgstr " (まだ実行中)"
 
 msgid ""
 "\n"
-"         [not usable with this version of Vim]"
+"         [not usable with this version of MNV]"
 msgstr ""
 "\n"
-"         [このVimバージョンでは使用できません]"
+"         [このMNVバージョンでは使用できません]"
 
 msgid ""
 "\n"
@@ -2192,8 +2192,8 @@ msgstr ""
 msgid "(2) An edit session for this file crashed.\n"
 msgstr "(2) このファイルの編集セッションがクラッシュした.\n"
 
-msgid "    If this is the case, use \":recover\" or \"vim -r "
-msgstr "    この場合には \":recover\" か \"vim -r "
+msgid "    If this is the case, use \":recover\" or \"mnv -r "
+msgstr "    この場合には \":recover\" か \"mnv -r "
 
 msgid ""
 "\"\n"
@@ -2221,8 +2221,8 @@ msgstr "スワップファイル \""
 msgid "\" already exists!"
 msgstr "\" が既にあります!"
 
-msgid "VIM - ATTENTION"
-msgstr "VIM - 注意"
+msgid "MNV - ATTENTION"
+msgstr "MNV - 注意"
 
 msgid "Swap file already exists!"
 msgstr "スワップファイルが既に存在します!"
@@ -2277,7 +2277,7 @@ msgstr "%s の処理中にエラーが検出されました:"
 msgid "line %4ld:"
 msgstr "行 %4ld:"
 
-msgid "Messages maintainer: The Vim Project"
+msgid "Messages maintainer: The MNV Project"
 msgstr "日本語メッセージ翻訳/監修: 村岡 太郎 <koron.kaoriya@gmail.com>"
 
 msgid "Interrupt: "
@@ -2355,13 +2355,13 @@ msgstr "実行のためにシェルを呼出し中: \"%s\""
 msgid "Warning: terminal cannot highlight"
 msgstr "警告: 使用している端末はハイライトできません"
 
-msgid "Type  :qa!  and press <Enter> to abandon all changes and exit Vim"
+msgid "Type  :qa!  and press <Enter> to abandon all changes and exit MNV"
 msgstr ""
-"すべての変更を破棄し、Vimを終了するには  :qa!  と入力し <Enter> を押してくだ"
+"すべての変更を破棄し、MNVを終了するには  :qa!  と入力し <Enter> を押してくだ"
 "さい"
 
-msgid "Type  :qa  and press <Enter> to exit Vim"
-msgstr "Vimを終了するには  :qa  と入力し <Enter> を押してください"
+msgid "Type  :qa  and press <Enter> to exit MNV"
+msgstr "MNVを終了するには  :qa  と入力し <Enter> を押してください"
 
 #, c-format
 msgid "%ld line %sed %d time"
@@ -2452,8 +2452,8 @@ msgstr ""
 msgid "cannot open "
 msgstr "開けません "
 
-msgid "VIM: Can't open window!\n"
-msgstr "VIM: ウィンドウを開けません!\n"
+msgid "MNV: Can't open window!\n"
+msgstr "MNV: ウィンドウを開けません!\n"
 
 msgid "Need Amigados version 2.04 or later\n"
 msgstr "Amigadosのバージョン 2.04かそれ以降が必要です\n"
@@ -2469,8 +2469,8 @@ msgid "Cannot create "
 msgstr "作成できません "
 
 #, c-format
-msgid "Vim exiting with %d\n"
-msgstr "Vimは %d で終了します\n"
+msgid "MNV exiting with %d\n"
+msgstr "MNVは %d で終了します\n"
 
 msgid "cannot change console mode ?!\n"
 msgstr "コンソールモードを変更できません?!\n"
@@ -2513,10 +2513,10 @@ msgstr "Xサーバーへの接続に %ld ミリ秒かかりました"
 
 msgid ""
 "\n"
-"Vim: Got X error\n"
+"MNV: Got X error\n"
 msgstr ""
 "\n"
-"Vim: X のエラーを検出しましたr\n"
+"MNV: X のエラーを検出しましたr\n"
 
 #, c-format
 msgid "restoring X11 display %s"
@@ -2627,8 +2627,8 @@ msgid "At line"
 msgstr "行"
 
 #, c-format
-msgid "Vim: Caught %s event\n"
-msgstr "Vim: イベント %s を検知\n"
+msgid "MNV: Caught %s event\n"
+msgstr "MNV: イベント %s を検知\n"
 
 msgid "close"
 msgstr "閉じる"
@@ -2648,8 +2648,8 @@ msgstr ""
 "外部コマンドの終了後に一時停止をしません.\n"
 "詳細は  :help win32-vimrun  を参照してください。"
 
-msgid "Vim Warning"
-msgstr "Vimの警告"
+msgid "MNV Warning"
+msgstr "MNVの警告"
 
 #, c-format
 msgid "shell returned %d"
@@ -2778,8 +2778,8 @@ msgstr "\"%s\" を検索中"
 msgid "not found in '%s': \"%s\""
 msgstr "'%s' の中にはありません: \"%s\""
 
-msgid "Source Vim script"
-msgstr "Vimスクリプトの取込み"
+msgid "Source MNV script"
+msgstr "MNVスクリプトの取込み"
 
 #, c-format
 msgid "Cannot source a directory: \"%s\""
@@ -3341,8 +3341,8 @@ msgstr[0] "%ld 秒経過しています"
 msgid "new shell started\n"
 msgstr "新しいシェルを起動します\n"
 
-msgid "Vim: Error reading input, exiting...\n"
-msgstr "Vim: 入力を読込み中のエラーにより終了します...\n"
+msgid "MNV: Error reading input, exiting...\n"
+msgstr "MNV: 入力を読込み中のエラーにより終了します...\n"
 
 msgid "No undo possible; continue anyway"
 msgstr "可能なアンドゥはありません: とりあえず続けます"
@@ -3659,8 +3659,8 @@ msgstr "  デフォルトファイル: \""
 msgid "    system menu file: \""
 msgstr "    システムメニュー: \""
 
-msgid "  fall-back for $VIM: \""
-msgstr "       省略時の $VIM: \""
+msgid "  fall-back for $MNV: \""
+msgstr "       省略時の $MNV: \""
 
 msgid " f-b for $VIMRUNTIME: \""
 msgstr "省略時の $VIMRUNTIME: \""
@@ -3677,8 +3677,8 @@ msgstr "リンク: "
 msgid "  DEBUG BUILD"
 msgstr "デバッグビルド"
 
-msgid "VIM - Vi IMproved"
-msgstr "VIM - Vi IMproved"
+msgid "MNV - Vi IMproved"
+msgstr "MNV - Vi IMproved"
 
 msgid "version "
 msgstr "version "
@@ -3686,8 +3686,8 @@ msgstr "version "
 msgid "by Bram Moolenaar et al."
 msgstr "by Bram Moolenaar 他."
 
-msgid "Vim is open source and freely distributable"
-msgstr "Vim はオープンソースであり自由に配布可能です"
+msgid "MNV is open source and freely distributable"
+msgstr "MNV はオープンソースであり自由に配布可能です"
 
 msgid "Help poor children in Uganda!"
 msgstr "ウガンダの恵まれない子供たちに援助を!"
@@ -3707,8 +3707,8 @@ msgstr "バージョン情報は       :help version9<Enter>  "
 msgid "Running in Vi compatible mode"
 msgstr "Vi互換モードで動作中"
 
-msgid "type  :set nocp<Enter>        for Vim defaults"
-msgstr "Vim推奨値にするには    :set nocp<Enter>       "
+msgid "type  :set nocp<Enter>        for MNV defaults"
+msgstr "MNV推奨値にするには    :set nocp<Enter>       "
 
 msgid "type  :help cp-default<Enter> for info on this"
 msgstr "詳細な情報は           :help cp-default<Enter>"
@@ -3728,11 +3728,11 @@ msgstr "                              でモード有に       "
 msgid "menu  Edit->Global Settings->Toggle Vi Compatible"
 msgstr "メニューの 編集->全体設定->Vi互換モード切替      "
 
-msgid "                              for Vim defaults   "
-msgstr "                              でVimとして動作    "
+msgid "                              for MNV defaults   "
+msgstr "                              でMNVとして動作    "
 
-msgid "Sponsor Vim development!"
-msgstr "Vimの開発を応援してください!"
+msgid "Sponsor MNV development!"
+msgstr "MNVの開発を応援してください!"
 
 msgid "type  :help sponsor<Enter>    for information "
 msgstr "詳細な情報は           :help sponsor<Enter>   "
@@ -3854,8 +3854,8 @@ msgstr ""
 "# ジャンプリスト (新しいものが先):\n"
 
 #, c-format
-msgid "# This viminfo file was generated by Vim %s.\n"
-msgstr "# この viminfo ファイルは Vim %s によって生成されました.\n"
+msgid "# This viminfo file was generated by MNV %s.\n"
+msgstr "# この viminfo ファイルは MNV %s によって生成されました.\n"
 
 msgid ""
 "# You may edit it if you're careful!\n"
@@ -3909,26 +3909,26 @@ msgstr ""
 "このコマンドは無効です、ごめんなさい: Perlライブラリをロードできませんでし"
 "た。"
 
-msgid "Edit with Vim using &tabpages"
-msgstr "Vimでタブページを使って編集する (&T)"
+msgid "Edit with MNV using &tabpages"
+msgstr "MNVでタブページを使って編集する (&T)"
 
-msgid "Edit with single &Vim"
-msgstr "単一のVimで編集する (&V)"
+msgid "Edit with single &MNV"
+msgstr "単一のMNVで編集する (&V)"
 
-msgid "Diff with Vim"
-msgstr "Vimで差分を表示する"
+msgid "Diff with MNV"
+msgstr "MNVで差分を表示する"
 
-msgid "Edit with &Vim"
-msgstr "Vimで編集する (&V)"
+msgid "Edit with &MNV"
+msgstr "MNVで編集する (&V)"
 
-msgid "Edit with existing Vim"
-msgstr "起動済のVimで編集する"
+msgid "Edit with existing MNV"
+msgstr "起動済のMNVで編集する"
 
-msgid "Edit with existing Vim - "
-msgstr "起動済のVimで編集する - "
+msgid "Edit with existing MNV - "
+msgstr "起動済のMNVで編集する - "
 
-msgid "Edits the selected file(s) with Vim"
-msgstr "選択したファイルをVimで編集する"
+msgid "Edits the selected file(s) with MNV"
+msgstr "選択したファイルをMNVで編集する"
 
 msgid "Error creating process: Check if gvim is in your path!"
 msgstr "プロセスの作成に失敗: gvimが環境変数PATH上にあるか確認してください!"
@@ -4748,8 +4748,8 @@ msgstr "E249: 予期せずウィンドウの配置が変わりました"
 msgid "E250: Fonts for the following charsets are missing in fontset %s:"
 msgstr "E250: 以下の文字セットのフォントがありません %s:"
 
-msgid "E251: VIM instance registry property is badly formed.  Deleted!"
-msgstr "E251: VIM 実体の登録プロパティが不正です。消去しました!"
+msgid "E251: MNV instance registry property is badly formed.  Deleted!"
+msgstr "E251: MNV 実体の登録プロパティが不正です。消去しました!"
 
 #, c-format
 msgid "E252: Fontset name: %s - Font '%s' is not fixed-width"
@@ -4912,8 +4912,8 @@ msgid "E306: Cannot open %s"
 msgstr "E306: %s を開けません"
 
 #, c-format
-msgid "E307: %s does not look like a Vim swap file"
-msgstr "E307: %s はVimのスワップファイルではないようです"
+msgid "E307: %s does not look like a MNV swap file"
+msgstr "E307: %s はMNVのスワップファイルではないようです"
 
 msgid "E308: Warning: Original file may have been changed"
 msgstr "E308: 警告: 原本ファイルが変更されています"
@@ -5926,8 +5926,8 @@ msgstr "E606: :try のない :finally があります"
 msgid "E607: Multiple :finally"
 msgstr "E607: 複数の :finally があります"
 
-msgid "E608: Cannot :throw exceptions with 'Vim' prefix"
-msgstr "E608: 'Vim' で始まる例外は :throw できません"
+msgid "E608: Cannot :throw exceptions with 'MNV' prefix"
+msgstr "E608: 'MNV' で始まる例外は :throw できません"
 
 #, c-format
 msgid "E609: Cscope error: %s"
@@ -6148,8 +6148,8 @@ msgstr "E677: 一時ファイル書込み中にエラーが発生しました"
 msgid "E678: Invalid character after %s%%[dxouU]"
 msgstr "E678: %s%%[dxouU] の後に不正な文字がありました"
 
-msgid "E679: Recursive loop loading syncolor.vim"
-msgstr "E679: syncolor.vim の再帰呼出しを検出しました"
+msgid "E679: Recursive loop loading syncolor.mnv"
+msgstr "E679: syncolor.mnv の再帰呼出しを検出しました"
 
 #, c-format
 msgid "E680: <buffer=%d>: invalid buffer number"
@@ -6472,8 +6472,8 @@ msgstr "E770: スペルファイルにサポートしていないセクションがあります"
 msgid "E771: Old spell file, needs to be updated"
 msgstr "E771: 古いスペルファイルなので、アップデートしてください"
 
-msgid "E772: Spell file is for newer version of Vim"
-msgstr "E772: より新しいバージョンの Vim 用のスペルファイルです"
+msgid "E772: Spell file is for newer version of MNV"
+msgstr "E772: より新しいバージョンの MNV 用のスペルファイルです"
 
 #, c-format
 msgid "E773: Symlink loop for \"%s\""
@@ -6500,8 +6500,8 @@ msgid "E779: Old .sug file, needs to be updated: %s"
 msgstr "E779: 古い .sug ファイルなので、アップデートしてください: %s"
 
 #, c-format
-msgid "E780: .sug file is for newer version of Vim: %s"
-msgstr "E780: より新しいバージョンの Vim 用の .sug ファイルです: %s"
+msgid "E780: .sug file is for newer version of MNV: %s"
+msgstr "E780: より新しいバージョンの MNV 用の .sug ファイルです: %s"
 
 #, c-format
 msgid "E781: .sug file doesn't match .spl file: %s"
@@ -6687,9 +6687,9 @@ msgstr "E832: 非暗号化ファイルが暗号化されたアンドゥファイルを使ってます: %s"
 
 #, c-format
 msgid ""
-"E833: %s is encrypted and this version of Vim does not support encryption"
+"E833: %s is encrypted and this version of MNV does not support encryption"
 msgstr ""
-"E833: %s はこのバージョンのVimでサポートしていない形式で暗号化されています"
+"E833: %s はこのバージョンのMNVでサポートしていない形式で暗号化されています"
 
 msgid "E834: Conflicts with value of 'listchars'"
 msgstr "E834: 'listchars'の値に矛盾があります"
@@ -6697,11 +6697,11 @@ msgstr "E834: 'listchars'の値に矛盾があります"
 msgid "E835: Conflicts with value of 'fillchars'"
 msgstr "E835: 'fillchars'の値に矛盾があります"
 
-msgid "E836: This Vim cannot execute :python after using :py3"
-msgstr "E836: このVimでは :py3 を使った後に :python を使えません"
+msgid "E836: This MNV cannot execute :python after using :py3"
+msgstr "E836: このMNVでは :py3 を使った後に :python を使えません"
 
-msgid "E837: This Vim cannot execute :py3 after using :python"
-msgstr "E837: このVimでは :python を使った後に :py3 を使えません"
+msgid "E837: This MNV cannot execute :py3 after using :python"
+msgstr "E837: このMNVでは :python を使った後に :py3 を使えません"
 
 msgid "E838: NetBeans is not supported with this GUI"
 msgstr "E838: NetBeansはこのGUIには対応していません"
@@ -6769,8 +6769,8 @@ msgstr "E857: 辞書のキー \"%s\" が必要です"
 msgid "E858: Eval did not return a valid python object"
 msgstr "E858: 式評価は有効なpythonオブジェクトを返しませんでした"
 
-msgid "E859: Failed to convert returned python object to a Vim value"
-msgstr "E859: 返されたpythonオブジェクトをVimの値に変換できませんでした"
+msgid "E859: Failed to convert returned python object to a MNV value"
+msgstr "E859: 返されたpythonオブジェクトをMNVの値に変換できませんでした"
 
 msgid "E860: Need 'id' and 'type' or 'types' with 'both'"
 msgstr "E860: 'both' には 'id' と 'type' または 'types' が必要です"
@@ -6850,8 +6850,8 @@ msgstr ""
 msgid "E879: (NFA regexp) Too many \\z("
 msgstr "E879: (NFA 正規表現) \\z( が多過ぎます"
 
-msgid "E880: Can't handle SystemExit of python exception in vim"
-msgstr "E880: vimでpythonのSystemExit例外を扱うことができません"
+msgid "E880: Can't handle SystemExit of python exception in mnv"
+msgstr "E880: mnvでpythonのSystemExit例外を扱うことができません"
 
 msgid "E881: Line count changed unexpectedly"
 msgstr "E881: 予期せず行カウントが変わりました"
@@ -7706,8 +7706,8 @@ msgid "E1123: Missing comma before argument: %s"
 msgstr "E1123: 引数の前にコンマがありません: %s"
 
 #, c-format
-msgid "E1124: \"%s\" cannot be used in legacy Vim script"
-msgstr "E1124: \"%s\" は旧来の Vim スクリプトの中では使用できません"
+msgid "E1124: \"%s\" cannot be used in legacy MNV script"
+msgstr "E1124: \"%s\" は旧来の MNV スクリプトの中では使用できません"
 
 msgid "E1125: Final requires a value"
 msgstr "E1125: final には値が必要です"
@@ -7929,8 +7929,8 @@ msgstr "E1185: :redir END がありません"
 msgid "E1186: Expression does not result in a value: %s"
 msgstr "E1186: 式が値を返しませんでした: %s"
 
-msgid "E1187: Failed to source defaults.vim"
-msgstr "E1187: defaults.vim の読込みに失敗しました"
+msgid "E1187: Failed to source defaults.mnv"
+msgstr "E1187: defaults.mnv の読込みに失敗しました"
 
 msgid "E1188: Cannot open a terminal from the command line window"
 msgstr "E1188: コマンドラインウィンドウから端末を開くことはできません"
@@ -7951,8 +7951,8 @@ msgstr "E1191: コンパイルに失敗した関数を呼出そうとしています: %s"
 msgid "E1192: Empty function name"
 msgstr "E1192: 関数名が空です"
 
-msgid "E1193: cryptmethod xchacha20 not built into this Vim"
-msgstr "E1193: この Vim には暗号化メソッド xchacha20 が組込まれていません"
+msgid "E1193: cryptmethod xchacha20 not built into this MNV"
+msgstr "E1193: この MNV には暗号化メソッド xchacha20 が組込まれていません"
 
 msgid "E1194: Cannot encrypt header, not enough space"
 msgstr "E1194: ヘッダを暗号化できません、スペースが足りません"
@@ -8186,9 +8186,9 @@ msgid "E1256: String or function required for argument %d"
 msgstr "E1256: 引数 %d には文字列または関数が必要です"
 
 #, c-format
-msgid "E1257: Imported script must use \"as\" or end in .vim: %s"
+msgid "E1257: Imported script must use \"as\" or end in .mnv: %s"
 msgstr ""
-"E1257: インポートされたスクリプトは \"as\" を使うか .vim で終わらなければなり"
+"E1257: インポートされたスクリプトは \"as\" を使うか .mnv で終わらなければなり"
 "ません: %s"
 
 #, c-format
@@ -8203,8 +8203,8 @@ msgstr "E1259: インポート名の後に名前がありません: %s"
 msgid "E1260: Cannot unlet an imported item: %s"
 msgstr "E1260: インポートされた要素はunletできません: %s"
 
-msgid "E1261: Cannot import .vim without using \"as\""
-msgstr "E1261: \"as\" を使わずに .vim をインポートすることはできません"
+msgid "E1261: Cannot import .mnv without using \"as\""
+msgstr "E1261: \"as\" を使わずに .mnv をインポートすることはできません"
 
 #, c-format
 msgid "E1262: Cannot import the same script twice: %s"
@@ -9020,8 +9020,8 @@ msgstr "E1545: quickfixのリスト(スタック)が利用できません"
 msgid "E1546: Cannot switch to a closing buffer"
 msgstr "E1546: 閉じようとしているバッファへは切り替えられません"
 
-msgid "E1547: This version of Vim does support :redrawtabpanel"
-msgstr "E1547: このバージョンのVimは :redrawtabpanel をサポートしていません"
+msgid "E1547: This version of MNV does support :redrawtabpanel"
+msgstr "E1547: このバージョンのMNVは :redrawtabpanel をサポートしていません"
 
 msgid "E1548: Wayland connection is unavailable"
 msgstr "E1548: Wayland 接続が利用できません"
@@ -9228,8 +9228,8 @@ msgstr "imp.find_module() が %d 要素のタプルを返しました (期待値: 3)"
 msgid "internal error: imp.find_module returned tuple with NULL"
 msgstr "内部エラー: imp.find_module が NULL を含むタプルを返しました"
 
-msgid "cannot delete vim.Dictionary attributes"
-msgstr "vim.Dictionary属性は消せません"
+msgid "cannot delete mnv.Dictionary attributes"
+msgstr "mnv.Dictionary属性は消せません"
 
 msgid "cannot modify fixed dictionary"
 msgstr "固定された辞書は変更できません"
@@ -9252,8 +9252,8 @@ msgid "list index out of range"
 msgstr "リスト範囲外のインデックスです"
 
 #, c-format
-msgid "internal error: failed to get Vim list item %d"
-msgstr "内部エラー: Vimのリスト要素 %d の取得に失敗しました"
+msgid "internal error: failed to get MNV list item %d"
+msgstr "内部エラー: MNVのリスト要素 %d の取得に失敗しました"
 
 msgid "slice step cannot be zero"
 msgstr "スライスのステップに 0 は指定できません"
@@ -9263,8 +9263,8 @@ msgid "attempt to assign sequence of size greater than %d to extended slice"
 msgstr "長さ %d の拡張スライスに、より長いスライスを割り当てようとしました"
 
 #, c-format
-msgid "internal error: no Vim list item %d"
-msgstr "内部エラー: Vimのリスト要素 %d はありません"
+msgid "internal error: no MNV list item %d"
+msgstr "内部エラー: MNVのリスト要素 %d はありません"
 
 msgid "internal error: not enough list items"
 msgstr "内部エラー: リストに十分な要素がありません"
@@ -9279,8 +9279,8 @@ msgstr "長さ %d のスライスを %d の拡張スライスに割り当てようとしました"
 msgid "failed to add item to list"
 msgstr "リストへの要素追加に失敗しました"
 
-msgid "cannot delete vim.List attributes"
-msgstr "vim.List 属性は消せません"
+msgid "cannot delete mnv.List attributes"
+msgstr "mnv.List 属性は消せません"
 
 msgid "cannot modify fixed list"
 msgstr "固定されたリストは変更できません"
@@ -9291,8 +9291,8 @@ msgstr "タプルのコンストラクタはキーワード引数を受け付けません"
 msgid "tuple index out of range"
 msgstr "タプルの範囲外のインデックスです"
 
-msgid "cannot delete vim.Tuple attributes"
-msgstr "vim.Tuple 属性は消せません"
+msgid "cannot delete mnv.Tuple attributes"
+msgstr "mnv.Tuple 属性は消せません"
 
 msgid "cannot modify fixed tuple"
 msgstr "固定されたタプルは変更できません"
@@ -9354,16 +9354,16 @@ msgid "mark name must be a single character"
 msgstr "マーク名は1文字のアルファベットでなければなりません"
 
 #, c-format
-msgid "expected vim.Buffer object, but got %s"
-msgstr "vim.Bufferオブジェクトが期待されているのに %s でした"
+msgid "expected mnv.Buffer object, but got %s"
+msgstr "mnv.Bufferオブジェクトが期待されているのに %s でした"
 
 #, c-format
 msgid "failed to switch to buffer %d"
 msgstr "指定されたバッファ %d への切り替えに失敗しました"
 
 #, c-format
-msgid "expected vim.Window object, but got %s"
-msgstr "vim.Windowオブジェクトが期待されているのに %s でした"
+msgid "expected mnv.Window object, but got %s"
+msgstr "mnv.Windowオブジェクトが期待されているのに %s でした"
 
 msgid "failed to find window in the current tab page"
 msgstr "現在のタブには指定されたウィンドウがありませんでした"
@@ -9372,8 +9372,8 @@ msgid "did not switch to the specified window"
 msgstr "指定されたウィンドウに切り替えませんでした"
 
 #, c-format
-msgid "expected vim.TabPage object, but got %s"
-msgstr "vim.TabPageオブジェクトが期待されているのに %s でした"
+msgid "expected mnv.TabPage object, but got %s"
+msgstr "mnv.TabPageオブジェクトが期待されているのに %s でした"
 
 msgid "did not switch to the specified tab page"
 msgstr "指定されたタブページに切り替えませんでした"
@@ -9382,16 +9382,16 @@ msgid "failed to run the code"
 msgstr "コードの実行に失敗しました"
 
 #, c-format
-msgid "unable to convert %s to a Vim dictionary"
-msgstr "%s をVimの辞書に変換できません"
+msgid "unable to convert %s to a MNV dictionary"
+msgstr "%s をMNVの辞書に変換できません"
 
 #, c-format
-msgid "unable to convert %s to a Vim list"
-msgstr "%s をVimのリストに変換できません"
+msgid "unable to convert %s to a MNV list"
+msgstr "%s をMNVのリストに変換できません"
 
 #, c-format
-msgid "unable to convert %s to a Vim structure"
-msgstr "%s をVimの構造体に変換できません"
+msgid "unable to convert %s to a MNV structure"
+msgstr "%s をMNVの構造体に変換できません"
 
 msgid "internal error: NULL reference passed"
 msgstr "内部エラー: NULL参照が渡されました"
@@ -9402,26 +9402,26 @@ msgstr "内部エラー: 無効な値型です"
 msgid ""
 "Failed to set path hook: sys.path_hooks is not a list\n"
 "You should now do the following:\n"
-"- append vim.path_hook to sys.path_hooks\n"
-"- append vim.VIM_SPECIAL_PATH to sys.path\n"
+"- append mnv.path_hook to sys.path_hooks\n"
+"- append mnv.VIM_SPECIAL_PATH to sys.path\n"
 msgstr ""
 "パスフックの設定に失敗しました: sys.path_hooks がリストではありません\n"
 "すぐに下記を実施してください:\n"
-"- vim.path_hooks を sys.path_hooks へ追加\n"
-"- vim.VIM_SPECIAL_PATH を sys.path へ追加\n"
+"- mnv.path_hooks を sys.path_hooks へ追加\n"
+"- mnv.VIM_SPECIAL_PATH を sys.path へ追加\n"
 
 msgid ""
 "Failed to set path: sys.path is not a list\n"
-"You should now append vim.VIM_SPECIAL_PATH to sys.path"
+"You should now append mnv.VIM_SPECIAL_PATH to sys.path"
 msgstr ""
 "パスの設定に失敗しました: sys.path がリストではありません\n"
-"すぐに vim.VIM_SPECIAL_PATH を sys.path に追加してください"
+"すぐに mnv.VIM_SPECIAL_PATH を sys.path に追加してください"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*.*)\t*.*\n"
 msgstr ""
-"Vimマクロファイル (*.vim)\t*.vim\n"
+"MNVマクロファイル (*.mnv)\t*.mnv\n"
 "すべてのファイル (*.*)\t*.*\n"
 
 msgid "All Files (*.*)\t*.*\n"
@@ -9432,19 +9432,19 @@ msgid ""
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VB code (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 msgstr ""
 "すべてのファイル (*.*)\t*.*\n"
 "Cソース (*.c, *.h)\t*.c;*.h\n"
 "C++ソース (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
 "VBコード (*.bas, *.frm)\t*.bas;*.frm\n"
-"Vimファイル (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNVファイル (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 
 msgid ""
-"Vim macro files (*.vim)\t*.vim\n"
+"MNV macro files (*.mnv)\t*.mnv\n"
 "All Files (*)\t*\n"
 msgstr ""
-"Vim マクロファイル (*.vim)\t*.vim\n"
+"MNV マクロファイル (*.mnv)\t*.mnv\n"
 "すべてのファイル (*)\t*\n"
 
 msgid "All Files (*)\t*\n"
@@ -9454,12 +9454,12 @@ msgid ""
 "All Files (*)\t*\n"
 "C source (*.c, *.h)\t*.c;*.h\n"
 "C++ source (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vim files (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNV files (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 msgstr ""
 "すべてのファイル (*)\t*\n"
 "Cソース (*.c, *.h)\t*.c;*.h\n"
 "C++ソース (*.cpp, *.hpp)\t*.cpp;*.hpp\n"
-"Vimファイル (*.vim, _vimrc, _gvimrc)\t*.vim;_vimrc;_gvimrc\n"
+"MNVファイル (*.mnv, _vimrc, _gvimrc)\t*.mnv;_vimrc;_gvimrc\n"
 
 msgid "GVim"
 msgstr "GVim"
@@ -9473,8 +9473,8 @@ msgstr "テキストファイルを編集します"
 msgid "Text;editor;"
 msgstr "テキスト;エディタ;"
 
-msgid "Vim"
-msgstr "Vim"
+msgid "MNV"
+msgstr "MNV"
 
 msgid "(local to window)"
 msgstr "(ウィンドウについてローカル)"
@@ -9902,8 +9902,8 @@ msgstr "このウィンドウのカーソルは他の同調ウィンドウと一緒に動く"
 msgid "size of a terminal window"
 msgstr "端末ウィンドウのサイズ"
 
-msgid "key that precedes Vim commands in a terminal window"
-msgstr "端末ウィンドウで Vim のコマンドの前に入力するキー"
+msgid "key that precedes MNV commands in a terminal window"
+msgstr "端末ウィンドウで MNV のコマンドの前に入力するキー"
 
 msgid "max number of lines to keep for scrollback in a terminal window"
 msgstr "端末ウィンドウでスクロールバックのために保持する最大行数"
@@ -9980,8 +9980,8 @@ msgstr "ウィンドウタイトルに使われる 'columns' の割合 (パーセント単位)"
 msgid "when not empty, string to be used for the window title"
 msgstr "空でないとき、ウィンドウタイトルに使われる文字列"
 
-msgid "string to restore the title to when exiting Vim"
-msgstr "Vim の終了時にタイトルに復元する文字列"
+msgid "string to restore the title to when exiting MNV"
+msgstr "MNV の終了時にタイトルに復元する文字列"
 
 msgid "set the text of the icon for this window"
 msgstr "このウィンドウのアイコンのテキストを設定"
@@ -9989,8 +9989,8 @@ msgstr "このウィンドウのアイコンのテキストを設定"
 msgid "when not empty, text for the icon of this window"
 msgstr "空でないとき、このウィンドウのアイコンに使われるテキスト"
 
-msgid "restore the screen contents when exiting Vim"
-msgstr "Vim の終了時に画面の内容を復元する"
+msgid "restore the screen contents when exiting MNV"
+msgstr "MNV の終了時に画面の内容を復元する"
 
 msgid "timeout used for terminal OSC responses"
 msgstr "端末のOSC応答のタイムアウト"
@@ -10595,8 +10595,8 @@ msgstr "'autowrite' と同様だが、より多くのコマンドで動作する"
 msgid "always write without asking for confirmation"
 msgstr "常に確認無しに書込む"
 
-msgid "automatically read a file when it was modified outside of Vim"
-msgstr "Vim の外でファイルが変更された際に自動的に読込む"
+msgid "automatically read a file when it was modified outside of MNV"
+msgstr "MNV の外でファイルが変更された際に自動的に読込む"
 
 msgid "keep oldest version of a file; specifies file name extension"
 msgstr "ファイルの最古のバージョンを保持; ファイルの拡張子を指定"
@@ -10844,10 +10844,10 @@ msgid "multi-byte characters"
 msgstr "マルチバイト文字"
 
 msgid ""
-"character encoding used in Vim: \"latin1\", \"utf-8\",\n"
+"character encoding used in MNV: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\", etc."
 msgstr ""
-"Vim で使用する文字エンコーディング: \"latin1\", \"utf-8\",\n"
+"MNV で使用する文字エンコーディング: \"latin1\", \"utf-8\",\n"
 "\"euc-jp\", \"big5\" など"
 
 msgid "character encoding for the current file"

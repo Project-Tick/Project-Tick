@@ -1,5 +1,5 @@
 Test for buffer name completion when 'wildoptions' contains "fuzzy"
-(Confirm that Vim does not crash)
+(Confirm that MNV does not crash)
 
 STARTTEST
 :set wildoptions=fuzzy

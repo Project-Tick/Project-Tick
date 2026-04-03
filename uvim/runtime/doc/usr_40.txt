@@ -1,13 +1,13 @@
-*usr_40.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_40.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			      Make new commands
 
 
-Vim is an extensible editor.  You can take a sequence of commands you use
+MNV is an extensible editor.  You can take a sequence of commands you use
 often and turn it into a new command.  Or redefine an existing command.
 Autocommands make it possible to execute commands automatically.
 
@@ -15,7 +15,7 @@ Autocommands make it possible to execute commands automatically.
 |40.2|	Defining command-line commands
 |40.3|	Autocommands
 
-     Next chapter: |usr_41.txt|  Write a Vim script
+     Next chapter: |usr_41.txt|  Write a MNV script
  Previous chapter: |usr_32.txt|  The undo tree
 Table of contents: |usr_toc.txt|
 
@@ -26,7 +26,7 @@ A simple mapping was explained in section |05.4|.  The principle is that one
 sequence of key strokes is translated into another sequence of key strokes.
 This is a simple, yet powerful mechanism.
    The simplest form is that one key is mapped to a sequence of keys.  Since
-the function keys, except <F1>, have no predefined meaning in Vim, these are
+the function keys, except <F1>, have no predefined meaning in MNV, these are
 good choices to map.  Example: >
 
 	:map <F2> GoDate: <Esc>:read !date<CR>kJ
@@ -38,7 +38,7 @@ inserted and <Esc> takes you out of insert mode.
 notation.  You type these as separate characters, not by pressing the key
 itself.  This makes the mappings better readable and you can copy and paste
 the text without problems.
-   The ":" character takes Vim to the command line.  The ":read !date" command
+   The ":" character takes MNV to the command line.  The ":read !date" command
 reads the output from the "date" command and appends it below the current
 line.  The <CR> is required to execute the ":read" command.
    At this point of execution the text looks like this:
@@ -128,7 +128,7 @@ For Normal mode <F2> is mapped to go to the last line, and then behave like
 also uses <F3>.  Then <F3> is mapped to do the actual work.
 
 Suppose you hardly ever use Ex mode, and want to use the "Q" command to format
-text (this was so in old versions of Vim).  This mapping will do it: >
+text (this was so in old versions of MNV).  This mapping will do it: >
 
 	:map Q gq
 
@@ -144,7 +144,7 @@ you don't get to Ex mode at all.
 
 	:noremap gQ Q
 
-Now Vim knows that the "Q" is not to be inspected for mappings that apply to
+Now MNV knows that the "Q" is not to be inspected for mappings that apply to
 it.  There is a similar command for every mode:
 
 	:noremap	Normal, Visual and Operator-pending
@@ -161,7 +161,7 @@ RECURSIVE MAPPING
 When a mapping triggers itself, it will run forever.  This can be used to
 repeat an action an unlimited number of times.
    For example, you have a list of files that contain a version number in the
-first line.  You edit these files with "vim *.txt".  You are now editing the
+first line.  You edit these files with "mnv *.txt".  You are now editing the
 first file.  Define this mapping: >
 
 	:map ,, :s/5.1/5.2/<CR>:wnext<CR>,,
@@ -245,14 +245,14 @@ inserted in the text while you type them.  When the abbreviation is triggered
 these characters are deleted and replaced by what the abbreviation produces.
 When typing the characters for a mapping, nothing is inserted until you type
 the last character that triggers it.  If the 'showcmd' option is set, the
-typed characters are displayed in the last line of the Vim window.
+typed characters are displayed in the last line of the MNV window.
    An exception is when a mapping is ambiguous.  Suppose you have done two
 mappings: >
 
 	:imap aa foo
 	:imap aaa bar
 
-Now, when you type "aa", Vim doesn't know if it should apply the first or the
+Now, when you type "aa", MNV doesn't know if it should apply the first or the
 second mapping.  It waits for another character to be typed.  If it is an "a",
 the second mapping is applied and results in "bar".  If it is a space, for
 example, the first mapping is applied, resulting in "foo", and then the space
@@ -281,13 +281,13 @@ There must be no space after <Nop>.
 ==============================================================================
 *40.2*	Defining command-line commands
 
-The Vim editor enables you to define your own commands.  You execute these
+The MNV editor enables you to define your own commands.  You execute these
 commands just like any other Command-line mode command.
    To define a command, use the ":command" command, as follows: >
 
 	:command DeleteFirst 1delete
 
-Now when you execute the command ":DeleteFirst" Vim executes ":1delete", which
+Now when you execute the command ":DeleteFirst" MNV executes ":1delete", which
 deletes the first line.
 
 	Note:
@@ -334,7 +334,7 @@ Now when you type >
 
 	:Say Hello World
 
-Vim echoes "Hello World".  However, if you add a double quote, it won't work.
+MNV echoes "Hello World".  However, if you add a double quote, it won't work.
 For example: >
 
 	:Say he said "hello"
@@ -361,7 +361,7 @@ Executes the following command: >
 
 LINE RANGE
 
-Some commands take a range as their argument.  To tell Vim that you are
+Some commands take a range as their argument.  To tell MNV that you are
 defining such a command, you need to specify a -range option.  The values for
 this option are as follows:
 
@@ -428,7 +428,7 @@ More details about all this in the reference manual: |user-commands|.
 
 An autocommand is a command that is executed automatically in response to some
 event, such as a file being read or written or a buffer change.  Through the
-use of autocommands you can train Vim to edit compressed files, for example.
+use of autocommands you can train MNV to edit compressed files, for example.
 That is used in the |gzip| plugin.
    Autocommands are very powerful.  Use them with care and they will help you
 avoid typing many commands.  Use them carelessly and they will cause a lot of
@@ -450,7 +450,7 @@ to a file.  This will make that happen: >
 "BufWritePre" is the event for which this autocommand is triggered: Just
 before (pre) writing a buffer to a file.  The "*" is a pattern to match with
 the file name.  In this case it matches all files.
-   With this command enabled, when you do a ":write", Vim checks for any
+   With this command enabled, when you do a ":write", MNV checks for any
 matching BufWritePre autocommands and executes them, and then it
 performs the ":write".
    The general form of the :autocmd command is as follows: >
@@ -486,14 +486,14 @@ right, define this autocommand: >
 
 	:autocmd BufReadPost *.gsm  set filetype=asm
 
-If Vim is able to detect the type of file, it will set the 'filetype' option
+If MNV is able to detect the type of file, it will set the 'filetype' option
 for you.  This triggers the Filetype event.  Use this to do something when a
 certain type of file is edited.  For example, to load a list of abbreviations
 for text files: >
 
-	:autocmd Filetype text  source ~/.vim/abbrevs.vim
+	:autocmd Filetype text  source ~/.mnv/abbrevs.mnv
 
-When starting to edit a new file, you could make Vim insert a skeleton: >
+When starting to edit a new file, you could make MNV insert a skeleton: >
 
 	:autocmd BufNewFile *.[ch]  0read ~/skeletons/skel.c
 
@@ -513,11 +513,11 @@ used ones:
 	.		Matches a dot
 	a{b,c}		Matches "ab" and "ac"
 
-When the pattern includes a slash (/) Vim will compare directory names.
+When the pattern includes a slash (/) MNV will compare directory names.
 Without the slash only the last part of a file name is used.  For example,
 "*.txt" matches "/home/biep/readme.txt".  The pattern "/home/biep/*" would
 also match it.  But "home/foo/*.txt" wouldn't.
-   When including a slash, Vim matches the pattern against both the full path
+   When including a slash, MNV matches the pattern against both the full path
 of the file ("/home/biep/readme.txt") and the relative path (e.g.,
 "biep/readme.txt").
 
@@ -640,7 +640,7 @@ to pass unprintable characters in a convenient way.  Example: >
 		\ 1read !date
 
 This also shows the use of a backslash to break a long command into more
-lines.  This can be used in Vim scripts (not at the command line).
+lines.  This can be used in MNV scripts (not at the command line).
 
 When you want the autocommand do something complicated, which involves jumping
 around in the file and then returning to the original position, you may want
@@ -665,6 +665,6 @@ To set it back to the normal behavior, make 'eventignore' empty: >
 
 ==============================================================================
 
-Next chapter: |usr_41.txt|  Write a Vim script
+Next chapter: |usr_41.txt|  Write a MNV script
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

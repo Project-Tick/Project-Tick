@@ -1,6 +1,6 @@
 #define DEFINE_INLINES
 
-// vim: set sw=2 :
+// mnv: set sw=2 :
 #include "vterm_internal.h"
 
 #include <stdio.h>

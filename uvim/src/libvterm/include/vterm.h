@@ -12,16 +12,16 @@ extern "C" {
 
 #include "vterm_keycodes.h"
 
-// VIM: use TRUE and FALSE instead of true and false
+// MNV: use TRUE and FALSE instead of true and false
 #define TRUE 1
 #define FALSE 0
 
-// VIM: from stdint.h
+// MNV: from stdint.h
 typedef unsigned char		uint8_t;
 typedef unsigned short		uint16_t;
 typedef unsigned int		uint32_t;
 
-// VIM: define max screen cols and rows
+// MNV: define max screen cols and rows
 #define VTERM_MAX_COLS 1000
 #define VTERM_MAX_ROWS 1000
 
@@ -137,7 +137,7 @@ typedef enum {
   VTERM_COLOR_DEFAULT_MASK = 0x06,
 
   /**
-   * VIM: If set, indicates that the color is invalid.
+   * MNV: If set, indicates that the color is invalid.
    */
   VTERM_COLOR_INVALID = 0x08
 } VTermColorType;
@@ -178,7 +178,7 @@ typedef enum {
  */
 #define VTERM_COLOR_IS_INVALID(col) (!!((col)->type & VTERM_COLOR_INVALID))
 
-// VIM: this was a union, but that doesn't always work.
+// MNV: this was a union, but that doesn't always work.
 typedef struct {
   /**
    * Tag indicating which member is actually valid.
@@ -261,7 +261,7 @@ typedef enum {
   VTERM_PROP_CURSORSHAPE,       // number
   VTERM_PROP_MOUSE,             // number
   VTERM_PROP_FOCUSREPORT,       // bool
-  VTERM_PROP_CURSORCOLOR,       // VIM - string
+  VTERM_PROP_CURSORCOLOR,       // MNV - string
 
   VTERM_N_PROPS
 } VTermProp;
@@ -405,7 +405,7 @@ void vterm_mouse_button(VTerm *vt, int button, int pressed, VTermModifier mod);
 #define CSI_ARG(a)          ((a) & CSI_ARG_MASK)
 
 /* Can't use -1 to indicate a missing argument; use this instead */
-// VIM: changed 31 to 30 to avoid an overflow warning
+// MNV: changed 31 to 30 to avoid an overflow warning
 #define CSI_ARG_MISSING ((1<<30)-1)
 
 #define CSI_ARG_IS_MISSING(a) (CSI_ARG(a) == CSI_ARG_MISSING)
@@ -454,7 +454,7 @@ typedef struct {
   int (*sb_clear)(void *user);
 } VTermStateCallbacks;
 
-// VIM: added
+// MNV: added
 typedef struct {
   VTermPos pos;
   int	   buttons;
@@ -495,7 +495,7 @@ void *vterm_state_get_unrecognised_fbdata(VTermState *state);
 void vterm_state_reset(VTermState *state, int hard);
 
 void vterm_state_get_cursorpos(const VTermState *state, VTermPos *cursorpos);
-// VIM: added
+// MNV: added
 void vterm_state_get_mousestate(const VTermState *state, VTermMouseState *mousestate);
 void vterm_state_get_default_colors(const VTermState *state, VTermColor *default_fg, VTermColor *default_bg);
 void vterm_state_get_palette_color(const VTermState *state, int index, VTermColor *col);

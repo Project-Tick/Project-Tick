@@ -1,4 +1,4 @@
-// VIM_TEST_SETUP highlight link javaConceptKind NonText
+// MNV_TEST_SETUP highlight link javaConceptKind NonText
 
 
 

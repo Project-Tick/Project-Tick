@@ -1,13 +1,13 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #define LN_MAX_BUFS 8
 #define LN_DECISION_MAX 255  // pow(2, LN_MAX_BUFS(8)) - 1 = 255
@@ -434,7 +434,7 @@ linematch_nbuffers(
     *decisions = lalloc(sizeof(int) * memsize_decisions, TRUE);
     if (*decisions == NULL)
     {
-	vim_free(diffcmppath);
+	mnv_free(diffcmppath);
 	return 0;
     }
 
@@ -454,7 +454,7 @@ linematch_nbuffers(
 	(*decisions)[n_optimal - 1 - i] = tmp;
     }
 
-    vim_free(diffcmppath);
+    mnv_free(diffcmppath);
 
     return n_optimal;
 }

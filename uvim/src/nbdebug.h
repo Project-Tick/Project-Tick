@@ -1,10 +1,10 @@
 /* vi:set ts=8 sw=8 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *			Visual Workshop integration by Gordon Prieur
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 
@@ -38,8 +38,8 @@
 
 typedef enum {
 		WT_ENV = 1,		// look for env var if set
-		WT_WAIT,		// look for ~/.gvimwait if set
-		WT_STOP			// look for ~/.gvimstop if set
+		WT_WAIT,		// look for ~/.gmnvwait if set
+		WT_STOP			// look for ~/.gmnvstop if set
 } WtWait;
 
 

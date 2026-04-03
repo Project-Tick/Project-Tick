@@ -1,0 +1,15 @@
+" MNV filetype plugin file
+" Language:      TT2 embedded with HTML
+" Maintainer:    mnv-perl <mnv-perl@googlegroups.com> (need to be subscribed to post)
+" Homepage:      https://github.com/mnv-perl/mnv-perl
+" Bugs/requests: https://github.com/mnv-perl/mnv-perl/issues
+" License:       MNV License (see :help license)
+" Last Change:   2018 Mar 28
+
+" Only do this when not done yet for this buffer
+if exists("b:did_ftplugin")
+    finish
+endif
+
+" Just use the HTML plugin for now.
+runtime! ftplugin/html.mnv ftplugin/html_*.mnv ftplugin/html/*.mnv

@@ -1,13 +1,13 @@
-*usr_27.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_27.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			 Search commands and patterns
 
 
-In chapter 3 a few simple search patterns were mentioned |03.9|.  Vim can do
+In chapter 3 a few simple search patterns were mentioned |03.9|.  MNV can do
 much more complex searches.  This chapter explains the most often used ones.
 A detailed specification can be found here: |pattern|
 Options affecting how search is done can be found here: |search-options|
@@ -29,7 +29,7 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *27.1*	Ignoring case
 
-By default, Vim's searches are case sensitive.  Therefore, "include",
+By default, MNV's searches are case sensitive.  Therefore, "include",
 "INCLUDE", and "Include" are three different words and a search will match
 only one of them.
    Now switch on the 'ignorecase' option: >
@@ -97,7 +97,7 @@ not found the string by that time, it starts from the beginning and searches
 from the start of the file to the cursor location.
    Keep in mind that when repeating the "n" command to search for the next
 match, you eventually get back to the first match.  If you don't notice this
-you keep searching forever!  To give you a hint, Vim displays this message:
+you keep searching forever!  To give you a hint, MNV displays this message:
 
 	search hit BOTTOM, continuing at TOP ~
 
@@ -111,7 +111,7 @@ this is by switching on the 'ruler' option: >
 
 	:set ruler
 
-Vim will display the cursor position in the lower righthand corner of the
+MNV will display the cursor position in the lower righthand corner of the
 window (in the status line if there is one).  It looks like this:
 
 	101,29       84% ~
@@ -140,7 +140,7 @@ keep searching until you see this message.
 *27.3*	Offsets
 
 By default, the search command leaves the cursor positioned on the beginning
-of the pattern.  You can tell Vim to leave it some other place by specifying
+of the pattern.  You can tell MNV to leave it some other place by specifying
 an offset.  For the forward search command "/", the offset is specified by
 appending a slash (/) and the offset: >
 
@@ -148,7 +148,7 @@ appending a slash (/) and the offset: >
 
 This command searches for the pattern "default" and then moves to the
 beginning of the second line past the pattern.  Using this command on the
-paragraph above, Vim finds the word "default" in the first line.  Then the
+paragraph above, MNV finds the word "default" in the first line.  Then the
 cursor is moved two lines down and lands on "an offset".
 
 If the offset is a simple number, the cursor will be placed at the beginning
@@ -228,14 +228,14 @@ specify a line offset, this can cause trouble.  For example: >
 	/const/-2
 
 This finds the next word "const" and then moves two lines up.  If you
-use "n" to search again, Vim could start at the current position and find the
+use "n" to search again, MNV could start at the current position and find the
 same "const" match.  Then using the offset again, you would be back where you
 started.  You would be stuck!
    It could be worse: Suppose there is another match with "const" in the next
 line.  Then repeating the forward search would find this match and move two
 lines up.  Thus you would actually move the cursor back!
 
-When you specify a character offset, Vim will compensate for this.  Thus the
+When you specify a character offset, MNV will compensate for this.  Thus the
 search starts a few characters forward or backward, so that the same match
 isn't found again.
 
@@ -399,7 +399,7 @@ This matches "foo" and "3!x", including the double quotes.
 
 PREDEFINED RANGES
 
-A number of ranges are used very often.  Vim provides a shortcut for these.
+A number of ranges are used very often.  MNV provides a shortcut for these.
 For example: >
 
 	/\a
@@ -472,7 +472,7 @@ The character classes are:
 ==============================================================================
 *27.8*	Matching a line break
 
-Vim can find a pattern that includes a line break.  You need to specify where
+MNV can find a pattern that includes a line break.  You need to specify where
 the line break happens, because all items mentioned so far don't match a line
 break.
    To check for a line break in a specific place, use the "\n" item: >
@@ -563,4 +563,4 @@ and "\w" for "[0-9A-Za-z_]".
 
 Next chapter: |usr_28.txt|  Folding
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

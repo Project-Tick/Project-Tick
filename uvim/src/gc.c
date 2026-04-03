@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * gc.c: Garbage Collection
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -94,7 +94,7 @@ garbage_collect(int testing)
 	if (exestack.ga_len + n < exestack.ga_maxlen)
 	{
 	    new_len = (size_t)exestack.ga_itemsize * (exestack.ga_len + n);
-	    pp = vim_realloc(exestack.ga_data, new_len);
+	    pp = mnv_realloc(exestack.ga_data, new_len);
 	    if (pp == NULL)
 		return FAIL;
 	    exestack.ga_maxlen = exestack.ga_len + n;
@@ -169,7 +169,7 @@ garbage_collect(int testing)
     abort = abort || set_ref_in_loopvars(copyID);
 
     // v: vars
-    abort = abort || garbage_collect_vimvars(copyID);
+    abort = abort || garbage_collect_mnvvars(copyID);
 
     // callbacks in buffers
     abort = abort || set_ref_in_buffers(copyID);

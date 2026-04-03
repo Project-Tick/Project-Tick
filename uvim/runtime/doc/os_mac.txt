@@ -1,30 +1,30 @@
-*os_mac.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*os_mac.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar et al.
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar et al.
 
 
 					*mac* *Mac* *macintosh* *Macintosh*
 
-This file documents the particularities of the Macintosh version of Vim.
+This file documents the particularities of the Macintosh version of MNV.
 
 NOTE: This file is a bit outdated.  You might find more useful info here:
-	http://macvim.org/
+	http://macmnv.org/
 
 1. Filename Convention		|mac-filename|
-2. .vimrc and .vim files	|mac-vimfile|
+2. .mnvrc and .mnv files	|mac-mnvfile|
 3. Standard mappings		|mac-standard-mappings|
 4. FAQ				|mac-faq|
 5. Known Lack			|mac-lack|
 6. Mac Bug Report		|mac-bug|
-7. Compiling Vim		|mac-compile|
+7. Compiling MNV		|mac-compile|
 8. The darwin feature		|mac-darwin-feature|
 
-There was a Mac port for version 3.0 of Vim.  Here are the first few lines
+There was a Mac port for version 3.0 of MNV.  Here are the first few lines
 from the old file:
 
-VIM Release Notes
-Initial Macintosh release, VIM version 3.0
+MNV Release Notes
+Initial Macintosh release, MNV version 3.0
 19 October 1994
 
 Eric Fischer
@@ -35,8 +35,8 @@ Indianapolis IN 46220 USA
 ==============================================================================
 1. Filename Convention					*mac-filename*
 
-Starting with Vim version 7 you can just use the unix path separators with
-Vim.  In order to determine if the specified filename is relative to the
+Starting with MNV version 7 you can just use the unix path separators with
+MNV.  In order to determine if the specified filename is relative to the
 current folder or absolute (i.e. relative to the "Desktop"), the following
 algorithm is used:
 
@@ -54,22 +54,22 @@ algorithm is used:
 		:e os_mac.c
 <	Edit the file "os_mac.c" in the current folder.
 
-You can use the |$VIM| and |$VIMRUNTIME|  variable. >
+You can use the |$MNV| and |$MNVRUNTIME|  variable. >
 
-		:so $VIMRUNTIME:syntax:syntax.vim
+		:so $MNVRUNTIME:syntax:syntax.mnv
 
 ==============================================================================
-2. .vimrc and .vim files				*mac-vimfile*
+2. .mnvrc and .mnv files				*mac-mnvfile*
 
-It is recommended to use Unix style line separators for Vim scripts, thus a
+It is recommended to use Unix style line separators for MNV scripts, thus a
 single newline character.
 
-When starting up Vim will load the $VIMRUNTIME/macmap.vim script to define
+When starting up MNV will load the $MNVRUNTIME/macmap.mnv script to define
 default command-key mappings.
 
 On older systems files starting with a dot "." are discouraged, thus the rc
-files are named "vimrc" or "_vimrc" and "gvimrc" or "_gvimrc".  These files
-can be in any format (mac, dos or unix).  Vim can handle any file format when
+files are named "mnvrc" or "_mnvrc" and "gmnvrc" or "_gmnvrc".  These files
+can be in any format (mac, dos or unix).  MNV can handle any file format when
 the 'nocompatible' option is set, otherwise it will only handle mac format
 files.
 
@@ -87,25 +87,25 @@ Backspace		"*d			cut Visual text
 ==============================================================================
 4. Mac FAQ						*mac-faq*
 
-On the internet:  https://github.com/macvim-dev/macvim/wiki/FAQ
+On the internet:  https://github.com/macmnv-dev/macmnv/wiki/FAQ
 
 Q: I can't enter non-ASCII character in Apple Terminal.
 A: Under Window Settings, Emulation, make sure that "Escape non-ASCII
    characters" is not checked.
 
 Q: How do I start the GUI from the command line?
-A: Assuming that Vim.app is located in /Applications:
-	open /Applications/Vim.app
+A: Assuming that MNV.app is located in /Applications:
+	open /Applications/MNV.app
    Or:
-	/Applications/Vim.app/Contents/MacOS/Vim -g  {arguments}
+	/Applications/MNV.app/Contents/MacOS/MNV -g  {arguments}
 
-Q: How can I set $PATH to something reasonable when I start Vim.app from the
+Q: How can I set $PATH to something reasonable when I start MNV.app from the
    GUI or with open?
-A: The following trick works with most shells.  Put it in your vimrc file.
-   This is included in the system vimrc file included with the binaries
-   distributed at macvim.org . >
-	let s:path = system("echo echo VIMPATH'${PATH}' | $SHELL -l")
-	let $PATH = matchstr(s:path, 'VIMPATH\zs.\{-}\ze\n')
+A: The following trick works with most shells.  Put it in your mnvrc file.
+   This is included in the system mnvrc file included with the binaries
+   distributed at macmnv.org . >
+	let s:path = system("echo echo MNVPATH'${PATH}' | $SHELL -l")
+	let $PATH = matchstr(s:path, 'MNVPATH\zs.\{-}\ze\n')
 
 ==============================================================================
 5. Mac Lack						*mac-lack*
@@ -116,18 +116,18 @@ Shift-Control-2.
 ==============================================================================
 6. Mac Bug Report					*mac-bug*
 
-When reporting any Mac specific bug or feature change, please use the vim-mac
-maillist |vim-mac|.  However, you need to be subscribed.  An alternative is to
-report issues either directly at the Vim github repository:
+When reporting any Mac specific bug or feature change, please use the mnv-mac
+maillist |mnv-mac|.  However, you need to be subscribed.  An alternative is to
+report issues either directly at the MNV github repository:
 
-https://github.com/vim/vim/issues
+https://github.com/Project-Tick/Project-Tick/issues
 
-or for MacVim specific issues, you may report those over here:
+or for MacMNV specific issues, you may report those over here:
 
-https://github.com/macvim-dev/macvim/issues
+https://github.com/macmnv-dev/macmnv/issues
 
 ==============================================================================
-7. Compiling Vim					*mac-compile*
+7. Compiling MNV					*mac-compile*
 
 See the file "src/INSTALLmac.txt" that comes with the source files.
 
@@ -135,24 +135,24 @@ See the file "src/INSTALLmac.txt" that comes with the source files.
 8. The Darwin Feature					*mac-darwin-feature*
 
 If you have a Mac that isn't very old, you will be running OS X, also called
-Darwin.  The last pre-Darwin OS was Mac OS 9.  The darwin feature makes Vim
+Darwin.  The last pre-Darwin OS was Mac OS 9.  The darwin feature makes MNV
 use Darwin-specific properties.
 
 What is accomplished with this feature is two-fold:
 
-- Make Vim interoperable with the system clipboard.
-- Incorporate into Vim a converter module that bridges the gap between some
-  character encodings specific to the platform and those known to Vim.
+- Make MNV interoperable with the system clipboard.
+- Incorporate into MNV a converter module that bridges the gap between some
+  character encodings specific to the platform and those known to MNV.
 
 Needless to say, both are not to be missed for any decent text editor to work
 nicely with other applications running on the same desktop environment.
 
-As Vim is not an application dedicated only to macOS, we need an extra feature
+As MNV is not an application dedicated only to macOS, we need an extra feature
 to add in order for it to offer the same user experience that our users on
 other platforms enjoy to people on macOS.
 
 For brevity, the feature is referred to as "darwin" to signify it one of the
-Vim features that are specific to that particular platform.
+MNV features that are specific to that particular platform.
 
 The feature is a configuration option.  Accordingly, whether it is enabled or
 not is determined at build time; once it is selected to be enabled, it is
@@ -165,7 +165,7 @@ If you want to disable it, pass `--disable-darwin` to the configure script: >
 
     ./configure --disable-darwin <other options>
 
-and then run `make` to build Vim.  The order of the options doesn't matter.
+and then run `make` to build MNV.  The order of the options doesn't matter.
 
 To make sure at runtime whether or not the darwin feature is compiled in, you
 can use `has('osxdarwin')` which returns 1 if the feature is compiled in; 0
@@ -179,8 +179,8 @@ Notable use cases where `--disable-darwin` is turned out to be useful are:
 
 Since both have to make use of X11 inter-client communication for them to work
 properly, and since the communication mechanism can come into conflict with
-the system clipboard, the darwin feature should be disabled to prevent Vim
+the system clipboard, the darwin feature should be disabled to prevent MNV
 from hanging at runtime.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

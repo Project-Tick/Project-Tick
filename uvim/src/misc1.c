@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * misc1.c: functions that didn't seem to fit elsewhere
  */
 
-#include "vim.h"
+#include "mnv.h"
 #include "version.h"
 
 #if defined(__HAIKU__)
@@ -57,7 +57,7 @@ get_leader_len(
     char_u	*saved_flags = NULL;
 
     result = i = 0;
-    while (VIM_ISWHITE(line[i]))    // leading white space is ignored
+    while (MNV_ISWHITE(line[i]))    // leading white space is ignored
 	++i;
 
     /*
@@ -77,7 +77,7 @@ get_leader_len(
 		*flags = list;	    // remember where flags started
 	    prev_list = list;
 	    (void)copy_option_part(&list, part_buf, COM_MAX_LEN, ",");
-	    string = vim_strchr(part_buf, ':');
+	    string = mnv_strchr(part_buf, ':');
 	    if (string == NULL)	    // missing ':', ignore this part
 		continue;
 	    *string++ = NUL;	    // isolate flags from string
@@ -85,28 +85,28 @@ get_leader_len(
 	    // If we found a middle match previously, use that match when this
 	    // is not a middle or end.
 	    if (middle_match_len != 0
-		    && vim_strchr(part_buf, COM_MIDDLE) == NULL
-		    && vim_strchr(part_buf, COM_END) == NULL)
+		    && mnv_strchr(part_buf, COM_MIDDLE) == NULL
+		    && mnv_strchr(part_buf, COM_END) == NULL)
 		break;
 
 	    // When we already found a nested comment, only accept further
 	    // nested comments.
-	    if (got_com && vim_strchr(part_buf, COM_NEST) == NULL)
+	    if (got_com && mnv_strchr(part_buf, COM_NEST) == NULL)
 		continue;
 
 	    // When 'O' flag present and using "O" command skip this one.
-	    if (backward && vim_strchr(part_buf, COM_NOBACK) != NULL)
+	    if (backward && mnv_strchr(part_buf, COM_NOBACK) != NULL)
 		continue;
 
 	    // Line contents and string must match.
 	    // When string starts with white space, must have some white space
 	    // (but the amount does not need to match, there might be a mix of
 	    // TABs and spaces).
-	    if (VIM_ISWHITE(string[0]))
+	    if (MNV_ISWHITE(string[0]))
 	    {
-		if (i == 0 || !VIM_ISWHITE(line[i - 1]))
+		if (i == 0 || !MNV_ISWHITE(line[i - 1]))
 		    continue;  // missing white space
-		while (VIM_ISWHITE(string[0]))
+		while (MNV_ISWHITE(string[0]))
 		    ++string;
 	    }
 	    for (j = 0; string[j] != NUL && string[j] == line[i + j]; ++j)
@@ -116,8 +116,8 @@ get_leader_len(
 
 	    // When 'b' flag used, there must be white space or an
 	    // end-of-line after the string in the line.
-	    if (vim_strchr(part_buf, COM_BLANK) != NULL
-			   && !VIM_ISWHITE(line[i + j]) && line[i + j] != NUL)
+	    if (mnv_strchr(part_buf, COM_BLANK) != NULL
+			   && !MNV_ISWHITE(line[i + j]) && line[i + j] != NUL)
 		continue;
 
 	    // We have found a match, stop searching unless this is a middle
@@ -125,7 +125,7 @@ get_leader_len(
 	    // comment in which case it's better to return the length of the
 	    // end comment and its flags.  Thus we keep searching with middle
 	    // and end matches and use an end match if it matches better.
-	    if (vim_strchr(part_buf, COM_MIDDLE) != NULL)
+	    if (mnv_strchr(part_buf, COM_MIDDLE) != NULL)
 	    {
 		if (middle_match_len == 0)
 		{
@@ -162,7 +162,7 @@ get_leader_len(
 	result = i;
 
 	// Include any trailing white space.
-	while (VIM_ISWHITE(line[i]))
+	while (MNV_ISWHITE(line[i]))
 	    ++i;
 
 	if (include_space)
@@ -170,7 +170,7 @@ get_leader_len(
 
 	// If this comment doesn't nest, stop here.
 	got_com = TRUE;
-	if (vim_strchr(part_buf, COM_NEST) == NULL)
+	if (mnv_strchr(part_buf, COM_NEST) == NULL)
 	    break;
     }
     return result;
@@ -215,7 +215,7 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	     * put string at start of string.
 	     */
 	    (void)copy_option_part(&list, part_buf, COM_MAX_LEN, ",");
-	    string = vim_strchr(part_buf, ':');
+	    string = mnv_strchr(part_buf, ':');
 	    if (string == NULL)	// If everything is fine, this cannot actually
 				// happen.
 		continue;
@@ -228,11 +228,11 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	     * (but the amount does not need to match, there might be a mix of
 	     * TABs and spaces).
 	     */
-	    if (VIM_ISWHITE(string[0]))
+	    if (MNV_ISWHITE(string[0]))
 	    {
-		if (i == 0 || !VIM_ISWHITE(line[i - 1]))
+		if (i == 0 || !MNV_ISWHITE(line[i - 1]))
 		    continue;
-		while (VIM_ISWHITE(*string))
+		while (MNV_ISWHITE(*string))
 		    ++string;
 	    }
 	    for (j = 0; string[j] != NUL && string[j] == line[i + j]; ++j)
@@ -244,18 +244,18 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	     * When 'b' flag used, there must be white space or an
 	     * end-of-line after the string in the line.
 	     */
-	    if (vim_strchr(part_buf, COM_BLANK) != NULL
-		    && !VIM_ISWHITE(line[i + j]) && line[i + j] != NUL)
+	    if (mnv_strchr(part_buf, COM_BLANK) != NULL
+		    && !MNV_ISWHITE(line[i + j]) && line[i + j] != NUL)
 		continue;
 
-	    if (vim_strchr(part_buf, COM_MIDDLE) != NULL)
+	    if (mnv_strchr(part_buf, COM_MIDDLE) != NULL)
 	    {
 		// For a middlepart comment, only consider it to match if
 		// everything before the current position in the line is
 		// whitespace.  Otherwise we would think we are inside a
 		// comment if the middle part appears somewhere in the middle
 		// of the line.  E.g. for C the "*" appears often.
-		for (j = 0; VIM_ISWHITE(line[j]) && j <= i; j++)
+		for (j = 0; MNV_ISWHITE(line[j]) && j <= i; j++)
 		    ;
 		if (j < i)
 		    continue;
@@ -282,7 +282,7 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	    /*
 	     * If this comment nests, continue searching.
 	     */
-	    if (vim_strchr(part_buf, COM_NEST) != NULL)
+	    if (mnv_strchr(part_buf, COM_NEST) != NULL)
 		continue;
 
 	    lower_check_bound = i;
@@ -292,7 +292,7 @@ get_last_leader_offset(char_u *line, char_u **flags)
 	    // lower_check_bound so that we make sure that we have determined
 	    // the comment leader correctly.
 
-	    while (VIM_ISWHITE(*com_leader))
+	    while (MNV_ISWHITE(*com_leader))
 		++com_leader;
 	    len1 = (int)STRLEN(com_leader);
 
@@ -303,9 +303,9 @@ get_last_leader_offset(char_u *line, char_u **flags)
 		(void)copy_option_part(&list, part_buf2, COM_MAX_LEN, ",");
 		if (flags_save == com_flags)
 		    continue;
-		string = vim_strchr(part_buf2, ':');
+		string = mnv_strchr(part_buf2, ':');
 		++string;
-		while (VIM_ISWHITE(*string))
+		while (MNV_ISWHITE(*string))
 		    ++string;
 		len2 = (int)STRLEN(string);
 		if (len2 == 0)
@@ -737,7 +737,7 @@ get_mode(char_u *buf)
     else if ((State & MODE_CMDLINE) || exmode_active)
     {
 	buf[i++] = 'c';
-	if (exmode_active == EXMODE_VIM)
+	if (exmode_active == EXMODE_MNV)
 	    buf[i++] = 'v';
 	else if (exmode_active == EXMODE_NORMAL)
 	    buf[i++] = 'e';
@@ -788,7 +788,7 @@ f_mode(typval_T *argvars, typval_T *rettv)
 {
     char_u	buf[MODE_MAX_LENGTH];
 
-    if (in_vim9script() && check_for_opt_bool_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_bool_arg(argvars, 0) == FAIL)
 	return;
 
     get_mode(buf);
@@ -798,14 +798,14 @@ f_mode(typval_T *argvars, typval_T *rettv)
     if (!non_zero_arg(&argvars[0]))
 	buf[1] = NUL;
 
-    rettv->vval.v_string = vim_strsave(buf);
+    rettv->vval.v_string = mnv_strsave(buf);
     rettv->v_type = VAR_STRING;
 }
 
     static void
 may_add_state_char(garray_T *gap, char_u *include, int c)
 {
-    if (include == NULL || vim_strchr(include, c) != NULL)
+    if (include == NULL || mnv_strchr(include, c) != NULL)
 	ga_append(gap, c);
 }
 
@@ -819,7 +819,7 @@ f_state(typval_T *argvars, typval_T *rettv)
     char_u	*include = NULL;
     int		i;
 
-    if (in_vim9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_string_arg(argvars, 0) == FAIL)
 	return;
 
     ga_init2(&ga, 1, 20);
@@ -891,9 +891,9 @@ get_keystroke(void)
 	    // Need some more space. This might happen when receiving a long
 	    // escape sequence.
 	    buflen += 100;
-	    buf = vim_realloc(buf, buflen);
+	    buf = mnv_realloc(buf, buflen);
 	    if (buf == NULL)
-		vim_free(t_buf);
+		mnv_free(t_buf);
 	    maxlen = (buflen - 6 - len) / 3;
 	}
 	if (buf == NULL)
@@ -972,7 +972,7 @@ get_keystroke(void)
 #endif
 	break;
     }
-    vim_free(buf);
+    mnv_free(buf);
 
     mapped_ctrl_c = save_mapped_ctrl_c;
     return merge_modifyOtherKeys(n, &mod_mask);
@@ -980,7 +980,7 @@ get_keystroke(void)
 
 // For overflow detection, add a digit safely to an int value.
     static int
-vim_append_digit_int(int *value, int digit)
+mnv_append_digit_int(int *value, int digit)
 {
     int x = *value;
     if (x > ((INT_MAX - digit) / 10))
@@ -1019,9 +1019,9 @@ get_number(
     {
 	windgoto(msg_row, cmdline_col_off + msg_col);
 	c = safe_vgetc();
-	if (VIM_ISDIGIT(c))
+	if (MNV_ISDIGIT(c))
 	{
-	    if (vim_append_digit_int(&n, c - '0') == FAIL)
+	    if (mnv_append_digit_int(&n, c - '0') == FAIL)
 		return 0;
 	    msg_putchar(c);
 	    ++typed;
@@ -1133,13 +1133,13 @@ msgmore(long n)
     if (pn > p_report)
     {
 	if (n > 0)
-	    vim_snprintf(msg_buf, MSG_BUF_LEN,
+	    mnv_snprintf(msg_buf, MSG_BUF_LEN,
 		    NGETTEXT("%ld more line", "%ld more lines", pn), pn);
 	else
-	    vim_snprintf(msg_buf, MSG_BUF_LEN,
+	    mnv_snprintf(msg_buf, MSG_BUF_LEN,
 		    NGETTEXT("%ld line less", "%ld fewer lines", pn), pn);
 	if (got_int)
-	    vim_strcat((char_u *)msg_buf, (char_u *)_(" (Interrupted)"),
+	    mnv_strcat((char_u *)msg_buf, (char_u *)_(" (Interrupted)"),
 								  MSG_BUF_LEN);
 	if (msg(msg_buf))
 	{
@@ -1158,7 +1158,7 @@ beep_flush(void)
     if (emsg_silent == 0)
     {
 	flush_buffers(FLUSH_MINIMAL);
-	vim_beep(BO_ERROR);
+	mnv_beep(BO_ERROR);
     }
 }
 
@@ -1166,10 +1166,10 @@ beep_flush(void)
  * Give a warning for an error. "val" is one of the BO_ values, e.g., BO_OPER.
  */
     void
-vim_beep(unsigned val)
+mnv_beep(unsigned val)
 {
 #ifdef FEAT_EVAL
-    called_vim_beep = TRUE;
+    called_mnv_beep = TRUE;
 #endif
 
     if (emsg_silent != 0 || in_assert_fails)
@@ -1182,7 +1182,7 @@ vim_beep(unsigned val)
 	static elapsed_T	start_tv;
 
 	// Only beep once per half a second, otherwise a sequence of beeps
-	// would freeze Vim.
+	// would freeze MNV.
 	if (!did_init || ELAPSED_FUNC(start_tv) > 500)
 	{
 	    did_init = TRUE;
@@ -1221,7 +1221,7 @@ vim_beep(unsigned val)
     // When 'debug' contains "beep" produce a message.  If we are sourcing
     // a script or executing a function give the user a hint where the beep
     // comes from.
-    if (vim_strchr(p_debug, 'e') != NULL)
+    if (mnv_strchr(p_debug, 'e') != NULL)
     {
 	msg_source(HL_ATTR(HLF_W));
 	msg_attr(_("Beep!"), HL_ATTR(HLF_W));
@@ -1245,7 +1245,7 @@ init_homedir(void)
     char_u  *var;
 
     // In case we are called a second time (when 'encoding' changes).
-    VIM_CLEAR(homedir);
+    MNV_CLEAR(homedir);
 
 #ifdef VMS
     var = mch_getenv((char_u *)"SYS$LOGIN");
@@ -1256,7 +1256,7 @@ init_homedir(void)
 #ifdef MSWIN
     /*
      * Typically, $HOME is not defined on Windows, unless the user has
-     * specifically defined it for Vim's sake.  However, on Windows NT
+     * specifically defined it for MNV's sake.  However, on Windows NT
      * platforms, $HOMEDRIVE and $HOMEPATH are automatically defined for
      * each user.  Try constructing $HOME from these.
      */
@@ -1290,15 +1290,15 @@ init_homedir(void)
 	char_u	*p;
 	char_u	*exp;
 
-	p = vim_strchr(var + 1, '%');
+	p = mnv_strchr(var + 1, '%');
 	if (p != NULL)
 	{
-	    vim_strncpy(NameBuff, var + 1, p - (var + 1));
+	    mnv_strncpy(NameBuff, var + 1, p - (var + 1));
 	    exp = mch_getenv(NameBuff);
 	    if (exp != NULL && *exp != NUL
 					&& STRLEN(exp) + STRLEN(p) < MAXPATHL)
 	    {
-		vim_snprintf((char *)NameBuff, MAXPATHL, "%s%s", exp, p + 1);
+		mnv_snprintf((char *)NameBuff, MAXPATHL, "%s%s", exp, p + 1);
 		var = NameBuff;
 	    }
 	}
@@ -1346,7 +1346,7 @@ init_homedir(void)
 		emsg(_(e_cannot_go_back_to_previous_directory));
 	}
 #endif
-	homedir = vim_strsave(var);
+	homedir = mnv_strsave(var);
     }
 }
 
@@ -1354,7 +1354,7 @@ init_homedir(void)
     void
 free_homedir(void)
 {
-    vim_free(homedir);
+    mnv_free(homedir);
 }
 
     void
@@ -1366,10 +1366,10 @@ free_users(void)
 
 #if defined(MSWIN)
 /*
- * Initialize $VIM and $VIMRUNTIME when 'enc' is updated.
+ * Initialize $MNV and $MNVRUNTIME when 'enc' is updated.
  */
     void
-init_vimdir(void)
+init_mnvdir(void)
 {
     int	    mustfree;
     char_u  *p;
@@ -1377,16 +1377,16 @@ init_vimdir(void)
     mch_get_exe_name();
 
     mustfree = FALSE;
-    didset_vim = FALSE;
-    p = vim_getenv((char_u *)"VIM", &mustfree);
+    didset_mnv = FALSE;
+    p = mnv_getenv((char_u *)"MNV", &mustfree);
     if (mustfree)
-	vim_free(p);
+	mnv_free(p);
 
     mustfree = FALSE;
-    didset_vimruntime = FALSE;
-    p = vim_getenv((char_u *)"VIMRUNTIME", &mustfree);
+    didset_mnvruntime = FALSE;
+    p = mnv_getenv((char_u *)"MNVRUNTIME", &mustfree);
     if (mustfree)
-	vim_free(p);
+	mnv_free(p);
 }
 #endif
 
@@ -1424,7 +1424,7 @@ expand_env_save_opt(char_u *src, int one)
  */
     size_t
 expand_env(
-    char_u	*src,		// input string e.g. "$HOME/vim.hlp"
+    char_u	*src,		// input string e.g. "$HOME/mnv.hlp"
     char_u	*dst,		// where to put the result
     int		dstlen)		// maximum length of the result
 {
@@ -1433,7 +1433,7 @@ expand_env(
 
     size_t
 expand_env_esc(
-    char_u	*srcp,		// input string e.g. "$HOME/vim.hlp"
+    char_u	*srcp,		// input string e.g. "$HOME/mnv.hlp"
     char_u	*dst,		// where to put the result
     int		dstlen,		// maximum length of the result
     int		esc,		// escape spaces in expanded variables
@@ -1471,7 +1471,7 @@ expand_env_esc(
 	    len = src - var;
 	    if (len > (size_t)dstlen)
 		len = dstlen;
-	    vim_strncpy(dst, var, len);
+	    mnv_strncpy(dst, var, len);
 	    dst += len;
 	    dstlen -= (int)len;
 	    continue;
@@ -1502,7 +1502,7 @@ expand_env_esc(
 
 #ifdef UNIX
 		// Unix has ${var-name} type environment vars
-		if (*tail == '{' && !vim_isIDc('{'))
+		if (*tail == '{' && !mnv_isIDc('{'))
 		{
 		    tail++;	// ignore '{'
 		    while (c-- > 0 && *tail && *tail != '}')
@@ -1511,7 +1511,7 @@ expand_env_esc(
 		else
 #endif
 		{
-		    while (c-- > 0 && *tail != NUL && ((vim_isIDc(*tail))
+		    while (c-- > 0 && *tail != NUL && ((mnv_isIDc(*tail))
 #if defined(MSWIN)
 			    || (*src == '%' && *tail != '%')
 #endif
@@ -1536,15 +1536,15 @@ expand_env_esc(
 			++tail;
 #endif
 		    *var = NUL;
-		    var = vim_getenv(dst, &mustfree);
+		    var = mnv_getenv(dst, &mustfree);
 #if defined(MSWIN) || defined(UNIX)
 		}
 #endif
 	    }
 							// home directory
 	    else if (  src[1] == NUL
-		    || vim_ispathsep(src[1])
-		    || vim_strchr((char_u *)" ,\t\n", src[1]) != NULL)
+		    || mnv_ispathsep(src[1])
+		    || mnv_strchr((char_u *)" ,\t\n", src[1]) != NULL)
 	    {
 		var = homedir;
 		tail = src + 1;
@@ -1560,8 +1560,8 @@ expand_env_esc(
 		c = dstlen - 1;
 		while (	   c-- > 0
 			&& *tail
-			&& vim_isfilec(*tail)
-			&& !vim_ispathsep(*tail))
+			&& mnv_isfilec(*tail)
+			&& !mnv_ispathsep(*tail))
 		    *var++ = *tail++;
 		*var = NUL;
 # ifdef UNIX
@@ -1611,7 +1611,7 @@ expand_env_esc(
 				next_path++);
 			if (*next_path)
 			    *next_path++ = NUL;
-			testlen = vim_snprintf_safelen(
+			testlen = mnv_snprintf_safelen(
 			    (char *)test,
 			    sizeof(test),
 			    "%s/%s",
@@ -1640,14 +1640,14 @@ expand_env_esc(
 #ifdef BACKSLASH_IN_FILENAME
 	    // If 'shellslash' is set change backslashes to forward slashes.
 	    // Can't use slash_adjust(), p_ssl may be set temporarily.
-	    if (p_ssl && var != NULL && vim_strchr(var, '\\') != NULL)
+	    if (p_ssl && var != NULL && mnv_strchr(var, '\\') != NULL)
 	    {
-		char_u	*p = vim_strsave(var);
+		char_u	*p = mnv_strsave(var);
 
 		if (p != NULL)
 		{
 		    if (mustfree)
-			vim_free(var);
+			mnv_free(var);
 		    var = p;
 		    mustfree = TRUE;
 		    forward_slash(var);
@@ -1657,14 +1657,14 @@ expand_env_esc(
 
 	    // If "var" contains white space, escape it with a backslash.
 	    // Required for ":e ~/tt" when $HOME includes a space.
-	    if (esc && var != NULL && vim_strpbrk(var, (char_u *)" \t") != NULL)
+	    if (esc && var != NULL && mnv_strpbrk(var, (char_u *)" \t") != NULL)
 	    {
-		char_u	*p = vim_strsave_escaped(var, (char_u *)" \t");
+		char_u	*p = mnv_strsave_escaped(var, (char_u *)" \t");
 
 		if (p != NULL)
 		{
 		    if (mustfree)
-			vim_free(var);
+			mnv_free(var);
 		    var = p;
 		    mustfree = TRUE;
 		}
@@ -1684,7 +1684,7 @@ expand_env_esc(
 #if defined(BACKSLASH_IN_FILENAME) || defined(AMIGA)
 			    && dst[c - 1] != ':'
 #endif
-			    && vim_ispathsep(*tail))
+			    && mnv_ispathsep(*tail))
 			++tail;
 		    dst += c;
 		    src = tail;
@@ -1692,7 +1692,7 @@ expand_env_esc(
 		}
 	    }
 	    if (mustfree)
-		vim_free(var);
+		mnv_free(var);
 	}
 
 	if (copy_char)	    // copy at least one char
@@ -1746,54 +1746,54 @@ remove_tail(char_u *p, char_u *pend, char_u *name)
 }
 
 /*
- * Check if the directory "vimdir/<version>" or "vimdir/runtime" exists.
+ * Check if the directory "mnvdir/<version>" or "mnvdir/runtime" exists.
  * Return NULL if not, return its name in allocated memory otherwise.
  */
     static char_u *
-vim_version_dir(char_u *vimdir)
+mnv_version_dir(char_u *mnvdir)
 {
     char_u	*p;
 
-    if (vimdir == NULL || *vimdir == NUL)
+    if (mnvdir == NULL || *mnvdir == NUL)
 	return NULL;
-    p = concat_fnames(vimdir, (char_u *)VIM_VERSION_NODOT, TRUE);
+    p = concat_fnames(mnvdir, (char_u *)MNV_VERSION_NODOT, TRUE);
     if (p != NULL && mch_isdir(p))
 	return p;
-    vim_free(p);
-    p = concat_fnames(vimdir, (char_u *)RUNTIME_DIRNAME, TRUE);
+    mnv_free(p);
+    p = concat_fnames(mnvdir, (char_u *)RUNTIME_DIRNAME, TRUE);
     if (p != NULL && mch_isdir(p))
     {
-	char_u *fname = concat_fnames(p, (char_u *)"defaults.vim", TRUE);
+	char_u *fname = concat_fnames(p, (char_u *)"defaults.mnv", TRUE);
 
-	// Check that "defaults.vim" exists in this directory, to avoid picking
+	// Check that "defaults.mnv" exists in this directory, to avoid picking
 	// up a stray "runtime" directory, it would make many tests fail in
 	// mysterious ways.
 	if (fname != NULL)
 	{
 	    int exists = file_is_readable(fname);
 
-	    vim_free(fname);
+	    mnv_free(fname);
 	    if (exists)
 		return p;
 	}
     }
-    vim_free(p);
+    mnv_free(p);
     return NULL;
 }
 
 /*
- * Vim's version of getenv().
- * Special handling of $HOME, $VIM and $VIMRUNTIME.
+ * MNV's version of getenv().
+ * Special handling of $HOME, $MNV and $MNVRUNTIME.
  * Also does ACP to 'enc' conversion for Win32.
  * "mustfree" is set to TRUE when the returned string is allocated.  It must be
  * initialized to FALSE by the caller.
  */
     char_u *
-vim_getenv(char_u *name, int *mustfree)
+mnv_getenv(char_u *name, int *mustfree)
 {
     char_u	*p = NULL;
     char_u	*pend;
-    int		vimruntime;
+    int		mnvruntime;
 #ifdef MSWIN
     WCHAR	*wn, *wp;
 
@@ -1807,7 +1807,7 @@ vim_getenv(char_u *name, int *mustfree)
 	return NULL;
 
     wp = _wgetenv(wn);
-    vim_free(wn);
+    mnv_free(wn);
 
     if (wp != NULL && *wp == NUL)   // empty is the same as not set
 	wp = NULL;
@@ -1844,24 +1844,24 @@ vim_getenv(char_u *name, int *mustfree)
 # endif
 #endif
 
-    // handling $VIMRUNTIME and $VIM is below, bail out if it's another name.
-    vimruntime = (STRCMP(name, "VIMRUNTIME") == 0);
-    if (!vimruntime && STRCMP(name, "VIM") != 0)
+    // handling $MNVRUNTIME and $MNV is below, bail out if it's another name.
+    mnvruntime = (STRCMP(name, "MNVRUNTIME") == 0);
+    if (!mnvruntime && STRCMP(name, "MNV") != 0)
 	return NULL;
 
     /*
-     * When expanding $VIMRUNTIME fails, try using $VIM/vim<version> or $VIM.
-     * Don't do this when default_vimruntime_dir is non-empty.
+     * When expanding $MNVRUNTIME fails, try using $MNV/mnv<version> or $MNV.
+     * Don't do this when default_mnvruntime_dir is non-empty.
      */
-    if (vimruntime
+    if (mnvruntime
 #ifdef HAVE_PATHDEF
-	    && *default_vimruntime_dir == NUL
+	    && *default_mnvruntime_dir == NUL
 #endif
        )
     {
 #ifdef MSWIN
 	// Use Wide function
-	wp = _wgetenv(L"VIM");
+	wp = _wgetenv(L"MNV");
 	if (wp != NULL && *wp == NUL)	    // empty is the same as not set
 	    wp = NULL;
 	if (wp != NULL)
@@ -1869,35 +1869,35 @@ vim_getenv(char_u *name, int *mustfree)
 	    char_u *q = utf16_to_enc(wp, NULL);
 	    if (q != NULL)
 	    {
-		p = vim_version_dir(q);
+		p = mnv_version_dir(q);
 		*mustfree = TRUE;
 		if (p == NULL)
 		    p = q;
 	    }
 	}
 #else
-	p = mch_getenv((char_u *)"VIM");
+	p = mch_getenv((char_u *)"MNV");
 	if (p != NULL && *p == NUL)	    // empty is the same as not set
 	    p = NULL;
 	if (p != NULL)
 	{
-	    p = vim_version_dir(p);
+	    p = mnv_version_dir(p);
 	    if (p != NULL)
 		*mustfree = TRUE;
 	    else
-		p = mch_getenv((char_u *)"VIM");
+		p = mch_getenv((char_u *)"MNV");
 	}
 #endif
     }
 
     /*
-     * When expanding $VIM or $VIMRUNTIME fails, try using:
+     * When expanding $MNV or $MNVRUNTIME fails, try using:
      * - the directory name from 'helpfile' (unless it contains '$')
      * - the executable name from argv[0]
      */
     if (p == NULL)
     {
-	if (p_hf != NULL && vim_strchr(p_hf, '$') == NULL)
+	if (p_hf != NULL && mnv_strchr(p_hf, '$') == NULL)
 	    p = p_hf;
 #ifdef USE_EXE_NAME
 	/*
@@ -1917,7 +1917,7 @@ vim_getenv(char_u *name, int *mustfree)
 
 #ifdef USE_EXE_NAME
 # ifdef MACOS_X
-	    // remove "MacOS" from exe_name and add "Resources/vim"
+	    // remove "MacOS" from exe_name and add "Resources/mnv"
 	    if (p == exe_name)
 	    {
 		char_u	*pend1;
@@ -1930,7 +1930,7 @@ vim_getenv(char_u *name, int *mustfree)
 		    if (pnew != NULL)
 		    {
 			STRNCPY(pnew, p, (pend1 - p));
-			STRCPY(pnew + (pend1 - p), "Resources/vim");
+			STRCPY(pnew + (pend1 - p), "Resources/mnv");
 			p = pnew;
 			pend = p + STRLEN(p);
 		    }
@@ -1942,11 +1942,11 @@ vim_getenv(char_u *name, int *mustfree)
 		pend = remove_tail(p, pend, (char_u *)"src");
 #endif
 
-	    // for $VIM, remove "runtime/" or "vim54/", if present
-	    if (!vimruntime)
+	    // for $MNV, remove "runtime/" or "mnv54/", if present
+	    if (!mnvruntime)
 	    {
 		pend = remove_tail(p, pend, (char_u *)RUNTIME_DIRNAME);
-		pend = remove_tail(p, pend, (char_u *)VIM_VERSION_NODOT);
+		pend = remove_tail(p, pend, (char_u *)MNV_VERSION_NODOT);
 	    }
 
 	    // remove trailing path separator
@@ -1957,17 +1957,17 @@ vim_getenv(char_u *name, int *mustfree)
 	    if (p == exe_name || p == p_hf)
 #endif
 		// check that the result is a directory name
-		p = vim_strnsave(p, pend - p);
+		p = mnv_strnsave(p, pend - p);
 
 	    if (p != NULL && !mch_isdir(p))
-		VIM_CLEAR(p);
+		MNV_CLEAR(p);
 	    else
 	    {
 #ifdef USE_EXE_NAME
-		// may add "/vim54" or "/runtime" if it exists
-		if (vimruntime && (pend = vim_version_dir(p)) != NULL)
+		// may add "/mnv54" or "/runtime" if it exists
+		if (mnvruntime && (pend = mnv_version_dir(p)) != NULL)
 		{
-		    vim_free(p);
+		    mnv_free(p);
 		    p = pend;
 		}
 #endif
@@ -1977,23 +1977,23 @@ vim_getenv(char_u *name, int *mustfree)
     }
 
 #ifdef HAVE_PATHDEF
-    // When there is a pathdef.c file we can use default_vim_dir and
-    // default_vimruntime_dir
+    // When there is a pathdef.c file we can use default_mnv_dir and
+    // default_mnvruntime_dir
     if (p == NULL)
     {
-	// Only use default_vimruntime_dir when it is not empty
-	if (vimruntime && *default_vimruntime_dir != NUL)
+	// Only use default_mnvruntime_dir when it is not empty
+	if (mnvruntime && *default_mnvruntime_dir != NUL)
 	{
-	    p = default_vimruntime_dir;
+	    p = default_mnvruntime_dir;
 	    *mustfree = FALSE;
 	}
-	else if (*default_vim_dir != NUL)
+	else if (*default_mnv_dir != NUL)
 	{
-	    if (vimruntime && (p = vim_version_dir(default_vim_dir)) != NULL)
+	    if (mnvruntime && (p = mnv_version_dir(default_mnv_dir)) != NULL)
 		*mustfree = TRUE;
 	    else
 	    {
-		p = default_vim_dir;
+		p = default_mnv_dir;
 		*mustfree = FALSE;
 	    }
 	}
@@ -2006,27 +2006,27 @@ vim_getenv(char_u *name, int *mustfree)
      */
     if (p != NULL)
     {
-	if (vimruntime)
+	if (mnvruntime)
 	{
-	    vim_setenv((char_u *)"VIMRUNTIME", p);
-	    didset_vimruntime = TRUE;
+	    mnv_setenv((char_u *)"MNVRUNTIME", p);
+	    didset_mnvruntime = TRUE;
 	}
 	else
 	{
-	    vim_setenv((char_u *)"VIM", p);
-	    didset_vim = TRUE;
+	    mnv_setenv((char_u *)"MNV", p);
+	    didset_mnv = TRUE;
 	}
     }
     return p;
 }
 
     void
-vim_unsetenv(char_u *var)
+mnv_unsetenv(char_u *var)
 {
 #ifdef HAVE_UNSETENV
     unsetenv((char *)var);
 #else
-    vim_setenv(var, (char_u *)"");
+    mnv_setenv(var, (char_u *)"");
 #endif
 }
 
@@ -2034,15 +2034,15 @@ vim_unsetenv(char_u *var)
  * Removes environment variable "name" and take care of side effects.
  */
     void
-vim_unsetenv_ext(char_u *var)
+mnv_unsetenv_ext(char_u *var)
 {
-    vim_unsetenv(var);
+    mnv_unsetenv(var);
 
     // "homedir" is not cleared, keep using the old value until $HOME is set.
-    if (STRICMP(var, "VIM") == 0)
-	didset_vim = FALSE;
-    else if (STRICMP(var, "VIMRUNTIME") == 0)
-	didset_vimruntime = FALSE;
+    if (STRICMP(var, "MNV") == 0)
+	didset_mnv = FALSE;
+    else if (STRICMP(var, "MNVRUNTIME") == 0)
+	didset_mnvruntime = FALSE;
 }
 
 #if defined(FEAT_EVAL)
@@ -2050,15 +2050,15 @@ vim_unsetenv_ext(char_u *var)
  * Set environment variable "name" and take care of side effects.
  */
     void
-vim_setenv_ext(char_u *name, char_u *val)
+mnv_setenv_ext(char_u *name, char_u *val)
 {
-    vim_setenv(name, val);
+    mnv_setenv(name, val);
     if (STRICMP(name, "HOME") == 0)
 	init_homedir();
-    else if (didset_vim && STRICMP(name, "VIM") == 0)
-	didset_vim = FALSE;
-    else if (didset_vimruntime && STRICMP(name, "VIMRUNTIME") == 0)
-	didset_vimruntime = FALSE;
+    else if (didset_mnv && STRICMP(name, "MNV") == 0)
+	didset_mnv = FALSE;
+    else if (didset_mnvruntime && STRICMP(name, "MNVRUNTIME") == 0)
+	didset_mnvruntime = FALSE;
 }
 #endif
 
@@ -2066,7 +2066,7 @@ vim_setenv_ext(char_u *name, char_u *val)
  * Our portable version of setenv.
  */
     void
-vim_setenv(char_u *name, char_u *val)
+mnv_setenv(char_u *name, char_u *val)
 {
 #ifdef HAVE_SETENV
     mch_setenv((char *)name, (char *)val, 1);
@@ -2086,17 +2086,17 @@ vim_setenv(char_u *name, char_u *val)
 #endif
 #ifdef FEAT_GETTEXT
     /*
-     * When setting $VIMRUNTIME adjust the directory to find message
-     * translations to $VIMRUNTIME/lang.
+     * When setting $MNVRUNTIME adjust the directory to find message
+     * translations to $MNVRUNTIME/lang.
      */
-    if (*val != NUL && STRICMP(name, "VIMRUNTIME") == 0)
+    if (*val != NUL && STRICMP(name, "MNVRUNTIME") == 0)
     {
 	char_u	*buf = concat_str(val, (char_u *)"/lang");
 
 	if (buf != NULL)
 	{
-	    bindtextdomain(VIMPACKAGE, (char *)buf);
-	    vim_free(buf);
+	    bindtextdomain(MNVPACKAGE, (char *)buf);
+	    mnv_free(buf);
 	}
     }
 #endif
@@ -2144,12 +2144,12 @@ get_env_name(
 add_user(char_u *user, int need_copy)
 {
     char_u	*user_copy = (user != NULL && need_copy)
-						    ? vim_strsave(user) : user;
+						    ? mnv_strsave(user) : user;
 
     if (user_copy == NULL || *user_copy == NUL || ga_grow(&ga_users, 1) == FAIL)
     {
 	if (need_copy)
-	    vim_free(user_copy);
+	    mnv_free(user_copy);
 	return;
     }
     ((char_u **)(ga_users.ga_data))[ga_users.ga_len++] = user_copy;
@@ -2269,7 +2269,7 @@ prepare_to_exit(void)
 {
 #if defined(SIGHUP) && defined(SIG_IGN)
     // Ignore SIGHUP, because a dropped connection causes a read error, which
-    // makes Vim exit and then handling SIGHUP causes various reentrance
+    // makes MNV exit and then handling SIGHUP causes various reentrance
     // problems.
     mch_signal(SIGHUP, SIG_IGN);
 #endif
@@ -2322,7 +2322,7 @@ preserve_exit(void)
     {
 	if (buf->b_ml.ml_mfp != NULL && buf->b_ml.ml_mfp->mf_fname != NULL)
 	{
-	    OUT_STR("Vim: preserving files...\r\n");
+	    OUT_STR("MNV: preserving files...\r\n");
 	    screen_start();	    // don't know where cursor is now
 	    out_flush();
 	    ml_sync_all(FALSE, FALSE);	// preserve all swap files
@@ -2332,7 +2332,7 @@ preserve_exit(void)
 
     ml_close_all(FALSE);	    // close all memfiles, without deleting
 
-    OUT_STR("Vim: Finished.\r\n");
+    OUT_STR("MNV: Finished.\r\n");
 
     getout(1);
 }
@@ -2421,7 +2421,7 @@ get_cmd_output(
 	return NULL;
 
     // get a name for the temp file
-    if ((tempname = vim_tempname('o', FALSE)) == NULL)
+    if ((tempname = mnv_tempname('o', FALSE)) == NULL)
     {
 	emsg(_(e_cant_get_temp_file_name));
 	return NULL;
@@ -2440,7 +2440,7 @@ get_cmd_output(
     call_shell(command, SHELL_DOOUT | SHELL_EXPAND | flags);
     --no_check_timestamps;
 
-    vim_free(command);
+    mnv_free(command);
 
     /*
      * read the names from the file into memory
@@ -2477,7 +2477,7 @@ get_cmd_output(
     if (i != len)
     {
 	semsg(_(e_cant_read_file_str), tempname);
-	VIM_CLEAR(buffer);
+	MNV_CLEAR(buffer);
     }
     else if (ret_len == NULL)
     {
@@ -2492,7 +2492,7 @@ get_cmd_output(
 	*ret_len = len;
 
 done:
-    vim_free(tempname);
+    mnv_free(tempname);
     return buffer;
 }
 
@@ -2520,7 +2520,7 @@ get_cmd_output_as_rettv(
     if (check_restricted() || check_secure())
 	goto errret;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_or_list_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_or_number_or_list_arg(argvars, 1)
 								      == FAIL))
@@ -2532,7 +2532,7 @@ get_cmd_output_as_rettv(
 	 * Write the text to a temp file, to be used for input of the shell
 	 * command.
 	 */
-	if ((infile = vim_tempname('i', TRUE)) == NULL)
+	if ((infile = mnv_tempname('i', TRUE)) == NULL)
 	{
 	    emsg(_(e_cant_get_temp_file_name));
 	    goto errret;
@@ -2685,7 +2685,7 @@ get_cmd_output_as_rettv(
 	    li = listitem_alloc();
 	    if (li == NULL)
 	    {
-		vim_free(s);
+		mnv_free(s);
 		goto errret;
 	    }
 	    li->li_tv.v_type = VAR_STRING;
@@ -2728,16 +2728,16 @@ errret:
     {
 	int i;
 	for (i = 0; argv[i] != NULL; i++)
-	    vim_free(argv[i]);
-	vim_free(argv);
+	    mnv_free(argv[i]);
+	mnv_free(argv);
     }
     if (infile != NULL)
     {
 	mch_remove(infile);
-	vim_free(infile);
+	mnv_free(infile);
     }
     if (res != NULL)
-	vim_free(res);
+	mnv_free(res);
     if (list != NULL)
 	list_free(list);
 }
@@ -2790,13 +2790,13 @@ get_isolated_shell_name(void)
 
 #ifdef MSWIN
     p = gettail(p_sh);
-    p = vim_strnsave(p, skiptowhite(p) - p);
+    p = mnv_strnsave(p, skiptowhite(p) - p);
 #else
     p = skiptowhite(p_sh);
     if (*p == NUL)
     {
 	// No white space, use the tail.
-	p = vim_strsave(gettail(p_sh));
+	p = mnv_strsave(gettail(p_sh));
     }
     else
     {
@@ -2805,9 +2805,9 @@ get_isolated_shell_name(void)
 	// Find the last path separator before the space.
 	p1 = p_sh;
 	for (p2 = p_sh; p2 < p; MB_PTR_ADV(p2))
-	    if (vim_ispathsep(*p2))
+	    if (mnv_ispathsep(*p2))
 		p1 = p2 + 1;
-	p = vim_strnsave(p1, p - p1);
+	p = mnv_strnsave(p1, p - p1);
     }
 #endif
     return p;
@@ -2866,7 +2866,7 @@ path_with_url(char_u *fname)
     dict_T *
 get_v_event(save_v_event_T *sve)
 {
-    dict_T	*v_event = get_vim_var_dict(VV_EVENT);
+    dict_T	*v_event = get_mnv_var_dict(VV_EVENT);
 
     if (v_event->dv_hashtab.ht_used > 0)
     {
@@ -2918,7 +2918,7 @@ may_trigger_modechanged(void)
     dict_set_items_ro(v_event);
 
     // concatenate modes in format "old_mode:new_mode"
-    vim_snprintf((char *)pattern_buf, sizeof(pattern_buf), "%s:%s", last_mode,
+    mnv_snprintf((char *)pattern_buf, sizeof(pattern_buf), "%s:%s", last_mode,
 	    curr_mode);
 
     apply_autocmds(EVENT_MODECHANGED, pattern_buf, NULL, FALSE, curbuf);
@@ -2930,7 +2930,7 @@ may_trigger_modechanged(void)
 
 // For overflow detection, add a digit safely to a long value.
     int
-vim_append_digit_long(long *value, int digit)
+mnv_append_digit_long(long *value, int digit)
 {
     long x = *value;
     if (x > ((LONG_MAX - (long)digit) / 10))
@@ -2941,7 +2941,7 @@ vim_append_digit_long(long *value, int digit)
 
 // Return something that fits into an int.
     int
-trim_to_int(vimlong_T x)
+trim_to_int(mnvlong_T x)
 {
     return x > INT_MAX ? INT_MAX : x < INT_MIN ? INT_MIN : x;
 }

@@ -8,4 +8,4 @@ void op_format(oparg_T *oap, int keep_cursor);
 void op_formatexpr(oparg_T *oap);
 int fex_format(linenr_T lnum, long count, int c);
 void format_lines(linenr_T line_count, int avoid_fex);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

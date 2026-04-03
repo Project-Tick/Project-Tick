@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -13,23 +13,23 @@
  * Requires Tcl 8.0 or higher.
  *
  *  Variables:
- *  ::vim::current(buffer)	# Name of buffer command for current buffer.
- *  ::vim::current(window)	# Name of window command for current window.
- *  ::vim::range(start)		# Start of current range (line number).
- *  ::vim::range(end)		# End of current range (line number).
- *  ::vim::lbase		# Start of line/column numbers (1 or 0).
+ *  ::mnv::current(buffer)	# Name of buffer command for current buffer.
+ *  ::mnv::current(window)	# Name of window command for current window.
+ *  ::mnv::range(start)		# Start of current range (line number).
+ *  ::mnv::range(end)		# End of current range (line number).
+ *  ::mnv::lbase		# Start of line/column numbers (1 or 0).
  *
  *  Commands:
- *  ::vim::command {cmd}	# Execute ex command {cmd}.
- *  ::vim::option {opt} [val]	# Get/Set option {opt}.
- *  ::vim::expr {expr}		# Evaluate {expr} using vim's evaluator.
- *  ::vim::beep			# Guess.
+ *  ::mnv::command {cmd}	# Execute ex command {cmd}.
+ *  ::mnv::option {opt} [val]	# Get/Set option {opt}.
+ *  ::mnv::expr {expr}		# Evaluate {expr} using mnv's evaluator.
+ *  ::mnv::beep			# Guess.
  *
- *  set buf [::vim::buffer {n}]	# Create Tcl command for buffer N.
- *  set bl [::vim::buffer list] # Get list of Tcl commands of all buffers.
- *  ::vim::buffer exists {n}	# True if buffer {n} exists.
+ *  set buf [::mnv::buffer {n}]	# Create Tcl command for buffer N.
+ *  set bl [::mnv::buffer list] # Get list of Tcl commands of all buffers.
+ *  ::mnv::buffer exists {n}	# True if buffer {n} exists.
  *
- *  set wl [::vim::window list] # Get list of Tcl commands of all windows.
+ *  set wl [::mnv::window list] # Get list of Tcl commands of all windows.
  *
  *  set n [$win height]		# Report window height.
  *  $win height {n}		# Set window height to {n}.
@@ -37,9 +37,9 @@
  *  $win cursor {row} {col}	# Set cursor position.
  *  $win cursor pos		# Set cursor position from array var "pos"
  *  $win delcmd {cmd}		# Register callback command for closed window.
- *  $win option {opt} [val]	# Get/Set vim option in context of $win.
+ *  $win option {opt} [val]	# Get/Set mnv option in context of $win.
  *  $win command {cmd}		# Execute ex command in context of $win.
- *  $win expr {expr}		# Evaluate vim expression in context of $win.
+ *  $win expr {expr}		# Evaluate mnv expression in context of $win.
  *  set buf [$win buffer]	# Create Tcl command for window's buffer.
  *
  *  $buf name			# Reports file name in buffer.
@@ -53,9 +53,9 @@
  *  $buf set {n} {l}		# Set line {n} to string {l}.
  *  $buf set {n} {m} {L}	# Set lines {n} through {m} from list {L}.
  *				# Delete/inserts lines as appropriate.
- *  $buf option {opt} [val]	# Get/Set vim option in context of $buf.
+ *  $buf option {opt} [val]	# Get/Set mnv option in context of $buf.
  *  $buf command {cmd}		# Execute ex command in context of $buf
- *  $buf expr {cmd}		# Evaluate vim expression in context of $buf.
+ *  $buf expr {cmd}		# Evaluate mnv expression in context of $buf.
  *  array set pos [$buf mark {m}]   # Get position of mark.
  *  $buf append {n} {str}	# Append string {str} to buffer,after line {n}.
  *  $buf insert {n} {str}	# Insert string {str} in buffer as line {n}.
@@ -63,10 +63,10 @@
  *  set wl [$buf windows]	# Get list of Tcl commands for all windows of
  *				# this buffer.
 TODO:
- *  ::vim::buffer new		#   create new buffer + Tcl command
+ *  ::mnv::buffer new		#   create new buffer + Tcl command
  */
 
-#include "vim.h"
+#include "mnv.h"
 #undef EXTERN			// tcl.h defines it too
 
 #ifdef DYNAMIC_TCL
@@ -87,24 +87,24 @@ typedef struct
 
 static tcl_info tclinfo = { NULL, 0, 0, 0, 0, NULL, NULL };
 
-#define VAR_RANGE1	"::vim::range(start)"
-#define VAR_RANGE2	"::vim::range(begin)"
-#define VAR_RANGE3	"::vim::range(end)"
-#define VAR_CURBUF	"::vim::current(buffer)"
-#define VAR_CURWIN	"::vim::current(window)"
-#define VAR_LBASE	"::vim::lbase"
+#define VAR_RANGE1	"::mnv::range(start)"
+#define VAR_RANGE2	"::mnv::range(begin)"
+#define VAR_RANGE3	"::mnv::range(end)"
+#define VAR_CURBUF	"::mnv::current(buffer)"
+#define VAR_CURWIN	"::mnv::current(window)"
+#define VAR_LBASE	"::mnv::lbase"
 #define VAR_CURLINE	"line"
 #define VAR_CURLNUM	"lnum"
 #define VARNAME_SIZE	64
 
 #define row2tcl(x)  ((x) - (tclinfo.lbase==0))
-#define row2vim(x)  ((x) + (tclinfo.lbase==0))
+#define row2mnv(x)  ((x) + (tclinfo.lbase==0))
 #define col2tcl(x)  ((x) + (tclinfo.lbase!=0))
-#define col2vim(x)  ((x) - (tclinfo.lbase!=0))
+#define col2mnv(x)  ((x) - (tclinfo.lbase!=0))
 
 
-#define VIMOUT	((ClientData)1)
-#define VIMERR	((ClientData)2)
+#define MNVOUT	((ClientData)1)
+#define MNVERR	((ClientData)2)
 
 // This appears to be new in Tcl 8.4.
 #ifndef CONST84
@@ -112,7 +112,7 @@ static tcl_info tclinfo = { NULL, 0, 0, 0, 0, NULL, NULL };
 #endif
 
 /*
- *  List of Tcl interpreters who reference a vim window or buffer.
+ *  List of Tcl interpreters who reference a mnv window or buffer.
  *  Each buffer and window has its own list in the w_tcl_ref or b_tcl_ref
  *  struct member.  We need this because Tcl can create sub-interpreters with
  *  the "interp" command, and each interpreter can reference all windows and
@@ -125,19 +125,19 @@ struct ref
     Tcl_Interp	*interp;
     Tcl_Command cmd;	    // Tcl command that represents this object
     Tcl_Obj	*delcmd;    // Tcl command to call when object is being del.
-    void	*vimobj;    // Vim window or buffer (win_T* or buf_T*)
+    void	*mnvobj;    // MNV window or buffer (win_T* or buf_T*)
 };
 static char * tclgetbuffer _ANSI_ARGS_((Tcl_Interp *interp, buf_T *buf));
 static char * tclgetwindow _ANSI_ARGS_((Tcl_Interp *interp, win_T *win));
-static int tclsetdelcmd _ANSI_ARGS_((Tcl_Interp *interp, struct ref *reflist, void *vimobj, Tcl_Obj *delcmd));
+static int tclsetdelcmd _ANSI_ARGS_((Tcl_Interp *interp, struct ref *reflist, void *mnvobj, Tcl_Obj *delcmd));
 static int tclgetlinenum _ANSI_ARGS_ ((Tcl_Interp *interp, Tcl_Obj *obj, int *valueP, buf_T *buf));
 static win_T *tclfindwin _ANSI_ARGS_ ((buf_T *buf));
 static int tcldoexcommand _ANSI_ARGS_ ((Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[], int objn));
 static int tclsetoption _ANSI_ARGS_ ((Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[], int objn));
-static int tclvimexpr _ANSI_ARGS_ ((Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[], int objn));
+static int tclmnvexpr _ANSI_ARGS_ ((Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[], int objn));
 static void tcldelthisinterp _ANSI_ARGS_ ((void));
 
-static int vimerror _ANSI_ARGS_((Tcl_Interp *interp));
+static int mnverror _ANSI_ARGS_((Tcl_Interp *interp));
 static void tclmsg _ANSI_ARGS_((char *text));
 static void tclerrmsg _ANSI_ARGS_((char *text));
 static void tclupdatevars _ANSI_ARGS_((void));
@@ -162,7 +162,7 @@ typedef int HANDLE;
 
 # ifdef MSWIN
 #  define TCL_PROC FARPROC
-#  define load_dll vimLoadLib
+#  define load_dll mnvLoadLib
 #  define symbol_from_dll GetProcAddress
 #  define close_dll FreeLibrary
 #  define load_dll_error GetWin32Error
@@ -240,7 +240,7 @@ static char *find_executable_arg = NULL;
 #endif
 
     void
-vim_tcl_init(char *arg)
+mnv_tcl_init(char *arg)
 {
 #ifdef DYNAMIC_TCL
     find_executable_arg = arg;
@@ -287,7 +287,7 @@ tcl_enabled(int verbose)
  * Called once when exiting.
  */
     void
-vim_tcl_finalize(void)
+mnv_tcl_finalize(void)
 {
 # ifdef DYNAMIC_TCL
     if (stubs_initialized)
@@ -315,7 +315,7 @@ tcl_end(void)
  * be run. Since the interpreter is now marked as deleted, an error
  * will be returned -- typically "attempt to call eval in deleted
  * interpreter". Hopefully, at this point, checks for TCL_ERROR take
- * place and control percolates back up to Vim -- but with this new error
+ * place and control percolates back up to MNV -- but with this new error
  * string in the interpreter's result value. Therefore it would be
  * useless for this routine to return the exit code via Tcl_SetResult().
  */
@@ -346,7 +346,7 @@ exitcmd(
 }
 
 /*
- *  "::vim::beep" - what Vi[m] does best :-)
+ *  "::mnv::beep" - what Vi[m] does best :-)
  */
     static int
 beepcmd(
@@ -360,15 +360,15 @@ beepcmd(
 	Tcl_WrongNumArgs(interp, 1, objv, NULL);
 	return TCL_ERROR;
     }
-    vim_beep(BO_LANG);
+    mnv_beep(BO_LANG);
     return TCL_OK;
 }
 
 /*
- *  "::vim::buffer list" - create a list of buffer commands.
- *  "::vim::buffer {N}" - create buffer command for buffer N.
- *  "::vim::buffer exists {N}" - test if buffer N exists.
- *  "::vim::buffer new" - create a new buffer (not implemented)
+ *  "::mnv::buffer list" - create a list of buffer commands.
+ *  "::mnv::buffer {N}" - create buffer command for buffer N.
+ *  "::mnv::buffer exists {N}" - test if buffer N exists.
+ *  "::mnv::buffer new" - create a new buffer (not implemented)
  */
     static int
 buffercmd(
@@ -464,7 +464,7 @@ buffercmd(
 }
 
 /*
- * "::vim::window list" - create list of window commands.
+ * "::mnv::window list" - create list of window commands.
  */
     static int
 windowcmd(
@@ -545,7 +545,7 @@ bufselfcmd(
     if (err != TCL_OK)
 	return err;
 
-    buf = (buf_T *)((struct ref *)ref)->vimobj;
+    buf = (buf_T *)((struct ref *)ref)->mnvobj;
     savebuf = curbuf;  curbuf = buf;
     savewin = curwin;  curwin = tclfindwin(buf);
     flags = 0;
@@ -564,7 +564,7 @@ bufselfcmd(
 	    break;
 
 	case BUF_EXPR:
-	    err = tclvimexpr(interp, objc, objv, 2);
+	    err = tclmnvexpr(interp, objc, objv, 2);
 	    break;
 
 	case BUF_NAME:
@@ -804,7 +804,7 @@ bufselfcmd(
 	    for (i = 0; i < n; i++)
 	    {
 		ml_delete((linenr_T)val1);
-		err = vimerror(interp);
+		err = mnverror(interp);
 		if (err != TCL_OK)
 		    break;
 	    }
@@ -831,7 +831,7 @@ bufselfcmd(
 		err = TCL_ERROR;
 		break;
 	    }
-	    err = vimerror(interp);
+	    err = mnverror(interp);
 	    if (err != TCL_OK)
 		break;
 	    if (pos->lnum <= 0)
@@ -980,7 +980,7 @@ winselfcmd(
     if (err != TCL_OK)
 	return TCL_ERROR;
 
-    win = (win_T *)((struct ref *)ref)->vimobj;
+    win = (win_T *)((struct ref *)ref)->mnvobj;
     savewin = curwin;  curwin = win;
     savebuf = curbuf;  curbuf = win->w_buffer;
     flags = 0;
@@ -998,7 +998,7 @@ winselfcmd(
 	    break;
 
 	case WIN_EXPR:
-	    err = tclvimexpr(interp, objc, objv, 2);
+	    err = tclmnvexpr(interp, objc, objv, 2);
 	    break;
 
 	case WIN_HEIGHT:
@@ -1011,7 +1011,7 @@ winselfcmd(
 		need_mouse_correct = TRUE;
 #endif
 		win_setheight(val1);
-		err = vimerror(interp);
+		err = mnverror(interp);
 		if (err != TCL_OK)
 		    break;
 	    }
@@ -1102,7 +1102,7 @@ winselfcmd(
 	    }
 	    // TODO: should check column
 	    win->w_cursor.lnum = val1;
-	    win->w_cursor.col = col2vim(val2);
+	    win->w_cursor.col = col2mnv(val2);
 	    win->w_set_curswant = TRUE;
 	    flags |= FL_UPDATE_SCREEN;
 	    break;
@@ -1156,7 +1156,7 @@ exprcmd(
     int		objc,
     Tcl_Obj	*CONST objv[])
 {
-    return tclvimexpr(interp, objc, objv, 1);
+    return tclmnvexpr(interp, objc, objv, 1);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1164,7 +1164,7 @@ exprcmd(
 ////////////////////////////////////////////////////////////////////////////
 
 /*
- * Get a line number from 'obj' and convert it to vim's range.
+ * Get a line number from 'obj' and convert it to mnv's range.
  */
     static int
 tclgetlinenum(
@@ -1206,7 +1206,7 @@ tclgetlinenum(
     err = Tcl_GetIntFromObj(interp, obj, &i);
     if (err != TCL_OK)
 	return err;
-    i = row2vim(i);
+    i = row2mnv(i);
     if (i < 1  ||  i > buf->b_ml.ml_line_count)
     {
 	Tcl_SetResult(interp, _("line number out of range"), TCL_STATIC);
@@ -1233,7 +1233,7 @@ tclfindwin(buf_T *buf)
 }
 
 /*
- * Do-it-all function for "::vim::command", "$buf command" and "$win command".
+ * Do-it-all function for "::mnv::command", "$buf command" and "$win command".
  */
     static int
 tcldoexcommand(
@@ -1279,7 +1279,7 @@ tcldoexcommand(
     do_cmdline_cmd((char_u *)arg);
     if (flag)
 	--emsg_off;
-    err = vimerror(interp);
+    err = mnverror(interp);
 
     // If the ex command created a new Tcl interpreter, remove it
     if (tclinfo.interp)
@@ -1291,7 +1291,7 @@ tcldoexcommand(
 }
 
 /*
- * Do-it-all function for "::vim::option", "$buf option" and "$win option".
+ * Do-it-all function for "::mnv::option", "$buf option" and "$win option".
  */
     static int
 tclsetoption(
@@ -1313,7 +1313,7 @@ tclsetoption(
     nobjs = objc - objn;
     if (nobjs != 1 && nobjs != 2)
     {
-	Tcl_WrongNumArgs(interp, objn, objv, "vimOption ?value?");
+	Tcl_WrongNumArgs(interp, objn, objv, "mnvOption ?value?");
 	return TCL_ERROR;
     }
 
@@ -1325,7 +1325,7 @@ tclsetoption(
     {
 	case gov_string:
 	    Tcl_SetResult(interp, (char *)sval, TCL_VOLATILE);
-	    vim_free(sval);
+	    mnv_free(sval);
 	    break;
 	case gov_bool:
 	case gov_number:
@@ -1333,7 +1333,7 @@ tclsetoption(
 	    Tcl_SetObjResult(interp, resobj);
 	    break;
 	default:
-	    Tcl_SetResult(interp, _("unknown vimOption"), TCL_STATIC);
+	    Tcl_SetResult(interp, _("unknown mnvOption"), TCL_STATIC);
 	    return TCL_ERROR;
     }
     if (nobjs == 2)
@@ -1368,17 +1368,17 @@ tclsetoption(
 	if (err == TCL_OK)
 	{
 	    set_option_value_give_err(option, lval, sval, OPT_LOCAL);
-	    err = vimerror(interp);
+	    err = mnverror(interp);
 	}
     }
     return err;
 }
 
 /*
- * Do-it-all function for "::vim::expr", "$buf expr" and "$win expr".
+ * Do-it-all function for "::mnv::expr", "$buf expr" and "$win expr".
  */
     static int
-tclvimexpr(
+tclmnvexpr(
     Tcl_Interp	*interp,
     int		objc,
     Tcl_Obj	*CONST objv[],
@@ -1391,7 +1391,7 @@ tclvimexpr(
 
     if (objc - objn != 1)
     {
-	Tcl_WrongNumArgs(interp, objn, objv, "vimExpr");
+	Tcl_WrongNumArgs(interp, objn, objv, "mnvExpr");
 	return TCL_ERROR;
     }
 
@@ -1403,9 +1403,9 @@ tclvimexpr(
     else
     {
 	Tcl_SetResult(interp, str, TCL_VOLATILE);
-	vim_free(str);
+	mnv_free(str);
     }
-    err = vimerror(interp);
+    err = mnverror(interp);
 #else
     Tcl_SetResult(interp, _("expressions disabled at compile time"), TCL_STATIC);
     err = TCL_ERROR;
@@ -1415,10 +1415,10 @@ tclvimexpr(
 }
 
 /*
- * Check for internal vim errors.
+ * Check for internal mnv errors.
  */
     static int
-vimerror(Tcl_Interp *interp)
+mnverror(Tcl_Interp *interp)
 {
     if (got_int)
     {
@@ -1427,7 +1427,7 @@ vimerror(Tcl_Interp *interp)
     }
     else if (did_emsg)
     {
-	Tcl_SetResult(interp, _("Vim error"), TCL_STATIC);
+	Tcl_SetResult(interp, _("MNV error"), TCL_STATIC);
 	return TCL_ERROR;
     }
     return TCL_OK;
@@ -1439,7 +1439,7 @@ vimerror(Tcl_Interp *interp)
  *   tclgetref() - find/create Tcl command for a win_T* or buf_T* object
  *   tclgetwindow() - window frontend for tclgetref()
  *   tclgetbuffer() - buffer frontend for tclgetref()
- *   tclsetdelcmd() - add Tcl callback command to a vim object
+ *   tclsetdelcmd() - add Tcl callback command to a mnv object
  */
     static void
 delref(ClientData cref)
@@ -1460,7 +1460,7 @@ tclgetref(
     void	**refstartP,	// ptr to w_tcl_ref/b_tcl-ref member of
 				// win_T/buf_T struct
     char	*prefix,	// "win" or "buf"
-    void	*vimobj,	// win_T* or buf_T*
+    void	*mnvobj,	// win_T* or buf_T*
     Tcl_ObjCmdProc *proc)	// winselfcmd or bufselfcmd
 {
     struct ref *ref, *unused = NULL;
@@ -1484,7 +1484,7 @@ tclgetref(
     }
 
     if (ref)
-	vim_snprintf(name, sizeof(name), "::vim::%s",
+	mnv_snprintf(name, sizeof(name), "::mnv::%s",
 					Tcl_GetCommandName(interp, ref->cmd));
     else
     {
@@ -1499,8 +1499,8 @@ tclgetref(
 	}
 
 	// This might break on some exotic systems...
-	vim_snprintf(name, sizeof(name), "::vim::%s_%lx",
-					       prefix, (unsigned long)vimobj);
+	mnv_snprintf(name, sizeof(name), "::mnv::%s_%lx",
+					       prefix, (unsigned long)mnvobj);
 	cmd = Tcl_CreateObjCommand(interp, name, proc,
 	    (ClientData)ref, (Tcl_CmdDeleteProc *)delref);
 	if (!cmd)
@@ -1509,7 +1509,7 @@ tclgetref(
 	ref->interp = interp;
 	ref->cmd = cmd;
 	ref->delcmd = NULL;
-	ref->vimobj = vimobj;
+	ref->mnvobj = mnvobj;
     }
     return name;
 }
@@ -1530,7 +1530,7 @@ tclgetbuffer(Tcl_Interp *interp, buf_T *buf)
 tclsetdelcmd(
     Tcl_Interp	*interp,
     struct ref	*reflist,
-    void	*vimobj,
+    void	*mnvobj,
     Tcl_Obj	*delcmd)
 {
     if (reflist == &refsdeleted)
@@ -1541,7 +1541,7 @@ tclsetdelcmd(
 
     while (reflist != NULL)
     {
-	if (reflist->interp == interp && reflist->vimobj == vimobj)
+	if (reflist->interp == interp && reflist->mnvobj == mnvobj)
 	{
 	    if (reflist->delcmd)
 		Tcl_DecrRefCount(reflist->delcmd);
@@ -1569,7 +1569,7 @@ tcl_channel_close(ClientData instance, Tcl_Interp *interp UNUSED)
 
     // currently does nothing
 
-    if (instance != VIMOUT && instance != VIMERR)
+    if (instance != MNVOUT && instance != MNVERR)
     {
 	Tcl_SetErrno(EBADF);
 	err = EBADF;
@@ -1606,7 +1606,7 @@ tcl_channel_output(
     // The buffer is not guaranteed to be 0-terminated, and we don't if
     // there is enough room to add a '\0'.  So we have to create a copy
     // of the buffer...
-    str = vim_strnsave((char_u *)buf, bufsiz);
+    str = mnv_strnsave((char_u *)buf, bufsiz);
     if (!str)
     {
 	Tcl_SetErrno(ENOMEM);
@@ -1616,10 +1616,10 @@ tcl_channel_output(
     }
 
     result = bufsiz;
-    if (instance == VIMOUT)
+    if (instance == MNVOUT)
 	tclmsg((char *)str);
     else
-    if (instance == VIMERR)
+    if (instance == MNVERR)
 	tclerrmsg((char *)str);
     else
     {
@@ -1628,7 +1628,7 @@ tcl_channel_output(
 	    *errptr = EBADF;
 	result = -1;
     }
-    vim_free(str);
+    mnv_free(str);
     return result;
 }
 
@@ -1651,7 +1651,7 @@ tcl_channel_gethandle(
 
 static Tcl_ChannelType tcl_channel_type =
 {
-    "vimmessage",	// typeName
+    "mnvmessage",	// typeName
     TCL_CHANNEL_VERSION_2, // version
     tcl_channel_close,	// closeProc
     tcl_channel_input,	// inputProc
@@ -1681,7 +1681,7 @@ static Tcl_ChannelType tcl_channel_type =
 };
 
 ///////////////////////////////////
-// Interface to vim
+// Interface to mnv
 //////////////////////////////////
 
     static void
@@ -1734,8 +1734,8 @@ tclinit(exarg_T *eap)
 	// Create replacement channels for stdout and stderr; this has to be
 	// done each time an interpreter is created since the channels are closed
 	// when the interpreter is deleted
-	ch1 = Tcl_CreateChannel(&tcl_channel_type, "vimout", VIMOUT, TCL_WRITABLE);
-	ch2 = Tcl_CreateChannel(&tcl_channel_type, "vimerr", VIMERR, TCL_WRITABLE);
+	ch1 = Tcl_CreateChannel(&tcl_channel_type, "mnvout", MNVOUT, TCL_WRITABLE);
+	ch2 = Tcl_CreateChannel(&tcl_channel_type, "mnverr", MNVERR, TCL_WRITABLE);
 	Tcl_SetStdChannel(ch1, TCL_STDOUT);
 	Tcl_SetStdChannel(ch2, TCL_STDERR);
 
@@ -1748,7 +1748,7 @@ tclinit(exarg_T *eap)
 	    return FAIL;
 	}
 #if 0
-	// VIM sure is interactive
+	// MNV sure is interactive
 	Tcl_SetVar(interp, "tcl_interactive", "1", TCL_GLOBAL_ONLY);
 #endif
 
@@ -1766,18 +1766,18 @@ tclinit(exarg_T *eap)
 	Tcl_CreateObjCommand(interp, "exit", exitcmd,
 	    (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
 
-	// new commands, in ::vim namespace
-	Tcl_CreateObjCommand(interp, "::vim::buffer", buffercmd,
+	// new commands, in ::mnv namespace
+	Tcl_CreateObjCommand(interp, "::mnv::buffer", buffercmd,
 	    (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-	Tcl_CreateObjCommand(interp, "::vim::window", windowcmd,
+	Tcl_CreateObjCommand(interp, "::mnv::window", windowcmd,
 	   (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-	Tcl_CreateObjCommand(interp, "::vim::command", commandcmd,
+	Tcl_CreateObjCommand(interp, "::mnv::command", commandcmd,
 	   (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-	Tcl_CreateObjCommand(interp, "::vim::beep", beepcmd,
+	Tcl_CreateObjCommand(interp, "::mnv::beep", beepcmd,
 	   (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-	Tcl_CreateObjCommand(interp, "::vim::option", optioncmd,
+	Tcl_CreateObjCommand(interp, "::mnv::option", optioncmd,
 	   (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-	Tcl_CreateObjCommand(interp, "::vim::expr", exprcmd,
+	Tcl_CreateObjCommand(interp, "::mnv::expr", exprcmd,
 	   (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
 
 	// "lbase" variable
@@ -1864,7 +1864,7 @@ tcldelthisinterp(void)
     // buffers, but unless the user creates hundreds of sub-interpreters
     // all referring to lots of windows and buffers, this is hardly worth
     // the effort.  Unused refs are recycled by other interpreters, and
-    // all refs are free'd when the window/buffer gets closed by vim.
+    // all refs are free'd when the window/buffer gets closed by mnv.
 
     tclinfo.interp = NULL;
     Tcl_Free(tclinfo.curbuf);
@@ -1940,7 +1940,7 @@ ex_tcl(exarg_T *eap)
 	    err = tclexit(err);
 	}
     }
-    vim_free(script);
+    mnv_free(script);
 }
 
 /*
@@ -2051,7 +2051,7 @@ tcldelallrefs(struct ref *ref)
     char	*result;
 
 #ifdef DYNAMIC_TCL
-    // TODO: this code currently crashes Vim on exit
+    // TODO: this code currently crashes MNV on exit
     if (exiting)
 	return;
 #endif

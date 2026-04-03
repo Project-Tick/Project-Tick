@@ -1,19 +1,19 @@
 ===============================================================================
-= V ä l k o m m e n  t i l l  V I M - h a n d l e d n i n g e n  - Ver. 1.7  =
+= V ä l k o m m e n  t i l l  M N V - h a n d l e d n i n g e n  - Ver. 1.7  =
 ===============================================================================
 =			    K A P I T E L   E T T			      =
 ===============================================================================
 
-     Vim är en väldigt kraftfull redigerare som har många kommandon, alltför
+     MNV är en väldigt kraftfull redigerare som har många kommandon, alltför
      många att förklara i en handledning som denna. Den här handledningen är
      gjord för att beskriva tillräckligt många kommandon så att du enkelt ska
-     kunna använda Vim som en redigerare för alla ändamål.
+     kunna använda MNV som en redigerare för alla ändamål.
      Den beräknade tiden för att slutföra denna handledning är 30 minuter,
      beroende på hur mycket tid som läggs ned på experimentering.
 
      OBSERVERA:
      Kommandona i lektionerna kommer att modifiera texten. Gör en kopia av den
-     här filen att öva på (om du startade "vimtutor" är det här redan en kopia).
+     här filen att öva på (om du startade "mnvtutor" är det här redan en kopia).
 
      Det är viktigt att komma ihåg att den här handledningen är konstruerad
      att lära vid användning. Det betyder att du måste köra kommandona för att
@@ -46,7 +46,7 @@ NOTERA: Piltangenterna borde också fungera. Men om du använder hjkl så kommer
 	du att kunna flytta runt mycket snabbare, när du väl vant dig vid det.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			    Lektion 1.1.2: AVSLUTA VIM
+			    Lektion 1.1.2: AVSLUTA MNV
 
 
   !! NOTERA: Innan du utför någon av punkterna nedan, läs hela lektionen!!
@@ -57,7 +57,7 @@ NOTERA: Piltangenterna borde också fungera. Men om du använder hjkl så kommer
      Detta avslutar redigeraren UTAN att spara några ändringar.
 
   3. Kom tillbaka hit genom att köra kommandot som tog dig till den här
-     handledningen. Det kan vara:  vimtutor <ENTER>
+     handledningen. Det kan vara:  mnvtutor <ENTER>
 
   4. Om du har memorerat dessa steg och känner dig säker, kör steg 1 till 3
      för att avsluta och starta om redigeraren.
@@ -149,15 +149,15 @@ NOTERA: När du går igenom den här handledningen, försök inte memorera, lär
   1.  Om du har tillgång till en annan terminal, gör följande där.
       Annars, avsluta denna handledning som i Lektion 1.1.2:  :q!
 
-  2. Vid skalprompten, skriv detta kommando:  vim fil.txt <ENTER>
-     'vim' är kommandot för att starta Vim-redigeraren, 'fil.txt' är namnet på
+  2. Vid skalprompten, skriv detta kommando:  mnv fil.txt <ENTER>
+     'mnv' är kommandot för att starta MNV-redigeraren, 'fil.txt' är namnet på
      filen du vill redigera. Använd ett namn på en fil som du kan ändra.
 
   3. Infoga och ta bort text som du lärt dig i tidigare lektioner.
 
-  4. Spara filen med ändringar och avsluta Vim med:  :wq <ENTER>
+  4. Spara filen med ändringar och avsluta MNV med:  :wq <ENTER>
 
-  5. Om du avslutade vimtutor i steg 1, starta om vimtutor och flytta ned till
+  5. Om du avslutade mnvtutor i steg 1, starta om mnvtutor och flytta ned till
      följande sammanfattning.
 
   6. Efter att ha läst stegen ovan och förstått dem: gör det.
@@ -169,9 +169,9 @@ NOTERA: När du går igenom den här handledningen, försök inte memorera, lär
   1. Markören flyttas med antingen piltangenterna eller hjkl-tangenterna.
 	 h (vänster)	j (ned)       k (upp)	    l (höger)
 
-  2. För att starta Vim från skalprompten, skriv:  vim FILNAMN <ENTER>
+  2. För att starta MNV från skalprompten, skriv:  mnv FILNAMN <ENTER>
 
-  3. För att avsluta Vim, skriv:   <ESC>   :q!	<ENTER>  för att kasta ändringar.
+  3. För att avsluta MNV, skriv:   <ESC>   :q!	<ENTER>  för att kasta ändringar.
 	     ELLER skriv:	   <ESC>   :wq	<ENTER>  för att spara ändringar.
 
   4. För att ta bort tecknet vid markören, skriv:  x
@@ -200,7 +200,7 @@ Fortsätt nu med Lektion 1.2.
   4. Skriv   dw	 för att få ordet att försvinna.
 
 NOTERA: Bokstaven  d  kommer att synas på sista raden på skärmen när du
-	skriver den. Vim väntar på att du ska skriva  w . Om du ser ett annat
+	skriver den. MNV väntar på att du ska skriva  w . Om du ser ett annat
 	tecken än  d  skrev du fel; tryck <ESC> och börja om.
 
 ---> Det finns a några ord kul som inte hör hemma papper i den här meningen.
@@ -378,7 +378,7 @@ Att dubbla för att operera på en rad fungerar också för operatorer nämnda n
 
   1. Flytta markören till den första raden nedan markerad med --->.
 
-  2. Skriv  dd  för att ta bort raden och lagra den i ett Vim-register.
+  2. Skriv  dd  för att ta bort raden och lagra den i ett MNV-register.
 
   3. Flytta markören till rad c), OVANFÖR där den borttagna raden ska vara.
 
@@ -640,11 +640,11 @@ NOTERA: Alla  :  kommandon måste avslutas genom att trycka <ENTER>
 
   3. Skriv nu:	 :w TEST   (där TEST är filnamnet du valde.)
 
-  4. Detta sparar hela filen (Vim Tutor) under namnet TEST.
+  4. Detta sparar hela filen (MNV Tutor) under namnet TEST.
      För att verifiera detta, skriv   :!ls   eller  :!dir  igen för att se
      din katalog.
 
-NOTERA: Om du skulle avsluta Vim och starta igen med  vim TEST , skulle filen
+NOTERA: Om du skulle avsluta MNV och starta igen med  mnv TEST , skulle filen
 	vara en exakt kopia av handledningen när du sparade den.
 
   5. Ta nu bort filen genom att skriva (MS-DOS):    :!del TEST
@@ -667,7 +667,7 @@ NOTERA: Om du skulle avsluta Vim och starta igen med  vim TEST , skulle filen
   4. Skriv  w TEST  , där TEST är ett filnamn som inte finns ännu. Verifiera
      att du ser  :'<,'>w TEST  innan du trycker <ENTER>.
 
-  5. Vim kommer att skriva de markerade raderna till filen TEST. Använd  :!ls
+  5. MNV kommer att skriva de markerade raderna till filen TEST. Använd  :!ls
      eller  :!dir  för att se den. Ta inte bort den ännu! Vi kommer att
      använda den i nästa lektion.
 
@@ -709,7 +709,7 @@ NOTERA: Du kan också läsa utdata från ett externt kommando. Till exempel,
 	  :!dir		   :!ls		   -  visar en kataloglista.
 	  :!del FILNAMN	   :!rm FILNAMN    -  tar bort filen FILNAMN.
 
-  2.  :w FILNAMN  sparar nuvarande Vim-fil till disk med namnet FILNAMN.
+  2.  :w FILNAMN  sparar nuvarande MNV-fil till disk med namnet FILNAMN.
 
   3.  v  rörelse  :w FILNAMN  sparar de Visuellt markerade raderna i filen
       FILNAMN.
@@ -868,7 +868,7 @@ NOTERA: Om du vill ignorera skiftläge för bara en sökning, använd  \c
 
 		       ** Använd online-hjälpsystemet **
 
-  Vim har ett omfattande online-hjälpsystem. För att komma igång, prova en
+  MNV har ett omfattande online-hjälpsystem. För att komma igång, prova en
   av dessa tre:
 	- tryck <HJÄLP>-tangenten (om du har en)
 	- tryck <F1>-tangenten (om du har en)
@@ -888,52 +888,52 @@ NOTERA: Om du vill ignorera skiftläge för bara en sökning, använd  \c
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			  Lektion 1.8: SKAPA ETT STARTSKRIPT
 
-			  ** Aktivera Vim-funktioner **
+			  ** Aktivera MNV-funktioner **
 
-  Vim har många fler funktioner än Vi, men de flesta är inaktiverade som
+  MNV har många fler funktioner än Vi, men de flesta är inaktiverade som
   standard. För att börja använda fler funktioner behöver du skapa en
-  "vimrc"-fil.
+  "mnvrc"-fil.
 
-  1. Börja redigera "vimrc"-filen. Detta beror på ditt system:
-	:e ~/.vimrc		för Unix
-	:e ~/_vimrc		för MS-Windows
+  1. Börja redigera "mnvrc"-filen. Detta beror på ditt system:
+	:e ~/.mnvrc		för Unix
+	:e ~/_mnvrc		för MS-Windows
 
-  2. Läs nu in exempel-"vimrc"-filens innehåll:
-	:r $VIMRUNTIME/vimrc_example.vim
+  2. Läs nu in exempel-"mnvrc"-filens innehåll:
+	:r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Skriv filen med:
 	:w
 
-  Nästa gång du startar Vim kommer den att använda syntaxmarkering.
-  Du kan lägga till alla dina föredragna inställningar i denna "vimrc"-fil.
-  För mer information, skriv  :help vimrc-intro
+  Nästa gång du startar MNV kommer den att använda syntaxmarkering.
+  Du kan lägga till alla dina föredragna inställningar i denna "mnvrc"-fil.
+  För mer information, skriv  :help mnvrc-intro
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			       Lektion 1.9: SLUTSATS
 
-  Detta var tänkt att ge en kort översikt av Vim-redigeraren, precis tillräckligt
+  Detta var tänkt att ge en kort översikt av MNV-redigeraren, precis tillräckligt
   för att du ska kunna använda redigeraren ganska enkelt. Det är långt ifrån
-  komplett eftersom Vim har många många fler kommandon. Läs användarhandboken
+  komplett eftersom MNV har många många fler kommandon. Läs användarhandboken
   härnäst: ":help user-manual".
 
   För vidare läsning och studier rekommenderas denna bok:
-	Vim - Vi Improved - av Steve Oualline
+	MNV - MNV is not Vim - av Steve Oualline
 	Förläggare: New Riders
-  Den första boken helt tillägnad Vim. Särskilt användbar för nybörjare.
+  Den första boken helt tillägnad MNV. Särskilt användbar för nybörjare.
   Det finns många exempel och bilder.
   Se https://iccf-holland.org/click5.html
 
-  Denna äldre bok handlar mer om Vi än Vim, men rekommenderas också:
+  Denna äldre bok handlar mer om Vi än MNV, men rekommenderas också:
 	Learning the Vi Editor - av Linda Lamb
 	Förläggare: O'Reilly & Associates Inc.
   Det är en bra bok för att lära sig nästan allt du vill göra med Vi.
-  Den sjätte upplagan inkluderar också information om Vim.
+  Den sjätte upplagan inkluderar också information om MNV.
 
   Denna handledning skrevs av Michael C. Pierce och Robert K. Ware,
   Colorado School of Mines med idéer av Charles Smith,
   Colorado State University.  E-post: bware@mines.colorado.edu.
 
-  Modifierad för Vim av Bram Moolenaar.
+  Modifierad för MNV av Bram Moolenaar.
   Svensk översättning av Johan Svedberg och Daniel Nylander.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

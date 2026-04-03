@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * popupmenu.c: Popup menu (PUM)
  */
-#include "vim.h"
+#include "mnv.h"
 
 static pumitem_T *pum_array = NULL;	// items of displayed pum
 static int pum_size;			// nr of items in "pum_array"
@@ -92,19 +92,19 @@ pum_compute_size(void)
     {
 	if (pum_array[i].pum_text != NULL)
 	{
-	    w = vim_strsize(pum_array[i].pum_text);
+	    w = mnv_strsize(pum_array[i].pum_text);
 	    if (pum_base_width < w)
 		pum_base_width = w;
 	}
 	if (pum_array[i].pum_kind != NULL)
 	{
-	    w = vim_strsize(pum_array[i].pum_kind) + 1;
+	    w = mnv_strsize(pum_array[i].pum_kind) + 1;
 	    if (pum_kind_width < w)
 		pum_kind_width = w;
 	}
 	if (pum_array[i].pum_extra != NULL)
 	{
-	    w = vim_strsize(pum_array[i].pum_extra) + 1;
+	    w = mnv_strsize(pum_array[i].pum_extra) + 1;
 	    if (pum_extra_width < w)
 		pum_extra_width = w;
 	}
@@ -445,7 +445,7 @@ pum_compute_text_attrs(char_u *text, hlf_T hlf, int user_hlattr)
     if (leader == NULL || *leader == NUL)
 	return NULL;
 
-    attrs = ALLOC_MULT(int, vim_strsize(text));
+    attrs = ALLOC_MULT(int, mnv_strsize(text));
     if (attrs == NULL)
 	return NULL;
 
@@ -458,7 +458,7 @@ pum_compute_text_attrs(char_u *text, hlf_T hlf, int user_hlattr)
 	ga = fuzzy_match_str_with_pos(text, leader);
 	if (!ga)
 	{
-	    vim_free(attrs);
+	    mnv_free(attrs);
 	    return NULL;
 	}
     }
@@ -508,7 +508,7 @@ pum_compute_text_attrs(char_u *text, hlf_T hlf, int user_hlattr)
     if (ga != NULL)
     {
 	ga_clear(ga);
-	vim_free(ga);
+	mnv_free(ga);
     }
     return attrs;
 }
@@ -603,7 +603,7 @@ pum_display_rtl_text(
     rt = reverse_text(st);
     if (rt == NULL)
     {
-	VIM_CLEAR(st);
+	MNV_CLEAR(st);
 	return col;
     }
 
@@ -666,8 +666,8 @@ pum_display_rtl_text(
 	pum_screen_puts_with_attrs(row, col - cells + 1, cells, rt,
 		(int)STRLEN(rt), attrs);
 
-    vim_free(rt_start);
-    VIM_CLEAR(st);
+    mnv_free(rt_start);
+    MNV_CLEAR(st);
     return col - width;
 }
 #endif
@@ -755,7 +755,7 @@ pum_display_ltr_text(
 	screen_putchar(trunc, row, col + cells + over_cell, trunc_attr);
     }
 
-    VIM_CLEAR(st);
+    MNV_CLEAR(st);
     return col + width;
 }
 
@@ -819,7 +819,7 @@ pum_process_item(
 		    width, pum_width, *totwidth_ptr, next_isempty, selected);
 
 	if (attrs != NULL)
-	    VIM_CLEAR(attrs);
+	    MNV_CLEAR(attrs);
 
 	if (*p != TAB)
 	    break;
@@ -1279,7 +1279,7 @@ pum_set_selected(int n, int repeat UNUSED)
 
 		    for (p = pum_array[pum_selected].pum_info; *p != NUL; )
 		    {
-			e = vim_strchr(p, '\n');
+			e = mnv_strchr(p, '\n');
 			if (e == NULL)
 			{
 			    ml_append(lnum++, p, 0, FALSE);
@@ -1722,8 +1722,8 @@ split_message(char_u *mesg, pumitem_T **array)
 	goto failed;
 
     // Add an empty line above and below, looks better.
-    (*array)->pum_text = vim_strsave((char_u *)"");
-    (*array + height - 1)->pum_text = vim_strsave((char_u *)"");
+    (*array)->pum_text = mnv_strsave((char_u *)"");
+    (*array + height - 1)->pum_text = mnv_strsave((char_u *)"");
 
     for (line = 1, item_idx = 0; line < height - 1; ++item_idx)
     {
@@ -1735,7 +1735,7 @@ split_message(char_u *mesg, pumitem_T **array)
 
 	item = ((balpart_T *)ga.ga_data) + item_idx;
 	if (item->bytelen == 0)
-	    (*array)[line++].pum_text = vim_strsave((char_u *)"");
+	    (*array)[line++].pum_text = mnv_strsave((char_u *)"");
 	else
 	    for (skip = 0; skip < item->bytelen; skip += thislen)
 	    {
@@ -1757,8 +1757,8 @@ split_message(char_u *mesg, pumitem_T **array)
 		if (p == NULL)
 		{
 		    for (line = 0; line <= height - 1; ++line)
-			vim_free((*array)[line].pum_text);
-		    vim_free(*array);
+			mnv_free((*array)[line].pum_text);
+		    mnv_free(*array);
 		    goto failed;
 		}
 		for (ind = 0; ind < item->indent * 2; ++ind)
@@ -1769,7 +1769,7 @@ split_message(char_u *mesg, pumitem_T **array)
 		    if (item->start[skip + copylen - 1] != ' ')
 			break;
 
-		vim_strncpy(p + ind, item->start + skip, copylen);
+		mnv_strncpy(p + ind, item->start + skip, copylen);
 		(*array)[line].pum_text = p;
 		item->indent = 0;  // wrapped line has no indent
 		++line;
@@ -1791,8 +1791,8 @@ ui_remove_balloon(void)
 
     pum_undisplay();
     while (balloon_arraysize > 0)
-	vim_free(balloon_array[--balloon_arraysize].pum_text);
-    VIM_CLEAR(balloon_array);
+	mnv_free(balloon_array[--balloon_arraysize].pum_text);
+    MNV_CLEAR(balloon_array);
 }
 
 /*
@@ -1822,7 +1822,7 @@ ui_post_balloon(char_u *mesg, list_T *list)
 	{
 	    char_u *text = tv_get_string_chk(&li->li_tv);
 
-	    balloon_array[idx].pum_text = vim_strsave(
+	    balloon_array[idx].pum_text = mnv_strsave(
 					   text == NULL ? (char_u *)"" : text);
 	}
     }
@@ -1878,9 +1878,9 @@ pum_select_mouse_pos(void)
  * Execute the currently selected popup menu item.
  */
     static void
-pum_execute_menu(vimmenu_T *menu, int mode)
+pum_execute_menu(mnvmenu_T *menu, int mode)
 {
-    vimmenu_T   *mp;
+    mnvmenu_T   *mp;
     int		idx = 0;
     exarg_T	ea;
 
@@ -1898,9 +1898,9 @@ pum_execute_menu(vimmenu_T *menu, int mode)
  * closed.
  */
     void
-pum_show_popupmenu(vimmenu_T *menu)
+pum_show_popupmenu(mnvmenu_T *menu)
 {
-    vimmenu_T   *mp;
+    mnvmenu_T   *mp;
     int		idx = 0;
     pumitem_T	*array;
 # ifdef FEAT_BEVAL_TERM
@@ -1940,7 +1940,7 @@ pum_show_popupmenu(vimmenu_T *menu)
 	    s = mp->dname;
 	if (s != NULL)
 	{
-	    s = vim_strsave(s);
+	    s = mnv_strsave(s);
 	    if (s != NULL)
 		array[idx++].pum_text = s;
 	}
@@ -2029,8 +2029,8 @@ pum_show_popupmenu(vimmenu_T *menu)
     }
 
     for (idx = 0; idx < pum_size; ++idx)
-	vim_free(array[idx].pum_text);
-    vim_free(array);
+	mnv_free(array[idx].pum_text);
+    mnv_free(array);
     pum_undisplay();
 # ifdef FEAT_BEVAL_TERM
     p_bevalterm = save_bevalterm;
@@ -2041,7 +2041,7 @@ pum_show_popupmenu(vimmenu_T *menu)
     void
 pum_make_popup(char_u *path_name, int use_mouse_pos)
 {
-    vimmenu_T *menu;
+    mnvmenu_T *menu;
 
     if (!use_mouse_pos)
     {

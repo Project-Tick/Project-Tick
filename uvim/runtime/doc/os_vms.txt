@@ -1,12 +1,12 @@
-*os_vms.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*os_vms.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL
+		  MNV REFERENCE MANUAL
 
 
 							*VMS* *vms*
-This file contains the particularities for the VMS version of Vim.
-You can reach this information file by typing :help VMS in Vim command
+This file contains the particularities for the VMS version of MNV.
+You can reach this information file by typing :help VMS in MNV command
 prompt.
 
  1. Getting started	|vms-started|
@@ -24,47 +24,47 @@ prompt.
 
 1. Getting started					*vms-started*
 
-Vim (Vi IMproved) is a Vi-compatible text editor that runs on nearly every
-operating system known to humanity.  Now use Vim on OpenVMS too, in character
+MNV (MNV is not Vim) is a Vi-compatible text editor that runs on nearly every
+operating system known to humanity.  Now use MNV on OpenVMS too, in character
 or X/Motif environment.  It is fully featured and absolutely compatible with
-Vim on other operating systems.
+MNV on other operating systems.
 
 ==============================================================================
 
 2. Download files					*vms-download*
 
-You can download the Vim source code from the official Vim site:
-	https://github.com/vim/vim/archive/refs/heads/master.zip
+You can download the MNV source code from the official MNV site:
+	https://github.com/Project-Tick/Project-Tick/archive/refs/heads/master.zip
 Or using git: >
-	git clone https://github.com/vim/vim.git
+	git clone https://github.com/Project-Tick/Project-Tick.git
 
 Older release archives are also available at:
-	https://ftp.nluug.nl/pub/vim/
+	https://ftp.nluug.nl/pub/mnv/
 Or use one of the mirrors:
-	https://ftp.nluug.nl/pub/vim/MIRRORS
+	https://ftp.nluug.nl/pub/mnv/MIRRORS
 
 Note: the ftp server has been retired and is no longer updated.
 
 You can download precompiled executables from:
-	http://www.polarhome.com/vim/
+	http://www.polarhome.com/mnv/
 
 To use the precompiled binary version, you need one of these archives:
 
-  vim-XX-exe-x86-gui.zip	X86_64 GUI/Motif executables
-  vim-XX-exe-x86-term.zip	X86_64 console executables
-  vim-XX-exe-ia64-gui.zip	IA64 GUI/Motif executables
-  vim-XX-exe-ia64-gtk.zip	IA64 GUI/GTK executables
-  vim-XX-exe-ia64-term.zip	IA64 console executables
-  vim-XX-exe-axp-gui.zip	Alpha GUI/Motif executables
-  vim-XX-exe-axp-gtk.zip	Alpha GUI/GTK executables
-  vim-XX-exe-axp-term.zip	Alpha console executables
-  vim-XX-exe-vax-gui.zip	VAX GUI executables
-  vim-XX-exe-vax-term.zip	VAX console executables
+  mnv-XX-exe-x86-gui.zip	X86_64 GUI/Motif executables
+  mnv-XX-exe-x86-term.zip	X86_64 console executables
+  mnv-XX-exe-ia64-gui.zip	IA64 GUI/Motif executables
+  mnv-XX-exe-ia64-gtk.zip	IA64 GUI/GTK executables
+  mnv-XX-exe-ia64-term.zip	IA64 console executables
+  mnv-XX-exe-axp-gui.zip	Alpha GUI/Motif executables
+  mnv-XX-exe-axp-gtk.zip	Alpha GUI/GTK executables
+  mnv-XX-exe-axp-term.zip	Alpha console executables
+  mnv-XX-exe-vax-gui.zip	VAX GUI executables
+  mnv-XX-exe-vax-term.zip	VAX console executables
 
 and of course (optional)
-  vim-XX-runtime.zip		runtime files
+  mnv-XX-runtime.zip		runtime files
 
-The binary archives contain: vim.exe, ctags.exe, xxd.exe files.
+The binary archives contain: mnv.exe, ctags.exe, xxd.exe files.
 
 For GTK executables you will need GTKLIB that is available for
 Alpha and IA64 platforms.
@@ -84,10 +84,10 @@ X86_64 platforms with the DEC C compiler.  It should work without major
 problems.  If your system does not have some include libraries you can tune in
 the OS_VMS_CONF.H file.
 
-If you decided to build Vim with +perl, +python, etc. options, first you need
+If you decided to build MNV with +perl, +python, etc. options, first you need
 to download OpenVMS distributions of Perl and Python.  Build and deploy the
 libraries and change adequate lines in MAKE_VMS.MMS file.  There should not be
-a problem from Vim side.
+a problem from MNV side.
 
 Also GTK, XPM library paths should be configured in MAKE_VMS.MMS
 
@@ -99,7 +99,7 @@ part of the job.  For detailed instructions read file INSTALLvms.txt
 To build XXD.EXE, you should change to the subdirectory and build it
 separately.
 
-CTAGS is not part of the Vim source distribution anymore, however the OpenVMS
+CTAGS is not part of the MNV source distribution anymore, however the OpenVMS
 specific source might contain CTAGS source files as described above.
 You can find more information about CTAGS on VMS at
 http://www.polarhome.com/ctags/
@@ -107,52 +107,52 @@ http://www.polarhome.com/ctags/
 Advanced users may try some acrobatics in FEATURE.H file as well.
 
 It is possible to compile with +xfontset +xim options too, but then you have
-to set up GUI fonts etc. correctly.  See :help xim from Vim command prompt.
+to set up GUI fonts etc. correctly.  See :help xim from MNV command prompt.
 
 You may want to use GUI with GTK icons, then you have to download and install
 GTK for OpenVMS or at least runtime shareable images - LIBGTK from
 polarhome.com
-Post 7.2 Vim uses GTK2+ while the last GTK on OpenVMS is 1.2.10, therefore
+Post 7.2 MNV uses GTK2+ while the last GTK on OpenVMS is 1.2.10, therefore
 the GTK build is no longer available.
 
-For more advanced questions, please send your problem to Vim on VMS mailing
-list <vim-vms@polarhome.com>
-More about the vim-vms list can be found at:
-http://www.polarhome.com/mailman/listinfo/vim-vms
+For more advanced questions, please send your problem to MNV on VMS mailing
+list <mnv-vms@polarhome.com>
+More about the mnv-vms list can be found at:
+http://www.polarhome.com/mailman/listinfo/mnv-vms
 
 ==============================================================================
 
 5. Deploy						*vms-deploy*
 
-Vim uses a special directory structure to hold the document and runtime files:
+MNV uses a special directory structure to hold the document and runtime files:
 
-   vim (or wherever)
+   mnv (or wherever)
     |- tmp
-    |- vim57
+    |- mnv57
     |----- doc
     |----- syntax
-    |- vim62
+    |- mnv62
     |----- doc
     |----- syntax
-    |- vim64
+    |- mnv64
     |----- doc
     |----- syntax
-    vimrc    (system rc files)
-    gvimrc
+    mnvrc    (system rc files)
+    gmnvrc
 
 Use: >
 
-	define/nolog VIM	device:[path.vim]
-	define/nolog VIMRUNTIME device:[path.vim.vim60]
+	define/nolog MNV	device:[path.mnv]
+	define/nolog MNVRUNTIME device:[path.mnv.mnv60]
 	define/nolog TMP	device:[path.tmp]
 
-To get vim.exe to find its document, filetype, and syntax files, and to
+To get mnv.exe to find its document, filetype, and syntax files, and to
 specify a directory where temporary files will be located.  Copy the "runtime"
-subdirectory of the Vim distribution to vimruntime.
+subdirectory of the MNV distribution to mnvruntime.
 
-Logicals $VIMRUNTIME and $TMP are optional.
+Logicals $MNVRUNTIME and $TMP are optional.
 
-If $VIMRUNTIME is not set, Vim will guess and try to set up automatically.
+If $MNVRUNTIME is not set, MNV will guess and try to set up automatically.
 Read more about it at :help runtime
 
 If $TMP is not set, you will not be able to use some functions as CTAGS,
@@ -168,98 +168,98 @@ or as: >
 
 6. Practical usage					*vms-usage*
 
-Usually, you want to run just one version of Vim on your system, therefore
-it is enough to dedicate one directory for Vim.
-Copy the whole Vim runtime directory structure to the deployment position.
+Usually, you want to run just one version of MNV on your system, therefore
+it is enough to dedicate one directory for MNV.
+Copy the whole MNV runtime directory structure to the deployment position.
 Add the following lines to your LOGIN.COM (in SYS$LOGIN directory).
-Set up the logical $VIM as: >
+Set up the logical $MNV as: >
 
-	$ define VIM device:<path>
+	$ define MNV device:<path>
 
 Set up some symbols: >
 
-	$ ! vi starts Vim in chr. mode.
-	$ vi*m  :== mcr VIM:VIM.EXE
+	$ ! vi starts MNV in chr. mode.
+	$ vi*m  :== mcr MNV:MNV.EXE
 
-	$ !gvi starts Vim in GUI mode.
-	$ gv*im :== spawn/nowait mcr VIM:VIM.EXE -g
+	$ !gvi starts MNV in GUI mode.
+	$ gv*im :== spawn/nowait mcr MNV:MNV.EXE -g
 
 Please, check the notes for customization and configuration of symbols.
 
-You may want to create .vimrc and .gvimrc files in your home directory
+You may want to create .mnvrc and .gmnvrc files in your home directory
 (SYS$LOGIN) to overwrite default settings.
 
 The easiest way is just rename example files.  You may leave the menu file
-(MENU.VIM) and files vimrc and gvimrc in the original $VIM directory.  It will
+(MENU.MNV) and files mnvrc and gmnvrc in the original $MNV directory.  It will
 be the default setup for all users, and for users it is enough to just have
-their own additions or resetting in their home directory in files .vimrc and
-.gvimrc.  It should work without problems.
+their own additions or resetting in their home directory in files .mnvrc and
+.gmnvrc.  It should work without problems.
 
 Note: Remember, system rc files (default for all users) don't have a leading
 ".".  So, system rc files are: >
 
-	$VIM:vimrc
-	$VIM:gvimrc
-	$VIM:menu.vim
+	$MNV:mnvrc
+	$MNV:gmnvrc
+	$MNV:menu.mnv
 
 and user customized rc files are: >
 
-	sys$login:.vimrc
-	sys$login:.gvimrc
+	sys$login:.mnvrc
+	sys$login:.gmnvrc
 
 You can check that everything is at the right place with the :version command.
 
 Example LOGIN.COM: >
 
-	$ define/nolog VIM DKA0:[UTIL.VIM81]
-	$ vi*m :== mcr VIM:VIM.EXE
-	$ gv*im:== spawn/nowait/input=NLA0 mcr VIM:VIM.EXE -g -GEOMETRY 80x40
+	$ define/nolog MNV DKA0:[UTIL.MNV81]
+	$ vi*m :== mcr MNV:MNV.EXE
+	$ gv*im:== spawn/nowait/input=NLA0 mcr MNV:MNV.EXE -g -GEOMETRY 80x40
 	$ set term/inq/ins ! inquire the terminal capabilities
 	$ set disp/create/node=192.168.10.202/trans=tcpip
 
 Note: This set-up should be enough, if you are working on a standalone server
-or clustered environment, but if you want to use Vim as an internode editor in
+or clustered environment, but if you want to use MNV as an internode editor in
 DECNET environment, it will satisfy as well.
 You just have to define the "whole" path: >
 
-	$ define VIM "<server_name>[""user password""]::device:<path>"
-	$ vi*m :== "mcr VIM:VIM.EXE"
+	$ define MNV "<server_name>[""user password""]::device:<path>"
+	$ vi*m :== "mcr MNV:MNV.EXE"
 
 For example: >
 
-	$ define VIM "PLUTO::RF10:[UTIL.VIM]"
-	$ define VIM "PLUTO""ZAY mypass""::RF10:[UTIL.VIM]" ! if passwd required
+	$ define MNV "PLUTO::RF10:[UTIL.MNV]"
+	$ define MNV "PLUTO""ZAY mypass""::RF10:[UTIL.MNV]" ! if passwd required
 
-You can also use the $VIMRUNTIME logical to point to the proper version of Vim
-if you have installed more versions at the same time.  If $VIMRUNTIME is not
-defined Vim will borrow its value from the $VIM logical.  You can find more
-information about the $VIMRUNTIME logical by typing :help runtime as a Vim
+You can also use the $MNVRUNTIME logical to point to the proper version of MNV
+if you have installed more versions at the same time.  If $MNVRUNTIME is not
+defined MNV will borrow its value from the $MNV logical.  You can find more
+information about the $MNVRUNTIME logical by typing :help runtime as a MNV
 command.
 
-System administrators might want to set up a system wide Vim installation,
+System administrators might want to set up a system wide MNV installation,
 then add to the SYS$STARTUP:SYLOGICALS.COM >
 
-	$ define/nolog/sys VIM device:<path>
+	$ define/nolog/sys MNV device:<path>
 	$ define/nolog/sys TMP SYS$SCRATCH
 
 And to the SYS$STARTUP:SYLOGIN.COM >
 
-	$ vi*m :== mcr VIM:VIM.EXE
-	$ gv*im:== spawn/nowait/input=NLA0 mcr VIM:VIM.EXE -g -GEOMETRY 80x40
+	$ vi*m :== mcr MNV:MNV.EXE
+	$ gv*im:== spawn/nowait/input=NLA0 mcr MNV:MNV.EXE -g -GEOMETRY 80x40
 
 
-It will set up a normal Vim work environment for every user on the system.
+It will set up a normal MNV work environment for every user on the system.
 
-IMPORTANT: Vim on OpenVMS (and on other case insensitive system) command line
+IMPORTANT: MNV on OpenVMS (and on other case insensitive system) command line
 parameters are assumed to be lowercase. In order to indicate that a command
 line parameter is uppercase "/" sign must be used.
 
 Examples:
   >
-	vim -R  filename  ! means: -r List swap files and exit
-	vim -/r filename  ! means: -R Readonly mode (like "view")
-	vim -u	<vimrc>   ! means: -u Use <vimrc> instead of any .vimrc
-	vim -/u <gvimrc>  ! means: -U Use <gvimrc> instead of any .gvimrc
+	mnv -R  filename  ! means: -r List swap files and exit
+	mnv -/r filename  ! means: -R Readonly mode (like "view")
+	mnv -u	<mnvrc>   ! means: -u Use <mnvrc> instead of any .mnvrc
+	mnv -/u <gmnvrc>  ! means: -U Use <gmnvrc> instead of any .gmnvrc
 
 ==============================================================================
 
@@ -267,7 +267,7 @@ Examples:
 
 OpenVMS is a real mainframe OS, therefore even if it has a GUI console, most
 of the users do not use a native X/Window environment during normal operation.
-It is not possible to start Vim in GUI mode "just like that".  But anyhow it
+It is not possible to start MNV in GUI mode "just like that".  But anyhow it
 is not too complicated either.
 
 First of all: you will need an executable that is built with the GUI enabled.
@@ -275,16 +275,16 @@ First of all: you will need an executable that is built with the GUI enabled.
 Second: you need to have installed DECW/Motif on your VMS server, otherwise
 you will get errors that some shareable libraries are missing.
 
-Third: If you choose to run Vim with extra features such as GUI/GTK then you
+Third: If you choose to run MNV with extra features such as GUI/GTK then you
 need a GTK installation too or at least a GTK runtime environment (LIBGTK
-can be downloaded from http://www.polarhome.com/vim/).
+can be downloaded from http://www.polarhome.com/mnv/).
 
 1) If you are working on the VMS X/Motif console:
-   Start Vim with the command: >
+   Start MNV with the command: >
 
-	$ mc device:<path>VIM.EXE -g
+	$ mc device:<path>MNV.EXE -g
 <
-   or type :gui as a command to the Vim command prompt.  For more info :help
+   or type :gui as a command to the MNV command prompt.  For more info :help
    gui
 
 2) If you are working on some other X/Window environment like Unix or a remote
@@ -292,7 +292,7 @@ can be downloaded from http://www.polarhome.com/vim/).
 
 	$ set disp/create/node=<your IP address>/trans=<transport-name>
 <
-   and start Vim as in point 1.  You can find more help in VMS documentation
+   and start MNV as in point 1.  You can find more help in VMS documentation
    or type: help set disp in VMS prompt.
    Examples: >
 
@@ -307,7 +307,7 @@ For more information type $help set disp in VMS prompt.
    It is possible to work from XDM client as from GUI console.
 
 4) If you are working on MS-Windows or some other non X/Window environment
-   you need to set up one X server and run Vim as in point 2.
+   you need to set up one X server and run MNV as in point 2.
    For MS-Windows there are available free X servers as MIX, Omni X etc.,
    as well as excellent commercial products as eXcursion or ReflectionX with
    built-in DEC support.
@@ -327,15 +327,15 @@ features, it is worth to choose non GUI executables.
 8.5 Remote host invocation
 8.6 Terminal problems
 8.7 Hex-editing and other external tools
-8.8 Sourcing vimrc and gvimrc
-8.9 Printing from Vim
+8.8 Sourcing mnvrc and gmnvrc
+8.9 Printing from MNV
 8.10 Setting up the symbols
 8.11 diff and other GNU programs
 8.12 diff-mode
 8.13 Allow '$' in C keywords
-8.14 VIMTUTOR for beginners
+8.14 MNVTUTOR for beginners
 8.15 Slow start in console mode issue
-8.16 Common VIM directory - different architectures
+8.16 Common MNV directory - different architectures
 
 8.1 Backspace/delete
 
@@ -346,22 +346,22 @@ There are backspace/delete key inconsistencies with VMS.
 	:inoremap <Del> <C-H>	" for gui mode
 
 Read more in ch: 8.6 (Terminal problems).
-(Bruce Hunsaker <BNHunsaker@chq.byu.edu> Vim 5.3)
+(Bruce Hunsaker <BNHunsaker@chq.byu.edu> MNV 5.3)
 
 
 8.2 Filters
 
-Vim supports filters, i.e., if you have a sort program that can handle
+MNV supports filters, i.e., if you have a sort program that can handle
 input/output redirection like Unix (<infile >outfile), you could use >
 
 	:map \s 0!'aqsort<CR>
 
-(Charles E. Campbell, Jr. <cec@gryphon.gsfc.nasa.gov> Vim 5.4)
+(Charles E. Campbell, Jr. <cec@gryphon.gsfc.nasa.gov> MNV 5.4)
 
 
 8.3 VMS file version numbers
 
-Vim is saving files into a new file with the next higher file version
+MNV is saving files into a new file with the next higher file version
 number, try these settings. >
 
 	:set nobackup	     " does not create *.*_ backup files
@@ -371,13 +371,13 @@ number, try these settings. >
 Recovery is working perfectly as well from the default swap file.
 Read more with :help swapfile
 
-(Claude Marinier <ClaudeMarinier@xwavesolutions.com> Vim 5.5, Zoltan Arpadffy
-Vim 5.6)
+(Claude Marinier <ClaudeMarinier@xwavesolutions.com> MNV 5.5, Zoltan Arpadffy
+MNV 5.6)
 
 
 8.4 Directory conversion
 
-Vim will internally convert any unix-style paths and even mixed unix/VMS
+MNV will internally convert any unix-style paths and even mixed unix/VMS
 paths into VMS style paths.  Some typical conversions resemble:
 
 	/abc/def/ghi		-> abc:[def]ghi.
@@ -394,12 +394,12 @@ Note: You may use <,> brackets as well (device:<path>file.ext;version) as
 rf10:<user.zay.work>test.c;1
 
 (David Elins <delins@foliage.com>, Jerome Lauret
-<JLAURET@mail.chem.sunysb.edu> Vim 5.6)
+<JLAURET@mail.chem.sunysb.edu> MNV 5.6)
 
 
 8.5 Remote host invocation
 
-It is possible to use Vim as an internode editor.
+It is possible to use MNV as an internode editor.
 1. Edit some file from remote node: >
 
 	vi "<server>""username passwd""::<device>:<path><filename>;<version>"
@@ -410,30 +410,30 @@ Example: >
 Note: syntax is very important, otherwise VMS will recognize more parameters
 instead of one (resulting with: file not found)
 
-2.  Set up Vim as your internode editor.  If Vim is not installed on your
-host, just set up your IP address, the full Vim path including the server name
+2.  Set up MNV as your internode editor.  If MNV is not installed on your
+host, just set up your IP address, the full MNV path including the server name
 and run the command procedure below: >
 
 	$ if (p1 .eqs. "") .OR. (p2 .eqs. "") then goto usage
 	$ set disp/create/node=<your_IP_here>/trans=tcpip
-	$ define "VIM "<vim_server>""''p1' ''p2'""::<device>:<vim_path>"
-	$  vi*m :== "mcr VIM:VIM.EXE"
-	$ gv*im :== "spawn/nowait mcr VIM:VIM.EXE -g"
+	$ define "MNV "<mnv_server>""''p1' ''p2'""::<device>:<mnv_path>"
+	$  vi*m :== "mcr MNV:MNV.EXE"
+	$ gv*im :== "spawn/nowait mcr MNV:MNV.EXE -g"
 	$ goto end
 	$ usage:
 	$ write sys$output " Please enter username and password as a parameter."
-	$ write sys$output " Example: @SETVIM.COM username passwd"
+	$ write sys$output " Example: @SETMNV.COM username passwd"
 	$ end:
 
 Note: Never use it in a clustered environment (you do not need it), loading
 could be very-very slow, but even faster than a local Emacs. :-)
 
-(Zoltan Arpadffy, Vim 5.6)
+(Zoltan Arpadffy, MNV 5.6)
 
 
 8.6 Terminal problems
 
-If your terminal name is not known to Vim and it is trying to find the default
+If your terminal name is not known to MNV and it is trying to find the default
 one you will get the following message during start-up:
 ---
 Terminal entry not found in termcap
@@ -467,13 +467,13 @@ name: >
 Terminals from VT100 to VT320 (as V300, VT220, VT200) do not need any extra
 keyboard mappings.  They should work perfectly as they are, including arrows,
 Ins, Del buttons etc., except Backspace in GUI mode.  To solve it, add to
-.gvimrc: >
+.gmnvrc: >
 
 	inoremap <Del> <BS>
 
-Vim will also recognize that they are fast terminals.
+MNV will also recognize that they are fast terminals.
 
-If you're using Vim on remote host or through a very slow connection, you
+If you're using MNV on remote host or through a very slow connection, you
 might want to reset fast terminal option with: >
 
 	set nottyfast   " set terminal to slow mode
@@ -487,16 +487,16 @@ special commands to execute executables: >
 	RUN <path>filename
 	MCR <path>filename <parameters>
 
-OpenVMS users always have to be aware that the Vim command :! "just" drop them
+OpenVMS users always have to be aware that the MNV command :! "just" drop them
 to DCL prompt.  This feature is possible to use without any problem with all
 DCL commands, but if we want to execute some programs such as XXD, CTAGS,
-JTAGS, etc.  we're running into trouble if we follow the Vim documentation
+JTAGS, etc.  we're running into trouble if we follow the MNV documentation
 (see: help xxd).
 
 Solution: Execute with the MC command and add the full path to the executable.
 Example: Instead of :%!xxd command use: >
 
-	:%!mc vim:xxd
+	:%!mc mnv:xxd
 
 ... or in general: >
 	:!mc <path>filename <parameters>
@@ -511,29 +511,29 @@ parameters as: >
 For additional information, please read :help tagsearch and CTAGS
 documentation at http://ctags.sourceforge.net/ctags.html.
 
-(Zoltan Arpadffy, Vim 5.6-70)
+(Zoltan Arpadffy, MNV 5.6-70)
 
 
-8.8 Sourcing vimrc and gvimrc
+8.8 Sourcing mnvrc and gmnvrc
 
-If you want to use your .vimrc and .gvimrc from other platforms (e.g. Windows)
+If you want to use your .mnvrc and .gmnvrc from other platforms (e.g. Windows)
 you can get in trouble if you ftp that file(s): VMS has different end-of-line
 indication.
-The symptom is that Vim is not sourcing your .vimrc/.gvimrc, even if you say:
+The symptom is that MNV is not sourcing your .mnvrc/.gmnvrc, even if you say:
 >
-	:so sys$login:.vimrc
+	:so sys$login:.mnvrc
 
 One trick is to compress (e.g. zip) the files on the other platform and
 uncompress it on VMS; if you have the same symptom, try to create the files
 with copy-paste (for this you need both op. systems reachable from one
 machine, e.g. an Xterm on Windows or telnet to Windows from VMS).
 
-(Sandor Kopanyi, <sandor.kopanyi@mailbox.hu> Vim 6.0a)
+(Sandor Kopanyi, <sandor.kopanyi@mailbox.hu> MNV 6.0a)
 
 
-8.9 Printing from Vim
+8.9 Printing from MNV
 
-To be able to print from Vim (running in GUI mode) under VMS you have to set
+To be able to print from MNV (running in GUI mode) under VMS you have to set
 up $TMP logical which should point to some temporary directory and logical
 SYS$PRINT to your default print queue.
 Example: >
@@ -543,23 +543,23 @@ Example: >
 You can print out the whole buffer or just the marked area.
 More info under :help hardcopy
 
-(Zoltan Arpadffy, Vim 6.0c)
+(Zoltan Arpadffy, MNV 6.0c)
 
 
 8.10 Setting up the symbols
 
-When I use gvim this way and press CTRL-Y in the parent terminal, gvim exits.
+When I use gmnv this way and press CTRL-Y in the parent terminal, gmnv exits.
 I now use a different symbol that seems to work OK and fixes the problem.
 I suggest this instead: >
 
-	$ GV*IM:==SPAWN/NOWAIT/INPUT=NLA0: MCR VIM:VIM.EXE -G -GEOMETRY 80X40
+	$ GV*IM:==SPAWN/NOWAIT/INPUT=NLA0: MCR MNV:MNV.EXE -G -GEOMETRY 80X40
 
-The /INPUT=NLA0: separates the standard input of the gvim process from the
+The /INPUT=NLA0: separates the standard input of the gmnv process from the
 parent terminal, to block signals from the parent window.
-Without the -GEOMETRY, the gvim window size will be minimal and the menu
+Without the -GEOMETRY, the gmnv window size will be minimal and the menu
 will be confused after a window-resize.
 
-(Carlo Mekenkamp, Coen Engelbarts, Vim 6.0ac)
+(Carlo Mekenkamp, Coen Engelbarts, MNV 6.0ac)
 
 
 8.11 diff and other GNU programs
@@ -567,7 +567,7 @@ will be confused after a window-resize.
 From 6.0 diff functionality has been implemented, but OpenVMS does not use
 GNU/Unix like diff therefore built in diff does not work.
 There is a simple solution to solve this anomaly.  Install a Unix like diff
-and Vim will work perfectly in diff mode too.  You just have to redefine your
+and MNV will work perfectly in diff mode too.  You just have to redefine your
 diff program as: >
 
 	define /nolog diff <GNU_PATH>diff.exe
@@ -576,20 +576,20 @@ Another, more sophisticated solution is described below (8.12 diff-mode)
 There are other programs such as patch, make etc that may cause the same
 problems.  At www.polarhome.com is possible to download an GNU package for
 Alpha and VAX boxes that is meant to solve GNU problems on OpenVMS.
-(Zoltan Arpadffy, Vim 6.1)
+(Zoltan Arpadffy, MNV 6.1)
 
 
 8.12 diff-mode
 
-Vim 6.0 and higher supports Vim diff-mode (See |new-diff-mode|, |diff-mode|
+MNV 6.0 and higher supports MNV diff-mode (See |new-diff-mode|, |diff-mode|
 and |08.7|).  This uses the external program 'diff' and expects a Unix-like
 output format from diff.  The standard VMS diff has a different output
-format.  To use Vim on VMS in diff-mode, you need to:
+format.  To use MNV on VMS in diff-mode, you need to:
     1 Install a Unix-like diff program, e.g. GNU diff
-    2 Tell Vim to use the Unix-like diff for diff-mode.
+    2 Tell MNV to use the Unix-like diff for diff-mode.
 
-You can download GNU diff from the VIM-VMS website, it is one of the GNU
-tools in http://www.polarhome.com/vim/files/gnu_tools.zip.  I suggest to
+You can download GNU diff from the MNV-VMS website, it is one of the GNU
+tools in http://www.polarhome.com/mnv/files/gnu_tools.zip.  I suggest to
 unpack it in a separate directory "GNU" and create a logical GNU: that
 points to that directory, e.g: >
 
@@ -600,11 +600,11 @@ prompt: >
 
    GDIFF :==     $GNU:DIFF.EXE
 
-Now you need to tell Vim to use the new diff program.  Take the example
+Now you need to tell MNV to use the new diff program.  Take the example
 settings from |diff-diffexpr| and change the call to the external diff
-program to the new diff on VMS.  Add this to your .vimrc file: >
+program to the new diff on VMS.  Add this to your .mnvrc file: >
 
-     " Set up vimdiff options
+     " Set up mnvdiff options
        if v:version >= 600
 	" Use GNU diff on VMS
 	set diffexpr=MyDiff()
@@ -621,37 +621,37 @@ program to the new diff on VMS.  Add this to your .vimrc file: >
 	endfunction
       endif
 
-You can now use Vim in diff-mode, e.g. to compare two files in read-only
+You can now use MNV in diff-mode, e.g. to compare two files in read-only
 mode: >
 
-    $ VIM -D/R <FILE1> <FILE2>
+    $ MNV -D/R <FILE1> <FILE2>
 
-You can also define new symbols for vimdiff, e.g.: >
+You can also define new symbols for mnvdiff, e.g.: >
 
-    $ VIMDIFF     :== 'VIM' -D/R
-    $ GVIMDIFF    :== 'GVIM' -D/R
+    $ MNVDIFF     :== 'MNV' -D/R
+    $ GMNVDIFF    :== 'GMNV' -D/R
 
 You can now compare files in 4 ways: >
 
     1. VMS  diff:  $ DIFF     <FILE1> <FILE2>
     2. GNU  diff:  $ GDIFF    <FILE1> <FILE2>
-    3. VIM  diff:  $ VIMDIFF  <FILE1> <FILE2>
-    4. GVIM diff:  $ GVIMDIFF <FILE1> <FILE2>
+    3. MNV  diff:  $ MNVDIFF  <FILE1> <FILE2>
+    4. GMNV diff:  $ GMNVDIFF <FILE1> <FILE2>
 
-(Coen Engelbarts, Vim 6.1)
+(Coen Engelbarts, MNV 6.1)
 
 
 8.13 Allow '$' in C keywords
 
 DEC C uses many identifiers with '$' in them.  This is not allowed in ANSI C,
-and Vim recognises the '$' as the end of the identifier.  You can change this
+and MNV recognises the '$' as the end of the identifier.  You can change this
 with the 'iskeyword' option.
-Add this command to your .vimrc file: >
+Add this command to your .mnvrc file: >
 
     autocmd FileType c,cpp,cs  set iskeyword+=$
 
-You can also create the file(s) $VIM/FTPLUGIN/C.VIM (and/or CPP.VIM and
-CS.VIM) and add this command: >
+You can also create the file(s) $MNV/FTPLUGIN/C.MNV (and/or CPP.MNV and
+CS.MNV) and add this command: >
 
 	set iskeyword+=$
 
@@ -659,52 +659,52 @@ Now word-based commands, e.g. the '*'-search-command and the CTRL-]
 tag-lookup, work on the whole identifier.  (Ctags on VMS also supports '$' in
 C keywords since ctags version 5.1.)
 
-(Coen Engelbarts, Vim 6.1)
+(Coen Engelbarts, MNV 6.1)
 
-8.14 VIMTUTOR for beginners
+8.14 MNVTUTOR for beginners
 
-The VIMTUTOR.COM DCL script can help Vim beginners to learn/make their first
-steps with Vim on OpenVMS.  Depending of binary distribution you may start it
+The MNVTUTOR.COM DCL script can help MNV beginners to learn/make their first
+steps with MNV on OpenVMS.  Depending of binary distribution you may start it
 with: >
 
-	@vim:vimtutor
+	@mnv:mnvtutor
 
-(Thomas.R.Wyant III, Vim 6.1)
+(Thomas.R.Wyant III, MNV 6.1)
 
 8.16 Slow start in console mode issue
 
-As GUI/GTK Vim works equally well in console mode, many administrators
+As GUI/GTK MNV works equally well in console mode, many administrators
 deploy those executables system wide.
 Unfortunately, on a remote slow connections GUI/GTK executables behave rather
-slow when user wants to run Vim just in the console mode - because of X
+slow when user wants to run MNV just in the console mode - because of X
 environment detection timeout.
 
 Luckily, there is a simple solution for that. Administrators need to deploy
 both GUI/GTK build and just console build executables, like below: >
 
-    |- vim73
+    |- mnv73
     |----- doc
     |----- syntax
-       vimrc    (system rc files)
-       gvimrc
-       gvim.exe (the renamed GUI or GTK built vim.exe)
-       vim.exe  (the console only executable)
+       mnvrc    (system rc files)
+       gmnvrc
+       gmnv.exe (the renamed GUI or GTK built mnv.exe)
+       mnv.exe  (the console only executable)
 
 Define system symbols like below in for ex in LOGIN.COM or SYLOGIN.COM: >
 
-	$ define/nolog VIM RF10:[UTIL.VIM73] ! where you VIM directory is
-	$ vi*m  :== mcr VIM:VIM.EXE
-	$ gvi*m :== mcr VIM:GVIM.EXE
+	$ define/nolog MNV RF10:[UTIL.MNV73] ! where you MNV directory is
+	$ vi*m  :== mcr MNV:MNV.EXE
+	$ gvi*m :== mcr MNV:GMNV.EXE
 	$ ! or you can try to spawn with
-	$ gv*im :== spawn/nowait/input=NLA0 mcr VIM:GVIM.EXE -g -GEOMETRY 80x40
+	$ gv*im :== spawn/nowait/input=NLA0 mcr MNV:GMNV.EXE -g -GEOMETRY 80x40
 
 
-Like this, users that do not have X environment and want to use Vim just in
+Like this, users that do not have X environment and want to use MNV just in
 console mode can avoid performance problems.
 
-(Zoltan Arpadffy, Vim 7.2)
+(Zoltan Arpadffy, MNV 7.2)
 
-8.15 Common VIM directory - different architectures
+8.15 Common MNV directory - different architectures
 
 In a cluster that contains nodes with different architectures like below:
 
@@ -720,7 +720,7 @@ View of Cluster from system ID 11655  node: TOR  18-AUG-2008 11:58:31
 | ODIN   | VMS V7.3-2   | MEMBER  |
 +---------------------------------+
 
-It is convenient to have a common VIM directory but execute different
+It is convenient to have a common MNV directory but execute different
 executables.
 There are several solutions for this problem:
 
@@ -731,17 +731,17 @@ to the login.com or sylogin.com: >
 	$ if f$getsyi("NODE_HWTYPE") .eqs. "VAX"
 	$ then
 	$       say "VAX platform"
-	$       vi*m:== mcr vim:VIM.EXE_VAX
+	$       vi*m:== mcr mnv:MNV.EXE_VAX
 	$ endif
 	$ if f$getsyi("NODE_HWTYPE") .eqs. "ALPH"
 	$ then
 	$       say "ALPHA platform"
-	$       vi*m :== mcr vim:VIM.EXE_AXP
+	$       vi*m :== mcr mnv:MNV.EXE_AXP
 	$ endif
 	$ if f$getsyi("ARCH_NAME") .eqs. "IA64"
 	$ then
 	$      say "IA64 platform"
-	$      vi*m :== mcr vim:VIM.EXE_IA64
+	$      vi*m :== mcr mnv:MNV.EXE_IA64
 	$ endif
 
 Solution 2.  Different directories: >
@@ -749,32 +749,32 @@ Solution 2.  Different directories: >
 	$ if f$getsyi("NODE_HWTYPE") .eqs. "VAX"
 	$ then
 	$       say "VAX platform"
-	$       define/nolog VIM RF10:[UTIL.VAX_EXE] ! VAX executables
+	$       define/nolog MNV RF10:[UTIL.VAX_EXE] ! VAX executables
 	$ endif
 	$ if f$getsyi("NODE_HWTYPE") .eqs. "ALPH"
 	$ then
 	$       say "ALPHA platform"
-	$       define/nolog VIM RF10:[UTIL.AXP_EXE] ! AXP executables
+	$       define/nolog MNV RF10:[UTIL.AXP_EXE] ! AXP executables
 	$ endif
 	$ if f$getsyi("ARCH_NAME") .eqs. "IA64"
 	$ then
 	$      say "IA64 platform"
-	$      define/nolog VIM RF10:[UTIL.IA64_EXE] ! IA64 executables
+	$      define/nolog MNV RF10:[UTIL.IA64_EXE] ! IA64 executables
 	$ endif
-	$! VIMRUNTIME must be defined in order to find runtime files
-	$ define/nolog VIMRUNTIME RF10:[UTIL.VIM73]
+	$! MNVRUNTIME must be defined in order to find runtime files
+	$ define/nolog MNVRUNTIME RF10:[UTIL.MNV73]
 
 A good example for this approach is the [GNU]gnu_tools.com script from
-GNU_TOOLS.ZIP package downloadable from http://www.polarhome.com/vim/
+GNU_TOOLS.ZIP package downloadable from http://www.polarhome.com/mnv/
 
-(Zoltan Arpadffy, Vim 7.2)
+(Zoltan Arpadffy, MNV 7.2)
 
 ==============================================================================
 
 9. VMS related changes					*vms-changes*
 
 Version 9.0 (2023 Nov 27)
-- Vim is ported to the X86_64 architecture
+- MNV is ported to the X86_64 architecture
 	- IMPORTANT: because of the getline function name used in structs like
 	in ex_cmds.h on X86_64 the CRTL_VER is kept under 80500000 level. The
 	proper solution would be to rename the getline function to something
@@ -818,7 +818,7 @@ Version 7.4 (2013 Aug 10)
 - fileio.c fix the comment
 - correct RealWaitForChar
 - after 7.4-119 use different functions lib$cvtf_to_internal_time because
-  Alpha and VAX have G_FLOAT but IA64 uses IEEE float otherwise Vim crashes
+  Alpha and VAX have G_FLOAT but IA64 uses IEEE float otherwise MNV crashes
 - guard against crashes that are caused by mixed filenames
 - [TESTDIR]make_vms.mms changed to see the output files
 - Improve tests, update known issues
@@ -834,7 +834,7 @@ Version 7.3 (2010 Aug 15)
 - the following plugins are included into VMS runtime:
 	genutils 2.4, multiselect 2.2, multvals 3.1, selectbuf 4.3,
 	bufexplorer 7.1.7, taglist 4.5
-- minor changes in vimrc (just in VMS runtime)
+- minor changes in mnvrc (just in VMS runtime)
 - make_vms.mms - HUGE model is the default
 - [TESTDIR]make_vms.mms include as many tests possible
 - modify test30 and test54 for VMS
@@ -855,7 +855,7 @@ Version 7 (2006 May 8)
 - CTAGS 5.6 included
 
 Version 6.4 (2005 Oct 15)
-- GTKLIB and Vim build on IA64
+- GTKLIB and MNV build on IA64
 - colors in terminal mode
 - syntax highlighting in terminal mode
 - write problem fixed (extra CR)
@@ -881,7 +881,7 @@ Version 6.2 (2003 May 7)
     - OpenVMS version 6.2 or older
 - Documentation updated with GTK features
 - CTAGS v5.5 included
-- VMS VIM tutor created
+- VMS MNV tutor created
 
 Version 6.1 (2002 Mar 25)
 - TCL init_tcl() problem fixed
@@ -909,8 +909,8 @@ Version 6.0 (2001 Sep 28)
 - changed quickfix parameters:
 	- errormessage format to suite DECC
 	- search, make and other commands to suite VMS system
-- updated and renamed MMS make files for Vim and CTAGS.
-- CTAGS has been removed from source distribution of Vim but it will remain
+- updated and renamed MMS make files for MNV and CTAGS.
+- CTAGS has been removed from source distribution of MNV but it will remain
   in OpenVMS binary distributions.
 - simplified build/configuration procedure
 - created INSTALLvms.txt - detailed compiling instructions under VMS.
@@ -940,22 +940,22 @@ Version 5.6 (2000 Jan 17)
 	- corrected (+,-) information data
 	- added compiler and OS version
 	- added user and host information
-	- resolving $VIM and $VIMRUNTIME logicals
+	- resolving $MNV and $MNVRUNTIME logicals
 - VMS port is in MAX_FEAT (maximum features) club with Unix, Win32 and OS/2.
 	- enabled farsi, rightleft etc. features
 	- undo level raised up to 1000
 - Updated OS_VMS.MMS file.
 	- maximum features ON is default
-	- Vim is compilable with +perl, +python and +tcl features.
+	- MNV is compilable with +perl, +python and +tcl features.
 	- improved MMK compatibility
-- Created MAKEFILE_VMS.MMS, makefile for testing Vim during development.
+- Created MAKEFILE_VMS.MMS, makefile for testing MNV during development.
 - Defined DEC terminal VT320
 	- compatibility for VT3*0, VT2*0 and VT1*0 - ANSI terminals
 	  backwards, but not VT340 and newer with colour capability.
 	- VT320 is default terminal for OpenVMS
 	- these new terminals are also fast ttys (default for OpenVMS).
 	- allowed dec_mouse ttym
-- Updated files vimrc and gvimrc with VMS specific suggestions.
+- Updated files mnvrc and gmnvrc with VMS specific suggestions.
 - OS_VMS.TXT updated with new features.
 
 Version 5.5 (1999 Dec 3)
@@ -990,7 +990,7 @@ Version 4.5 (1996 Dec 16)
 
 OpenVMS documentation and executables are maintained by:
 Zoltan Arpadffy <zoltan.arpadffy@gmail.com>
-OpenVMS Vim page: http://www.polarhome.com/vim/
+OpenVMS MNV page: http://www.polarhome.com/mnv/
 
 This document uses parts and remarks from earlier authors and contributors
 of OS_VMS.TXT:
@@ -998,4 +998,4 @@ of OS_VMS.TXT:
 	Bruce Hunsaker <BNHunsaker@chq.byu.edu>
 	Sandor Kopanyi <sandor.kopanyi@mailbox.hu>
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

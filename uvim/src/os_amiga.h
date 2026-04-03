@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -41,10 +41,10 @@
 #endif
 
 #ifndef	DFLT_RUNTIMEPATH
-# define DFLT_RUNTIMEPATH "VIM:vimfiles,VIM:,VIM:vimfiles/after"
+# define DFLT_RUNTIMEPATH "MNV:mnvfiles,MNV:,MNV:mnvfiles/after"
 #endif
 #ifndef	CLEAN_RUNTIMEPATH
-# define CLEAN_RUNTIMEPATH "VIM:vimfiles,VIM:,VIM:vimfiles/after"
+# define CLEAN_RUNTIMEPATH "MNV:mnvfiles,MNV:,MNV:mnvfiles/after"
 #endif
 
 #ifndef	BASENAMELEN
@@ -109,64 +109,64 @@ typedef long off_t;
  * Names for the EXRC, HELP and temporary files.
  * Some of these may have been defined in the makefile.
  */
-#ifndef SYS_VIMRC_FILE
-# define SYS_VIMRC_FILE "VIM:vimrc"
+#ifndef SYS_MNVRC_FILE
+# define SYS_MNVRC_FILE "MNV:mnvrc"
 #endif
-#ifndef SYS_GVIMRC_FILE
-# define SYS_GVIMRC_FILE "VIM:gvimrc"
+#ifndef SYS_GMNVRC_FILE
+# define SYS_GMNVRC_FILE "MNV:gmnvrc"
 #endif
 #ifndef SYS_MENU_FILE
-# define SYS_MENU_FILE	"VIM:menu.vim"
+# define SYS_MENU_FILE	"MNV:menu.mnv"
 #endif
 #ifndef DFLT_HELPFILE
-# define DFLT_HELPFILE	"VIM:doc/help.txt"
+# define DFLT_HELPFILE	"MNV:doc/help.txt"
 #endif
 #ifndef SYNTAX_FNAME
-# define SYNTAX_FNAME	"VIM:syntax/%s.vim"
+# define SYNTAX_FNAME	"MNV:syntax/%s.mnv"
 #endif
 
 #ifndef USR_EXRC_FILE
 # define USR_EXRC_FILE	"HOME:.exrc"
 #endif
 #ifndef USR_EXRC_FILE2
-# define USR_EXRC_FILE2	"VIM:.exrc"
+# define USR_EXRC_FILE2	"MNV:.exrc"
 #endif
 
-#ifndef USR_VIMRC_FILE
-# define USR_VIMRC_FILE	"HOME:.vimrc"
+#ifndef USR_MNVRC_FILE
+# define USR_MNVRC_FILE	"HOME:.mnvrc"
 #endif
-#ifndef USR_VIMRC_FILE2
-# define USR_VIMRC_FILE2 "VIM:.vimrc"
+#ifndef USR_MNVRC_FILE2
+# define USR_MNVRC_FILE2 "MNV:.mnvrc"
 #endif
-#ifndef USR_VIMRC_FILE3
-# define USR_VIMRC_FILE3 "HOME:vimfiles/vimrc"
+#ifndef USR_MNVRC_FILE3
+# define USR_MNVRC_FILE3 "HOME:mnvfiles/mnvrc"
 #endif
-#ifndef USR_VIMRC_FILE4
-# define USR_VIMRC_FILE4 "S:.vimrc"
+#ifndef USR_MNVRC_FILE4
+# define USR_MNVRC_FILE4 "S:.mnvrc"
 #endif
-#ifndef VIM_DEFAULTS_FILE
-# define VIM_DEFAULTS_FILE "VIM:defaults.vim"
+#ifndef MNV_DEFAULTS_FILE
+# define MNV_DEFAULTS_FILE "MNV:defaults.mnv"
 #endif
-#ifndef EVIM_FILE
-# define EVIM_FILE	"VIM:evim.vim"
-#endif
-
-#ifndef USR_GVIMRC_FILE
-# define USR_GVIMRC_FILE "HOME:.gvimrc"
-#endif
-#ifndef USR_GVIMRC_FILE2
-# define USR_GVIMRC_FILE2 "VIM:.gvimrc"
-#endif
-#ifndef USR_GVIMRC_FILE3
-# define USR_GVIMRC_FILE3 "HOME:vimfiles/gvimrc"
-#endif
-#ifndef USR_GVIMRC_FILE4
-# define USR_GVIMRC_FILE4 "S:.gvimrc"
+#ifndef EMNV_FILE
+# define EMNV_FILE	"MNV:emnv.mnv"
 #endif
 
-#ifdef FEAT_VIMINFO
-# ifndef VIMINFO_FILE
-#  define VIMINFO_FILE	"VIM:.viminfo"
+#ifndef USR_GMNVRC_FILE
+# define USR_GMNVRC_FILE "HOME:.gmnvrc"
+#endif
+#ifndef USR_GMNVRC_FILE2
+# define USR_GMNVRC_FILE2 "MNV:.gmnvrc"
+#endif
+#ifndef USR_GMNVRC_FILE3
+# define USR_GMNVRC_FILE3 "HOME:mnvfiles/gmnvrc"
+#endif
+#ifndef USR_GMNVRC_FILE4
+# define USR_GMNVRC_FILE4 "S:.gmnvrc"
+#endif
+
+#ifdef FEAT_MNVINFO
+# ifndef MNVINFO_FILE
+#  define MNVINFO_FILE	"MNV:.mnvinfo"
 # endif
 #endif
 
@@ -174,12 +174,12 @@ typedef long off_t;
 # define EXRC_FILE	".exrc"
 #endif
 
-#ifndef VIMRC_FILE
-# define VIMRC_FILE	".vimrc"
+#ifndef MNVRC_FILE
+# define MNVRC_FILE	".mnvrc"
 #endif
 
-#ifndef GVIMRC_FILE
-# define GVIMRC_FILE	".gvimrc"
+#ifndef GMNVRC_FILE
+# define GMNVRC_FILE	".gmnvrc"
 #endif
 
 #ifndef DFLT_BDIR
@@ -191,7 +191,7 @@ typedef long off_t;
 #endif
 
 #ifndef DFLT_VDIR
-# define DFLT_VDIR	"HOME:vimfiles/view"	// default for 'viewdir'
+# define DFLT_VDIR	"HOME:mnvfiles/view"	// default for 'viewdir'
 #endif
 
 #ifndef DFLT_MAXMEM
@@ -208,4 +208,4 @@ int setenv(const char *, const char *);
 #define mch_remove(x) remove((char *)(x))
 #define mch_rename(src, dst) rename(src, dst)
 #define mch_chdir(s) chdir(s)
-#define vim_mkdir(x, y) mch_mkdir(x)
+#define mnv_mkdir(x, y) mch_mkdir(x)

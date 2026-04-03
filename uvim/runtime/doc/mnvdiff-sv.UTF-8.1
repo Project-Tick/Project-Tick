@@ -1,0 +1,48 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH MNVDIFF 1 "13 juni 2021"
+.SH NAMN
+mnvdiff \- redigera mellan två och åtta versioner av en fil med MNV och visa
+skillnader
+.SH SYNOPSIS
+.br
+\fBmnvdiff\fP [flaggor] fil1 fil2 [fil3 [fil4 [fil5 [fil6 [fil7 [fil8]]]]]]
+.PP
+\fBgmnvdiff\fP
+.SH BESKRIVNING
+\fBMNVdiff\fP startar \fBMNV\fP på två till åtta filer.  Varje fil får sitt eget
+fönster.  Skillnaderna mellan filerna markeras.  Detta är ett bra sätt att
+granska ändringar och flytta ändringar från en version till en annan version
+av samma fil.
+.PP
+Se mnv(1) för mer information om MNV.
+.PP
+När du startar som \fBgmnvdiff\fP, startas grafiska gränssnittet om det är
+tillgängligt.
+.PP
+I varje fönster kommer flaggan "diff" att vara aktiverad, vilket gör att
+skillnaderna markeras.
+.br
+Flaggorna "wrap" och "scrollbind" är inställda för att texten ska se bra ut.
+.br
+Flaggan "foldmethod" är inställt på "diff", vilket innebär att rader utan
+ändringar placeras i en vikning.  "foldcolumn" är inställt på två för att
+göra det enkelt att hitta vikningarna och öppna eller stänga dem.
+.SH FLAGGOR
+Vertikala delningar används för att justera raderna, som om argumentet "\-O"
+hade använts.  För att istället använda horisontella delningar, använd
+argumentet "\-o".
+.PP
+För alla andra argument, se mnv(1).
+.SH "SE ÄVEN"
+mnv(1)
+.SH UPPHOVSPERSON
+Det mesta av \fBMNV\fP har skapats av Bram Moolenaar, med stor hjälp från
+andra.  Se ":help credits" i \fBMNV.\fP
+.SH SVENSK ÖVERSÄTTNING
+MNV översattes ursprungligen av Johan Svedberg 2003-2007 och har under 2025
+uppdaterats av Daniel Nylander, speciellt manualsidor samt själva MNV.
+Om du hittar fel i översättningen, kontakta <tp-sv@listor.tp-sv.se>.

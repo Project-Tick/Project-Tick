@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * map.c: Code for mappings and abbreviations.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * List used for abbreviations.
@@ -84,16 +84,16 @@ map_free(mapblock_T **mpp)
     mapblock_T	*mp;
 
     mp = *mpp;
-    vim_free(mp->m_keys);
+    mnv_free(mp->m_keys);
     if (mp->m_alt != NULL)
 	mp->m_alt->m_alt = NULL;
-    vim_free(mp->m_str);
-    vim_free(mp->m_orig_str);
+    mnv_free(mp->m_str);
+    mnv_free(mp->m_orig_str);
     *mpp = mp->m_next;
 #ifdef FEAT_EVAL
     reset_last_used_map(mp);
 #endif
-    vim_free(mp);
+    mnv_free(mp);
 }
 
 /*
@@ -172,7 +172,7 @@ showmap(
     {
 	msg_puts((char *)mapchars);
 	len = (int)STRLEN(mapchars);
-	vim_free(mapchars);
+	mnv_free(mapchars);
     }
 
     while (++len <= 3)
@@ -249,15 +249,15 @@ map_add(
 	    mapped_ctrl_c |= mode;
     }
 
-    mp->m_keys = vim_strsave(keys);
-    mp->m_str = vim_strsave(rhs);
-    mp->m_orig_str = vim_strsave(orig_rhs);
+    mp->m_keys = mnv_strsave(keys);
+    mp->m_str = mnv_strsave(rhs);
+    mp->m_orig_str = mnv_strsave(orig_rhs);
     if (mp->m_keys == NULL || mp->m_str == NULL)
     {
-	vim_free(mp->m_keys);
-	vim_free(mp->m_str);
-	vim_free(mp->m_orig_str);
-	vim_free(mp);
+	mnv_free(mp->m_keys);
+	mnv_free(mp->m_str);
+	mnv_free(mp->m_orig_str);
+	mnv_free(mp);
 	return NULL;
     }
     mp->m_keylen = (int)STRLEN(mp->m_keys);
@@ -332,7 +332,7 @@ list_mappings(
 	    }
 
 	    char buf[200];
-	    vim_snprintf(buf, sizeof(buf),
+	    mnv_snprintf(buf, sizeof(buf),
 				    _("modifyOtherKeys detected: %s\n"), name);
 	    msg_puts(buf);
 	}
@@ -350,7 +350,7 @@ list_mappings(
 	    }
 
 	    char buf[200];
-	    vim_snprintf(buf, sizeof(buf),
+	    mnv_snprintf(buf, sizeof(buf),
 				     _("Kitty keyboard protocol: %s\n"), name);
 	    msg_puts(buf);
 	}
@@ -562,8 +562,8 @@ do_map(
     // Accept backslash like CTRL-V when 'cpoptions' does not contain 'B'.
     // with :unmap white space is included in the keys, no argument possible.
     p = keys;
-    do_backslash = (vim_strchr(p_cpo, CPO_BSLASH) == NULL);
-    while (*p && (maptype == MAPTYPE_UNMAP || !VIM_ISWHITE(*p)))
+    do_backslash = (mnv_strchr(p_cpo, CPO_BSLASH) == NULL);
+    while (*p && (maptype == MAPTYPE_UNMAP || !MNV_ISWHITE(*p)))
     {
 	if ((p[0] == Ctrl_V || (do_backslash && p[0] == '\\')) &&
 								  p[1] != NUL)
@@ -661,14 +661,14 @@ do_map(
 		    int	first, last;
 		    int	same = -1;
 
-		    first = vim_iswordp(keys);
+		    first = mnv_iswordp(keys);
 		    last = first;
 		    p = keys + (*mb_ptr2len)(keys);
 		    n = 1;
 		    while (p < keys + len)
 		    {
 			++n;			// nr of (multi-byte) chars
-			last = vim_iswordp(p);	// type of last char
+			last = mnv_iswordp(p);	// type of last char
 			if (same == -1 && last != first)
 			    same = n - 1;	// count of same char type
 			p += (*mb_ptr2len)(p);
@@ -679,17 +679,17 @@ do_map(
 			goto theend;
 		    }
 		}
-		else if (vim_iswordc(keys[len - 1]))
+		else if (mnv_iswordc(keys[len - 1]))
 		    // ends in keyword char
 		    for (n = 0; n < len - 2; ++n)
-			if (vim_iswordc(keys[n]) != vim_iswordc(keys[len - 2]))
+			if (mnv_iswordc(keys[n]) != mnv_iswordc(keys[len - 2]))
 			{
 			    retval = 1;
 			    goto theend;
 			}
 		// An abbreviation cannot contain white space.
 		for (n = 0; n < len; ++n)
-		    if (VIM_ISWHITE(keys[n]))
+		    if (MNV_ISWHITE(keys[n]))
 		    {
 			retval = 1;
 			goto theend;
@@ -850,7 +850,7 @@ do_map(
 				mp->m_mode &= ~mode;	// remove mode bits
 				if (mp->m_mode == 0 && !did_it) // reuse entry
 				{
-				    char_u *newstr = vim_strsave(rhs);
+				    char_u *newstr = mnv_strsave(rhs);
 
 				    if (newstr == NULL)
 				    {
@@ -859,10 +859,10 @@ do_map(
 				    }
 				    if (mp->m_alt != NULL)
 					mp->m_alt = mp->m_alt->m_alt = NULL;
-				    vim_free(mp->m_str);
+				    mnv_free(mp->m_str);
 				    mp->m_str = newstr;
-				    vim_free(mp->m_orig_str);
-				    mp->m_orig_str = vim_strsave(orig_rhs);
+				    mnv_free(mp->m_orig_str);
+				    mp->m_orig_str = mnv_strsave(orig_rhs);
 				    mp->m_noremap = noremap;
 				    mp->m_nowait = nowait;
 				    mp->m_silent = silent;
@@ -957,9 +957,9 @@ do_map(
     }
 
 theend:
-    vim_free(keys_buf);
-    vim_free(alt_keys_buf);
-    vim_free(arg_buf);
+    mnv_free(keys_buf);
+    mnv_free(alt_keys_buf);
+    mnv_free(arg_buf);
     return retval;
 }
 
@@ -1124,21 +1124,21 @@ mode_str2flags(char_u *modechars)
 {
     int		mode = 0;
 
-    if (vim_strchr(modechars, 'n') != NULL)
+    if (mnv_strchr(modechars, 'n') != NULL)
 	mode |= MODE_NORMAL;
-    if (vim_strchr(modechars, 'v') != NULL)
+    if (mnv_strchr(modechars, 'v') != NULL)
 	mode |= MODE_VISUAL | MODE_SELECT;
-    if (vim_strchr(modechars, 'x') != NULL)
+    if (mnv_strchr(modechars, 'x') != NULL)
 	mode |= MODE_VISUAL;
-    if (vim_strchr(modechars, 's') != NULL)
+    if (mnv_strchr(modechars, 's') != NULL)
 	mode |= MODE_SELECT;
-    if (vim_strchr(modechars, 'o') != NULL)
+    if (mnv_strchr(modechars, 'o') != NULL)
 	mode |= MODE_OP_PENDING;
-    if (vim_strchr(modechars, 'i') != NULL)
+    if (mnv_strchr(modechars, 'i') != NULL)
 	mode |= MODE_INSERT;
-    if (vim_strchr(modechars, 'l') != NULL)
+    if (mnv_strchr(modechars, 'l') != NULL)
 	mode |= MODE_LANGMAP;
-    if (vim_strchr(modechars, 'c') != NULL)
+    if (mnv_strchr(modechars, 'c') != NULL)
 	mode |= MODE_CMDLINE;
 
     return mode;
@@ -1159,7 +1159,7 @@ map_to_exists(char_u *str, char_u *modechars, int abbr)
     rhs = replace_termcodes(str, &buf, 0, REPTERM_DO_LT, NULL);
 
     retval = map_to_exists_mode(rhs, mode_str2flags(modechars), abbr);
-    vim_free(buf);
+    mnv_free(buf);
 
     return retval;
 }
@@ -1245,8 +1245,8 @@ translate_mapping(char_u *str)
     ga.ga_itemsize = 1;
     ga.ga_growsize = 40;
 
-    cpo_bslash = (vim_strchr(p_cpo, CPO_BSLASH) != NULL);
-    cpo_special = (vim_strchr(p_cpo, CPO_SPECI) != NULL);
+    cpo_bslash = (mnv_strchr(p_cpo, CPO_BSLASH) != NULL);
+    cpo_special = (mnv_strchr(p_cpo, CPO_SPECI) != NULL);
 
     for (; *str; ++str)
     {
@@ -1429,7 +1429,7 @@ ExpandMappings(
 	    continue;
 
 	if (!fuzzy)
-	    match = vim_regexec(regmatch, p, (colnr_T)0);
+	    match = mnv_regexec(regmatch, p, (colnr_T)0);
 	else
 	{
 	    score = fuzzy_match_str(p, pat);
@@ -1446,11 +1446,11 @@ ExpandMappings(
 	{
 	    fuzmatch = &((fuzmatch_str_T *)ga.ga_data)[ga.ga_len];
 	    fuzmatch->idx = ga.ga_len;
-	    fuzmatch->str = vim_strsave(p);
+	    fuzmatch->str = mnv_strsave(p);
 	    fuzmatch->score = score;
 	}
 	else
-	    ((char_u **)ga.ga_data)[ga.ga_len] = vim_strsave(p);
+	    ((char_u **)ga.ga_data)[ga.ga_len] = mnv_strsave(p);
 	++ga.ga_len;
     }
 
@@ -1476,7 +1476,7 @@ ExpandMappings(
 		continue;
 
 	    if (!fuzzy)
-		match = vim_regexec(regmatch, p, (colnr_T)0);
+		match = mnv_regexec(regmatch, p, (colnr_T)0);
 	    else
 	    {
 		score = fuzzy_match_str(p, pat);
@@ -1485,13 +1485,13 @@ ExpandMappings(
 
 	    if (!match)
 	    {
-		vim_free(p);
+		mnv_free(p);
 		continue;
 	    }
 
 	    if (ga_grow(&ga, 1) == FAIL)
 	    {
-		vim_free(p);
+		mnv_free(p);
 		break;
 	    }
 
@@ -1548,7 +1548,7 @@ ExpandMappings(
 		*++ptr1 = *ptr2++;
 	    else
 	    {
-		vim_free(*ptr2++);
+		mnv_free(*ptr2++);
 		count--;
 	    }
 	}
@@ -1571,7 +1571,7 @@ ExpandMappings(
  * characters or all non-id characters. This allows for abbr. "#i" to
  * "#include".
  *
- * Vim addition: Allow for abbreviations that end in a non-keyword character.
+ * MNV addition: Allow for abbreviations that end in a non-keyword character.
  * Then there must be white space before the abbr.
  *
  * return TRUE if there is an abbreviation, FALSE if not
@@ -1592,7 +1592,7 @@ check_abbr(
     mapblock_T	*mp2;
     int		clen = 0;	// length in characters
     int		is_id = TRUE;
-    int		vim_abbr;
+    int		mnv_abbr;
 
     if (typebuf.tb_no_abbr_cnt)	// abbrev. are not recursive
 	return FALSE;
@@ -1613,19 +1613,19 @@ check_abbr(
 	char_u *p;
 
 	p = mb_prevptr(ptr, ptr + col);
-	if (!vim_iswordp(p))
-	    vim_abbr = TRUE;			// Vim added abbr.
+	if (!mnv_iswordp(p))
+	    mnv_abbr = TRUE;			// MNV added abbr.
 	else
 	{
-	    vim_abbr = FALSE;			// vi compatible abbr.
+	    mnv_abbr = FALSE;			// vi compatible abbr.
 	    if (p > ptr)
-		is_id = vim_iswordp(mb_prevptr(ptr, p));
+		is_id = mnv_iswordp(mb_prevptr(ptr, p));
 	}
 	clen = 1;
 	while (p > ptr + mincol)
 	{
 	    p = mb_prevptr(ptr, p);
-	    if (vim_isspace(*p) || (!vim_abbr && is_id != vim_iswordp(p)))
+	    if (mnv_isspace(*p) || (!mnv_abbr && is_id != mnv_iswordp(p)))
 	    {
 		p += (*mb_ptr2len)(p);
 		break;
@@ -1636,16 +1636,16 @@ check_abbr(
     }
     else
     {
-	if (!vim_iswordc(ptr[col - 1]))
-	    vim_abbr = TRUE;			// Vim added abbr.
+	if (!mnv_iswordc(ptr[col - 1]))
+	    mnv_abbr = TRUE;			// MNV added abbr.
 	else
 	{
-	    vim_abbr = FALSE;			// vi compatible abbr.
+	    mnv_abbr = FALSE;			// vi compatible abbr.
 	    if (col > 1)
-		is_id = vim_iswordc(ptr[col - 2]);
+		is_id = mnv_iswordc(ptr[col - 2]);
 	}
-	for (scol = col - 1; scol > 0 && !vim_isspace(ptr[scol - 1])
-		&& (vim_abbr || is_id == vim_iswordc(ptr[scol - 1])); --scol)
+	for (scol = col - 1; scol > 0 && !mnv_isspace(ptr[scol - 1])
+		&& (mnv_abbr || is_id == mnv_iswordc(ptr[scol - 1])); --scol)
 	    ;
     }
 
@@ -1669,15 +1669,15 @@ check_abbr(
 	    char_u	*q = mp->m_keys;
 	    int		match;
 
-	    if (vim_strbyte(mp->m_keys, K_SPECIAL) != NULL)
+	    if (mnv_strbyte(mp->m_keys, K_SPECIAL) != NULL)
 	    {
-		char_u *qe = vim_strsave(mp->m_keys);
+		char_u *qe = mnv_strsave(mp->m_keys);
 
 		// might have CSI escaped mp->m_keys
 		if (qe != NULL)
 		{
 		    q = qe;
-		    vim_unescape_csi(q);
+		    mnv_unescape_csi(q);
 		    qlen = (int)STRLEN(q);
 		}
 	    }
@@ -1687,7 +1687,7 @@ check_abbr(
 		    && qlen == len
 		    && !STRNCMP(q, ptr, (size_t)len);
 	    if (q != mp->m_keys)
-		vim_free(q);
+		mnv_free(q);
 	    if (match)
 		break;
 	}
@@ -1735,13 +1735,13 @@ check_abbr(
 			newlen = (*mb_char2bytes)(c, tb + j);
 			tb[j + newlen] = NUL;
 			// Need to escape K_SPECIAL.
-			escaped = vim_strsave_escape_csi(tb + j);
+			escaped = mnv_strsave_escape_csi(tb + j);
 			if (escaped != NULL)
 			{
 			    newlen = (int)STRLEN(escaped);
 			    mch_memmove(tb + j, escaped, newlen);
 			    j += newlen;
-			    vim_free(escaped);
+			    mnv_free(escaped);
 			}
 		    }
 		    else
@@ -1771,7 +1771,7 @@ check_abbr(
 		typebuf.tb_no_abbr_cnt += (int)STRLEN(s) + j + 1;
 #ifdef FEAT_EVAL
 		if (expr)
-		    vim_free(s);
+		    mnv_free(s);
 #endif
 	    }
 
@@ -1809,23 +1809,23 @@ eval_map_expr(
 
     // Remove escaping of CSI, because "str" is in a format to be used as
     // typeahead.
-    expr = vim_strsave(mp->m_str);
+    expr = mnv_strsave(mp->m_str);
     if (expr == NULL)
 	return NULL;
-    vim_unescape_csi(expr);
+    mnv_unescape_csi(expr);
 
     // Forbid changing text or using ":normal" to avoid most of the bad side
     // effects.  Also restore the cursor position.
     ++textlock;
     ++ex_normal_lock;
-    set_vim_var_char(c);  // set v:char to the typed character
+    set_mnv_var_char(c);  // set v:char to the typed character
     save_cursor = curwin->w_cursor;
     save_msg_col = msg_col;
     save_msg_row = msg_row;
-    if (mp->m_script_ctx.sc_version == SCRIPT_VERSION_VIM9)
+    if (mp->m_script_ctx.sc_version == SCRIPT_VERSION_MNV9)
     {
 	current_sctx.sc_sid = mp->m_script_ctx.sc_sid;
-	current_sctx.sc_version = SCRIPT_VERSION_VIM9;
+	current_sctx.sc_version = SCRIPT_VERSION_MNV9;
     }
 
     // Note: the evaluation may make "mp" invalid.
@@ -1839,13 +1839,13 @@ eval_map_expr(
     current_sctx.sc_sid = save_sctx_sid;
     current_sctx.sc_version = save_sctx_version;
 
-    vim_free(expr);
+    mnv_free(expr);
 
     if (p == NULL)
 	return NULL;
     // Escape CSI in the result to be able to use the string as typeahead.
-    res = vim_strsave_escape_csi(p);
-    vim_free(p);
+    res = mnv_strsave_escape_csi(p);
+    mnv_free(p);
 
     return res;
 }
@@ -1857,7 +1857,7 @@ eval_map_expr(
  * Returns NULL when out of memory.
  */
     char_u *
-vim_strsave_escape_csi(char_u *p)
+mnv_strsave_escape_csi(char_u *p)
 {
     char_u	*res;
     char_u	*s, *d;
@@ -1898,10 +1898,10 @@ vim_strsave_escape_csi(char_u *p)
 
 /*
  * Remove escaping from CSI and K_SPECIAL characters.  Reverse of
- * vim_strsave_escape_csi().  Works in-place.
+ * mnv_strsave_escape_csi().  Works in-place.
  */
     void
-vim_unescape_csi(char_u *p)
+mnv_unescape_csi(char_u *p)
 {
     char_u	*s = p, *d = p;
 
@@ -2072,7 +2072,7 @@ makemap(
 		do	// do this twice if c2 is set, 3 times with c3
 		{
 		    // When outputting <> form, need to make sure that 'cpo'
-		    // is set to the Vim default.
+		    // is set to the MNV default.
 		    if (!did_cpo)
 		    {
 			if (*mp->m_str == NUL)		// will use <Nop>
@@ -2086,7 +2086,7 @@ makemap(
 			{
 			    if (fprintf(fd, "let s:cpo_save=&cpo") < 0
 				    || put_eol(fd) < 0
-				    || fprintf(fd, "set cpo&vim") < 0
+				    || fprintf(fd, "set cpo&mnv") < 0
 				    || put_eol(fd) < 0)
 				return FAIL;
 			}
@@ -2232,7 +2232,7 @@ put_escstr(FILE *fd, char_u *strstart, int what)
 	// A '<' has to be escaped with a CTRL-V to prevent it being
 	// interpreted as the start of a special key name.
 	// A space in the lhs of a :map needs a CTRL-V.
-	if (what == 2 && (VIM_ISWHITE(c) || c == '"' || c == '\\'))
+	if (what == 2 && (MNV_ISWHITE(c) || c == '"' || c == '\\'))
 	{
 	    if (putc('\\', fd) < 0)
 		return FAIL;
@@ -2417,7 +2417,7 @@ f_hasmapto(typval_T *argvars, typval_T *rettv)
     char_u	buf[NUMBUFLEN];
     int		abbr = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -2455,7 +2455,7 @@ mapblock2dict(
     char_u	    *mapmode = map_mode_to_chars(mp->m_mode);
 
     dict_add_string(dict, "lhs", lhs);
-    vim_free(lhs);
+    mnv_free(lhs);
     dict_add_string(dict, "lhsraw", mp->m_keys);
     if (lhsrawalt)
 	// Also add the value for the simplified entry.
@@ -2476,7 +2476,7 @@ mapblock2dict(
     dict_add_number(dict, "abbr", abbr ? 1L : 0L);
     dict_add_number(dict, "mode_bits", mp->m_mode);
 
-    vim_free(mapmode);
+    mnv_free(mapmode);
 }
 
     static void
@@ -2542,7 +2542,7 @@ get_maparg(typval_T *argvars, typval_T *rettv, int exact)
 	if (rhs != NULL)
 	{
 	    if (*rhs == NUL)
-		rettv->vval.v_string = vim_strsave((char_u *)"<Nop>");
+		rettv->vval.v_string = mnv_strsave((char_u *)"<Nop>");
 	    else
 		rettv->vval.v_string = str2special_save(rhs, FALSE, FALSE);
 	}
@@ -2553,8 +2553,8 @@ get_maparg(typval_T *argvars, typval_T *rettv, int exact)
 			  did_simplify ? keys_simplified : NULL,
 			  buffer_local, abbr);
 
-    vim_free(keys_buf);
-    vim_free(alt_keys_buf);
+    mnv_free(keys_buf);
+    mnv_free(alt_keys_buf);
 }
 
 /*
@@ -2573,7 +2573,7 @@ f_maplist(typval_T *argvars UNUSED, typval_T *rettv)
     const int	flags = REPTERM_FROM_PART | REPTERM_DO_LT;
     int		abbr = FALSE;
 
-    if (in_vim9script() && check_for_opt_bool_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_bool_arg(argvars, 0) == FAIL)
 	return;
     if (argvars[0].v_type != VAR_UNKNOWN)
 	abbr = tv_get_bool(&argvars[0]);
@@ -2619,12 +2619,12 @@ f_maplist(typval_T *argvars UNUSED, typval_T *rettv)
 		lhs = str2special_save(mp->m_keys, TRUE, FALSE);
 		(void)replace_termcodes(lhs, &keys_buf, 0, flags,
 								&did_simplify);
-		vim_free(lhs);
+		mnv_free(lhs);
 
 		mapblock2dict(mp, d,
 				 did_simplify ? keys_buf : NULL,
 				 buffer_local, abbr);
-		vim_free(keys_buf);
+		mnv_free(keys_buf);
 	    }
 	}
     }
@@ -2636,7 +2636,7 @@ f_maplist(typval_T *argvars UNUSED, typval_T *rettv)
     void
 f_maparg(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -2654,7 +2654,7 @@ f_maparg(typval_T *argvars, typval_T *rettv)
     void
 f_mapcheck(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -2751,7 +2751,7 @@ f_mapset(typval_T *argvars, typval_T *rettv UNUSED)
 
     // If first arg is a dict, then that's the only arg permitted.
     dict_only = argvars[0].v_type == VAR_DICT;
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_or_dict_arg(argvars, 0) == FAIL
 		|| (dict_only && check_for_unknown_arg(argvars, 1) == FAIL)
 		|| (!dict_only
@@ -2837,12 +2837,12 @@ f_mapset(typval_T *argvars, typval_T *rettv UNUSED)
     }
     else
     {
-	arg = vim_strsave(lhs);
+	arg = mnv_strsave(lhs);
 	if (arg == NULL)
 	    return;
     }
     do_map(MAPTYPE_UNMAP_LHS, arg, mode, is_abbr);
-    vim_free(arg);
+    mnv_free(arg);
 
     mp_result[0] = map_add(map_table, abbr_table, lhsraw, rhs, orig_rhs,
 			    noremap, nowait, silent, mode, is_abbr, expr, sid,
@@ -2858,7 +2858,7 @@ f_mapset(typval_T *argvars, typval_T *rettv UNUSED)
 	mp_result[1]->m_alt = mp_result[0];
     }
 
-    vim_free(arg_buf);
+    mnv_free(arg_buf);
 }
 #endif
 
@@ -2892,7 +2892,7 @@ static struct initmap initmappings[] =
 };
 # endif
 
-# if defined(MSWIN) && (!defined(FEAT_GUI) || defined(VIMDLL))
+# if defined(MSWIN) && (!defined(FEAT_GUI) || defined(MNVDLL))
 // Use the Windows (CUA) keybindings. (Console)
 static struct initmap cinitmappings[] =
 {
@@ -2947,8 +2947,8 @@ init_mappings(void)
 #if defined(MSWIN) || defined(MACOS_X)
     int		i;
 
-# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))
-#  ifdef VIMDLL
+# if defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))
+#  ifdef MNVDLL
     if (!gui.starting)
 #  endif
     {
@@ -2975,11 +2975,11 @@ add_map(char_u *map, int mode, int nore)
     char_u	*cpo_save = p_cpo;
 
     p_cpo = empty_option;	// Allow <> notation
-    s = vim_strsave(map);
+    s = mnv_strsave(map);
     if (s != NULL)
     {
 	(void)do_map(nore ? MAPTYPE_NOREMAP : MAPTYPE_MAP, s, mode, FALSE);
-	vim_free(s);
+	mnv_free(s);
     }
     p_cpo = cpo_save;
 }
@@ -2989,10 +2989,10 @@ add_map(char_u *map, int mode, int nore)
  * Any character has an equivalent 'langmap' character.  This is used for
  * keyboards that have a special language mode that sends characters above
  * 128 (although other characters can be translated too).  The "to" field is a
- * Vim command character.  This avoids having to switch the keyboard back to
+ * MNV command character.  This avoids having to switch the keyboard back to
  * ASCII mode when leaving Insert mode.
  *
- * langmap_mapchar[] maps any of 256 chars to an ASCII char used for Vim
+ * langmap_mapchar[] maps any of 256 chars to an ASCII char used for MNV
  * commands.
  * langmap_mapga.ga_data is a sorted table of langmap_entry_T.  This does the
  * same as langmap_mapchar[] for characters >= 256.
@@ -3163,7 +3163,7 @@ did_set_langmap(optset_T *args UNUSED)
 		    {
 			if (p[0] != ',')
 			{
-			    vim_snprintf(args->os_errbuf, args->os_errbuflen,
+			    mnv_snprintf(args->os_errbuf, args->os_errbuflen,
 				    _(e_langmap_extra_characters_after_semicolon_str),
 				    p);
 			    return args->os_errbuf;
@@ -3216,7 +3216,7 @@ ex_abbreviate(exarg_T *eap)
     void
 ex_map(exarg_T *eap)
 {
-    // If we are sourcing .exrc or .vimrc in current directory we
+    // If we are sourcing .exrc or .mnvrc in current directory we
     // print the mappings for security reasons.
     if (secure)
     {

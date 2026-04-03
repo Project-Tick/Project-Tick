@@ -31,7 +31,7 @@ linenr_T *source_breakpoint(void *cookie);
 int *source_dbg_tick(void *cookie);
 int source_level(void *cookie);
 char_u *source_nextline(void *cookie);
-int do_source(char_u *fname, int check_other, int is_vimrc, int *ret_sid);
+int do_source(char_u *fname, int check_other, int is_mnvrc, int *ret_sid);
 void ex_scriptnames(exarg_T *eap);
 void scriptnames_slash_adjust(void);
 char_u *get_scriptname(scid_T id);
@@ -50,4 +50,4 @@ char_u *get_autoload_prefix(scriptitem_T *si);
 char_u *may_prefix_autoload(char_u *name);
 char_u *autoload_name(char_u *name);
 int script_autoload(char_u *name, int reload);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

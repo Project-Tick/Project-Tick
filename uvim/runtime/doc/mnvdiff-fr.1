@@ -1,0 +1,54 @@
+.TH MNVDIFF 1 "30 mars 2001"
+.SH NOM
+mnvdiff \- ouvre deux, trois ou quatre versions d'un fichier dans MNV et
+affiche leurs diff�rences
+.SH SYNOPSIS
+.br
+.B mnvdiff
+[options] fichier1 fichier2 [fichier3 [fichier4]]
+.PP
+.B gmnvdiff
+.SH DESCRIPTION
+.B MNVdiff
+d�marre
+.B MNV
+avec deux (ou trois ou quatre) fichiers.
+Chaque fichier est ouvert dans sa propre fen�tre.
+Les diff�rences entre ces fichiers sont mises en surbrillance.
+C'est un outil tr�s pratique pour visualiser et reporter les
+changements entre deux versions d'un m�me fichier.
+.PP
+Consulter mnv(1) pour des informations sur l'�diteuMNMNV lui-m�me.
+.PP
+Si
+.B gmnvdiff
+est invoqu�, l'IHM graphique est d�marr�e quand elle est disponible.
+.PP
+L'option 'diff' est activ�e dans chacune des fen�tres, ce qui provoque la mise
+en surbrillance des diff�rences.
+.br
+Les options 'wrap' et 'scrollbind' sont activ�es pour donner un aspect
+agr�able au texte.
+.br
+L'option 'foldmethod' est fix�e � "diff", ce qui replie les lignes cons�cutives
+identiques. 'foldcolumn' est fix� � 2 pour trouver les replis rapidement et
+les ouvrir ou les fermer facilement.
+.SH ARGUMENTS
+La fen�tre dMNMNV est partag�e verticalement afin d'afficher les lignes
+correspondantes les unes en face des autres, comme si l'argument "\-O" �tait
+sp�cifi�. Utilisez l'argument "\-o" pour obtenir un partage horizontal � la
+place.
+.PP
+Pour conna�tre les autres arguments disponibles, consultez mnv(1).
+.SH VOIR AUSSI
+mnv(1)
+.SH AUTEUR
+La majeure partie de
+.B MNV
+a �t� �crite par Bram Moolenaar, avec l'aide de nombreux autres contributeurs.
+Voir ":help credits" dans
+.B MNV.
+.SH TRADUCTION
+Cette page de manuel a �t� traduite par David Blanchet
+<david.blanchet@free.fr> 2005-03-12.
+Mise � jour 2012-05-06, Dominique Pell� <dominique.pelle@gmail.com>

@@ -1,10 +1,10 @@
   ==========================================================================
-  =    W e l k o m   b i j   d e   V I M   l e s s e n   -   Versie 1.7    =
+  =    W e l k o m   b i j   d e   M N V   l e s s e n   -   Versie 1.7    =
   ==========================================================================
 
-  Vim is een krachtige editor met veel commando's, te veel om uit te leggen
+  MNV is een krachtige editor met veel commando's, te veel om uit te leggen
   in lessen zoals deze. Deze lessen zijn bedoeld om voldoende commando's te
-  behandelen om je in staat te stellen met Vim te werken als een editor voor
+  behandelen om je in staat te stellen met MNV te werken als een editor voor
   algemeen gebruik.
 
   Deze lessen zullen 25 tot 30 minuten in beslag nemen, afhankelijk van de
@@ -12,7 +12,7 @@
 
   LET OP:
   Door de commando's in deze lessen verandert de tekst. Maak een kopie van
-  dit bestand om mee te oefenen (als je "vimtutor" uitvoerde, is dit al een
+  dit bestand om mee te oefenen (als je "mnvtutor" uitvoerde, is dit al een
   kopie).
 
   Deze lessen zijn bedoeld om al doende te leren. Dat betekent dat je de
@@ -51,7 +51,7 @@
              rondbewegen, als je er eenmaal aan gewend bent. Echt waar!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                   Les 1.1.2: VIM AFSLUITEN
+                   Les 1.1.2: MNV AFSLUITEN
 
       !! LET OP: Lees deze les goed door voordat je iets uitvoert!!
 
@@ -61,7 +61,7 @@
      Hiermee wordt de editor afgesloten. Alle veranderingen gaan VERLOREN.
 
   3. Nu zie je de shell-prompt. Tik het commando waarmee je deze lessen
-     hebt opgeroepen. Dat is normaal gesproken:  vimtutor <ENTER>
+     hebt opgeroepen. Dat is normaal gesproken:  mnvtutor <ENTER>
 
   4. Als je deze stappen goed hebt doorgelezen, voer dan de stappen 1 tot 3
      uit om de editor te verlaten en weer op te starten.
@@ -148,16 +148,16 @@
      Of gebruik een andere terminal als je daar de beschikking over hebt. Doe
      daar het volgende.
 
-  2. Tik het volgende commando na de shell-prompt:  vim les <ENTER>
-     'vim' (vaak ook 'vi') is het commando om de Vim-editor te starten,
+  2. Tik het volgende commando na de shell-prompt:  mnv les <ENTER>
+     'mnv' (vaak ook 'vi') is het commando om de MNV-editor te starten,
      'les' is de naam van het bestand, dat je gaat bewerken. Kies een andere
      naam als er al een bestand 'les' bestaat, dat niet veranderd mag worden.
 
   3. Voeg naar eigen keus tekst toe, zoals je geleerd hebt in eerdere lessen.
 
-  4. Sla het bestand met de wijzigingen op en verlaat Vim met  :wq <ENTER>
+  4. Sla het bestand met de wijzigingen op en verlaat MNV met  :wq <ENTER>
 
-  5. Herstart vimtutor als je deze bij stap 1 hebt verlaten en ga verder met
+  5. Herstart mnvtutor als je deze bij stap 1 hebt verlaten en ga verder met
      de volgende samenvatting.
 
   6. Voer deze stappen uit nadat je ze hebt gelezen en begrepen.
@@ -168,9 +168,9 @@
   1. De cursor wordt bewogen met de pijltjestoetsen of de hjkl-toetsen.
        h (links)   j (omlaag)  k (omhoog)  l (rechts)
 
-  2. Start Vim van de shell-prompt. Tik:  vim BESTANDSNAAM <ENTER>
+  2. Start MNV van de shell-prompt. Tik:  mnv BESTANDSNAAM <ENTER>
 
-  3. Sluit Vim af met  <ESC> :q! <ENTER>  om de veranderingen weg te gooien.
+  3. Sluit MNV af met  <ESC> :q! <ENTER>  om de veranderingen weg te gooien.
                OF tik  <ESC> :wq <ENTER>  om de veranderingen te bewaren.
 
   4. Wis het teken onder de cursor met:  x
@@ -198,7 +198,7 @@
   4. Met het tikken van  dw  verdwijnt het woord.
 
   OPMERKING: De letter  d  verschijnt op de laatste regel van het scherm
-             zodra je hem tikt. Vim is aan het wachten tot je de  w  tikt.
+             zodra je hem tikt. MNV is aan het wachten tot je de  w  tikt.
              Als je een ander teken dan  d  ziet, heb je iets verkeerds
              getikt. Druk op <ESC> en begin opnieuw.
 
@@ -370,7 +370,7 @@
 
   1. Ga met de cursor naar de eerste regel met ---> hierna.
 
-  2. Wis de regel met  dd  en bewaar hem zodoende in een Vim-register.
+  2. Wis de regel met  dd  en bewaar hem zodoende in een MNV-register.
 
   3. Ga naar de c-regel, waar de gewiste regel ONDER moet komen.
 
@@ -615,10 +615,10 @@
 
   3. Tik nu:  :w TEST  (als je de naam TEST hebt gekozen).
 
-  4. Hierdoor wordt het hele bestand (de VIM lessen) opgeslagen onder de
+  4. Hierdoor wordt het hele bestand (de MNV lessen) opgeslagen onder de
      naam TEST. Tik weer  :!dir  of  :!ls  om dit te controleren.
 
-  OPMERKING: Als je Vim zou verlaten en opnieuw zou starten met  vim TEST  is
+  OPMERKING: Als je MNV zou verlaten en opnieuw zou starten met  mnv TEST  is
              het bestand een exacte kopie van de lessen, zoals je ze opsloeg.
 
   5. Wis het bestand nu met de opdracht (MS-DOS)  :!del TEST
@@ -639,7 +639,7 @@
   4. Tik  w TEST  , waar TEST een bestandsnaam is, die nog niet bestaat.
      Controleer dat je  :'<,'>w TEST  ziet staan voordat je <ENTER> tikt.
 
-  5. Vim slaat nu de geselecteerde regels op in het bestand TEST. Met
+  5. MNV slaat nu de geselecteerde regels op in het bestand TEST. Met
      :!dir  of  !ls  kan je dat zien. Wis het nog niet! We zullen het in
      de volgende les gebruiken.
 
@@ -678,7 +678,7 @@
          :!dir            :!ls          - laat de inhoud van een map zien
          :!del BESTAND    :!rm BESTAND  - wist bestand BESTAND
 
-  2. :w BESTANDSNAAM  schrijft het huidige Vim-bestand naar disk met de
+  2. :w BESTANDSNAAM  schrijft het huidige MNV-bestand naar disk met de
      naam BESTANDSNAAM.
 
   3. v beweging :w BESTANDSNAAM  laat je in zichtbare modus een fragment
@@ -836,7 +836,7 @@
 
            ** Het gebruik van ingebouwde hulp. **
 
-  Vim heeft een uitgebreid ingebouwd hulpsysteem. Probeer, om te beginnen,
+  MNV heeft een uitgebreid ingebouwd hulpsysteem. Probeer, om te beginnen,
   één van deze drie:
     - druk de <HELP> toets (als je die hebt)
     - druk de <F1> toets (als je die hebt)
@@ -856,45 +856,45 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                    Les 1.7.2: SCHRIJF EEN CONFIGURATIEBESTAND
 
-                    ** Mogelijkheden van Vim uitbreiden. **
+                    ** Mogelijkheden van MNV uitbreiden. **
 
-  Vim kent veel meer mogelijkheden dan Vi, maar de meeste zijn standaard
-  uitgeschakeld. Om meer functies te gebruiken moet je een 'vimrc'-bestand
+  MNV kent veel meer mogelijkheden dan Vi, maar de meeste zijn standaard
+  uitgeschakeld. Om meer functies te gebruiken moet je een 'mnvrc'-bestand
   schrijven.
 
-  1. Bewerk het bestand 'vimrc'. Hoe dat moet hangt af van je systeem:
-      :e ~/.vimrc		voor Unix
-      :e ~/_vimrc		voor MS-Windows
+  1. Bewerk het bestand 'mnvrc'. Hoe dat moet hangt af van je systeem:
+      :e ~/.mnvrc		voor Unix
+      :e ~/_mnvrc		voor MS-Windows
 
   2. Lees de inhoud van het voorbeeld-bestand:
-      :r $VIMRUNTIME/vimrc_example.vim
+      :r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Sla het bestand op met  :w
 
-  De volgende keer dat je Vim start wordt 'syntaxiskleuring' gebruiken.
-  Je kan al je voorkeursinstellingen toevoegen aan dit 'vimrc'-bestand.
-  Tik  :help vimrc-intro  voor meer informatie.
+  De volgende keer dat je MNV start wordt 'syntaxiskleuring' gebruiken.
+  Je kan al je voorkeursinstellingen toevoegen aan dit 'mnvrc'-bestand.
+  Tik  :help mnvrc-intro  voor meer informatie.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                    Les 1.7.3: AANVULLEN
 
       ** Aanvullen van de 'command line' met CTRL-D en <TAB>. **
 
-  1. Zorg dat Vim niet in 'compatible mode' is met  :set nocp
+  1. Zorg dat MNV niet in 'compatible mode' is met  :set nocp
 
   2. Kijk welke bestanden zich in de map bevinden met  :!ls  of  :!dir
 
   3. Tik het begin van een commando:  :e
 
-  4. Met  CTRL-D  toont Vim een lijst commando's, die met "e" beginnen.
+  4. Met  CTRL-D  toont MNV een lijst commando's, die met "e" beginnen.
 
-  5. Druk enkele keren <TAB>. Vim laat aanvullingen zien, zoals ":edit",
+  5. Druk enkele keren <TAB>. MNV laat aanvullingen zien, zoals ":edit",
      dat we hier gebruiken.
 
   6. Voeg een spatie toe en de eerste letter(s) van een bestaande
      bestandsnaam:  :edit BESTAND
 
-  7. Druk <TAB>. Vim vult de naam aan (als hij uniek is).
+  7. Druk <TAB>. MNV vult de naam aan (als hij uniek is).
 
   OPMERKING: Aanvullen werkt bij tal van commando's. Probeer gewoon CTRL-D
              en <TAB>. Het is bijzonder nuttig bij  :help .
@@ -910,39 +910,39 @@
 
   4. Tik  :q  om het help-venster te sluiten.
 
-  5. Maak een bestand met de naam 'vimrc' voor je voorkeursinstellingen.
+  5. Maak een bestand met de naam 'mnvrc' voor je voorkeursinstellingen.
 
   6. Druk CTRL-D tijdens het intikken van een :-commando om mogelijke
      aanvullingen te zien. Druk <TAB> om aanvullen te gebruiken.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Hiermee komen de Vim-lessen tot een einde. Ze waren bedoeld om een kort
-  overzicht te geven van de Vim-editor, juist voldoende om de editor
-  redelijk makkelijk te gebruiken. Deze lessen zijn verre van volledig. Vim
+  Hiermee komen de MNV-lessen tot een einde. Ze waren bedoeld om een kort
+  overzicht te geven van de MNV-editor, juist voldoende om de editor
+  redelijk makkelijk te gebruiken. Deze lessen zijn verre van volledig. MNV
   kent veel meer commando's. Lees hierna de handleiding voor gebruikers:
   ":help user-manual".
 
   Voor verdere studie wordt aanbevolen:
-      Vim - Vi Improved - door Steve Oualline
+      MNV - MNV is not Vim - door Steve Oualline
       Uitgever: New Riders
-  Dit is het eerste boek dat geheel aan Vim is gewijd. Speciaal geschikt
+  Dit is het eerste boek dat geheel aan MNV is gewijd. Speciaal geschikt
   voor beginners. Met veel voorbeelden en afbeeldingen.
   Zie https://iccf-holland.org/click5.html
 
-  Het volgende boek is ouder en gaat meer over Vi dan Vim, maar het wordt
+  Het volgende boek is ouder en gaat meer over Vi dan MNV, maar het wordt
   toch aanbevolen:
       Learning the Vi Editor - door Linda Lamb
       Uitgever: O'Reilly & Associates Inc.
   Het is een goed boek om nagenoeg alles te weten te komen dat je met Vi
   zou willen doen. De zesde en vooral de nieuwe zevende druk (onder de
-  titel Learning the Vi and Vim Editors door Arnold Robbins, Elbert Hannah
-  & Linda Lamb) bevat ook informatie over Vim.
+  titel Learning the Vi and MNV Editors door Arnold Robbins, Elbert Hannah
+  & Linda Lamb) bevat ook informatie over MNV.
 
   Deze lessen zijn geschreven door Michael C. Pierce en Robert K. Ware,
   Colorado School of Mines met gebruikmaking van ideeën van Charles Smith
   van de Colorado State University. E-mail: bware@mines.colorado.edu.
 
-  Aangepast voor Vim door Bram Moolenaar.
+  Aangepast voor MNV door Bram Moolenaar.
 
   Nederlandse vertaling door Rob Bishoff, april 2012
   e-mail: rob.bishoff@hccnet.nl)

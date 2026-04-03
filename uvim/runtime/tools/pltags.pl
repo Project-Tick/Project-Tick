@@ -2,7 +2,7 @@
 
 # pltags - create a tags file for Perl code, for use by vi(m)
 #
-# Distributed with Vim <http://www.vim.org/>, latest version always available
+# Distributed with MNV <http://www.mnv.org/>, latest version always available
 # at <http://www.mscha.com/mscha.html?pltags#tools>
 #
 # Version 2.3, 28 February 2002
@@ -168,7 +168,7 @@ unless ($status && @ARGV)
     print "    --vars (--novars)     (don't) include variable declarations in tag file\n";
     print "    --pkgs (--nopkgs)     (don't) include package declarations in tag file\n";
     print "    --extensions (--noextensions)\n";
-    print "                          (don't) include Exuberant Ctags / Vim style\n";
+    print "                          (don't) include Exuberant Ctags / MNV style\n";
     print "                          extensions in tag file\n\n";
     print "  Default options: ";
     print ($do_subs ? "--subs " : "--nosubs ");
@@ -222,7 +222,7 @@ foreach $file (map { glob } @ARGV)
 		# Make a tag for this variable unless we're told not to.  We
 		# assume that a variable is always static, unless it appears
 		# in a package before any sub.	(Not necessarily true, but
-		# it's ok for most purposes and Vim works fine even if it is
+		# it's ok for most purposes and MNV works fine even if it is
 		# incorrect)
 		if ($do_vars)
 		{
@@ -259,7 +259,7 @@ foreach $file (map { glob } @ARGV)
 
 	    # Make a tag for this sub unless we're told not to.  We assume
 	    # that a sub is static, unless it appears in a package.  (Not
-	    # necessarily true, but it's ok for most purposes and Vim works
+	    # necessarily true, but it's ok for most purposes and MNV works
 	    # fine even if it is incorrect)
 	    if ($do_subs)
 	    {

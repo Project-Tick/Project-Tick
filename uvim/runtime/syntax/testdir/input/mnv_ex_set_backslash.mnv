@@ -1,0 +1,79 @@
+" MNV :set command (escaped characters)
+" MNV_TEST_SETUP hi link mnvSetEscape      DiffAdd
+" MNV_TEST_SETUP hi link mnvSetBarEscape   DiffDelete
+" MNV_TEST_SETUP hi link mnvSetQuoteEscape DiffDelete
+" MNV_TEST_SETUP hi link mnvSetEqual       DiffChange
+
+
+echo "-- 1 --"
+set titlestring=\afoo\abar\a " comment
+echo &titlestring
+set titlestring=\afoo\abar\a
+echo &titlestring
+set titlestring=\ foo\ bar\  " comment
+echo &titlestring
+set titlestring=\ foo\ bar\ 
+echo &titlestring
+set titlestring=\|foo\|bar\| " comment
+echo &titlestring
+set titlestring=\|foo\|bar\|
+echo &titlestring
+set titlestring=\"foo\"bar\" " comment
+echo &titlestring
+set titlestring=\"foo\"bar\"
+echo &titlestring
+
+echo "-- 2 --"
+set titlestring=\\afoo\\abar\\a " comment
+echo &titlestring
+set titlestring=\\afoo\\abar\\a
+echo &titlestring
+set titlestring=\\ foo\\ bar\\  " comment
+echo &titlestring
+set titlestring=\\ foo\\ bar\\ 
+echo &titlestring
+set titlestring=\\|foo\\|bar\\| " comment
+echo &titlestring
+set titlestring=\\|foo\\|bar\\|
+echo &titlestring
+set titlestring=\\"foo\\"bar\\" " comment
+echo &titlestring
+set titlestring=\\"foo\\"bar\\"
+echo &titlestring
+
+echo "-- 3 --"
+set titlestring=\\\afoo\\\abar\\\a " comment
+echo &titlestring
+set titlestring=\\\afoo\\\abar\\\a
+echo &titlestring
+set titlestring=\\\ foo\\\ bar\\\  " comment
+echo &titlestring
+set titlestring=\\\ foo\\\ bar\\\ 
+echo &titlestring
+set titlestring=\\\|foo\\\|bar\\\| " comment
+echo &titlestring
+set titlestring=\\\|foo\\\|bar\\\|
+echo &titlestring
+set titlestring=\\\"foo\\\"bar\\\" " comment
+echo &titlestring
+set titlestring=\\\"foo\\\"bar\\\"
+echo &titlestring
+
+echo "-- 4 --"
+set titlestring=\\\\afoo\\\\abar\\\\a " comment
+echo &titlestring
+set titlestring=\\\\afoo\\\\abar\\\\a
+echo &titlestring
+set titlestring=\\\\ foo\\\\ bar\\\\  " comment
+echo &titlestring
+set titlestring=\\\\ foo\\\\ bar\\\\ 
+echo &titlestring
+set titlestring=\\\\|foo\\\\|bar\\\\| " comment
+echo &titlestring
+set titlestring=\\\\|foo\\\\|bar\\\\|
+echo &titlestring
+set titlestring=\\\\"foo\\\\"bar\\\\" " comment
+echo &titlestring
+set titlestring=foo\\\\"\\\\"bar\\\\"
+echo &titlestring
+

@@ -1,18 +1,18 @@
 ===============================================================================
-=    V i t a j t e   v o   V I M   T u t o r i a l i    -    Verzia 1.7       =
+=    V i t a j t e   v o   M N V   T u t o r i a l i    -    Verzia 1.7       =
 ===============================================================================
 
-     Vim je veľmi výkonný editor, ktorý má príliž veľa príkazov na to aby
+     MNV je veľmi výkonný editor, ktorý má príliž veľa príkazov na to aby
      mohli byt všetky popísané vo výuke akou je táto. Táto výuka
      popisuje dostatočné množstvo príkazov nato aby bolo možné používať
-     Vim ako viacúčelový editor.
+     MNV ako viacúčelový editor.
 
      Približný čas potrebný na prebratie tejto výuky je 25-30 minút,
      závisí na tom, koľko je stráveného času s preskúšavaním.
 
      UPOZORNENIE:
      Príkazy v lekciách modifikujú text. Vytvor kópiu tohto súboru aby
-     sa mohlo precvičovať na ňom (pri štarte "vimtutor" je toto kópia).
+     sa mohlo precvičovať na ňom (pri štarte "mnvtutor" je toto kópia).
 
      Je dôležité zapamätať si, že táto výuka je vytvorená pre výuku
      používaním. To znamená, že je potrebné si príkazy vyskúšať, aby bolo
@@ -46,7 +46,7 @@ Poznámka: Kurzorové klávesy sú tiež funkčné. Ale používaním hjkl sa bu
 	        schopný pohybovať rýchlejšie, keď si zvykneš ich používať. Naozaj!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		     LEKCIA 1.1.2: ZATVÁRANIE VIMU
+		     LEKCIA 1.1.2: ZATVÁRANIE MNVU
 
 
   !! POZNÁMKA: Pred vykonaním týchto krokov si prečítaj celú túto lekciu !!
@@ -57,7 +57,7 @@ Poznámka: Kurzorové klávesy sú tiež funkčné. Ale používaním hjkl sa bu
      Tým ukončíš prácu s editorom BEZ uloženia zmien, ktoré si vykonal.
 
   3. Keď sa dostaneš na príkazový riadok, napíš príkaz, ktorým sa dostaneš
-     speť do tejto výuky. To môže byť:	vimtutor <ENTER>
+     speť do tejto výuky. To môže byť:	mnvtutor <ENTER>
 
   4. Ak si si tieto kroky spoľahlivo zapamätal, vykonaj kroky 1 až 3, pre
      ukončenie a znovu spustenie editora.
@@ -146,15 +146,15 @@ POZNÁMKA: Neskúšaj si zapamätať obsah tejto výuky, ale sa uč používaní
 
 1. Opusti túto výuku, ako si to urobil v lekcii 1.1.2:  :q!
 
-2. Do príkazového riadku napíš príkaz:  vim tutor <ENTER>
-   'vim' je príkaz, ktorý spustí editor Vim, 'tutor' je meno súboru,
+2. Do príkazového riadku napíš príkaz:  mnv tutor <ENTER>
+   'mnv' je príkaz, ktorý spustí editor MNV, 'tutor' je meno súboru,
    ktorý chceš editovať. Použi taký súbor, ktorý môžeš meniť.
 
 3. Vlož a zmaž text tak, ako si sa naučil v predošlých lekciach.
 
-4. Ulož súbor so zmenami a opusti Vim príkazom:  :wq  <ENTER>
+4. Ulož súbor so zmenami a opusti MNV príkazom:  :wq  <ENTER>
 
-5. Reštartuj vimtutor a presuň sa dole na nasledujúce zhrnutie.
+5. Reštartuj mnvtutor a presuň sa dole na nasledujúce zhrnutie.
 
 6. Urob tak po prečítaní predošlých krokov a porozumeniu im.
 
@@ -166,9 +166,9 @@ POZNÁMKA: Neskúšaj si zapamätať obsah tejto výuky, ale sa uč používaní
   1. Kurzor sa pohybuje použitím kláves so šípkami alebo klávesmi hjkl.
 	  h (do lava)    j (dole)    k (hore)    l (doprava)
 
-  2. Pre spustenie Vimu (z príkazového riadku) napíš: vim FILENAME <ENTER>
+  2. Pre spustenie MNVu (z príkazového riadku) napíš: mnv FILENAME <ENTER>
 
-  3. Na ukončenie Vimu napíš: <ESC>  :q!  <ENTER> pre zrušenie všetkých zmien
+  3. Na ukončenie MNVu napíš: <ESC>  :q!  <ENTER> pre zrušenie všetkých zmien
        alebo napíš:   <ESC>   :wq   <ENTER>    pre uloženie zmien.
 
   4. Na zmazanie znaku na mieste kurzora napíš:  x
@@ -198,7 +198,7 @@ Teraz pokračuj lekciou 1.2.
 4. Napíš  dw  aby slovo zmizlo.
 
 POZNÁMKA: Písmeno d sa zobrazí na poslednom riadku obrazovky keď ho
-	        napíšeš. Vim na teba počká, aby si mohol napísať
+	        napíšeš. MNV na teba počká, aby si mohol napísať
           písmeno w. Ak vidíš niečo iné ako  d , tak si napísal
           nesprávny znak; stlač  <ESC>  a začni znova.
 
@@ -301,7 +301,7 @@ POZNÁMKA: Číslo medzi operátorom  d  a pohybom funguje podobne ako pri
 
 	    ** Napísanie príkazu   dd   zmaže celý riadok. **
 
-Vzhľadom na frekvenciu mazania celého riadku, sa autori Vimu rozhodli,
+Vzhľadom na frekvenciu mazania celého riadku, sa autori MNVu rozhodli,
 že bude jednoduchšie mazať celý riadok napísaním dvoch písmen d.
 
 1. Presuň kurzor na druhý riadok v texte na spodu.
@@ -376,7 +376,7 @@ Vzhľadom na frekvenciu mazania celého riadku, sa autori Vimu rozhodli,
 
   1. Presuň kurzor nižšie na prvý riadok textu.
 
-  2. Napíš  dd  čím zmažeš riadok a uložíš ho do buffera editora Vim.
+  2. Napíš  dd  čím zmažeš riadok a uložíš ho do buffera editora MNV.
 
   3. Presuň kurzor vyššie tam, kam zmazaný riadok patrí.
 
@@ -645,11 +645,11 @@ Poznámka:  Všetky príkazy  :  musia byť dokončené stlačením <ENTER>
 
   3. Teraz napíš:   :w TEST   (kde TEST je názov vybratého súboru.)
 
-  4. To uloží celý súbor  (Vim Tutor)  pod názovm TEST.
+  4. To uloží celý súbor  (MNV Tutor)  pod názovm TEST.
      Pre overenie napíš   :!dir   , čím  zobrazíš obsah adresára.
 
-Poznámka: že ak ukončíš prácu s editorom Vim a znovu ho spustíš príkazom
-	        vim TEST, súbor bude kópia výuky, keď si ho uložil.
+Poznámka: že ak ukončíš prácu s editorom MNV a znovu ho spustíš príkazom
+	        mnv TEST, súbor bude kópia výuky, keď si ho uložil.
 
   5. Teraz odstráň súbor napísaním (MS-DOS):   :!del TEST
 			     alebo (Unix):     :!rm TEST
@@ -671,7 +671,7 @@ Poznámka: že ak ukončíš prácu s editorom Vim a znovu ho spustíš príkazo
   4. Napíš w TEST  , kde TEST je meno súboru, ktorý zatial neexistuje.
      Skontroluj, e vidíš  :'<,'>w TEST  predtým než stlačíš Enter.
 
-  5. Vim zapíše označené riadky do súboru TEST. Použi :!dir  alebo  :!ls
+  5. MNV zapíše označené riadky do súboru TEST. Použi :!dir  alebo  :!ls
      pre overenie. Zatial ho ešte nemaž! Použijeme ho v ďalšej lekcii.
 
 POZNÁMKA: Stlačením klávesy  v  sa spustí vizuálne označovanie.
@@ -887,7 +887,7 @@ POZNÁMKA: Ak chceš nerozlyšovať veľkosť písmen len pre jedno
 
 	  ** Používaj on-line systém nápovedy **
 
-  Vim má obsiahly on-line systém nápovedy. Pre odštartovanie, vyskúšaj jeden
+  MNV má obsiahly on-line systém nápovedy. Pre odštartovanie, vyskúšaj jeden
   z týchto troch:
 	- stlač klávesu <HELP> (ak nejakú máš)
 	- stlač klávesu <F1> (ak nejakú máš)
@@ -909,25 +909,25 @@ POZNÁMKA: Ak chceš nerozlyšovať veľkosť písmen len pre jedno
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		 LEKCIA 1.7.2: VYTVORENIE ŠTARTOVACIEHO SKRIPTU
 
-		       ** Zapni funkcie editora Vim **
+		       ** Zapni funkcie editora MNV **
 
-  Vim má omnoho viac funkcii než Vi, ale večšina z nich je implicitne
-  vypnutá. Pre používanie viac Vim funkcii vytvor "vimrc" súbor.
+  MNV má omnoho viac funkcii než Vi, ale večšina z nich je implicitne
+  vypnutá. Pre používanie viac MNV funkcii vytvor "mnvrc" súbor.
 
-  1. Začni editovať "vimrc" súbor, to závisí na použitom systéme:
-	:e ~/.vimrc      pre Unix
-	:e ~/_vimrc      pre MS-Windows
+  1. Začni editovať "mnvrc" súbor, to závisí na použitom systéme:
+	:e ~/.mnvrc      pre Unix
+	:e ~/_mnvrc      pre MS-Windows
 
-  2. Teraz si prečítaj text príkladu "vimrc" súboru:
+  2. Teraz si prečítaj text príkladu "mnvrc" súboru:
 
-	:r $VIMRUNTIME/vimrc_example.vim
+	:r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Ulož súbor:
 	:w
 
-  Pri nasledujúcom štarte editora Vim sa použije zvýrazňovanie syntaxe.
-  Do "vimrc" súboru môžeš pridať všetky svoje uprednostňované nastavenia.
-  Pre viac informácii napíš  :help vimrc-intro
+  Pri nasledujúcom štarte editora MNV sa použije zvýrazňovanie syntaxe.
+  Do "mnvrc" súboru môžeš pridať všetky svoje uprednostňované nastavenia.
+  Pre viac informácii napíš  :help mnvrc-intro
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -935,20 +935,20 @@ POZNÁMKA: Ak chceš nerozlyšovať veľkosť písmen len pre jedno
 
      ** Dokonči príkaz na príkazovom riadku použitím CTRL-D a <TAB> **
 
-  1. Uisti sa, že Vim nieje v kompatibilnom móde:  :set nocp
+  1. Uisti sa, že MNV nieje v kompatibilnom móde:  :set nocp
 
   2. Pozri sa aké súbory sa nachádzajú v adresári:  :!ls  alebo  :!dir
 
   3. Napíš začiatok príkazu:  :e
 
-  4. Stlač  CTRL-D  a Vim zobrazí zoznam príkazov začínajúcich "e".
+  4. Stlač  CTRL-D  a MNV zobrazí zoznam príkazov začínajúcich "e".
 
-  5. Stlač <TAB> a Vim dokončí meno príkazu na ":edit".
+  5. Stlač <TAB> a MNV dokončí meno príkazu na ":edit".
 
   6. Teraz pridaj medzerník a začiatok mena existujúceho súboru:
      :edit FIL
 
-  7. Stlač <TAB>. Vim dokončí meno (ak je jedinečné).
+  7. Stlač <TAB>. MNV dokončí meno (ak je jedinečné).
 
 POZNÁMKA: Dokončovanie funguje pre veľa príkazov. Vyskúšaj stlačenie
           CTRL-D a <TAB>. Špeciálne je to užitočné pre príkaz  :help.
@@ -966,7 +966,7 @@ POZNÁMKA: Dokončovanie funguje pre veľa príkazov. Vyskúšaj stlačenie
 
   4. Napíš  :q  pre zatvorenie okna nápovedy
 
-  5. Vytvor štartovací skript vimrc pre udržanie uprednostňovaných nastavení.
+  5. Vytvor štartovací skript mnvrc pre udržanie uprednostňovaných nastavení.
 
   6. Počas písania príkazu  :  stlač CTRL-D pre zobrazenie dokončení.
      Stlač <TAB> pre použitie jedného z dokončení.
@@ -976,29 +976,29 @@ POZNÁMKA: Dokončovanie funguje pre veľa príkazov. Vyskúšaj stlačenie
 
 
 
-  Toto vymedzuje výuku Vimu. Toto je určené pre strucný prehľad o editore
-  Vim, úplne postačujúce pre ľahké a obstojné používanie tohto editora.
-  Táto výuka je ďaleko od kompletnosti, pretože Vim má omnoho viacej príkazov.
+  Toto vymedzuje výuku MNVu. Toto je určené pre strucný prehľad o editore
+  MNV, úplne postačujúce pre ľahké a obstojné používanie tohto editora.
+  Táto výuka je ďaleko od kompletnosti, pretože MNV má omnoho viacej príkazov.
   Ako ďalšie si prečítaj užívatľský manuál: ":help user-manual".
 
   Pre ďalšie čítanie a štúdium je odporúčaná kniha:
-  Vim - Vi Improved - od Steve Oualline
+  MNV - MNV is not Vim - od Steve Oualline
   Vydavateľ: New Riders
-  Prvá kniha určená pre Vim. Špeciálne vhodná pre začiatočníkov.
+  Prvá kniha určená pre MNV. Špeciálne vhodná pre začiatočníkov.
   Obsahuje množstvo príkladov a obrázkov.
   Pozri na https://iccf-holland.org/click5.html
 
-  Táto kniha je staršia a je viac o Vi ako o Vim, ale je tiež odporúčaná:
+  Táto kniha je staršia a je viac o Vi ako o MNV, ale je tiež odporúčaná:
   Learning the Vi Editor - od Linda Lamb
   Vydavateľ: O'Reilly & Associates Inc.
   Je to dobrá kniha pre získanie vedomostí o práci s editorom Vi.
-  Šieste vydanie obsahuje tiež informácie o editore Vim.
+  Šieste vydanie obsahuje tiež informácie o editore MNV.
 
   Táto výuka bola napísaná autormi Michael C. Pierce a Robert K. Ware,
   Colorado School of Mines s použitím myšlienok dodanými od Charles Smith,
   Colorado State University.  E-mail: bware@mines.colorado.edu.
 
-  Modifikované pre Vim od Bram Moolenaar.
+  Modifikované pre MNV od Bram Moolenaar.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

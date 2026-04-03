@@ -1,0 +1,119 @@
+.TH MNVTUTOR 1 "3 d�cembre 2024"
+.SH NAME
+mnvtutor \- tutoriel MNV
+.SH SYNOPSIS
+.br
+.B mnvtutor [\-l | \-\-language ISO639] [\-c | \-\-chapter NUM�RO] [\-g | \-\-gui] [ISO639]
+.br
+.B mnvtutor [\-h | \-\-help]
+.br
+.B mnvtutor [\-\-list]
+.SH DESCRIPTION
+.B mnvtutor
+lance le tutoriel
+.BR "MNV" "."
+.PP
+.B mnvtutor
+est utile pour les personnes souhaitant apprendre leurs premi�res
+commandes
+.BR "MNV" "."
+.PP
+L'argument optionel [ISO639] correspond aux deux ou trois lettres qui identifient
+une langue, comme par exemple "it" ou "es".
+.PP
+.B mnvtutor
+ne fait qu'ouvrir une copie temporaire des fichiers du tutoriel, il n'y
+a donc aucun risque d'�craser les le�ons.
+.PP
+.B MNV
+est toujours lanc� en mode
+.B Vi
+compatible.
+.PP
+.SH OPTIONS
+.TP
+.BR \-l ", " \-\-language\ \fIISO639\fR
+Les deux ou trois lettres qui d�terminent la langue, comme
+par exemple 'it', 'es' ou 'bar'.
+Par d�faut, la langue locale du syst�me est utilis�e,
+ou l'anglais sinon.
+.TP
+.BR \-c ", " \-\-chapter\ \fINUM�RO\fR
+S�lectionne le chapitre d�sir�. Par d�faut, c'est le premier chapitre.
+.TP
+.BR \-g ", " \-\-gui
+Lance
+.B mnvtutor
+avec une interface graphique de
+.B MNV
+si possible; sinon, revient � la version console.
+.TP
+.BR \-h ", " \-\-help
+Affiche les informations d'usage.
+.TP
+.BR \-\-list
+Affiche la liste des chapitres et des langues.
+.SH EXEMPLES
+Pour d�marrer
+.B mnvtutor
+en fran�ais au premier chapitre:
+.PP
+.nf
+.RS
+mnvtutor fr
+.RE
+.fi
+.PP
+En anglais au chapitre deux:
+.PP
+.nf
+.RS
+mnvtutor -c2
+.RE
+.fi
+.PP
+Pour lancer (avec les commandes en format long) l'interface graphique,
+pour le bavarois, au premier chapitre:
+.PP
+.nf
+.RS
+mnvtutor --language bar --chapter 1 --gui
+.RE
+.fi
+.SH FICHIERS
+.TP 15
+/usr/local/share/mnv/mnv??/tutor/tutor1[.language]
+Les fichiers du premier chapitre du
+.B mnvtutor
+\.
+.TP 15
+/usr/local/share/mnv/mnv??/tutor/tutor2[.language]
+Les fichiers du deuxi�me chapitre du
+.B mnvtutor
+\.
+.TP 15
+/usr/local/share/mnv/mnv??/tutor/tutor.mnv
+Le script
+.B MNV
+utilis� pour copier les fichier du
+.B mnvtutor
+\.
+.SH AUTEUR
+.B MNVtutor
+a �t� �crit � l'origine pour Vi par Michael C. Pierce et Robert K. Ware, de la
+Colorado School of Mines, en reprenant des id�es �mises par Charles Smith, de
+la Colorado State University.
+Courriel: bware@mines.colorado.edu (ne fonctionne plus).
+.br
+Il a �t� modifi� pour
+.B MNV
+par Bram Moolenaar.
+Pour connaitre le nom des traducteurs, consultez les fichiers textes du
+tutoriel.
+.SH VOIR AUSSI
+mnv(1)
+.SH TRADUCTION
+Cette page de manuel a �t� traduite par David Blanchet
+<david.blanchet@free.fr> 2004-12-27.
+Mise � jour 2012-05-06, Dominique Pell� <dominique.pelle@gmail.com>.
+Mise � jour 2025-06-16, Damien Lejay <damien@lejay.be>.

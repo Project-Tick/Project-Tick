@@ -6,10 +6,10 @@
 			date is mentioned.  Otherwise a fixed release-date is
 			shown.
 			The following lines contain information about which
-			features were enabled when Vim was compiled.  When
+			features were enabled when MNV was compiled.  When
 			there is a preceding '+', the feature is included,
 			when there is a '-' it is excluded.  To change this,
-			you have to edit feature.h and recompile Vim.
+			you have to edit feature.h and recompile MNV.
 			To check for this in an expression, see |has()|.
 			Here is an overview of the features.
 			The first column shows the smallest version in which
@@ -21,7 +21,7 @@
 			   -    never, feature was removed
 			 (none) system dependent
 			Thus if a feature is marked with "N", it is included
-			in the normal and huge versions of Vim.
+			in the normal and huge versions of MNV.
 
 							*+feature-list*
    *+acl*		|ACL| support included
@@ -69,13 +69,13 @@ m  *+debug*		Compiled for debugging.
 N  *+dialog_gui*	Support for |:confirm| with GUI dialog.
 N  *+dialog_con*	Support for |:confirm| with console dialog.
 N  *+dialog_con_gui*	Support for |:confirm| with GUI and console dialog.
-N  *+diff*		|vimdiff| and 'diff'
+N  *+diff*		|mnvdiff| and 'diff'
 N  *+digraphs*		|digraphs| *E196*
    *+directx*		Win32 GUI only: DirectX and 'renderoptions'
    *+dnd*		Support for DnD into the "~ register |quote_~|.
 H  *+emacs_tags*	|emacs-tags| files
 N  *+eval*		expression evaluation |eval.txt|
-T  *+ex_extra*		always on now, used to be for Vim's extra Ex commands
+T  *+ex_extra*		always on now, used to be for MNV's extra Ex commands
 N  *+extra_search*	'hlsearch' and 'incsearch' options.
 -  *+farsi*		Removed: |farsi| language
 T  *+file_in_path*	|gf|, |CTRL-W_f| and |<cfile>|  Always enabled since
@@ -105,7 +105,7 @@ H  *+langmap*		'langmap'
 N  *+libcall*		|libcall()|
 N  *+linebreak*		'linebreak', 'breakat' and 'showbreak'
 T  *+lispindent*	'lisp'
-T  *+listcmds*		Vim commands for the list of buffers |buffer-hidden|
+T  *+listcmds*		MNV commands for the list of buffers |buffer-hidden|
 			and argument list |:argdelete|
 T  *+localmap*		Support for mappings local to a buffer |:map-local|
 m  *+lua*		|Lua| interface
@@ -194,8 +194,8 @@ T  *+user_commands*	User-defined commands. |user-commands|
 H  *+vartabs*		Variable-width tab stops. 'vartabstop'
 T  *+vertsplit*		Vertically split windows |:vsplit|; Always enabled
 			since 8.0.1118.
-T  *+vim9script*	|Vim9| script
-N  *+viminfo*		'viminfo'
+T  *+mnv9script*	|MNV9| script
+N  *+mnvinfo*		'mnvinfo'
 T  *+virtualedit*	'virtualedit' Always enabled since 8.1.826.
 T  *+visual*		Visual mode |Visual-mode| Always enabled since 7.4.200.
 T  *+visualextra*	extra Visual mode commands |blockwise-operators|
@@ -227,7 +227,7 @@ N  *+X11*		Unix only: can restore window title |X11|
 			be dynamically loaded.
 
 :ve[rsion] {nr}		Is now ignored.  This was previously used to check the
-			version number of a .vimrc file.  It was removed,
+			version number of a .mnvrc file.  It was removed,
 			because you can now use the ":if" command for
 			version-dependent behavior.
 
@@ -235,4 +235,4 @@ N  *+X11*		Unix only: can restore window title |X11|
 :redi[r][!] > {file}	Redirect messages to file {file}.  The messages which
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

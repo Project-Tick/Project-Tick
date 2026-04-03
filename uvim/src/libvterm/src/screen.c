@@ -1,6 +1,6 @@
 #include "vterm_internal.h"
 
-// vim: set sw=2 :
+// mnv: set sw=2 :
 #include <stdio.h>
 #include <string.h>
 

@@ -1,4 +1,4 @@
-This directory contains Vim scripts to be used with a specific compiler.
+This directory contains MNV scripts to be used with a specific compiler.
 They are used with the ":compiler" command.
 
 These scripts usually set options, for example 'errorformat'.
@@ -10,4 +10,4 @@ If you want to write your own compiler plugin, have a look at the other files
 for how to do it, the format is simple.
 
 If you think a compiler plugin you have written is useful for others, please
-send it to the vim-dev mailing list: <vim-dev@vim.org>
+send it to the mnv-dev mailing list: <mnv-dev@mnv.org>

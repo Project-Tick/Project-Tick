@@ -1,0 +1,49 @@
+" MNV syntax file
+" Language:	MNV .mnvinfo file
+" Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+" Last Change:	2023 Aug 10
+" Former Maintainer:	Bram Moolenaar <Bram@mnv.org>
+
+" Quit when a (custom) syntax file was already loaded
+if exists("b:current_syntax")
+  finish
+endif
+
+let s:cpo_save = &cpo
+set cpo&mnv
+
+" The lines that are NOT recognized
+syn match mnvinfoError "^[^\t].*"
+
+" The one-character one-liners that are recognized
+syn match mnvinfoStatement "^[/&$@:?=%!<]"
+
+" The two-character one-liners that are recognized
+syn match mnvinfoStatement "^[-'>"]."
+syn match mnvinfoStatement +^"".+
+syn match mnvinfoStatement "^\~[/&]"
+syn match mnvinfoStatement "^\~[hH]"
+syn match mnvinfoStatement "^\~[mM][sS][lL][eE]\d\+\~\=[/&]"
+
+syn match mnvinfoOption "^\*.*=" contains=mnvinfoOptionName
+syn match mnvinfoOptionName "\*\a*"ms=s+1 contained
+
+" Comments
+syn match mnvinfoComment "^#.*"
+
+" New style lines.  TODO: highlight numbers and strings.
+syn match mnvinfoNew "^|.*"
+
+" Define the default highlighting.
+" Only used when an item doesn't have highlighting yet
+hi def link mnvinfoComment	Comment
+hi def link mnvinfoError	Error
+hi def link mnvinfoStatement	Statement
+hi def link mnvinfoNew		String
+
+let b:current_syntax = "mnvinfo"
+
+let &cpo = s:cpo_save
+unlet s:cpo_save
+
+" mnv: ts=8 sw=2

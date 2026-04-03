@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -12,13 +12,13 @@
  */
 
 #define USING_FLOAT_STUFF
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * Copy "string" into newly allocated memory.
  */
     char_u *
-vim_strsave(char_u *string)
+mnv_strsave(char_u *string)
 {
     char_u	*p;
     size_t	len;
@@ -37,7 +37,7 @@ vim_strsave(char_u *string)
  * shorter.
  */
     char_u *
-vim_strnsave(char_u *string, size_t len)
+mnv_strnsave(char_u *string, size_t len)
 {
     char_u	*p;
 
@@ -51,22 +51,22 @@ vim_strnsave(char_u *string, size_t len)
 }
 
 /*
- * Same as vim_strsave(), but any characters found in esc_chars are preceded
+ * Same as mnv_strsave(), but any characters found in esc_chars are preceded
  * by a backslash.
  */
     char_u *
-vim_strsave_escaped(char_u *string, char_u *esc_chars)
+mnv_strsave_escaped(char_u *string, char_u *esc_chars)
 {
-    return vim_strsave_escaped_ext(string, esc_chars, '\\', FALSE);
+    return mnv_strsave_escaped_ext(string, esc_chars, '\\', FALSE);
 }
 
 /*
- * Same as vim_strsave_escaped(), but when "bsl" is TRUE also escape
+ * Same as mnv_strsave_escaped(), but when "bsl" is TRUE also escape
  * characters where rem_backslash() would remove the backslash.
  * Escape the characters with "cc".
  */
     char_u *
-vim_strsave_escaped_ext(
+mnv_strsave_escaped_ext(
     char_u	*string,
     char_u	*esc_chars,
     int		cc,
@@ -89,7 +89,7 @@ vim_strsave_escaped_ext(
 	    p += l - 1;
 	    continue;
 	}
-	if (vim_strchr(esc_chars, *p) != NULL || (bsl && rem_backslash(p)))
+	if (mnv_strchr(esc_chars, *p) != NULL || (bsl && rem_backslash(p)))
 	    ++length;			// count a backslash
 	++length;			// count an ordinary char
     }
@@ -106,7 +106,7 @@ vim_strsave_escaped_ext(
 	    p += l - 1;		// skip multibyte char
 	    continue;
 	}
-	if (vim_strchr(esc_chars, *p) != NULL || (bsl && rem_backslash(p)))
+	if (mnv_strchr(esc_chars, *p) != NULL || (bsl && rem_backslash(p)))
 	    *p2++ = cc;
 	*p2++ = *p;
     }
@@ -145,7 +145,7 @@ fish_like_shell(void)
  * Returns the result in allocated memory, NULL if we have run out.
  */
     char_u *
-vim_strsave_shellescape(char_u *string, int do_special, int do_newline)
+mnv_strsave_shellescape(char_u *string, int do_special, int do_newline)
 {
     unsigned	length;
     char_u	*p;
@@ -301,30 +301,30 @@ vim_strsave_shellescape(char_u *string, int do_special, int do_newline)
 }
 
 /*
- * Like vim_strsave(), but make all characters uppercase.
+ * Like mnv_strsave(), but make all characters uppercase.
  * This uses ASCII lower-to-upper case translation, language independent.
  */
     char_u *
-vim_strsave_up(char_u *string)
+mnv_strsave_up(char_u *string)
 {
     char_u *p1;
 
-    p1 = vim_strsave(string);
-    vim_strup(p1);
+    p1 = mnv_strsave(string);
+    mnv_strup(p1);
     return p1;
 }
 
 /*
- * Like vim_strnsave(), but make all characters uppercase.
+ * Like mnv_strnsave(), but make all characters uppercase.
  * This uses ASCII lower-to-upper case translation, language independent.
  */
     char_u *
-vim_strnsave_up(char_u *string, size_t len)
+mnv_strnsave_up(char_u *string, size_t len)
 {
     char_u *p1;
 
-    p1 = vim_strnsave(string, len);
-    vim_strup(p1);
+    p1 = mnv_strnsave(string, len);
+    mnv_strup(p1);
     return p1;
 }
 
@@ -332,7 +332,7 @@ vim_strnsave_up(char_u *string, size_t len)
  * ASCII lower-to-upper case translation, language independent.
  */
     void
-vim_strup(
+mnv_strup(
     char_u	*p)
 {
     char_u  *p2;
@@ -358,7 +358,7 @@ strup_save(char_u *orig)
     char_u	*p;
     char_u	*res;
 
-    res = p = vim_strsave(orig);
+    res = p = mnv_strsave(orig);
 
     if (res != NULL)
 	while (*p != NUL)
@@ -389,13 +389,13 @@ strup_save(char_u *orig)
 		    s = alloc(STRLEN(res) + 1 + newl - l);
 		    if (s == NULL)
 		    {
-			vim_free(res);
+			mnv_free(res);
 			return NULL;
 		    }
 		    mch_memmove(s, res, p - res);
 		    STRCPY(s + (p - res) + newl, p + l);
 		    p = s + (p - res);
-		    vim_free(res);
+		    mnv_free(res);
 		    res = s;
 		}
 
@@ -425,7 +425,7 @@ strlow_save(char_u *orig)
     char_u	*p;
     char_u	*res;
 
-    res = p = vim_strsave(orig);
+    res = p = mnv_strsave(orig);
 
     if (res != NULL)
 	while (*p != NUL)
@@ -456,13 +456,13 @@ strlow_save(char_u *orig)
 		    s = alloc(STRLEN(res) + 1 + newl - l);
 		    if (s == NULL)
 		    {
-			vim_free(res);
+			mnv_free(res);
 			return NULL;
 		    }
 		    mch_memmove(s, res, p - res);
 		    STRCPY(s + (p - res) + newl, p + l);
 		    p = s + (p - res);
-		    vim_free(res);
+		    mnv_free(res);
 		    res = s;
 		}
 
@@ -491,7 +491,7 @@ del_trailing_spaces(char_u *ptr)
     char_u	*q;
 
     q = ptr + STRLEN(ptr);
-    while (--q > ptr && VIM_ISWHITE(q[0]) && q[-1] != '\\' && q[-1] != Ctrl_V)
+    while (--q > ptr && MNV_ISWHITE(q[0]) && q[-1] != '\\' && q[-1] != Ctrl_V)
 	*q = NUL;
 }
 
@@ -500,7 +500,7 @@ del_trailing_spaces(char_u *ptr)
  * "to" must be "len + 1" long!
  */
     void
-vim_strncpy(char_u *to, char_u *from, size_t len)
+mnv_strncpy(char_u *to, char_u *from, size_t len)
 {
     STRNCPY(to, from, len);
     to[len] = NUL;
@@ -511,7 +511,7 @@ vim_strncpy(char_u *to, char_u *from, size_t len)
  * always NUL terminated. "from" and "to" may overlap.
  */
     void
-vim_strcat(char_u *to, char_u *from, size_t tosize)
+mnv_strcat(char_u *to, char_u *from, size_t tosize)
 {
     size_t tolen = STRLEN(to);
     size_t fromlen = STRLEN(from);
@@ -529,7 +529,7 @@ vim_strcat(char_u *to, char_u *from, size_t tosize)
  * A version of strlen() that has a maximum length.
  */
     size_t
-vim_strlen_maxlen(char *s, size_t maxlen)
+mnv_strlen_maxlen(char *s, size_t maxlen)
 {
     size_t i;
     for (i = 0; i < maxlen; ++i)
@@ -545,7 +545,7 @@ vim_strlen_maxlen(char *s, size_t maxlen)
  * return 0 for match, < 0 for smaller, > 0 for bigger
  */
     int
-vim_stricmp(char *s1, char *s2)
+mnv_stricmp(char *s1, char *s2)
 {
     int		i;
 
@@ -570,7 +570,7 @@ vim_stricmp(char *s1, char *s2)
  * return 0 for match, < 0 for smaller, > 0 for bigger
  */
     int
-vim_strnicmp(char *s1, char *s2, size_t len)
+mnv_strnicmp(char *s1, char *s2, size_t len)
 {
     int		i;
 
@@ -595,7 +595,7 @@ vim_strnicmp(char *s1, char *s2, size_t len)
  * return 0 for match, < 0 for smaller, > 0 for bigger
  */
     int
-vim_strnicmp_asc(char *s1, char *s2, size_t len)
+mnv_strnicmp_asc(char *s1, char *s2, size_t len)
 {
     int                i = 0;
 
@@ -620,7 +620,7 @@ vim_strnicmp_asc(char *s1, char *s2, size_t len)
  * end of the string.
  */
     char_u *
-vim_strchr(char_u *string, int c)
+mnv_strchr(char_u *string, int c)
 {
     char_u	*p;
     int		b;
@@ -677,7 +677,7 @@ vim_strchr(char_u *string, int c)
  * pointer to the NUL at the end of the string.
  */
     char_u  *
-vim_strbyte(char_u *string, int c)
+mnv_strbyte(char_u *string, int c)
 {
     char_u	*p = string;
 
@@ -699,7 +699,7 @@ vim_strbyte(char_u *string, int c)
  * Does not handle multi-byte char for "c"!
  */
     char_u  *
-vim_strrchr(char_u *string, int c)
+mnv_strrchr(char_u *string, int c)
 {
     char_u	*retval = NULL;
     char_u	*p = string;
@@ -714,20 +714,20 @@ vim_strrchr(char_u *string, int c)
 }
 
 /*
- * Vim's version of strpbrk(), in case it's missing.
+ * MNV's version of strpbrk(), in case it's missing.
  * Don't generate a prototype for this, causes problems when it's not used.
  */
 #ifndef PROTO
 # ifndef HAVE_STRPBRK
-#  ifdef vim_strpbrk
-#   undef vim_strpbrk
+#  ifdef mnv_strpbrk
+#   undef mnv_strpbrk
 #  endif
     char_u *
-vim_strpbrk(char_u *s, char_u *charset)
+mnv_strpbrk(char_u *s, char_u *charset)
 {
     while (*s)
     {
-	if (vim_strchr(charset, *s) != NULL)
+	if (mnv_strchr(charset, *s) != NULL)
 	    return s;
 	MB_PTR_ADV(s);
     }
@@ -925,7 +925,7 @@ copy_first_char_to_tv(char_u *input, typval_T *output)
     STRNCPY(buf, input, len);
     buf[len] = NUL;
     output->v_type = VAR_STRING;
-    output->vval.v_string = vim_strnsave(buf, len);
+    output->vval.v_string = mnv_strnsave(buf, len);
 
     return output->vval.v_string == NULL ? -1 : len;
 }
@@ -953,8 +953,8 @@ string_filter_map(
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    // set_vim_var_nr() doesn't set the type
-    set_vim_var_type(VV_KEY, VAR_NUMBER);
+    // set_mnv_var_nr() doesn't set the type
+    set_mnv_var_type(VV_KEY, VAR_NUMBER);
 
     // Create one funccall_T for all eval_expr_typval() calls.
     fc = eval_expr_get_funccal(expr, &newtv);
@@ -966,7 +966,7 @@ string_filter_map(
 	if (len < 0)
 	    break;
 
-	set_vim_var_nr(VV_KEY, idx);
+	set_mnv_var_nr(VV_KEY, idx);
 	if (filter_map_one(&tv, expr, filtermap, fc, &newtv, &rem) == FAIL
 		|| did_emsg)
 	{
@@ -1065,7 +1065,7 @@ byteidx_common(typval_T *argvars, typval_T *rettv, int comp)
 {
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_opt_bool_arg(argvars, 2) == FAIL))
@@ -1202,15 +1202,15 @@ f_charidx(typval_T *argvars, typval_T *rettv)
     static int
 convert_string(string_T *str, char_u *from, char_u *to, string_T *ret)
 {
-    vimconv_T	vimconv;
+    mnvconv_T	mnvconv;
 
-    vimconv.vc_type = CONV_NONE;
-    if (convert_setup(&vimconv, from, to) == FAIL)
+    mnvconv.vc_type = CONV_NONE;
+    if (convert_setup(&mnvconv, from, to) == FAIL)
 	return FAIL;
-    vimconv.vc_fail = TRUE;
-    if (vimconv.vc_type == CONV_NONE)
+    mnvconv.vc_fail = TRUE;
+    if (mnvconv.vc_type == CONV_NONE)
     {
-	ret->string = vim_strnsave(str->string, str->length);
+	ret->string = mnv_strnsave(str->string, str->length);
 	if (ret->string == NULL)
 	    ret->length = 0;
 	else
@@ -1219,10 +1219,10 @@ convert_string(string_T *str, char_u *from, char_u *to, string_T *ret)
     else
     {
 	int len = (int)str->length;
-	ret->string = string_convert(&vimconv, str->string, &len);
+	ret->string = string_convert(&mnvconv, str->string, &len);
 	ret->length = len;
     }
-    convert_setup(&vimconv, NULL, NULL);
+    convert_setup(&mnvconv, NULL, NULL);
 
     return (ret->string == NULL) ? FAIL : OK;
 }
@@ -1285,12 +1285,12 @@ string_from_blob(blob_T *blob, long *start_idx, string_T *ret)
 
     if (str_ga.ga_data != NULL)
     {
-	ret->string = vim_strnsave(str_ga.ga_data, str_ga.ga_len);
+	ret->string = mnv_strnsave(str_ga.ga_data, str_ga.ga_len);
 	ret->length = str_ga.ga_len;
     }
     else
     {
-	ret->string = vim_strsave((char_u *)"");
+	ret->string = mnv_strsave((char_u *)"");
 	ret->length = 0;
     }
     *start_idx = idx;
@@ -1327,8 +1327,8 @@ normalize_encoding_name(char_u *enc_skipped)
 
     // Add hyphen before digit: "ucs2be" -> "ucs-2be", "utf16le" -> "utf-16le"
     char_u *p = from_encoding_raw;
-    if ((STRNCMP(p, "ucs", 3) == 0 && VIM_ISDIGIT(p[3]) && p[3] != NUL && p[4] != '-') ||
-	(STRNCMP(p, "utf", 3) == 0 && VIM_ISDIGIT(p[3]) && p[3] != NUL && p[4] != '-'))
+    if ((STRNCMP(p, "ucs", 3) == 0 && MNV_ISDIGIT(p[3]) && p[3] != NUL && p[4] != '-') ||
+	(STRNCMP(p, "utf", 3) == 0 && MNV_ISDIGIT(p[3]) && p[3] != NUL && p[4] != '-'))
     {
 	// Insert hyphen after "ucs" or "utf": "ucs2" -> "ucs-2"
 	mch_memmove(p + 4, p + 3, STRLEN(p + 3) + 1);
@@ -1365,36 +1365,36 @@ append_converted_string_to_list(
 
 	    // Add this line to the result list
 	    line.length = (size_t)(p - line_start);
-	    line.string = vim_strnsave(line_start, line.length);
+	    line.string = mnv_strnsave(line_start, line.length);
 	    if (line.string != NULL)
 	    {
 		if (validate_utf8 && !utf_valid_string(line.string, NULL))
 		{
-		    vim_free(line.string);
+		    mnv_free(line.string);
 		    semsg(_(e_str_encoding_from_failed), p_enc);
-		    vim_free(converted->string);
+		    mnv_free(converted->string);
 		    return; // Stop processing
 		}
 		if (list_append_string(list, line.string, (int)line.length) == FAIL)
 		{
-		    vim_free(line.string);
-		    vim_free(converted->string);
+		    mnv_free(line.string);
+		    mnv_free(converted->string);
 		    return; // Stop processing on append failure
 		}
-		vim_free(line.string);
+		mnv_free(line.string);
 	    }
 	    else
 	    {
 		// Allocation failure: report error and stop processing
 		emsg(_(e_out_of_memory));
-		vim_free(converted->string);
+		mnv_free(converted->string);
 		return;
 	    }
 
 	    if (*p == NL)
 		p++;
 	}
-	vim_free(converted->string);
+	mnv_free(converted->string);
     }
     else
     {
@@ -1408,12 +1408,12 @@ append_validated_line_to_list(string_T *line, int validate_utf8, list_T *list)
     if (validate_utf8 && !utf_valid_string(line->string, NULL))
     {
 	semsg(_(e_str_encoding_from_failed), p_enc);
-	vim_free(line->string);
+	mnv_free(line->string);
 	return FAIL;
     }
 
     int ret = list_append_string(list, line->string, (int)line->length);
-    vim_free(line->string);
+    mnv_free(line->string);
     return ret;
 }
 
@@ -1456,7 +1456,7 @@ f_blob2str(typval_T *argvars, typval_T *rettv)
 		if (from_encoding_raw == NULL)
 		{
 		    emsg(_(e_out_of_memory));
-		    VIM_CLEAR(from_encoding);
+		    MNV_CLEAR(from_encoding);
 		    return;
 		}
 	    }
@@ -1469,8 +1469,8 @@ f_blob2str(typval_T *argvars, typval_T *rettv)
     if (from_encoding != NULL && STRCMP(from_encoding, "none") == 0)
     {
 	validate_utf8 = FALSE;
-	VIM_CLEAR(from_encoding);
-	VIM_CLEAR(from_encoding_raw);
+	MNV_CLEAR(from_encoding);
+	MNV_CLEAR(from_encoding_raw);
     }
 
     // Special handling for UTF-16/UCS-2/UTF-32/UCS-4 encodings: convert entire blob before splitting by newlines
@@ -1491,26 +1491,26 @@ f_blob2str(typval_T *argvars, typval_T *rettv)
 	    ga_append(&blob_ga, NUL);
 
 	// Convert the entire blob at once
-	vimconv_T vimconv;
-	vimconv.vc_type = CONV_NONE;
+	mnvconv_T mnvconv;
+	mnvconv.vc_type = CONV_NONE;
 	// Use raw encoding name for iconv to preserve endianness (utf-16be vs utf-16)
 	// from_encoding_raw is guaranteed non-NULL whenever from_encoding != NULL
-	if (convert_setup_ext(&vimconv, from_encoding_raw, FALSE, p_enc, FALSE) == FAIL)
+	if (convert_setup_ext(&mnvconv, from_encoding_raw, FALSE, p_enc, FALSE) == FAIL)
 	{
 	    ga_clear(&blob_ga);
 	    semsg(_(e_str_encoding_from_failed), from_encoding);
 	    goto done;
 	}
-	vimconv.vc_fail = TRUE;
+	mnvconv.vc_fail = TRUE;
 
 	// Use string_convert_ext with explicit input length
 	string_T    converted;
 
 	int len = blen;
 	converted.string =
-	    string_convert_ext(&vimconv, (char_u *)blob_ga.ga_data, &len, NULL);
+	    string_convert_ext(&mnvconv, (char_u *)blob_ga.ga_data, &len, NULL);
 	converted.length = len;
-	convert_setup(&vimconv, NULL, NULL);
+	convert_setup(&mnvconv, NULL, NULL);
 	ga_clear(&blob_ga);
 	append_converted_string_to_list(&converted, validate_utf8, rettv->vval.v_list, from_encoding);
     }
@@ -1532,7 +1532,7 @@ f_blob2str(typval_T *argvars, typval_T *rettv)
 		string_T    converted;
 
 		res = convert_string(&str, from_encoding_raw, p_enc, &converted);
-		vim_free(str.string);
+		mnv_free(str.string);
 		if (res != OK)
 		{
 		    semsg(_(e_str_encoding_from_failed), from_encoding);
@@ -1552,8 +1552,8 @@ f_blob2str(typval_T *argvars, typval_T *rettv)
 	list_append_string(rettv->vval.v_list, (char_u *)"", 0);
 
 done:
-    vim_free(from_encoding);
-    vim_free(from_encoding_raw);
+    mnv_free(from_encoding);
+    mnv_free(from_encoding_raw);
 }
 
 /*
@@ -1628,12 +1628,12 @@ f_str2blob(typval_T *argvars, typval_T *rettv)
 	blob_from_string(str.string, blob);
 
 	if (to_encoding != NULL)
-	    vim_free(str.string);
+	    mnv_free(str.string);
     }
 
 done:
     if (to_encoding != NULL)
-	vim_free(to_encoding);
+	mnv_free(to_encoding);
 }
 
 /*
@@ -1648,7 +1648,7 @@ f_str2list(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_bool_arg(argvars, 1) == FAIL))
 	return;
@@ -1694,7 +1694,7 @@ f_str2nr(typval_T *argvars, typval_T *rettv)
     int		what = 0;
     int		isneg;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -1723,7 +1723,7 @@ f_str2nr(typval_T *argvars, typval_T *rettv)
 	case 8: what |= STR2NR_OCT + STR2NR_OOCT + STR2NR_FORCE; break;
 	case 16: what |= STR2NR_HEX + STR2NR_FORCE; break;
     }
-    vim_str2nr(p, NULL, NULL, what, &n, NULL, 0, FALSE, NULL);
+    mnv_str2nr(p, NULL, NULL, what, &n, NULL, 0, FALSE, NULL);
     // Text after the number is silently ignored.
     if (isneg)
 	rettv->vval.v_number = -n;
@@ -1746,7 +1746,7 @@ f_strgetchar(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL))
 	return;
@@ -1784,7 +1784,7 @@ f_stridx(typval_T *argvars, typval_T *rettv)
     char_u	*pos;
     int		start_idx;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_number_arg(argvars, 2) == FAIL))
@@ -1826,7 +1826,7 @@ f_string(typval_T *argvars, typval_T *rettv)
 								get_copyID());
     // Make a copy if we have a value but it's not in allocated memory.
     if (rettv->vval.v_string != NULL && tofree == NULL)
-	rettv->vval.v_string = vim_strsave(rettv->vval.v_string);
+	rettv->vval.v_string = mnv_strsave(rettv->vval.v_string);
 }
 
 /*
@@ -1835,7 +1835,7 @@ f_string(typval_T *argvars, typval_T *rettv)
     void
 f_strlen(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && check_for_string_or_number_arg(argvars, 0) == FAIL)
 	return;
 
@@ -1865,7 +1865,7 @@ strchar_common(typval_T *argvars, typval_T *rettv, int skipcc)
     void
 f_strcharlen(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && check_for_string_or_number_arg(argvars, 0) == FAIL)
 	return;
 
@@ -1880,7 +1880,7 @@ f_strchars(typval_T *argvars, typval_T *rettv)
 {
     varnumber_T		skipcc = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_bool_arg(argvars, 1) == FAIL))
 	return;
@@ -1944,7 +1944,7 @@ f_strdisplaywidth(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL))
 	return;
@@ -1964,7 +1964,7 @@ f_strwidth(typval_T *argvars, typval_T *rettv)
 {
     char_u	*s;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     s = tv_get_string_strict(&argvars[0]);
@@ -1986,7 +1986,7 @@ f_strcharpart(typval_T *argvars, typval_T *rettv)
     int		slen;
     int		error = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_opt_number_arg(argvars, 2) == FAIL
@@ -2062,7 +2062,7 @@ f_strcharpart(typval_T *argvars, typval_T *rettv)
 	len = slen - nbyte;
 
     rettv->v_type = VAR_STRING;
-    rettv->vval.v_string = vim_strnsave(p + nbyte, len);
+    rettv->vval.v_string = mnv_strnsave(p + nbyte, len);
 }
 
 /*
@@ -2077,7 +2077,7 @@ f_strpart(typval_T *argvars, typval_T *rettv)
     int		slen;
     int		error = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_opt_number_arg(argvars, 2) == FAIL
@@ -2121,7 +2121,7 @@ f_strpart(typval_T *argvars, typval_T *rettv)
     }
 
     rettv->v_type = VAR_STRING;
-    rettv->vval.v_string = vim_strnsave(p + n, len);
+    rettv->vval.v_string = mnv_strnsave(p + n, len);
 }
 
 /*
@@ -2137,7 +2137,7 @@ f_strridx(typval_T *argvars, typval_T *rettv)
     char_u	*lastmatch = NULL;
     int		haystack_len, end_idx;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_number_arg(argvars, 2) == FAIL))
@@ -2189,7 +2189,7 @@ f_strridx(typval_T *argvars, typval_T *rettv)
     void
 f_strtrans(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->v_type = VAR_STRING;
@@ -2268,7 +2268,7 @@ f_utf16idx(typval_T *argvars, typval_T *rettv)
     void
 f_tolower(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->v_type = VAR_STRING;
@@ -2281,7 +2281,7 @@ f_tolower(typval_T *argvars, typval_T *rettv)
     void
 f_toupper(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->v_type = VAR_STRING;
@@ -2309,7 +2309,7 @@ f_tr(typval_T *argvars, typval_T *rettv)
     char_u	buf2[NUMBUFLEN];
     garray_T	ga;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_string_arg(argvars, 2) == FAIL))
@@ -2391,7 +2391,7 @@ error:
 	else
 	{
 	    // When not using multi-byte chars we can do it faster.
-	    p = vim_strchr(fromstr, *in_str);
+	    p = mnv_strchr(fromstr, *in_str);
 	    if (p != NULL)
 		ga_append(&ga, tostr[p - fromstr]);
 	    else
@@ -2426,7 +2426,7 @@ f_trim(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -2509,7 +2509,7 @@ f_trim(typval_T *argvars, typval_T *rettv)
 	    }
 	}
     }
-    rettv->vval.v_string = vim_strnsave(head, tail - head);
+    rettv->vval.v_string = mnv_strnsave(head, tail - head);
 }
 
 /*
@@ -2764,7 +2764,7 @@ infinity_str(int positive,
  *
  * This code is based on snprintf.c - a portable implementation of snprintf
  * by Mark Martinec <mark.martinec@ijs.si>, Version 2.2, 2000-10-06.
- * Included with permission.  It was heavily modified to fit in Vim.
+ * Included with permission.  It was heavily modified to fit in MNV.
  * The original code, including useful comments, can be found here:
  *	http://www.ijs.si/software/snprintf/
  *
@@ -2793,9 +2793,9 @@ infinity_str(int positive,
  */
 
 /*
- * When va_list is not supported we only define vim_snprintf().
+ * When va_list is not supported we only define mnv_snprintf().
  *
- * vim_vsnprintf_typval() can be invoked with either "va_list" or a list of
+ * mnv_vsnprintf_typval() can be invoked with either "va_list" or a list of
  * "typval_T".  When the latter is not used it must be NULL.
  */
 
@@ -2803,9 +2803,9 @@ infinity_str(int positive,
 // understand this.
 #ifndef PROTO
 
-// Like vim_vsnprintf() but append to the string.
+// Like mnv_vsnprintf() but append to the string.
     int
-vim_snprintf_add(char *str, size_t str_m, const char *fmt, ...)
+mnv_snprintf_add(char *str, size_t str_m, const char *fmt, ...)
 {
     va_list	ap;
     int		str_l;
@@ -2817,34 +2817,34 @@ vim_snprintf_add(char *str, size_t str_m, const char *fmt, ...)
     else
 	space = str_m - len;
     va_start(ap, fmt);
-    str_l = vim_vsnprintf(str + len, space, fmt, ap);
+    str_l = mnv_vsnprintf(str + len, space, fmt, ap);
     va_end(ap);
     return str_l;
 }
 
     int
-vim_snprintf(char *str, size_t str_m, const char *fmt, ...)
+mnv_snprintf(char *str, size_t str_m, const char *fmt, ...)
 {
     va_list	ap;
     int		str_l;
 
     va_start(ap, fmt);
-    str_l = vim_vsnprintf(str, str_m, fmt, ap);
+    str_l = mnv_vsnprintf(str, str_m, fmt, ap);
     va_end(ap);
     return str_l;
 }
 
 /*
- * Like vim_snprintf() except the return value can be safely used to increment a
+ * Like mnv_snprintf() except the return value can be safely used to increment a
  * buffer length.
- * Normal `snprintf()` (and `vim_snprintf()`) returns the number of bytes that
+ * Normal `snprintf()` (and `mnv_snprintf()`) returns the number of bytes that
  * would have been copied if the destination buffer was large enough.
  * This means that you cannot rely on it's return value for the destination
  * length because the destination may be shorter than the source. This function
  * guarantees the returned length will never be greater than the destination length.
  */
     size_t
-vim_snprintf_safelen(char *str, size_t str_m, const char *fmt, ...)
+mnv_snprintf_safelen(char *str, size_t str_m, const char *fmt, ...)
 {
     va_list ap;
     int	    str_l;
@@ -2853,7 +2853,7 @@ vim_snprintf_safelen(char *str, size_t str_m, const char *fmt, ...)
 	return 0;
 
     va_start(ap, fmt);
-    str_l = vim_vsnprintf_typval(str, str_m, fmt, ap, NULL);
+    str_l = mnv_vsnprintf_typval(str, str_m, fmt, ap, NULL);
     va_end(ap);
 
     if (str_l < 0)
@@ -2865,13 +2865,13 @@ vim_snprintf_safelen(char *str, size_t str_m, const char *fmt, ...)
 }
 
     int
-vim_vsnprintf(
+mnv_vsnprintf(
     char	*str,
     size_t	str_m,
     const char	*fmt,
     va_list	ap)
 {
-    return vim_vsnprintf_typval(str, str_m, fmt, ap, NULL);
+    return mnv_vsnprintf_typval(str, str_m, fmt, ap, NULL);
 }
 
 enum
@@ -3069,7 +3069,7 @@ adjust_types(
 	if (*ap_types == NULL)
 	    new_types = ALLOC_CLEAR_MULT(const char *, arg);
 	else
-	    new_types = vim_realloc((char **)*ap_types,
+	    new_types = mnv_realloc((char **)*ap_types,
 						arg * sizeof(const char *));
 
 	if (new_types == NULL)
@@ -3124,7 +3124,7 @@ format_overflow_error(const char *pstart)
     char	*argcopy = NULL;
     const char	*p = pstart;
 
-    while (VIM_ISDIGIT((int)(*p)))
+    while (MNV_ISDIGIT((int)(*p)))
 	++p;
 
     arglen = p - pstart;
@@ -3151,7 +3151,7 @@ get_unsigned_int(
     *uj = **p - '0';
     ++*p;
 
-    while (VIM_ISDIGIT((int)(**p)) && *uj < MAX_ALLOWED_STRING_WIDTH)
+    while (MNV_ISDIGIT((int)(**p)) && *uj < MAX_ALLOWED_STRING_WIDTH)
     {
 	*uj = 10 * *uj + (unsigned int)(**p - '0');
 	++*p;
@@ -3223,7 +3223,7 @@ parse_fmt_types(
 	    // argument specifier
 	    ptype = p;
 
-	    while (VIM_ISDIGIT(*ptype))
+	    while (MNV_ISDIGIT(*ptype))
 		++ptype;
 
 	    if (*ptype == '$')
@@ -3274,7 +3274,7 @@ parse_fmt_types(
 	    {
 		p++;
 
-		if (VIM_ISDIGIT((int)(*p)))
+		if (MNV_ISDIGIT((int)(*p)))
 		{
 		    // Positional argument field width
 		    unsigned int uj;
@@ -3303,7 +3303,7 @@ parse_fmt_types(
 		    CHECK_POS_ARG;
 		}
 	    }
-	    else if (VIM_ISDIGIT((int)(*p)))
+	    else if (MNV_ISDIGIT((int)(*p)))
 	    {
 		// size_t could be wider than unsigned int; make sure we treat
 		// argument like common implementations do
@@ -3329,7 +3329,7 @@ parse_fmt_types(
 		{
 		    p++;
 
-		    if (VIM_ISDIGIT((int)(*p)))
+		    if (MNV_ISDIGIT((int)(*p)))
 		    {
 			// Parse precision
 			unsigned int uj;
@@ -3359,7 +3359,7 @@ parse_fmt_types(
 			CHECK_POS_ARG;
 		    }
 		}
-		else if (VIM_ISDIGIT((int)(*p)))
+		else if (MNV_ISDIGIT((int)(*p)))
 		{
 		    // size_t could be wider than unsigned int; make sure we
 		    // treat argument like common implementations do
@@ -3468,7 +3468,7 @@ parse_fmt_types(
     return OK;
 
 error:
-    vim_free((char**)*ap_types);
+    mnv_free((char**)*ap_types);
     *ap_types = NULL;
     *num_posarg = 0;
     return FAIL;
@@ -3577,7 +3577,7 @@ skip_to_arg(
 }
 
     int
-vim_vsnprintf_typval(
+mnv_vsnprintf_typval(
     char	*str,
     size_t	str_m,
     const char	*fmt,
@@ -3670,7 +3670,7 @@ vim_vsnprintf_typval(
 	    // argument specifier
 	    ptype = p;
 
-	    while (VIM_ISDIGIT(*ptype))
+	    while (MNV_ISDIGIT(*ptype))
 		++ptype;
 
 	    if (*ptype == '$')
@@ -3716,7 +3716,7 @@ vim_vsnprintf_typval(
 
 		p++;
 
-		if (VIM_ISDIGIT((int)(*p)))
+		if (MNV_ISDIGIT((int)(*p)))
 		{
 		    // Positional argument field width
 		    unsigned int uj;
@@ -3756,7 +3756,7 @@ vim_vsnprintf_typval(
 		    justify_left = 1;
 		}
 	    }
-	    else if (VIM_ISDIGIT((int)(*p)))
+	    else if (MNV_ISDIGIT((int)(*p)))
 	    {
 		// size_t could be wider than unsigned int; make sure we treat
 		// argument like common implementations do
@@ -3775,7 +3775,7 @@ vim_vsnprintf_typval(
 		p++;
 		precision_specified = 1;
 
-		if (VIM_ISDIGIT((int)(*p)))
+		if (MNV_ISDIGIT((int)(*p)))
 		{
 		    // size_t could be wider than unsigned int; make sure we
 		    // treat argument like common implementations do
@@ -3794,7 +3794,7 @@ vim_vsnprintf_typval(
 
 		    p++;
 
-		    if (VIM_ISDIGIT((int)(*p)))
+		    if (MNV_ISDIGIT((int)(*p)))
 		    {
 			// positional argument
 			unsigned int uj;
@@ -4406,7 +4406,7 @@ vim_vsnprintf_typval(
 				tp = tmp + str_arg_l - 1;
 			    else
 			    {
-				tp = (char *)vim_strchr((char_u *)tmp,
+				tp = (char *)mnv_strchr((char_u *)tmp,
 						 fmt_spec == 'e' ? 'e' : 'E');
 				if (tp != NULL)
 				{
@@ -4447,12 +4447,12 @@ vim_vsnprintf_typval(
 			    // Be consistent: some printf("%e") use 1.0e+12
 			    // and some 1.0e+012.  Remove one zero in the last
 			    // case.
-			    tp = (char *)vim_strchr((char_u *)tmp,
+			    tp = (char *)mnv_strchr((char_u *)tmp,
 						 fmt_spec == 'e' ? 'e' : 'E');
 			    if (tp != NULL && (tp[1] == '+' || tp[1] == '-')
 					  && tp[2] == '0'
-					  && vim_isdigit(tp[3])
-					  && vim_isdigit(tp[4]))
+					  && mnv_isdigit(tp[3])
+					  && mnv_isdigit(tp[4]))
 			    {
 				STRMOVE(tp + 2, tp + 3);
 				--str_arg_l;
@@ -4505,7 +4505,7 @@ vim_vsnprintf_typval(
 		    {
 			size_t avail = str_m - str_l;
 
-			vim_memset(str + str_l, zero_padding ? '0' : ' ',
+			mnv_memset(str + str_l, zero_padding ? '0' : ' ',
 					     (size_t)pn > avail ? avail
 								: (size_t)pn);
 		    }
@@ -4549,7 +4549,7 @@ vim_vsnprintf_typval(
 		    {
 			size_t avail = str_m - str_l;
 
-			vim_memset(str + str_l, '0',
+			mnv_memset(str + str_l, '0',
 					     (size_t)zn > avail ? avail
 								: (size_t)zn);
 		    }
@@ -4589,14 +4589,14 @@ vim_vsnprintf_typval(
 		    {
 			size_t avail = str_m - str_l;
 
-			vim_memset(str + str_l, ' ',
+			mnv_memset(str + str_l, ' ',
 					     (size_t)pn > avail ? avail
 								: (size_t)pn);
 		    }
 		    str_l += pn;
 		}
 	    }
-	    vim_free(tofree);
+	    mnv_free(tofree);
 	}
     }
 
@@ -4612,7 +4612,7 @@ vim_vsnprintf_typval(
 	emsg(_(e_too_many_arguments_to_printf));
 
 error:
-    vim_free((char*)ap_types);
+    mnv_free((char*)ap_types);
     va_end(ap);
 
     // Return the number of characters formatted (excluding trailing nul

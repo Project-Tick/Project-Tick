@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * misc2.c: Various functions.
  */
-#include "vim.h"
+#include "mnv.h"
 
 static char_u	*username = NULL; // cached result of mch_get_user_name()
 
@@ -744,12 +744,12 @@ copy_option_part(
     // skip '.' at start of option part, for 'suffixes'
     if (*p == '.')
 	buf[len++] = *p++;
-    while (*p != NUL && vim_strchr((char_u *)sep_chars, *p) == NULL)
+    while (*p != NUL && mnv_strchr((char_u *)sep_chars, *p) == NULL)
     {
 	/*
 	 * Skip backslash before a separator character and space.
 	 */
-	if (p[0] == '\\' && vim_strchr((char_u *)sep_chars, p[1]) != NULL)
+	if (p[0] == '\\' && mnv_strchr((char_u *)sep_chars, p[1]) != NULL)
 	    ++p;
 	if (len < maxlen - 1)
 	    buf[len++] = *p;
@@ -767,7 +767,7 @@ copy_option_part(
 
 #if !defined(HAVE_MEMSET) && !defined(PROTO)
     void *
-vim_memset(void *ptr, int c, size_t size)
+mnv_memset(void *ptr, int c, size_t size)
 {
     char *p = ptr;
 
@@ -778,11 +778,11 @@ vim_memset(void *ptr, int c, size_t size)
 #endif
 
 /*
- * Vim has its own isspace() function, because on some machines isspace()
+ * MNV has its own isspace() function, because on some machines isspace()
  * can't handle characters above 128.
  */
     int
-vim_isspace(int x)
+mnv_isspace(int x)
 {
     return ((x >= 9 && x <= 13) || x == ' ');
 }
@@ -1246,7 +1246,7 @@ get_special_key_name(int c, int modifiers)
     if (c > 0 && (*mb_char2len)(c) == 1)
     {
 	if (table_idx < 0
-		&& (!vim_isprintc(c) || (c & 0x7f) == ' ')
+		&& (!mnv_isprintc(c) || (c & 0x7f) == ' ')
 		&& (c & 0x80))
 	{
 	    c &= 0x7f;
@@ -1254,7 +1254,7 @@ get_special_key_name(int c, int modifiers)
 	    // try again, to find the un-alted key in the special key table
 	    table_idx = find_special_key_in_table(c);
 	}
-	if (table_idx < 0 && !vim_isprintc(c) && c < ' ')
+	if (table_idx < 0 && !mnv_isprintc(c) && c < ' ')
 	{
 	    c += '@';
 	    modifiers |= MOD_MASK_CTRL;
@@ -1283,7 +1283,7 @@ get_special_key_name(int c, int modifiers)
 	else
 	{
 	    len = (*mb_char2len)(c);
-	    if (len == 1 && vim_isprintc(c))
+	    if (len == 1 && mnv_isprintc(c))
 		string[idx++] = c;
 	    else if (has_mbyte && len > 1)
 		idx += (*mb_char2bytes)(c, string + idx);
@@ -1405,7 +1405,7 @@ find_special_key(
 
     // Find end of modifier list
     last_dash = src;
-    for (bp = src + 1; *bp == '-' || vim_isNormalIDc(*bp); bp++)
+    for (bp = src + 1; *bp == '-' || mnv_isNormalIDc(*bp); bp++)
     {
 	if (*bp == '-')
 	{
@@ -1430,7 +1430,7 @@ find_special_key(
 	    bp += 3;	// skip t_xx, xx may be '-' or '>'
 	else if (STRNICMP(bp, "char-", 5) == 0)
 	{
-	    vim_str2nr(bp + 5, NULL, &l, STR2NR_ALL, NULL, NULL, 0, TRUE, NULL);
+	    mnv_str2nr(bp + 5, NULL, &l, STR2NR_ALL, NULL, NULL, 0, TRUE, NULL);
 	    if (l == 0)
 	    {
 		emsg(_(e_invalid_argument));
@@ -1464,10 +1464,10 @@ find_special_key(
 	if (bp >= last_dash)
 	{
 	    if (STRNICMP(last_dash + 1, "char-", 5) == 0
-						 && VIM_ISDIGIT(last_dash[6]))
+						 && MNV_ISDIGIT(last_dash[6]))
 	    {
 		// <Char-123> or <Char-033> or <Char-0x33>
-		vim_str2nr(last_dash + 6, NULL, &l, STR2NR_ALL, NULL,
+		mnv_str2nr(last_dash + 6, NULL, &l, STR2NR_ALL, NULL,
 							    &n, 0, TRUE, NULL);
 		if (l == 0)
 		{
@@ -1608,7 +1608,7 @@ may_remove_shift_modifier(int modifiers, int key)
 		|| modifiers == (MOD_MASK_SHIFT | MOD_MASK_META))
 	    && ((key >= '!' && key <= '/')
 		|| (key >= ':' && key <= 'Z')
-		|| vim_isdigit(key)
+		|| mnv_isdigit(key)
 		|| (key >= '[' && key <= '`')
 		|| (key >= '{' && key <= '~')))
 	return modifiers & ~MOD_MASK_SHIFT;
@@ -1704,7 +1704,7 @@ find_special_key_in_table(int c)
  * 'LeftMouse>", "<LeftMouse>"] ...'
  * should match with
  * 'LeftMouse'.
- * These characters are identified by vim_isNormalIDc().
+ * These characters are identified by mnv_isNormalIDc().
  */
     static int
 cmp_key_name_entry(const void *a, const void *b)
@@ -1716,7 +1716,7 @@ cmp_key_name_entry(const void *a, const void *b)
     if (p1 == p2)
 	return 0;
 
-    while (vim_isNormalIDc(*p1) && *p2 != NUL)
+    while (mnv_isNormalIDc(*p1) && *p2 != NUL)
     {
 	if ((result = TOLOWER_ASC(*p1) - TOLOWER_ASC(*p2)) != 0)
 	    break;
@@ -1728,7 +1728,7 @@ cmp_key_name_entry(const void *a, const void *b)
     {
 	if (*p2 == NUL)
 	{
-	    if (vim_isNormalIDc(*p1))
+	    if (mnv_isNormalIDc(*p1))
 		result = 1;
 	}
 	else
@@ -1948,7 +1948,7 @@ call_shell(char_u *cmd, int opt)
 
 	    if (*p_sxe != NUL && *p_sxq == '(')
 	    {
-		ecmd = vim_strsave_escaped_ext(cmd, p_sxe, '^', FALSE);
+		ecmd = mnv_strsave_escaped_ext(cmd, p_sxe, '^', FALSE);
 		if (ecmd == NULL)
 		    ecmd = cmd;
 	    }
@@ -1958,16 +1958,16 @@ call_shell(char_u *cmd, int opt)
 	    {
 		// When 'shellxquote' is ( append ).
 		// When 'shellxquote' is "( append )".
-		vim_snprintf((char *)ncmd, ncmdsize, "%s%s%s", p_sxq, ecmd, *p_sxq == '(' ? (char_u *)")"
+		mnv_snprintf((char *)ncmd, ncmdsize, "%s%s%s", p_sxq, ecmd, *p_sxq == '(' ? (char_u *)")"
 		    : *p_sxq == '"' && *(p_sxq+1) == '(' ? (char_u *)")\""
 		    : p_sxq);
 		retval = mch_call_shell(ncmd, opt);
-		vim_free(ncmd);
+		mnv_free(ncmd);
 	    }
 	    else
 		retval = -1;
 	    if (ecmd != cmd)
-		vim_free(ecmd);
+		mnv_free(ecmd);
 	}
 #ifdef FEAT_GUI
 	--hold_gui_events;
@@ -1980,7 +1980,7 @@ call_shell(char_u *cmd, int opt)
     }
 
 #ifdef FEAT_EVAL
-    set_vim_var_nr(VV_SHELL_ERROR, (long)retval);
+    set_mnv_var_nr(VV_SHELL_ERROR, (long)retval);
 # ifdef FEAT_PROFILE
     if (do_profiling == PROF_YES)
 	prof_child_exit(&wait_time);
@@ -2020,7 +2020,7 @@ get_real_state(void)
     int
 after_pathsep(char_u *b, char_u *p)
 {
-    return p > b && vim_ispathsep(p[-1])
+    return p > b && mnv_ispathsep(p[-1])
 			     && (!has_mbyte || (*mb_head_off)(b, p - 1) == 0);
 }
 
@@ -2039,7 +2039,7 @@ same_directory(char_u *f1, char_u *f2)
     if (f1 == NULL || f2 == NULL)
 	return FALSE;
 
-    (void)vim_FullName(f1, ffname, MAXPATHL, FALSE);
+    (void)mnv_FullName(f1, ffname, MAXPATHL, FALSE);
     t1 = gettail_sep(ffname);
     t2 = gettail_sep(f2);
     return (t1 - ffname == t2 - f2
@@ -2055,7 +2055,7 @@ same_directory(char_u *f1, char_u *f2)
  * Return OK or FAIL.
  */
     int
-vim_chdirfile(char_u *fname, char *trigger_autocmd)
+mnv_chdirfile(char_u *fname, char *trigger_autocmd)
 {
     char_u	old_dir[MAXPATHL];
     char_u	new_dir[MAXPATHL];
@@ -2063,7 +2063,7 @@ vim_chdirfile(char_u *fname, char *trigger_autocmd)
     if (mch_dirname(old_dir, MAXPATHL) != OK)
 	*old_dir = NUL;
 
-    vim_strncpy(new_dir, fname, MAXPATHL - 1);
+    mnv_strncpy(new_dir, fname, MAXPATHL - 1);
     *gettail_sep(new_dir) = NUL;
 
     if (pathcmp((char *)old_dir, (char *)new_dir, -1) == 0)
@@ -2087,7 +2087,7 @@ vim_chdirfile(char_u *fname, char *trigger_autocmd)
 /*
  * Check if "name" ends in a slash and is not a directory.
  * Used for systems where stat() ignores a trailing slash on a file name.
- * The Vim code assumes a trailing slash is only ignored for a directory.
+ * The MNV code assumes a trailing slash is only ignored for a directory.
  */
     static int
 illegal_slash(const char *name)
@@ -2105,7 +2105,7 @@ illegal_slash(const char *name)
  * Special implementation of mch_stat() for Solaris.
  */
     int
-vim_stat(const char *name, stat_T *stp)
+mnv_stat(const char *name, stat_T *stp)
 {
     // On Solaris stat() accepts "file/" as if it was "file".  Return -1 if
     // the name ends in "/" and it's not a directory.
@@ -2122,7 +2122,7 @@ vim_stat(const char *name, stat_T *stp)
 cursorentry_T shape_table[SHAPE_IDX_COUNT] =
 {
     // The values will be filled in from the 'guicursor' and 'mouseshape'
-    // defaults when Vim starts.
+    // defaults when MNV starts.
     // Adjust the SHAPE_IDX_ defines when making changes!
     {0,	0, 0, 700L, 400L, 250L, 0, 0, "n", SHAPE_CURSOR+SHAPE_MOUSE},
     {0,	0, 0, 700L, 400L, 250L, 0, 0, "v", SHAPE_CURSOR+SHAPE_MOUSE},
@@ -2212,8 +2212,8 @@ parse_shape_opt(int what)
 	    modep = p_guicursor;
 	while (*modep != NUL)
 	{
-	    colonp = vim_strchr(modep, ':');
-	    commap = vim_strchr(modep, ',');
+	    colonp = mnv_strchr(modep, ':');
+	    commap = mnv_strchr(modep, ',');
 
 	    if (colonp == NULL || (commap != NULL && commap < colonp))
 		return e_missing_colon_2;
@@ -2282,7 +2282,7 @@ parse_shape_opt(int what)
 			{
 			    if (mshape_names[i].string == NULL)
 			    {
-				if (!VIM_ISDIGIT(*p))
+				if (!MNV_ISDIGIT(*p))
 				    return e_illegal_mouseshape;
 				if (round == 2)
 				    shape_table[idx].mshape =
@@ -2321,7 +2321,7 @@ parse_shape_opt(int what)
 			if (len != 0)
 			{
 			    p += len;
-			    if (!VIM_ISDIGIT(*p))
+			    if (!MNV_ISDIGIT(*p))
 				return e_digit_expected;
 			    n = getdigits(&p);
 			    if (len == 3)   // "ver" or "hor"
@@ -2355,7 +2355,7 @@ parse_shape_opt(int what)
 			}
 			else	// must be a highlight group name then
 			{
-			    endp = vim_strchr(p, '-');
+			    endp = mnv_strchr(p, '-');
 			    if (commap == NULL)		    // last part
 			    {
 				if (endp == NULL)
@@ -2363,7 +2363,7 @@ parse_shape_opt(int what)
 			    }
 			    else if (endp > commap || endp == NULL)
 				endp = commap;
-			    slashp = vim_strchr(p, '/');
+			    slashp = mnv_strchr(p, '/');
 			    if (slashp != NULL && slashp < endp)
 			    {
 				// "group/langmap_group"
@@ -2540,7 +2540,7 @@ f_getmouseshape(typval_T *argvars UNUSED, typval_T *rettv)
 # if defined(FEAT_MOUSESHAPE)
     if (current_mouse_shape >= 0
 			      && current_mouse_shape < (int)MSHAPE_NAMES_COUNT)
-	rettv->vval.v_string = vim_strnsave(
+	rettv->vval.v_string = mnv_strnsave(
 				  mshape_names[current_mouse_shape].string,
 				  mshape_names[current_mouse_shape].length);
 # endif
@@ -2554,7 +2554,7 @@ f_getmouseshape(typval_T *argvars UNUSED, typval_T *rettv)
  * names.
  */
     int
-vim_chdir(char_u *new_dir)
+mnv_chdir(char_u *new_dir)
 {
     char_u	*dir_name;
     int		r;
@@ -2563,12 +2563,12 @@ vim_chdir(char_u *new_dir)
 
     dir_name = find_directory_in_path(new_dir, (int)STRLEN(new_dir),
 		     FNAME_MESS, curbuf->b_ffname, &file_to_find, &search_ctx);
-    vim_free(file_to_find);
-    vim_findfile_cleanup(search_ctx);
+    mnv_free(file_to_find);
+    mnv_findfile_cleanup(search_ctx);
     if (dir_name == NULL)
 	return -1;
     r = mch_chdir((char *)dir_name);
-    vim_free(dir_name);
+    mnv_free(dir_name);
     return r;
 }
 
@@ -2586,10 +2586,10 @@ get_user_name(char_u *buf, int len)
     {
 	if (mch_get_user_name(buf, len) == FAIL)
 	    return FAIL;
-	username = vim_strsave(buf);
+	username = mnv_strsave(buf);
     }
     else
-	vim_strncpy(buf, username, len - 1);
+	mnv_strncpy(buf, username, len - 1);
     return OK;
 }
 
@@ -2600,7 +2600,7 @@ get_user_name(char_u *buf, int len)
     void
 free_username(void)
 {
-    vim_free(username);
+    mnv_free(username);
 }
 #endif
 
@@ -2641,7 +2641,7 @@ qsort(
 		mch_memmove(p2, buf, elm_size);
 	    }
 
-    vim_free(buf);
+    mnv_free(buf);
 }
 #endif
 
@@ -2711,7 +2711,7 @@ putenv(const char *string)
     }
     else
     {				// name already in env.
-	p = vim_realloc(environ[i], strlen(string) + 1);
+	p = mnv_realloc(environ[i], strlen(string) + 1);
 	if (p == NULL)
 	    return -1;
     }
@@ -2778,7 +2778,7 @@ moreenv(void)
     char    **env;
 
     esize = envsize + EXTRASIZE;
-    env = vim_realloc((char *)environ, esize * sizeof (*env));
+    env = mnv_realloc((char *)environ, esize * sizeof (*env));
     if (env == 0)
 	return -1;
     environ = env;
@@ -2786,12 +2786,12 @@ moreenv(void)
     return 0;
 }
 
-# ifdef USE_VIMPTY_GETENV
+# ifdef USE_MNVPTY_GETENV
 /*
  * Used for mch_getenv() for Mac.
  */
     char_u *
-vimpty_getenv(const char_u *string)
+mnvpty_getenv(const char_u *string)
 {
     int i;
     char_u *p;
@@ -2804,7 +2804,7 @@ vimpty_getenv(const char_u *string)
     if (i < 0)
 	return NULL;
 
-    p = vim_strchr((char_u *)environ[i], '=');
+    p = mnv_strchr((char_u *)environ[i], '=');
     return (p + 1);
 }
 # endif
@@ -2931,7 +2931,7 @@ read_string(FILE *fd, int cnt)
 	c = getc(fd);
 	if (c == EOF)
 	{
-	    vim_free(str);
+	    mnv_free(str);
 	    return NULL;
 	}
 	str[i] = c;
@@ -2956,7 +2956,7 @@ put_bytes(FILE *fd, long_u nr, int len)
 
 #endif
 
-#ifndef PROTO  // proto is defined in vim.h
+#ifndef PROTO  // proto is defined in mnv.h
 # ifdef ELAPSED_TIMEVAL
 /*
  * Return time in msec since "start_tv".
@@ -3081,17 +3081,17 @@ build_argv_from_string(char_u *cmd, char ***argv, int *argc)
     int		i;
 
     // Make a copy, parsing will modify "cmd".
-    cmd_copy = vim_strsave(cmd);
+    cmd_copy = mnv_strsave(cmd);
     if (cmd_copy == NULL
 	    || mch_parse_cmd(cmd_copy, FALSE, argv, argc) == FAIL)
     {
-	vim_free(cmd_copy);
+	mnv_free(cmd_copy);
 	return FAIL;
     }
     for (i = 0; i < *argc; i++)
-	(*argv)[i] = (char *)vim_strsave((char_u *)(*argv)[i]);
+	(*argv)[i] = (char *)mnv_strsave((char_u *)(*argv)[i]);
     (*argv)[*argc] = NULL;
-    vim_free(cmd_copy);
+    mnv_free(cmd_copy);
     return OK;
 }
 
@@ -3122,11 +3122,11 @@ build_argv_from_list(list_T *l, char ***argv, int *argc)
 	    int i;
 
 	    for (i = 0; i < *argc; ++i)
-		VIM_CLEAR((*argv)[i]);
+		MNV_CLEAR((*argv)[i]);
 	    (*argv)[0] = NULL;
 	    return FAIL;
 	}
-	(*argv)[*argc] = (char *)vim_strsave(s);
+	(*argv)[*argc] = (char *)mnv_strsave(s);
 	*argc += 1;
     }
     (*argv)[*argc] = NULL;
@@ -3192,7 +3192,7 @@ cmp_keyvalue_value_ni(const void *a, const void *b)
     keyvalue_T *kv1 = (keyvalue_T *)a;
     keyvalue_T *kv2 = (keyvalue_T *)b;
 
-    return vim_strnicmp_asc((char *)kv1->value.string,
+    return mnv_strnicmp_asc((char *)kv1->value.string,
 	    (char *)kv2->value.string, MAX(kv1->value.length,
 		    kv2->value.length));
 }

@@ -3,7 +3,7 @@
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .SH 名前
 .I xxd
 \- 16 進ダンプを作成したり、元に戻したり。
@@ -322,19 +322,19 @@ xxd.1 の日付を修正する。
 .br
 \fI% echo "010000: 41" | xxd \-r \-s \-0x10000 > file\fR
 .PP
-.B vim(1)
+.B mnv(1)
 の中から xxd をフィルタとして実行し、
 マークされた `a' から `z' までの領域を 16 進ダンプする。
 .br
 \fI:'a,'z!xxd\fR
 .PP
-.B vim(1)
+.B mnv(1)
 の中から xxd をフィルタとして実行し、
 マークされた `a' から `z' までの領域をバイナリに戻す。
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
-.B vim(1)
+.B mnv(1)
 の中から xxd をフィルタとして実行し、16 進ダンプされた行を元に戻す。
 戻したい行にカーソルを移動して:
 .br

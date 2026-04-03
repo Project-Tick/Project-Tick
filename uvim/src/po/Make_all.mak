@@ -192,12 +192,12 @@ CHECKFILES = \
 		zh_TW.UTF-8.ck \
 		zh_TW.ck \
 
-PO_VIM_INPUTLIST = \
-	../../runtime/optwin.vim \
-	../../runtime/autoload/typeset.vim \
-	../../runtime/defaults.vim
+PO_MNV_INPUTLIST = \
+	../../runtime/optwin.mnv \
+	../../runtime/autoload/typeset.mnv \
+	../../runtime/defaults.mnv
 
-PO_VIM_JSLIST = \
+PO_MNV_JSLIST = \
 	optwin.js \
 	typeset.js \
 	defaults.js

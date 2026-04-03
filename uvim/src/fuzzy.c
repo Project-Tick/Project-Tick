@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  *
  * fuzzy.c: fuzzy matching algorithm and related functions
  *
@@ -32,7 +32,7 @@
  * THE SOFTWARE.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL) || defined(FEAT_PROTO)
 static int fuzzy_match_item_compare(const void *s1, const void *s2);
@@ -89,7 +89,7 @@ fuzzy_match(
 
     *outScore = 0;
 
-    save_pat = vim_strsave(pat_arg);
+    save_pat = mnv_strsave(pat_arg);
     if (save_pat == NULL)
 	return FALSE;
     pat = save_pat;
@@ -107,7 +107,7 @@ fuzzy_match(
 	    if (*p == NUL)
 		break;
 	    pat = p;
-	    while (*p != NUL && !VIM_ISWHITE(PTR2CHAR(p)))
+	    while (*p != NUL && !MNV_ISWHITE(PTR2CHAR(p)))
 	    {
 		if (has_mbyte)
 		    MB_PTR_ADV(p);
@@ -152,7 +152,7 @@ fuzzy_match(
 	++p;
     }
 
-    vim_free(save_pat);
+    mnv_free(save_pat);
     return numMatches != 0;
 }
 
@@ -282,7 +282,7 @@ fuzzy_match_in_list(
 	{
 	    if (itemstr_allocate)
 	    {
-		itemstr_copy = vim_strsave(itemstr);
+		itemstr_copy = mnv_strsave(itemstr);
 		if (itemstr_copy == NULL)
 		{
 		    clear_tv(&rettv);
@@ -300,7 +300,7 @@ fuzzy_match_in_list(
 		if (match_positions == NULL)
 		{
 		    if (itemstr_allocate && itemstr_copy)
-			vim_free(itemstr_copy);
+			mnv_free(itemstr_copy);
 		    clear_tv(&rettv);
 		    continue;
 		}
@@ -312,7 +312,7 @@ fuzzy_match_in_list(
 
 		while (*p != NUL && j < FUZZY_MATCH_MAX_LEN && success)
 		{
-		    if (!VIM_ISWHITE(PTR2CHAR(p)) || matchseq)
+		    if (!MNV_ISWHITE(PTR2CHAR(p)) || matchseq)
 		    {
 			if (list_append_number(match_positions, matches[j]) == FAIL)
 			{
@@ -331,7 +331,7 @@ fuzzy_match_in_list(
 		{
 		    list_free(match_positions);
 		    if (itemstr_allocate && itemstr_copy)
-			vim_free(itemstr_copy);
+			mnv_free(itemstr_copy);
 		    clear_tv(&rettv);
 		    continue;
 		}
@@ -419,12 +419,12 @@ done:
     for (int i = 0; i < match_count; i++)
     {
 	if (items[i].itemstr_allocated)
-	    vim_free(items[i].itemstr);
+	    mnv_free(items[i].itemstr);
 
 	if (items[i].lmatchpos)
 	    list_free(items[i].lmatchpos);
     }
-    vim_free(items);
+    mnv_free(items);
 }
 
 /*
@@ -440,7 +440,7 @@ do_fuzzymatch(typval_T *argvars, typval_T *rettv, int retmatchpos)
     int		matchseq = FALSE;
     long	max_matches = 0;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_list_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_opt_dict_arg(argvars, 2) == FAIL))
@@ -682,13 +682,13 @@ fuzzy_match_str_with_pos(char_u *str UNUSED, char_u *pat UNUSED)
 	    || score == FUZZY_SCORE_NONE)
     {
 	ga_clear(match_positions);
-	vim_free(match_positions);
+	mnv_free(match_positions);
 	return NULL;
     }
 
     for (char_u *p = pat; *p != NUL; MB_PTR_ADV(p))
     {
-	if (!VIM_ISWHITE(PTR2CHAR(p)))
+	if (!MNV_ISWHITE(PTR2CHAR(p)))
 	{
 	    ga_grow(match_positions, 1);
 	    ((int_u *)match_positions->ga_data)[match_positions->ga_len] =
@@ -765,7 +765,7 @@ fuzzy_match_str_in_line(
 	// Move to the end of the current word for the next iteration
 	str = end;
 	// Ensure we continue searching after the current word
-	while (*str != NUL && !vim_iswordp(str))
+	while (*str != NUL && !mnv_iswordp(str))
 	    MB_PTR_ADV(str);
     }
 
@@ -903,8 +903,8 @@ fuzmatch_str_free(fuzmatch_str_T *fuzmatch, int count)
 	return;
 
     for (int i = 0; i < count; ++i)
-	vim_free(fuzmatch[i].str);
-    vim_free(fuzmatch);
+	mnv_free(fuzmatch[i].str);
+    mnv_free(fuzmatch);
 }
 
 /*
@@ -939,7 +939,7 @@ fuzzymatches_to_strmatches(
 	(*matches)[i] = fuzmatch[i].str;
 
 theend:
-    vim_free(fuzmatch);
+    mnv_free(fuzmatch);
     return OK;
 }
 
@@ -1010,7 +1010,7 @@ typedef struct match_struct
     static score_t
 compute_bonus_codepoint(int last_c, int c)
 {
-    if (ASCII_ISALNUM(c) || vim_iswordc(c))
+    if (ASCII_ISALNUM(c) || mnv_iswordc(c))
     {
 	if (IS_PATH_SEP(last_c))
 	    return SCORE_MATCH_SLASH;
@@ -1182,6 +1182,6 @@ match_positions(char_u *needle, char_u *haystack, int_u *positions)
     }
 
     score_t result = M[n - 1][m - 1];
-    vim_free(block);
+    mnv_free(block);
     return result;
 }

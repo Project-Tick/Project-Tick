@@ -1,0 +1,335 @@
+" Tests for the XDG feature
+
+func s:get_rcs()
+  let rcs = {
+        \ 'file1': { 'path': '~/.mnvrc', 'dir': expand('~/.mnv/') },
+        \ 'file2': { 'path': '~/.mnv/mnvrc', 'dir': expand('~/.mnv/') },
+        \ 'xdg': { 'path': exists('$XDG_CONFIG_HOME') ? '$XDG_CONFIG_HOME' : "~/.config",
+                  \ 'dir': exists('$XDG_CONFIG_HOME') ? expand("$XDG_CONFIG_HOME/mnv") : '~/.config/mnv/'},
+        \}
+  for v in values(rcs)
+    let v.exists = filereadable(expand(v.path))
+  endfor
+  return rcs
+endfunc
+
+func Test_xdg_rc_detection()
+  CheckUnix
+  let rc = s:get_rcs()
+  let before =<< trim CODE
+    call writefile([expand('$MYMNVRC')], "XMY_MNVRC")
+    call writefile([expand('$MYMNVDIR')], "XMY_MNVDIR")
+    quit!
+  CODE
+  call RunMNV(before, [], "")
+  let my_rc = readfile("XMY_MNVRC")
+  let my_rcdir = readfile("XMY_MNVDIR")
+  if rc.file1.exists
+    call assert_equal(rc.file1.path, my_rc)
+    call assert_equal(rc.file1.dir, my_rcdir)
+  elseif !rc.file1.exists && rc.file2.exists
+    call assert_equal(rc.file2.path, my_rc)
+    call assert_equal(rc.file2.dir, my_rcdir)
+  elseif !rc.file1.exists && !rc.file2.exists && rc.xdg.exists
+    call assert_equal(rc.xdg.path, my_rc)
+    call assert_equal(rc.xdg.dir, my_rcdir)
+  endif
+  call delete("XMY_MNVRC")
+  call delete("XMY_MNVDIR")
+endfunc
+
+func Test_xdg_runtime_files()
+  " This tests, that the initialization file from
+  " ~/.mnvrc, ~/.mnv/mnvrc and ~/.config/mnv/mnvrc (or
+  " $XDG_CONFIG_HOME/mnv/mnvrc) are sourced in that order
+  CheckUnix
+  call mkdir(expand('~/.mnv/'), 'pD')
+  call mkdir(expand('~/.config/mnv/'), 'pD')
+  call mkdir(expand('~/xdg/mnv/'), 'pD')
+
+  let rc1=expand('~/.mnvrc')
+  let rc2=expand('~/.mnv/mnvrc')
+  let rc3=expand('~/.config/mnv/mnvrc')
+  let rc4=expand('~/xdg/mnv/mnvrc')
+
+  " g:rc_one|two|three|four is to verify, that the other
+  " init files are not sourced
+  " g:rc is to verify which rc file has been loaded.
+  " g:rc_mnvdir is to verify $MYMNVDIR is set and valid
+  let file1 =<< trim CODE
+    let g:rc_one = 'one'
+    let g:rc = '.mnvrc'
+    let g:rc_mnvdir = expand('~/.mnv/')
+    call assert_equal(g:rc_mnvdir, $MYMNVDIR)
+  CODE
+  let file2 =<< trim CODE
+    let g:rc_two = 'two'
+    let g:rc = '.mnv/mnvrc'
+    let g:rc_mnvdir = expand('~/.mnv/')
+    call assert_equal(g:rc_mnvdir, $MYMNVDIR)
+  CODE
+  let file3 =<< trim CODE
+    let g:rc_three = 'three'
+    let g:rc = '.config/mnv/mnvrc'
+    let g:rc_mnvdir = expand('~/.config/mnv/')
+    call assert_equal(g:rc_mnvdir, $MYMNVDIR)
+  CODE
+  let file4 =<< trim CODE
+    let g:rc_four = 'four'
+    let g:rc = 'xdg/mnv/mnvrc'
+    let g:rc_mnvdir = expand('~/xdg/mnv/')
+    call assert_equal(g:rc_mnvdir, $MYMNVDIR)
+  CODE
+  call writefile(file1, rc1)
+  call writefile(file2, rc2)
+  call writefile(file3, rc3)
+  call writefile(file4, rc4)
+
+  " Get the MNV command to run without the '-u NONE' argument
+  let mnvcmd = substitute(GetMNVCommand(), '-u NONE', '', '')
+
+  " Test for ~/.mnvrc
+  let lines =<< trim END
+    call assert_match('XfakeHOME/\.mnvrc', $MYMNVRC)
+    call assert_match('XfakeHOME/.mnv/', $MYMNVDIR)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_one: 'one', rc: '.mnvrc', rc_mnvdir: $MYMNVDIR}, g:)
+    call assert_match('XfakeHOME/\.mnv/view', &viewdir)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc1)
+
+  " Test for ~/.mnv/mnvrc
+  let lines =<< trim END
+    call assert_match('XfakeHOME/\.mnv/mnvrc', $MYMNVRC)
+    call assert_match('XfakeHOME/\.mnv/', $MYMNVDIR)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_two: 'two', rc: '.mnv/mnvrc', rc_mnvdir: $MYMNVDIR}, g:)
+    call assert_match('XfakeHOME/\.mnv/view', &viewdir)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc2)
+
+  " XDG_CONFIG_HOME is set in Github CI runners
+  unlet $XDG_CONFIG_HOME
+
+  " Test for ~/.config/mnv/mnvrc
+  let lines =<< trim END
+    let msg = $'HOME="{$HOME}", ~="{expand("~")}"'
+    call assert_match('XfakeHOME/\.config/mnv/mnvrc', $MYMNVRC, msg)
+    call assert_match('XfakeHOME/\.config/mnv/', $MYMNVDIR, msg)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_three: 'three', rc: '.config/mnv/mnvrc', rc_mnvdir: $MYMNVDIR}, g:)
+    call assert_match('XfakeHOME/\.config/mnv/view', &viewdir)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc3)
+
+  " Test for ~/xdg/mnv/mnvrc
+  let $XDG_CONFIG_HOME=expand('~/xdg/')
+  let lines =<< trim END
+    let msg = $'HOME="{$HOME}", XDG_CONFIG_HOME="{$XDG_CONFIG_HOME}"'
+    call assert_match('XfakeHOME/xdg/mnv/mnvrc', $MYMNVRC, msg)
+    call assert_match('XfakeHOME/xdg/mnv/', $MYMNVDIR, msg)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_four: 'four', rc: 'xdg/mnv/mnvrc', rc_mnvdir: $MYMNVDIR}, g:)
+    call assert_match('XfakeHOME/xdg/mnv/view, &viewdir)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  " Test for $MYMNVDIR changes when updating runtimepath
+  let lines =<< trim END
+    let msg = $'HOME="{$HOME}", XDG_CONFIG_HOME="{$XDG_CONFIG_HOME}" rtp-prepend'
+    set rtp^=/non-existing
+    call assert_match('XfakeHOME/xdg/mnv/mnvrc', $MYMNVRC, msg)
+    call assert_match('/non-existing', $MYMNVDIR, msg)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc4)
+  unlet $XDG_CONFIG_HOME
+endfunc
+
+func Test_xdg_version()
+  CheckUnix
+  let $HOME = getcwd() .. '/XfakeHOME'
+  unlet $XDG_CONFIG_HOME
+  let a = execute(':version')->split('\n')
+  let a = filter(a, { _, val -> val =~ '\.config\|XDG_CONFIG_HOME' })
+  " There should be 1 entry for gmnvrc and 1 entry for mnvrc,
+  " but only if MNV was compiled with gui support
+  call assert_equal(1 + has("gui"), len(a))
+  call assert_match('\~/\.config/mnv/mnvrc', a[0])
+  if has("gui")
+    call assert_match('\~/\.config/mnv/gmnvrc', a[1])
+  endif
+
+  let $XDG_CONFIG_HOME = expand('~/.xdg')
+  let a = execute(':version')->split('\n')
+  let a = filter(a, { _, val -> val =~ '\.config\|XDG_CONFIG_HOME' })
+  call assert_equal(1 + has("gui"), len(a))
+  call assert_match('XDG_CONFIG_HOME/mnv/mnvrc', a[0])
+  if has("gui")
+    call assert_match('XDG_CONFIG_HOME/mnv/gmnvrc', a[1])
+  endif
+  unlet $XDG_CONFIG_HOME
+endfunc
+
+" Test for gmnvrc, must be last, since it starts the GUI
+" and sources a few extra test files
+func Test_zzz_xdg_runtime_files()
+  CheckCanRunGui
+  CheckUnix
+
+  " Is setup in Github Runner
+  unlet $XDG_CONFIG_HOME
+  source util/setup_gui.mnv
+  call GUISetUpCommon()
+
+  " This tests, that the GUI initialization file from
+  " ~/.gmnvrc, ~/.mnv/gmnvrc, ~/.config/mnv/gmnvrc
+  " and ~/XDG_CONFIG_HOME/mnv/gmnvrc is sourced
+  " when starting GUI mode
+  call mkdir(expand('~/.mnv/'), 'pD')
+  call mkdir(expand('~/.config/mnv/'), 'pD')
+  call mkdir(expand('~/xdg/mnv/'), 'pD')
+
+  let rc1=expand('~/.gmnvrc')
+  let rc2=expand('~/.mnv/gmnvrc')
+  let rc3=expand('~/.config/mnv/gmnvrc')
+  let rc4=expand('~/xdg/mnv/gmnvrc')
+
+  " g:rc_one|two|three|four is to verify, that the other
+  " init files are not sourced
+  " g:rc is to verify which rc file has been loaded.
+  let file1 =<< trim CODE
+    let g:rc_one = 'one'
+    let g:rc = '.gmnvrc'
+  CODE
+  let file2 =<< trim CODE
+    let g:rc_two = 'two'
+    let g:rc = '.mnv/gmnvrc'
+  CODE
+  let file3 =<< trim CODE
+    let g:rc_three = 'three'
+    let g:rc = '.config/mnv/gmnvrc'
+  CODE
+  let file4 =<< trim CODE
+    let g:rc_four = 'four'
+    let g:rc = 'xdg/mnv/gmnvrc'
+  CODE
+  call writefile(file1, rc1)
+  call writefile(file2, rc2)
+  call writefile(file3, rc3)
+  call writefile(file4, rc4)
+
+  " Get the MNV command to run without the '-u NONE' argument
+  let mnvcmd = substitute(GetMNVCommand(), '-u NONE', '', '')
+
+  " Test for ~/.gmnvrc
+  let lines =<< trim END
+    " Ignore the "failed to create input context" error.
+    call test_ignore_error('E285')
+    gui -f
+    call assert_match('Xhome/\.gmnvrc', $MYGMNVRC)
+    call assert_match('Xhome/\.mnv/', $MYMNVDIR)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_one: 'one', rc: '.gmnvrc'}, g:)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc1)
+
+  " Test for ~/.mnv/gmnvrc
+  let lines =<< trim END
+    " Ignore the "failed to create input context" error.
+    call test_ignore_error('E285')
+    gui -f
+    call assert_match('Xhome/\.mnv/gmnvrc', $MYGMNVRC)
+    call assert_match('Xhome/\.mnv/', $MYMNVDIR)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_two: 'two', rc: '.mnv/gmnvrc'}, g:)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc2)
+
+  " Test for ~/.config/mnv/gmnvrc
+  " MYMNVDIR is only set to ~/config/.mnv if ~/.config/mnv/mnvrc exists!
+  let lines =<< trim END
+    " Ignore the "failed to create input context" error.
+    call test_ignore_error('E285')
+    gui -f
+    let msg = $'HOME="{$HOME}", ~="{expand("~")}"'
+    call assert_match('Xhome/\.config/mnv/gmnvrc', $MYGMNVRC, msg)
+    call assert_match('Xhome/\.mnv/', $MYMNVDIR, msg)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_three: 'three', rc: '.config/mnv/gmnvrc'}, g:)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc3)
+
+  " Test for ~/xdg/mnv/gmnvrc
+  " MYMNVDIR is only set to ~/xdg/mnv if ~/xdg/mnv/mnvrc exists!
+  let $XDG_CONFIG_HOME=expand('~/xdg/')
+  let lines =<< trim END
+    " Ignore the "failed to create input context" error.
+    call test_ignore_error('E285')
+    gui -f
+    let msg = $'HOME="{$HOME}", XDG_CONFIG_HOME="{$XDG_CONFIG_HOME}"'
+    call assert_match('Xhome/xdg/mnv/gmnvrc', $MYGMNVRC, msg)
+    call assert_match('Xhome/\.mnv/', $MYMNVDIR, msg)
+    call filter(g:, {idx, _ -> idx =~ '^rc'})
+    call assert_equal(#{rc_four: 'four', rc: 'xdg/mnv/gmnvrc'}, g:)
+    call writefile(v:errors, 'Xresult')
+    quit
+  END
+  call writefile(lines, 'Xscript', 'D')
+  call system($'{mnvcmd} -S Xscript')
+  call assert_equal([], readfile('Xresult'))
+
+  call delete(rc4)
+
+  " Clean up
+  unlet $XDG_CONFIG_HOME
+  call GUITearDownCommon()
+  call delete('Xhome', 'rf')
+endfunc
+
+" mnv: shiftwidth=2 sts=2 expandtab

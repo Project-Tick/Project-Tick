@@ -2,17 +2,17 @@
 #!/bin/sh
 if test -z "$1" ; then src=../src ; else src=$1 ; fi
 if test -z "$2" ; then dst=${src} ; else dst=$2 ; fi
-if test -f "${src}/vim.exe" ;
- then mv -f "${src}/vim.exe" "${dst}/vimw32.exe" ;
+if test -f "${src}/mnv.exe" ;
+ then mv -f "${src}/mnv.exe" "${dst}/mnvw32.exe" ;
 fi
-if test -f "${src}/vim.pdb" ;
- then mv -f "${src}/vim.pdb" "${dst}/vimw32.pdb" ;
+if test -f "${src}/mnv.pdb" ;
+ then mv -f "${src}/mnv.pdb" "${dst}/mnvw32.pdb" ;
 fi
-if test -f "${src}/gvim.exe" ;
- then mv -f "${src}/gvim.exe" "${dst}/gvim_ole.exe" ;
+if test -f "${src}/gmnv.exe" ;
+ then mv -f "${src}/gmnv.exe" "${dst}/gmnv_ole.exe" ;
 fi
-if test -f "${src}/gvim.pdb" ;
- then mv -f "${src}/gvim.pdb" "${dst}/gvim_ole.pdb" ;
+if test -f "${src}/gmnv.pdb" ;
+ then mv -f "${src}/gmnv.pdb" "${dst}/gmnv_ole.pdb" ;
 fi
 if test -f "${src}/install.exe" ;
  then mv "${src}/install.exe" "${dst}/installw32.exe" ;
@@ -39,10 +39,10 @@ SetLocal
 if exist mv.exe (set "mv=mv.exe -f") else (set "mv=move /Y")
 if ""=="%~1" (set "src=..\src") else (set "src=%~1")
 if ""=="%~2" (set "dst=%src%") else (set "dst=%~2")
-if exist "%src%\vim.exe" %mv% "%src%\vim.exe" "%dst%\vimw32.exe"
-if exist "%src%\vim.pdb" %mv% "%src%\vim.pdb" "%dst%\vimw32.pdb"
-if exist "%src%\gvim.exe" %mv% "%src%\gvim.exe" "%dst%\gvim_ole.exe"
-if exist "%src%\gvim.pdb" %mv% "%src%\gvim.pdb" "%dst%\gvim_ole.pdb"
+if exist "%src%\mnv.exe" %mv% "%src%\mnv.exe" "%dst%\mnvw32.exe"
+if exist "%src%\mnv.pdb" %mv% "%src%\mnv.pdb" "%dst%\mnvw32.pdb"
+if exist "%src%\gmnv.exe" %mv% "%src%\gmnv.exe" "%dst%\gmnv_ole.exe"
+if exist "%src%\gmnv.pdb" %mv% "%src%\gmnv.pdb" "%dst%\gmnv_ole.pdb"
 if exist "%src%\install.exe" %mv% "%src%\install.exe" "%dst%\installw32.exe"
 if exist "%src%\uninstall.exe" (
     %mv% "%src%\uninstall.exe" "%dst%\uninstallw32.exe"

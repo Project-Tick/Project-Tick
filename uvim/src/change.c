@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * change.c: functions related to changing text
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * If the file is readonly, give a warning message with the first change.
@@ -48,7 +48,7 @@ change_warning(int col)
     msg_source(HL_ATTR(HLF_W));
     msg_puts_attr(_(w_readonly), HL_ATTR(HLF_W) | MSG_HIST);
 #ifdef FEAT_EVAL
-    set_vim_var_string(VV_WARNINGMSG, (char_u *)_(w_readonly), -1);
+    set_mnv_var_string(VV_WARNINGMSG, (char_u *)_(w_readonly), -1);
 #endif
     msg_clr_eos();
     (void)msg_end();
@@ -172,7 +172,7 @@ remove_listener_from_list(
     else
 	*list = lnr->lr_next;
     free_callback(&lnr->lr_callback);
-    vim_free(lnr);
+    mnv_free(lnr);
 }
 
 /*
@@ -327,7 +327,7 @@ f_listener_add(typval_T *argvars, typval_T *rettv)
 	return;
     }
 
-    if (in_vim9script() && (
+    if (in_mnv9script() && (
 	    check_for_opt_buffer_arg(argvars, 1) == FAIL
 	    || check_for_opt_bool_arg(argvars, 2) == FAIL))
 	return;
@@ -389,7 +389,7 @@ f_listener_flush(typval_T *argvars, typval_T *rettv UNUSED)
     if (recursive)
 	return;
 
-    if (in_vim9script() && check_for_opt_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -439,7 +439,7 @@ f_listener_remove(typval_T *argvars, typval_T *rettv)
     int		id;
     buf_T	*buf;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     id = tv_get_number(argvars);
@@ -915,7 +915,7 @@ changed_bytes(linenr_T lnum, colnr_T col)
     // Don't do this when displaying '$' at the end of changed text.
     if (spell_check_window(curwin)
 	    && lnum < curbuf->b_ml.ml_line_count
-	    && vim_strchr(p_cpo, CPO_DOLLAR) == NULL)
+	    && mnv_strchr(p_cpo, CPO_DOLLAR) == NULL)
 	redrawWinline(curwin, lnum + 1);
 #endif
 #ifdef FEAT_DIFF
@@ -1124,8 +1124,8 @@ save_file_ff(buf_T *buf)
     if (buf->b_start_fenc == NULL
 			     || STRCMP(buf->b_start_fenc, buf->b_p_fenc) != 0)
     {
-	vim_free(buf->b_start_fenc);
-	buf->b_start_fenc = vim_strsave(buf->b_p_fenc);
+	mnv_free(buf->b_start_fenc);
+	buf->b_start_fenc = mnv_strsave(buf->b_p_fenc);
     }
 }
 
@@ -1256,7 +1256,7 @@ ins_char_bytes(char_u *buf, int charlen)
 	    // Returns the old value of list, so when finished,
 	    // curwin->w_p_list should be set back to this.
 	    old_list = curwin->w_p_list;
-	    if (old_list && vim_strchr(p_cpo, CPO_LISTWM) == NULL)
+	    if (old_list && mnv_strchr(p_cpo, CPO_LISTWM) == NULL)
 		curwin->w_p_list = FALSE;
 
 	    // In virtual replace mode each character may replace one or more
@@ -1619,7 +1619,7 @@ open_line(
 #endif
 
     // make a copy of the current line so we can mess with it
-    saved_line = vim_strnsave(ml_get_curline(), ml_get_curline_len());
+    saved_line = mnv_strnsave(ml_get_curline(), ml_get_curline_len());
     if (saved_line == NULL)	    // out of memory!
 	return FALSE;
 
@@ -1630,16 +1630,16 @@ open_line(
     if (State & VREPLACE_FLAG)
     {
 	// With MODE_VREPLACE we make a copy of the next line, which we will be
-	// starting to replace.  First make the new line empty and let vim play
+	// starting to replace.  First make the new line empty and let mnv play
 	// with the indenting and comment leader to its heart's content.  Then
 	// we grab what it ended up putting on the new line, put back the
 	// original line, and call ins_char() to put each new character onto
 	// the line, replacing what was there before and pushing the right
 	// stuff onto the replace stack.  -- webb.
 	if (curwin->w_cursor.lnum < orig_line_count)
-	    next_line = vim_strnsave(ml_get(curwin->w_cursor.lnum + 1), ml_get_len(curwin->w_cursor.lnum + 1));
+	    next_line = mnv_strnsave(ml_get(curwin->w_cursor.lnum + 1), ml_get_len(curwin->w_cursor.lnum + 1));
 	else
-	    next_line = vim_strsave((char_u *)"");
+	    next_line = mnv_strsave((char_u *)"");
 	if (next_line == NULL)	    // out of memory!
 	    goto theend;
 
@@ -1769,7 +1769,7 @@ open_line(
 		{
 		    // Find last non-blank in line
 		    p = ptr + STRLEN(ptr) - 1;
-		    while (p > ptr && VIM_ISWHITE(*p))
+		    while (p > ptr && MNV_ISWHITE(*p))
 			--p;
 		    last_char = *p;
 
@@ -1778,7 +1778,7 @@ open_line(
 		    {
 			if (p > ptr)
 			    --p;
-			while (p > ptr && VIM_ISWHITE(*p))
+			while (p > ptr && MNV_ISWHITE(*p))
 			    --p;
 		    }
 		    // Try to catch lines that are split over multiple
@@ -1972,7 +1972,7 @@ open_line(
 		    // If we have hit RETURN immediately after the start
 		    // comment leader, then put a space after the middle
 		    // comment leader on the next line.
-		    if (!VIM_ISWHITE(saved_line[lead_len - 1])
+		    if (!MNV_ISWHITE(saved_line[lead_len - 1])
 			    && ((p_extra != NULL
 				    && (int)curwin->w_cursor.col == lead_len)
 				|| (p_extra == NULL
@@ -2049,11 +2049,11 @@ open_line(
 	    {
 		int li;
 
-		vim_strncpy(leader, saved_line, lead_len);
+		mnv_strncpy(leader, saved_line, lead_len);
 
 		// TODO: handle multi-byte and double width chars
 		for (li = 0; li < comment_start; ++li)
-		    if (!VIM_ISWHITE(leader[li]))
+		    if (!MNV_ISWHITE(leader[li]))
 			leader[li] = ' ';
 
 		// Replace leader with lead_repl, right or left adjusted
@@ -2066,7 +2066,7 @@ open_line(
 		    {
 			if (*p == COM_RIGHT || *p == COM_LEFT)
 			    c = *p++;
-			else if (VIM_ISDIGIT(*p) || *p == '-')
+			else if (MNV_ISDIGIT(*p) || *p == '-')
 			    off = getdigits(&p);
 			else
 			    ++p;
@@ -2075,14 +2075,14 @@ open_line(
 		    {
 			// find last non-white in the leader to line up with
 			for (p = leader + lead_len - 1; p > leader
-						      && VIM_ISWHITE(*p); --p)
+						      && MNV_ISWHITE(*p); --p)
 			    ;
 			++p;
 
 			// Compute the length of the replaced characters in
 			// screen characters, not bytes.
 			{
-			    int	    repl_size = vim_strnsize(lead_repl,
+			    int	    repl_size = mnv_strnsize(lead_repl,
 							       lead_repl_len);
 			    int	    old_size = 0;
 			    char_u  *endp = p;
@@ -2121,7 +2121,7 @@ open_line(
 				lead_len -= l;
 				*p = ' ';
 			    }
-			    else if (!VIM_ISWHITE(*p))
+			    else if (!MNV_ISWHITE(*p))
 				*p = ' ';
 			}
 		    }
@@ -2133,7 +2133,7 @@ open_line(
 			// screen characters, not bytes. Move the part that is
 			// not to be overwritten.
 			{
-			    int	    repl_size = vim_strnsize(lead_repl,
+			    int	    repl_size = mnv_strnsize(lead_repl,
 							       lead_repl_len);
 			    int	    i;
 			    int	    l;
@@ -2141,7 +2141,7 @@ open_line(
 			    for (i = 0; i < lead_len && p[i] != NUL; i += l)
 			    {
 				l = (*mb_ptr2len)(p + i);
-				if (vim_strnsize(p, i + l) > repl_size)
+				if (mnv_strnsize(p, i + l) > repl_size)
 				    break;
 			    }
 			    if (i != lead_repl_len)
@@ -2157,7 +2157,7 @@ open_line(
 			// leader by spaces.  Keep Tabs, the indent must
 			// remain the same.
 			for (p += lead_repl_len; p < leader + lead_len; ++p)
-			    if (!VIM_ISWHITE(*p))
+			    if (!MNV_ISWHITE(*p))
 			    {
 				// Don't put a space before a TAB.
 				if (p + 1 < leader + lead_len && p[1] == TAB)
@@ -2214,7 +2214,7 @@ open_line(
 					       && leader[lead_len - 1] == ' ')
 		    {
 			// Don't do it when there is a tab before the space
-			if (vim_strchr(skipwhite(leader), '\t') != NULL)
+			if (mnv_strchr(skipwhite(leader), '\t') != NULL)
 			    break;
 			--lead_len;
 			--off;
@@ -2222,7 +2222,7 @@ open_line(
 
 		    // If the leader ends in white space, don't add an
 		    // extra space
-		    if (lead_len > 0 && VIM_ISWHITE(leader[lead_len - 1]))
+		    if (lead_len > 0 && MNV_ISWHITE(leader[lead_len - 1]))
 			extra_space = FALSE;
 		    leader[lead_len] = NUL;
 		}
@@ -2239,7 +2239,7 @@ open_line(
 		// is in the comment leader
 		if (newindent || did_si)
 		{
-		    while (lead_len && VIM_ISWHITE(*leader))
+		    while (lead_len && MNV_ISWHITE(*leader))
 		    {
 			--lead_len;
 			--newcol;
@@ -2494,7 +2494,7 @@ open_line(
     if (State & VREPLACE_FLAG)
     {
 	// Put new line in p_extra
-	p_extra = vim_strnsave(ml_get_curline(), ml_get_curline_len());
+	p_extra = mnv_strnsave(ml_get_curline(), ml_get_curline_len());
 	if (p_extra == NULL)
 	    goto theend;
 
@@ -2505,16 +2505,16 @@ open_line(
 	curwin->w_cursor.col = 0;
 	curwin->w_cursor.coladd = 0;
 	ins_bytes(p_extra);	// will call changed_bytes()
-	vim_free(p_extra);
+	mnv_free(p_extra);
 	next_line = NULL;
     }
 
     retval = OK;		// success!
 theend:
     curbuf->b_p_pi = saved_pi;
-    vim_free(saved_line);
-    vim_free(next_line);
-    vim_free(allocated);
+    mnv_free(saved_line);
+    mnv_free(next_line);
+    mnv_free(allocated);
     return retval;
 }
 
@@ -2536,9 +2536,9 @@ truncate_line(int fixpos)
 
     old_line = ml_get(lnum);
     if (col == 0)
-	newp = vim_strsave((char_u *)"");
+	newp = mnv_strsave((char_u *)"");
     else
-	newp = vim_strnsave(old_line, col);
+	newp = mnv_strnsave(old_line, col);
     deleted = (int)ml_get_len(lnum) - col;
 
     if (newp == NULL)

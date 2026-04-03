@@ -1,7 +1,7 @@
-*undo.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*undo.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Undo and redo						*undo-redo*
@@ -55,11 +55,11 @@ Use "u" to undo changes until the buffer becomes unchanged.
 2. Two ways of undo					*undo-two-ways*
 
 How undo and redo commands work depends on the 'u' flag in 'cpoptions'.
-There is the Vim way ('u' excluded) and the Vi-compatible way ('u' included).
-In the Vim way, "uu" undoes two changes.  In the Vi-compatible way, "uu" does
+There is the MNV way ('u' excluded) and the Vi-compatible way ('u' included).
+In the MNV way, "uu" undoes two changes.  In the Vi-compatible way, "uu" does
 nothing (undoes an undo).
 
-'u' excluded, the Vim way:
+'u' excluded, the MNV way:
 You can go back in time with the undo command.  You can then go forward again
 with the redo command.  If you make a new change after the undo command,
 the redo will not be possible anymore.
@@ -69,7 +69,7 @@ The undo command undoes the previous change, and also the previous undo
 command.  The redo command repeats the previous undo command.  It does NOT
 repeat a change command, use "." for that.
 
-Examples	Vim way			Vi-compatible way	~
+Examples	MNV way			Vi-compatible way	~
 "uu"		two times undo		no-op
 "u CTRL-R"	no-op			two times undo
 
@@ -112,7 +112,7 @@ parts.  E.g., for each sentence.  |i_CTRL-G_u|
 
 Setting the value of 'undolevels' also closes the undo block.  Even when the
 new value is equal to the old value.  Use `g:undolevels` to explicitly read
-and write only the global value of 'undolevels'.  In |Vim9| script: >
+and write only the global value of 'undolevels'.  In |MNV9| script: >
 	&g:undolevels = &g:undolevels
 In legacy script: >
 	let &g:undolevels = &g:undolevels
@@ -245,8 +245,8 @@ while repeating "g-" and "g+" does.
 ==============================================================================
 5. Undo persistence		*undo-persistence* *persistent-undo*
 
-When unloading a buffer Vim normally destroys the tree of undos created for
-that buffer.  By setting the 'undofile' option, Vim will automatically save
+When unloading a buffer MNV normally destroys the tree of undos created for
+that buffer.  By setting the 'undofile' option, MNV will automatically save
 your undo history when you write a file and restore undo history when you edit
 the file again.
 
@@ -255,8 +255,8 @@ autocommands.  If you want to control what files to write undo information
 for, you can use a BufWritePre autocommand: >
 	au BufWritePre /tmp/* setlocal noundofile
 
-Vim saves undo trees in a separate undo file, one for each edited file, using
-a simple scheme that maps filesystem paths directly to undo files.  Vim will
+MNV saves undo trees in a separate undo file, one for each edited file, using
+a simple scheme that maps filesystem paths directly to undo files.  MNV will
 detect if an undo file is no longer synchronized with the file it was written
 for (with a hash of the file contents) and ignore it when the file was changed
 after the undo file was written, to prevent corruption.  An undo file is also
@@ -316,21 +316,21 @@ history file.  E.g.: >
 You should keep 'undofile' off, otherwise you end up with two undo files for
 every write.
 
-You can use the |undofile()| function to find out the file name that Vim would
+You can use the |undofile()| function to find out the file name that MNV would
 use.
 
 Note that while reading/writing files and 'undofile' is set most errors will
 be silent, unless 'verbose' is set.  With :wundo and :rundo you will get more
 error messages, e.g., when the file cannot be read or written.
 
-NOTE: undo files are never deleted by Vim.  You need to delete them yourself.
+NOTE: undo files are never deleted by MNV.  You need to delete them yourself.
 
 Reading an existing undo file may fail for several reasons:
 *E822*	It cannot be opened, because the file permissions don't allow it.
 *E823*	The magic number at the start of the file doesn't match.  This usually
 	means it is not an undo file.
 *E824*	The version number of the undo file indicates that it's written by a
-	newer version of Vim.  You need that newer version to open it.  Don't
+	newer version of MNV.  You need that newer version to open it.  Don't
 	write the buffer if you want to keep the undo info in the file.
 "File contents changed, cannot use undo info"
 	The file text differs from when the undo file was written.  This means
@@ -338,10 +338,10 @@ Reading an existing undo file may fail for several reasons:
 	happens when 'encoding' differs from when the undo file was written.
 *E825*  The undo file does not contain valid contents and cannot be used.
 *E826*  The undo file is encrypted but decryption failed.
-*E827*  The undo file is encrypted but this version of Vim does not support
-	encryption.  Open the file with another Vim.
+*E827*  The undo file is encrypted but this version of MNV does not support
+	encryption.  Open the file with another MNV.
 *E832*  The undo file is encrypted but 'key' is not set, the text file is not
-	encrypted.  This would happen if the text file was written by Vim
+	encrypted.  This would happen if the text file was written by MNV
 	encrypted at first, and later overwritten by not encrypted text.
 	You probably want to delete this undo file.
 "Not reading undo file, owner differs"
@@ -396,7 +396,7 @@ Marks for the buffer ('a to 'z) are also saved and restored, together with the
 text.
 
 When all changes have been undone, the buffer is not considered to be changed.
-It is then possible to exit Vim with ":q" instead of ":q!".  Note
+It is then possible to exit MNV with ":q" instead of ":q!".  Note
 that this is relative to the last write of the file.  Typing "u" after ":w"
 actually changes the buffer, compared to what was written, so the buffer is
 considered changed then.
@@ -428,4 +428,4 @@ if it is not what you want do 'u.'.  This will remove the contents of the
 first put, and repeat the put command for the second register.  Repeat the
 'u.' until you got what you want.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

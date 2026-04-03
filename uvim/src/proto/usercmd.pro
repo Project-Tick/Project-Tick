@@ -21,4 +21,4 @@ void ex_delcommand(exarg_T *eap);
 size_t add_win_cmd_modifiers(char_u *buf, cmdmod_T *cmod, int *multi_mods);
 size_t produce_cmdmods(char_u *buf, cmdmod_T *cmod, int quote);
 void do_ucmd(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

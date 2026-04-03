@@ -1,14 +1,14 @@
-*if_cscop.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*if_cscop.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Andy Kahn
+		  MNV REFERENCE MANUAL	  by Andy Kahn
 
 
 							*cscope* *Cscope*
-This document explains how to use Vim's cscope interface.
+This document explains how to use MNV's cscope interface.
 
 Cscope is a tool like ctags, but think of it as ctags on steroids since it
-does a lot more than what ctags provides.  In Vim, jumping to a result from
+does a lot more than what ctags provides.  In MNV, jumping to a result from
 a cscope query is just like jumping to any tag; it is saved on the tag stack
 so that with the right keyboard mappings, you can jump back and forth between
 functions as you normally would with |tags|.
@@ -16,7 +16,7 @@ functions as you normally would with |tags|.
 1. Cscope introduction		|cscope-intro|
 2. Cscope related commands	|cscope-commands|
 3. Cscope options		|cscope-options|
-4. How to use cscope in Vim	|cscope-howtouse|
+4. How to use cscope in MNV	|cscope-howtouse|
 5. Limitations			|cscope-limitations|
 6. Suggested usage		|cscope-suggestions|
 7. Availability & Information	|cscope-info|
@@ -76,7 +76,7 @@ text editor to edit the source file containing match, you cannot simply
 jump from tag to tag as you normally would with vi's Ctrl-] or :tag
 command.
 
-Vim's cscope interface is done by invoking cscope with its line-oriented
+MNV's cscope interface is done by invoking cscope with its line-oriented
 interface, and then parsing the output returned from a query.  The end
 result is that cscope query results become just like regular tags, so
 you can jump to them just like you do with normal tags (Ctrl-] or :tag)
@@ -110,8 +110,8 @@ The available subcommands are:
 
 	EXAMPLES >
 	    :cscope add /usr/local/cdb/cscope.out
-	    :cscope add /projects/vim/cscope.out /usr/local/vim
-	    :cscope add cscope.out /usr/local/vim -C
+	    :cscope add /projects/mnv/cscope.out /usr/local/mnv
+	    :cscope add cscope.out /usr/local/mnv -C
 <
 				      *cscope-find* *cs-find* *E567*
     find  : Query cscope.  All cscope query options are available
@@ -137,11 +137,11 @@ The available subcommands are:
 	and {name}.  Further white space is included in {name}.
 
 	EXAMPLES >
-	    :cscope find c vim_free
-	    :cscope find 3  vim_free
+	    :cscope find c mnv_free
+	    :cscope find 3  mnv_free
 <
 	    These two examples perform the same query: functions calling
-	    "vim_free". >
+	    "mnv_free". >
 
 	    :cscope find t initOnce
 	    :cscope find t  initOnce
@@ -151,40 +151,40 @@ The available subcommands are:
 
 	    :cscope find 0 DEFAULT_TERM
 <
-	    Executing this example on the source code for Vim 5.1 produces the
+	    Executing this example on the source code for MNV 5.1 produces the
 	    following output:
 
 	    Cscope tag: DEFAULT_TERM
 	       #   line  filename / context / line
-	       1   1009  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       1   1009  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"amiga"
-	       2   1013  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       2   1013  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"win32"
-	       3   1017  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       3   1017  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"pcterm"
-	       4   1021  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       4   1021  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"ansi"
-	       5   1025  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       5   1025  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"vt52"
-	       6   1029  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       6   1029  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"os2ansi"
-	       7   1033  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       7   1033  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"ansi"
-	       8   1037  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       8   1037  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 # undef DEFAULT_TERM
-	       9   1038  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	       9   1038  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"beos-ansi"
-	      10   1042  vim-5.1-gtk/src/term.c <<GLOBAL>>
+	      10   1042  mnv-5.1-gtk/src/term.c <<GLOBAL>>
 			 #define DEFAULT_TERM (char_u *)"mac-ansi"
-	      11   1335  vim-5.1-gtk/src/term.c <<set_termname>>
+	      11   1335  mnv-5.1-gtk/src/term.c <<set_termname>>
 			 term = DEFAULT_TERM;
-	      12   1459  vim-5.1-gtk/src/term.c <<set_termname>>
+	      12   1459  mnv-5.1-gtk/src/term.c <<set_termname>>
 			 if (STRCMP(term, DEFAULT_TERM))
-	      13   1826  vim-5.1-gtk/src/term.c <<termcapinit>>
+	      13   1826  mnv-5.1-gtk/src/term.c <<termcapinit>>
 			 term = DEFAULT_TERM;
-	      14   1833  vim-5.1-gtk/src/term.c <<termcapinit>>
+	      14   1833  mnv-5.1-gtk/src/term.c <<termcapinit>>
 			 term = DEFAULT_TERM;
-	      15   3635  vim-5.1-gtk/src/term.c <<update_tcap>>
+	      15   3635  mnv-5.1-gtk/src/term.c <<update_tcap>>
 			 p = find_builtin_term(DEFAULT_TERM);
 	    Enter nr of choice (<CR> to abort):
 
@@ -244,8 +244,8 @@ through your tags file(s).
 3. Cscope options					*cscope-options*
 
 Use the |:set| command to set all cscope options.  Ideally, you would do
-this in one of your startup files (e.g., .vimrc).  Some cscope related
-variables are only valid within |.vimrc|.  Setting them after vim has
+this in one of your startup files (e.g., .mnvrc).  Some cscope related
+variables are only valid within |.mnvrc|.  Setting them after mnv has
 started will have no effect!
 
 							*cscopeprg* *csprg*
@@ -266,7 +266,7 @@ seems to be useful: >
 	:set cscopequickfix=s-,c-,d-,i-,t-,e-,a-
 <
 							*cscopetag* *cst*
-If 'cscopetag' is set, the commands ":tag" and CTRL-] as well as "vim -t"
+If 'cscopetag' is set, the commands ":tag" and CTRL-] as well as "mnv -t"
 will always use |:cstag| instead of the default :tag behavior.  Effectively,
 by setting 'cst', you will always search your cscope databases as well as
 your tag files.  The default is off.  Examples: >
@@ -295,9 +295,9 @@ Examples: >
 						*cscopeverbose* *csverb*
 If 'cscopeverbose' is not set (the default), messages will not be printed
 indicating success or failure when adding a cscope database.  Ideally, you
-should reset this option in your |.vimrc| before adding any cscope databases,
+should reset this option in your |.mnvrc| before adding any cscope databases,
 and after adding them, set it.  From then on, when you add more databases
-within Vim, you will get a (hopefully) useful message should the database fail
+within MNV, you will get a (hopefully) useful message should the database fail
 to be added.  Examples: >
 	:set csverb
 	:set nocsverb
@@ -312,16 +312,16 @@ will display the last 3 components of the file's path, including the file
 name itself.
 
 ==============================================================================
-4. How to use cscope in Vim				*cscope-howtouse*
+4. How to use cscope in MNV				*cscope-howtouse*
 
 The first thing you need to do is to build a cscope database for your
 source files.  For the most basic case, simply do "cscope -b".  Please
 refer to the cscope man page for more details.
 
-Assuming you have a cscope database, you need to "add" the database to Vim.
-This establishes a cscope "connection" and makes it available for Vim to use.
-You can do this in your .vimrc file, or you can do it manually after starting
-vim.  For example, to add the cscope database "cscope.out", you would do:
+Assuming you have a cscope database, you need to "add" the database to MNV.
+This establishes a cscope "connection" and makes it available for MNV to use.
+You can do this in your .mnvrc file, or you can do it manually after starting
+mnv.  For example, to add the cscope database "cscope.out", you would do:
 
 	:cs add cscope.out
 
@@ -354,7 +354,7 @@ simply hit Ctrl-T to get back to the previous one.
 ==============================================================================
 5. Limitations						*cscope-limitations*
 
-Cscope support for Vim is only available on systems that support these four
+Cscope support for MNV is only available on systems that support these four
 system calls: fork(), pipe(), execl(), waitpid().  This means it is mostly
 limited to Unix systems.
 
@@ -364,7 +364,7 @@ cscope version for Win32 see (link seems dead):
 	iamphet.nm.ru/cscope/index.html
 
 The DJGPP-built version from http://cscope.sourceforge.net is known to not
-work with Vim.
+work with MNV.
 
 Hard-coded limitation: doing a |:tjump| when |:cstag| searches the tag files
 is not configurable (e.g., you can't do a tselect instead).
@@ -372,7 +372,7 @@ is not configurable (e.g., you can't do a tselect instead).
 ==============================================================================
 6. Suggested usage					*cscope-suggestions*
 
-Put these entries in your .vimrc (adjust the pathname accordingly to your
+Put these entries in your .mnvrc (adjust the pathname accordingly to your
 setup): >
 
 	if has("cscope")
@@ -391,7 +391,7 @@ setup): >
 	endif
 
 By setting 'cscopetag', we have effectively replaced all instances of the :tag
-command with :cstag.  This includes :tag, Ctrl-], and "vim -t".  In doing
+command with :cstag.  This includes :tag, Ctrl-], and "mnv -t".  In doing
 this, the regular tag command not only searches your ctags generated tag
 files, but your cscope databases as well.
 
@@ -413,7 +413,7 @@ These mappings for Ctrl-] (right bracket) and Ctrl-\ (backslash) allow you to
 place your cursor over the function name or C symbol and quickly query cscope
 for any matches.
 
-Or you may use the following scheme, inspired by Vim/Cscope tutorial from
+Or you may use the following scheme, inspired by MNV/Cscope tutorial from
 Cscope Home Page (http://cscope.sourceforge.net/): >
 
 	nmap <C-_>s :cs find s <C-R>=expand("<cword>")<CR><CR>
@@ -426,7 +426,7 @@ Cscope Home Page (http://cscope.sourceforge.net/): >
 	nmap <C-_>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 	nmap <C-_>a :cs find a <C-R>=expand("<cword>")<CR><CR>
 
-	" Using 'CTRL-spacebar' then a search type makes the vim window
+	" Using 'CTRL-spacebar' then a search type makes the mnv window
 	" split horizontally, with search result displayed in
 	" the new window.
 
@@ -472,9 +472,9 @@ In Solaris 2.x, if you have the C compiler license, you will also have
 cscope.  Both are usually located under /opt/SUNWspro/bin
 
 There is source to an older version of a cscope clone (called "cs") available
-on the net.  Due to various reasons, this is not supported with Vim.
+on the net.  Due to various reasons, this is not supported with MNV.
 
-The cscope interface/support for Vim was originally written by
+The cscope interface/support for MNV was originally written by
 Andy Kahn <ackahn@netapp.com>.  The original structure (as well as a tiny
 bit of code) was adapted from the cscope interface in nvi.
 							*cscope-win32*
@@ -484,4 +484,4 @@ For a cscope version for Win32 see (seems abandoned):
 Win32 support was added by Sergey Khorev <sergey.khorev@gmail.com>.  Contact
 him if you have Win32-specific issues.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

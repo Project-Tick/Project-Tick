@@ -3,7 +3,7 @@
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .SH NOME
 .I xxd
 \- Produce lista esadecimale da un file binario o viceversa.
@@ -345,19 +345,19 @@ in pratica, i byte precedenti non sono stampati.
 \fI% echo "010000: 41" | xxd \-r \-s \-0x10000 > file\fR
 .PP
 Usare xxd come filtro all'interno di un editor come
-.B vim(1)
+.B mnv(1)
 per ottenere l'immagine esadecimale della parte di file fra i marcatori `a' e `z'.
 .br
 \fI:'a,'z!xxd\fR
 .PP
 Usare xxd come filtro all'interno di un editor come
-.B vim(1)
+.B mnv(1)
 per ricostruire un pezzo di file binario da un'immagine esadecimale fra i marcatori `a' e `z'.
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
 Usare xxd come filtro all'interno di un editor come
-.B vim(1)
+.B mnv(1)
 per ricostruire una sola riga di file binario da un'immagine esadecimale. Portare il cursore sopra la riga e battere:
 .br
 \fI!!xxd \-r\fR

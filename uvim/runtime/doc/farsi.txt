@@ -1,10 +1,10 @@
-*farsi.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*farsi.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Mortaza Ghassab Shiran
+		  MNV REFERENCE MANUAL	  by Mortaza Ghassab Shiran
 
 
-Right to Left and Farsi Mapping for Vim		*farsi* *Farsi*
+Right to Left and Farsi Mapping for MNV		*farsi* *Farsi*
 
 
 						*E27*
@@ -16,4 +16,4 @@ Farsi code, as it was present at the 8.1 release.  It should be merged with
 Arabic support using the Unicode character set.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

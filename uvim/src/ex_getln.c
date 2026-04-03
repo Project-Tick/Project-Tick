@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * ex_getln.c: Functions for entering and editing an Ex command line.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 // Return value when handling keys in command-line mode.
 #define CMDLINE_NOT_CHANGED	1
@@ -102,7 +102,7 @@ empty_pattern_magic(char_u *p, size_t len, magic_T magic_val)
 {
     // remove trailing \v and the like
     while (len >= 2 && p[len - 2] == '\\'
-			&& vim_strchr((char_u *)"mMvVcCZ", p[len - 1]) != NULL)
+			&& mnv_strchr((char_u *)"mMvVcCZ", p[len - 1]) != NULL)
 	len -= 2;
 
     // true, if the pattern is empty, or the pattern ends with \| and magic is
@@ -245,7 +245,7 @@ parse_pattern_and_range(
     // Skip over the range to find the command.
     cmd = skip_range(ea.cmd, TRUE, NULL);
 
-    if (vim_strchr((char_u *)"sgvlu", *cmd) == NULL)
+    if (mnv_strchr((char_u *)"sgvlu", *cmd) == NULL)
 	return FALSE;
 
     // Skip over command name to find pattern separator
@@ -275,10 +275,10 @@ parse_pattern_and_range(
 	if (*p == NUL)
 	    return FALSE;
     }
-    else if (STRNCMP(cmd, "vimgrep", MAX(p - cmd, 3)) == 0
-	    || STRNCMP(cmd, "vimgrepadd", MAX(p - cmd, 8)) == 0
-	    || STRNCMP(cmd, "lvimgrep", MAX(p - cmd, 2)) == 0
-	    || STRNCMP(cmd, "lvimgrepadd", MAX(p - cmd, 9)) == 0
+    else if (STRNCMP(cmd, "mnvgrep", MAX(p - cmd, 3)) == 0
+	    || STRNCMP(cmd, "mnvgrepadd", MAX(p - cmd, 8)) == 0
+	    || STRNCMP(cmd, "lmnvgrep", MAX(p - cmd, 2)) == 0
+	    || STRNCMP(cmd, "lmnvgrepadd", MAX(p - cmd, 9)) == 0
 	    || STRNCMP(cmd, "global", p - cmd) == 0)
     {
 	// skip optional "!"
@@ -295,7 +295,7 @@ parse_pattern_and_range(
 	return FALSE;
 
     p = skipwhite(p);
-    delim = (delim_optional && vim_isIDc(*p)) ? ' ' : *p++;
+    delim = (delim_optional && mnv_isIDc(*p)) ? ' ' : *p++;
     *search_delim = delim;
 
     end = skip_regexp_ex(p, delim, magic_isset(), NULL, NULL, &magic);
@@ -732,7 +732,7 @@ may_adjust_incsearch_highlighting(
 	curwin->w_cursor = is_state->match_end;
     }
     else
-	vim_beep(BO_ERROR);
+	mnv_beep(BO_ERROR);
     restore_last_search_pattern();
     return FAIL;
 }
@@ -771,7 +771,7 @@ may_add_char_to_search(int firstc, int *c, incsearch_state_T *is_state)
 	    // the character to lowercase.
 	    if (p_ic && p_scs && !pat_has_uppercase(ccline.cmdbuff + skiplen))
 		*c = MB_TOLOWER(*c);
-	    if (*c == search_delim || vim_strchr((char_u *)(
+	    if (*c == search_delim || mnv_strchr((char_u *)(
 			     magic_isset() ? "\\~^$.*[" : "\\^$"), *c) != NULL)
 	    {
 		// put a backslash before special characters
@@ -892,7 +892,7 @@ cmdline_handle_ctrl_bsl(int c, int *gotesc)
 		{
 		    ccline.cmdlen = len;
 		    STRCPY(ccline.cmdbuff, p);
-		    vim_free(p);
+		    mnv_free(p);
 
 		    // Restore the cursor or use the position set with
 		    // set_cmdline_pos().
@@ -905,7 +905,7 @@ cmdline_handle_ctrl_bsl(int c, int *gotesc)
 		    redrawcmd();
 		    return CMDLINE_CHANGED;
 		}
-		vim_free(p);
+		mnv_free(p);
 	    }
 	}
 	beep_flush();
@@ -1047,7 +1047,7 @@ cmdline_wildchar_complete(
 		if (wim_list || (p_wmnu && (wim_full || wim_noselect)))
 		    (void)showmatches(xp, p_wmnu, wim_list, wim_noselect);
 		else
-		    vim_beep(BO_WILD);
+		    mnv_beep(BO_WILD);
 	    }
 
 	    redrawcmd();
@@ -1108,7 +1108,7 @@ cmdline_erase_chars(
 	    p = mb_prevptr(ccline.cmdbuff, p);
 	    if (c == Ctrl_W)
 	    {
-		while (p > ccline.cmdbuff && vim_isspace(*p))
+		while (p > ccline.cmdbuff && mnv_isspace(*p))
 		    p = mb_prevptr(ccline.cmdbuff, p);
 		i = mb_get_class(p);
 		while (p > ccline.cmdbuff && mb_get_class(p) == i)
@@ -1119,13 +1119,13 @@ cmdline_erase_chars(
 	}
 	else if (c == Ctrl_W)
 	{
-	    while (p > ccline.cmdbuff && vim_isspace(p[-1]))
+	    while (p > ccline.cmdbuff && mnv_isspace(p[-1]))
 		--p;
 	    if (p > ccline.cmdbuff)
 	    {
-		i = vim_iswordc(p[-1]);
-		while (p > ccline.cmdbuff && !vim_isspace(p[-1])
-			&& vim_iswordc(p[-1]) == i)
+		i = mnv_iswordc(p[-1]);
+		while (p > ccline.cmdbuff && !mnv_isspace(p[-1])
+			&& mnv_iswordc(p[-1]) == i)
 		    --p;
 	    }
 	}
@@ -1419,7 +1419,7 @@ cmdline_browse_history(
     // save current command string so it can be restored later
     if (lookfor == NULL)
     {
-	if ((lookfor = vim_strnsave(ccline.cmdbuff, ccline.cmdlen)) == NULL)
+	if ((lookfor = mnv_strnsave(ccline.cmdbuff, ccline.cmdlen)) == NULL)
 	    return CMDLINE_NOT_CHANGED;
 	lookfor[ccline.cmdpos] = NUL;
 	lookforlen = ccline.cmdpos;
@@ -1602,7 +1602,7 @@ init_ccline(int firstc, int indent)
     // autoindent for :insert and :append
     if (firstc <= 0)
     {
-	vim_memset(ccline.cmdbuff, ' ', indent);
+	mnv_memset(ccline.cmdbuff, ' ', indent);
 	ccline.cmdbuff[indent] = NUL;
 	ccline.cmdpos = indent;
 	ccline.cmdspos = indent;
@@ -1857,7 +1857,7 @@ getcmdline_int(
 	int	prev_cmdpos = ccline.cmdpos;
 	int	skip_pum_redraw = FALSE;
 
-	VIM_CLEAR(prev_cmdbuff);
+	MNV_CLEAR(prev_cmdbuff);
 
 	redir_off = TRUE;	// Don't redirect the typed command.
 				// Repeated, because a ":redir" inside
@@ -1873,7 +1873,7 @@ getcmdline_int(
 
 	if (ex_normal_busy == 0 && stuff_empty() && typebuf.tb_len == 0)
 	    // There is no pending input from sources other than user input, so
-	    // Vim is going to wait for the user to type a key.  Consider the
+	    // MNV is going to wait for the user to type a key.  Consider the
 	    // command line typed even if next key will trigger a mapping.
 	    some_key_typed = TRUE;
 
@@ -1882,7 +1882,7 @@ getcmdline_int(
 
 	if (ccline.cmdbuff != NULL)
 	{
-	    prev_cmdbuff = vim_strsave(ccline.cmdbuff);
+	    prev_cmdbuff = mnv_strsave(ccline.cmdbuff);
 	    if (prev_cmdbuff == NULL)
 		goto returncmd;
 	}
@@ -1993,7 +1993,7 @@ getcmdline_int(
 		&& c != K_LEFT && c != K_RIGHT
 		&& (xpc.xp_numfiles > 0 || (c != Ctrl_P && c != Ctrl_N)))
 	{
-	    VIM_CLEAR(lookfor);
+	    MNV_CLEAR(lookfor);
 	    lookforlen = 0;
 	}
 
@@ -2031,7 +2031,7 @@ getcmdline_int(
 		    || c == Ctrl_C))
 	{
 #ifdef FEAT_EVAL
-	    set_vim_var_char(c);  // Set v:char
+	    set_mnv_var_char(c);  // Set v:char
 #endif
 	    trigger_cmd_autocmd(cmdline_type, EVENT_CMDLINELEAVEPRE);
 	    event_cmdlineleavepre_triggered = TRUE;
@@ -2058,8 +2058,8 @@ getcmdline_int(
 	    if (cmdline_pum_active())
 	    {
 		skip_pum_redraw = skip_pum_redraw && !key_is_wc
-		    && !VIM_ISWHITE(c)
-		    && (vim_isprintc(c)
+		    && !MNV_ISWHITE(c)
+		    && (mnv_isprintc(c)
 			|| c == K_BS || c == Ctrl_H || c == K_DEL
 			|| c == K_KDEL || c == Ctrl_W || c == Ctrl_U);
 		cmdline_pum_remove(&ccline, skip_pum_redraw);
@@ -2109,7 +2109,7 @@ getcmdline_int(
 #endif
 
 	if (c == '\n' || c == '\r' || c == K_KENTER || (c == ESC
-			&& (!KeyTyped || vim_strchr(p_cpo, CPO_ESC) != NULL)))
+			&& (!KeyTyped || mnv_strchr(p_cpo, CPO_ESC) != NULL)))
 	{
 	    // In Ex mode a backslash escapes a newline.
 	    if (exmode_active
@@ -2614,7 +2614,7 @@ getcmdline_int(
 	 * We come here if we have a normal character.
 	 */
 
-	if (do_abbr && (IS_SPECIAL(c) || !vim_iswordc(c))
+	if (do_abbr && (IS_SPECIAL(c) || !mnv_iswordc(c))
 		&& (ccheck_abbr(
 			// Add ABBR_OFF for characters above 0x100, this is
 			// what check_abbr() expects.
@@ -2704,7 +2704,7 @@ returncmd:
     if (!event_cmdlineleavepre_triggered)
     {
 #ifdef FEAT_EVAL
-	set_vim_var_char(c);  // Set v:char
+	set_mnv_var_char(c);  // Set v:char
 #endif
 	trigger_cmd_autocmd(cmdline_type, EVENT_CMDLINELEAVEPRE);
     }
@@ -2742,8 +2742,8 @@ returncmd:
 				       histype == HIST_SEARCH ? firstc : NUL);
 	    if (firstc == ':')
 	    {
-		vim_free(new_last_cmdline);
-		new_last_cmdline = vim_strnsave(ccline.cmdbuff, ccline.cmdlen);
+		mnv_free(new_last_cmdline);
+		new_last_cmdline = mnv_strnsave(ccline.cmdbuff, ccline.cmdlen);
 	    }
 	}
 
@@ -2766,7 +2766,7 @@ returncmd:
 
     // Trigger CmdlineLeave autocommands.
 #ifdef FEAT_EVAL
-    set_vim_var_char(c);  // Set v:char
+    set_mnv_var_char(c);  // Set v:char
 #endif
     trigger_cmd_autocmd(cmdline_type, EVENT_CMDLINELEAVE);
 
@@ -2799,7 +2799,7 @@ theend:
 	else
 	    ccline.cmdbuff = NULL;
 
-	vim_free(prev_cmdbuff);
+	mnv_free(prev_cmdbuff);
 	return p;
     }
 }
@@ -3482,7 +3482,7 @@ redrawcmd_preedit(void)
     static void
 dealloc_cmdbuff(void)
 {
-    VIM_CLEAR(ccline.cmdbuff);
+    MNV_CLEAR(ccline.cmdbuff);
     ccline.cmdlen = ccline.cmdbufflen = 0;
 }
 
@@ -3548,7 +3548,7 @@ realloc_cmdbuff(int len)
 	    ccline.xpc->xp_pattern = ccline.cmdbuff + i;
     }
 
-    vim_free(p);
+    mnv_free(p);
 
     return OK;
 }
@@ -3560,7 +3560,7 @@ static char_u	*arshape_buf = NULL;
     void
 free_arshape_buf(void)
 {
-    vim_free(arshape_buf);
+    mnv_free(arshape_buf);
 }
 # endif
 #endif
@@ -3607,7 +3607,7 @@ draw_cmdline(int start, int len)
 	{
 	    // Re-allocate the buffer.  We keep it around to avoid a lot of
 	    // alloc()/free() calls.
-	    vim_free(arshape_buf);
+	    mnv_free(arshape_buf);
 	    buflen = len * 2 + 2;
 	    arshape_buf = alloc(buflen);
 	    if (arshape_buf == NULL)
@@ -3969,13 +3969,13 @@ cmdline_paste(
 		if (has_mbyte)
 		{
 		    len = (*mb_head_off)(ccline.cmdbuff, w - 1) + 1;
-		    if (!vim_iswordc(mb_ptr2char(w - len)))
+		    if (!mnv_iswordc(mb_ptr2char(w - len)))
 			break;
 		    w -= len;
 		}
 		else
 		{
-		    if (!vim_iswordc(w[-1]))
+		    if (!mnv_iswordc(w[-1]))
 			break;
 		    --w;
 		}
@@ -3987,7 +3987,7 @@ cmdline_paste(
 
 	cmdline_paste_str(p, literally);
 	if (allocated)
-	    vim_free(arg);
+	    mnv_free(arg);
 	return OK;
     }
 
@@ -4201,7 +4201,7 @@ ccheck_abbr(int c)
 
     // Do not consider '<,'> be part of the mapping, skip leading whitespace.
     // Actually accepts any mark.
-    while (VIM_ISWHITE(ccline.cmdbuff[spos]) && spos < ccline.cmdlen)
+    while (MNV_ISWHITE(ccline.cmdbuff[spos]) && spos < ccline.cmdlen)
 	spos++;
     if (ccline.cmdlen - spos > 5
 	    && ccline.cmdbuff[spos] == '\''
@@ -4217,13 +4217,13 @@ ccheck_abbr(int c)
 
 /*
  * Escape special characters in "fname", depending on "what":
- * VSE_NONE: for when used as a file name argument after a Vim command.
+ * VSE_NONE: for when used as a file name argument after a MNV command.
  * VSE_SHELL: for a shell command.
  * VSE_BUFFER: for the ":buffer" command.
  * Returns the result in allocated memory.
  */
     char_u *
-vim_strsave_fnameescape(char_u *fname, int what)
+mnv_strsave_fnameescape(char_u *fname, int what)
 {
     char_u	*p;
 #ifdef BACKSLASH_IN_FILENAME
@@ -4234,21 +4234,21 @@ vim_strsave_fnameescape(char_u *fname, int what)
     // ":buffer" command.
     for (p = what == VSE_BUFFER ? BUFFER_ESC_CHARS : PATH_ESC_CHARS;
 								*p != NUL; ++p)
-	if ((*p != '[' && *p != '{' && *p != '!') || !vim_isfilec(*p))
+	if ((*p != '[' && *p != '{' && *p != '!') || !mnv_isfilec(*p))
 	    buf[j++] = *p;
     buf[j] = NUL;
-    p = vim_strsave_escaped(fname, buf);
+    p = mnv_strsave_escaped(fname, buf);
 #else
-    p = vim_strsave_escaped(fname, what == VSE_SHELL ? SHELL_ESC_CHARS
+    p = mnv_strsave_escaped(fname, what == VSE_SHELL ? SHELL_ESC_CHARS
 		    : what == VSE_BUFFER ? BUFFER_ESC_CHARS : PATH_ESC_CHARS);
     if (what == VSE_SHELL && csh_like_shell() && p != NULL)
     {
 	char_u	    *s;
 
 	// For csh and similar shells need to put two backslashes before '!'.
-	// One is taken by Vim, one by the shell.
-	s = vim_strsave_escaped(p, (char_u *)"!");
-	vim_free(p);
+	// One is taken by MNV, one by the shell.
+	s = mnv_strsave_escaped(p, (char_u *)"!");
+	mnv_free(p);
 	p = s;
     }
 #endif
@@ -4275,7 +4275,7 @@ escape_fname(char_u **pp)
 
     p[0] = '\\';
     STRCPY(p + 1, *pp);
-    vim_free(*pp);
+    mnv_free(*pp);
     *pp = p;
 }
 
@@ -4292,14 +4292,14 @@ tilde_replace(
     int	    i;
     char_u  *p;
 
-    if (orig_pat[0] == '~' && vim_ispathsep(orig_pat[1]))
+    if (orig_pat[0] == '~' && mnv_ispathsep(orig_pat[1]))
     {
 	for (i = 0; i < num_files; ++i)
 	{
 	    p = home_replace_save(NULL, files[i]);
 	    if (p != NULL)
 	    {
-		vim_free(files[i]);
+		mnv_free(files[i]);
 		files[i] = p;
 	    }
 	}
@@ -4369,7 +4369,7 @@ get_cmdline_str(void)
     p = get_ccline_ptr();
     if (p == NULL)
 	return NULL;
-    return vim_strnsave(p->cmdbuff, p->cmdlen);
+    return mnv_strnsave(p->cmdbuff, p->cmdlen);
 }
 
 /*
@@ -4403,7 +4403,7 @@ get_cmdline_completion_pattern(void)
     if (compl_pat == NULL)
 	return NULL;
 
-    return vim_strsave(compl_pat);
+    return mnv_strsave(compl_pat);
 }
 
 /*
@@ -4485,7 +4485,7 @@ f_getcmdprompt(typval_T *argvars UNUSED, typval_T *rettv)
     cmdline_info_T *p = get_ccline_ptr();
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = p != NULL && p->cmdprompt != NULL ?
-					    vim_strsave(p->cmdprompt) : NULL;
+					    mnv_strsave(p->cmdprompt) : NULL;
 }
 
 /*
@@ -4603,7 +4603,7 @@ f_setcmdpos(typval_T *argvars, typval_T *rettv)
 {
     int		pos;
 
-    if (in_vim9script() && check_for_number_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_number_arg(argvars, 0) == FAIL)
 	return;
 
     pos = (int)tv_get_number(&argvars[0]) - 1;
@@ -4634,9 +4634,9 @@ get_list_range(char_u **str, int *num1, int *num2)
     varnumber_T	num;
 
     *str = skipwhite(*str);
-    if (**str == '-' || vim_isdigit(**str))  // parse "from" part of range
+    if (**str == '-' || mnv_isdigit(**str))  // parse "from" part of range
     {
-	vim_str2nr(*str, NULL, &len, 0, &num, NULL, 0, FALSE, NULL);
+	mnv_str2nr(*str, NULL, &len, 0, &num, NULL, 0, FALSE, NULL);
 	*str += len;
 	// overflow
 	if (num > INT_MAX)
@@ -4649,7 +4649,7 @@ get_list_range(char_u **str, int *num1, int *num2)
     if (**str == ',')			// parse "to" part of range
     {
 	*str = skipwhite(*str + 1);
-	vim_str2nr(*str, NULL, &len, 0, &num, NULL, 0, FALSE, NULL);
+	mnv_str2nr(*str, NULL, &len, 0, &num, NULL, 0, FALSE, NULL);
 	if (len > 0)
 	{
 	    *str = skipwhite(*str + len);
@@ -4681,7 +4681,7 @@ did_set_cedit(optset_T *args UNUSED)
     else
     {
 	n = string_to_key(p_cedit, FALSE);
-	if (n == 0 || vim_isprintc(n))
+	if (n == 0 || mnv_isprintc(n))
 	    return e_invalid_argument;
 	cedit_key = n;
     }
@@ -4826,11 +4826,11 @@ open_cmdwin(void)
 	    add_map((char_u *)"<buffer> <S-Tab> <C-P>", MODE_INSERT, TRUE);
 	}
 	set_option_value_give_err((char_u *)"ft",
-					       0L, (char_u *)"vim", OPT_LOCAL);
+					       0L, (char_u *)"mnv", OPT_LOCAL);
     }
     --curbuf_lock;
 
-    // Reset 'textwidth' after setting 'filetype' (the Vim filetype plugin
+    // Reset 'textwidth' after setting 'filetype' (the MNV filetype plugin
     // sets 'textwidth' to 78).
     curbuf->b_p_tw = 0;
 
@@ -4937,7 +4937,7 @@ open_cmdwin(void)
 	    if (histtype == HIST_CMD)
 	    {
 		// Execute the command directly.
-		ccline.cmdbuff = vim_strnsave(p, plen);
+		ccline.cmdbuff = mnv_strnsave(p, plen);
 		ccline.cmdlen = (int)plen;
 		ccline.cmdbufflen = (int)(plen + 1);
 		cmdwin_result = CAR;
@@ -4960,12 +4960,12 @@ open_cmdwin(void)
 	{
 	    ccline.cmdlen = ml_get_curline_len();
 	    ccline.cmdbufflen = ccline.cmdlen + 1;
-	    ccline.cmdbuff = vim_strnsave(ml_get_curline(), ccline.cmdlen);
+	    ccline.cmdbuff = mnv_strnsave(ml_get_curline(), ccline.cmdlen);
 	}
 
 	if (ccline.cmdbuff == NULL)
 	{
-	    ccline.cmdbuff = vim_strnsave((char_u *)"", 0);
+	    ccline.cmdbuff = mnv_strnsave((char_u *)"", 0);
 	    ccline.cmdlen = 0;
 	    ccline.cmdbufflen = 1;
 	    ccline.cmdpos = 0;
@@ -5107,7 +5107,7 @@ get_user_input(
     if (input_busy)
 	return;  // this doesn't work recursively.
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -5128,7 +5128,7 @@ get_user_input(
     {
 	// Only the part of the message after the last NL is considered as
 	// prompt for the command line
-	p = vim_strrchr(prompt, '\n');
+	p = mnv_strrchr(prompt, '\n');
 	if (p == NULL)
 	    p = prompt;
 	else
@@ -5191,10 +5191,10 @@ get_user_input(
 	if (inputdialog && rettv->vval.v_string == NULL
 		&& argvars[1].v_type != VAR_UNKNOWN
 		&& argvars[2].v_type != VAR_UNKNOWN)
-	    rettv->vval.v_string = vim_strsave(tv_get_string_buf(
+	    rettv->vval.v_string = mnv_strsave(tv_get_string_buf(
 							   &argvars[2], buf));
 
-	vim_free(xp_arg);
+	mnv_free(xp_arg);
 
 	// since the user typed this, no need to wait for return
 	need_wait_return = FALSE;

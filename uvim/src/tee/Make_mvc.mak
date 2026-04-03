@@ -21,4 +21,4 @@ clean:
 	- $(RM) tee.obj
 	- $(RM) tee.exe
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

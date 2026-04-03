@@ -1,10 +1,10 @@
-# Aap recipe for Tetum Vim spell files.
+# Aap recipe for Tetum MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = tet_ID.aff tet_ID.dic
@@ -14,11 +14,11 @@ all: $SPELLDIR/tet.latin1.spl $SPELLDIR/tet.utf-8.spl ../README_tet.txt
 
 $SPELLDIR/tet.latin1.spl : $FILES
         :sys env LANG=nl_NL.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/tet tet_ID" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/tet tet_ID" -c q
 
 $SPELLDIR/tet.utf-8.spl : $FILES
         :sys env LANG=nl_NL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/tet tet_ID" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/tet tet_ID" -c q
 
 ../README_tet.txt : README_tet_ID.txt
         :copy $source $target
@@ -45,7 +45,7 @@ tet_ID.aff tet_ID.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -76,4 +76,4 @@ check:
             :delete tet_ID.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

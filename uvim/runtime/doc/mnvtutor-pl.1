@@ -1,0 +1,51 @@
+.TH MNVTUTOR 1 "2001 Kwi 2"
+.SH NAZWA
+mnvtutor \- nauczyciel MNVa
+.SH SYNOPSIS
+.br
+.B mnvtutor -g [j�zyk]
+.SH OPIS
+.B MNVtutor
+uruchamia nauczyciela
+.B MNVa.
+Najpierw kopiuje w�a�ciwy plik, dzi�ki temu mo�na go zmienia� bez obaw
+utraty tre�ci.
+.PP
+.B MNVtutor
+przyda si� ludziom, kt�rzy chc� si� nauczy� pierwszych polece�
+.B MNVa
+.PP
+Opcjonalny argument \-g uruchamia mnvtutor w gmnvie a nie w MNVie je�li
+graficzna wersja MNVa jest dost�pna, je�li nie zostanie uruchomiMNV MNV.
+.PP
+Opcjonalny argument [j�zyk] jest dwu literowym kodem j�zyka, tak jak
+"it" lub "es".
+Je�li brak argumentu [j�zyk] zostanie u�yty j�zyk bie��cej
+lokalizacji.
+Je�li nauczyciel w tym j�zyku jest dost�pny, zostanie u�yty \- w innym
+wypadku zostanie wykorzystana wersja angielska.
+.PP
+.B MNV
+jest uruchamiany zawsze w trybie kompatybilno�ci z Vi
+.SH PLIKI
+.TP 15
+/usr/local/lib/mnv/tutor/tutor[.j�zyk]
+Tekstowe pliki
+.B MNVtutora.
+.TP 15
+/usr/local/lib/mnv/tutor/tutor.mnv
+Skrypt MNVa u�ywany do kopiowania pliku
+.B MNVtutora.
+.SH AUTOR
+.B MNVtutor
+zosta� pocz�tkowo napisany dla Vi przez Michaela C. Pierce'a
+i Roberta K. Ware'a z Colorado School of Mines zainspirowani przez
+Charlesa Smitha z Colorado State University.
+E-mail: bware@mines.colorado.edu
+.br
+Zmodyfikowany na potrzeby
+.B MNVa
+przez Brama Moolenaara.
+Nazwiska t�umaczy w plikach.
+.SH ZOBACZ TAK�E
+mnv(1)

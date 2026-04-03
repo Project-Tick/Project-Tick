@@ -1,0 +1,17 @@
+mnv9script
+# MNV9 types
+# MNV_TEST_SETUP hi link mnvTypeAny Todo
+# MNV_TEST_SETUP hi link mnv9VariableTypeAny Todo
+
+
+# builtin types (distinct any highlighting)
+
+var foo: bool
+var bar: any
+
+def Foo(arg: bool): bool
+enddef
+
+def Bar(arg: any): any
+enddef
+

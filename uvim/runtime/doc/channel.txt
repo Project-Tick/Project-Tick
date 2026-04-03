@@ -1,12 +1,12 @@
-*channel.txt*	For Vim version 9.2.  Last change: 2026 Mar 13
+*channel.txt*	For MNV version 9.2.  Last change: 2026 Mar 13
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 		      Inter-process communication		*channel*
 
-Vim uses channels to communicate with other processes.
+MNV uses channels to communicate with other processes.
 A channel uses a socket or pipes.			*socket-interface*
 Jobs can be used to start processes and communicate with them.
 The Netbeans interface also uses a channel. |netbeans|
@@ -38,9 +38,9 @@ The Netbeans interface also uses a channel. |netbeans|
 1. Overview						*job-channel-overview*
 
 There are four main types of jobs:
-1. A daemon, serving several Vim instances.
-   Vim connects to it with a socket.
-2. One job working with one Vim instance, asynchronously.
+1. A daemon, serving several MNV instances.
+   MNV connects to it with a socket.
+2. One job working with one MNV instance, asynchronously.
    Uses a socket or pipes.
 3. A job performing some work for a short time, asynchronously.
    Uses a socket or pipes.
@@ -52,7 +52,7 @@ For when using sockets See |job-start|, |job-start-nochannel| and
 For 4 use the ":{range}!cmd" command, see |filter|.
 
 Over the socket and pipes these protocols are available:
-RAW	nothing known, Vim cannot tell where a message ends
+RAW	nothing known, MNV cannot tell where a message ends
 NL	every message ends in a NL (newline) character
 JSON	JSON encoding |json_encode()|
 JS	JavaScript style JSON-like encoding |js_encode()|
@@ -69,10 +69,10 @@ Common combination are:
 2. Channel demo				*channel-demo* *demoserver.py*
 
 This requires Python.  The demo program can be found in
-$VIMRUNTIME/tools/demoserver.py
+$MNVRUNTIME/tools/demoserver.py
 Run it in one terminal.  We will call this T1.
 
-Run Vim in another terminal.  Connect to the demo server with: >
+Run MNV in another terminal.  Connect to the demo server with: >
 	let channel = ch_open('localhost:8765')
 
 In T1 you should see:
@@ -81,17 +81,17 @@ In T1 you should see:
 You can now send a message to the server: >
 	echo ch_evalexpr(channel, 'hello!')
 
-The message is received in T1 and a response is sent back to Vim.
-You can see the raw messages in T1.  What Vim sends is:
+The message is received in T1 and a response is sent back to MNV.
+You can see the raw messages in T1.  What MNV sends is:
 	[1,"hello!"] ~
 And the response is:
 	[1,"got it"] ~
 The number will increase every time you send a message.
 
-The server can send a command to Vim.  Type this on T1 (literally, including
+The server can send a command to MNV.  Type this on T1 (literally, including
 the quotes):
 	["ex","echo 'hi there'"] ~
-And you should see the message in Vim.  You can move the cursor a word
+And you should see the message in MNV.  You can move the cursor a word
 forward:
 	["normal","w"] ~
 
@@ -100,7 +100,7 @@ To handle asynchronous communication a callback needs to be used: >
 	  echo "from the handler: " .. a:msg
 	endfunc
 	call ch_sendexpr(channel, 'hello!', {'callback': "MyHandler"})
-Vim will not wait for a response.  Now the server can send the response later
+MNV will not wait for a response.  Now the server can send the response later
 and MyHandler will be invoked.
 
 Instead of giving a callback with every send call, it can also be specified
@@ -110,22 +110,22 @@ when opening the channel: >
 	call ch_sendexpr(channel, 'hello channel!')
 
 When trying out channels it's useful to see what is going on.  You can tell
-Vim to write lines in log file: >
+MNV to write lines in log file: >
 	call ch_logfile('channellog', 'w')
 See |ch_logfile()|.
 
-You can also make Vim act as a server using |ch_listen()|.  This does not
+You can also make MNV act as a server using |ch_listen()|.  This does not
 require an external server program.
 
 							*channel-listen-demo*
-Start Vim and create a listening channel: >
+Start MNV and create a listening channel: >
 	func OnAccept(channel, clientaddr)
 	  " Log the connection
 	  echomsg "Accepted connection from " .. a:clientaddr
 
 	  " Get current time and send it to the client
 	  let current_time = strftime("%Y-%m-%d %H:%M:%S")
-	  call ch_sendraw(a:channel, "Vim Server Time: " .. current_time .. "\n")
+	  call ch_sendraw(a:channel, "MNV Server Time: " .. current_time .. "\n")
 
 	  " Optional: close immediately if you only want to provide the time
 	  call ch_close(a:channel)
@@ -134,7 +134,7 @@ Start Vim and create a listening channel: >
 	" Start listening on port 8765
 	let server = ch_listen('localhost:8765', {"callback": "OnAccept"})
 
-From another Vim instance (or any program) you can connect to it: >
+From another MNV instance (or any program) you can connect to it: >
 	let channel = ch_open('localhost:8765')
 
 When done, close the server channel: >
@@ -159,7 +159,7 @@ a Unix-domain socket path prefixed by "unix:".  E.g. >
     unix:/tmp/my-socket  " Unix-domain socket path
 
 When a domain name resolves to multiple addresses (e.g., both IPv6 and IPv4),
-Vim tries each address in order.  If a connection is slow or unreachable, it
+MNV tries each address in order.  If a connection is slow or unreachable, it
 quickly falls back to the next address.  This helps when IPv6 or IPv4 is
 unreachable on the network.
 
@@ -183,7 +183,7 @@ unreachable on the network.
 	let channel = ch_open("localhost:8765", {"callback": "Handle"})
 <
 		When "mode" is any of "json", "js", "lsp" or "dap" the "msg"
-		argument is the body of the received message, converted to Vim
+		argument is the body of the received message, converted to MNV
 		types.
 		When "mode" is "nl" the "msg" argument is one message,
 		excluding the NL.
@@ -194,17 +194,17 @@ unreachable on the network.
 		and/or a Dictionary.  Or use the form "dict.function" to bind
 		the Dictionary.
 
-		Callbacks are only called at a "safe" moment, usually when Vim
-		is waiting for the user to type a character.  Vim does not use
+		Callbacks are only called at a "safe" moment, usually when MNV
+		is waiting for the user to type a character.  MNV does not use
 		multi-threading.
 
 							*close_cb*
 "close_cb"	A function that is called when the channel gets closed, other
 		than by calling ch_close().  It should be defined like this: >
 	func MyCloseHandler(channel)
-<		Vim will invoke callbacks that handle data before invoking
+<		MNV will invoke callbacks that handle data before invoking
 		close_cb, thus when this function is called no more data will
-		be passed to the callbacks.  However, if a callback causes Vim
+		be passed to the callbacks.  However, if a callback causes MNV
 		to check for messages, the close_cb may be invoked while still
 		in the callback.  The plugin must handle this somehow, it can
 		be useful to know that no more data is coming.
@@ -234,7 +234,7 @@ unreachable on the network.
 		milliseconds.  A negative number waits forever.
 
 		The default is zero, don't wait, which is useful if a local
-		server is supposed to be running already.  On Unix Vim
+		server is supposed to be running already.  On Unix MNV
 		actually uses a 1 msec timeout, that is required on many
 		systems.  Use a larger value for a remote server, e.g.  10
 		msec at least.
@@ -254,7 +254,7 @@ For example, the handler can be added or changed: >
     call ch_setoptions(channel, {'callback': callback})
 When "callback" is empty (zero or an empty string) the handler is removed.
 
-After a callback has been invoked Vim will update the screen and put the
+After a callback has been invoked MNV will update the screen and put the
 cursor back where it belongs.  Thus the callback should not need to do
 `:redraw`.
 
@@ -302,7 +302,7 @@ To send a message and letting the response handled by a specific function,
 asynchronously: >
     call ch_sendexpr(channel, {expr}, {'callback': Handler})
 
-Vim will match the response with the request using the message ID.  Once the
+MNV will match the response with the request using the message ID.  Once the
 response is received the callback will be invoked.  Further responses with the
 same ID will be ignored.  If your server sends back multiple responses you
 need to send them with ID zero, they will be passed to the channel callback.
@@ -319,7 +319,7 @@ In which {number} is different every time.  It must be used in the response
 
     [{number},{response}]
 
-This way Vim knows which sent message matches with which received message and
+This way MNV knows which sent message matches with which received message and
 can call the right handler.  Also when the messages arrive out of order.
 
 A newline character is terminating the JSON text.  This can be used to
@@ -328,15 +328,15 @@ separate the read text.  For example, in Python:
 	message = read_text[:splitidx]
 	rest = read_text[splitidx + 1:]
 
-The sender must always send valid JSON to Vim.  Vim can check for the end of
+The sender must always send valid JSON to MNV.  MNV can check for the end of
 the message by parsing the JSON.  It will only accept the message if the end
 was received.  A newline after the message is optional.
 
-When the process wants to send a message to Vim without first receiving a
+When the process wants to send a message to MNV without first receiving a
 message, it must use the number zero:
     [0,{response}]
 
-Then channel handler will then get {response} converted to Vim types.  If the
+Then channel handler will then get {response} converted to MNV types.  If the
 channel does not have a handler the message is dropped.
 
 It is also possible to use ch_sendraw() and ch_evalraw() on a JSON or JS
@@ -346,8 +346,8 @@ decoding.
 ==============================================================================
 5. Channel commands					*channel-commands*
 
-With a JSON channel the process can send commands to Vim that will be
-handled by Vim internally, it does not require a handler for the channel.
+With a JSON channel the process can send commands to MNV that will be
+handled by MNV internally, it does not require a handler for the channel.
 
 Possible commands are:				*E903* *E904* *E905*
     ["redraw", {forced}]
@@ -413,7 +413,7 @@ The format is:
 	[{number}, {result}]
 
 Here {number} is the same as what was in the request.  Use a negative number
-to avoid confusion with message that Vim sends.  Use a different number on
+to avoid confusion with message that MNV sends.  Use a different number on
 every request to be able to match the request with the response.
 
 {result} is the result of the evaluation and is JSON encoded.  If the
@@ -447,7 +447,7 @@ If mode is RAW or NL then a message can be sent like this: >
     let response = ch_evalraw(channel, {string})
 
 The {string} is sent as-is.  The response will be what can be read from the
-channel right away.  Since Vim doesn't know how to recognize the end of the
+channel right away.  Since MNV doesn't know how to recognize the end of the
 message you need to take care of it yourself.  The timeout applies for reading
 the first byte, after that it will not wait for anything more.
 
@@ -472,7 +472,7 @@ This {string} can also be JSON, use |json_encode()| to create it and
 
 It is not possible to use |ch_evalexpr()| or |ch_sendexpr()| on a raw channel.
 
-A String in Vim cannot contain NUL bytes.  To send or receive NUL bytes read
+A String in MNV cannot contain NUL bytes.  To send or receive NUL bytes read
 or write from a buffer.  See |in_io-buffer| and |out_io-buffer|.
 
 ==============================================================================
@@ -517,7 +517,7 @@ To read a message with a specific ID, on a JS or JSON channel:
 When no ID is specified or the ID is -1, the first message is returned.  This
 overrules any callback waiting for this message.
 
-For a RAW channel this returns whatever is available, since Vim does not know
+For a RAW channel this returns whatever is available, since MNV does not know
 where a message ends.
 For a NL channel this returns one message.
 For a JS or JSON channel this returns one decoded message.
@@ -579,7 +579,7 @@ ch_evalexpr({handle}, {expr} [, {options}])			*ch_evalexpr()*
 		empty |String| or, when using the "lsp" or "dap" channel mode,
 		returns an empty |Dict|.
 
-		Note that while waiting for the response, Vim handles other
+		Note that while waiting for the response, MNV handles other
 		messages.  You need to make sure this doesn't cause trouble.
 
 		Can also be used as a |method|: >
@@ -597,7 +597,7 @@ ch_evalraw({handle}, {string} [, {options}])		*ch_evalraw()*
 		correct contents.  Also does not add a newline for a channel
 		in NL mode, the caller must do that.  The NL in the response
 		is removed.
-		Note that Vim does not know when the text received on a raw
+		Note that MNV does not know when the text received on a raw
 		channel is complete, it may only return the first part and you
 		need to use |ch_readraw()| to fetch the rest.
 		See |channel-use|.
@@ -726,7 +726,7 @@ ch_logfile({fname} [, {mode}])					*ch_logfile()*
 
 		To enable the log very early, to see what is received from a
 		terminal during startup, use |--log| (this uses mode "ao"): >
-			vim --log logfile
+			mnv --log logfile
 <
 		This function is not available in the |sandbox|.
 		NOTE: the channel communication is stored in the file, be
@@ -903,7 +903,7 @@ If you want to handle both stderr and stdout with one handler use the
 "callback" option: >
     let job = job_start(command, {"callback": "MyHandler"})
 
-Depending on the system, starting a job can put Vim in the background, the
+Depending on the system, starting a job can put MNV in the background, the
 started job gets the focus.  To avoid that, use the `foreground()` function.
 This might not always work when called early, put in the callback handler or
 use a timer to call it after the job has started.
@@ -940,7 +940,7 @@ When not using the special mode the pipe or socket will be closed after the
 last line has been written.  This signals the reading end that the input
 finished.  You can also use |ch_close_in()| to close it sooner.
 
-NUL bytes in the text will be passed to the job (internally Vim stores these
+NUL bytes in the text will be passed to the job (internally MNV stores these
 as NL bytes).
 
 
@@ -965,9 +965,9 @@ To start another process without creating a channel: >
     let job = job_start(command,
 	\ {"in_io": "null", "out_io": "null", "err_io": "null"})
 
-This starts {command} in the background, Vim does not wait for it to finish.
+This starts {command} in the background, MNV does not wait for it to finish.
 
-When Vim sees that neither stdin, stdout or stderr are connected, no channel
+When MNV sees that neither stdin, stdout or stderr are connected, no channel
 will be created.  Often you will want to include redirection in the command to
 avoid it getting stuck.
 
@@ -1074,8 +1074,8 @@ job_start({command} [, {options}])			*job_start()*
 		On Unix $PATH is used to search for the executable only when
 		the command does not contain a slash.
 
-		The job will use the same terminal as Vim.  If it reads from
-		stdin the job and Vim will be fighting over input, that
+		The job will use the same terminal as MNV.  If it reads from
+		stdin the job and MNV will be fighting over input, that
 		doesn't work.  Redirect stdin and stdout to avoid problems: >
 	let job = job_start(['sh', '-c', "myserver </dev/null >/dev/null"])
 <
@@ -1115,7 +1115,7 @@ job_status({job})					*job_status()* *E916*
 		"fail", because a fork happens before the failure can be
 		detected.
 
-		If in Vim9 script a variable is declared with type "job" but
+		If in MNV9 script a variable is declared with type "job" but
 		never assigned to, passing that variable to job_status()
 		returns "fail".
 
@@ -1169,7 +1169,7 @@ job_stop({job} [, {how}])					*job_stop()*
 		sent.  This is to avoid to stop the wrong job (esp. on Unix,
 		where process numbers are recycled).
 
-		When using "kill" Vim will assume the job will die and close
+		When using "kill" MNV will assume the job will die and close
 		the channel.
 
 		Can also be used as a |method|: >
@@ -1202,9 +1202,9 @@ See |job_setoptions()| and |ch_setoptions()|.
 
 						*job-noblock*
 "noblock": 1		When writing use a non-blocking write call.  This
-			avoids getting stuck if Vim should handle other
+			avoids getting stuck if MNV should handle other
 			messages in between, e.g. when a job sends back data
-			to Vim.  It implies that when `ch_sendraw()` returns
+			to MNV.  It implies that when `ch_sendraw()` returns
 			not all data may have been written yet.
 			This option was added in patch 8.1.0350, test with: >
 				if has("patch-8.1.350")
@@ -1235,7 +1235,7 @@ See |job_setoptions()| and |ch_setoptions()|.
 						*job-exit_cb*
 "exit_cb": handler	Callback for when the job ends.  The arguments are the
 			job and the exit status.
-			Vim checks up to 10 times per second for jobs that
+			MNV checks up to 10 times per second for jobs that
 			ended.  The check can also be triggered by calling
 			|job_status()|, which may then invoke the exit_cb
 			handler.
@@ -1253,9 +1253,9 @@ See |job_setoptions()| and |ch_setoptions()|.
 			part specific mode later.
 
 						*job-stoponexit*
-"stoponexit": {signal}	Send {signal} to the job when Vim exits.  See
+"stoponexit": {signal}	Send {signal} to the job when MNV exits.  See
 			|job_stop()| for possible values.
-"stoponexit": ""	Do not stop the job when Vim exits.
+"stoponexit": ""	Do not stop the job when MNV exits.
 			The default is "term".
 
 						*job-term*
@@ -1361,7 +1361,7 @@ When the buffer written to is displayed in a window and the cursor is in the
 first column of the last line, the cursor will be moved to the newly added
 line and the window is scrolled up to show the cursor if needed.
 
-Undo is synced for every added line.  NUL bytes are accepted (internally Vim
+Undo is synced for every added line.  NUL bytes are accepted (internally MNV
 stores these as NL bytes).
 
 
@@ -1391,14 +1391,14 @@ For more options see |job_stop()|.
 ==============================================================================
 14. Using a prompt buffer				*prompt-buffer*
 
-If you want to type input for the job in a Vim window you have a few options:
+If you want to type input for the job in a MNV window you have a few options:
 - Use a normal buffer and handle all possible commands yourself.
   This will be complicated, since there are so many possible commands.
 - Use a terminal window.  This works well if what you type goes directly to
   the job and the job output is directly displayed in the window.
   See |terminal-window|.
 - Use a window with a prompt buffer.  This works well when entering a line for
-  the job in Vim while displaying (possibly filtered) output from the job.
+  the job in MNV while displaying (possibly filtered) output from the job.
 
 A prompt buffer is created by setting 'buftype' to "prompt".  You would
 normally only do that in a newly created buffer.
@@ -1414,7 +1414,7 @@ the buffer is not modifiable with Normal mode commands.  It can be modified by
 calling functions, such as |append()|.  Using other commands may mess up the
 buffer.
 
-After setting 'buftype' to "prompt" Vim does not automatically start Insert
+After setting 'buftype' to "prompt" MNV does not automatically start Insert
 mode, use `:startinsert` if you want to enter Insert mode, so that the user
 can start typing a line.
 
@@ -1473,9 +1473,9 @@ prompt. >
 	" start accepting shell commands
 	startinsert
 <
-The same in |Vim9| script: >
+The same in |MNV9| script: >
 
-	vim9script
+	mnv9script
 
 	# Create a channel log so we can see what happens.
 	ch_logfile('logfile', 'w')
@@ -1526,18 +1526,18 @@ payload encoded in JSON-RPC format.  This is described in:
 
     https://www.jsonrpc.org/specification
 
-To encode and send a LSP request/notification message in a Vim |Dict| into a
+To encode and send a LSP request/notification message in a MNV |Dict| into a
 LSP JSON-RPC message and to receive and decode a LSP JSON-RPC
-response/notification message into a Vim |Dict|, connect to the LSP server
+response/notification message into a MNV |Dict|, connect to the LSP server
 with the |channel-mode| set to "lsp".
 
-For messages received on a channel with |channel-mode| set to "lsp", Vim will
-process the HTTP header and decode the JSON-RPC payload into a Vim |Dict| type
+For messages received on a channel with |channel-mode| set to "lsp", MNV will
+process the HTTP header and decode the JSON-RPC payload into a MNV |Dict| type
 and call the |channel-callback| function or the specified
 |channel-onetime-callback| function.  When sending messages on a channel using
-the |ch_evalexpr()| or |ch_sendexpr()| functions, Vim will add the HTTP header
-and encode the Vim expression into JSON.  Refer to |json_encode()| and
-|json_decode()| for more information about how Vim encodes and decodes the
+the |ch_evalexpr()| or |ch_sendexpr()| functions, MNV will add the HTTP header
+and encode the MNV expression into JSON.  Refer to |json_encode()| and
+|json_decode()| for more information about how MNV encodes and decodes the
 builtin types into JSON.
 
 To open a channel using the "lsp" mode, set the "mode" item in the |ch_open()|
@@ -1580,15 +1580,15 @@ time.  If the request times out, then an empty |Dict| is returned.  Example: >
     endif
 
 Note that in the request message the "id" field should not be specified.  If
-it is specified, then Vim will overwrite the value with an internally
-generated identifier.  Vim currently supports only a number type for the "id"
+it is specified, then MNV will overwrite the value with an internally
+generated identifier.  MNV currently supports only a number type for the "id"
 field.
 The callback function will be invoked for both a successful and a failed RPC
 request.
 
 To send a JSON-RPC request to the server and asynchronously process the
 response, use the |ch_sendexpr()| function and supply a callback function.  If
-the "id" field is present in the request message, then Vim will overwrite it
+the "id" field is present in the request message, then MNV will overwrite it
 with an internally generated number.  This function returns a Dict with the
 identifier used for the message.  This can be used to send cancellation
 request to the LSP server (if needed).  Example: >
@@ -1640,7 +1640,7 @@ The JSON-RPC notification messages from the server are delivered through the
 Depending on the use case, you can use the ch_evalexpr(), ch_sendexpr() and
 ch_sendraw() functions on the same channel.
 
-A LSP request message has the following format (expressed as a Vim Dict).  The
+A LSP request message has the following format (expressed as a MNV Dict).  The
 "params" field is optional: >
 
     {
@@ -1650,17 +1650,17 @@ A LSP request message has the following format (expressed as a Vim Dict).  The
 	"params": <list|dict>
     }
 
-A LSP response message has the following format (expressed as a Vim Dict).
+A LSP response message has the following format (expressed as a MNV Dict).
 The "result" and "error" fields are optional: >
 
     {
 	"jsonrpc": "2.0",
 	"id": <number>,
-	"result": <vim type>
+	"result": <mnv type>
 	"error": <dict>
     }
 
-A LSP notification message has the following format (expressed as a Vim Dict).
+A LSP notification message has the following format (expressed as a MNV Dict).
 The "params" field is optional: >
 
     {
@@ -1680,22 +1680,22 @@ specification can be found here:
 
 The protocol uses the same header format as the LSP protocol.
 
-To encode and send a DAP request/notification message in a Vim |Dict| into a
+To encode and send a DAP request/notification message in a MNV |Dict| into a
 JSON message and to receive and decode a DAP JSON response/notification
-message into a Vim |Dict|, connect to the debug adapter with the
+message into a MNV |Dict|, connect to the debug adapter with the
 |channel-mode| set to "dap".
 
-For messages received on a channel with |channel-mode| set to "dap", Vim will
-process the HTTP header and decode the JSON payload into a Vim |Dict| type.
+For messages received on a channel with |channel-mode| set to "dap", MNV will
+process the HTTP header and decode the JSON payload into a MNV |Dict| type.
 When sending messages on a channel using the |ch_evalexpr()| or
-|ch_sendexpr()| functions, Vim will add the HTTP header and encode the Vim
+|ch_sendexpr()| functions, MNV will add the HTTP header and encode the MNV
 expression into JSON.
 
-Vim will automatically add the "seq" field to the JSON DAP message, and manage
+MNV will automatically add the "seq" field to the JSON DAP message, and manage
 the "request_seq" field as well for responses. However it will not add the
 "type" field, it should be manually specified in the |Dict|.
 
-Otherwise the behaviour is the same as how Vim handles the "lsp" channel mode
+Otherwise the behaviour is the same as how MNV handles the "lsp" channel mode
 |language-server-protocol|.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

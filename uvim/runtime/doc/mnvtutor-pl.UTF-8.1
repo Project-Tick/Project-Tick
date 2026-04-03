@@ -1,0 +1,51 @@
+.TH MNVTUTOR 1 "2001 Kwi 2"
+.SH NAZWA
+mnvtutor \- nauczyciel MNVa
+.SH SYNOPSIS
+.br
+.B mnvtutor -g [język]
+.SH OPIS
+.B MNVtutor
+uruchamia nauczyciela
+.B MNVa.
+Najpierw kopiuje właściwy plik, dzięki temu można go zmieniać bez obaw
+utraty treści.
+.PP
+.B MNVtutor
+przyda się ludziom, którzy chcą się nauczyć pierwszych poleceń
+.B MNVa
+.PP
+Opcjonalny argument \-g uruchamia mnvtutor w gmnvie a nie w MNVie jeśli
+graficzna wersja MNVa jest dostępna, jeśli nie zostanie uruchomiony MNV.
+.PP
+Opcjonalny argument [język] jest dwu literowym kodem języka, tak jak
+"it" lub "es".
+Jeśli brak argumentu [język] zostanie użyty język bieżącej
+lokalizacji.
+Jeśli nauczyciel w tym języku jest dostępny, zostanie użyty \- w innym
+wypadku zostanie wykorzystana wersja angielska.
+.PP
+.B MNV
+jest uruchamiany zawsze w trybie kompatybilności z Vi
+.SH PLIKI
+.TP 15
+/usr/local/lib/mnv/tutor/tutor[.język]
+Tekstowe pliki
+.B MNVtutora.
+.TP 15
+/usr/local/lib/mnv/tutor/tutor.mnv
+Skrypt MNVa używany do kopiowania pliku
+.B MNVtutora.
+.SH AUTOR
+.B MNVtutor
+został początkowo napisany dla Vi przez Michaela C. Pierce'a
+i Roberta K. Ware'a z Colorado School of Mines zainspirowani przez
+Charlesa Smitha z Colorado State University.
+E-mail: bware@mines.colorado.edu
+.br
+Zmodyfikowany na potrzeby
+.B MNVa
+przez Brama Moolenaara.
+Nazwiska tłumaczy w plikach.
+.SH ZOBACZ TAKŻE
+mnv(1)

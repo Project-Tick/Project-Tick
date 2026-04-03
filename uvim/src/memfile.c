@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -32,7 +32,7 @@
  * file is opened.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * Some systems have the page size in statfs.f_bsize, some in stat.st_blksize
@@ -142,7 +142,7 @@ mf_open(char_u *fname, int flags)
 	// if the file cannot be opened, return here
 	if (mfp->mf_fd < 0)
 	{
-	    vim_free(mfp);
+	    mnv_free(mfp);
 	    return NULL;
 	}
     }
@@ -175,7 +175,7 @@ mf_open(char_u *fname, int flags)
 #endif
 
     if (mfp->mf_fd < 0 || (flags & (O_TRUNC|O_EXCL))
-		  || (size = vim_lseek(mfp->mf_fd, (off_T)0L, SEEK_END)) <= 0)
+		  || (size = mnv_lseek(mfp->mf_fd, (off_T)0L, SEEK_END)) <= 0)
 	mfp->mf_blocknr_max = 0;	// no file or empty file
     else
 	mfp->mf_blocknr_max = (blocknr_T)((size + mfp->mf_page_size - 1)
@@ -253,12 +253,12 @@ mf_close(memfile_T *mfp, int del_file)
 	mf_free_bhdr(hp);
     }
     while (mfp->mf_free_first != NULL)	    // free entries in free list
-	vim_free(mf_rem_free(mfp));
+	mnv_free(mf_rem_free(mfp));
     mf_hash_free(&mfp->mf_hash);
     mf_hash_free_all(&mfp->mf_trans);	    // free hashtable and its items
-    vim_free(mfp->mf_fname);
-    vim_free(mfp->mf_ffname);
-    vim_free(mfp);
+    mnv_free(mfp->mf_fname);
+    mnv_free(mfp->mf_ffname);
+    mnv_free(mfp);
 }
 
 /*
@@ -293,8 +293,8 @@ mf_close_file(
     if (mfp->mf_fname != NULL)
     {
 	mch_remove(mfp->mf_fname);		// delete the swap file
-	VIM_CLEAR(mfp->mf_fname);
-	VIM_CLEAR(mfp->mf_ffname);
+	MNV_CLEAR(mfp->mf_fname);
+	MNV_CLEAR(mfp->mf_ffname);
     }
 }
 
@@ -367,7 +367,7 @@ mf_new(memfile_T *mfp, int negative, int page_count)
 	{
 	    freep = mf_rem_free(mfp);
 	    hp->bh_bnum = freep->bh_bnum;
-	    vim_free(freep);
+	    mnv_free(freep);
 	}
     }
     else	// get a new number
@@ -395,7 +395,7 @@ mf_new(memfile_T *mfp, int negative, int page_count)
      * Init the data to all zero, to avoid reading uninitialized data.
      * This also avoids that the passwd file ends up in the swap file!
      */
-    (void)vim_memset((char *)(hp->bh_data), 0,
+    (void)mnv_memset((char *)(hp->bh_data), 0,
 				      (size_t)mfp->mf_page_size * page_count);
 
     return hp;
@@ -497,12 +497,12 @@ mf_put(
     void
 mf_free(memfile_T *mfp, bhdr_T *hp)
 {
-    vim_free(hp->bh_data);	// free the memory
+    mnv_free(hp->bh_data);	// free the memory
     mf_rem_hash(mfp, hp);	// get *hp out of the hash list
     mf_rem_used(mfp, hp);	// get *hp out of the used list
     if (hp->bh_bnum < 0)
     {
-	vim_free(hp);		// don't want negative numbers in free list
+	mnv_free(hp);		// don't want negative numbers in free list
 	mfp->mf_neg_count--;
     }
     else
@@ -589,7 +589,7 @@ mf_sync(memfile_T *mfp, int flags)
 	 */
 	if (STRCMP(p_sws, "fsync") == 0)
 	{
-	    if (vim_fsync(mfp->mf_fd))
+	    if (mnv_fsync(mfp->mf_fd))
 		status = FAIL;
 	}
 	else
@@ -603,7 +603,7 @@ mf_sync(memfile_T *mfp, int flags)
 #ifdef VMS
 	if (STRCMP(p_sws, "fsync") == 0)
 	{
-	    if (vim_fsync(mfp->mf_fd))
+	    if (mnv_fsync(mfp->mf_fd))
 		status = FAIL;
 	}
 #endif
@@ -613,7 +613,7 @@ mf_sync(memfile_T *mfp, int flags)
 #endif
 #ifdef AMIGA
 # if defined(__AROS__) || defined(__amigaos4__)
-	if (vim_fsync(mfp->mf_fd) != 0)
+	if (mnv_fsync(mfp->mf_fd) != 0)
 	    status = FAIL;
 # else
 	/*
@@ -813,12 +813,12 @@ mf_release(memfile_T *mfp, int page_count)
      */
     if (hp->bh_page_count != page_count)
     {
-	VIM_CLEAR(hp->bh_data);
+	MNV_CLEAR(hp->bh_data);
 	if (page_count > 0)
 	    hp->bh_data = alloc((size_t)mfp->mf_page_size * page_count);
 	if (hp->bh_data == NULL)
 	{
-	    vim_free(hp);
+	    mnv_free(hp);
 	    return NULL;
 	}
 	hp->bh_page_count = page_count;
@@ -886,7 +886,7 @@ mf_alloc_bhdr(memfile_T *mfp, int page_count)
 
     if ((hp->bh_data = alloc((size_t)mfp->mf_page_size * page_count)) == NULL)
     {
-	vim_free(hp);	    // not enough memory
+	mnv_free(hp);	    // not enough memory
 	return NULL;
     }
     hp->bh_page_count = page_count;
@@ -899,8 +899,8 @@ mf_alloc_bhdr(memfile_T *mfp, int page_count)
     static void
 mf_free_bhdr(bhdr_T *hp)
 {
-    vim_free(hp->bh_data);
-    vim_free(hp);
+    mnv_free(hp->bh_data);
+    mnv_free(hp);
 }
 
 /*
@@ -945,7 +945,7 @@ mf_read(memfile_T *mfp, bhdr_T *hp)
     page_size = mfp->mf_page_size;
     offset = (off_T)page_size * hp->bh_bnum;
     size = page_size * hp->bh_page_count;
-    if (vim_lseek(mfp->mf_fd, offset, SEEK_SET) != offset)
+    if (mnv_lseek(mfp->mf_fd, offset, SEEK_SET) != offset)
     {
 	PERROR(_(e_seek_error_in_swap_file_read));
 	return FAIL;
@@ -1021,7 +1021,7 @@ mf_write(memfile_T *mfp, bhdr_T *hp)
 	{
 	    if (mfp->mf_fd >= 0)
 	    {
-		if (vim_lseek(mfp->mf_fd, offset, SEEK_SET) != offset)
+		if (mnv_lseek(mfp->mf_fd, offset, SEEK_SET) != offset)
 		{
 		    PERROR(_(e_seek_error_in_swap_file_write));
 		    return FAIL;
@@ -1096,7 +1096,7 @@ mf_write_block(
 
 #ifdef FEAT_CRYPT
     if (data != hp->bh_data)
-	vim_free(data);
+	mnv_free(data);
 #endif
 
     return result;
@@ -1143,7 +1143,7 @@ mf_trans_add(memfile_T *mfp, bhdr_T *hp)
 	else
 	{
 	    freep = mf_rem_free(mfp);
-	    vim_free(freep);
+	    mnv_free(freep);
 	}
     }
     else
@@ -1187,7 +1187,7 @@ mf_trans_del(memfile_T *mfp, blocknr_T old_nr)
     // remove entry from the trans list
     mf_hash_rem_item(&mfp->mf_trans, (mf_hashitem_T *)np);
 
-    vim_free(np);
+    mnv_free(np);
 
     return new_bnum;
 }
@@ -1213,7 +1213,7 @@ mf_fullname(memfile_T *mfp)
     if (mfp == NULL || mfp->mf_fname == NULL || mfp->mf_ffname == NULL)
 	return;
 
-    vim_free(mfp->mf_fname);
+    mnv_free(mfp->mf_fname);
     mfp->mf_fname = mfp->mf_ffname;
     mfp->mf_ffname = NULL;
 }
@@ -1290,8 +1290,8 @@ mf_do_open(
      */
     if (mfp->mf_fd < 0)
     {
-	VIM_CLEAR(mfp->mf_fname);
-	VIM_CLEAR(mfp->mf_ffname);
+	MNV_CLEAR(mfp->mf_fname);
+	MNV_CLEAR(mfp->mf_ffname);
     }
     else
     {
@@ -1338,7 +1338,7 @@ mf_hash_init(mf_hashtab_T *mht)
 mf_hash_free(mf_hashtab_T *mht)
 {
     if (mht->mht_buckets != mht->mht_small_buckets)
-	vim_free(mht->mht_buckets);
+	mnv_free(mht->mht_buckets);
 }
 
 /*
@@ -1355,7 +1355,7 @@ mf_hash_free_all(mf_hashtab_T *mht)
 	for (mhi = mht->mht_buckets[idx]; mhi != NULL; mhi = next)
 	{
 	    next = mhi->mhi_next;
-	    vim_free(mhi);
+	    mnv_free(mhi);
 	}
 
     mf_hash_free(mht);
@@ -1493,7 +1493,7 @@ mf_hash_grow(mf_hashtab_T *mht)
     }
 
     if (mht->mht_buckets != mht->mht_small_buckets)
-	vim_free(mht->mht_buckets);
+	mnv_free(mht->mht_buckets);
 
     mht->mht_buckets = buckets;
     mht->mht_mask = (mht->mht_mask + 1) * MHT_GROWTH_FACTOR - 1;

@@ -1,17 +1,17 @@
-# Makefile for Vim on Win32 (Windows 7/8/10/11) and Win64, using the Microsoft
+# Makefile for MNV on Win32 (Windows 7/8/10/11) and Win64, using the Microsoft
 # Visual C++ compilers. Known to work with VC14 (VS2015), VC14.1 (VS2017),
 # VC14.2 (VS2019) and VC14.3 (VS2022).
 #
 # To build using other Windows compilers, see INSTALLpc.txt
 #
 # This makefile can build the console, GUI, OLE-enable, Perl-enabled and
-# Python-enabled versions of Vim for Win32 platforms.
+# Python-enabled versions of MNV for Win32 platforms.
 #
-# The basic command line to build Vim is:
+# The basic command line to build MNV is:
 #
 #	nmake -f Make_mvc.mak
 #
-# This will build the console version of Vim with no additional interfaces.
+# This will build the console version of MNV with no additional interfaces.
 # To add features, define any of the following:
 #
 #	!!!!  After changing any features do "nmake clean" first  !!!!
@@ -43,14 +43,14 @@
 #	  DYNAMIC_SODIUM=yes (to load the Sodium DLL dynamically)
 #	  You need to install the msvc package from
 #	  https://download.libsodium.org/libsodium/releases/
-#	  and package the libsodium.dll with Vim
+#	  and package the libsodium.dll with MNV
 #
 #
-#	DLL support (EXPERIMENTAL): VIMDLL=yes (default is no)
-#	  Creates vim{32,64}.dll, and stub gvim.exe and vim.exe.
+#	DLL support (EXPERIMENTAL): MNVDLL=yes (default is no)
+#	  Creates mnv{32,64}.dll, and stub gmnv.exe and mnv.exe.
 #	  The shared codes between the GUI and the console are built into
 #	  the DLL.  This reduces the total file size and memory usage.
-#	  Also supports `vim -g` and the `:gui` command.
+#	  Also supports `mnv -g` and the `:gui` command.
 #
 #	Lua interface:
 #	  LUA=[Path to Lua directory]
@@ -168,7 +168,7 @@
 # Read MAJOR and MINOR from version.h.
 !IFNDEF MAJOR
 ! IF ![for /F "tokens=3" %G in \
-	('findstr /RC:"VIM_VERSION_MAJOR[	^]*[0-9^]" .\version.h') \
+	('findstr /RC:"MNV_VERSION_MAJOR[	^]*[0-9^]" .\version.h') \
 	do @(echo:MAJOR=%G> .\_major.tmp)]
 !  INCLUDE .\_major.tmp
 !  IF [$(RM) .\_major.tmp]
@@ -180,7 +180,7 @@ MAJOR = 9
 
 !IFNDEF MINOR
 ! IF ![for /F "tokens=3" %G in \
-	('findstr /RC:"VIM_VERSION_MINOR[	^]*[0-9^]" .\version.h') \
+	('findstr /RC:"MNV_VERSION_MINOR[	^]*[0-9^]" .\version.h') \
 	do @(echo:MINOR=%G> .\_minor.tmp)]
 !  INCLUDE .\_minor.tmp
 !  IF [$(RM) .\_minor.tmp]
@@ -205,9 +205,9 @@ PATCHLEVEL = 0
 ! ENDIF
 !ENDIF
 
-!MESSAGE Vim version: $(MAJOR).$(MINOR).$(PATCHLEVEL)
+!MESSAGE MNV version: $(MAJOR).$(MINOR).$(PATCHLEVEL)
 
-!IF "$(VIMDLL)" == "yes"
+!IF "$(MNVDLL)" == "yes"
 GUI = yes
 !ENDIF
 
@@ -217,7 +217,7 @@ DIRECTX = $(GUI)
 
 # Select a code directory, depends on GUI, OLE, DEBUG, interfaces and etc.
 # If you change something else, do "make clean" first!
-!IF "$(VIMDLL)" == "yes"
+!IF "$(MNVDLL)" == "yes"
 OBJDIR = .\ObjD
 !ELSEIF "$(GUI)" == "yes"
 OBJDIR = .\ObjG
@@ -289,7 +289,7 @@ OBJDIR = $(OBJDIR)$(CPU)
 NODEBUG = 1
 !ELSE
 ! UNDEF NODEBUG
-MAKEFLAGS_GVIMEXT = DEBUG=yes
+MAKEFLAGS_GMNVEXT = DEBUG=yes
 !ENDIF
 
 LINK = link
@@ -522,10 +522,10 @@ CON_LIB = oldnames.lib kernel32.lib advapi32.lib shell32.lib gdi32.lib \
 CON_LIB = $(CON_LIB) /DELAYLOAD:comdlg32.dll /DELAYLOAD:ole32.dll DelayImp.lib
 !ENDIF
 
-# If you have a fixed directory for $VIM or $VIMRUNTIME, other than the normal
+# If you have a fixed directory for $MNV or $MNVRUNTIME, other than the normal
 # default, use these lines.
-#VIMRCLOC = somewhere
-#VIMRUNTIMEDIR = somewhere
+#MNVRCLOC = somewhere
+#MNVRUNTIMEDIR = somewhere
 
 CFLAGS = -c /W3 /GF /nologo -I. -Iproto -DHAVE_PATHDEF -DWIN32 -DHAVE_STDINT_H \
 	$(CSCOPE_DEFS) $(TERM_DEFS) $(SOUND_DEFS) $(NETBEANS_DEFS) \
@@ -533,7 +533,7 @@ CFLAGS = -c /W3 /GF /nologo -I. -Iproto -DHAVE_PATHDEF -DWIN32 -DHAVE_STDINT_H \
 	$(DEFINES) $(CI_CFLAGS) -DWINVER=$(WINVER) -D_WIN32_WINNT=$(WINVER) \
 	/source-charset:utf-8
 
-RCFLAGS = -DVIM_VERSION_PATCHLEVEL=$(PATCHLEVEL)
+RCFLAGS = -DMNV_VERSION_PATCHLEVEL=$(PATCHLEVEL)
 
 #>>>>> end of choices
 ###########################################################################
@@ -592,18 +592,18 @@ CPUARG = /arch:AVX512
 CPUARG = /arch:$(CPUNR)
 !ENDIF
 
-# Pass CPUARG to GvimExt, to avoid using version-dependent defaults
-MAKEFLAGS_GVIMEXT = $(MAKEFLAGS_GVIMEXT) CPUARG="$(CPUARG)"
+# Pass CPUARG to GmnvExt, to avoid using version-dependent defaults
+MAKEFLAGS_GMNVEXT = $(MAKEFLAGS_GMNVEXT) CPUARG="$(CPUARG)"
 
-!IF "$(VIMDLL)" == "yes"
-VIMDLLBASE = vim
+!IF "$(MNVDLL)" == "yes"
+MNVDLLBASE = mnv
 ! IF "$(CPU)" == "i386"
-VIMDLLBASE = $(VIMDLLBASE)32
+MNVDLLBASE = $(MNVDLLBASE)32
 ! ELSE
-VIMDLLBASE = $(VIMDLLBASE)64
+MNVDLLBASE = $(MNVDLLBASE)64
 ! ENDIF
 ! IF "$(DEBUG)" == "yes"
-VIMDLLBASE = $(VIMDLLBASE)d
+MNVDLLBASE = $(MNVDLLBASE)d
 ! ENDIF
 !ENDIF
 
@@ -628,7 +628,7 @@ CFLAGS = $(CFLAGS) /fsanitize=address
 
 !IFDEF NODEBUG
 
-VIM = vim
+MNV = mnv
 ! IF "$(OPTIMIZE)" == "SPACE"
 OPTFLAG = /O1
 ! ELSEIF "$(OPTIMIZE)" == "SPEED"
@@ -654,7 +654,7 @@ LIBC = libcmt.lib
 
 !ELSE  # DEBUG
 
-VIM = vimd
+MNV = mnvd
 ! IF ("$(CPU)" == "i386") || ("$(CPU)" == "ix86")
 DEBUGINFO = /ZI
 ! ENDIF
@@ -679,7 +679,7 @@ CFLAGS = $(CFLAGS) $(CFLAGS_DEPR)
 !INCLUDE .\Make_all.mak
 !INCLUDE .\testdir\Make_all.mak
 
-INCL = vim.h alloc.h ascii.h ex_cmds.h feature.h errors.h globals.h \
+INCL = mnv.h alloc.h ascii.h ex_cmds.h feature.h errors.h globals.h \
 	keymap.h macros.h option.h os_dos.h os_win32.h proto.h regexp.h \
 	spell.h structs.h termdefs.h beval.h $(NBDEBUG_INCL)
 
@@ -791,24 +791,24 @@ OBJ = \
 	$(OUTDIR)\undo.obj \
 	$(OUTDIR)\usercmd.obj \
 	$(OUTDIR)\userfunc.obj \
-	$(OUTDIR)\vim9class.obj \
-	$(OUTDIR)\vim9cmds.obj \
-	$(OUTDIR)\vim9compile.obj \
-	$(OUTDIR)\vim9execute.obj \
-	$(OUTDIR)\vim9expr.obj \
-	$(OUTDIR)\vim9generics.obj \
-	$(OUTDIR)\vim9instr.obj \
-	$(OUTDIR)\vim9script.obj \
-	$(OUTDIR)\vim9type.obj \
-	$(OUTDIR)\viminfo.obj \
+	$(OUTDIR)\mnv9class.obj \
+	$(OUTDIR)\mnv9cmds.obj \
+	$(OUTDIR)\mnv9compile.obj \
+	$(OUTDIR)\mnv9execute.obj \
+	$(OUTDIR)\mnv9expr.obj \
+	$(OUTDIR)\mnv9generics.obj \
+	$(OUTDIR)\mnv9instr.obj \
+	$(OUTDIR)\mnv9script.obj \
+	$(OUTDIR)\mnv9type.obj \
+	$(OUTDIR)\mnvinfo.obj \
 	$(OUTDIR)\winclip.obj \
 	$(OUTDIR)\window.obj \
 
-!IF "$(VIMDLL)" == "yes"
-OBJ = $(OBJ) $(OUTDIR)\os_w32dll.obj $(OUTDIR)\vimd.res
-EXEOBJC = $(OUTDIR)\os_w32exec.obj $(OUTDIR)\vimc.res
-EXEOBJG = $(OUTDIR)\os_w32exeg.obj $(OUTDIR)\vimg.res
-CFLAGS = $(CFLAGS) -DVIMDLL
+!IF "$(MNVDLL)" == "yes"
+OBJ = $(OBJ) $(OUTDIR)\os_w32dll.obj $(OUTDIR)\mnvd.res
+EXEOBJC = $(OUTDIR)\os_w32exec.obj $(OUTDIR)\mnvc.res
+EXEOBJG = $(OUTDIR)\os_w32exeg.obj $(OUTDIR)\mnvg.res
+CFLAGS = $(CFLAGS) -DMNVDLL
 ! IFDEF MZSCHEME
 EXECFLAGS =
 EXELIBC = $(LIBC)
@@ -817,7 +817,7 @@ EXECFLAGS = -DUSE_OWNSTARTUP /GS-
 EXELIBC =
 ! ENDIF
 !ELSE
-OBJ = $(OBJ) $(OUTDIR)\os_w32exe.obj $(OUTDIR)\vim.res
+OBJ = $(OBJ) $(OUTDIR)\os_w32exe.obj $(OUTDIR)\mnv.res
 !ENDIF
 
 !IF "$(OLE)" == "yes"
@@ -847,14 +847,14 @@ IME_LIB = imm32.lib
 SUBSYSTEM = windows
 CFLAGS = $(CFLAGS) -DFEAT_GUI_MSWIN
 RCFLAGS = $(RCFLAGS) -DFEAT_GUI_MSWIN
-! IF "$(VIMDLL)" == "yes"
+! IF "$(MNVDLL)" == "yes"
 SUBSYSTEM_CON = console
-GVIM = g$(VIM)
+GMNV = g$(MNV)
 CUI_INCL = iscygpty.h
 CUI_OBJ = $(OUTDIR)\iscygpty.obj
-RCFLAGS = $(RCFLAGS) -DVIMDLL
+RCFLAGS = $(RCFLAGS) -DMNVDLL
 ! ELSE
-VIM = g$(VIM)
+MNV = g$(MNV)
 ! ENDIF
 GUI_INCL = \
 	gui.h
@@ -892,11 +892,11 @@ XDIFF_DEPS = \
 !IF "$(SUBSYSTEM_VER)" != ""
 SUBSYSTEM = $(SUBSYSTEM),$(SUBSYSTEM_VER)
 SUBSYSTEM_TOOLS = $(SUBSYSTEM_TOOLS),$(SUBSYSTEM_VER)
-! IF "$(VIMDLL)" == "yes"
+! IF "$(MNVDLL)" == "yes"
 SUBSYSTEM_CON = $(SUBSYSTEM_CON),$(SUBSYSTEM_VER)
 ! ENDIF
-# Pass SUBSYSTEM_VER to GvimExt and other tools
-MAKEFLAGS_GVIMEXT = $(MAKEFLAGS_GVIMEXT) SUBSYSTEM_VER=$(SUBSYSTEM_VER)
+# Pass SUBSYSTEM_VER to GmnvExt and other tools
+MAKEFLAGS_GMNVEXT = $(MAKEFLAGS_GMNVEXT) SUBSYSTEM_VER=$(SUBSYSTEM_VER)
 MAKEFLAGS_TOOLS = $(MAKEFLAGS_TOOLS) SUBSYSTEM_VER=$(SUBSYSTEM_VER)
 !ENDIF
 
@@ -1225,10 +1225,10 @@ CFLAGS = $(CFLAGS) -DMODIFIED_BY=\"$(MODIFIED_BY)\"
 # debug more conveniently (able to look at variables which are in registers)
 #
 CFLAGS = $(CFLAGS) /Fd$(OUTDIR)/ $(DEBUGINFO)
-!IF "$(VIMDLL)" == "yes"
-LINK_PDB = /PDB:$(VIMDLLBASE).pdb -debug
+!IF "$(MNVDLL)" == "yes"
+LINK_PDB = /PDB:$(MNVDLLBASE).pdb -debug
 !ELSE
-LINK_PDB = /PDB:$(VIM).pdb -debug
+LINK_PDB = /PDB:$(MNV).pdb -debug
 !ENDIF
 
 #
@@ -1277,65 +1277,65 @@ LINKARGS1 = $(LINKARGS1) /LTCG:STATUS
 !ENDIF
 
 !IF "$(CPU)" == "AMD64" && "$(GUI)" == "yes"
-# This option is required for VC2012 or later so that 64-bit gvim can
+# This option is required for VC2012 or later so that 64-bit gmnv can
 # accept D&D from 32-bit applications.  NOTE: This disables 64-bit ASLR,
 # therefore the security level becomes as same as VC2010.
 LINKARGS1 = $(LINKARGS1) /HIGHENTROPYVA:NO
 !ENDIF
 
-!IF "$(VIMDLL)" == "yes"
-MAIN_TARGET = $(GVIM).exe $(VIM).exe $(VIMDLLBASE).dll
+!IF "$(MNVDLL)" == "yes"
+MAIN_TARGET = $(GMNV).exe $(MNV).exe $(MNVDLLBASE).dll
 !ELSE
-MAIN_TARGET = $(VIM).exe
+MAIN_TARGET = $(MNV).exe
 !ENDIF
 
 # Target to run individual tests.
-VIMTESTTARGET = $(VIM).exe
+MNVTESTTARGET = $(MNV).exe
 
 all: $(MAIN_TARGET) \
-	vimrun.exe \
+	mnvrun.exe \
 	install.exe \
 	uninstall.exe \
 	xxd/xxd.exe \
 	tee/tee.exe \
-	GvimExt/gvimext.dll
+	GmnvExt/gmnvext.dll
 
 # To get around the command line limit: Make use of nmake's response files to
 # capture the arguments for $(LINK) in a file  using the @<<ARGS<< syntax.
 
-!IF "$(VIMDLL)" == "yes"
+!IF "$(MNVDLL)" == "yes"
 
-$(VIMDLLBASE).dll: $(OUTDIR) $(OBJ) $(XDIFF_OBJ) $(GUI_OBJ) $(CUI_OBJ) \
+$(MNVDLLBASE).dll: $(OUTDIR) $(OBJ) $(XDIFF_OBJ) $(GUI_OBJ) $(CUI_OBJ) \
 		$(OLE_OBJ) $(OLE_IDL) $(MZSCHEME_OBJ) $(LUA_OBJ) $(PERL_OBJ) \
 		$(PYTHON_OBJ) $(PYTHON3_OBJ) $(RUBY_OBJ) $(TCL_OBJ) \
 		$(TERM_OBJ) $(SOUND_OBJ) $(NETBEANS_OBJ) $(CHANNEL_OBJ) \
 		$(XPM_OBJ) version.c version.h
 	$(CC) $(CFLAGS_OUTDIR) version.c
 	$(LINK) @<<
-$(LINKARGS1) /dll -out:$(VIMDLLBASE).dll $(OBJ) $(XDIFF_OBJ)
+$(LINKARGS1) /dll -out:$(MNVDLLBASE).dll $(OBJ) $(XDIFF_OBJ)
 $(GUI_OBJ) $(CUI_OBJ) $(OLE_OBJ) $(LUA_OBJ) $(MZSCHEME_OBJ) $(PERL_OBJ)
 $(PYTHON_OBJ) $(PYTHON3_OBJ) $(RUBY_OBJ) $(TCL_OBJ) $(TERM_OBJ) $(SOUND_OBJ)
 $(NETBEANS_OBJ) $(CHANNEL_OBJ) $(XPM_OBJ) $(OUTDIR)\version.obj $(LINKARGS2)
 <<
 
-$(GVIM).exe: $(OUTDIR) $(EXEOBJG) $(VIMDLLBASE).dll
-	$(LINK) $(LINKARGS1) /subsystem:$(SUBSYSTEM) -out:$(GVIM).exe \
-		$(EXEOBJG) $(VIMDLLBASE).lib $(EXELIBC)
+$(GMNV).exe: $(OUTDIR) $(EXEOBJG) $(MNVDLLBASE).dll
+	$(LINK) $(LINKARGS1) /subsystem:$(SUBSYSTEM) -out:$(GMNV).exe \
+		$(EXEOBJG) $(MNVDLLBASE).lib $(EXELIBC)
 
-$(VIM).exe: $(OUTDIR) $(EXEOBJC) $(VIMDLLBASE).dll
-	$(LINK) $(LINKARGS1) /subsystem:$(SUBSYSTEM_CON) -out:$(VIM).exe \
-		$(EXEOBJC) $(VIMDLLBASE).lib $(EXELIBC)
+$(MNV).exe: $(OUTDIR) $(EXEOBJC) $(MNVDLLBASE).dll
+	$(LINK) $(LINKARGS1) /subsystem:$(SUBSYSTEM_CON) -out:$(MNV).exe \
+		$(EXEOBJC) $(MNVDLLBASE).lib $(EXELIBC)
 
 !ELSE
 
-$(VIM).exe: $(OUTDIR) $(OBJ) $(XDIFF_OBJ) $(GUI_OBJ) $(CUI_OBJ) \
+$(MNV).exe: $(OUTDIR) $(OBJ) $(XDIFF_OBJ) $(GUI_OBJ) $(CUI_OBJ) \
 		$(OLE_OBJ) $(OLE_IDL) $(MZSCHEME_OBJ) $(LUA_OBJ) $(PERL_OBJ) \
 		$(PYTHON_OBJ) $(PYTHON3_OBJ) $(RUBY_OBJ) $(TCL_OBJ) \
 		$(TERM_OBJ) $(SOUND_OBJ) $(NETBEANS_OBJ) $(CHANNEL_OBJ) \
 		$(XPM_OBJ) version.c version.h
 	$(CC) $(CFLAGS_OUTDIR) version.c
 	$(LINK) @<<
-$(LINKARGS1) /subsystem:$(SUBSYSTEM) -out:$(VIM).exe $(OBJ) $(XDIFF_OBJ)
+$(LINKARGS1) /subsystem:$(SUBSYSTEM) -out:$(MNV).exe $(OBJ) $(XDIFF_OBJ)
 $(GUI_OBJ) $(CUI_OBJ) $(OLE_OBJ) $(LUA_OBJ) $(MZSCHEME_OBJ) $(PERL_OBJ)
 $(PYTHON_OBJ) $(PYTHON3_OBJ) $(RUBY_OBJ) $(TCL_OBJ) $(TERM_OBJ) $(SOUND_OBJ)
 $(NETBEANS_OBJ) $(CHANNEL_OBJ) $(XPM_OBJ) $(OUTDIR)\version.obj $(LINKARGS2)
@@ -1343,7 +1343,7 @@ $(NETBEANS_OBJ) $(CHANNEL_OBJ) $(XPM_OBJ) $(OUTDIR)\version.obj $(LINKARGS2)
 
 !ENDIF
 
-$(VIM): $(VIM).exe
+$(MNV): $(MNV).exe
 
 $(OUTDIR):
 	@ if not exist $(OUTDIR)/nul  $(MKD) $(OUTDIR:/=\)
@@ -1354,7 +1354,7 @@ $(OUTDIR)/libvterm: $(OUTDIR)
 CFLAGS_INST = /nologo /O2 -DNDEBUG -DWIN32 -DWINVER=$(WINVER) \
 	-D_WIN32_WINNT=$(WINVER) $(CFLAGS_DEPR)
 
-CFLAGS_INST = $(CFLAGS_INST) -DVIM_VERSION_PATCHLEVEL=$(PATCHLEVEL)
+CFLAGS_INST = $(CFLAGS_INST) -DMNV_VERSION_PATCHLEVEL=$(PATCHLEVEL)
 
 install.exe: dosinst.c dosinst.h version.h
 	$(CC) $(CFLAGS_INST) /Fe$@ dosinst.c kernel32.lib shell32.lib \
@@ -1365,8 +1365,8 @@ uninstall.exe: uninstall.c dosinst.h version.h
 	$(CC) $(CFLAGS_INST) uninstall.c shell32.lib advapi32.lib \
 		-link -subsystem:$(SUBSYSTEM_TOOLS)
 
-vimrun.exe: vimrun.c
-	$(CC) /nologo -DNDEBUG vimrun.c -link -subsystem:$(SUBSYSTEM_TOOLS)
+mnvrun.exe: mnvrun.c
+	$(CC) /nologo -DNDEBUG mnvrun.c -link -subsystem:$(SUBSYSTEM_TOOLS)
 
 xxd/xxd.exe: xxd/xxd.c
 	cd xxd
@@ -1378,9 +1378,9 @@ tee/tee.exe: tee/tee.c
 	$(MAKE) -lf Make_mvc.mak $(MAKEFLAGS_TOOLS)
 	cd ..
 
-GvimExt/gvimext.dll: GvimExt/gvimext.cpp GvimExt/gvimext.rc GvimExt/gvimext.h
-	cd GvimExt
-	$(MAKE) -lf Make_mvc.mak $(MAKEFLAGS_GVIMEXT)
+GmnvExt/gmnvext.dll: GmnvExt/gmnvext.cpp GmnvExt/gmnvext.rc GmnvExt/gmnvext.h
+	cd GmnvExt
+	$(MAKE) -lf Make_mvc.mak $(MAKEFLAGS_GMNVEXT)
 	cd ..
 
 
@@ -1393,26 +1393,26 @@ notags:
 clean: testclean
 	- if exist $(OUTDIR)/nul $(DELTREE) $(OUTDIR)
 	- if exist *.obj $(RM) *.obj
-	- if exist $(VIM).exe $(RM) $(VIM).exe
-	- if exist $(VIM).exp $(RM) $(VIM).exp
-	- if exist $(VIM).lib $(RM) $(VIM).lib
-	- if exist $(VIM).ilk $(RM) $(VIM).ilk
-	- if exist $(VIM).pdb $(RM) $(VIM).pdb
-	- if exist $(VIM).map $(RM) $(VIM).map
-	- if exist $(VIM).ncb $(RM) $(VIM).ncb
-!IF "$(VIMDLL)" == "yes"
-	- if exist $(GVIM).exe $(RM) $(GVIM).exe
-	- if exist $(GVIM).exp $(RM) $(GVIM).exp
-	- if exist $(GVIM).lib $(RM) $(GVIM).lib
-	- if exist $(GVIM).map $(RM) $(GVIM).map
-	- if exist $(VIMDLLBASE).dll $(RM) $(VIMDLLBASE).dll
-	- if exist $(VIMDLLBASE).ilk $(RM) $(VIMDLLBASE).ilk
-	- if exist $(VIMDLLBASE).lib $(RM) $(VIMDLLBASE).lib
-	- if exist $(VIMDLLBASE).exp $(RM) $(VIMDLLBASE).exp
-	- if exist $(VIMDLLBASE).pdb $(RM) $(VIMDLLBASE).pdb
-	- if exist $(VIMDLLBASE).map $(RM) $(VIMDLLBASE).map
+	- if exist $(MNV).exe $(RM) $(MNV).exe
+	- if exist $(MNV).exp $(RM) $(MNV).exp
+	- if exist $(MNV).lib $(RM) $(MNV).lib
+	- if exist $(MNV).ilk $(RM) $(MNV).ilk
+	- if exist $(MNV).pdb $(RM) $(MNV).pdb
+	- if exist $(MNV).map $(RM) $(MNV).map
+	- if exist $(MNV).ncb $(RM) $(MNV).ncb
+!IF "$(MNVDLL)" == "yes"
+	- if exist $(GMNV).exe $(RM) $(GMNV).exe
+	- if exist $(GMNV).exp $(RM) $(GMNV).exp
+	- if exist $(GMNV).lib $(RM) $(GMNV).lib
+	- if exist $(GMNV).map $(RM) $(GMNV).map
+	- if exist $(MNVDLLBASE).dll $(RM) $(MNVDLLBASE).dll
+	- if exist $(MNVDLLBASE).ilk $(RM) $(MNVDLLBASE).ilk
+	- if exist $(MNVDLLBASE).lib $(RM) $(MNVDLLBASE).lib
+	- if exist $(MNVDLLBASE).exp $(RM) $(MNVDLLBASE).exp
+	- if exist $(MNVDLLBASE).pdb $(RM) $(MNVDLLBASE).pdb
+	- if exist $(MNVDLLBASE).map $(RM) $(MNVDLLBASE).map
 !ENDIF
-	- if exist vimrun.exe $(RM) vimrun.exe
+	- if exist mnvrun.exe $(RM) mnvrun.exe
 	- if exist install.exe $(RM) install.exe
 	- if exist uninstall.exe $(RM) uninstall.exe
 	- if exist if_perl.c $(RM) if_perl.c
@@ -1424,26 +1424,26 @@ clean: testclean
 	cd tee
 	$(MAKE) -lf Make_mvc.mak clean
 	cd ..
-	cd GvimExt
+	cd GmnvExt
 	$(MAKE) -lf Make_mvc.mak clean
 	cd ..
 
-# Run Vim script to generate the Ex command lookup table.
+# Run MNV script to generate the Ex command lookup table.
 # This only needs to be run when a command name has been added or changed.
-# If this fails because you don't have Vim yet, first build and install Vim
+# If this fails because you don't have MNV yet, first build and install MNV
 # without changes.
 cmdidxs: ex_cmds.h
-	vim.exe --clean -N -X --not-a-term -u create_cmdidxs.vim -c quit
+	mnv.exe --clean -N -X --not-a-term -u create_cmdidxs.mnv -c quit
 
-# Run Vim script to generate the normal/visual mode command lookup table.
+# Run MNV script to generate the normal/visual mode command lookup table.
 # This only needs to be run when a new normal/visual mode command has been
-# added.  If this fails because you don't have Vim yet:
+# added.  If this fails because you don't have MNV yet:
 #   - change nv_cmds[] in nv_cmds.h to add the new normal/visual mode command.
 #   - run "make nvcmdidxs" to generate nv_cmdidxs.h
 nvcmdidxs: nv_cmds.h
 	$(CC) /nologo -I. -Iproto -DNDEBUG create_nvcmdidxs.c \
 		-link -subsystem:$(SUBSYSTEM_TOOLS)
-	vim.exe --clean -N -X --not-a-term -u create_nvcmdidxs.vim -c quit
+	mnv.exe --clean -N -X --not-a-term -u create_nvcmdidxs.mnv -c quit
 	- $(RM) create_nvcmdidxs.exe
 
 test:
@@ -1451,9 +1451,9 @@ test:
 	$(MAKE) -lf Make_mvc.mak
 	cd ..
 
-testgvim testgui:
+testgmnv testgui:
 	cd testdir
-	$(MAKE) -lf Make_mvc.mak "VIMPROG=..\gvim.exe"
+	$(MAKE) -lf Make_mvc.mak "MNVPROG=..\gmnv.exe"
 	cd ..
 
 testtiny:
@@ -1461,9 +1461,9 @@ testtiny:
 	$(MAKE) -lf Make_mvc.mak tiny
 	cd ..
 
-testgvimtiny:
+testgmnvtiny:
 	cd testdir
-	$(MAKE) -lf Make_mvc.mak "VIMPROG=..\gvim.exe" tiny
+	$(MAKE) -lf Make_mvc.mak "MNVPROG=..\gmnv.exe" tiny
 	cd ..
 
 testclean:
@@ -1476,8 +1476,8 @@ testclean:
 $(SCRIPTS_TINY):
 	cd testdir
 	- if exist $@.out $(RM) $@.out
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) nolog
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) $@.out
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) nolog
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) $@.out
 	@ if exist test.log ( type test.log & exit /b 1 )
 	cd ..
 
@@ -1486,19 +1486,19 @@ $(SCRIPTS_TINY):
 $(NEW_TESTS):
 	cd testdir
 	- if exist $@.res $(RM) $@.res
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) nolog
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) $@.res
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) report
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) nolog
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) $@.res
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) report
 	cd ..
 
-# Run Vim9 tests.
+# Run MNV9 tests.
 # These do not depend on the executable, compile it when needed.
-test_vim9:
+test_mnv9:
 	cd testdir
-	- $(RM) test_vim9_*.res
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) nolog
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) $(TEST_VIM9_RES)
-	$(MAKE) -lf Make_mvc.mak VIMPROG=..\$(VIMTESTTARGET) report
+	- $(RM) test_mnv9_*.res
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) nolog
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) $(TEST_MNV9_RES)
+	$(MAKE) -lf Make_mvc.mak MNVPROG=..\$(MNVTESTTARGET) report
 	cd ..
 
 ###########################################################################
@@ -1806,60 +1806,60 @@ $(OUTDIR)/userfunc.obj: $(OUTDIR) userfunc.c $(INCL)
 
 $(OUTDIR)/version.obj: $(OUTDIR) version.c $(INCL) version.h
 
-$(OUTDIR)/vim9class.obj: $(OUTDIR) vim9class.c $(INCL) vim9.h
+$(OUTDIR)/mnv9class.obj: $(OUTDIR) mnv9class.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9cmds.obj: $(OUTDIR) vim9cmds.c $(INCL) vim9.h
+$(OUTDIR)/mnv9cmds.obj: $(OUTDIR) mnv9cmds.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9compile.obj: $(OUTDIR) vim9compile.c $(INCL) vim9.h
+$(OUTDIR)/mnv9compile.obj: $(OUTDIR) mnv9compile.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9execute.obj: $(OUTDIR) vim9execute.c $(INCL) vim9.h
+$(OUTDIR)/mnv9execute.obj: $(OUTDIR) mnv9execute.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9expr.obj: $(OUTDIR) vim9expr.c $(INCL) vim9.h
+$(OUTDIR)/mnv9expr.obj: $(OUTDIR) mnv9expr.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9generics.obj: $(OUTDIR) vim9generics.c $(INCL) vim9.h
+$(OUTDIR)/mnv9generics.obj: $(OUTDIR) mnv9generics.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9instr.obj: $(OUTDIR) vim9instr.c $(INCL) vim9.h
+$(OUTDIR)/mnv9instr.obj: $(OUTDIR) mnv9instr.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9script.obj: $(OUTDIR) vim9script.c $(INCL) vim9.h
+$(OUTDIR)/mnv9script.obj: $(OUTDIR) mnv9script.c $(INCL) mnv9.h
 
-$(OUTDIR)/vim9type.obj: $(OUTDIR) vim9type.c $(INCL) vim9.h
+$(OUTDIR)/mnv9type.obj: $(OUTDIR) mnv9type.c $(INCL) mnv9.h
 
-$(OUTDIR)/viminfo.obj: $(OUTDIR) viminfo.c $(INCL) version.h
+$(OUTDIR)/mnvinfo.obj: $(OUTDIR) mnvinfo.c $(INCL) version.h
 
 $(OUTDIR)/window.obj: $(OUTDIR) window.c $(INCL)
 
 $(OUTDIR)/xpm_w32.obj: $(OUTDIR) xpm_w32.c
 	$(CC) $(CFLAGS_OUTDIR) $(XPM_INC) xpm_w32.c
 
-!IF "$(VIMDLL)" == "yes"
-$(OUTDIR)/vimc.res: $(OUTDIR) vim.rc vim.manifest version.h gui_w32_rc.h \
-				vim.ico
-	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS:-DFEAT_GUI_MSWIN=) vim.rc
+!IF "$(MNVDLL)" == "yes"
+$(OUTDIR)/mnvc.res: $(OUTDIR) mnv.rc mnv.manifest version.h gui_w32_rc.h \
+				mnv.ico
+	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS:-DFEAT_GUI_MSWIN=) mnv.rc
 
-$(OUTDIR)/vimg.res: $(OUTDIR) vim.rc vim.manifest version.h gui_w32_rc.h \
-				vim.ico
-	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS) vim.rc
+$(OUTDIR)/mnvg.res: $(OUTDIR) mnv.rc mnv.manifest version.h gui_w32_rc.h \
+				mnv.ico
+	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS) mnv.rc
 
-$(OUTDIR)/vimd.res: $(OUTDIR) vim.rc version.h gui_w32_rc.h \
-			tools.bmp tearoff.bmp vim.ico vim_error.ico \
-			vim_alert.ico vim_info.ico vim_quest.ico
+$(OUTDIR)/mnvd.res: $(OUTDIR) mnv.rc version.h gui_w32_rc.h \
+			tools.bmp tearoff.bmp mnv.ico mnv_error.ico \
+			mnv_alert.ico mnv_info.ico mnv_quest.ico
 	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS) \
-		-DRCDLL -DVIMDLLBASE=\"$(VIMDLLBASE)\" vim.rc
+		-DRCDLL -DMNVDLLBASE=\"$(MNVDLLBASE)\" mnv.rc
 !ELSE
-$(OUTDIR)/vim.res: $(OUTDIR) vim.rc vim.manifest version.h gui_w32_rc.h \
-			tools.bmp tearoff.bmp vim.ico vim_error.ico \
-			vim_alert.ico vim_info.ico vim_quest.ico
-	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS) vim.rc
+$(OUTDIR)/mnv.res: $(OUTDIR) mnv.rc mnv.manifest version.h gui_w32_rc.h \
+			tools.bmp tearoff.bmp mnv.ico mnv_error.ico \
+			mnv_alert.ico mnv_info.ico mnv_quest.ico
+	$(RC) /nologo /l 0x409 /Fo$@ $(RCFLAGS) mnv.rc
 !ENDIF
 
-iid_ole.c if_ole.h vim.tlb: if_ole.idl
-	midl /nologo /error none /proxy nul /iid iid_ole.c /tlb vim.tlb \
+iid_ole.c if_ole.h mnv.tlb: if_ole.idl
+	midl /nologo /error none /proxy nul /iid iid_ole.c /tlb mnv.tlb \
 		/header if_ole.h if_ole.idl
 
 
 CCCTERM = $(CC) $(CFLAGS) -Ilibvterm/include -DINLINE="" \
-	-DVSNPRINTF=vim_vsnprintf \
-	-DSNPRINTF=vim_snprintf \
+	-DVSNPRINTF=mnv_vsnprintf \
+	-DSNPRINTF=mnv_snprintf \
 	-DIS_COMBINING_FUNCTION=utf_iscomposing_uint \
 	-DWCWIDTH_FUNCTION=utf_uint2cells \
 	-DGET_SPECIAL_PTY_TYPE_FUNCTION=get_special_pty_type \
@@ -1912,11 +1912,11 @@ E_LINKARGS2 = $(E000_LINKARGS2:>=^^>)
 $(PATHDEF_SRC): Make_mvc.mak
 	@ echo creating $(PATHDEF_SRC)
 	@ echo /* pathdef.c */ > $(PATHDEF_SRC)
-	@ echo #include "vim.h" >> $(PATHDEF_SRC)
-	@ echo char_u *default_vim_dir = (char_u *)"$(VIMRCLOC:\=\\)"; \
+	@ echo #include "mnv.h" >> $(PATHDEF_SRC)
+	@ echo char_u *default_mnv_dir = (char_u *)"$(MNVRCLOC:\=\\)"; \
 		>> $(PATHDEF_SRC)
-	@ echo char_u *default_vimruntime_dir = \
-		(char_u *)"$(VIMRUNTIMEDIR:\=\\)"; >> $(PATHDEF_SRC)
+	@ echo char_u *default_mnvruntime_dir = \
+		(char_u *)"$(MNVRUNTIMEDIR:\=\\)"; >> $(PATHDEF_SRC)
 	@ echo char_u *all_cflags = (char_u *)"$(CC:\=\\) $(E_CFLAGS)"; \
 		>> $(PATHDEF_SRC)
 	@ echo char_u *all_lflags = \
@@ -2033,16 +2033,16 @@ proto.h: \
 	proto/undo.pro \
 	proto/usercmd.pro \
 	proto/userfunc.pro \
-	proto/vim9class.pro \
-	proto/vim9cmds.pro \
-	proto/vim9compile.pro \
-	proto/vim9execute.pro \
-	proto/vim9expr.pro \
-	proto/vim9generics.pro \
-	proto/vim9instr.pro \
-	proto/vim9script.pro \
-	proto/vim9type.pro \
-	proto/viminfo.pro \
+	proto/mnv9class.pro \
+	proto/mnv9cmds.pro \
+	proto/mnv9compile.pro \
+	proto/mnv9execute.pro \
+	proto/mnv9expr.pro \
+	proto/mnv9generics.pro \
+	proto/mnv9instr.pro \
+	proto/mnv9script.pro \
+	proto/mnv9type.pro \
+	proto/mnvinfo.pro \
 	proto/window.pro \
 	$(SOUND_PRO) \
 	$(NETBEANS_PRO) \
@@ -2059,4 +2059,4 @@ proto.h: \
 .c.i:
 	$(CC) $(CFLAGS) /P /C $<
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

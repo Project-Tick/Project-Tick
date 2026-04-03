@@ -1,0 +1,20 @@
+let encoding = &enc
+if encoding == 'latin1'
+    if has("unix")
+	let encoding = 'iso-8859-2'
+    else
+	let encoding = 'cp1250'
+    endif
+endif
+
+if encoding == 'utf-8'
+	source <sfile>:p:h/serbian_utf-8.mnv
+elseif encoding == 'cp1250'
+	source <sfile>:p:h/serbian_cp1250.mnv
+elseif encoding == 'cp1251'
+	source <sfile>:p:h/serbian_cp1251.mnv
+elseif encoding == 'iso-8859-2'
+	source <sfile>:p:h/serbian_iso-8859-2.mnv
+else
+	source <sfile>:p:h/serbian_iso-8859-5.mnv
+endif

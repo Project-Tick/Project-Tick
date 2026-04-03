@@ -1,11 +1,11 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  * Multibyte extensions partly by Sung-Hoon Baek
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * mbyte.c: Code specifically for handling multi-byte characters.
@@ -72,12 +72,12 @@
  * (4) The encoding of the file is specified with 'fileencoding'.  Conversion
  *     is to be done when it's different from 'encoding'.
  *
- * The viminfo file is a special case: Only text is converted, not file names.
- * Vim scripts may contain an ":encoding" command.  This has an effect for
+ * The mnvinfo file is a special case: Only text is converted, not file names.
+ * MNV scripts may contain an ":encoding" command.  This has an effect for
  * some commands, like ":menutrans"
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef WIN32UNIX
 # ifndef WIN32_LEAN_AND_MEAN
@@ -85,7 +85,7 @@
 # endif
 # if defined(FEAT_GUI) || defined(FEAT_XCLIPBOARD)
 #  ifdef __CYGWIN__
-    // ControlMask from <X11/X.h> (included in "vim.h") is conflicting with
+    // ControlMask from <X11/X.h> (included in "mnv.h") is conflicting with
     // <w32api/windows.h> (included in <X11/Xwindows.h>).
 #   undef ControlMask
 #  endif
@@ -427,7 +427,7 @@ enc_canon_props(char_u *name)
     if (i >= 0)
 	return enc_canon_table[i].prop;
 #ifdef MSWIN
-    if (name[0] == 'c' && name[1] == 'p' && VIM_ISDIGIT(name[2]))
+    if (name[0] == 'c' && name[1] == 'p' && MNV_ISDIGIT(name[2]))
     {
 	CPINFO	cpinfo;
 
@@ -473,7 +473,7 @@ mb_init(void)
 #if defined(USE_ICONV) && !defined(MSWIN) && !defined(WIN32UNIX) \
 	&& !defined(MACOS_CONVERT)
 # define LEN_FROM_CONV
-    vimconv_T	vimconv;
+    mnvconv_T	mnvconv;
     char_u	*p;
 #endif
 
@@ -489,7 +489,7 @@ mb_init(void)
     }
 
 #ifdef MSWIN
-    if (p_enc[0] == 'c' && p_enc[1] == 'p' && VIM_ISDIGIT(p_enc[2]))
+    if (p_enc[0] == 'c' && p_enc[1] == 'p' && MNV_ISDIGIT(p_enc[2]))
     {
 	CPINFO	cpinfo;
 
@@ -637,16 +637,16 @@ codepage_invalid:
 #ifdef LEN_FROM_CONV
     // When 'encoding' is different from the current locale mblen() won't
     // work.  Use conversion to "utf-8" instead.
-    vimconv.vc_type = CONV_NONE;
+    mnvconv.vc_type = CONV_NONE;
     if (enc_dbcs)
     {
 	p = enc_locale();
 	if (p == NULL || STRCMP(p, p_enc) != 0)
 	{
-	    convert_setup(&vimconv, p_enc, (char_u *)"utf-8");
-	    vimconv.vc_fail = TRUE;
+	    convert_setup(&mnvconv, p_enc, (char_u *)"utf-8");
+	    mnvconv.vc_fail = TRUE;
 	}
-	vim_free(p);
+	mnv_free(p);
     }
 #endif
 
@@ -684,16 +684,16 @@ codepage_invalid:
 		buf[0] = i;
 		buf[1] = 0;
 #  ifdef LEN_FROM_CONV
-		if (vimconv.vc_type != CONV_NONE)
+		if (mnvconv.vc_type != CONV_NONE)
 		{
 		    /*
 		     * string_convert() should fail when converting the first
 		     * byte of a double-byte character.
 		     */
-		    p = string_convert(&vimconv, (char_u *)buf, NULL);
+		    p = string_convert(&mnvconv, (char_u *)buf, NULL);
 		    if (p != NULL)
 		    {
-			vim_free(p);
+			mnv_free(p);
 			n = 1;
 		    }
 		    else
@@ -708,7 +708,7 @@ codepage_invalid:
 		     * where mblen() returns 0 for invalid character.
 		     * Therefore, following condition includes 0.
 		     */
-		    vim_ignored = mblen(NULL, 0);  // First reset the state.
+		    mnv_ignored = mblen(NULL, 0);  // First reset the state.
 		    if (mblen(buf, (size_t)1) <= 0)
 			n = 2;
 		    else
@@ -723,7 +723,7 @@ codepage_invalid:
     }
 
 #ifdef LEN_FROM_CONV
-    convert_setup(&vimconv, NULL, NULL);
+    convert_setup(&mnvconv, NULL, NULL);
 #endif
 
     // The cell width depends on the type of multi-byte characters.
@@ -739,7 +739,7 @@ codepage_invalid:
 #if defined(HAVE_BIND_TEXTDOMAIN_CODESET) && defined(FEAT_GETTEXT)
     // GNU gettext 0.10.37 supports this feature: set the codeset used for
     // translated messages independently from the current locale.
-    (void)bind_textdomain_codeset(VIMPACKAGE,
+    (void)bind_textdomain_codeset(MNVPACKAGE,
 					  enc_utf8 ? "utf-8" : (char *)p_enc);
 #endif
 
@@ -751,7 +751,7 @@ codepage_invalid:
 #endif
 
     // Fire an autocommand to let people do custom font setup. This must be
-    // after Vim has been setup for the new encoding.
+    // after MNV has been setup for the new encoding.
     apply_autocmds(EVENT_ENCODINGCHANGED, NULL, (char_u *)"", FALSE, curbuf);
 
 #ifdef FEAT_SPELL
@@ -809,7 +809,7 @@ remove_bom(char_u *s)
 
     char_u *p = s;
 
-    while ((p = vim_strbyte(p, 0xef)) != NULL)
+    while ((p = mnv_strbyte(p, 0xef)) != NULL)
     {
 	if (p[1] == 0xbb && p[2] == 0xbf)
 	    STRMOVE(p, p + 3);
@@ -837,9 +837,9 @@ mb_get_class_buf(char_u *p, buf_T *buf)
 {
     if (MB_BYTE2LEN(p[0]) == 1)
     {
-	if (p[0] == NUL || VIM_ISWHITE(p[0]))
+	if (p[0] == NUL || MNV_ISWHITE(p[0]))
 	    return 0;
-	if (vim_iswordc_buf(p[0], buf))
+	if (mnv_iswordc_buf(p[0], buf))
 	    return 2;
 	return 1;
     }
@@ -1165,7 +1165,7 @@ intable(struct interval *table, size_t size, int c)
 }
 
 // Sorted list of non-overlapping intervals of East Asian Ambiguous
-// characters, generated with ../runtime/tools/unicode.vim.
+// characters, generated with ../runtime/tools/unicode.mnv.
 static struct interval ambiguous[] =
 {
     {0x00a1, 0x00a1},
@@ -1373,7 +1373,7 @@ utf_uint2cells(UINT32_T c)
 utf_char2cells(int c)
 {
     // Sorted list of non-overlapping intervals of East Asian double width
-    // characters, generated with ../runtime/tools/unicode.vim.
+    // characters, generated with ../runtime/tools/unicode.mnv.
     static struct interval doublewidth[] =
     {
 	{0x1100, 0x115f},
@@ -1576,7 +1576,7 @@ utf_char2cells(int c)
 	//
 	// Note that these symbols are of varying widths, as they are symbols
 	// representing different things ranging from a simple gear icon to an
-	// airplane. Some of them are in fact wider than double-width, but Vim
+	// airplane. Some of them are in fact wider than double-width, but MNV
 	// doesn't support non-fixed-width font, and tagging them as
 	// double-width is the best way to handle them.
 	//
@@ -1588,7 +1588,7 @@ utf_char2cells(int c)
 #ifdef FEAT_EVAL
     // Use the value from setcellwidths() at 0x80 and higher, unless the
     // character is not printable.
-    if (c >= 0x80 && vim_isprintc(c))
+    if (c >= 0x80 && mnv_isprintc(c))
     {
 	int n = cw_value(c);
 	if (n != 0)
@@ -1607,7 +1607,7 @@ utf_char2cells(int c)
     }
 
     // Characters below 0x100 are influenced by 'isprint' option
-    else if (c >= 0x80 && !vim_isprintc(c))
+    else if (c >= 0x80 && !mnv_isprintc(c))
 	return 4;		// unprintable, displays <xx>
 
     if (c >= 0x80 && *p_ambw == 'd' && intable(ambiguous, sizeof(ambiguous), c))
@@ -2473,7 +2473,7 @@ utf_iscomposing_uint(UINT32_T c)
 utf_iscomposing(int c)
 {
     // Sorted list of non-overlapping intervals.
-    // Generated by ../runtime/tools/unicode.vim.
+    // Generated by ../runtime/tools/unicode.mnv.
     static struct interval combining[] =
     {
 	{0x0300, 0x036f},
@@ -2856,7 +2856,7 @@ utf_printable(int c)
 
 // Sorted list of non-overlapping intervals of all Emoji characters,
 // based on http://unicode.org/emoji/charts/emoji-list.html
-// Generated by ../runtime/tools/unicode.vim.
+// Generated by ../runtime/tools/unicode.mnv.
 // Excludes 0x00a9 and 0x00ae because they are considered latin1.
 static struct interval emoji_all[] =
 {
@@ -3113,7 +3113,7 @@ utf_class_buf(int c, buf_T *buf)
     {
 	if (c == ' ' || c == '\t' || c == NUL || c == 0xa0)
 	    return 0;	    // blank
-	if (vim_iswordc_buf(c, buf))
+	if (mnv_iswordc_buf(c, buf))
 	    return 2;	    // word character
 	return 1;	    // punctuation
     }
@@ -3153,7 +3153,7 @@ utf_ambiguous_width(int c)
  */
 
 /*
- * The following tables are built by ../runtime/tools/unicode.vim.
+ * The following tables are built by ../runtime/tools/unicode.mnv.
  * They must be in numeric order, because we use binary search.
  * An entry such as {0x41,0x5a,1,32} means that Unicode characters in the
  * range from 0x41 to 0x5a inclusive, stepping by 1, are changed to
@@ -4413,26 +4413,26 @@ utf_find_illegal(void)
     pos_T	pos = curwin->w_cursor;
     char_u	*p;
     int		len;
-    vimconv_T	vimconv;
+    mnvconv_T	mnvconv;
     char_u	*tofree = NULL;
 
-    vimconv.vc_type = CONV_NONE;
+    mnvconv.vc_type = CONV_NONE;
     if (enc_utf8 && (enc_canon_props(curbuf->b_p_fenc) & ENC_8BIT))
     {
 	// 'encoding' is "utf-8" but we are editing a 8-bit encoded file,
 	// possibly a utf-8 file with illegal bytes.  Setup for conversion
 	// from utf-8 to 'fileencoding'.
-	convert_setup(&vimconv, p_enc, curbuf->b_p_fenc);
+	convert_setup(&mnvconv, p_enc, curbuf->b_p_fenc);
     }
 
     curwin->w_cursor.coladd = 0;
     for (;;)
     {
 	p = ml_get_cursor();
-	if (vimconv.vc_type != CONV_NONE)
+	if (mnvconv.vc_type != CONV_NONE)
 	{
-	    vim_free(tofree);
-	    tofree = string_convert(&vimconv, p, NULL);
+	    mnv_free(tofree);
+	    tofree = string_convert(&mnvconv, p, NULL);
 	    if (tofree == NULL)
 		break;
 	    p = tofree;
@@ -4446,7 +4446,7 @@ utf_find_illegal(void)
 	    if (*p >= 0x80 && (len == 1
 				     || utf_char2len(utf_ptr2char(p)) != len))
 	    {
-		if (vimconv.vc_type == CONV_NONE)
+		if (mnvconv.vc_type == CONV_NONE)
 		    curwin->w_cursor.col += (colnr_T)(p - ml_get_cursor());
 		else
 		{
@@ -4474,8 +4474,8 @@ utf_find_illegal(void)
     beep_flush();
 
 theend:
-    vim_free(tofree);
-    convert_setup(&vimconv, NULL, NULL);
+    mnv_free(tofree);
+    convert_setup(&mnvconv, NULL, NULL);
 }
 
 #if defined(FEAT_GUI_GTK) || defined(FEAT_SPELL) || defined(FEAT_EVAL)
@@ -4557,7 +4557,7 @@ mb_adjustpos(buf_T *buf, pos_T *lp)
 	// double-wide character.
 	if (lp->coladd == 1
 		&& p[lp->col] != TAB
-		&& vim_isprintc((*mb_ptr2char)(p + lp->col))
+		&& mnv_isprintc((*mb_ptr2char)(p + lp->col))
 		&& ptr2cells(p + lp->col) > 1)
 	    lp->coladd = 0;
     }
@@ -4711,7 +4711,7 @@ mb_fix_col(int col, int row)
 static int enc_alias_search(char_u *name);
 
 /*
- * Skip the Vim specific head of a 'encoding' name.
+ * Skip the MNV specific head of a 'encoding' name.
  */
     char_u *
 enc_skip(char_u *p)
@@ -4747,7 +4747,7 @@ enc_canonize(char_u *enc)
 #endif
 	if (r == NULL)
 	    r = (char_u *)ENC_DFLT;
-	return vim_strsave(r);
+	return mnv_strsave(r);
     }
 
     // copy "enc" to allocated memory, with room for two '-'
@@ -4800,8 +4800,8 @@ enc_canonize(char_u *enc)
     else if ((i = enc_alias_search(p)) >= 0)
     {
 	// alias recognized, get canonical name
-	vim_free(r);
-	r = vim_strsave((char_u *)enc_canon_table[i].name);
+	mnv_free(r);
+	r = mnv_strsave((char_u *)enc_canon_table[i].name);
     }
     return r;
 }
@@ -4826,7 +4826,7 @@ enc_alias_search(char_u *name)
 # include <langinfo.h>
 #endif
 
-#if !defined(FEAT_GUI_MSWIN) || defined(VIMDLL)
+#if !defined(FEAT_GUI_MSWIN) || defined(MNVDLL)
 /*
  * Get the canonicalized encoding from the specified locale string "locale"
  * or from the environment variables LC_ALL, LC_CTYPE and LANG.
@@ -4855,7 +4855,7 @@ enc_locale_env(char *locale)
     // Make the name lowercase and replace '_' with '-'.
     // Exception: "ja_JP.EUC" == "euc-jp", "zh_CN.EUC" = "euc-cn",
     // "ko_KR.EUC" == "euc-kr"
-    if ((p = (char *)vim_strchr((char_u *)s, '.')) != NULL)
+    if ((p = (char *)mnv_strchr((char_u *)s, '.')) != NULL)
     {
 	if (p > s + 2 && STRNICMP(p + 1, "EUC", 3) == 0
 			&& !SAFE_isalnum((int)p[4]) && p[4] != '-' && p[-3] == '_')
@@ -5013,7 +5013,7 @@ my_iconv_open(char_u *to, char_u *from)
  */
     static char_u *
 iconv_string(
-    vimconv_T	*vcp,
+    mnvconv_T	*vcp,
     char_u	*str,
     int		slen,
     int		*unconvlenp,
@@ -5041,7 +5041,7 @@ iconv_string(
 	    p = alloc(len);
 	    if (p != NULL && done > 0)
 		mch_memmove(p, result, done);
-	    vim_free(result);
+	    mnv_free(result);
 	    result = p;
 	    if (result == NULL)	// out of memory
 		break;
@@ -5096,7 +5096,7 @@ iconv_string(
 	else if (ICONV_ERRNO != ICONV_E2BIG)
 	{
 	    // conversion failed
-	    VIM_CLEAR(result);
+	    MNV_CLEAR(result);
 	    break;
 	}
 	// Not enough room or skipping illegal sequence.
@@ -5142,21 +5142,21 @@ iconv_enabled(int verbose)
     // Do the "2" version first, it's newer.
 #  ifdef DYNAMIC_ICONV_DLL_ALT2
     if (hIconvDLL == 0)
-	hIconvDLL = vimLoadLib(DYNAMIC_ICONV_DLL_ALT2);
+	hIconvDLL = mnvLoadLib(DYNAMIC_ICONV_DLL_ALT2);
 #  endif
 #  ifdef DYNAMIC_ICONV_DLL_ALT3
     if (hIconvDLL == 0)
-	hIconvDLL = vimLoadLib(DYNAMIC_ICONV_DLL_ALT3);
+	hIconvDLL = mnvLoadLib(DYNAMIC_ICONV_DLL_ALT3);
 #  endif
     if (hIconvDLL == 0)
-	hIconvDLL = vimLoadLib(DYNAMIC_ICONV_DLL);
+	hIconvDLL = mnvLoadLib(DYNAMIC_ICONV_DLL);
 #  ifdef DYNAMIC_ICONV_DLL_ALT1
     if (hIconvDLL == 0)
-	hIconvDLL = vimLoadLib(DYNAMIC_ICONV_DLL_ALT1);
+	hIconvDLL = mnvLoadLib(DYNAMIC_ICONV_DLL_ALT1);
 #  endif
 
     if (hIconvDLL != 0)
-	hMsvcrtDLL = vimLoadLib(DYNAMIC_MSVCRT_DLL);
+	hMsvcrtDLL = mnvLoadLib(DYNAMIC_MSVCRT_DLL);
     if (hIconvDLL == 0 || hMsvcrtDLL == 0)
     {
 	// Only give the message when 'verbose' is set, otherwise it might be
@@ -5240,12 +5240,12 @@ f_iconv(typval_T *argvars UNUSED, typval_T *rettv)
     char_u	buf1[NUMBUFLEN];
     char_u	buf2[NUMBUFLEN];
     char_u	*from, *to, *str;
-    vimconv_T	vimconv;
+    mnvconv_T	mnvconv;
 
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL
 		|| check_for_string_arg(argvars, 2) == FAIL))
@@ -5254,18 +5254,18 @@ f_iconv(typval_T *argvars UNUSED, typval_T *rettv)
     str = tv_get_string(&argvars[0]);
     from = enc_canonize(enc_skip(tv_get_string_buf(&argvars[1], buf1)));
     to = enc_canonize(enc_skip(tv_get_string_buf(&argvars[2], buf2)));
-    vimconv.vc_type = CONV_NONE;
-    convert_setup(&vimconv, from, to);
+    mnvconv.vc_type = CONV_NONE;
+    convert_setup(&mnvconv, from, to);
 
     // If the encodings are equal, no conversion needed.
-    if (vimconv.vc_type == CONV_NONE)
-	rettv->vval.v_string = vim_strsave(str);
+    if (mnvconv.vc_type == CONV_NONE)
+	rettv->vval.v_string = mnv_strsave(str);
     else
-	rettv->vval.v_string = string_convert(&vimconv, str, NULL);
+	rettv->vval.v_string = string_convert(&mnvconv, str, NULL);
 
-    convert_setup(&vimconv, NULL, NULL);
-    vim_free(from);
-    vim_free(to);
+    convert_setup(&mnvconv, NULL, NULL);
+    mnv_free(from);
+    mnv_free(to);
 }
 #endif
 
@@ -5279,7 +5279,7 @@ f_iconv(typval_T *argvars UNUSED, typval_T *rettv)
  * Return FAIL when conversion is not supported, OK otherwise.
  */
     int
-convert_setup(vimconv_T *vcp, char_u *from, char_u *to)
+convert_setup(mnvconv_T *vcp, char_u *from, char_u *to)
 {
     return convert_setup_ext(vcp, from, TRUE, to, TRUE);
 }
@@ -5290,7 +5290,7 @@ convert_setup(vimconv_T *vcp, char_u *from, char_u *to)
  */
     int
 convert_setup_ext(
-    vimconv_T	*vcp,
+    mnvconv_T	*vcp,
     char_u	*from,
     int		from_unicode_is_utf8,
     char_u	*to,
@@ -5449,7 +5449,7 @@ convert_input_safe(
 	// result is too long, keep the unconverted text (the caller must
 	// have done something wrong!)
 	dlen = len;
-    vim_free(d);
+    mnv_free(d);
     return dlen;
 }
 
@@ -5462,7 +5462,7 @@ convert_input_safe(
  */
     char_u *
 string_convert(
-    vimconv_T	*vcp,
+    mnvconv_T	*vcp,
     char_u	*ptr,
     int		*lenp)
 {
@@ -5476,7 +5476,7 @@ string_convert(
  */
     char_u *
 string_convert_ext(
-    vimconv_T	*vcp,
+    mnvconv_T	*vcp,
     char_u	*ptr,
     int		*lenp,
     int		*unconvlenp)
@@ -5493,7 +5493,7 @@ string_convert_ext(
     else
 	len = *lenp;
     if (len == 0)
-	return vim_strsave((char_u *)"");
+	return mnv_strsave((char_u *)"");
 
     switch (vcp->vc_type)
     {
@@ -5562,7 +5562,7 @@ string_convert_ext(
 		    if (l_w == 0)
 		    {
 			// Illegal utf-8 byte cannot be converted
-			vim_free(retval);
+			mnv_free(retval);
 			return NULL;
 		    }
 		    if (unconvlenp != NULL && l_w > len - i)
@@ -5602,7 +5602,7 @@ string_convert_ext(
 			    *d++ = c;
 			else if (vcp->vc_fail)
 			{
-			    vim_free(retval);
+			    mnv_free(retval);
 			    return NULL;
 			}
 			else
@@ -5703,7 +5703,7 @@ string_convert_ext(
 		if (lenp != NULL)
 		    *lenp = retlen;
 	    }
-	    vim_free(tmp);
+	    mnv_free(tmp);
 	    break;
 	}
 #endif
@@ -5821,7 +5821,7 @@ f_setcellwidths(typval_T *argvars, typval_T *rettv UNUSED)
 	if (li->li_tv.v_type != VAR_LIST || li->li_tv.vval.v_list == NULL)
 	{
 	    semsg(_(e_list_item_nr_is_not_list), item);
-	    vim_free(ptrs);
+	    mnv_free(ptrs);
 	    return;
 	}
 
@@ -5837,28 +5837,28 @@ f_setcellwidths(typval_T *argvars, typval_T *rettv UNUSED)
 		if (n1 < 0x80)
 		{
 		    emsg(_(e_only_values_of_0x80_and_higher_supported));
-		    vim_free(ptrs);
+		    mnv_free(ptrs);
 		    return;
 		}
 	    }
 	    else if (i == 1 && lili->li_tv.vval.v_number < n1)
 	    {
 		semsg(_(e_list_item_nr_range_invalid), item);
-		vim_free(ptrs);
+		mnv_free(ptrs);
 		return;
 	    }
 	    else if (i == 2 && (lili->li_tv.vval.v_number < 1
 					     || lili->li_tv.vval.v_number > 2))
 	    {
 		semsg(_(e_list_item_nr_cell_width_invalid), item);
-		vim_free(ptrs);
+		mnv_free(ptrs);
 		return;
 	    }
 	}
 	if (i != 3)
 	{
 	    semsg(_(e_list_item_nr_does_not_contain_3_numbers), item);
-	    vim_free(ptrs);
+	    mnv_free(ptrs);
 	    return;
 	}
 	++item;
@@ -5870,7 +5870,7 @@ f_setcellwidths(typval_T *argvars, typval_T *rettv UNUSED)
     table = ALLOC_MULT(cw_interval_T, table_size);
     if (table == NULL)
     {
-	vim_free(ptrs);
+	mnv_free(ptrs);
 	return;
     }
 
@@ -5884,8 +5884,8 @@ f_setcellwidths(typval_T *argvars, typval_T *rettv UNUSED)
 	if (item > 0 && n1 <= table[item - 1].last)
 	{
 	    semsg(_(e_overlapping_ranges_for_nr), (long)n1);
-	    vim_free(ptrs);
-	    vim_free(table);
+	    mnv_free(ptrs);
+	    mnv_free(table);
 	    return;
 	}
 	table[item].first = n1;
@@ -5895,7 +5895,7 @@ f_setcellwidths(typval_T *argvars, typval_T *rettv UNUSED)
 	table[item].width = lili->li_tv.vval.v_number;
     }
 
-    vim_free(ptrs);
+    mnv_free(ptrs);
 
 update:
     cw_table_save = cw_table;
@@ -5911,11 +5911,11 @@ update:
 	emsg(_(error));
 	cw_table = cw_table_save;
 	cw_table_size = cw_table_size_save;
-	vim_free(table);
+	mnv_free(table);
 	return;
     }
 
-    vim_free(cw_table_save);
+    mnv_free(cw_table_save);
     changed_window_setting_all();
     redraw_all_later(UPD_CLEAR);
 }

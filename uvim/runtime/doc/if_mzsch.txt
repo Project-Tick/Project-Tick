@@ -1,21 +1,21 @@
-*if_mzsch.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*if_mzsch.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Sergey Khorev
+		  MNV REFERENCE MANUAL	  by Sergey Khorev
 
 
-The MzScheme Interface to Vim				*mzscheme* *MzScheme*
+The MzScheme Interface to MNV				*mzscheme* *MzScheme*
 
 1. Commands				|mzscheme-commands|
 2. Examples				|mzscheme-examples|
 3. Threads				|mzscheme-threads|
-4. Vim access from MzScheme		|mzscheme-vim|
-5. mzeval() Vim function		|mzscheme-mzeval|
+4. MNV access from MzScheme		|mzscheme-mnv|
+5. mzeval() MNV function		|mzscheme-mzeval|
 6. Using Function references		|mzscheme-funcref|
 7. Dynamic loading			|mzscheme-dynamic|
 8. MzScheme setup			|mzscheme-setup|
 
-{only available when Vim was compiled with the |+mzscheme| feature}
+{only available when MNV was compiled with the |+mzscheme| feature}
 
 Based on the work of Brent Fulgham.
 Dynamic loading added by Sergey Khorev
@@ -24,7 +24,7 @@ MzScheme and PLT Scheme names have been rebranded as Racket.  For more
 information please check http://racket-lang.org
 
 Futures and places of Racket version 5.x up to and including 5.3.1 do not
-work correctly with processes created by Vim.
+work correctly with processes created by MNV.
 The simplest solution is to build Racket on your own with these features
 disabled: >
   ./configure --disable-futures --disable-places --prefix=your-install-prefix
@@ -63,8 +63,8 @@ range.
 In the case of :mzscheme, the code to execute is in the command-line.
 In the case of :mzfile, the code to execute is the contents of the given file.
 
-MzScheme interface defines exception exn:vim, derived from exn.
-It is raised for various Vim errors.
+MzScheme interface defines exception exn:mnv, derived from exn.
+It is raised for various MNV errors.
 
 During compilation, the MzScheme interface will remember the current MzScheme
 collection path.  If you want to specify additional paths use the
@@ -78,18 +78,18 @@ MzScheme collection path: >
     EOF
 <
 
-All functionality is provided through module vimext.
+All functionality is provided through module mnvext.
 
-The exn:vim is available without explicit import.
+The exn:mnv is available without explicit import.
 
 To avoid clashes with MzScheme, consider using prefix when requiring module,
 e.g.: >
-	:mzscheme (require (prefix vim- vimext))
+	:mzscheme (require (prefix mnv- mnvext))
 <
 All the examples below assume this naming scheme.
 
 							*mzscheme-sandbox*
-When executed in the |sandbox|, access to some filesystem and Vim interface
+When executed in the |sandbox|, access to some filesystem and MNV interface
 procedures is restricted.
 
 ==============================================================================
@@ -97,9 +97,9 @@ procedures is restricted.
 >
 	:mzscheme (display "Hello")
 	:mz (display (string-append "Using MzScheme version " (version)))
-	:mzscheme (require (prefix vim- vimext)) ; for MzScheme < 4.x
-	:mzscheme (require (prefix-in vim- 'vimext)) ; MzScheme 4.x
-	:mzscheme (vim-set-buff-line 10 "This is line #10")
+	:mzscheme (require (prefix mnv- mnvext)) ; for MzScheme < 4.x
+	:mzscheme (require (prefix-in mnv- 'mnvext)) ; MzScheme 4.x
+	:mzscheme (mnv-set-buff-line 10 "This is line #10")
 
 To see what version of MzScheme you have: >
 	:mzscheme (display (version))
@@ -108,10 +108,10 @@ Inline script usage: >
 	function! <SID>SetFirstLine()
 	    :mz << EOF
 	    (display "!!!")
-	    (require (prefix vim- vimext))
-	    ; for newer versions (require (prefix-in vim- 'vimext))
-	    (vim-set-buff-line 1 "This is line #1")
-	    (vim-beep)
+	    (require (prefix mnv- mnvext))
+	    ; for newer versions (require (prefix-in mnv- 'mnvext))
+	    (mnv-set-buff-line 1 "This is line #1")
+	    (mnv-beep)
 	EOF
 	endfunction
 
@@ -120,26 +120,26 @@ Inline script usage: >
 File execution: >
 	:mzfile supascript.scm
 <
-Vim exception handling: >
+MNV exception handling: >
 	:mz << EOF
-	(require (prefix vim- vimext))
-	; for newer versions (require (prefix-in vim- 'vimext))
+	(require (prefix mnv- mnvext))
+	; for newer versions (require (prefix-in mnv- 'mnvext))
 	(with-handlers
-	  ([exn:vim? (lambda (e) (display (exn-message e)))])
-	  (vim-eval "nonsense-string"))
+	  ([exn:mnv? (lambda (e) (display (exn-message e)))])
+	  (mnv-eval "nonsense-string"))
 	EOF
 <
-Auto-instantiation of vimext module (can be placed in your |vimrc|): >
+Auto-instantiation of mnvext module (can be placed in your |mnvrc|): >
     function! MzRequire()
 	:redir => l:mzversion
 	:mz (version)
 	:redir END
 	if strpart(l:mzversion, 1, 1) < "4"
 	    " MzScheme versions < 4.x:
-	    :mz (require (prefix vim- vimext))
+	    :mz (require (prefix mnv- mnvext))
 	else
 	    " newer versions:
-	    :mz (require (prefix-in vim- 'vimext))
+	    :mz (require (prefix-in mnv- 'mnvext))
 	endif
     endfunction
 
@@ -152,22 +152,22 @@ Auto-instantiation of vimext module (can be placed in your |vimrc|): >
 
 The MzScheme interface supports threads.  They are independent from OS
 threads, thus scheduling is required.  The option 'mzquantum' determines how
-often Vim should poll for available MzScheme threads.
+often MNV should poll for available MzScheme threads.
 NOTE
-Thread scheduling in the console version of Vim is less reliable than in the
+Thread scheduling in the console version of MNV is less reliable than in the
 GUI version.
 
 ==============================================================================
-4. Vim access from MzScheme				*mzscheme-vim*
+4. MNV access from MzScheme				*mzscheme-mnv*
 
-							*mzscheme-vimext*
-The 'vimext' module provides access to procedures defined in the MzScheme
+							*mzscheme-mnvext*
+The 'mnvext' module provides access to procedures defined in the MzScheme
 interface.
 
 Common
 ------
-    (command {command-string})	    Perform the vim ":Ex" style command.
-    (eval {expr-string})	    Evaluate the vim expression into
+    (command {command-string})	    Perform the mnv ":Ex" style command.
+    (eval {expr-string})	    Evaluate the mnv expression into
 				    respective MzScheme object: |Lists| are
 				    represented as Scheme lists,
 				    |Dictionaries| as hash tables,
@@ -178,10 +178,10 @@ Common
     (range-start)		    Start/End of the range passed with
     (range-end)			    the Scheme command.
     (beep)			    beep
-    (get-option {option-name} [buffer-or-window]) Get Vim option value (either
+    (get-option {option-name} [buffer-or-window]) Get MNV option value (either
 				    local or global, see set-option).
     (set-option {string} [buffer-or-window])
-				    Set a Vim option.  String must have option
+				    Set a MNV option.  String must have option
 				    setting form (like optname=optval, or
 				    optname+=optval, etc.) When called with
 				    {buffer} or {window} the local option will
@@ -193,7 +193,7 @@ Buffers							 *mzscheme-buffer*
 -------
     (buff? {object})		    Is object a buffer?
     (buff-valid? {object})	    Is object a valid buffer? (i.e.
-				    corresponds to the real Vim buffer)
+				    corresponds to the real MNV buffer)
     (get-buff-line {linenr} [buffer])
 				    Get line from a buffer.
     (set-buff-line {linenr} {string} [buffer])
@@ -234,7 +234,7 @@ Windows							    *mzscheme-window*
 ------
     (win? {object})		    Is object a window?
     (win-valid? {object})	    Is object a valid window (i.e. corresponds
-				    to the real Vim window)?
+				    to the real MNV window)?
     (curr-win)			    Get the current window.
     (win-count)			    Get count of windows.
     (get-win-num [window])	    Get window number.
@@ -250,24 +250,24 @@ Windows							    *mzscheme-window*
     (set-cursor (line . col) [window])  Set cursor position.
 
 ==============================================================================
-5. mzeval() Vim function				    *mzscheme-mzeval*
+5. mzeval() MNV function				    *mzscheme-mzeval*
 
 To facilitate bi-directional interface, you can use |mzeval()| function to
-evaluate MzScheme expressions and pass their values to Vim script.
+evaluate MzScheme expressions and pass their values to MNV script.
 
 ==============================================================================
 6. Using Function references				    *mzscheme-funcref*
 
-MzScheme interface allows use of |Funcref|s so you can call Vim functions
+MzScheme interface allows use of |Funcref|s so you can call MNV functions
 directly from Scheme.  For instance: >
     function! MyAdd2(arg)
 	return a:arg + 2
     endfunction
-    mz (define f2 (vim-eval "function(\"MyAdd2\")"))
+    mz (define f2 (mnv-eval "function(\"MyAdd2\")"))
     mz (f2 7)
 < or : >
-    :mz (define indent (vim-eval "function('indent')"))
-    " return Vim indent for line 12
+    :mz (define indent (mnv-eval "function('indent')"))
+    " return MNV indent for line 12
     :mz (indent 12)
 <
 
@@ -277,12 +277,12 @@ directly from Scheme.  For instance: >
 On MS-Windows the MzScheme libraries can be loaded dynamically.  The |:version|
 output then includes |+mzscheme/dyn|.
 
-This means that Vim will search for the MzScheme DLL files only when needed.
+This means that MNV will search for the MzScheme DLL files only when needed.
 When you don't use the MzScheme interface you don't need them, thus you can
-use Vim without these DLL files.
+use MNV without these DLL files.
 NOTE: Newer version of MzScheme (Racket) require earlier (trampolined)
-initialisation via scheme_main_setup.  So Vim always loads the MzScheme DLL at
-startup if possible.  This may make Vim startup slower.
+initialisation via scheme_main_setup.  So MNV always loads the MzScheme DLL at
+startup if possible.  This may make MNV startup slower.
 
 To use the MzScheme interface the MzScheme DLLs must be in your search path.
 In a console window type "path" to see what directories are used.
@@ -290,7 +290,7 @@ In a console window type "path" to see what directories are used.
 On MS-Windows the options 'mzschemedll' and 'mzschemegcdll' are used for the
 name of the library to load.  The initial value is specified at build time.
 
-The version of the DLL must match the MzScheme version Vim was compiled with.
+The version of the DLL must match the MzScheme version MNV was compiled with.
 For MzScheme version 209 they will be "libmzsch209_000.dll" and
 "libmzgc209_000.dll".  To know for sure look at the output of the ":version"
 command, look for -DDYNAMIC_MZSCH_DLL="something" and
@@ -306,9 +306,9 @@ to set the environment variable as the following: >
 ==============================================================================
 8. MzScheme setup				    *mzscheme-setup* *E895*
 
-Vim requires "racket/base" module for if_mzsch core (fallback to "scheme/base"
+MNV requires "racket/base" module for if_mzsch core (fallback to "scheme/base"
 if it doesn't exist), "r5rs" module for test and "raco ctool" command for
-building Vim.  If MzScheme did not have them, you can install them with
+building MNV.  If MzScheme did not have them, you can install them with
 MzScheme's raco command:
 >
   raco pkg install scheme-lib       # scheme/base module
@@ -316,4 +316,4 @@ MzScheme's raco command:
   raco pkg install cext-lib         # raco ctool command
 <
 ======================================================================
-  vim:tw=78:ts=8:noet:sts=4:ft=help:norl:
+  mnv:tw=78:ts=8:noet:sts=4:ft=help:norl:

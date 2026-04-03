@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * crypt.c: Generic encryption support.
  */
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_CRYPT)
 /*
@@ -92,7 +92,7 @@ static cryptmethod_T cryptmethods[CRYPT_M_COUNT] = {
     // PK_Zip; very weak
     {
 	"zip",
-	"VimCrypt~01!",
+	"MNVCrypt~01!",
 	0,
 	0,
 	0,
@@ -110,7 +110,7 @@ static cryptmethod_T cryptmethods[CRYPT_M_COUNT] = {
     // Blowfish/CFB + SHA-256 custom key derivation; implementation issues.
     {
 	"blowfish",
-	"VimCrypt~02!",
+	"MNVCrypt~02!",
 	8,
 	8,
 	0,
@@ -128,7 +128,7 @@ static cryptmethod_T cryptmethods[CRYPT_M_COUNT] = {
     // Blowfish/CFB + SHA-256 custom key derivation; fixed.
     {
 	"blowfish2",
-	"VimCrypt~03!",
+	"MNVCrypt~03!",
 	8,
 	8,
 	0,
@@ -146,7 +146,7 @@ static cryptmethod_T cryptmethods[CRYPT_M_COUNT] = {
     // XChaCha20 using libsodium; implementation issues
     {
 	"xchacha20",
-	"VimCrypt~04!",
+	"MNVCrypt~04!",
 #ifdef FEAT_SODIUM
 	crypto_pwhash_argon2id_SALTBYTES, // 16
 #else
@@ -167,7 +167,7 @@ static cryptmethod_T cryptmethods[CRYPT_M_COUNT] = {
     // XChaCha20 using libsodium; stores parameters in header
     {
 	"xchacha20v2",
-	"VimCrypt~05!",
+	"MNVCrypt~05!",
 #ifdef FEAT_SODIUM
 	crypto_pwhash_argon2id_SALTBYTES, // 16
 #else
@@ -204,7 +204,7 @@ typedef struct {
 # ifdef DYNAMIC_SODIUM
 #  ifdef MSWIN
 #   define SODIUM_PROC FARPROC
-#   define load_dll vimLoadLib
+#   define load_dll mnvLoadLib
 #   define symbol_from_dll GetProcAddress
 #   define close_dll FreeLibrary
 #   define load_dll_error GetWin32Error
@@ -342,7 +342,7 @@ sodium_enabled(int verbose)
 #endif
 
 #define CRYPT_MAGIC_LEN	12	// cannot change
-static char	crypt_magic_head[] = "VimCrypt~";
+static char	crypt_magic_head[] = "MNVCrypt~";
 
 /*
  * Return int value for crypt method name.
@@ -466,7 +466,7 @@ crypt_get_max_header_len(void)
 crypt_set_cm_option(buf_T *buf, int method_nr)
 {
     free_string_option(buf->b_p_cm);
-    buf->b_p_cm = vim_strsave((char_u *)cryptmethods[method_nr].name);
+    buf->b_p_cm = mnv_strsave((char_u *)cryptmethods[method_nr].name);
 }
 
 /*
@@ -501,7 +501,7 @@ crypt_create(
     state->method_nr = method_nr;
     if (cryptmethods[method_nr].init_fn(state, key, crypt_arg) == FAIL)
     {
-	vim_free(state);
+	mnv_free(state);
 	return NULL;
     }
     return state;
@@ -564,12 +564,12 @@ crypt_create_from_file(FILE *fp, char_u *key)
 	    && fread(buffer + CRYPT_MAGIC_LEN,
 				    header_len - CRYPT_MAGIC_LEN, 1, fp) != 1)
     {
-	vim_free(buffer);
+	mnv_free(buffer);
 	return NULL;
     }
 
     state = crypt_create_from_header(method_nr, key, buffer);
-    vim_free(buffer);
+    mnv_free(buffer);
     return state;
 }
 
@@ -630,7 +630,7 @@ crypt_create_for_writing(
     }
     state = crypt_create(method_nr, key, &arg);
     if (state == NULL)
-	VIM_CLEAR(*header);
+	MNV_CLEAR(*header);
     return state;
 }
 
@@ -650,8 +650,8 @@ crypt_free_state(cryptstate_T *state)
     }
     else
 #endif
-	vim_free(state->method_state);
-    vim_free(state);
+	mnv_free(state->method_state);
+    mnv_free(state);
 }
 
 #ifdef CRYPT_NOT_INPLACE
@@ -781,7 +781,7 @@ crypt_decode_inplace(
 crypt_free_key(char_u *key)
 {
     // Create a safe memset which cannot be optimized away by compiler
-    static void *(* volatile vim_memset_safe)(void *s, int c, size_t n) =
+    static void *(* volatile mnv_memset_safe)(void *s, int c, size_t n) =
 	memset;
     if (key != NULL)
     {
@@ -790,8 +790,8 @@ crypt_free_key(char_u *key)
 	    sodium_memzero(key, STRLEN(key));
 	else
 #endif
-	    vim_memset_safe(key, 0, STRLEN(key));
-	vim_free(key);
+	    mnv_memset_safe(key, 0, STRLEN(key));
+	mnv_free(key);
     }
 }
 
@@ -979,7 +979,7 @@ crypt_sodium_init_(
 	{
 	    char_u	buffer[20];
 	    char_u	*p = buffer;
-	    vim_memset(buffer, 0, 20);
+	    mnv_memset(buffer, 0, 20);
 
 	    crypt_long_long_to_char(opslimit, p);
 	    p += sizeof(opslimit);
@@ -995,7 +995,7 @@ crypt_sodium_init_(
     {
 	char_u	buffer[20];
 	char_u	*p = buffer;
-	vim_memset(buffer, 0, 20);
+	mnv_memset(buffer, 0, 20);
 	int	size = sizeof(opslimit) +
 	    sizeof(memlimit) + sizeof(alg);
 
@@ -1173,7 +1173,7 @@ crypt_sodium_decode(
 	mch_memmove(p2, buf_out, buf_len);
 
 fail:
-    vim_free(buf_out);
+    mnv_free(buf_out);
 # endif
 }
 #endif

@@ -1,7 +1,7 @@
-*usr_51.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_51.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			      Write plugins
@@ -9,22 +9,22 @@
 
 Plugins can be used to define settings for a specific type of file, syntax
 highlighting and many other things.  This chapter explains how to write the
-most common Vim plugins.
+most common MNV plugins.
 
 |51.1|	Writing a generic plugin
 |51.2|	Writing a filetype plugin
 |51.3|	Writing a compiler plugin
-|51.4|	Distributing Vim scripts
+|51.4|	Distributing MNV scripts
 
      Next chapter: |usr_52.txt|  Write large plugins
- Previous chapter: |usr_50.txt|  Advanced Vim script writing
+ Previous chapter: |usr_50.txt|  Advanced MNV script writing
 Table of contents: |usr_toc.txt|
 
 ==============================================================================
 *51.1*	Writing a generic plugin			*write-plugin*
 
-You can write a Vim script in such a way that many people can use it.  This is
-called a plugin.  Vim users can drop your script in their plugin directory and
+You can write a MNV script in such a way that many people can use it.  This is
+called a plugin.  MNV users can drop your script in their plugin directory and
 use its features right away |add-plugin|.
 
 There are actually two types of plugins:
@@ -36,8 +36,8 @@ In this section the first type is explained.  Most items are also relevant for
 writing filetype plugins.  The specifics for filetype plugins are in the next
 section |write-filetype-plugin|.
 
-We will use |Vim9| syntax here, the recommended way to write new plugins.
-Make sure the file starts with the `vim9script` command.
+We will use |MNV9| syntax here, the recommended way to write new plugins.
+Make sure the file starts with the `mnv9script` command.
 
 
 NAME
@@ -47,7 +47,7 @@ by the plugin should be clear from its name.  And it should be unlikely that
 someone else writes a plugin with the same name but which does something
 different.
 
-A script that corrects typing mistakes could be called "typecorrect.vim".  We
+A script that corrects typing mistakes could be called "typecorrect.mnv".  We
 will use it here as an example.
 
 For the plugin to work for everybody, it should follow a few guidelines.  This
@@ -72,14 +72,14 @@ in your plugin file!
 
 FIRST LINE
 >
-  1	vim9script noclear
+  1	mnv9script noclear
 
-You need to use `vim9script` as the very first command.  Best is to put it in
+You need to use `mnv9script` as the very first command.  Best is to put it in
 the very first line.
 
 The script we are writing will have a `finish` command to bail out when it is
 loaded a second time.  To avoid that the items defined in the script are lost
-the "noclear" argument is used.  More info about this at |vim9-reload|.
+the "noclear" argument is used.  More info about this at |mnv9-reload|.
 
 
 HEADER
@@ -89,13 +89,13 @@ versions lying around.  And when distributing this file, people will want to
 know who wrote this wonderful plugin and where they can send remarks.
 Therefore, put a header at the top of your plugin: >
 
-  2	# Vim global plugin for correcting typing mistakes
+  2	# MNV global plugin for correcting typing mistakes
   3	# Last Change:	2021 Dec 30
-  4	# Maintainer:	Bram Moolenaar <Bram@vim.org>
+  4	# Maintainer:	Bram Moolenaar <Bram@mnv.org>
 
 About copyright and licensing: Since plugins are very useful and it's hardly
 worth restricting their distribution, please consider making your plugin
-either public domain or use the Vim |license|.  A short note about this near
+either public domain or use the MNV |license|.  A short note about this near
 the top of the plugin should be sufficient.  Example: >
 
   5	# License:	This file is placed in the public domain.
@@ -121,8 +121,8 @@ the plugin, literally.  The "g:" is prepended to make the variable global, so
 that other places can check whether its functionality is available.  Without
 "g:" it would be local to the script.
 
-Using `finish` stops Vim from reading the rest of the file, it's much quicker
-than using if-endif around the whole file, since Vim would still need to parse
+Using `finish` stops MNV from reading the rest of the file, it's much quicker
+than using if-endif around the whole file, since MNV would still need to parse
 the commands to find the `endif`.
 
 
@@ -158,7 +158,7 @@ that with this mechanism: >
 
 This checks if a mapping to "<Plug>TypecorrAdd;" already exists, and only
 defines the mapping from "<Leader>a" if it doesn't.  The user then has a
-chance of putting this in their vimrc file: >
+chance of putting this in their mnvrc file: >
 
 	map ,c  <Plug>TypecorrAdd;
 
@@ -172,7 +172,7 @@ can use functions or mappings for this.  But you don't want these functions
 and mappings to interfere with the ones from other scripts.  For example, you
 could define a function Add(), but another script could try to define the same
 function.  To avoid this, we define the function local to the script.
-Fortunately, in |Vim9| script this is the default.  In a legacy script you
+Fortunately, in |MNV9| script this is the default.  In a legacy script you
 would need to prefix the name with "s:".
 
 We will define a function that adds a new typing correction: >
@@ -204,7 +204,7 @@ thus define another mapping.
 
 Note that instead of Add() we use <SID>Add() here.  That is because the
 mapping is typed by the user, thus outside of the script context.  The <SID>
-is translated to the script ID, so that Vim knows in which script to look for
+is translated to the script ID, so that MNV knows in which script to look for
 the Add() function.
 
 This is a bit complicated, but it's required for the plugin to work together
@@ -245,7 +245,7 @@ difference between using <SID> and <Plug>:
 	mapname is uppercase, so that we can see where mapname starts.
 
 <SID>	is the script ID, a unique identifier for a script.
-	Internally Vim translates <SID> to "<SNR>123_", where "123" can be any
+	Internally MNV translates <SID> to "<SNR>123_", where "123" can be any
 	number.  Thus a function "<SID>Add()" will have a name "<SNR>11_Add()"
 	in one script, and "<SNR>22_Add()" in another.  You can see this if
 	you use the ":function" command to get a list of functions.  The
@@ -275,10 +275,10 @@ SCRIPT VARIABLES
 When a variable starts with "s:" it is a script variable.  It can only be used
 inside a script.  Outside the script it's not visible.  This avoids trouble
 with using the same variable name in different scripts.  The variables will be
-kept as long as Vim is running.  And the same variables are used when sourcing
+kept as long as MNV is running.  And the same variables are used when sourcing
 the same script again. |s:var|
 
-The nice thing about |Vim9| script is that variables are local to the script
+The nice thing about |MNV9| script is that variables are local to the script
 by default.  You can prepend "s:" if you like, but you do not need to.  And
 functions in the script can also use the script variables without a prefix
 (they must be declared before the function for this to work).
@@ -306,10 +306,10 @@ THE RESULT
 
 Here is the resulting complete example: >
 
-  1	vim9script noclear
-  2	# Vim global plugin for correcting typing mistakes
+  1	mnv9script noclear
+  2	# MNV global plugin for correcting typing mistakes
   3	# Last Change:	2021 Dec 30
-  4	# Maintainer:	Bram Moolenaar <Bram@vim.org>
+  4	# Maintainer:	Bram Moolenaar <Bram@mnv.org>
   5	# License:	This file is placed in the public domain.
   6
   7	if exists("g:loaded_typecorrect")
@@ -444,10 +444,10 @@ the same buffer (happens when using an ":edit" command without arguments).
 Now users can disable loading the default plugin completely by making a
 filetype plugin with only these lines: >
 
-	vim9script
+	mnv9script
 	b:did_ftplugin = 1
 
-This does require that the filetype plugin directory comes before $VIMRUNTIME
+This does require that the filetype plugin directory comes before $MNVRUNTIME
 in 'runtimepath'!
 
 If you do want to use the default plugin, but overrule one of the settings,
@@ -456,8 +456,8 @@ you can write the different setting in a script: >
 	setlocal textwidth=70
 
 Now write this in the "after" directory, so that it gets sourced after the
-distributed "vim.vim" ftplugin |after-directory|.  For Unix this would be
-"~/.vim/after/ftplugin/vim.vim".  Note that the default plugin will have set
+distributed "mnv.mnv" ftplugin |after-directory|.  For Unix this would be
+"~/.mnv/after/ftplugin/mnv.mnv".  Note that the default plugin will have set
 "b:did_ftplugin", it is ignored here.
 
 
@@ -552,7 +552,7 @@ This construct makes sure the function is only defined once: >
 	  enddef
 	endif
 <
-Don't forget to use "noclear" with the `vim9script` command to avoid that the
+Don't forget to use "noclear" with the `mnv9script` command to avoid that the
 function is deleted when the script is sourced a second time.
 
 
@@ -571,7 +571,7 @@ global value.  That is mostly the best way to reset the option value.
 For undoing the effect of an indent script, the b:undo_indent variable should
 be set accordingly.
 
-Both these variables use legacy script syntax, not |Vim9| syntax.
+Both these variables use legacy script syntax, not |MNV9| syntax.
 
 
 FILE NAME
@@ -579,25 +579,25 @@ FILE NAME
 The filetype must be included in the file name |ftplugin-name|.  Use one of
 these three forms:
 
-	.../ftplugin/stuff.vim
-	.../ftplugin/stuff_foo.vim
-	.../ftplugin/stuff/bar.vim
+	.../ftplugin/stuff.mnv
+	.../ftplugin/stuff_foo.mnv
+	.../ftplugin/stuff/bar.mnv
 
 "stuff" is the filetype, "foo" and "bar" are arbitrary names.
 
 
 FILETYPE DETECTION					*plugin-filetype*
 
-If your filetype is not already detected by Vim, you should create a filetype
+If your filetype is not already detected by MNV, you should create a filetype
 detection snippet in a separate file.  It is usually in the form of an
 autocommand that sets the filetype when the file name matches a pattern.
 Example: >
 
 	au BufNewFile,BufRead *.foo		setlocal filetype=foofoo
 
-Write this single-line file as "ftdetect/foofoo.vim" in the first directory
+Write this single-line file as "ftdetect/foofoo.mnv" in the first directory
 that appears in 'runtimepath'.  For Unix that would be
-"~/.vim/ftdetect/foofoo.vim".  The convention is to use the name of the
+"~/.mnv/ftdetect/foofoo.mnv".  The convention is to use the name of the
 filetype for the script name.
 
 You can make more complicated checks if you like, for example to inspect the
@@ -634,25 +634,25 @@ load it with the |:compiler| command.  The main use is to set the
 Easiest is to have a look at examples.  This command will edit all the default
 compiler plugins: >
 
-	next $VIMRUNTIME/compiler/*.vim
+	next $MNVRUNTIME/compiler/*.mnv
 
 Type `:next` to go to the next plugin file.
 
 There are two special items about these files.  First is a mechanism to allow
 a user to overrule or add to the default file.  The default files start with: >
 
-	vim9script
+	mnv9script
 	if exists("g:current_compiler")
 	  finish
 	endif
 	g:current_compiler = "mine"
 
 When you write a compiler file and put it in your personal runtime directory
-(e.g., ~/.vim/compiler for Unix), you set the "current_compiler" variable to
+(e.g., ~/.mnv/compiler for Unix), you set the "current_compiler" variable to
 make the default file skip the settings.
 							*:CompilerSet*
 The second mechanism is to use ":set" for ":compiler!" and ":setlocal" for
-":compiler".  Vim defines the ":CompilerSet" user command for this.  This is
+":compiler".  MNV defines the ":CompilerSet" user command for this.  This is
 an example: >
 
   CompilerSet errorformat&		" use the default 'errorformat'
@@ -660,31 +660,31 @@ an example: >
 
 Note: arguments need to be escaped according to |option-backslash|.
 
-When you write a compiler plugin for the Vim distribution or for a system-wide
+When you write a compiler plugin for the MNV distribution or for a system-wide
 runtime directory, use the mechanism mentioned above.  When
 "current_compiler" was already set by a user plugin nothing will be done.
 
 When you write a compiler plugin to overrule settings from a default plugin,
 don't check "current_compiler".  This plugin is supposed to be loaded
 last, thus it should be in a directory at the end of 'runtimepath'.  For Unix
-that could be ~/.vim/after/compiler.
+that could be ~/.mnv/after/compiler.
 
 ==============================================================================
-*51.4*	Distributing Vim scripts			*distribute-script*
+*51.4*	Distributing MNV scripts			*distribute-script*
 
-Vim users will look for scripts on the Vim website: http://www.vim.org.
+MNV users will look for scripts on the MNV website: http://www.mnv.org.
 If you made something that is useful for others, share it!
 
 Another place is github.  But there you need to know where to find it!  The
 advantage is that most plugin managers fetch plugins from github.  You'll have
 to use your favorite search engine to find them.
 
-Vim scripts can be used on any system.  However, there might not be a tar or
+MNV scripts can be used on any system.  However, there might not be a tar or
 gzip command.  If you want to pack files together and/or compress them the
 "zip" utility is recommended.
 
-For utmost portability use Vim itself to pack scripts together.  This can be
-done with the Vimball utility.  See |vimball|.
+For utmost portability use MNV itself to pack scripts together.  This can be
+done with the MNVball utility.  See |mnvball|.
 
 It's good if you add a line to allow automatic updating.  See |glvs-plugins|.
 
@@ -692,4 +692,4 @@ It's good if you add a line to allow automatic updating.  See |glvs-plugins|.
 
 Next chapter: |usr_52.txt|  Write large plugins
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

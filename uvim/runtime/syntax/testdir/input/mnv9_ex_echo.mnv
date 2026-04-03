@@ -1,0 +1,36 @@
+mnv9script
+# MNV9 :echo commands
+# MNV_TEST_SETUP hi link mnvVar Identifier
+
+
+echo         # comment
+echo "Foo"   # comment
+echo foo[0]  # comment
+echo Foo()   # comment
+echo "Foo" | # comment
+
+def Foo()
+  echo         # comment
+  echo "Foo"   # comment
+  echo foo[0]  # comment
+  echo Foo()   # comment
+  echo "Foo" | # comment
+enddef
+
+
+echo "4"
+  # comment
+  .. "2" # comment
+
+echo "4" ..
+  # comment
+  "2" # comment
+
+echo "4" # comment
+  # comment
+  .. "2" # comment
+
+echo "4" .. # comment
+  # comment
+  "2" # comment
+

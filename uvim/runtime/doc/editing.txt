@@ -1,7 +1,7 @@
-*editing.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*editing.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Editing files						*edit-files*
@@ -21,7 +21,7 @@ Editing files						*edit-files*
 ==============================================================================
 1. Introduction						*edit-intro*
 
-Editing a file with Vim means:
+Editing a file with MNV means:
 
 1. reading the file into a buffer
 2. changing the buffer with editor commands
@@ -106,7 +106,7 @@ g CTRL-G		Prints the current position of the cursor in five
 :ls			List all the currently known file names.  See
 			|windows.txt| |:files| |:buffers| |:ls|.
 
-Vim will remember the full path name of a file name that you enter.  In most
+MNV will remember the full path name of a file name that you enter.  In most
 cases when the file name is displayed only the name you typed is shown, but
 the full path name is being used if you used the ":cd" command |:cd|.
 
@@ -123,27 +123,27 @@ when you give the "ZZ" or ":wq" command, the original file will be
 overwritten.  If you do not want this, the buffer can be written into another
 file by giving a file name argument to the ":write" command.  For example: >
 
-	vim testfile
+	mnv testfile
 	[change the buffer with editor commands]
 	:w newfile
 	:q
 
 This will create a file "newfile", that is a modified copy of "testfile".
 The file "testfile" will remain unchanged.  Anyway, if the 'backup' option is
-set, Vim renames or copies the original file before it will be overwritten.
+set, MNV renames or copies the original file before it will be overwritten.
 You can use this file if you discover that you need the original file.  See
 also the 'patchmode' option.  The name of the backup file is normally the same
 as the original file with 'backupext' appended.  The default "~" is a bit
 strange to avoid accidentally overwriting existing files.  If you prefer
 ".bak" change the 'backupext' option.  Extra dots are replaced with '_' on
-MS-Windows machines, when Vim has detected that an MS-DOS-like filesystem is
+MS-Windows machines, when MNV has detected that an MS-DOS-like filesystem is
 being used, or when the 'shortname' option is on.
 The backup file can be placed in another directory by setting 'backupdir'.
 
 							*auto-shortname*
 Technical: On the Amiga you can use 30 characters for a file name.  But on an
 	   MS-DOS-compatible filesystem only 8 plus 3 characters are
-	   available.  Vim tries to detect the type of filesystem when it is
+	   available.  MNV tries to detect the type of filesystem when it is
 	   creating the .swp file.  If an MS-DOS-like filesystem is suspected,
 	   a flag is set that has the same effect as setting the 'shortname'
 	   option.  This flag will be reset as soon as you start editing a
@@ -161,7 +161,7 @@ the 'F' flag is included in 'cpoptions' (by default it is included) |cpo-F|.
 This is useful when entering text in an empty buffer and then writing it to a
 file.  If 'cpoptions' contains the 'f' flag (by default it is NOT included)
 |cpo-f| the file name is set for the ":read file" command.  This is useful
-when starting Vim without an argument and then doing ":read file" to start
+when starting MNV without an argument and then doing ":read file" to start
 editing a file.
 When the file name was set and 'filetype' is empty the filetype detection
 autocommands will be triggered.
@@ -174,9 +174,9 @@ When writing the buffer to the current file name (with ":w!"), the "notedited"
 flag is reset.
 
 							*abandon*
-Vim remembers whether you have changed the buffer.  You are protected from
+MNV remembers whether you have changed the buffer.  You are protected from
 losing the changes you made.  If you try to quit without writing, or want to
-start editing another file, Vim will refuse this.  In order to overrule this
+start editing another file, MNV will refuse this.  In order to overrule this
 protection, add a '!' to the command.  The changes will then be lost.  For
 example: ":q" will not work if the buffer was changed, but ":q!" will.  To see
 whether the buffer was changed use the "CTRL-G" command.  The message includes
@@ -196,7 +196,7 @@ If you want to keep the changed buffer without saving it, switch on the
 
 							*:e* *:edit* *reload*
 :e[dit] [++opt] [+cmd]	Edit the current file.  This is useful to re-edit the
-			current file, when it has been changed outside of Vim.
+			current file, when it has been changed outside of MNV.
 			This fails when changes have been made to the current
 			buffer and 'autowriteall' isn't set or the file can't
 			be written.
@@ -308,7 +308,7 @@ CTRL-^			Edit the alternate file.  Mostly the alternate file is
 			modify the name and another attempt is done.
 			If a [count] is given, the count'th file that is found
 			in the 'path' is edited.
-			This command fails if Vim refuses to |abandon| the
+			This command fails if MNV refuses to |abandon| the
 			current file.
 			If you want to edit the file in a new window use
 			|CTRL-W_CTRL-F|.
@@ -415,25 +415,25 @@ On Unix and a few other systems you can also use backticks for the file name
 argument, for example: >
 	:next `find . -name ver\\*.c -print`
 	:view `ls -t *.patch  \| head -n1`
-Vim will run the command in backticks using the 'shell' and use the standard
-output as argument for the given Vim command (error messages from the shell
+MNV will run the command in backticks using the 'shell' and use the standard
+output as argument for the given MNV command (error messages from the shell
 command will be discarded).
-To see what shell command Vim is running, set the 'verbose' option to 4.  When
+To see what shell command MNV is running, set the 'verbose' option to 4.  When
 the shell command returns a non-zero exit code, an error message will be
-displayed and the Vim command will be aborted.  To avoid this make the shell
+displayed and the MNV command will be aborted.  To avoid this make the shell
 always return zero like so: >
        :next `find . -name ver\\*.c -print \|\| true`
 
 The backslashes before the star are required to prevent the shell from
 expanding "ver*.c" prior to execution of the find program.  The backslash
-before the shell pipe symbol "|" prevents Vim from parsing it as command
+before the shell pipe symbol "|" prevents MNV from parsing it as command
 termination.
 This also works for most other systems, with the restriction that the
 backticks must be around the whole item.  It is not possible to have text
 directly before the first or just after the last backtick.
 
 						*`=* *E1083*
-You can have the backticks expanded as a Vim expression, instead of as an
+You can have the backticks expanded as a MNV expression, instead of as an
 external command, by putting an equal sign right after the first backtick,
 e.g.: >
 	:e `=tempname()`
@@ -443,10 +443,10 @@ does apply like to other wildcards.
 
 Environment variables in the expression are expanded when evaluating the
 expression, thus this works: >
-	:e `=$HOME .. '/.vimrc'`
+	:e `=$HOME .. '/.mnvrc'`
 This uses $HOME inside a string and it will be used literally, most likely not
 what you intended: >
-	:e `='$HOME' .. '/.vimrc'`
+	:e `='$HOME' .. '/.mnvrc'`
 
 If the expression returns a string then names are to be separated with line
 breaks.  When the result is a |List| then each item is used as a name.  Line
@@ -549,8 +549,8 @@ characters will be replaced with <CR><NL> (assuming 'fileformats' includes
 	:w
 
 If you start editing a new file and the 'fileformats' option is not empty
-(which is the default), Vim will try to detect whether the lines in the file
-are separated by the specified formats.  When set to "unix,dos", Vim will
+(which is the default), MNV will try to detect whether the lines in the file
+are separated by the specified formats.  When set to "unix,dos", MNV will
 check for lines with a single <NL> (as used on Unix and Amiga) or by a <CR>
 <NL> pair (MS-Windows).  Only when ALL lines end in <CR><NL>, 'fileformat' is
 set to "dos", otherwise it is set to "unix".  When 'fileformats' includes
@@ -573,8 +573,8 @@ If the new file does not exist, the 'fileformat' of the current buffer is used
 when 'fileformats' is empty.  Otherwise the first format from 'fileformats' is
 used for the new file.
 
-Before editing binary, executable or Vim script files you should set the
-'binary' option.  A simple way to do this is by starting Vim with the "-b"
+Before editing binary, executable or MNV script files you should set the
+'binary' option.  A simple way to do this is by starting MNV with the "-b"
 option.  This will avoid the use of 'fileformat'.  Without this you risk that
 single <NL> characters are unexpectedly replaced with <CR><NL>.
 
@@ -583,7 +583,7 @@ provides some security against others reading your files. |encryption|
 
 END OF LINE AND END OF FILE				*eol-and-eof*
 
-Vim has several options to control the file format:
+MNV has several options to control the file format:
 	'fileformat'	the <EOL> style: Unix, DOS, Mac
 	'endofline'	whether the last line ends with a <EOL>
 	'endoffile'	whether the file ends with a CTRL-Z
@@ -603,7 +603,7 @@ If you want files in Unix format (every line NL terminated): >
 	setl ff=unix fixeol
 You should probably do this on any Unix-like system.  Also modern MS-Windows
 systems tend to work well with this.  It is recommended to always use this
-format for Vim scripts.
+format for MNV scripts.
 
 If you want to use an old MS-DOS file in a modern environment, fixing line
 endings and dropping CTRL-Z, but keeping the <CR><NL> style <EOL>: >
@@ -622,12 +622,12 @@ If you want to preserve the fileformat exactly as-is, including any final
 ==============================================================================
 3. The argument list				*argument-list* *arglist*
 
-If you give more than one file name when starting Vim, this list is remembered
+If you give more than one file name when starting MNV, this list is remembered
 as the argument list.  You can jump to each file in this list.
 
 Do not confuse this with the buffer list, which you can see with the
 |:buffers| command.  The argument list was already present in Vi, the buffer
-list is new in Vim.  Every file name in the argument list will also be present
+list is new in MNV.  Every file name in the argument list will also be present
 in the buffer list (unless it was deleted with |:bdel| or |:bwipe|).  But it's
 common that names in the buffer list are not in the argument list.
 
@@ -648,7 +648,7 @@ list of the current window.
 :ar[gs] [++opt] [+cmd] {arglist}			*:args_f*
 			Define {arglist} as the new argument list and edit
 			the first one.  This fails when changes have been made
-			and Vim does not want to |abandon| the current buffer.
+			and MNV does not want to |abandon| the current buffer.
 			Also see |++opt| and |+cmd|.
 
 :ar[gs]! [++opt] [+cmd] {arglist}			*:args_f!*
@@ -731,7 +731,7 @@ list of the current window.
 :[count]argu[ment] [count] [++opt] [+cmd]
 			Edit file [count] in the argument list.  When [count]
 			is omitted the current entry is used.  This fails
-			when changes have been made and Vim does not want to
+			when changes have been made and MNV does not want to
 			|abandon| the current buffer.
 			Also see |++opt| and |+cmd|.
 
@@ -743,7 +743,7 @@ list of the current window.
 
 :[count]n[ext] [++opt] [+cmd]			*:n* *:ne* *:next* *E165* *E163*
 			Edit [count] next file.  This fails when changes have
-			been made and Vim does not want to |abandon| the
+			been made and MNV does not want to |abandon| the
 			current buffer.  Also see |++opt| and |+cmd|.
 
 :[count]n[ext]! [++opt] [+cmd]
@@ -758,7 +758,7 @@ list of the current window.
 
 :[count]N[ext] [count] [++opt] [+cmd]			*:Next* *:N* *E164*
 			Edit [count] previous file in argument list.  This
-			fails when changes have been made and Vim does not
+			fails when changes have been made and MNV does not
 			want to |abandon| the current buffer.
 			Also see |++opt| and |+cmd|.
 
@@ -773,7 +773,7 @@ list of the current window.
 							*:rew* *:rewind*
 :rew[ind] [++opt] [+cmd]
 			Start editing the first file in the argument list.
-			This fails when changes have been made and Vim does
+			This fails when changes have been made and MNV does
 			not want to |abandon| the current buffer.
 			Also see |++opt| and |+cmd|.
 
@@ -789,7 +789,7 @@ list of the current window.
 							*:la* *:last*
 :la[st] [++opt] [+cmd]
 			Start editing the last file in the argument list.
-			This fails when changes have been made and Vim does
+			This fails when changes have been made and MNV does
 			not want to |abandon| the current buffer.
 			Also see |++opt| and |+cmd|.
 
@@ -829,8 +829,8 @@ first line (the last line in Ex mode).
 
 							*{arglist}*
 The wildcards in the argument list are expanded and the file names are sorted.
-Thus you can use the command "vim *.c" to edit all the C files.  From within
-Vim the command ":n *.c" does the same.
+Thus you can use the command "mnv *.c" to edit all the C files.  From within
+MNV the command ":n *.c" does the same.
 
 White space is used to separate file names.  Put a backslash before a space or
 tab to include it in a file name.  E.g., to edit the single file "foo bar": >
@@ -1018,7 +1018,7 @@ WRITING WITH MULTIPLE BUFFERS				*buffer-write*
 			written and cause an error message.
 
 
-Vim will warn you if you try to overwrite a file that has been changed
+MNV will warn you if you try to overwrite a file that has been changed
 elsewhere.  See |timestamp|.
 
 			    *backup* *E207* *E506* *E507* *E508* *E509* *E510*
@@ -1062,29 +1062,29 @@ to write anyway add a '!' to the command.
 
 							*file-watcher*
 When you notice issues with programs, that act upon when a buffer is written
-(like inotify, entr or fswatch) or when external applications execute Vim to
+(like inotify, entr or fswatch) or when external applications execute MNV to
 edit the file (like git) and those programs do not seem to notice that the
 original file has been changed, you may want to consider switching the
-'backupcopy' option value to "yes".  This makes sure, Vim writes to the same
+'backupcopy' option value to "yes".  This makes sure, MNV writes to the same
 file, that those watcher programs expect, without creating a new file (which
 prevents them from detecting that the file has changed).  See also |crontab|
 
 							*write-permissions*
 When writing a new file the permissions are read-write.  For unix the mask is
-0o666 with additionally umask applied.  When writing a file that was read Vim
+0o666 with additionally umask applied.  When writing a file that was read MNV
 will preserve the permissions, but clear the s-bit.
 
 							*write-readonly*
-When the 'cpoptions' option contains 'W', Vim will refuse to overwrite a
+When the 'cpoptions' option contains 'W', MNV will refuse to overwrite a
 readonly file.  When 'W' is not present, ":w!" will overwrite a readonly file,
 if the system allows it (the directory must be writable).
 
 							*write-fail*
 If the writing of the new file fails, you have to be careful not to lose
 your changes AND the original file.  If there is no backup file and writing
-the new file failed, you have already lost the original file!  DON'T EXIT VIM
+the new file failed, you have already lost the original file!  DON'T EXIT MNV
 UNTIL YOU WRITE OUT THE FILE!  If a backup was made, it is put back in place
-of the original file (if possible).  If you exit Vim, and lose the changes
+of the original file (if possible).  If you exit MNV, and lose the changes
 you made, the original file will mostly still be there.  If putting back the
 original file fails, there will be an error message telling you that you
 lost the original file.
@@ -1106,7 +1106,7 @@ See also |file-formats| and the 'fileformat' and 'fileformats' options.
 ACL stands for Access Control List.  It is an advanced way to control access
 rights for a file.  It is used on new MS-Windows and Unix systems, but only
 when the filesystem supports it.
-   Vim attempts to preserve the ACL info when writing a file.  The backup file
+   MNV attempts to preserve the ACL info when writing a file.  The backup file
 will get the ACL info of the original file.
    The ACL info is also used to check if a file is read-only (when opening the
 file).
@@ -1114,27 +1114,27 @@ file).
 					*xattr* *E1506* *E1508* *E1509*
 xattr stands for Extended Attributes.  It is an advanced way to save metadata
 alongside the file in the filesystem.  It depends on the actual filesystem
-being used and Vim supports it only on a Linux system.
-   Vim attempts to preserve the extended attribute info when writing a file.
+being used and MNV supports it only on a Linux system.
+   MNV attempts to preserve the extended attribute info when writing a file.
 The backup file will get the extended attribute of the original file.
 
 						*read-only-share*
 When MS-Windows shares a drive on the network it can be marked as read-only.
 This means that even if the file read-only attribute is absent, and the ACL
 settings on NT network shared drives allow writing to the file, you can still
-not write to the file.  Vim on Win32 platforms will detect read-only network
+not write to the file.  MNV on Win32 platforms will detect read-only network
 drives and will mark the file as read-only.  You will not be able to override
 it with |:write|.
 
 						*write-device*
-When the file name is actually a device name, Vim will not make a backup (that
+When the file name is actually a device name, MNV will not make a backup (that
 would be impossible).  You need to use "!", since the device already exists.
 Example for Unix: >
 	:w! /dev/lpt0
 and for MS-Windows: >
 	:w! lpt0
 For Unix a device is detected when the name doesn't refer to a normal file or
-a directory.  A fifo or named pipe also looks like a device to Vim.
+a directory.  A fifo or named pipe also looks like a device to MNV.
 For MS-Windows the device is detected by its name:
 	AUX
 	CON
@@ -1149,9 +1149,9 @@ The names can be in upper- or lowercase.
 5. Writing and quitting					*write-quit*
 
 							*:q* *:quit*
-:q[uit]			Quit the current window.  Quit Vim if this is the last
+:q[uit]			Quit the current window.  Quit MNV if this is the last
 			|edit-window|.  This fails when changes have been made
-			and Vim refuses to |abandon| the current buffer, and
+			and MNV refuses to |abandon| the current buffer, and
 			when the last file in the argument list has not been
 			edited.
 			If there are other tab pages and quitting the last
@@ -1179,21 +1179,21 @@ The names can be in upper- or lowercase.
 
 							*:wq*
 :wq [++opt]		Write the current file and close the window.  If this
-			was the last |edit-window| Vim quits.
+			was the last |edit-window| MNV quits.
 			Writing fails when the file is read-only or the buffer
 			does not have a name.  Quitting fails when the last
 			file in the argument list has not been edited.
 
 :wq! [++opt]		Write the current file and close the window.  If this
-			was the last |edit-window| Vim quits.  Writing fails
+			was the last |edit-window| MNV quits.  Writing fails
 			when the current buffer does not have a name.
 
 :wq [++opt] {file}	Write to {file} and close the window.  If this was the
-			last |edit-window| Vim quits.  Quitting fails when the
+			last |edit-window| MNV quits.  Quitting fails when the
 			last file in the argument list has not been edited.
 
 :wq! [++opt] {file}	Write to {file} and close the current window.  Quit
-			Vim if this was the last |edit-window|.
+			MNV if this was the last |edit-window|.
 
 :[range]wq[!] [++opt] [file]
 			Same as above, but only write the lines in [range].
@@ -1204,7 +1204,7 @@ The names can be in upper- or lowercase.
 			made.
 			When 'hidden' is set and there are more windows, the
 			current buffer becomes hidden, after writing the file.
-			This command is not supported in |Vim9| script,
+			This command is not supported in |MNV9| script,
 			because it is too easily confused with a variable
 			name.
 
@@ -1225,16 +1225,16 @@ ZQ			Quit without checking for changes (same as ":q!").
 MULTIPLE WINDOWS AND BUFFERS				*window-exit*
 
 							*:qa* *:qall*
-:qa[ll]		Exit Vim, unless there are some buffers which have been
+:qa[ll]		Exit MNV, unless there are some buffers which have been
 		changed.  (Use ":bmod" to go to the next modified buffer).
 		When 'autowriteall' is set all changed buffers will be
 		written, like |:wqall|.
 
 :conf[irm] qa[ll]
-		Exit Vim.  Bring up a prompt when some buffers have been
+		Exit MNV.  Bring up a prompt when some buffers have been
 		changed.  See |:confirm|.
 
-:qa[ll]!	Exit Vim.  Any changes to buffers are lost.
+:qa[ll]!	Exit MNV.  Any changes to buffers are lost.
 		Also see |:cquit|, it does the same but exits with a non-zero
 		value.
 
@@ -1242,21 +1242,21 @@ MULTIPLE WINDOWS AND BUFFERS				*window-exit*
 :quita[ll][!]	Same as ":qall".
 
 :wqa[ll] [++opt]				*:wqa* *:wqall* *:xa* *:xall*
-:xa[ll]		Write all changed buffers and exit Vim.  If there are buffers
+:xa[ll]		Write all changed buffers and exit MNV.  If there are buffers
 		without a file name, which are readonly or which cannot be
-		written for another reason, Vim will not quit.
+		written for another reason, MNV will not quit.
 
 :conf[irm] wqa[ll] [++opt]
 :conf[irm] xa[ll]
-		Write all changed buffers and exit Vim.  Bring up a prompt
+		Write all changed buffers and exit MNV.  Bring up a prompt
 		when some buffers are readonly or cannot be written for
 		another reason.  See |:confirm|.
 
 :wqa[ll]! [++opt]
 :xa[ll]!	Write all changed buffers, even the ones that are readonly,
-		and exit Vim.  If there are buffers without a file name or
+		and exit MNV.  If there are buffers without a file name or
 		which cannot be written for another reason, or there is a
-		terminal with a running job, Vim will not quit.
+		terminal with a running job, MNV will not quit.
 
 ==============================================================================
 6. Dialogs						*edit-dialogs*
@@ -1286,7 +1286,7 @@ If you want to always use ":confirm", set the 'confirm' option.
 			{command}.  At present this works for |:e|, |:w|,
 			|:wall|, |:wq|, |:wqall|, |:x|, |:xall|, |:exit|,
 			|:view|, |:sview|, |:r|, |:saveas|, |:sp|, |:mkexrc|,
-			|:mkvimrc|, |:mksession|, |:mkview|, |:split|,
+			|:mkmnvrc|, |:mksession|, |:mkview|, |:split|,
 			|:vsplit|, |:tabe|, |:tabnew|, |:cfile|, |:cgetfile|,
 			|:caddfile|, |:lfile|, |:lgetfile|, |:laddfile|,
 			|:diffsplit|, |:diffpatch|, |:open|, |:pedit|,
@@ -1303,8 +1303,8 @@ If you want to always use ":confirm", set the 'confirm' option.
 			See also |:oldfiles| for ":browse oldfiles".
 
 The syntax is best shown via some examples: >
-	:browse e $vim/foo
-<		Open the browser in the $vim/foo directory, and edit the
+	:browse e $mnv/foo
+<		Open the browser in the $mnv/foo directory, and edit the
 		file chosen. >
 	:browse e
 <		Open the browser in the directory specified with 'browsedir',
@@ -1318,7 +1318,7 @@ The syntax is best shown via some examples: >
 		buffer filename as default, and save the buffer under the
 		filename chosen.
 Also see the 'browsedir' option.
-For versions of Vim where browsing is not supported, the command is executed
+For versions of MNV where browsing is not supported, the command is executed
 unmodified.
 
 							*browsefilter*
@@ -1333,10 +1333,10 @@ separated by ';'.
 For Motif the same format is used, but only the very first pattern is actually
 used (Motif only offers one pattern, but you can edit it).
 
-For example, to have only Vim files in the dialog, you could use the following
+For example, to have only MNV files in the dialog, you could use the following
 command: >
 
-     let g:browsefilter = "Vim scripts\t*.vim\nVim Startup Files\t*vimrc\n"
+     let g:browsefilter = "MNV scripts\t*.mnv\nMNV Startup Files\t*mnvrc\n"
 
 You can override the filter setting on a per-buffer basis by setting the
 b:browsefilter variable.  You would most likely set b:browsefilter in a
@@ -1353,7 +1353,7 @@ desired file: >
 	All Files\t(*)\t*\n
 <
 
-To avoid setting browsefilter when Vim does not actually support it, you can
+To avoid setting browsefilter when MNV does not actually support it, you can
 use has("browsefilter"): >
 
 	if has("browsefilter")
@@ -1469,16 +1469,16 @@ After using |:cd| the full path name will be used for reading and writing
 files.  On some networked file systems this may cause problems.  The result of
 using the full path name is that the file names currently in use will remain
 referring to the same file.  Example: If you have a file a:test and a
-directory a:vim the commands ":e test" ":cd vim" ":w" will overwrite the file
-a:test and not write a:vim/test.  But if you do ":w test" the file a:vim/test
+directory a:mnv the commands ":e test" ":cd mnv" ":w" will overwrite the file
+a:test and not write a:mnv/test.  But if you do ":w test" the file a:mnv/test
 will be written, because you gave a new file name and did not refer to a
 filename before the ":cd".
 
 ==============================================================================
 8. Editing binary files					*edit-binary*
 
-Although Vim was made to edit text files, it is possible to edit binary
-files.  The |-b| Vim argument (b for binary) makes Vim do file I/O in binary
+Although MNV was made to edit text files, it is possible to edit binary
+files.  The |-b| MNV argument (b for binary) makes MNV do file I/O in binary
 mode, and sets some options for editing binary files ('binary' on, 'textwidth'
 to 0, 'modeline' off, 'expandtab' off).  Setting the 'binary' option has the
 same effect.  Don't forget to do this before reading the file.
@@ -1503,7 +1503,7 @@ There are a few things to remember when editing binary files:
   "CTRL-V CTRL-@" or "CTRL-V 000"
 - To insert a <NL> character in the file split a line.  When writing the
   buffer to a file a <NL> will be written for the <EOL>.
-- Vim normally appends an <EOL> at the end of the file if there is none.
+- MNV normally appends an <EOL> at the end of the file if there is none.
   Setting the 'binary' option prevents this.  If you want to add the final
   <EOL>, set the 'endofline' option.  You can also read the value of this
   option to see if there was an <EOL> for the last line (you cannot see this
@@ -1512,7 +1512,7 @@ There are a few things to remember when editing binary files:
 ==============================================================================
 9. Encryption						*encryption*
 
-Vim is able to write files encrypted, and read them back.  The encrypted text
+MNV is able to write files encrypted, and read them back.  The encrypted text
 cannot be read without the right key.
 {only available when compiled with the |+cryptv| feature}  *E833*
 
@@ -1526,10 +1526,10 @@ lose your work.  The undo file can be disabled without too much disadvantage. >
 Note: The text in memory is not encrypted.  A system administrator may be able
 to see your text while you are editing it.  When filtering text with
 ":!filter" or using ":w !command" the text is also not encrypted, this may
-reveal it to others.  The 'viminfo' file is not encrypted.
+reveal it to others.  The 'mnvinfo' file is not encrypted.
 
 You could do this to edit very secret text: >
-	:set noundofile viminfo=
+	:set noundofile mnvinfo=
 	:noswapfile edit secrets.txt
 Keep in mind that without a swap file you risk losing your work in the event
 of a crash or a power failure.
@@ -1539,7 +1539,7 @@ exit, the text will be lost!
 
 The normal way to work with encryption, is to use the ":X" command, which will
 ask you to enter a key.  A following write command will use that key to
-encrypt the file.  If you later edit the same file, Vim will ask you to enter
+encrypt the file.  If you later edit the same file, MNV will ask you to enter
 a key.  If you type the same key as that was used for writing, the text will
 be readable again.  If you use a wrong key, it will be a mess.
 
@@ -1555,7 +1555,7 @@ be readable again.  If you use a wrong key, it will be a mess.
 
 The value of the 'key' options is used when text is written.  When the option
 is not empty, the written file will be encrypted, using the value as the
-encryption key.  A magic number is prepended, so that Vim can recognize that
+encryption key.  A magic number is prepended, so that MNV can recognize that
 the file is encrypted.
 
 To disable the encryption, reset the 'key' option to an empty value: >
@@ -1572,11 +1572,11 @@ Do this before writing the file.  When reading an encrypted file it will be
 set automatically to the method used when that file was written.  You can
 change 'cryptmethod' before writing that file to change the method.
 
-To set the default method, used for new files, use this in your |vimrc|
+To set the default method, used for new files, use this in your |mnvrc|
 file: >
 	set cm=blowfish2
 Using "blowfish2" is highly recommended.  Only use another method if you
-must use an older Vim version that does not support it.
+must use an older MNV version that does not support it.
 
 The message given for reading and writing a file will show "[crypted]" when
 using zip, "[blowfish]" when using blowfish, etc.
@@ -1587,20 +1587,20 @@ in the undo file. |persistent-undo|.
 To test for blowfish support you can use these conditions: >
 	has('crypt-blowfish')
 	has('crypt-blowfish2')
-This works since Vim 7.4.1099 while blowfish support was added earlier.
+This works since MNV 7.4.1099 while blowfish support was added earlier.
 Thus the condition failing doesn't mean blowfish is not supported.  You can
 test for blowfish with: >
 	v:version >= 703
 And for blowfish2 with: >
 	v:version > 704 || (v:version == 704 && has('patch401'))
-If you are sure Vim includes patch 7.4.237 a simpler check is: >
+If you are sure MNV includes patch 7.4.237 a simpler check is: >
 	has('patch-7.4.401')
 <
 						*E817* *E818* *E819* *E820*
 When encryption does not work properly, you would be able to write your text
 to a file and never be able to read it back.  Therefore a test is performed to
 check if the encryption works as expected.  If you get one of these errors
-don't write the file encrypted!  You need to rebuild the Vim binary to fix
+don't write the file encrypted!  You need to rebuild the MNV binary to fix
 this.
 
 *E831* This is an internal error, "cannot happen".  If you can reproduce it,
@@ -1613,17 +1613,17 @@ file is edited without being decrypted.  There is no warning about using the
 wrong key (this makes brute force methods to find the key more difficult).
 
 If want to start reading a file that uses a different key, set the 'key'
-option to an empty string, so that Vim will prompt for a new one.  Don't use
+option to an empty string, so that MNV will prompt for a new one.  Don't use
 the ":set" command to enter the value, other people can read the command over
 your shoulder.
 
 Since the value of the 'key' option is supposed to be a secret, its value can
-never be viewed.  You should not set this option in a vimrc file.
+never be viewed.  You should not set this option in a mnvrc file.
 
 An encrypted file can be recognized by the "file" command, if you add these
 lines to "/etc/magic", "/usr/share/misc/magic" or wherever your system has the
 "magic" file: >
-     0	string	VimCrypt~	Vim encrypted file
+     0	string	MNVCrypt~	MNV encrypted file
      >9	string	01	- "zip" cryptmethod
      >9	string	02	- "blowfish" cryptmethod
      >9	string	03	- "blowfish2" cryptmethod
@@ -1631,15 +1631,15 @@ lines to "/etc/magic", "/usr/share/misc/magic" or wherever your system has the
 Notes:
 - Encryption is not possible when doing conversion with 'charconvert'.
 - Text you copy or delete goes to the numbered registers.  The registers can
-  be saved in the .viminfo file, where they could be read.  Change your
-  'viminfo' option to be safe.
-- Someone can type commands in Vim when you walk away for a moment, he should
+  be saved in the .mnvinfo file, where they could be read.  Change your
+  'mnvinfo' option to be safe.
+- Someone can type commands in MNV when you walk away for a moment, he should
   not be able to get the key.
 - If you make a typing mistake when entering the key, you might not be able to
   get your text back!
 - If you type the key with a ":set key=value" command, it can be kept in the
-  history, showing the 'key' value in a viminfo file.
-- There is never 100% safety.  The encryption in Vim has not been tested for
+  history, showing the 'key' value in a mnvinfo file.
+- There is never 100% safety.  The encryption in MNV has not been tested for
   robustness.
 - The algorithm used for 'cryptmethod' "zip" is breakable.  A 4 character key
   in about one hour, a 6 character key in one day (on a Pentium 133 PC).  This
@@ -1653,34 +1653,34 @@ Notes:
 - The implementation of 'cryptmethod' "blowfish" has a flaw.  It is possible
   to crack the first 64 bytes of a file and in some circumstances more of the
   file.  Use of it is not recommended, but it's still the strongest method
-  supported by Vim 7.3 and 7.4.  The "zip" method is even weaker.
-- Vim originates from the Netherlands.  That is where the sources come from.
+  supported by MNV 7.3 and 7.4.  The "zip" method is even weaker.
+- MNV originates from the Netherlands.  That is where the sources come from.
   Thus the encryption code is not exported from the USA.
 
 ==============================================================================
 10. Timestamps					*timestamp* *timestamps*
 
-Vim remembers the modification timestamp, mode and size of a file when you
+MNV remembers the modification timestamp, mode and size of a file when you
 begin editing it.  This is used to avoid that you have two different versions
 of the same file (without you knowing this).
 
 After a shell command is run (|:!cmd| |suspend| |:read!| |K|) timestamps,
-file modes and file sizes are compared for all buffers in a window.   Vim will
+file modes and file sizes are compared for all buffers in a window.   MNV will
 run any associated |FileChangedShell| autocommands or display a warning for
-any files that have changed.  In the GUI this happens when Vim regains input
+any files that have changed.  In the GUI this happens when MNV regains input
 focus.
 
 							*E321* *E462*
 If you want to automatically reload a file when it has been changed outside of
-Vim, set the 'autoread' option.  This doesn't work at the moment you write the
-file though, only when the file wasn't changed inside of Vim.
+MNV, set the 'autoread' option.  This doesn't work at the moment you write the
+file though, only when the file wasn't changed inside of MNV.
 							*ignore-timestamp*
 If you do not want to be asked or automatically reload the file, you can use
 this: >
 	set buftype=nofile
 
-Or, when starting gvim from a shell: >
-	gvim file.log -c "set buftype=nofile"
+Or, when starting gmnv from a shell: >
+	gmnv file.log -c "set buftype=nofile"
 
 Note that if a FileChangedShell autocommand is defined you will not get a
 warning message or prompt.  The autocommand is expected to handle this.
@@ -1689,8 +1689,8 @@ There is no warning for a directory (e.g., with |netrw-browse|).  But you do
 get warned if you started editing a new file and it was created as a directory
 later.
 
-When Vim notices the timestamp of a file has changed, and the file is being
-edited in a buffer but has not changed, Vim checks if the contents of the file
+When MNV notices the timestamp of a file has changed, and the file is being
+edited in a buffer but has not changed, MNV checks if the contents of the file
 is equal.  This is done by reading the file again (into a hidden buffer, which
 is immediately deleted again) and comparing the text.  If the text is equal,
 you will get no warning.
@@ -1698,7 +1698,7 @@ you will get no warning.
 If you don't get warned often enough you can use the following command.
 
 							*:checkt* *:checktime*
-:checkt[ime]		Check if any buffers were changed outside of Vim.
+:checkt[ime]		Check if any buffers were changed outside of MNV.
 			This checks and warns you if you would end up with two
 			versions of a file.
 			If this is called from an autocommand, a ":global"
@@ -1706,7 +1706,7 @@ If you don't get warned often enough you can use the following command.
 			until a moment the side effects (reloading the file)
 			would be harmless.
 			Each loaded buffer is checked for its associated file
-			being changed.  If the file was changed Vim will take
+			being changed.  If the file was changed MNV will take
 			action.  If there are no changes in the buffer and
 			'autoread' is set, the buffer is reloaded.  Otherwise,
 			you are offered the choice of reloading the file.  If
@@ -1728,7 +1728,7 @@ If you don't get warned often enough you can use the following command.
 
 
 							*E813* *E814*
-Vim will reload the buffer if you chose to.  If a window is visible that
+MNV will reload the buffer if you chose to.  If a window is visible that
 contains this buffer, the reloading will happen in the context of this window.
 Otherwise a special window is used, so that most autocommands will work.  You
 can't close this window.  A few other restrictions apply.  Best is to make
@@ -1738,14 +1738,14 @@ doing something there and closing it should be OK (if there are no side
 effects from other autocommands).  Closing unrelated windows and buffers will
 get you into trouble.
 
-Before writing a file the timestamp is checked.  If it has changed, Vim will
+Before writing a file the timestamp is checked.  If it has changed, MNV will
 ask if you really want to overwrite the file:
 
 	WARNING: The file has been changed since reading it!!!
 	Do you really want to write to it (y/n)?
 
-If you hit 'y' Vim will continue writing the file.  If you hit 'n' the write
-is aborted.  If you used ":wq" or "ZZ" Vim will not exit, you will get another
+If you hit 'y' MNV will continue writing the file.  If you hit 'n' the write
+is aborted.  If you used ":wq" or "ZZ" MNV will not exit, you will get another
 chance to write the file.
 
 The message would normally mean that somebody has written to the file after
@@ -1765,7 +1765,7 @@ are available.
 
 There is one situation where you get the message while there is nothing wrong:
 On a Win32 system on the day daylight saving time starts.  There is something
-in the Win32 libraries that confuses Vim about the hour time difference.  The
+in the Win32 libraries that confuses MNV about the hour time difference.  The
 problem goes away the next day.
 
 ==============================================================================
@@ -1779,7 +1779,7 @@ There are three different types of searching:
 
 1) Downward search:					*starstar*
    Downward search uses the wildcards '*', '**' and possibly others
-   supported by your operating system.  '*' and '**' are handled inside Vim,
+   supported by your operating system.  '*' and '**' are handled inside MNV,
    so they work on all operating systems.  Note that "**" only acts as a
    special wildcard when it is at the start of a name.
 
@@ -1828,23 +1828,23 @@ There are three different types of searching:
 	   /usr/include
 	   /usr
 <
-   If you use a relative path the upward search is started in Vim's current
+   If you use a relative path the upward search is started in MNV's current
    directory or in the directory of the current file (if the relative path
    starts with './' and 'd' is not included in 'cpoptions').
 
-   If Vim's current path is /u/user_x/work/release and you do >
+   If MNV's current path is /u/user_x/work/release and you do >
 	:set path=include;/u/user_x
 <   and then search for a file with |gf| the file is searched in: >
 	/u/user_x/work/release/include
 	/u/user_x/work/include
 	/u/user_x/include
 
-<   Note: If your 'path' setting includes a non-existing directory, Vim will
+<   Note: If your 'path' setting includes a non-existing directory, MNV will
    skip the non-existing directory, and also does not search in the parent of
    the non-existing directory if upwards searching is used.
 
 3) Combined up/downward search:
-   If Vim's current path is /u/user_x/work/release and you do >
+   If MNV's current path is /u/user_x/work/release and you do >
 	set path=**;/u/user_x
 <   and then search for a file with |gf| the file is searched in: >
 	/u/user_x/work/release/**
@@ -1867,4 +1867,4 @@ There are three different types of searching:
    currently work with 'path' items that contain a URL or use the double star
    with depth limiter (/usr/**2) or upward search (;) notations.
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

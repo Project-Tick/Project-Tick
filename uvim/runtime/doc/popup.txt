@@ -1,7 +1,7 @@
-*popup.txt*	For Vim version 9.2.  Last change: 2026 Mar 02
+*popup.txt*	For MNV version 9.2.  Last change: 2026 Mar 02
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Displaying text in a popup window.	*popup* *popup-window* *popupwin*
@@ -52,7 +52,7 @@ The default color used is "Pmenu".  If you prefer something else use the
 'hlsearch' highlighting is not displayed in a popup window.
 
 A popup window has a window-ID like other windows, but behaves differently.
-The size can be up to the whole Vim window and it overlaps other windows.
+The size can be up to the whole MNV window and it overlaps other windows.
 Popup windows can also overlap each other.  The "zindex" property specifies
 what goes on top of what.
 							*E366*
@@ -84,10 +84,10 @@ if there is not enough space then the window is shifted left in order to
 display more text.  When right-aligned the window is shifted right to display
 more text.  The shifting can be disabled with the "fixed" property.
 
-Vim tries to show the popup in the location you specify.  In some cases, e.g.
-when the popup would go outside of the Vim window, it will show it somewhere
+MNV tries to show the popup in the location you specify.  In some cases, e.g.
+when the popup would go outside of the MNV window, it will show it somewhere
 nearby.  E.g. if you use `popup_atcursor()` the popup normally shows just above
-the current cursor position, but if the cursor is close to the top of the Vim
+the current cursor position, but if the cursor is close to the top of the MNV
 window it will be placed below the cursor position.
 
 When the screen scrolls up for output of an Ex command, popups move too, so
@@ -121,7 +121,7 @@ is always associated with the popup window and manipulation is restricted:
 - 'bufhidden' is "hide"
 - 'buflisted' is off
 - 'undolevels' is -1: no undo at all
-- all other buffer-local and window-local options are set to their Vim default
+- all other buffer-local and window-local options are set to their MNV default
   value.
 
 It is possible to change the specifically mentioned options, but anything
@@ -546,7 +546,7 @@ popup_move({id}, {options})					*popup_move()*
 
 
 popup_notification({what}, {options})			 *popup_notification()*
-		Show the {what} for 3 seconds at the top of the Vim window.
+		Show the {what} for 3 seconds at the top of the MNV window.
 		This works like: >
 			call popup_create({what}, #{
 				\ line: 1,
@@ -586,7 +586,7 @@ popup_setbuf({id}, {buf})				*popup_setbuf()*
 		Can also be used as a |method|: >
 			GetPopup()->popup_setbuf(bufnr('foobar'))
 <
-		Return type: |vim9-boolean|
+		Return type: |mnv9-boolean|
 
 
 popup_setoptions({id}, {options})			*popup_setoptions()*
@@ -696,7 +696,7 @@ The second argument of |popup_create()| is a dictionary with options:
 			defines what corner of the popup "line" and "col" are
 			used for.  When not set "topleft" is used.
 			Alternatively "center" can be used to position the
-			popup in the center of the Vim window, in which case
+			popup in the center of the MNV window, in which case
 			"line" and "col" are ignored.
 	posinvert	When FALSE the value of "pos" is always used.  When
 			TRUE (the default) and the popup does not fit
@@ -872,7 +872,7 @@ short time the suggestion is to use zindex 1000.
 
 By default text wraps, which causes a line in {lines} to occupy more than one
 screen line.  When "wrap" is FALSE then the text outside of the popup or
-outside of the Vim window will not be displayed, thus truncated.
+outside of the MNV window will not be displayed, thus truncated.
 
 
 POPUP TEXT PROPERTIES					*popup-props*
@@ -967,7 +967,7 @@ A callback that gets any typed keys while a popup is displayed.  The filter is
 not invoked when the popup is hidden.
 
 The filter can return TRUE to indicate the key has been handled and is to be
-discarded, or FALSE to let Vim handle the key as usual in the current state.
+discarded, or FALSE to let MNV handle the key as usual in the current state.
 In case it returns FALSE and there is another popup window visible, that
 filter is also called.  The filter of the popup window with the highest zindex
 is called first.
@@ -1008,7 +1008,7 @@ When CTRL-C is pressed the popup is closed, the filter will not be invoked.
 A mouse click arrives as <LeftMouse>.  The coordinates can be obtained with
 |getmousepos()|.
 
-Vim provides standard filters |popup_filter_menu()| and
+MNV provides standard filters |popup_filter_menu()| and
 |popup_filter_yesno()|.
 
 Keys coming from a `:normal` command do not pass through the filter.  This can
@@ -1018,7 +1018,7 @@ Keys coming from `feedkeys()` are passed through the filter.
 
 Note that "x" is the normal way to close a popup.  You may want to use Esc,
 but since many keys start with an Esc character, there may be a delay before
-Vim recognizes the Esc key.  If you do use Esc, it is recommended to set the
+MNV recognizes the Esc key.  If you do use Esc, it is recommended to set the
 'ttimeoutlen' option to 100 and set 'timeout' and/or 'ttimeout'.
 
 							*popup-filter-errors*
@@ -1114,7 +1114,7 @@ To make the four corners transparent:
 ==============================================================================
 4. Examples						*popup-examples*
 
-These examples use |Vim9| script.
+These examples use |MNV9| script.
 
 					*popup_dialog-example*
 Prompt the user to press y/Y or n/N: >
@@ -1211,4 +1211,4 @@ this example simulated with a timer callback: >
 	enddef
 <
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

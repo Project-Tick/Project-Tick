@@ -1,4 +1,4 @@
-# Toplevel Aap recipe for Vim spell files
+# Toplevel Aap recipe for MNV spell files
 #
 # Usage:
 # aap        generate all the .spl files
@@ -20,7 +20,7 @@ diff: $*LANG/diff
         :child $l/main.aap
 
 # The existing .spl files need to be generated when the spell file format
-# changes.  Depending on the Vim executable does that, but results in doing it
+# changes.  Depending on the MNV executable does that, but results in doing it
 # much too often.  Generate a dummy .spl file and let the .spl depend on it, so
 # that they are outdated when it changes.
 :child check/main.aap

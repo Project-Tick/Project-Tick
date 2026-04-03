@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * typval.c: functions that deal with a typval
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -42,7 +42,7 @@ alloc_string_tv(char_u *s)
 	rettv->vval.v_string = s;
     }
     else
-	vim_free(s);
+	mnv_free(s);
     return rettv;
 }
 
@@ -61,7 +61,7 @@ free_tv(typval_T *varp)
 	    func_unref(varp->vval.v_string);
 	    // FALLTHROUGH
 	case VAR_STRING:
-	    vim_free(varp->vval.v_string);
+	    mnv_free(varp->vval.v_string);
 	    break;
 	case VAR_PARTIAL:
 	    partial_unref(varp->vval.v_partial);
@@ -109,7 +109,7 @@ free_tv(typval_T *varp)
 	case VAR_INSTR:
 	    break;
     }
-    vim_free(varp);
+    mnv_free(varp);
 }
 
 /*
@@ -127,7 +127,7 @@ clear_tv(typval_T *varp)
 	    func_unref(varp->vval.v_string);
 	    // FALLTHROUGH
 	case VAR_STRING:
-	    VIM_CLEAR(varp->vval.v_string);
+	    MNV_CLEAR(varp->vval.v_string);
 	    break;
 	case VAR_PARTIAL:
 	    partial_unref(varp->vval.v_partial);
@@ -170,7 +170,7 @@ clear_tv(typval_T *varp)
 #endif
 	    break;
 	case VAR_INSTR:
-	    VIM_CLEAR(varp->vval.v_instr);
+	    MNV_CLEAR(varp->vval.v_instr);
 	    break;
 	case VAR_CLASS:
 	    class_unref(varp->vval.v_class);
@@ -207,14 +207,14 @@ tv_get_bool_or_number_chk(
 	typval_T    *varp,
 	int	    *denote,
 	int	    want_bool,
-	int	    vim9_string_error) // in Vim9 using a string is an error
+	int	    mnv9_string_error) // in MNV9 using a string is an error
 {
     varnumber_T	n = 0L;
 
     switch (varp->v_type)
     {
 	case VAR_NUMBER:
-	    if (in_vim9script() && want_bool && varp->vval.v_number != 0
+	    if (in_mnv9script() && want_bool && varp->vval.v_number != 0
 						   && varp->vval.v_number != 1)
 	    {
 		semsg(_(e_using_number_as_bool_nr), varp->vval.v_number);
@@ -229,13 +229,13 @@ tv_get_bool_or_number_chk(
 	    emsg(_(e_using_funcref_as_number));
 	    break;
 	case VAR_STRING:
-	    if (vim9_string_error && in_vim9script())
+	    if (mnv9_string_error && in_mnv9script())
 	    {
 		emsg_using_string_as(varp, !want_bool);
 		break;
 	    }
 	    if (varp->vval.v_string != NULL)
-		vim_str2nr(varp->vval.v_string, NULL, NULL,
+		mnv_str2nr(varp->vval.v_string, NULL, NULL,
 					 STR2NR_ALL, &n, NULL, 0, FALSE, NULL);
 	    return n;
 	case VAR_LIST:
@@ -249,7 +249,7 @@ tv_get_bool_or_number_chk(
 	    break;
 	case VAR_BOOL:
 	case VAR_SPECIAL:
-	    if (!want_bool && in_vim9script())
+	    if (!want_bool && in_mnv9script())
 	    {
 		if (varp->v_type == VAR_BOOL)
 		    emsg(_(e_using_bool_as_number));
@@ -307,7 +307,7 @@ tv_get_bool_or_number_chk(
 
 /*
  * Get the number value of a variable.
- * If it is a String variable, uses vim_str2nr().
+ * If it is a String variable, uses mnv_str2nr().
  * For incompatible types, return 0.
  * tv_get_number_chk() is similar to tv_get_number(), but informs the
  * caller of incompatible types: it sets *denote to TRUE if "denote"
@@ -322,7 +322,7 @@ tv_get_number(typval_T *varp)
 }
 
 /*
- * Like tv_get_number() but in Vim9 script do convert a number in a string to a
+ * Like tv_get_number() but in MNV9 script do convert a number in a string to a
  * number without giving an error.
  */
     varnumber_T
@@ -341,7 +341,7 @@ tv_get_number_chk(typval_T *varp, int *denote)
 
 /*
  * Get the boolean value of "varp".  This is like tv_get_number_chk(),
- * but in Vim9 script accepts Number (0 and 1) and Bool/Special.
+ * but in MNV9 script accepts Number (0 and 1) and Bool/Special.
  */
     varnumber_T
 tv_get_bool(typval_T *varp)
@@ -351,7 +351,7 @@ tv_get_bool(typval_T *varp)
 
 /*
  * Get the boolean value of "varp".  This is like tv_get_number_chk(),
- * but in Vim9 script accepts Number and Bool.
+ * but in MNV9 script accepts Number and Bool.
  */
     varnumber_T
 tv_get_bool_chk(typval_T *varp, int *denote)
@@ -1153,14 +1153,14 @@ tv_get_string(typval_T *varp)
 }
 
 /*
- * Like tv_get_string() but don't allow number to string conversion for Vim9.
+ * Like tv_get_string() but don't allow number to string conversion for MNV9.
  */
     char_u *
 tv_get_string_strict(typval_T *varp)
 {
     static char_u   mybuf[NUMBUFLEN];
     char_u	    *res =  tv_get_string_buf_chk_strict(
-						 varp, mybuf, in_vim9script());
+						 varp, mybuf, in_mnv9script());
 
     return res != NULL ? res : (char_u *)"";
 }
@@ -1201,7 +1201,7 @@ tv_get_string_buf_chk_strict(typval_T *varp, char_u *buf, int strict)
 		emsg(_(e_using_number_as_string));
 		break;
 	    }
-	    vim_snprintf((char *)buf, NUMBUFLEN, "%lld",
+	    mnv_snprintf((char *)buf, NUMBUFLEN, "%lld",
 					    (varnumber_T)varp->vval.v_number);
 	    return buf;
 	case VAR_FUNC:
@@ -1223,7 +1223,7 @@ tv_get_string_buf_chk_strict(typval_T *varp, char_u *buf, int strict)
 		emsg(_(e_using_float_as_string));
 		break;
 	    }
-	    vim_snprintf((char *)buf, NUMBUFLEN, "%g", varp->vval.v_float);
+	    mnv_snprintf((char *)buf, NUMBUFLEN, "%g", varp->vval.v_float);
 	    return buf;
 	case VAR_STRING:
 	    if (varp->vval.v_string != NULL)
@@ -1256,7 +1256,7 @@ tv_get_string_buf_chk_strict(typval_T *varp, char_u *buf, int strict)
 	    break;
 	case VAR_JOB:
 #ifdef FEAT_JOB_CHANNEL
-	    if (in_vim9script())
+	    if (in_mnv9script())
 	    {
 		semsg(_(e_using_invalid_value_as_string_str), "job");
 		break;
@@ -1266,7 +1266,7 @@ tv_get_string_buf_chk_strict(typval_T *varp, char_u *buf, int strict)
 	    break;
 	case VAR_CHANNEL:
 #ifdef FEAT_JOB_CHANNEL
-	    if (in_vim9script())
+	    if (in_mnv9script())
 	    {
 		semsg(_(e_using_invalid_value_as_string_str), "channel");
 		break;
@@ -1404,7 +1404,7 @@ copy_tv(typval_T *from, typval_T *to)
 		to->vval.v_string = NULL;
 	    else
 	    {
-		to->vval.v_string = vim_strsave(from->vval.v_string);
+		to->vval.v_string = mnv_strsave(from->vval.v_string);
 		if (from->v_type == VAR_FUNC)
 		    func_ref(to->vval.v_string);
 	    }
@@ -1604,7 +1604,7 @@ typval_compare2(
 	}
 	*res = n1;
     }
-    else if (in_vim9script() && (tv1->v_type == VAR_BOOL
+    else if (in_mnv9script() && (tv1->v_type == VAR_BOOL
 				    || tv2->v_type == VAR_BOOL
 				    || (tv1->v_type == VAR_SPECIAL
 					      && tv2->v_type == VAR_SPECIAL)))
@@ -1673,7 +1673,7 @@ typval_compare(
     }
 
     clear_tv(tv1);
-    if (in_vim9script())
+    if (in_mnv9script())
     {
 	tv1->v_type = VAR_BOOL;
 	tv1->vval.v_number = res ? VVAL_TRUE : VVAL_FALSE;
@@ -1799,10 +1799,10 @@ typval_compare_null(typval_T *tv1, typval_T *tv2)
 	    case VAR_PARTIAL: return tv->vval.v_partial == NULL;
 	    case VAR_STRING: return tv->vval.v_string == NULL;
 
-	    case VAR_NUMBER: if (!in_vim9script())
+	    case VAR_NUMBER: if (!in_mnv9script())
 				 return tv->vval.v_number == 0;
 			     break;
-	    case VAR_FLOAT: if (!in_vim9script())
+	    case VAR_FLOAT: if (!in_mnv9script())
 				 return tv->vval.v_float == 0.0;
 			     break;
 	    case VAR_TYPEALIAS: return tv->vval.v_typealias == NULL;
@@ -2001,7 +2001,7 @@ typval_compare_string(
     char_u	*s1, *s2;
     char_u	buf1[NUMBUFLEN], buf2[NUMBUFLEN];
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	  && ((tv1->v_type != VAR_STRING && tv1->v_type != VAR_SPECIAL)
 	   || (tv2->v_type != VAR_STRING && tv2->v_type != VAR_SPECIAL)))
     {
@@ -2015,7 +2015,7 @@ typval_compare_string(
 	i = ic ? MB_STRICMP(s1, s2) : STRCMP(s1, s2);
     switch (type)
     {
-	case EXPR_IS:	    if (in_vim9script())
+	case EXPR_IS:	    if (in_mnv9script())
 			    {
 				// Really check it is the same string, not just
 				// the same value.
@@ -2024,7 +2024,7 @@ typval_compare_string(
 			    }
 			    // FALLTHROUGH
 	case EXPR_EQUAL:    val = (i == 0); break;
-	case EXPR_ISNOT:    if (in_vim9script())
+	case EXPR_ISNOT:    if (in_mnv9script())
 			    {
 				// Really check it is not the same string, not
 				// just a different value.
@@ -2063,10 +2063,10 @@ typval_tostring(typval_T *arg, int quotes)
     char_u	*ret = NULL;
 
     if (arg == NULL)
-	return vim_strsave((char_u *)"(does not exist)");
+	return mnv_strsave((char_u *)"(does not exist)");
     if (!quotes && arg->v_type == VAR_STRING)
     {
-	ret = vim_strsave(arg->vval.v_string == NULL ? (char_u *)""
+	ret = mnv_strsave(arg->vval.v_string == NULL ? (char_u *)""
 							 : arg->vval.v_string);
     }
     else
@@ -2074,7 +2074,7 @@ typval_tostring(typval_T *arg, int quotes)
 	ret = tv2string(arg, &tofree, numbuf, 0);
 	// Make a copy if we have a value but it's not in allocated memory.
 	if (ret != NULL && tofree == NULL)
-	    ret = vim_strsave(ret);
+	    ret = mnv_strsave(ret);
     }
     return ret;
 }
@@ -2332,13 +2332,13 @@ eval_option(
 	}
 	else if (opt_type == gov_hidden_bool || opt_type == gov_hidden_number)
 	{
-	    rettv->v_type = in_vim9script() && opt_type == gov_hidden_bool
+	    rettv->v_type = in_mnv9script() && opt_type == gov_hidden_bool
 						       ? VAR_BOOL : VAR_NUMBER;
 	    rettv->vval.v_number = 0;
 	}
 	else if (opt_type == gov_bool || opt_type == gov_number)
 	{
-	    if (in_vim9script() && opt_type == gov_bool)
+	    if (in_mnv9script() && opt_type == gov_bool)
 	    {
 		rettv->v_type = VAR_BOOL;
 		rettv->vval.v_number = numval ? VVAL_TRUE : VVAL_FALSE;
@@ -2399,14 +2399,14 @@ eval_number(
 	    {
 		if (*p == '\'')
 		    ++p;
-		if (!vim_isdigit(*p))
+		if (!mnv_isdigit(*p))
 		    break;
 		p = skipdigits(p);
 	    }
 	else
 	    p = skipdigits(p);
     }
-    if (!want_string && p[0] == '.' && vim_isdigit(p[1]))
+    if (!want_string && p[0] == '.' && mnv_isdigit(p[1]))
     {
 	get_float = TRUE;
 	p = skipdigits(p + 2);
@@ -2415,7 +2415,7 @@ eval_number(
 	    ++p;
 	    if (*p == '-' || *p == '+')
 		++p;
-	    if (!vim_isdigit(*p))
+	    if (!mnv_isdigit(*p))
 		get_float = FALSE;
 	    else
 		p = skipdigits(p + 1);
@@ -2443,22 +2443,22 @@ eval_number(
 	// Blob constant: 0z0123456789abcdef
 	if (evaluate)
 	    blob = blob_alloc();
-	for (bp = *arg + 2; vim_isxdigit(bp[0]); bp += 2)
+	for (bp = *arg + 2; mnv_isxdigit(bp[0]); bp += 2)
 	{
-	    if (!vim_isxdigit(bp[1]))
+	    if (!mnv_isxdigit(bp[1]))
 	    {
 		if (blob != NULL)
 		{
 		    emsg(_(e_blob_literal_should_have_an_even_number_of_hex_characters));
 		    ga_clear(&blob->bv_ga);
-		    VIM_CLEAR(blob);
+		    MNV_CLEAR(blob);
 		}
 		return FAIL;
 	    }
 	    if (blob != NULL)
 		ga_append(&blob->bv_ga,
 			     (hex2nr(*bp) << 4) + hex2nr(*(bp+1)));
-	    if (bp[2] == '.' && vim_isxdigit(bp[3]))
+	    if (bp[2] == '.' && mnv_isxdigit(bp[3]))
 		++bp;
 	}
 	if (blob != NULL)
@@ -2470,7 +2470,7 @@ eval_number(
 	varnumber_T	n;
 
 	// decimal, hex or octal number
-	vim_str2nr(*arg, NULL, &len, skip_quotes
+	mnv_str2nr(*arg, NULL, &len, skip_quotes
 		      ? STR2NR_NO_OCT + STR2NR_QUOTE
 		      : STR2NR_ALL, &n, NULL, 0, TRUE, NULL);
 	if (len == 0)
@@ -2582,7 +2582,7 @@ eval_string(char_u **arg, typval_T *rettv, int evaluate, int interpolate)
 		case 'x':
 		case 'u': // Unicode: "\u0023"
 		case 'U':
-			  if (vim_isxdigit(p[1]))
+			  if (mnv_isxdigit(p[1]))
 			  {
 			      int	n, nr;
 			      int	c = SAFE_toupper(*p);
@@ -2594,7 +2594,7 @@ eval_string(char_u **arg, typval_T *rettv, int evaluate, int interpolate)
 			      else
 				  n = 8;
 			      nr = 0;
-			      while (--n >= 0 && vim_isxdigit(p[1]))
+			      while (--n >= 0 && mnv_isxdigit(p[1]))
 			      {
 				  ++p;
 				  nr = (nr << 4) + hex2nr(*p);
@@ -2863,22 +2863,22 @@ eval_env_var(char_u **arg, typval_T *rettv, int evaluate)
 
 	cc = name[len];
 	name[len] = NUL;
-	// first try vim_getenv(), fast for normal environment vars
-	string = vim_getenv(name, &mustfree);
+	// first try mnv_getenv(), fast for normal environment vars
+	string = mnv_getenv(name, &mustfree);
 	if (string != NULL && *string != NUL)
 	{
 	    if (!mustfree)
-		string = vim_strsave(string);
+		string = mnv_strsave(string);
 	}
 	else
 	{
 	    if (mustfree)
-		vim_free(string);
+		mnv_free(string);
 
-	    // next try expanding things like $VIM and ${HOME}
+	    // next try expanding things like $MNV and ${HOME}
 	    string = expand_env_save(name - 1);
 	    if (string != NULL && *string == '$')
-		VIM_CLEAR(string);
+		MNV_CLEAR(string);
 	}
 	name[len] = cc;
 
@@ -2901,7 +2901,7 @@ tv_get_lnum(typval_T *argvars)
     linenr_T	lnum = -1;
     int		did_emsg_before = did_emsg;
 
-    if (argvars[0].v_type != VAR_STRING || !in_vim9script())
+    if (argvars[0].v_type != VAR_STRING || !in_mnv9script())
 	lnum = (linenr_T)tv_get_number_chk(&argvars[0], NULL);
     if (lnum <= 0 && did_emsg_before == did_emsg
 					    && argvars[0].v_type != VAR_NUMBER)

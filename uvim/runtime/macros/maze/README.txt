@@ -1,9 +1,9 @@
-To run the maze macros with Vim:
+To run the maze macros with MNV:
 
-	vim -u maze_mac maze_5.78
+	mnv -u maze_mac maze_5.78
 	press "g"
 
-The "-u maze.mac" loads the maze macros and skips loading your .vimrc, which
+The "-u maze.mac" loads the maze macros and skips loading your .mnvrc, which
 may contain settings and mappings that get in the way.
 
 

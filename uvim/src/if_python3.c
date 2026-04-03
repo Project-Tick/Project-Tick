@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved    by Bram Moolenaar
+ * MNV - MNV is not Vim    by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * Python extensions by Paul Moore.
@@ -13,8 +13,8 @@
  * This consists of four parts:
  * 1. Python interpreter main program
  * 2. Python output stream: writes output via [e]msg().
- * 3. Implementation of the Vim module for Python
- * 4. Utility functions for handling the interface between Vim and Python.
+ * 3. Implementation of the MNV module for Python
+ * 4. Utility functions for handling the interface between MNV and Python.
  */
 
 /*
@@ -29,7 +29,7 @@
 // allocator
 // #define Py_DEBUG_NO_PYMALLOC
 
-#include "vim.h"
+#include "mnv.h"
 
 #include <limits.h>
 
@@ -135,7 +135,7 @@ static HINSTANCE hinstPy3 = 0; // Instance of python.dll
 #if defined(DYNAMIC_PYTHON3)
 
 # ifdef MSWIN
-#  define load_dll vimLoadLib
+#  define load_dll mnvLoadLib
 #  define close_dll FreeLibrary
 #  define symbol_from_dll GetProcAddress
 #  define load_dll_error GetWin32Error
@@ -752,7 +752,7 @@ static struct
 //
 // For 3.8 or above, we also use this version even if not using limited API.
 // The Py_DECREF macros in 3.8+ include references to internal functions which
-// cause link errors when building Vim. The stable versions are exposed as API
+// cause link errors when building MNV. The stable versions are exposed as API
 // functions and don't have these problems (albeit slightly slower as they
 // require function calls rather than an inlined macro).
 #  undef Py_INCREF
@@ -907,7 +907,7 @@ py3_get_system_libname(const char *libname)
 							    NULL, path, &len);
     if (ret != ERROR_SUCCESS)
     {
-	vim_free(path);
+	mnv_free(path);
 	return NULL;
     }
     // Remove trailing path separators.
@@ -940,7 +940,7 @@ py3_runtime_link_init(char *libname, int verbose)
     if (python_loaded())
     {
 	if (verbose)
-	    emsg(_(e_this_vim_cannot_execute_py3_after_using_python));
+	    emsg(_(e_this_mnv_cannot_execute_py3_after_using_python));
 	return FAIL;
     }
 # endif
@@ -960,7 +960,7 @@ py3_runtime_link_init(char *libname, int verbose)
 	    hinstPy3 = LoadLibraryExW(syslibname, NULL,
 		    LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
 		    LOAD_LIBRARY_SEARCH_SYSTEM32);
-	    vim_free(syslibname);
+	    mnv_free(syslibname);
 	}
     }
 # endif
@@ -1120,7 +1120,7 @@ static PyObject *TupleGetattro(PyObject *, PyObject *);
 static int TupleSetattro(PyObject *, PyObject *, PyObject *);
 static PyObject *FunctionGetattro(PyObject *, PyObject *);
 
-static struct PyModuleDef vimmodule;
+static struct PyModuleDef mnvmodule;
 
 #define PY_CAN_RECURSE
 
@@ -1180,7 +1180,7 @@ static char* PY_UNICODE_GET_UTF8_CHARS(PyObject* str)
 ///////////////////////////////////////////////////////
 // Internal function prototypes.
 
-static PyObject *Py3Init_vim(void);
+static PyObject *Py3Init_mnv(void);
 
 ///////////////////////////////////////////////////////
 // 1. Python interpreter main program.
@@ -1246,9 +1246,9 @@ is_stdin_readable(void)
 }
 
 // Python 3.5 or later will abort inside Py_Initialize() when stdin has
-// been closed (i.e. executed by "vim -").  Reconnect stdin to CONIN$.
+// been closed (i.e. executed by "mnv -").  Reconnect stdin to CONIN$.
 // Note that the python DLL is linked to its own stdio DLL which can be
-// differ from Vim's stdio.
+// differ from MNV's stdio.
     static void
 reset_stdin(void)
 {
@@ -1347,7 +1347,7 @@ Python3_Init(void)
 	// This is great if you're reading them from the terminal, but useless
 	// and broken everywhere else (such as in log files, or text editors).
 	// Opt out, forcefully.
-	vim_setenv((char_u*)"PYTHON_COLORS", (char_u*)"0");
+	mnv_setenv((char_u*)"PYTHON_COLORS", (char_u*)"0");
 
 	init_structs();
 
@@ -1366,7 +1366,7 @@ Python3_Init(void)
 	    Py_SetPythonHome(PYTHON3_HOME);
 #endif
 
-	PyImport_AppendInittab("vim", Py3Init_vim);
+	PyImport_AppendInittab("mnv", Py3Init_mnv);
 
 #if !defined(DYNAMIC_PYTHON3) && defined(MSWIN)
 	hinstPy3 = GetModuleHandle(PYTHON3_DLL);
@@ -1406,12 +1406,12 @@ Python3_Init(void)
 	globals = PyModule_GetDict(PyImport_AddModule("__main__"));
 
 	// Remove the element from sys.path that was added because of our
-	// argv[0] value in Py3Init_vim().  Previously we used an empty
+	// argv[0] value in Py3Init_mnv().  Previously we used an empty
 	// string, but depending on the OS we then get an empty entry or
 	// the current directory in sys.path.
-	// Only after vim has been imported, the element does exist in
+	// Only after mnv has been imported, the element does exist in
 	// sys.path.
-	PyRun_SimpleString("import vim; import sys; sys.path = list(filter(lambda x: not x.endswith('must>not&exist'), sys.path))");
+	PyRun_SimpleString("import mnv; import sys; sys.path = list(filter(lambda x: not x.endswith('must>not&exist'), sys.path))");
 
 	// Without the call to PyEval_SaveThread, thread specific state (such
 	// as the system trace hook), will be lost between invocations of
@@ -1462,7 +1462,7 @@ DoPyCommand(const char *cmd,
 
     init_range(arg);
 
-    Python_Release_Vim();	    // leave Vim
+    Python_Release_MNV();	    // leave MNV
 
 #if defined(HAVE_LOCALE_H) || defined(X_LOCALE)
     // Python only works properly when the LC_NUMERIC locale is "C".
@@ -1472,7 +1472,7 @@ DoPyCommand(const char *cmd,
     else
     {
 	// Need to make a copy, value may change when setting new locale.
-	saved_locale = (char *)vim_strsave((char_u *)saved_locale);
+	saved_locale = (char *)mnv_strsave((char_u *)saved_locale);
 	(void)setlocale(LC_NUMERIC, "C");
     }
 #endif
@@ -1495,11 +1495,11 @@ DoPyCommand(const char *cmd,
     if (saved_locale != NULL)
     {
 	(void)setlocale(LC_NUMERIC, saved_locale);
-	vim_free(saved_locale);
+	mnv_free(saved_locale);
     }
 #endif
 
-    Python_Lock_Vim();		    // enter Vim
+    Python_Lock_MNV();		    // enter MNV
     PythonIO_Flush();
 
 theend:
@@ -1526,7 +1526,7 @@ ex_py3(exarg_T *eap)
 		(runner) run_cmd,
 		(void *) eap);
     }
-    vim_free(script);
+    mnv_free(script);
 }
 
 #define BUFFER_SIZE 2048
@@ -1546,7 +1546,7 @@ ex_py3file(exarg_T *eap)
 	p_pyx = 3;
 
     // Have to do it like this. PyRun_SimpleFile requires you to pass a
-    // stdio file pointer, but Vim and the Python DLL are compiled with
+    // stdio file pointer, but MNV and the Python DLL are compiled with
     // different options under Windows, meaning that stdio pointers aren't
     // compatible between the two. Yuk.
     //
@@ -1636,7 +1636,7 @@ OutputSetattro(PyObject *self, PyObject *nameobj, PyObject *val)
 }
 
 ///////////////////////////////////////////////////////
-// 3. Implementation of the Vim module for Python
+// 3. Implementation of the MNV module for Python
 
 // Window type - Implementation functions
 // --------------------------------------
@@ -2103,7 +2103,7 @@ python3_tabpage_free(tabpage_T *tab)
 }
 
     static PyObject *
-Py3Init_vim(void)
+Py3Init_mnv(void)
 {
     // The special value is removed from sys.path in Python3_Init().
     static wchar_t *(argv[2]) = {L"/must>not&exist/foo", NULL};
@@ -2114,23 +2114,23 @@ Py3Init_vim(void)
     // Set sys.argv[] to avoid a crash in warn().
     PySys_SetArgv(1, argv);
 
-    if ((vim_module = PyModule_Create(&vimmodule)) == NULL)
+    if ((mnv_module = PyModule_Create(&mnvmodule)) == NULL)
 	return NULL;
 
-    if (populate_module(vim_module))
+    if (populate_module(mnv_module))
 	return NULL;
 
     if (init_sys_path())
 	return NULL;
 
-    return vim_module;
+    return mnv_module;
 }
 
 //////////////////////////////////////////////////////////////////////////
-// 4. Utility functions for handling the interface between Vim and Python.
+// 4. Utility functions for handling the interface between MNV and Python.
 
 /*
- * Convert a Vim line into a Python string.
+ * Convert a MNV line into a Python string.
  * All internal newlines are replaced by null characters.
  *
  * On errors, the Python exception data is set, and NULL is returned.
@@ -2164,7 +2164,7 @@ LineToString(const char *str)
 
     result = PyUnicode_Decode(tmp, len, (char *)ENC_OPT, ERRORS_DECODE_ARG);
 
-    vim_free(tmp);
+    mnv_free(tmp);
     return result;
 }
 

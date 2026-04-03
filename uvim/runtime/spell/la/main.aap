@@ -1,10 +1,10 @@
-# Aap recipe for Latin Vim spell files.
+# Aap recipe for Latin MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = la.aff la.dic
@@ -16,10 +16,10 @@ all: $SPELLDIR/la.latin1.spl $SPELLDIR/la.utf-8.spl ../README_la.txt
 
 $SPELLDIR/la.latin1.spl : $FILES
         :sys env LANG=en_US.ISO-8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/la la" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/la la" -c q
 
 $SPELLDIR/la.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                 -c "mkspell! $SPELLDIR/la la" -c q
 
 ../README_la.txt : README_la.txt
@@ -47,7 +47,7 @@ la.aff la.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -78,4 +78,4 @@ check:
             :delete la.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

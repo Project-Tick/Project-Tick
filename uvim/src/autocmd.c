@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * autocmd.c: Autocommand related functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * The autocommands are stored in a list for each event.
@@ -159,6 +159,12 @@ static keyvalue_T event_tab[NUM_EVENTS] = {
     KEYVALUE_ENTRY(-EVENT_INSERTLEAVEPRE, "InsertLeavePre"),
     KEYVALUE_ENTRY(EVENT_KEYINPUTPRE, "KeyInputPre"),
     KEYVALUE_ENTRY(EVENT_MENUPOPUP, "MenuPopup"),
+    KEYVALUE_ENTRY(EVENT_MNVENTER, "MNVEnter"),
+    KEYVALUE_ENTRY(EVENT_MNVLEAVE, "MNVLeave"),
+    KEYVALUE_ENTRY(EVENT_MNVLEAVEPRE, "MNVLeavePre"),
+    KEYVALUE_ENTRY(EVENT_MNVRESIZED, "MNVResized"),
+    KEYVALUE_ENTRY(EVENT_MNVRESUME, "MNVResume"),
+    KEYVALUE_ENTRY(EVENT_MNVSUSPEND, "MNVSuspend"),
     KEYVALUE_ENTRY(EVENT_MODECHANGED, "ModeChanged"),
     KEYVALUE_ENTRY(EVENT_OPTIONSET, "OptionSet"),
     KEYVALUE_ENTRY(EVENT_QUICKFIXCMDPOST, "QuickFixCmdPost"),
@@ -197,12 +203,6 @@ static keyvalue_T event_tab[NUM_EVENTS] = {
     KEYVALUE_ENTRY(-EVENT_TEXTCHANGEDT, "TextChangedT"),
     KEYVALUE_ENTRY(-EVENT_TEXTYANKPOST, "TextYankPost"),
     KEYVALUE_ENTRY(EVENT_USER, "User"),
-    KEYVALUE_ENTRY(EVENT_VIMENTER, "VimEnter"),
-    KEYVALUE_ENTRY(EVENT_VIMLEAVE, "VimLeave"),
-    KEYVALUE_ENTRY(EVENT_VIMLEAVEPRE, "VimLeavePre"),
-    KEYVALUE_ENTRY(EVENT_VIMRESIZED, "VimResized"),
-    KEYVALUE_ENTRY(EVENT_VIMRESUME, "VimResume"),
-    KEYVALUE_ENTRY(EVENT_VIMSUSPEND, "VimSuspend"),
     KEYVALUE_ENTRY(-EVENT_WINCLOSED, "WinClosed"),
     KEYVALUE_ENTRY(-EVENT_WINENTER, "WinEnter"),
     KEYVALUE_ENTRY(-EVENT_WINLEAVE, "WinLeave"),
@@ -360,7 +360,7 @@ theend:
     static void
 au_remove_pat(AutoPat *ap)
 {
-    VIM_CLEAR(ap->pat);
+    MNV_CLEAR(ap->pat);
     ap->buflocal_nr = -1;
     au_need_clean = TRUE;
 }
@@ -374,14 +374,14 @@ au_remove_cmds(AutoPat *ap)
     AutoCmd *ac;
 
     for (ac = ap->cmds; ac != NULL; ac = ac->next)
-	VIM_CLEAR(ac->cmd);
+	MNV_CLEAR(ac->cmd);
     au_need_clean = TRUE;
 }
 
 // Delete one command from an autocmd pattern.
 static void au_del_cmd(AutoCmd *ac)
 {
-    VIM_CLEAR(ac->cmd);
+    MNV_CLEAR(ac->cmd);
     au_need_clean = TRUE;
 }
 
@@ -418,8 +418,8 @@ au_cleanup(void)
 		if (ap->pat == NULL || ac->cmd == NULL)
 		{
 		    *prev_ac = ac->next;
-		    vim_free(ac->cmd);
-		    vim_free(ac);
+		    mnv_free(ac->cmd);
+		    mnv_free(ac);
 		}
 		else
 		{
@@ -446,8 +446,8 @@ au_cleanup(void)
 			last_autopat[(int)event] = (AutoPat *)prev_ap;
 		}
 		*prev_ap = ap->next;
-		vim_regfree(ap->reg_prog);
-		vim_free(ap);
+		mnv_regfree(ap->reg_prog);
+		mnv_free(ap);
 	    }
 	    else
 		prev_ap = &(ap->next);
@@ -512,7 +512,7 @@ au_new_group(char_u *name)
     if (i == augroups.ga_len && ga_grow(&augroups, 1) == FAIL)
 	return AUGROUP_ERROR;
 
-    AUGROUP_NAME(i) = vim_strsave(name);
+    AUGROUP_NAME(i) = mnv_strsave(name);
     if (AUGROUP_NAME(i) == NULL)
 	return AUGROUP_ERROR;
     if (i == augroups.ga_len)
@@ -554,7 +554,7 @@ au_del_group(char_u *name)
 		break;
 	    }
     }
-    vim_free(AUGROUP_NAME(i));
+    mnv_free(AUGROUP_NAME(i));
     if (in_use)
 	AUGROUP_NAME(i) = get_deleted_augroup();
     else
@@ -645,7 +645,7 @@ free_all_autocmds(void)
     {
 	s = ((char_u **)(augroups.ga_data))[i];
 	if (s != get_deleted_augroup())
-	    vim_free(s);
+	    mnv_free(s);
     }
     ga_clear(&augroups);
 
@@ -680,7 +680,7 @@ event_name2nr(char_u *start, char_u **end)
     static keyvalue_T *bufread = &event_tab[BUFREAD_INDEX];
 
     // the event name ends with end of line, '|', a blank or a comma
-    for (p = start; *p && !VIM_ISWHITE(*p) && *p != ',' && *p != '|'; ++p)
+    for (p = start; *p && !MNV_ISWHITE(*p) && *p != ',' && *p != '|'; ++p)
 	;
 
     target.key = 0;
@@ -774,7 +774,7 @@ find_end_event(
 
     if (*arg == '*')
     {
-	if (arg[1] && !VIM_ISWHITE(arg[1]))
+	if (arg[1] && !MNV_ISWHITE(arg[1]))
 	{
 	    semsg(_(e_illegal_character_after_star_str), arg);
 	    return NULL;
@@ -783,7 +783,7 @@ find_end_event(
     }
     else
     {
-	for (pat = arg; *pat && *pat != '|' && !VIM_ISWHITE(*pat); pat = p)
+	for (pat = arg; *pat && *pat != '|' && !MNV_ISWHITE(*pat); pat = p)
 	{
 	    if ((int)event_name2nr(pat, &p) >= NUM_EVENTS)
 	    {
@@ -866,14 +866,14 @@ au_event_disable(char *what)
     size_t	p_ei_len;
 
     p_ei_len = STRLEN(p_ei);
-    save_ei = vim_strnsave(p_ei, p_ei_len);
+    save_ei = mnv_strnsave(p_ei, p_ei_len);
     if (save_ei == NULL)
 	return NULL;
 
-    new_ei = vim_strnsave(p_ei, p_ei_len + STRLEN(what));
+    new_ei = mnv_strnsave(p_ei, p_ei_len + STRLEN(what));
     if (new_ei == NULL)
     {
-	vim_free(save_ei);
+	mnv_free(save_ei);
 	return NULL;
     }
 
@@ -883,7 +883,7 @@ au_event_disable(char *what)
 	STRCPY(new_ei + p_ei_len, what);
     set_string_option_direct((char_u *)"ei", -1, new_ei,
 	    OPT_FREE, SID_NONE);
-    vim_free(new_ei);
+    mnv_free(new_ei);
     return save_ei;
 }
 
@@ -894,7 +894,7 @@ au_event_restore(char_u *old_ei)
     {
 	set_string_option_direct((char_u *)"ei", -1, old_ei,
 							  OPT_FREE, SID_NONE);
-	vim_free(old_ei);
+	mnv_free(old_ei);
     }
 }
 #endif  // FEAT_SYN_HL
@@ -985,14 +985,14 @@ do_autocmd(exarg_T *eap, char_u *arg_in, int forceit)
 	 * Scan over the pattern.  Put a NUL at the end.
 	 */
 	cmd = pat;
-	while (*cmd && (!VIM_ISWHITE(*cmd) || cmd[-1] == '\\'))
+	while (*cmd && (!MNV_ISWHITE(*cmd) || cmd[-1] == '\\'))
 	    cmd++;
 	if (*cmd)
 	    *cmd++ = NUL;
 
 	// Expand environment variables in the pattern.  Set 'shellslash', we
 	// want forward slashes here.
-	if (vim_strchr(pat, '$') != NULL || vim_strchr(pat, '~') != NULL)
+	if (mnv_strchr(pat, '$') != NULL || mnv_strchr(pat, '~') != NULL)
 	{
 #ifdef BACKSLASH_IN_FILENAME
 	    int	p_ssl_save = p_ssl;
@@ -1014,7 +1014,7 @@ do_autocmd(exarg_T *eap, char_u *arg_in, int forceit)
 		continue;
 
 	    // Check for "++once" flag.
-	    if (STRNCMP(cmd, "++once", 6) == 0 && VIM_ISWHITE(cmd[6]))
+	    if (STRNCMP(cmd, "++once", 6) == 0 && MNV_ISWHITE(cmd[6]))
 	    {
 		if (once)
 		    semsg(_(e_duplicate_argument_str), "++once");
@@ -1023,7 +1023,7 @@ do_autocmd(exarg_T *eap, char_u *arg_in, int forceit)
 	    }
 
 	    // Check for "++nested" flag.
-	    if ((STRNCMP(cmd, "++nested", 8) == 0 && VIM_ISWHITE(cmd[8])))
+	    if ((STRNCMP(cmd, "++nested", 8) == 0 && MNV_ISWHITE(cmd[8])))
 	    {
 		if (nested)
 		{
@@ -1035,9 +1035,9 @@ do_autocmd(exarg_T *eap, char_u *arg_in, int forceit)
 	    }
 
 	    // Check for the old "nested" flag in legacy script.
-	    if (STRNCMP(cmd, "nested", 6) == 0 && VIM_ISWHITE(cmd[6]))
+	    if (STRNCMP(cmd, "nested", 6) == 0 && MNV_ISWHITE(cmd[6]))
 	    {
-		if (in_vim9script())
+		if (in_mnv9script())
 		{
 		    // If there ever is a :nested command this error should
 		    // be removed and "nested" accepted as the start of the
@@ -1097,16 +1097,16 @@ do_autocmd(exarg_T *eap, char_u *arg_in, int forceit)
     }
     else
     {
-	while (*arg && *arg != '|' && !VIM_ISWHITE(*arg))
+	while (*arg && *arg != '|' && !MNV_ISWHITE(*arg))
 	    if (do_autocmd_event(event_name2nr(arg, &arg), pat,
 			  once, nested,	cmd, forceit, group, flags) == FAIL)
 		break;
     }
 
     if (cmd_need_free)
-	vim_free(cmd);
-    vim_free(tofree);
-    vim_free(envpat);
+	mnv_free(cmd);
+    mnv_free(tofree);
+    mnv_free(envpat);
 }
 
 /*
@@ -1123,12 +1123,12 @@ au_get_grouparg(char_u **argp)
     char_u	*arg = *argp;
     int		group = AUGROUP_ALL;
 
-    for (p = arg; *p && !VIM_ISWHITE(*p) && *p != '|'; ++p)
+    for (p = arg; *p && !MNV_ISWHITE(*p) && *p != '|'; ++p)
 	;
     if (p <= arg)
 	return AUGROUP_ALL;
 
-    group_name = vim_strnsave(arg, p - arg);
+    group_name = mnv_strnsave(arg, p - arg);
     if (group_name == NULL)		// out of memory
 	return AUGROUP_ERROR;
     group = au_find_group(group_name);
@@ -1136,7 +1136,7 @@ au_get_grouparg(char_u **argp)
 	group = AUGROUP_ALL;	// no match, use all groups
     else
 	*argp = skipwhite(p);	// match, skip over group name
-    vim_free(group_name);
+    mnv_free(group_name);
     return group;
 }
 
@@ -1331,11 +1331,11 @@ do_autocmd_event(
 		ap = ALLOC_ONE(AutoPat);
 		if (ap == NULL)
 		    return FAIL;
-		ap->pat = vim_strnsave(pat, patlen);
+		ap->pat = mnv_strnsave(pat, patlen);
 		ap->patlen = patlen;
 		if (ap->pat == NULL)
 		{
-		    vim_free(ap);
+		    mnv_free(ap);
 		    return FAIL;
 		}
 
@@ -1376,12 +1376,12 @@ do_autocmd_event(
 		    reg_pat = file_pat_to_reg_pat(pat, endpat,
 							 &ap->allow_dirs, TRUE);
 		    if (reg_pat != NULL)
-			ap->reg_prog = vim_regcomp(reg_pat, RE_MAGIC);
-		    vim_free(reg_pat);
+			ap->reg_prog = mnv_regcomp(reg_pat, RE_MAGIC);
+		    mnv_free(reg_pat);
 		    if (reg_pat == NULL || ap->reg_prog == NULL)
 		    {
-			vim_free(ap->pat);
-			vim_free(ap);
+			mnv_free(ap->pat);
+			mnv_free(ap);
 			return FAIL;
 		    }
 		}
@@ -1404,16 +1404,16 @@ do_autocmd_event(
 	    ac = ALLOC_ONE(AutoCmd);
 	    if (ac == NULL)
 		return FAIL;
-	    ac->cmd = vim_strsave(cmd);
+	    ac->cmd = mnv_strsave(cmd);
 	    ac->script_ctx = current_sctx;
-	    if (flags & UC_VIM9)
-		ac->script_ctx.sc_version = SCRIPT_VERSION_VIM9;
+	    if (flags & UC_MNV9)
+		ac->script_ctx.sc_version = SCRIPT_VERSION_MNV9;
 #ifdef FEAT_EVAL
 	    ac->script_ctx.sc_lnum += SOURCING_LNUM;
 #endif
 	    if (ac->cmd == NULL)
 	    {
-		vim_free(ac);
+		mnv_free(ac);
 		return FAIL;
 	    }
 	    ac->next = NULL;
@@ -1471,7 +1471,7 @@ do_doautocmd(
     /*
      * Loop over the events.
      */
-    while (*arg && !ends_excmd(*arg) && !VIM_ISWHITE(*arg))
+    while (*arg && !ends_excmd(*arg) && !MNV_ISWHITE(*arg))
 	if (apply_autocmds_group(event_name2nr(arg, &arg),
 				      fname, NULL, TRUE, group, curbuf, NULL))
 	    nothing_done = FALSE;
@@ -1766,9 +1766,9 @@ win_found:
 	// directory before restoring tp_localdir and globaldir.
 	if (awp->w_localdir != NULL)
 	    win_fix_current_dir();
-	vim_free(curtab->tp_localdir);
+	mnv_free(curtab->tp_localdir);
 	curtab->tp_localdir = aco->tp_localdir;
-	vim_free(globaldir);
+	mnv_free(globaldir);
 	globaldir = aco->globaldir;
 
 	// the buffer contents may have changed
@@ -2214,7 +2214,7 @@ apply_autocmds_group(
     else
 	autocmd_fname = fname_io;
     if (autocmd_fname != NULL)
-	autocmd_fname = vim_strsave(autocmd_fname);
+	autocmd_fname = mnv_strsave(autocmd_fname);
     autocmd_fname_full = FALSE; // call FullName_save() later
 
     /*
@@ -2246,17 +2246,17 @@ apply_autocmds_group(
 		else
 		{
 		    if (buf->b_sfname != NULL)
-			sfname = vim_strsave(buf->b_sfname);
+			sfname = mnv_strsave(buf->b_sfname);
 		    fname = buf->b_ffname;
 		}
 	}
 	if (fname == NULL)
 	    fname = (char_u *)"";
-	fname = vim_strsave(fname);	// make a copy, so we can change it
+	fname = mnv_strsave(fname);	// make a copy, so we can change it
     }
     else
     {
-	sfname = vim_strsave(fname);
+	sfname = mnv_strsave(fname);
 	// Don't try expanding FileType, Syntax, FuncUndefined, WindowID,
 	// ColorScheme, QuickFixCmd*, DirChanged and similar.
 	if (event == EVENT_FILETYPE
@@ -2288,7 +2288,7 @@ apply_autocmds_group(
 		|| event == EVENT_WINSCROLLED
 		|| event == EVENT_TERMRESPONSEALL)
 	{
-	    fname = vim_strsave(fname);
+	    fname = mnv_strsave(fname);
 	    autocmd_fname_full = TRUE; // don't expand it later
 	}
 	else
@@ -2296,7 +2296,7 @@ apply_autocmds_group(
     }
     if (fname == NULL)	    // out of memory
     {
-	vim_free(sfname);
+	mnv_free(sfname);
 	retval = FALSE;
 	goto BYPASS_AU;
     }
@@ -2390,11 +2390,11 @@ apply_autocmds_group(
 
 #ifdef FEAT_EVAL
 	// set v:cmdarg (only when there is a matching pattern)
-	save_cmdbang = (long)get_vim_var_nr(VV_CMDBANG);
+	save_cmdbang = (long)get_mnv_var_nr(VV_CMDBANG);
 	if (eap != NULL)
 	{
 	    save_cmdarg = set_cmdarg(eap, NULL);
-	    set_vim_var_nr(VV_CMDBANG, (long)eap->forceit);
+	    set_mnv_var_nr(VV_CMDBANG, (long)eap->forceit);
 	}
 	else
 	    save_cmdarg = NULL;	// avoid gcc warning
@@ -2431,7 +2431,7 @@ apply_autocmds_group(
 	if (eap != NULL)
 	{
 	    (void)set_cmdarg(NULL, save_cmdarg);
-	    set_vim_var_nr(VV_CMDBANG, save_cmdbang);
+	    set_mnv_var_nr(VV_CMDBANG, save_cmdbang);
 	}
 #endif
 	// delete from active_apc_list
@@ -2444,10 +2444,10 @@ apply_autocmds_group(
     autocmd_busy = save_autocmd_busy;
     filechangeshell_busy = FALSE;
     autocmd_nested = save_autocmd_nested;
-    vim_free(SOURCING_NAME);
+    mnv_free(SOURCING_NAME);
     ESTACK_CHECK_NOW;
     estack_pop();
-    vim_free(autocmd_fname);
+    mnv_free(autocmd_fname);
     autocmd_fname = save_autocmd_fname;
     autocmd_fname_full = save_autocmd_fname_full;
     autocmd_bufnr = save_autocmd_bufnr;
@@ -2461,8 +2461,8 @@ apply_autocmds_group(
 # endif
 #endif
     KeyTyped = save_KeyTyped;
-    vim_free(fname);
-    vim_free(sfname);
+    mnv_free(fname);
+    mnv_free(sfname);
     --nesting;		// see matching increment above
 
     /*
@@ -2480,14 +2480,14 @@ apply_autocmds_group(
 	{
 	    buf_T *b = au_pending_free_buf->b_next;
 
-	    vim_free(au_pending_free_buf);
+	    mnv_free(au_pending_free_buf);
 	    au_pending_free_buf = b;
 	}
 	while (au_pending_free_win != NULL)
 	{
 	    win_T *w = au_pending_free_win->w_next;
 
-	    vim_free(au_pending_free_win);
+	    mnv_free(au_pending_free_win);
 	    au_pending_free_win = w;
 	}
     }
@@ -2500,8 +2500,8 @@ apply_autocmds_group(
 	    && (event == EVENT_BUFREADPOST
 		|| event == EVENT_BUFWRITEPOST
 		|| event == EVENT_FILEAPPENDPOST
-		|| event == EVENT_VIMLEAVE
-		|| event == EVENT_VIMLEAVEPRE))
+		|| event == EVENT_MNVLEAVE
+		|| event == EVENT_MNVLEAVEPRE))
     {
 	if (curbuf->b_changed != save_changed)
 	    need_maketitle = TRUE;
@@ -2542,12 +2542,12 @@ block_autocmds(void)
     // Remember the value of v:termresponse.
     if (autocmd_blocked == 0)
     {
-	old_termresponse = get_vim_var_str(VV_TERMRESPONSE);
-	old_termu7resp = get_vim_var_str(VV_TERMU7RESP);
-	old_termblinkresp = get_vim_var_str(VV_TERMBLINKRESP);
-	old_termrbgresp = get_vim_var_str(VV_TERMRBGRESP);
-	old_termrfgresp = get_vim_var_str(VV_TERMRFGRESP);
-	old_termstyleresp = get_vim_var_str(VV_TERMSTYLERESP);
+	old_termresponse = get_mnv_var_str(VV_TERMRESPONSE);
+	old_termu7resp = get_mnv_var_str(VV_TERMU7RESP);
+	old_termblinkresp = get_mnv_var_str(VV_TERMBLINKRESP);
+	old_termrbgresp = get_mnv_var_str(VV_TERMRBGRESP);
+	old_termrfgresp = get_mnv_var_str(VV_TERMRFGRESP);
+	old_termstyleresp = get_mnv_var_str(VV_TERMSTYLERESP);
     }
 #endif
     ++autocmd_blocked;
@@ -2561,31 +2561,31 @@ unblock_autocmds(void)
 #ifdef FEAT_EVAL
     // When v:termresponse, etc, were set while autocommands were blocked,
     // trigger the autocommands now.  Esp. useful when executing a shell
-    // command during startup (vimdiff).
+    // command during startup (mnvdiff).
     if (autocmd_blocked == 0)
     {
-	if (get_vim_var_str(VV_TERMRESPONSE) != old_termresponse)
+	if (get_mnv_var_str(VV_TERMRESPONSE) != old_termresponse)
 	{
 	    apply_autocmds(EVENT_TERMRESPONSE, NULL, NULL, FALSE, curbuf);
 	    apply_autocmds(EVENT_TERMRESPONSEALL, (char_u *)"version", NULL, FALSE, curbuf);
 	}
-	if (get_vim_var_str(VV_TERMU7RESP) != old_termu7resp)
+	if (get_mnv_var_str(VV_TERMU7RESP) != old_termu7resp)
 	{
 	    apply_autocmds(EVENT_TERMRESPONSEALL, (char_u *)"ambiguouswidth", NULL, FALSE, curbuf);
 	}
-	if (get_vim_var_str(VV_TERMBLINKRESP) != old_termblinkresp)
+	if (get_mnv_var_str(VV_TERMBLINKRESP) != old_termblinkresp)
 	{
 	    apply_autocmds(EVENT_TERMRESPONSEALL, (char_u *)"cursorblink", NULL, FALSE, curbuf);
 	}
-	if (get_vim_var_str(VV_TERMRBGRESP) != old_termrbgresp)
+	if (get_mnv_var_str(VV_TERMRBGRESP) != old_termrbgresp)
 	{
 	    apply_autocmds(EVENT_TERMRESPONSEALL, (char_u *)"background", NULL, FALSE, curbuf);
 	}
-	if (get_vim_var_str(VV_TERMRFGRESP) != old_termrfgresp)
+	if (get_mnv_var_str(VV_TERMRFGRESP) != old_termrfgresp)
 	{
 	    apply_autocmds(EVENT_TERMRESPONSEALL, (char_u *)"foreground", NULL, FALSE, curbuf);
 	}
-	if (get_vim_var_str(VV_TERMSTYLERESP) != old_termstyleresp)
+	if (get_mnv_var_str(VV_TERMSTYLERESP) != old_termstyleresp)
 	{
 	    apply_autocmds(EVENT_TERMRESPONSEALL, (char_u *)"cursorshape", NULL, FALSE, curbuf);
 	}
@@ -2617,7 +2617,7 @@ auto_next_pat(
     entry = ((estack_T *)exestack.ga_data) + exestack.ga_len - 1;
 
     // Clear the exestack entry for this ETYPE_AUCMD entry.
-    VIM_CLEAR(entry->es_name);
+    MNV_CLEAR(entry->es_name);
     entry->es_info.aucmd = NULL;
 
     for (ap = apc->curpat; ap != NULL && !got_int; ap = ap->next)
@@ -2734,7 +2734,7 @@ getnextac(
 	msg_puts("\n");   // don't overwrite this either
 	verbose_leave_scroll();
     }
-    retval = vim_strsave(ac->cmd);
+    retval = mnv_strsave(ac->cmd);
     // Remove one-shot ("once") autocmd in anticipation of its execution.
     if (ac->once)
 	au_del_cmd(ac);
@@ -2770,7 +2770,7 @@ has_autocmd(event_T event, char_u *sfname, buf_T *buf)
      * Replace all backslashes with forward slashes.  This makes the
      * autocommand patterns portable between Unix and MS-DOS.
      */
-    sfname = vim_strsave(sfname);
+    sfname = mnv_strsave(sfname);
     if (sfname != NULL)
 	forward_slash(sfname);
     forward_slash(fname);
@@ -2788,9 +2788,9 @@ has_autocmd(event_T event, char_u *sfname, buf_T *buf)
 	    break;
 	}
 
-    vim_free(fname);
+    mnv_free(fname);
 #ifdef BACKSLASH_IN_FILENAME
-    vim_free(sfname);
+    mnv_free(sfname);
 #endif
 
     return retval;
@@ -2831,14 +2831,14 @@ set_context_in_autocmd(
     if (group == AUGROUP_ERROR)
 	return NULL;
     // If there only is a group name that's what we expand.
-    if (*arg == NUL && group != AUGROUP_ALL && !VIM_ISWHITE(arg[-1]))
+    if (*arg == NUL && group != AUGROUP_ALL && !MNV_ISWHITE(arg[-1]))
     {
 	arg = p;
 	group = AUGROUP_ALL;
     }
 
     // skip over event name
-    for (p = arg; *p != NUL && !VIM_ISWHITE(*p); ++p)
+    for (p = arg; *p != NUL && !MNV_ISWHITE(*p); ++p)
 	if (*p == ',')
 	    arg = p + 1;
     if (*p == NUL)
@@ -2852,7 +2852,7 @@ set_context_in_autocmd(
 
     // skip over pattern
     arg = skipwhite(p);
-    while (*arg && (!VIM_ISWHITE(*arg) || arg[-1] == '\\'))
+    while (*arg && (!MNV_ISWHITE(*arg) || arg[-1] == '\\'))
 	arg++;
     if (*arg)
 	return arg;			    // expand (next) command
@@ -2959,10 +2959,10 @@ au_exists(char_u *arg)
     int		retval = FALSE;
 
     // Make a copy so that we can change the '#' chars to a NUL.
-    arg_save = vim_strsave(arg);
+    arg_save = mnv_strsave(arg);
     if (arg_save == NULL)
 	return FALSE;
-    p = vim_strchr(arg_save, '#');
+    p = mnv_strchr(arg_save, '#');
     if (p != NULL)
 	*p++ = NUL;
 
@@ -2985,7 +2985,7 @@ au_exists(char_u *arg)
 
 	// Must be "Group#Event" or "Group#Event#pat".
 	event_name = p;
-	p = vim_strchr(event_name, '#');
+	p = mnv_strchr(event_name, '#');
 	if (p != NULL)
 	    *p++ = NUL;	    // "Group#Event#pat"
     }
@@ -3027,7 +3027,7 @@ au_exists(char_u *arg)
 	}
 
 theend:
-    vim_free(arg_save);
+    mnv_free(arg_save);
     return retval;
 }
 
@@ -3073,8 +3073,8 @@ autocmd_add_or_delete(typval_T *argvars, typval_T *rettv, int delete)
 
     FOR_ALL_LIST_ITEMS(aucmd_list, li)
     {
-	VIM_CLEAR(group_name);
-	VIM_CLEAR(cmd);
+	MNV_CLEAR(group_name);
+	MNV_CLEAR(cmd);
 	event_name = NULL;
 	event_list = NULL;
 	pat = NULL;
@@ -3154,7 +3154,7 @@ autocmd_add_or_delete(typval_T *argvars, typval_T *rettv, int delete)
 	    if (bnum == -1)
 		continue;
 
-	    vim_snprintf((char *)IObuff, IOSIZE, "<buffer=%d>", (int)bnum);
+	    mnv_snprintf((char *)IObuff, IOSIZE, "<buffer=%d>", (int)bnum);
 	    pat = IObuff;
 	}
 	else
@@ -3200,7 +3200,7 @@ autocmd_add_or_delete(typval_T *argvars, typval_T *rettv, int delete)
 	if (cmd == NULL)
 	{
 	    if (delete)
-		cmd = vim_strsave((char_u *)"");
+		cmd = mnv_strsave((char_u *)"");
 	    else
 		continue;
 	}
@@ -3305,8 +3305,8 @@ autocmd_add_or_delete(typval_T *argvars, typval_T *rettv, int delete)
 	    au_del_group(group_name);
     }
 
-    VIM_CLEAR(group_name);
-    VIM_CLEAR(cmd);
+    MNV_CLEAR(group_name);
+    MNV_CLEAR(cmd);
 
     current_augroup = save_augroup;
     rettv->vval.v_number = retval;
@@ -3370,11 +3370,11 @@ f_autocmd_get(typval_T *argvars, typval_T *rettv)
 		if (group == AUGROUP_ERROR)
 		{
 		    semsg(_(e_no_such_group_str), name);
-		    vim_free(name);
+		    mnv_free(name);
 		    return;
 		}
 	    }
-	    vim_free(name);
+	    mnv_free(name);
 	}
 
 	// return only the autocmds for the specified event
@@ -3399,12 +3399,12 @@ f_autocmd_get(typval_T *argvars, typval_T *rettv)
 		if (entry == NULL)
 		{
 		    semsg(_(e_no_such_event_str), name);
-		    vim_free(name);
+		    mnv_free(name);
 		    return;
 		}
 		event_arg = (event_T)abs(entry->key);
 	    }
-	    vim_free(name);
+	    mnv_free(name);
 	}
 
 	// return only the autocmds for the specified pattern
@@ -3451,7 +3451,7 @@ f_autocmd_get(typval_T *argvars, typval_T *rettv)
 		if (event_dict == NULL
 			|| list_append_dict(event_list, event_dict) == FAIL)
 		{
-		    vim_free(pat);
+		    mnv_free(pat);
 		    return;
 		}
 
@@ -3469,14 +3469,14 @@ f_autocmd_get(typval_T *argvars, typval_T *rettv)
 			|| dict_add_bool(event_dict, "nested",
 							   ac->nested) == FAIL)
 		{
-		    vim_free(pat);
+		    mnv_free(pat);
 		    return;
 		}
 	    }
 	}
     }
 
-    vim_free(pat);
+    mnv_free(pat);
 }
 
 #endif

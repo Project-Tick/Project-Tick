@@ -1,0 +1,107 @@
+.TH MNVTUTOR 1 "03 dicembre 2024"
+.SH NOME
+mnvtutor \- Un breve corso introduttivo a MNV
+.SH SINTASSI
+.br
+.B mnvtutor [\-l | \-\-language ISO639] [\-c | \-\-chapter NUMERO] [\-g | \-\-gui] [ISO639]
+.br
+.B mnvtutor [\-h | \-\-help]
+.br
+.B mnvtutor [\-\-list]
+.SH DESCRIZIONE
+.B MNVtutor
+inizia il
+.B MNV
+tutor (un breve corso introduttivo a MNV).
+.PP
+Il comando
+.B MNVtutor
+� utile a chi voglia imparare i primi comandi di
+.B MNV.
+L'argomento opzionale [ISO639] specifica l'abbreviazione di due o tre lettere
+del nome di una lingua, per esempio "it" oppure "es".
+.PP
+.B MNVtutor
+utilizza delle copie dei file originali, non c'� pericolo di danneggiare
+i file stessi.
+.PP
+.B MNV
+� sempre iniziato in Modo non compatibile con
+.B Vi.
+.SH OPZIONI
+.TP
+.BR \-l ", " \-\-language\ \fIISO639\fR
+Imposta il codice di due o tre lettere che designa la lingua.
+P.es., 'it', 'es', 'bar'.
+Il default � il linguaggio locale, se una traduzione � disponibile,
+altrimenti viene utilizzato il testo originale in inglese.
+.TP
+.BR \-c ", " \-\-chapter\ \fINUMERO\fR
+Imposta il numero del capitolo.  Il default � il capitolo uno.
+.TP
+.BR \-g ", " \-\-gui
+Inizia
+.B mnvtutor
+nella versione GUI di mnv, se disponibile, altrimenti viene usata la versione console.
+.TP
+.BR \-h ", " \-\-help
+Visualizza le informazioni relative all'uso del comando.
+.TP
+.BR \-\-list
+Visualizza capitoli e lingue disponibili.
+.SH ESEMPI
+Per iniziare
+.B mnvtutor
+in tedesco, dal capitolo uno:
+.PP
+.nf
+.RS
+mnvtutor de
+.RE
+.fi
+.PP
+In inglese, dal capitolo due:
+.PP
+.nf
+.RS
+mnvtutor -c2
+.RE
+.fi
+.PP
+Comandi nel formato esteso per usare il linguaggio bavarese, nella GUI, dal capitolo uno:
+.PP
+.nf
+.RS
+mnvtutor --language bar --chapter 1 --gui
+.RE
+.fi
+.SH FILE
+.TP 15
+/usr/local/lib/mnv/mnv??/tutor/tutor1[.lingua]
+I file di testo per il capitolo uno di
+.B MNVtutor
+.
+.TP 15
+/usr/local/share/mnv/mnv??/tutor/tutor2[.lingua]
+I file di testo per il capitolo due di
+.B MNVtutor.
+.TP 15
+/usr/local/share/mnv/mnv??/tutor/tutor.mnv
+Lo script di MNV usato per copiare il file di testo
+.B MNVtutor.
+.SH AUTORE
+Il corso introduttivo
+.B MNVtutor
+� stato scritto in origine per Vi da Michael C. Pierce e Robert K. Ware,
+Colorado School of Mines, usando idee fornite da Charles Smith,
+Colorado State University.
+.B E-mail: bware@mines.colorado.edu (non pi� valido).
+.PP
+.B MNVtutor
+� stato modificato per
+.B MNV
+da Bram Moolenaar.
+.PP
+Per i nomi dei traduttori, vedere i file nelle rispettive lingue.
+.SH VEDERE ANCHE
+mnv(1)

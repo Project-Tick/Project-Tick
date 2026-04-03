@@ -1,0 +1,47 @@
+MNVDIFF(1)                  General Commands Manual                 MNVDIFF(1)
+
+
+
+NAME
+       mnvdiff  -  edit  between two and eight versions of a file with MNV and
+       show differences
+
+SYNOPSIS
+       mnvdiff [options]  file1  file2  [file3  [file4  [file5  [file6  [file7
+       [file8]]]]]]
+
+       gmnvdiff
+
+DESCRIPTION
+       MNVdiff  starts  MNV  on two up to eight files.  Each file gets its own
+       window.  The differences between the files are highlighted.  This is  a
+       nice way to inspect changes and to move changes from one version to an‐
+       other version of the same file.
+
+       See mnv(1) for details about MNV itself.
+
+       When started as gmnvdiff the GUI will be started, if available.
+
+       In each window the 'diff' option will be set, which causes the  differ‐
+       ences to be highlighted.
+       The 'wrap' and 'scrollbind' options are set to make the text look good.
+       The  'foldmethod'  option  is set to "diff", which puts ranges of lines
+       without changes in a fold.  'foldcolumn' is set to two to make it  easy
+       to spot the folds and open or close them.
+
+OPTIONS
+       Vertical  splits  are  used to align the lines, as if the "-O" argument
+       was used.  To use horizontal splits instead, use the "-o" argument.
+
+       For all other arguments see mnv(1).
+
+SEE ALSO
+       mnv(1)
+
+AUTHOR
+       Most of MNV was made by Bram Moolenaar, with a lot of help from others.
+       See ":help credits" in MNV.
+
+
+
+                                 2021 June 13                       MNVDIFF(1)

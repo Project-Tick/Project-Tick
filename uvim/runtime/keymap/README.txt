@@ -1,10 +1,10 @@
-keymap files for Vim
+keymap files for MNV
 
 One of these files is loaded when the 'keymap' option is set.
 
 The name of the file consists of these parts:
 
-	{language}[-{layout}][_{encoding}].vim
+	{language}[-{layout}][_{encoding}].mnv
 
 {language}	Name of the language (e.g., "hebrew", "greek")
 
@@ -22,5 +22,5 @@ Each file starts with a header, naming the maintainer and the date when it was
 last changed.  If you find a problem in a keymap file, check if you have the
 most recent version.  If necessary, report a problem to the maintainer.
 
-The format of the keymap lines below "loadkeymap" is explained in the Vim help
+The format of the keymap lines below "loadkeymap" is explained in the MNV help
 files, see ":help keymap-file-format".

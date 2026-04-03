@@ -3,7 +3,7 @@
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .SH NAZWA
 .I xxd
 \- zrzut pliku do hex lub odwrotnie
@@ -309,20 +309,20 @@ w efekcie poprzedzające bajty są ukryte.
 \fI% echo '010000: 41' | xxd \-r \-s \-0x10000 \> plik\fR
 .PP
 Użyj xxd jako filtra wewnątrz edytora takiego jak
-.B vim(1)
+.B mnv(1)
 aby uzyskać zrzut heksowy zakresu między markerami `a' i `z'.
 .br
 \fI:'a,'z!xxd\fR
 .PP
 Użyj xxd jako filtra wewnątrz edytora takiego jak
-.B vim(1)
+.B mnv(1)
 by odzyskać binarny zrzut heksowy zakresu pomiędzy markerami `a'
 i `z'.
 .br
 \fI:'a,'z!xxd \-r\fR
 .PP
 Użyj xxd jako filtra wewnątrz edytora takiego jak
-.B vim(1)
+.B mnv(1)
 by odzyskać jedną linię zrzutu heksowego. Przejdź z kursorem na linię
 i wpisz:
 .br

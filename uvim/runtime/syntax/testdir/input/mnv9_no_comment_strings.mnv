@@ -1,0 +1,27 @@
+mnv9script
+# MNV9 no comment strings
+# MNV_TEST_SETUP let g:mnvsyn_comment_strings = v:false
+
+
+# pre "string" post
+
+function Foo()
+  " pre "string" post
+endfunction
+
+def Bar()
+  # pre "string" post
+enddef
+
+command Foo {
+  # pre "string" post
+}
+
+autocmd BufNewFile * {
+  # pre "string" post
+}
+
+{
+  # pre "string" post
+}
+

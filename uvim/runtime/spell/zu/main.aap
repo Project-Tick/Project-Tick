@@ -1,10 +1,10 @@
-# Aap recipe for Zulu Vim spell files.
+# Aap recipe for Zulu MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = zu_ZA.aff zu_ZA.dic
@@ -15,14 +15,14 @@ all: $SPELLDIR/zu.latin1.spl $SPELLDIR/zu.utf-8.spl \
 
 $SPELLDIR/zu.latin1.spl : $FILES
         :sys env LANG=nl_NL.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/zu zu_ZA" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/zu zu_ZA" -c q
 
 $SPELLDIR/zu.utf-8.spl : $FILES
         :sys env LANG=nl_NL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/zu zu_ZA" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/zu zu_ZA" -c q
 
 $SPELLDIR/zu.ascii.spl : $FILES
-        :sys $VIM -u NONE -e -c "mkspell! -ascii $SPELLDIR/zu zu_ZA" -c q
+        :sys $MNV -u NONE -e -c "mkspell! -ascii $SPELLDIR/zu zu_ZA" -c q
  
 ../README_zu.txt : README_zu_ZA.txt
         :copy $source $target
@@ -49,7 +49,7 @@ zu_ZA.aff zu_ZA.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -80,4 +80,4 @@ check:
             :delete zu_ZA.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
@@ -14,7 +14,7 @@
 #include <direct.h>		// for _mkdir()
 
 #define BINARY_FILE_IO
-#define USE_EXE_NAME		// use argv[0] for $VIM
+#define USE_EXE_NAME		// use argv[0] for $MNV
 #define USE_TERM_CONSOLE
 #ifndef HAVE_STRING_H
 # define HAVE_STRING_H
@@ -59,7 +59,7 @@
 
 #define HAVE_PUTENV		// at least Bcc 5.2 and MSC have it
 
-#if defined(FEAT_GUI_MSWIN) && !defined(VIMDLL)
+#if defined(FEAT_GUI_MSWIN) && !defined(MNVDLL)
 # define NO_CONSOLE		// don't include console-only code
 #endif
 
@@ -116,7 +116,7 @@ typedef void (*sighandler_T)(int, int);
 #endif
 
 #ifndef DFLT_MAXMEMTOT
-# define DFLT_MAXMEMTOT	(5*1024)    // use up to 5 Mbyte for Vim
+# define DFLT_MAXMEMTOT	(5*1024)    // use up to 5 Mbyte for MNV
 #endif
 
 /*
@@ -223,7 +223,7 @@ Trace(char *pszFormat, ...);
 # define HAVE_SETENV
 #endif
 #define mch_getenv(x) (char_u *)getenv((char *)(x))
-#define vim_mkdir(x, y) mch_mkdir(x)
+#define mnv_mkdir(x, y) mch_mkdir(x)
 
 // Windows Version
 #define MAKE_VER(major, minor, build) \

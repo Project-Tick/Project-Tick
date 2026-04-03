@@ -27,7 +27,7 @@ void redrawcmd(void);
 void compute_cmdrow(void);
 void cursorcmd(void);
 void gotocmdline(int clr);
-char_u *vim_strsave_fnameescape(char_u *fname, int what);
+char_u *mnv_strsave_fnameescape(char_u *fname, int what);
 void escape_fname(char_u **pp);
 void tilde_replace(char_u *orig_pat, int num_files, char_u **files);
 cmdline_info_T *get_cmdline_info(void);
@@ -47,4 +47,4 @@ int is_in_cmdwin(void);
 char_u *script_get(exarg_T *eap, char_u *cmd);
 void get_user_input(typval_T *argvars, typval_T *rettv, int inputdialog, int secret);
 void f_wildtrigger(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

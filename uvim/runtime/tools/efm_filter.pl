@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 #
 # This program works as a filter that reads from stdin, copies to
-# stdout *and* creates an error file that can be read by vim.
+# stdout *and* creates an error file that can be read by mnv.
 #
 # This program has only been tested on SGI, Irix5.3.
 #
@@ -12,7 +12,7 @@
 $args = @ARGV;
 
 unless ($args == 1) {
-  die("Usage: vimccparse <output filename>\n");
+  die("Usage: mnvccparse <output filename>\n");
 }
 
 $filename = @ARGV[0];

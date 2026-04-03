@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * cmdhist.c: Functions for the history of the command-line.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static histentry_T *(history[HIST_COUNT]) = {NULL, NULL, NULL, NULL, NULL};
 static int	hisidx[HIST_COUNT] = {-1, -1, -1, -1, -1};  // lastused entry
@@ -37,7 +37,7 @@ get_histentry(int hist_type)
     return history[hist_type];
 }
 
-#if defined(FEAT_VIMINFO)
+#if defined(FEAT_MNVINFO)
     void
 set_histentry(int hist_type, histentry_T *entry)
 {
@@ -51,7 +51,7 @@ get_hisidx(int hist_type)
     return &hisidx[hist_type];
 }
 
-#if defined(FEAT_VIMINFO)
+#if defined(FEAT_MNVINFO)
     int *
 get_hisnum(int hist_type)
 {
@@ -187,7 +187,7 @@ init_history(void)
 		    temp[i] = history[type][j];
 		else			// remove older entries
 		{
-		    vim_free(history[type][j].hisstr);
+		    mnv_free(history[type][j].hisstr);
 		    history[type][j].hisstrlen = 0;
 		}
 		if (--j < 0)
@@ -197,7 +197,7 @@ init_history(void)
 	    }
 	    hisidx[type] = newlen - 1;
 	}
-	vim_free(history[type]);
+	mnv_free(history[type]);
 	history[type] = temp;
     }
     hislen = newlen;
@@ -207,7 +207,7 @@ init_history(void)
 clear_hist_entry(histentry_T *hisptr)
 {
     hisptr->hisnum = 0;
-    hisptr->viminfo = FALSE;
+    hisptr->mnvinfo = FALSE;
     hisptr->hisstr = NULL;
     hisptr->hisstrlen = 0;
     hisptr->time_set = 0;
@@ -223,7 +223,7 @@ in_history(
     char_u  *str,
     int	    move_to_front,	// Move the entry to the front if it exists
     int	    sep,
-    int	    writing)		// ignore entries read from viminfo
+    int	    writing)		// ignore entries read from mnvinfo
 {
     int	    i;
     int	    last_i = -1;
@@ -242,7 +242,7 @@ in_history(
 	// well.
 	p = history[type][i].hisstr;
 	if (STRCMP(str, p) == 0
-		&& !(writing && history[type][i].viminfo)
+		&& !(writing && history[type][i].mnvinfo)
 		&& (type != HIST_SEARCH || sep == p[history[type][i].hisstrlen + 1]))
 	{
 	    if (!move_to_front)
@@ -267,10 +267,10 @@ in_history(
 	last_i = i;
     }
     history[type][i].hisnum = ++hisnum[type];
-    history[type][i].viminfo = FALSE;
+    history[type][i].mnvinfo = FALSE;
     history[type][i].hisstr = str;
     history[type][i].hisstrlen = len;
-    history[type][i].time_set = vim_time();
+    history[type][i].time_set = mnv_time();
     return TRUE;
 }
 
@@ -293,7 +293,7 @@ get_histtype(char_u *name)
 	if (STRNICMP(name, history_names[i], len) == 0)
 	    return i;
 
-    if (vim_strchr((char_u *)":=@>?/", name[0]) != NULL && name[1] == NUL)
+    if (mnv_strchr((char_u *)":=@>?/", name[0]) != NULL && name[1] == NUL)
 	return hist_char2type(name[0]);
 
     return -1;
@@ -331,7 +331,7 @@ add_to_history(
 	{
 	    // Current line is from the same mapping, remove it
 	    hisptr = &history[HIST_SEARCH][hisidx[HIST_SEARCH]];
-	    vim_free(hisptr->hisstr);
+	    mnv_free(hisptr->hisstr);
 	    clear_hist_entry(hisptr);
 	    --hisnum[histype];
 	    if (--hisidx[HIST_SEARCH] < 0)
@@ -346,10 +346,10 @@ add_to_history(
     if (++hisidx[histype] == hislen)
 	hisidx[histype] = 0;
     hisptr = &history[histype][hisidx[histype]];
-    vim_free(hisptr->hisstr);
+    mnv_free(hisptr->hisstr);
 
     // Store the separator after the NUL of the string.
-    hisptr->hisstr = vim_strnsave(new_entry, new_entrylen + 2);
+    hisptr->hisstr = mnv_strnsave(new_entry, new_entrylen + 2);
     if (hisptr->hisstr == NULL)
 	hisptr->hisstrlen = 0;
     else
@@ -359,8 +359,8 @@ add_to_history(
     }
 
     hisptr->hisnum = ++hisnum[histype];
-    hisptr->viminfo = FALSE;
-    hisptr->time_set = vim_time();
+    hisptr->mnvinfo = FALSE;
+    hisptr->time_set = mnv_time();
     if (histype == HIST_SEARCH && in_map)
 	last_maptick = maptick;
 }
@@ -438,7 +438,7 @@ clr_history(int histype)
 	hisptr = history[histype];
 	for (i = hislen; i--;)
 	{
-	    vim_free(hisptr->hisstr);
+	    mnv_free(hisptr->hisstr);
 	    clear_hist_entry(hisptr);
 	    hisptr++;
 	}
@@ -468,7 +468,7 @@ del_history_entry(int histype, char_u *str)
 	return FALSE;
 
     idx = hisidx[histype];
-    regmatch.regprog = vim_regcomp(str, RE_MAGIC + RE_STRING);
+    regmatch.regprog = mnv_regcomp(str, RE_MAGIC + RE_STRING);
     if (regmatch.regprog == NULL)
 	return FALSE;
 
@@ -480,10 +480,10 @@ del_history_entry(int histype, char_u *str)
 	hisptr = &history[histype][i];
 	if (hisptr->hisstr == NULL)
 	    break;
-	if (vim_regexec(&regmatch, hisptr->hisstr, (colnr_T)0))
+	if (mnv_regexec(&regmatch, hisptr->hisstr, (colnr_T)0))
 	{
 	    found = TRUE;
-	    vim_free(hisptr->hisstr);
+	    mnv_free(hisptr->hisstr);
 	    clear_hist_entry(hisptr);
 	}
 	else
@@ -503,7 +503,7 @@ del_history_entry(int histype, char_u *str)
     if (history[histype][idx].hisstr == NULL)
 	hisidx[histype] = -1;
 
-    vim_regfree(regmatch.regprog);
+    mnv_regfree(regmatch.regprog);
     return found;
 }
 
@@ -520,7 +520,7 @@ del_history_idx(int histype, int idx)
     if (i < 0)
 	return FALSE;
     idx = hisidx[histype];
-    vim_free(history[histype][i].hisstr);
+    mnv_free(history[histype][i].hisstr);
     history[histype][i].hisstrlen = 0;
 
     // When deleting the last added search string in a mapping, reset
@@ -555,7 +555,7 @@ f_histadd(typval_T *argvars UNUSED, typval_T *rettv)
     if (check_secure())
 	return;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -583,7 +583,7 @@ f_histdel(typval_T *argvars UNUSED, typval_T *rettv UNUSED)
     int		n;
     char_u	*str;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_or_number_arg(argvars, 1) == FAIL))
 	return;
@@ -618,7 +618,7 @@ f_histget(typval_T *argvars UNUSED, typval_T *rettv)
 {
     char_u  *str;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL))
 	return;
@@ -640,9 +640,9 @@ f_histget(typval_T *argvars UNUSED, typval_T *rettv)
 
 	idx = calc_hist_idx(type, idx);
 	if (idx < 0)
-	    rettv->vval.v_string = vim_strnsave((char_u *)"", 0);
+	    rettv->vval.v_string = mnv_strnsave((char_u *)"", 0);
 	else
-	    rettv->vval.v_string = vim_strnsave(history[type][idx].hisstr, history[type][idx].hisstrlen);
+	    rettv->vval.v_string = mnv_strnsave(history[type][idx].hisstr, history[type][idx].hisstrlen);
     }
     rettv->v_type = VAR_STRING;
 }
@@ -656,7 +656,7 @@ f_histnr(typval_T *argvars UNUSED, typval_T *rettv)
     int		i;
     char_u	*histname;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     histname = tv_get_string_chk(&argvars[0]);
@@ -693,11 +693,11 @@ remove_key_from_history(void)
     {
 	if (STRNCMP(p, "key", 3) == 0 && !SAFE_isalpha(p[3]))
 	{
-	    p = vim_strchr(p + 3, '=');
+	    p = mnv_strchr(p + 3, '=');
 	    if (p == NULL)
 		break;
 	    ++p;
-	    for (i = 0; p[i] && !VIM_ISWHITE(p[i]); ++i)
+	    for (i = 0; p[i] && !MNV_ISWHITE(p[i]); ++i)
 		if (p[i] == '\\' && p[i + 1])
 		    ++i;
 
@@ -733,11 +733,11 @@ ex_history(exarg_T *eap)
 	return;
     }
 
-    if (!(VIM_ISDIGIT(*arg) || *arg == '-' || *arg == ','))
+    if (!(MNV_ISDIGIT(*arg) || *arg == '-' || *arg == ','))
     {
 	end = arg;
 	while (ASCII_ISALPHA(*end)
-		|| vim_strchr((char_u *)":=@>/?", *end) != NULL)
+		|| mnv_strchr((char_u *)":=@>/?", *end) != NULL)
 	    end++;
 	i = *end;
 	*end = NUL;
@@ -773,7 +773,7 @@ ex_history(exarg_T *eap)
 
     for (; !got_int && histype1 <= histype2; ++histype1)
     {
-	vim_snprintf((char *)IObuff, IOSIZE, "\n      #  %s history", history_names[histype1]);
+	mnv_snprintf((char *)IObuff, IOSIZE, "\n      #  %s history", history_names[histype1]);
 	msg_puts_title((char *)IObuff);
 	idx = hisidx[histype1];
 	hist = history[histype1];
@@ -795,9 +795,9 @@ ex_history(exarg_T *eap)
 		    int  len;
 
 		    msg_putchar('\n');
-		    len = vim_snprintf((char *)IObuff, IOSIZE,
+		    len = mnv_snprintf((char *)IObuff, IOSIZE,
 				"%c%6d  ", i == idx ? '>' : ' ', hist[i].hisnum);
-		    if (vim_strsize(hist[i].hisstr) > (int)Columns - 10)
+		    if (mnv_strsize(hist[i].hisstr) > (int)Columns - 10)
 			trunc_string(hist[i].hisstr, IObuff + len,
 			     (int)Columns - 10, IOSIZE - (int)len);
 		    else

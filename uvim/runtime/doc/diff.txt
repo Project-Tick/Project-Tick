@@ -1,16 +1,16 @@
-*diff.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*diff.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
-				*diff* *vimdiff* *gvimdiff* *diff-mode*
+				*diff* *mnvdiff* *gmnvdiff* *diff-mode*
 This file describes the |+diff| feature: Showing differences between two to
 eight versions of the same file.
 
 The basics are explained in section |08.7| of the user manual.
 
-1. Starting diff mode		|start-vimdiff|
+1. Starting diff mode		|start-mnvdiff|
 2. Viewing diffs		|view-diffs|
 3. Jumping to diffs		|jumpto-diffs|
 4. Copying diffs		|copy-diffs|
@@ -18,23 +18,23 @@ The basics are explained in section |08.7| of the user manual.
 6. Diff options			|diff-options|
 
 ==============================================================================
-1. Starting diff mode					*start-vimdiff*
+1. Starting diff mode					*start-mnvdiff*
 
-The easiest way to start editing in diff mode is with the "vimdiff" command.
-This starts Vim as usual, and additionally sets up for viewing the differences
+The easiest way to start editing in diff mode is with the "mnvdiff" command.
+This starts MNV as usual, and additionally sets up for viewing the differences
 between the arguments. >
 
-	vimdiff file1 file2 [file3 [file4]]
+	mnvdiff file1 file2 [file3 [file4]]
 
 This is equivalent to: >
 
-	vim -d file1 file2 [file3 [file4]]
+	mnv -d file1 file2 [file3 [file4]]
 
-You may also use "gvimdiff" or "vim -d -g".  The GUI is started then.
-You may also use "viewdiff" or "gviewdiff".  Vim starts in readonly mode then.
+You may also use "gmnvdiff" or "mnv -d -g".  The GUI is started then.
+You may also use "viewdiff" or "gviewdiff".  MNV starts in readonly mode then.
 "r" may be prepended for restricted mode (see |-Z|).
 
-The second and following arguments may also be a directory name.  Vim will
+The second and following arguments may also be a directory name.  MNV will
 then append the file name of the first argument to the directory name to find
 the file.
 
@@ -46,11 +46,11 @@ Diffs are local to the current tab page |tab-page|.  You can't see diffs with
 a window in another tab page.  This does make it possible to have several
 diffs at the same time, each in their own tab page.
 
-What happens is that Vim opens a window for each of the files.  This is like
+What happens is that MNV opens a window for each of the files.  This is like
 using the |-O| argument.  This uses vertical splits.  If you prefer horizontal
 splits add the |-o| argument: >
 
-	vimdiff -o file1 file2 [file3 [file4]]
+	mnvdiff -o file1 file2 [file3 [file4]]
 
 If you always prefer horizontal splits include "horizontal" in 'diffopt'.
 
@@ -77,7 +77,7 @@ diffs.  You might have to do ":diffupdate" now and then, not all changes are
 immediately taken into account, especially when using an external diff
 command.
 
-In your .vimrc file you could do something special when Vim was started in
+In your .mnvrc file you could do something special when MNV was started in
 diff mode.  You could use a construct like this: >
 
 	if &diff
@@ -86,27 +86,27 @@ diff mode.  You could use a construct like this: >
 	   setup for non-diff mode
 	endif
 
-While already in Vim you can start diff mode in three ways.
+While already in MNV you can start diff mode in three ways.
 
 							*E98*
 :diffs[plit] {filename}					*:diffs* *:diffsplit*
 		Open a new window on the file {filename}.  The options are set
-		as for "vimdiff" for the current and the newly opened window.
+		as for "mnvdiff" for the current and the newly opened window.
 		Also see 'diffexpr'.
 
 							*:difft* *:diffthis*
 :difft[his]	Make the current window part of the diff windows.  This sets
-		the options like for "vimdiff".
+		the options like for "mnvdiff".
 
 :diffp[atch] {patchfile}			 *E816* *:diffp* *:diffpatch*
 		Use the current buffer, patch it with the diff found in
 		{patchfile} and open a buffer on the result.  The options are
-		set as for "vimdiff".
+		set as for "mnvdiff".
 		{patchfile} can be in any format that the "patch" program
 		understands or 'patchexpr' can handle.
 		Note that {patchfile} should only contain a diff for one file,
 		the current file.  If {patchfile} contains diffs for other
-		files as well, the results are unpredictable.  Vim changes
+		files as well, the results are unpredictable.  MNV changes
 		directory to /tmp to avoid files in the current directory
 		accidentally being patched.  But it may still result in
 		various ".rej" files to be created.  And when absolute path
@@ -139,7 +139,7 @@ file for a moment and come back to the same file and be in diff mode again.
 		buffers.
 
 The `:diffoff` command resets the relevant options to the values they had when
-using `:diffsplit`, `:diffpatch`, `:diffthis`, or starting Vim in diff mode.
+using `:diffsplit`, `:diffpatch`, `:diffthis`, or starting MNV in diff mode.
 When using `:diffoff` twice the last saved values are restored.
 Otherwise they are set to their default value:
 
@@ -181,11 +181,11 @@ buffers use `:diffoff!`.
 Since 'diff' is a window-local option, it's possible to view the same buffer
 in diff mode in one window and "normal" in another window.  It is also
 possible to view the changes you have made to a buffer since the file was
-loaded.  Since Vim doesn't allow having two buffers for the same file, you
+loaded.  Since MNV doesn't allow having two buffers for the same file, you
 need another buffer.  This command is useful: >
 	 command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_
 		\ | diffthis | wincmd p | diffthis
-(this is in |defaults.vim|).  Use ":DiffOrig" to see the differences between
+(this is in |defaults.mnv|).  Use ":DiffOrig" to see the differences between
 the current buffer and the file it was loaded from.
 
 A buffer that is unloaded cannot be used for the diff.  But it does work for
@@ -196,20 +196,20 @@ nodiff" before hiding it.
 						*:dif* *:diff* *:diffupdate*
 :dif[fupdate][!]		Update the diff highlighting and folds.
 
-Vim attempts to keep the differences updated when you make changes to the
+MNV attempts to keep the differences updated when you make changes to the
 text.  This mostly takes care of inserted and deleted lines.  Changes within a
 line and more complicated changes do not cause the differences to be updated.
 To force the differences to be updated use: >
 
 	:diffupdate
 
-If the ! is included Vim will check if the file was changed externally and
+If the ! is included MNV will check if the file was changed externally and
 needs to be reloaded.  It will prompt for each changed file, like `:checktime`
 was used.
 
-Vim will show filler lines for lines that are missing in one window but are
+MNV will show filler lines for lines that are missing in one window but are
 present in another.  These lines were inserted in another file or deleted in
-this file.  Removing "filler" from the 'diffopt' option will make Vim not
+this file.  Removing "filler" from the 'diffopt' option will make MNV not
 display these filler lines.
 
 
@@ -231,7 +231,7 @@ The diffs are highlighted with these groups:
 |hl-DiffText|	DiffText	Changed text inside a Changed line.  Exact
 				behavior depends on the `inline:` setting in
 				'diffopt'.
-				With `inline:` set to "simple", Vim finds the
+				With `inline:` set to "simple", MNV finds the
 				first character that is different, and the
 				last character that is different (searching
 				from the end of the line).  The text in
@@ -239,7 +239,7 @@ The diffs are highlighted with these groups:
 				in the middle that are still the same are
 				highlighted anyway.  The 'diffopt' flags
 				"iwhite" and "icase" are used here.
-				With `inline:` set to "char" or "word", Vim
+				With `inline:` set to "char" or "word", MNV
 				uses the internal diff library to perform a
 				detailed diff between the changed blocks and
 				highlight the exact difference between the
@@ -311,7 +311,7 @@ the cursor is on the last line in the buffer and there is no diff above this
 line, and no [range] is given, the diff below the cursor position will be used
 instead.
 
-When [range] is used, Vim tries to only put or get the specified lines.  When
+When [range] is used, MNV tries to only put or get the specified lines.  When
 there are deleted lines, they will be used if they are between the lines
 specified by [range].
 
@@ -352,7 +352,7 @@ hard to see what the actual edit on it was.  You can use diff anchors to pin
 that function so the diff algorithm will align based on it.
 
 To use it, set anchors using 'diffanchors' which is a comma-separated list of
-{address} in each file, and then add "anchor" to 'diffopt'.  Internally, Vim
+{address} in each file, and then add "anchor" to 'diffopt'.  Internally, MNV
 splits each file up into sections split by the anchors.  It performs the diff
 on each pair of sections separately before merging the results back.
 
@@ -484,7 +484,7 @@ The 'diffexpr' option can be set to use something else than the internal diff
 support or the standard "diff" program to compare two files and find the
 differences. *E959*
 
-When 'diffexpr' is empty, Vim uses this command to find the differences
+When 'diffexpr' is empty, MNV uses this command to find the differences
 between file1 and file2: >
 
 	diff file1 file2 > outfile
@@ -495,7 +495,7 @@ The output of "diff" must be a normal "ed" style diff or a unified diff.  A
 context diff will NOT work.  For a unified diff no context lines can be used.
 Using "diff -u" will NOT work, use "diff -U0".
 
-This example explains the format that Vim expects for the "ed" style diff: >
+This example explains the format that MNV expects for the "ed" style diff: >
 
 	1a2
 	> bbb
@@ -510,7 +510,7 @@ The "1a2" item appends the line "bbb".
 The "4d4" item deletes the line "111".
 The "7c7" item replaces the line "GGG" with "ggg".
 
-When 'diffexpr' is not empty, Vim evaluates it to obtain a diff file in the
+When 'diffexpr' is not empty, MNV evaluates it to obtain a diff file in the
 format mentioned.  These variables are set to the file names used:
 
 	v:fname_in		original file
@@ -555,7 +555,7 @@ Otherwise, the expression is evaluated in the context of the script where the
 option was set, thus script-local items are available.
 
 						*E810* *E97*
-Vim will do a test if the diff output looks alright.  If it doesn't, you will
+MNV will do a test if the diff output looks alright.  If it doesn't, you will
 get an error message.  Possible causes:
 -  The "diff" program cannot be executed.
 -  The "diff" program doesn't produce normal "ed" style diffs (see above).
@@ -565,7 +565,7 @@ get an error message.  Possible causes:
 If it's not clear what the problem is set the 'verbose' option to one or more
 to see more messages.
 
-The self-installing Vim for MS-Windows includes a diff program.  If you don't
+The self-installing MNV for MS-Windows includes a diff program.  If you don't
 have it you might want to download a diff.exe.  For example from
 http://gnuwin32.sourceforge.net/packages/diffutils.htm.
 
@@ -575,7 +575,7 @@ USING PATCHES					*diff-patchexpr*
 The 'patchexpr' option can be set to use something else than the standard
 "patch" program.
 
-When 'patchexpr' is empty, Vim will call the "patch" program like this: >
+When 'patchexpr' is empty, MNV will call the "patch" program like this: >
 
 	patch -o outfile origfile < patchfile
 
@@ -603,9 +603,9 @@ Example (this does the same as 'patchexpr' being empty): >
 Make sure that using the "patch" program doesn't have unwanted side effects.
 For example, watch out for additionally generated files, which should be
 deleted.  It should just patch the file and nothing else.
-   Vim will change directory to "/tmp" or another temp directory before
+   MNV will change directory to "/tmp" or another temp directory before
 evaluating 'patchexpr'.  This hopefully avoids that files in the current
-directory are accidentally patched.  Vim will also delete files starting with
+directory are accidentally patched.  MNV will also delete files starting with
 v:fname_in and ending in ".rej" and ".orig".
 
 If the 'patchexpr' expression starts with s: or |<SID>|, then it is replaced
@@ -660,4 +660,4 @@ between two Lists of strings are below.
 
 <
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

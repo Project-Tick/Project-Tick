@@ -1,4 +1,4 @@
-/* Automatically generated code by create_cmdidxs.vim
+/* Automatically generated code by create_cmdidxs.mnv
  *
  * Table giving the index of the first command in cmdnames[] to lookup
  * based on the first letter of a command.

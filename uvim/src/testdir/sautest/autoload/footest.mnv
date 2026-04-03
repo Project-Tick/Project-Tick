@@ -1,0 +1,5 @@
+" Autoload script used by test_listdict.mnv, test_exists.mnv and test_let.mnv
+let footest#x = 1
+func footest#F()
+  return 0
+endfunc

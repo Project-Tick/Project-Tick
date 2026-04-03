@@ -55,7 +55,7 @@ RESIZE 20,80
   ?cursor = 9,0
 
 !Resize shorter does not lose line with cursor
-# See also https://github.com/neovim/libvterm/commit/1b745d29d45623aa8d22a7b9288c7b0e331c7088
+# See also https://github.com/neomnv/libvterm/commit/1b745d29d45623aa8d22a7b9288c7b0e331c7088
 RESET
 WANTSCREEN -b
 RESIZE 25,80
@@ -70,7 +70,7 @@ RESIZE 24,80
   ?cursor = 23,0
 
 !Resize shorter does not send the cursor to a negative row
-# See also https://github.com/vim/vim/pull/6141
+# See also https://github.com/Project-Tick/Project-Tick/pull/6141
 RESET
 WANTSCREEN -b
 RESIZE 25,80

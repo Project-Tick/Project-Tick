@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * bufwrite.c: functions for writing a buffer
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(HAVE_UTIME) && defined(HAVE_UTIME_H)
 # include <utime.h>		// for struct utimbuf
@@ -517,7 +517,7 @@ buf_write_bytes(struct bw_info *ip)
 	    if (len == 0)
 		return OK;  // Crypt layer is buffering, will flush later.
 	    wlen = write_eintr(ip->bw_fd, outbuf, len);
-	    vim_free(outbuf);
+	    mnv_free(outbuf);
 	    return (wlen < len) ? FAIL : OK;
 	}
 # endif
@@ -689,7 +689,7 @@ buf_write(
     char_u	    *fenc_tofree = NULL; // allocated "fenc"
     int		    wb_flags = 0;
 #ifdef HAVE_ACL
-    vim_acl_T	    acl = NULL;		// ACL copied from original file to
+    mnv_acl_T	    acl = NULL;		// ACL copied from original file to
 					// backup or new file
 #endif
 #ifdef FEAT_PERSISTENT_UNDO
@@ -705,12 +705,12 @@ buf_write(
     if (buf->b_ml.ml_mfp == NULL)
     {
 	// This can happen during startup when there is a stray "w" in the
-	// vimrc file.
+	// mnvrc file.
 	emsg(_(e_empty_buffer));
 	return FAIL;
     }
 
-    // Disallow writing from .exrc and .vimrc in current directory for
+    // Disallow writing from .exrc and .mnvrc in current directory for
     // security reasons.
     if (check_secure())
 	return FAIL;
@@ -750,8 +750,8 @@ buf_write(
 	    && buf == curbuf
 	    && !bt_nofilename(buf)
 	    && !filtering
-	    && (!append || vim_strchr(p_cpo, CPO_FNAMEAPP) != NULL)
-	    && vim_strchr(p_cpo, CPO_FNAMEW) != NULL)
+	    && (!append || mnv_strchr(p_cpo, CPO_FNAMEAPP) != NULL)
+	    && mnv_strchr(p_cpo, CPO_FNAMEW) != NULL)
     {
 	if (set_rw_fname(fname, sfname) == FAIL)
 	    return FAIL;
@@ -928,7 +928,7 @@ buf_write(
 			buf->b_flags &= ~BF_WRITE_MASK;
 		}
 		if (reset_changed && buf->b_changed && !append
-			&& (overwriting || vim_strchr(p_cpo, CPO_PLUS) != NULL))
+			&& (overwriting || mnv_strchr(p_cpo, CPO_PLUS) != NULL))
 		    // Buffer still changed, the autocommands didn't work
 		    // properly.
 		    return FAIL;
@@ -1120,7 +1120,7 @@ buf_write(
 
 	if (!forceit && file_readonly)
 	{
-	    if (vim_strchr(p_cpo, CPO_FWRITE) != NULL)
+	    if (mnv_strchr(p_cpo, CPO_FWRITE) != NULL)
 	    {
 		errnum = (char_u *)"E504: ";
 		errmsg = (char_u *)_(e_is_read_only_cannot_override_W_in_cpoptions);
@@ -1214,11 +1214,11 @@ buf_write(
 		// First find a file name that doesn't exist yet (use some
 		// arbitrary numbers).
 		dirlen = (size_t)(gettail(fname) - fname);
-		vim_strncpy(tmp_fname, fname, dirlen);
+		mnv_strncpy(tmp_fname, fname, dirlen);
 		fd = -1;
 		for (i = 4913; ; i += 123)
 		{
-		    vim_snprintf((char *)tmp_fname + dirlen,
+		    mnv_snprintf((char *)tmp_fname + dirlen,
 			sizeof(tmp_fname) - dirlen, "%d", i);
 		    if (mch_lstat((char *)tmp_fname, &st) < 0)
 		    {
@@ -1238,7 +1238,7 @@ buf_write(
 		{
 # ifdef UNIX
 #  ifdef HAVE_FCHOWN
-		    vim_ignored = fchown(fd, st_old.st_uid, st_old.st_gid);
+		    mnv_ignored = fchown(fd, st_old.st_uid, st_old.st_gid);
 #  endif
 		    if (mch_stat((char *)tmp_fname, &st) < 0
 			    || st.st_uid != st_old.st_uid
@@ -1363,7 +1363,7 @@ buf_write(
 		    if ((p = make_percent_swname(copybuf, p, fname)) != NULL)
 		    {
 			backup = modname(p, backup_ext, FALSE);
-			vim_free(p);
+			mnv_free(p);
 		    }
 #endif
 		rootname = get_file_in_dir(fname, copybuf);
@@ -1386,7 +1386,7 @@ buf_write(
 						 rootname, backup_ext, FALSE);
 		    if (backup == NULL)
 		    {
-			vim_free(rootname);
+			mnv_free(rootname);
 			some_error = TRUE;		// out of memory
 			goto nobackup;
 		    }
@@ -1403,7 +1403,7 @@ buf_write(
 			if (st_new.st_dev == st_old.st_dev
 					    && st_new.st_ino == st_old.st_ino)
 			{
-			    VIM_CLEAR(backup);	// no backup file to delete
+			    MNV_CLEAR(backup);	// no backup file to delete
 			    // may try again with 'shortname' set
 			    if (!(buf->b_shortname || buf->b_p_sn))
 			    {
@@ -1435,12 +1435,12 @@ buf_write(
 				--*wp;
 			    // They all exist??? Must be something wrong.
 			    if (*wp == 'a')
-				VIM_CLEAR(backup);
+				MNV_CLEAR(backup);
 			}
 		    }
 		    break;
 		}
-		vim_free(rootname);
+		mnv_free(rootname);
 
 		// Try to create the backup file
 		if (backup != NULL)
@@ -1460,7 +1460,7 @@ buf_write(
 		    (void)umask(umask_save);
 #endif
 		    if (bfd < 0)
-			VIM_CLEAR(backup);
+			MNV_CLEAR(backup);
 		    else
 		    {
 			// Set file protection same as original file, but
@@ -1533,7 +1533,7 @@ buf_write(
 	    }
     nobackup:
 	    close(fd);		// ignore errors for closing read file
-	    vim_free(copybuf);
+	    mnv_free(copybuf);
 
 	    if (backup == NULL && errmsg == NULL)
 		errmsg = (char_u *)_(e_cannot_create_backup_file_add_bang_to_write_anyway);
@@ -1556,7 +1556,7 @@ buf_write(
 	    // If 'cpoptions' includes the "W" flag, we don't want to
 	    // overwrite a read-only file.  But rename may be possible
 	    // anyway, thus we need an extra check here.
-	    if (file_readonly && vim_strchr(p_cpo, CPO_FWRITE) != NULL)
+	    if (file_readonly && mnv_strchr(p_cpo, CPO_FWRITE) != NULL)
 	    {
 		errnum = (char_u *)"E504: ";
 		errmsg = (char_u *)_(e_is_read_only_cannot_override_W_in_cpoptions);
@@ -1581,7 +1581,7 @@ buf_write(
 		    if ((p = make_percent_swname(IObuff, p, fname)) != NULL)
 		    {
 			backup = modname(p, backup_ext, FALSE);
-			vim_free(p);
+			mnv_free(p);
 		    }
 #endif
 		if (backup == NULL)
@@ -1594,7 +1594,7 @@ buf_write(
 			backup = buf_modname(
 				(buf->b_p_sn || buf->b_shortname),
 						rootname, backup_ext, FALSE);
-			vim_free(rootname);
+			mnv_free(rootname);
 		    }
 		}
 
@@ -1613,7 +1613,7 @@ buf_write(
 			    --*p;
 			// They all exist??? Must be something wrong!
 			if (*p == 'a')
-			    VIM_CLEAR(backup);
+			    MNV_CLEAR(backup);
 		    }
 		}
 		if (backup != NULL)
@@ -1625,10 +1625,10 @@ buf_write(
 
 		    // If the renaming of the original file to the backup file
 		    // works, quit here.
-		    if (vim_rename(fname, backup) == 0)
+		    if (mnv_rename(fname, backup) == 0)
 			break;
 
-		    VIM_CLEAR(backup);   // don't do the rename below
+		    MNV_CLEAR(backup);   // don't do the rename below
 		}
 	    }
 	    if (backup == NULL && !forceit)
@@ -1642,7 +1642,7 @@ buf_write(
 #if defined(UNIX)
     // When using ":w!" and the file was read-only: make it writable
     if (forceit && perm >= 0 && !(perm & 0200) && st_old.st_uid == getuid()
-				     && vim_strchr(p_cpo, CPO_FWRITE) == NULL)
+				     && mnv_strchr(p_cpo, CPO_FWRITE) == NULL)
     {
 	perm |= 0200;
 	(void)mch_setperm(fname, perm);
@@ -1652,7 +1652,7 @@ buf_write(
 
     // When using ":w!" and writing to the current file, 'readonly' makes no
     // sense, reset it, unless 'Z' appears in 'cpoptions'.
-    if (forceit && overwriting && vim_strchr(p_cpo, CPO_KEEPRO) == NULL)
+    if (forceit && overwriting && mnv_strchr(p_cpo, CPO_KEEPRO) == NULL)
     {
 	buf->b_p_ro = FALSE;
 	need_maketitle = TRUE;	    // set window title later
@@ -1770,7 +1770,7 @@ buf_write(
 	    // overwrite the original file.
 	    if (*p_ccv != NUL)
 	    {
-		wfname = vim_tempname('w', FALSE);
+		wfname = mnv_tempname('w', FALSE);
 		if (wfname == NULL)	// Can't write without a tempfile!
 		{
 		    errmsg = (char_u *)_(e_cant_find_temp_file_for_writing);
@@ -1854,7 +1854,7 @@ buf_write(
 #endif
 		    {
 			errmsg = (char_u *)_(e_cant_open_file_for_writing);
-			if (forceit && vim_strchr(p_cpo, CPO_FWRITE) == NULL
+			if (forceit && mnv_strchr(p_cpo, CPO_FWRITE) == NULL
 								  && perm >= 0)
 			{
 #ifdef UNIX
@@ -1887,13 +1887,13 @@ restore_backup:
 			{
 			    // There is a small chance that we removed the
 			    // original, try to move the copy in its place.
-			    // This may not work if the vim_rename() fails.
+			    // This may not work if the mnv_rename() fails.
 			    // In that case we leave the copy around.
 
 			    // If file does not exist, put the copy in its
 			    // place
 			    if (mch_stat((char *)fname, &st) < 0)
-				vim_rename(backup, fname);
+				mnv_rename(backup, fname);
 			    // if original file does exist throw away the copy
 			    if (mch_stat((char *)fname, &st) >= 0)
 				mch_remove(backup);
@@ -1901,7 +1901,7 @@ restore_backup:
 			else
 			{
 			    // try to put the original file back
-			    vim_rename(backup, fname);
+			    mnv_rename(backup, fname);
 			}
 		    }
 
@@ -1911,7 +1911,7 @@ restore_backup:
 		}
 
 		if (wfname != fname)
-		    vim_free(wfname);
+		    mnv_free(wfname);
 		goto fail;
 	    }
 	    write_info.bw_fd = fd;
@@ -1937,7 +1937,7 @@ restore_backup:
 #endif
 #ifdef HAVE_FTRUNCATE
 	    if (!append)
-		vim_ignored = ftruncate(fd, (off_t)0);
+		mnv_ignored = ftruncate(fd, (off_t)0);
 #endif
 
 #if defined(MSWIN)
@@ -1965,7 +1965,7 @@ restore_backup:
 		    end = 0;
 		else
 		{
-		    // Write magic number, so that Vim knows how this file is
+		    // Write magic number, so that MNV knows how this file is
 		    // encrypted when reading it back.
 		    write_info.bw_buf = header;
 		    write_info.bw_len = header_len;
@@ -1973,7 +1973,7 @@ restore_backup:
 		    if (buf_write_bytes(&write_info) == FAIL)
 			end = 0;
 		    wb_flags |= FIO_ENCRYPTED;
-		    vim_free(header);
+		    mnv_free(header);
 		}
 	    }
 #endif
@@ -2211,7 +2211,7 @@ restore_backup:
 	// For a device do try the fsync() but don't complain if it does not
 	// work (could be a pipe).
 	// If the 'fsync' option is FALSE, don't fsync().  Useful for laptops.
-	if ((buf->b_p_fs >= 0 ? buf->b_p_fs : p_fs) && vim_fsync(fd) != 0
+	if ((buf->b_p_fs >= 0 ? buf->b_p_fs : p_fs) && mnv_fsync(fd) != 0
 		&& !device)
 	{
 	    errmsg = (char_u *)_(e_fsync_failed);
@@ -2247,7 +2247,7 @@ restore_backup:
 		    || st.st_gid != st_old.st_gid)
 	    {
 		// changing owner might not be possible
-		vim_ignored = fchown(fd, st_old.st_uid, -1);
+		mnv_ignored = fchown(fd, st_old.st_uid, -1);
 		// if changing group fails clear the group permissions
 		if (fchown(fd, -1, st_old.st_gid) == -1 && perm > 0)
 		    perm &= ~070;
@@ -2315,7 +2315,7 @@ restore_backup:
 		}
 	    }
 	    mch_remove(wfname);
-	    vim_free(wfname);
+	    mnv_free(wfname);
 	}
 #endif
     }
@@ -2335,7 +2335,7 @@ restore_backup:
 		    errmsg = alloc(300);
 		    if (errmsg == NULL)
 			goto fail;
-		    vim_snprintf((char *)errmsg, 300, _(e_write_error_conversion_failed_in_line_nr_make_fenc_empty_to_override),
+		    mnv_snprintf((char *)errmsg, 300, _(e_write_error_conversion_failed_in_line_nr_make_fenc_empty_to_override),
 					 (long)write_info.bw_conv_error_lnum);
 		}
 	    }
@@ -2386,7 +2386,7 @@ restore_backup:
 	    }
 	    else
 	    {
-		if (vim_rename(backup, fname) == 0)
+		if (mnv_rename(backup, fname) == 0)
 		    end = 1;
 	    }
 	}
@@ -2408,7 +2408,7 @@ restore_backup:
 	    STRCAT(IObuff, _(" CONVERSION ERROR"));
 	    c = TRUE;
 	    if (write_info.bw_conv_error_lnum != 0)
-		vim_snprintf_add((char *)IObuff, IOSIZE, _(" in line %ld;"),
+		mnv_snprintf_add((char *)IObuff, IOSIZE, _(" in line %ld;"),
 			(long)write_info.bw_conv_error_lnum);
 	}
 	else if (notconverted)
@@ -2462,7 +2462,7 @@ restore_backup:
     // writing to the original file and '+' is not in 'cpoptions'.
     if (reset_changed && whole && !append
 	    && !write_info.bw_conv_error
-	    && (overwriting || vim_strchr(p_cpo, CPO_PLUS) != NULL))
+	    && (overwriting || mnv_strchr(p_cpo, CPO_PLUS) != NULL))
     {
 	unchanged(buf, TRUE, FALSE);
 	// b:changedtick may be incremented in unchanged() but that should not
@@ -2501,8 +2501,8 @@ restore_backup:
 		emsg(_(e_patchmode_cant_save_original_file));
 	    else if (mch_stat(org, &st) < 0)
 	    {
-		vim_rename(backup, (char_u *)org);
-		VIM_CLEAR(backup);	    // don't delete the file
+		mnv_rename(backup, (char_u *)org);
+		MNV_CLEAR(backup);	    // don't delete the file
 #ifdef UNIX
 		set_file_time((char_u *)org, st_old.st_atime, st_old.st_mtime);
 #endif
@@ -2525,7 +2525,7 @@ restore_backup:
 	if (org != NULL)
 	{
 	    mch_setperm((char_u *)org, mch_getperm(fname) & 0777);
-	    vim_free(org);
+	    mnv_free(org);
 	}
     }
 
@@ -2545,11 +2545,11 @@ nofail:
     // Done saving, we accept changed buffer warnings again
     buf->b_saving = FALSE;
 
-    vim_free(backup);
+    mnv_free(backup);
     if (buffer != smallbuf)
-	vim_free(buffer);
-    vim_free(fenc_tofree);
-    vim_free(write_info.bw_conv_buf);
+	mnv_free(buffer);
+    mnv_free(fenc_tofree);
+    mnv_free(write_info.bw_conv_buf);
 #ifdef USE_ICONV
     if (write_info.bw_iconv_fd != (iconv_t)-1)
     {
@@ -2585,7 +2585,7 @@ nofail:
 	STRCAT(IObuff, errmsg);
 	emsg((char *)IObuff);
 	if (errmsg_allocated)
-	    vim_free(errmsg);
+	    mnv_free(errmsg);
 
 	retval = FAIL;
 	if (end == 0)
@@ -2658,8 +2658,8 @@ nofail:
 #endif
     }
 
-#ifdef FEAT_VIMINFO
-    // Make sure marks will be written out to the viminfo file later, even when
+#ifdef FEAT_MNVINFO
+    // Make sure marks will be written out to the mnvinfo file later, even when
     // the file is new.
     curbuf->b_marks_read = TRUE;
 #endif

@@ -23,7 +23,7 @@ int compl_status_sol(void);
 int compl_status_local(void);
 void compl_status_clear(void);
 int has_compl_option(int dict_opt);
-int vim_is_ctrl_x_key(int c);
+int mnv_is_ctrl_x_key(int c);
 int ins_compl_accept_char(int c);
 int ins_compl_add_infercase(char_u *str_arg, int len, int icase, char_u *fname, int dir, int cont_s_ipos, int score);
 int ins_compl_is_match_selected(void);
@@ -77,4 +77,4 @@ int ins_complete(int c, int enable_pum);
 void ins_compl_enable_autocomplete(void);
 void free_insexpand_stuff(void);
 void f_preinserted(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

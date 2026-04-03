@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
- * help.c: functions for Vim help
+ * help.c: functions for MNV help
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 /*
  * ":help": open a read-only window on a help file
@@ -72,7 +72,7 @@ ex_help(exarg_T *eap)
 
     // remove trailing blanks
     p = arg + STRLEN(arg) - 1;
-    while (p > arg && VIM_ISWHITE(*p) && p[-1] != '\\')
+    while (p > arg && MNV_ISWHITE(*p) && p[-1] != '\\')
 	*p-- = NUL;
 
 #ifdef FEAT_MULTI_LANG
@@ -114,7 +114,7 @@ ex_help(exarg_T *eap)
     }
 
     // The first match (in the requested language) is the best match.
-    tag = vim_strsave(matches[i]);
+    tag = mnv_strsave(matches[i]);
     FreeWild(num_matches, matches);
 
 #ifdef FEAT_GUI
@@ -198,7 +198,7 @@ ex_help(exarg_T *eap)
 	curwin->w_alt_fnum = alt_fnum;
 
 erret:
-    vim_free(tag);
+    mnv_free(tag);
 }
 
 /*
@@ -419,10 +419,10 @@ find_help_tags(
 	// And also "\_$" and "\_^".
 	if (arg[0] == '\\'
 		&& ((arg[1] != NUL && arg[2] == NUL)
-		    || (vim_strchr((char_u *)"%_z@", arg[1]) != NULL
+		    || (mnv_strchr((char_u *)"%_z@", arg[1]) != NULL
 							   && arg[2] != NUL)))
 	{
-	    vim_snprintf((char *)d, IOSIZE, "/\\\\%s", arg + 1);
+	    mnv_snprintf((char *)d, IOSIZE, "/\\\\%s", arg + 1);
 	    // Check for "/\\_$", should be "/\\_\$"
 	    if (d[3] == '_' && d[4] == '$')
 		STRCPY(d + 4, "\\$");
@@ -473,7 +473,7 @@ find_help_tags(
 	    // ":help i_^_CTRL-D" work.
 	    // Insert '-' before and after "CTRL-X" when applicable.
 	    if (*s < ' ' || (*s == '^' && s[1] && (ASCII_ISALPHA(s[1])
-			   || vim_strchr((char_u *)"?@[\\]^", s[1]) != NULL)))
+			   || mnv_strchr((char_u *)"?@[\\]^", s[1]) != NULL)))
 	    {
 		if (d > IObuff && d[-1] != '_' && d[-1] != '\\')
 		    *d++ = '_';		// prepend a '_' to make x_CTRL-x
@@ -565,7 +565,7 @@ find_help_tags(
 					      sizeof(char_u *), help_compare);
 	// Delete more than TAG_MANY to reduce the size of the listing.
 	while (*num_matches > TAG_MANY)
-	    vim_free((*matches)[--*num_matches]);
+	    mnv_free((*matches)[--*num_matches]);
     }
     return OK;
 }
@@ -721,7 +721,7 @@ fix_help_buffer(void)
 	{
 	    line = ml_get_buf(curbuf, lnum, FALSE);
 	    len = ml_get_buf_len(curbuf, lnum);
-	    if (in_example && len > 0 && !VIM_ISWHITE(line[0]))
+	    if (in_example && len > 0 && !MNV_ISWHITE(line[0]))
 	    {
 		// End of example: non-white or '<' in first column.
 		if (line[0] == '<')
@@ -771,7 +771,7 @@ fix_help_buffer(void)
 		continue;
 
 	    // Go through all directories in 'runtimepath', skipping
-	    // $VIMRUNTIME.
+	    // $MNVRUNTIME.
 	    p = p_rtp;
 	    while (*p != NUL)
 	    {
@@ -779,7 +779,7 @@ fix_help_buffer(void)
 
 		NameBufflen = copy_option_part(&p, NameBuff, MAXPATHL, ",");
 		mustfree = FALSE;
-		rt = vim_getenv((char_u *)"VIMRUNTIME", &mustfree);
+		rt = mnv_getenv((char_u *)"MNVRUNTIME", &mustfree);
 		if (rt != NULL &&
 			    fullpathcmp(rt, NameBuff, FALSE, TRUE) != FPC_SAME)
 		{
@@ -788,7 +788,7 @@ fix_help_buffer(void)
 		    FILE	*fd;
 		    char_u	*s;
 		    int		fi;
-		    vimconv_T	vc;
+		    mnvconv_T	vc;
 		    char_u	*cp;
 
 		    // Find all "doc/ *.txt" files in this directory.
@@ -818,14 +818,14 @@ fix_help_buffer(void)
 			{
 			    f1 = fnames[i1];
 			    t1 = gettail(f1);
-			    e1 = vim_strrchr(t1, '.');
+			    e1 = mnv_strrchr(t1, '.');
 			    if (e1 == NULL)
 				continue;
 			    if (fnamecmp(e1, ".txt") != 0
 					       && fnamecmp(e1, fname + 4) != 0)
 			    {
 				// Not .txt and not .abx, remove it.
-				VIM_CLEAR(fnames[i1]);
+				MNV_CLEAR(fnames[i1]);
 				continue;
 			    }
 
@@ -835,7 +835,7 @@ fix_help_buffer(void)
 				if (f2 == NULL)
 				    continue;
 				t2 = gettail(f2);
-				e2 = vim_strrchr(t2, '.');
+				e2 = mnv_strrchr(t2, '.');
 				if (e2 == NULL)
 				    continue;
 				if (e1 - f1 != e2 - f2
@@ -844,7 +844,7 @@ fix_help_buffer(void)
 				if (fnamecmp(e1, ".txt") == 0
 					       && fnamecmp(e2, fname + 4) == 0)
 				    // use .abx instead of .txt
-				    VIM_CLEAR(fnames[i1]);
+				    MNV_CLEAR(fnames[i1]);
 			    }
 			}
 #endif
@@ -855,9 +855,9 @@ fix_help_buffer(void)
 			    fd = mch_fopen((char *)fnames[fi], "r");
 			    if (fd != NULL)
 			    {
-				vim_fgets(IObuff, IOSIZE, fd);
+				mnv_fgets(IObuff, IOSIZE, fd);
 				if (IObuff[0] == '*'
-					&& (s = vim_strchr(IObuff + 1, '*'))
+					&& (s = mnv_strchr(IObuff + 1, '*'))
 								  != NULL)
 				{
 				    int	this_utf = MAYBE;
@@ -909,7 +909,7 @@ fix_help_buffer(void)
 
 				    ml_append(lnum, cp, (colnr_T)0, FALSE);
 				    if (cp != IObuff)
-					vim_free(cp);
+					mnv_free(cp);
 				    ++lnum;
 				}
 				fclose(fd);
@@ -919,7 +919,7 @@ fix_help_buffer(void)
 		    }
 		}
 		if (mustfree)
-		    vim_free(rt);
+		    mnv_free(rt);
 	    }
 	    break;
 	}
@@ -1003,10 +1003,10 @@ helptags_one(
 	return;
     }
 
-    // If using the "++t" argument or generating tags for "$VIMRUNTIME/doc"
+    // If using the "++t" argument or generating tags for "$MNVRUNTIME/doc"
     // add the "help-tags" tag.
     ga_init2(&ga, sizeof(char_u *), 100);
-    if (add_help_tags || fullpathcmp((char_u *)"$VIMRUNTIME/doc",
+    if (add_help_tags || fullpathcmp((char_u *)"$MNVRUNTIME/doc",
 						dir, FALSE, TRUE) == FPC_SAME)
     {
 	if (ga_grow(&ga, 1) == FAIL)
@@ -1038,7 +1038,7 @@ helptags_one(
 
 	in_example = FALSE;
 	firstline = TRUE;
-	while (!vim_fgets(IObuff, IOSIZE, fd) && !got_int)
+	while (!mnv_fgets(IObuff, IOSIZE, fd) && !got_int)
 	{
 	    if (firstline)
 	    {
@@ -1074,17 +1074,17 @@ helptags_one(
 	    if (in_example)
 	    {
 		// skip over example; a non-white in the first column ends it
-		if (vim_strchr((char_u *)" \t\n\r", IObuff[0]))
+		if (mnv_strchr((char_u *)" \t\n\r", IObuff[0]))
 		    continue;
 		in_example = FALSE;
 	    }
-	    p1 = vim_strchr(IObuff, '*');	// find first '*'
+	    p1 = mnv_strchr(IObuff, '*');	// find first '*'
 	    while (p1 != NULL)
 	    {
-		// Use vim_strbyte() instead of vim_strchr() so that when
+		// Use mnv_strbyte() instead of mnv_strchr() so that when
 		// 'encoding' is dbcs it still works, don't find '*' in the
 		// second byte.
-		p2 = vim_strbyte(p1 + 1, '*');	// find second '*'
+		p2 = mnv_strbyte(p1 + 1, '*');	// find second '*'
 		if (p2 != NULL && p2 > p1 + 1)	// skip "*" and "**"
 		{
 		    for (s = p1 + 1; s < p2; ++s)
@@ -1096,7 +1096,7 @@ helptags_one(
 		    // followed by a white character or end-of-line.
 		    if (s == p2
 			    && (p1 == IObuff || p1[-1] == ' ' || p1[-1] == '\t')
-			    && (vim_strchr((char_u *)" \t\n\r", s[1]) != NULL
+			    && (mnv_strchr((char_u *)" \t\n\r", s[1]) != NULL
 				|| s[1] == '\0'))
 		    {
 			*p2 = '\0';
@@ -1117,7 +1117,7 @@ helptags_one(
 			sprintf((char *)s, "%s\t%s", p1, fname);
 
 			// find next '*'
-			p2 = vim_strchr(p2 + 1, '*');
+			p2 = mnv_strchr(p2 + 1, '*');
 		    }
 		}
 		p1 = p2;
@@ -1127,7 +1127,7 @@ helptags_one(
 	    {
 		off -= 2;
 		while (off > 0 && (ASCII_ISLOWER(IObuff[off])
-						  || VIM_ISDIGIT(IObuff[off])))
+						  || MNV_ISDIGIT(IObuff[off])))
 		    off--;
 		if (IObuff[off] == '>' && (off == 0 || IObuff[off - 1] == ' '))
 		    in_example = TRUE;
@@ -1156,7 +1156,7 @@ helptags_one(
 		if (*p2 == '\t')
 		{
 		    *p2 = NUL;
-		    vim_snprintf((char *)NameBuff, MAXPATHL,
+		    mnv_snprintf((char *)NameBuff, MAXPATHL,
 			    _(e_duplicate_tag_str_in_file_str_str),
 				     ((char_u **)ga.ga_data)[i], dir, p2 + 1);
 		    emsg((char *)NameBuff);
@@ -1196,7 +1196,7 @@ helptags_one(
 	got_int = FALSE;    // continue with other languages
 
     for (i = 0; i < ga.ga_len; ++i)
-	vim_free(((char_u **)ga.ga_data)[i]);
+	mnv_free(((char_u **)ga.ga_data)[i]);
     ga_clear(&ga);
     fclose(fd_tags);	    // there is no check for an error...
 }
@@ -1319,7 +1319,7 @@ ex_helptags(exarg_T *eap)
     int		add_help_tags = FALSE;
 
     // Check for ":helptags ++t {dir}".
-    if (STRNCMP(eap->arg, "++t", 3) == 0 && VIM_ISWHITE(eap->arg[3]))
+    if (STRNCMP(eap->arg, "++t", 3) == 0 && MNV_ISWHITE(eap->arg[3]))
     {
 	add_help_tags = TRUE;
 	eap->arg = skipwhite(eap->arg + 3);
@@ -1340,6 +1340,6 @@ ex_helptags(exarg_T *eap)
 	    semsg(_(e_not_a_directory_str), eap->arg);
 	else
 	    do_helptags(dirname, add_help_tags, FALSE);
-	vim_free(dirname);
+	mnv_free(dirname);
     }
 }

@@ -2,8 +2,8 @@
 #
 # Change "nawk" to "awk" or "gawk" if you get errors.
 #
-# Make Vim Errors
-# Processes errors from cc for use by Vim's quick fix tools
+# Make MNV Errors
+# Processes errors from cc for use by MNV's quick fix tools
 # specifically it translates the ---------^ notation to a
 # column number
 #

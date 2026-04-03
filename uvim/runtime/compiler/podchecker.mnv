@@ -1,0 +1,25 @@
+" MNV compiler file
+" Compiler:      podchecker
+" Maintainer:    mnv-perl <mnv-perl@googlegroups.com> (need to be subscribed to post)
+" Author:        Doug Kearns <dougkearns@gmail.com>
+" Homepage:      https://github.com/mnv-perl/mnv-perl
+" Bugs/requests: https://github.com/mnv-perl/mnv-perl/issues
+" License:       MNV License (see :help license)
+" Last Change:   2021 Oct 20
+"                2024 Apr 03 by The MNV Project (removed :CompilerSet definition)
+
+if exists("current_compiler")
+  finish
+endif
+let current_compiler = "podchecker"
+
+let s:cpo_save = &cpo
+set cpo&mnv
+
+CompilerSet makeprg=podchecker\ -w
+CompilerSet errorformat=\*\*\*\ %tRROR:\ %m\ at\ line\ %l\ in\ file\ %f,
+                       \\*\*\*\ %tARNING:\ %m\ at\ line\ %l\ in\ file\ %f,
+                       \%-G%.%#
+
+let &cpo = s:cpo_save
+unlet s:cpo_save

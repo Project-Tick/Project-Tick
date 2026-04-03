@@ -1,7 +1,7 @@
-*helphelp.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*helphelp.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Help on help files					*helphelp*
@@ -103,7 +103,7 @@ Help on help files					*helphelp*
 
 							*:helpc* *:helpclose*
 :helpc[lose]		Close one help window, if there is one.
-			Vim will try to restore the window layout (including
+			MNV will try to restore the window layout (including
 			cursor position) to the same layout it was before
 			opening the help window initially.  This might cause
 			triggering several autocommands.
@@ -118,7 +118,7 @@ Help on help files					*helphelp*
 			|quickfix| commands, e.g., |:cnext| to jump to the
 			next one.  Or use |:cwindow| to get the list of
 			matches in the quickfix window.
-			{pattern} is used as a Vim regexp |pattern|.
+			{pattern} is used as a MNV regexp |pattern|.
 			'ignorecase' is not used, add "\c" to ignore case.
 			Example for case sensitive search: >
 				:helpgrep Uganda
@@ -208,14 +208,14 @@ To write a local help file, see |write-local-help|.
 
 Note that the title lines from the local help files are automagically added to
 the "LOCAL ADDITIONS" section in the "help.txt" help file |local-additions|.
-This is done when viewing the file in Vim, the file itself is not changed.  It
+This is done when viewing the file in MNV, the file itself is not changed.  It
 is done by going through all help files and obtaining the first line of each
-file.  The files in $VIMRUNTIME/doc are skipped.
+file.  The files in $MNVRUNTIME/doc are skipped.
 
 							*help-xterm-window*
 If you want to have the help in another xterm window, you could use this
 command: >
-	:!xterm -e vim +help &
+	:!xterm -e mnv +help &
 <
 
 			*:helpfind* *:helpf*
@@ -242,16 +242,16 @@ command: >
 
 			The optional "++t" argument forces adding the
 			"help-tags" tag.  This is also done when the {dir} is
-			equal to $VIMRUNTIME/doc.
+			equal to $MNVRUNTIME/doc.
 
 			To rebuild the help tags in the runtime directory
 			(requires write permission there): >
-				:helptags $VIMRUNTIME/doc
+				:helptags $MNVRUNTIME/doc
 <
 		*:HelpToc* *help-TOC* *help-toc-install* *package-helptoc*
 
 If you want to access an interactive table of contents, from any position in
-the file, you can use the helptoc plugin.  Load the plugin with: >vim
+the file, you can use the helptoc plugin.  Load the plugin with: >mnv
 
     packadd helptoc
 <
@@ -291,7 +291,7 @@ The latter supports the following normal commands: >
 	<End>      | select last entry
 
 The plugin can also provide a table of contents in buffers of the following
-filetypes: asciidoc, html, man, markdown, tex, vim, and xhtml.  In addition
+filetypes: asciidoc, html, man, markdown, tex, mnv, and xhtml.  In addition
 it also provide a table of contents for a terminal buffer, which produces
 entries that are the past executed shell commands.  To find those, by default,
 the following pattern is used: >
@@ -316,7 +316,7 @@ Note:  You need to `packadd helptoc` before you can jump to |helptoc.txt|.
 2. Translated help files				*help-translated*
 
 It is possible to add translated help files, next to the original English help
-files.  Vim will search for all help in "doc" directories in 'runtimepath'.
+files.  MNV will search for all help in "doc" directories in 'runtimepath'.
 This is only available when compiled with the |+multi_lang| feature.
 
 At this moment translations are available for:
@@ -327,7 +327,7 @@ At this moment translations are available for:
 	Polish   - translated by Mikolaj Machowski
 	Russian  - translated by Vassily Ragosin
 	Swedish  - translated by Daniel Nylander
-See the Vim website to find them: http://www.vim.org/translations.php
+See the MNV website to find them: http://www.mnv.org/translations.php
 
 A set of translated help files consists of these files:
 
@@ -344,7 +344,7 @@ A set of translated help files consists of these files:
 	tags-it
 
 The 'helplang' option can be set to the preferred language(s).  The default is
-set according to the environment.  Vim will first try to find a matching tag
+set according to the environment.  MNV will first try to find a matching tag
 in the preferred language(s).  English is used when it cannot be found.
 
 To find a tag in a specific language, append "@ab" to a tag, where "ab" is the
@@ -361,13 +361,13 @@ tag only exists for English "@en" is omitted.  When the first candidate has an
 "@ab" extension and it matches the first language in 'helplang' "@ab" is also
 omitted.
 
-When using |CTRL-]| or ":help!" in a non-English help file Vim will try to
+When using |CTRL-]| or ":help!" in a non-English help file MNV will try to
 find the tag in the same language.  If not found then 'helplang' will be used
 to select a language.
 
-Help files must use latin1 or utf-8 encoding.  Vim assumes the encoding is
+Help files must use latin1 or utf-8 encoding.  MNV assumes the encoding is
 utf-8 when finding non-ASCII characters in the first line.  Thus you must
-translate the header with "For Vim version".
+translate the header with "For MNV version".
 
 The same encoding must be used for the help files of one language in one
 directory.  You can use a different encoding for different languages and use
@@ -381,19 +381,19 @@ Hints for translators:
   using the "tag@en" notation.
 - Make a package with all the files and the tags file available for download.
   Users can drop it in one of the "doc" directories and start use it.
-  Report to the development team, so they can add a link on www.vim.org.
+  Report to the development team, so they can add a link on www.mnv.org.
 - Use the |:helptags| command to generate the tags files.  It will find all
   languages in the specified directory.
 
 ==============================================================================
 3. Writing help files					*help-writing*
 
-For ease of use, a Vim help file for a plugin should follow the format of the
-standard Vim help files, except for the first line.  If you are writing a new
+For ease of use, a MNV help file for a plugin should follow the format of the
+standard MNV help files, except for the first line.  If you are writing a new
 help file it's best to copy one of the existing files and use it as a
 template.
 
-Vim help files generally use 2 spaces after a sentence (since they are written
+MNV help files generally use 2 spaces after a sentence (since they are written
 using a fixed-width font and that was the preferred style in the 70s/80s),
 like what is described here: https://english.stackexchange.com/a/2602
 
@@ -409,17 +409,17 @@ file.  Check there that it shows up properly: |local-additions|.
 If you want to add a version number or last modification date, put it in the
 second line, right aligned.
 
-At the bottom of the help file, place a Vim modeline to set the 'textwidth'
+At the bottom of the help file, place a MNV modeline to set the 'textwidth'
 and 'tabstop' options and the 'filetype' to "help".  Never set a global option
 in such a modeline, that can have undesired consequences.
 
 
 STYLE
 
-If your Vim has 'modeline' enabled, Vim should follow the preferred style
+If your MNV has 'modeline' enabled, MNV should follow the preferred style
 automatically when editing built-in help files.
 
-Vim help files should be formatted for a 'textwidth' of 78 characters (with
+MNV help files should be formatted for a 'textwidth' of 78 characters (with
 'conceal' enabled), so they look good in a typical 80 x 24 terminal window;
 use `:set colorcolumn=+0` as a visual guide.
 
@@ -436,18 +436,18 @@ Always use |:retab| after you have finished editing.  Don't blindly use
 TAGS
 
 To define a help tag, place the name between asterisks ("*tag-name*").  The
-tag-name should be different from all the Vim help tag names and ideally
-should begin with the name of the Vim plugin.  The tag name is usually right
+tag-name should be different from all the MNV help tag names and ideally
+should begin with the name of the MNV plugin.  The tag name is usually right
 aligned on a line.
 
 When referring to an existing help tag and to create a hot-link, place the
 name between two bars (|) eg. |help-writing|.
 
-When referring to a Vim command and to create a hot-link, place the
+When referring to a MNV command and to create a hot-link, place the
 name between two backticks, eg. inside `:filetype`.  You will see this is
 highlighted as a command, like a code block (see below).
 
-When referring to a Vim option in the help file, place the option name between
+When referring to a MNV option in the help file, place the option name between
 two single quotes, eg. 'statusline'
 
 
@@ -472,21 +472,21 @@ also implicitly stops the block of ex-commands before it.  E.g. >
 	endfunction
 <
 To enable syntax highlighting for a block of code, place a language name
-annotation (e.g. "vim") after a greater than (>) character.  E.g. >vim
+annotation (e.g. "mnv") after a greater than (>) character.  E.g. >mnv
 
 	function Example_Func()
 	  echo "Example"
 	endfunction
 <
 						*g:help_example_languages*
-By default, help files only support Vim script highlighting.  If you need
-syntax highlighting for other languages, add to your |vimrc|: >
+By default, help files only support MNV script highlighting.  If you need
+syntax highlighting for other languages, add to your |mnvrc|: >
 	:let g:help_example_languages = #{
-	      \	vim: "vim", vim9: "vim", bash: "sh" }
+	      \	mnv: "mnv", mnv9: "mnv", bash: "sh" }
 The key represents the annotation marker name, and the value is the 'syntax'
 name.
 
-Note: If you do not include "vim" in "g:help_example_languages", its syntax
+Note: If you do not include "mnv" in "g:help_example_languages", its syntax
 highlighting will not be enabled.  If you set "g:help_example_languages" to an
 empty value, syntax highlighting for embedded languages will be disabled.
 
@@ -494,7 +494,7 @@ Further note: Including arbitrary syntax languages into help files may not
 always work perfectly, if the included 'syntax' script does not account for
 such an import.
 						*help-notation*
-The following are highlighted differently in a Vim help file:
+The following are highlighted differently in a MNV help file:
   - a special key name expressed either in <> notation as in <PageDown>, or
     as a Ctrl character as in CTRL-X
   - anything between {braces}, e.g. {lhs} and {rhs}
@@ -504,7 +504,7 @@ highlighting.  So do these:
 	*Todo	something to do
 	*Error	something wrong
 
-You can find the details in $VIMRUNTIME/syntax/help.vim
+You can find the details in $MNVRUNTIME/syntax/help.mnv
 
 
 FILETYPE COMPLETION					*ft-help-omni*
@@ -515,11 +515,11 @@ To get completion for help tags when writing a tag reference, you can use the
 
 GENDER NEUTRAL LANGUAGE
 						*gender-neutral* *inclusion*
-Vim is for everybody, no matter race, gender or anything.  For new or updated
+MNV is for everybody, no matter race, gender or anything.  For new or updated
 help text, gender neutral language is recommended.  Some of the help text is
 many years old and there is no need to change it.  We do not make any
 assumptions about the gender of the user, no matter how the text is phrased.
-The goal is that the reader understands how Vim works, the exact wording is
+The goal is that the reader understands how MNV works, the exact wording is
 secondary.
 
 Many online technical style guides include sections about gender neutral
@@ -532,4 +532,4 @@ language.  Here are a few: >
 <
 Note: gender neutral language does not require using singular "they".
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

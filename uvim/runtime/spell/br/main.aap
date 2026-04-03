@@ -1,10 +1,10 @@
-# Aap recipe for Breton Vim spell files.
+# Aap recipe for Breton MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = br_FR.aff br_FR.dic
@@ -12,11 +12,11 @@ FILES    = br_FR.aff br_FR.dic
 all: $SPELLDIR/br.latin1.spl $SPELLDIR/br.utf-8.spl ../README_br.txt
 
 $SPELLDIR/br.latin1.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=latin1"
+        :sys $MNV -u NONE -e -c "set enc=latin1"
                 -c "mkspell! $SPELLDIR/br br_FR" -c q
 
 $SPELLDIR/br.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=UTF-8"
+        :sys $MNV -u NONE -e -c "set enc=UTF-8"
                 -c "mkspell! $SPELLDIR/br br_FR" -c q
 
 ../README_br.txt : package-description.txt
@@ -38,11 +38,11 @@ br_FR.aff br_FR.dic: {buildcheck=}
         :copy dictionaries/br_FR.aff br_FR.aff
         :copy dictionaries/br_FR.dic br_FR.dic
         # The br_FR.aff file contains a BOM, remove it.
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                     -c "e br_FR.aff"
                     -c "set nobomb ff=unix"
                     -c "update" -c q
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                     -c "e br_FR.dic"
                     -c "set nobomb ff=unix"
                     -c "update" -c q
@@ -52,7 +52,7 @@ br_FR.aff br_FR.dic: {buildcheck=}
             :sys patch <br_FR.diff
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -83,4 +83,4 @@ check:
             :delete difazier-an-drouizig-0_13.oxt
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

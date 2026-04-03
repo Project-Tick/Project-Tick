@@ -14,4 +14,4 @@ void f_matchaddpos(typval_T *argvars, typval_T *rettv);
 void f_matcharg(typval_T *argvars, typval_T *rettv);
 void f_matchdelete(typval_T *argvars, typval_T *rettv);
 void ex_match(exarg_T *eap);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

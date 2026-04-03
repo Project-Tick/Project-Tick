@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  * move.c: Functions for moving the cursor and scrolling text.
@@ -17,7 +17,7 @@
  * The 'scrolloff' option makes this a bit complicated.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 static void redraw_for_cursorline(win_T *wp);
 static int scrolljump_value(void);
@@ -1122,7 +1122,7 @@ curwin_col_off(void)
     int
 win_col_off2(win_T *wp)
 {
-    if ((wp->w_p_nu || wp->w_p_rnu) && vim_strchr(p_cpo, CPO_NUMCOL) != NULL)
+    if ((wp->w_p_nu || wp->w_p_rnu) && mnv_strchr(p_cpo, CPO_NUMCOL) != NULL)
 	return number_width(wp) + 1;
     return 0;
 }
@@ -1545,7 +1545,7 @@ f_screenpos(typval_T *argvars UNUSED, typval_T *rettv)
 	return;
     dict = rettv->vval.v_dict;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_number_arg(argvars, 2) == FAIL))

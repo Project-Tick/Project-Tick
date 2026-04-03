@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 #
-# gen_prototypes.py : Generate function prototypes (.pro files) for Vim source
+# gen_prototypes.py : Generate function prototypes (.pro files) for MNV source
 #
 # This script scans C source files, extracts non-static function definitions
 # using libclang, and writes corresponding prototypes to files under proto/.
-# It is intended to be run via `make proto` in the Vim source directory.
+# It is intended to be run via `make proto` in the MNV source directory.
 #
 # The following specifications are used for processing.
 # 1. Preprocessor directives in C files are selected and discarded based on
@@ -28,7 +28,7 @@
 #   with `make`.
 #
 # Author: Hirohito Higashi (@h-east)
-# Copyright: Vim license applies, see ":help license"
+# Copyright: MNV license applies, see ":help license"
 # Last Change: 2025 Oct 08
 #
 import os
@@ -462,7 +462,7 @@ def write_prototypes(out_path: Path, headers: List[str], src_name: str) -> None:
             f.write(f"/* {src_name} */\n")
             for h in headers:
                 f.write(h + "\n")
-            f.write("/* vim: set ft=c : */\n")
+            f.write("/* mnv: set ft=c : */\n")
     except Exception as e:
         print(f"write failed: {e}", file=sys.stderr)
         sys.exit(4)

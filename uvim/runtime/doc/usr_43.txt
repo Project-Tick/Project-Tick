@@ -1,7 +1,7 @@
-*usr_43.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_43.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			       Using filetypes
@@ -29,22 +29,22 @@ want to set the 'softtabstop' option to 4 and define a mapping to insert a
 three-line comment.  You do this with only two steps:
 
 							*your-runtime-dir*
-1. Create your own runtime directory.  On Unix this usually is "~/.vim".  In
+1. Create your own runtime directory.  On Unix this usually is "~/.mnv".  In
    this directory create the "ftplugin" directory: >
 
-	mkdir ~/.vim
-	mkdir ~/.vim/ftplugin
+	mkdir ~/.mnv
+	mkdir ~/.mnv/ftplugin
 <
    When you are not on Unix, check the value of the 'runtimepath' option to
-   see where Vim will look for the "ftplugin" directory: >
+   see where MNV will look for the "ftplugin" directory: >
 
 	set runtimepath
 
 <  You would normally use the first directory name (before the first comma).
    You might want to prepend a directory name to the 'runtimepath' option in
-   your |vimrc| file if you don't like the default value.
+   your |mnvrc| file if you don't like the default value.
 
-2. Create the file "~/.vim/ftplugin/c.vim", with the contents: >
+2. Create the file "~/.mnv/ftplugin/c.mnv", with the contents: >
 
 	setlocal softtabstop=4
 	noremap <buffer> <LocalLeader>c o/**************<CR><CR>/<Esc>
@@ -70,7 +70,7 @@ with a special meaning inside a string, such as a backslash.
 
 You can find examples for filetype plugins in this directory: >
 
-	$VIMRUNTIME/ftplugin/
+	$MNVRUNTIME/ftplugin/
 
 More details about writing a filetype plugin can be found here:
 |write-plugin|.
@@ -78,11 +78,11 @@ More details about writing a filetype plugin can be found here:
 ==============================================================================
 *43.2*	Adding a filetype
 
-If you are using a type of file that is not recognized by Vim, this is how to
+If you are using a type of file that is not recognized by MNV, this is how to
 get it recognized.  You need a runtime directory of your own.  See
 |your-runtime-dir| above.
 
-Create a file "filetype.vim" which contains an autocommand for your filetype.
+Create a file "filetype.mnv" which contains an autocommand for your filetype.
 (Autocommands were explained in section |40.3|.)  Example: >
 
 	augroup filetypedetect
@@ -108,27 +108,27 @@ file name extension.  Adding this to the example above: >
 
 However, if you now edit a file /usr/share/scripts/README.txt, this is not a
 ruby file.  The danger of a pattern ending in "*" is that it quickly matches
-too many files.  To avoid trouble with this, put the filetype.vim file in
+too many files.  To avoid trouble with this, put the filetype.mnv file in
 another directory, one that is at the end of 'runtimepath'.  For Unix for
-example, you could use "~/.vim/after/filetype.vim".
-   You now put the detection of text files in ~/.vim/filetype.vim: >
+example, you could use "~/.mnv/after/filetype.mnv".
+   You now put the detection of text files in ~/.mnv/filetype.mnv: >
 
 	augroup filetypedetect
 	au BufNewFile,BufRead *.txt			setf text
 	augroup END
 
 That file is found in 'runtimepath' first.  Then use this in
-~/.vim/after/filetype.vim, which is found last: >
+~/.mnv/after/filetype.mnv, which is found last: >
 
 	augroup filetypedetect
 	au BufNewFile,BufRead /usr/share/scripts/*	setf ruby
 	augroup END
 
-What will happen now is that Vim searches for "filetype.vim" files in each
-directory in 'runtimepath'.  First ~/.vim/filetype.vim is found.  The
-autocommand to catch *.txt files is defined there.  Then Vim finds the
-filetype.vim file in $VIMRUNTIME, which is halfway 'runtimepath'.  Finally
-~/.vim/after/filetype.vim is found and the autocommand for detecting ruby
+What will happen now is that MNV searches for "filetype.mnv" files in each
+directory in 'runtimepath'.  First ~/.mnv/filetype.mnv is found.  The
+autocommand to catch *.txt files is defined there.  Then MNV finds the
+filetype.mnv file in $MNVRUNTIME, which is halfway 'runtimepath'.  Finally
+~/.mnv/after/filetype.mnv is found and the autocommand for detecting ruby
 files in /usr/share/scripts is added.
    When you now edit /usr/share/scripts/README.txt, the autocommands are
 checked in the order in which they were defined.  The *.txt pattern matches,
@@ -148,8 +148,8 @@ line like:
 
 	#!/bin/xyz ~
 
-To recognize this script create a file "scripts.vim" in your runtime directory
-(same place where filetype.vim goes).  It might look like this: >
+To recognize this script create a file "scripts.mnv" in your runtime directory
+(same place where filetype.mnv goes).  It might look like this: >
 
 	if did_filetype()
 	  finish
@@ -162,14 +162,14 @@ The first check with did_filetype() is to avoid that you will check the
 contents of files for which the filetype was already detected by the file
 name.  That avoids wasting time on checking the file when the "setf" command
 won't do anything.
-   The scripts.vim file is sourced by an autocommand in the default
-filetype.vim file.  Therefore, the order of checks is:
+   The scripts.mnv file is sourced by an autocommand in the default
+filetype.mnv file.  Therefore, the order of checks is:
 
-	1. filetype.vim files before $VIMRUNTIME in 'runtimepath'
-	2. first part of $VIMRUNTIME/filetype.vim
-	3. all scripts.vim files in 'runtimepath'
-	4. remainder of $VIMRUNTIME/filetype.vim
-	5. filetype.vim files after $VIMRUNTIME in 'runtimepath'
+	1. filetype.mnv files before $MNVRUNTIME in 'runtimepath'
+	2. first part of $MNVRUNTIME/filetype.mnv
+	3. all scripts.mnv files in 'runtimepath'
+	4. remainder of $MNVRUNTIME/filetype.mnv
+	5. filetype.mnv files after $MNVRUNTIME in 'runtimepath'
 
 If this is not sufficient for you, add an autocommand that matches all files
 and sources a script or executes a function to check the contents of the file.
@@ -178,4 +178,4 @@ and sources a script or executes a function to check the contents of the file.
 
 Next chapter: |usr_44.txt|  Your own syntax highlighted
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

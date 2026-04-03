@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *				Motif support by Robert Webb
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 #ifdef FEAT_GUI_MOTIF
@@ -47,7 +47,7 @@
 #endif
 
 /*
- * GUIs that support dropping files on a running Vim.
+ * GUIs that support dropping files on a running MNV.
  */
 #if (defined(FEAT_DND) && defined(FEAT_GUI_GTK)) \
 	|| defined(FEAT_GUI_MSWIN) \
@@ -177,7 +177,7 @@ typedef struct GuiScrollbar
 #endif
 
 #ifdef FEAT_GUI_HAIKU
-    VimScrollBar *id;		// Pointer to real scroll bar
+    MNVScrollBar *id;		// Pointer to real scroll bar
 #endif
 #ifdef FEAT_GUI_PHOTON
     PtWidget_t	*id;
@@ -219,23 +219,23 @@ typedef long	    guicolor_T;	// handle for a GUI color; for X11 this should
 # endif
 #endif
 
-#ifdef VIMDLL
+#ifdef MNVDLL
 // Use spawn when GUI is starting.
 # define GUI_MAY_SPAWN
 
 // Uncomment the next definition if you want to use the `:gui` command on
-// Windows.  It uses `:mksession` to inherit the session from vim.exe to
-// gvim.exe.  So, it doesn't work perfectly. (EXPERIMENTAL)
+// Windows.  It uses `:mksession` to inherit the session from mnv.exe to
+// gmnv.exe.  So, it doesn't work perfectly. (EXPERIMENTAL)
 //# define EXPERIMENTAL_GUI_CMD
 #endif
 
 typedef struct Gui
 {
-    int		in_focus;	    // Vim has input focus
+    int		in_focus;	    // MNV has input focus
     int		in_use;		    // Is the GUI being used?
     int		starting;	    // GUI will start in a little while
     bool	shell_created;	    // Has the shell been created yet?
-    int		dying;		    // Is vim dying? Then output to terminal
+    int		dying;		    // Is mnv dying? Then output to terminal
     int		dofork;		    // Use fork() when GUI is starting
 #ifdef GUI_MAY_SPAWN
     int		dospawn;	    // Use spawn() when GUI is starting
@@ -436,25 +436,25 @@ typedef struct Gui
 #endif
 
 #ifdef FEAT_GUI_HAIKU
-    VimApp     *vimApp;
-    VimWindow  *vimWindow;
-    VimFormView *vimForm;
-    VimTextAreaView *vimTextArea;
-    int	vdcmp;			    // Vim Direct Communication Message Port
+    MNVApp     *mnvApp;
+    MNVWindow  *mnvWindow;
+    MNVFormView *mnvForm;
+    MNVTextAreaView *mnvTextArea;
+    int	vdcmp;			    // MNV Direct Communication Message Port
 #endif
 
 #ifdef FEAT_GUI_PHOTON
-    PtWidget_t	*vimWindow;		// PtWindow
-    PtWidget_t	*vimTextArea;		// PtRaw
-    PtWidget_t	*vimContainer;		// PtPanel
+    PtWidget_t	*mnvWindow;		// PtWindow
+    PtWidget_t	*mnvTextArea;		// PtRaw
+    PtWidget_t	*mnvContainer;		// PtPanel
 # if defined(FEAT_MENU) || defined(FEAT_TOOLBAR)
-    PtWidget_t	*vimToolBarGroup;
+    PtWidget_t	*mnvToolBarGroup;
 # endif
 # ifdef FEAT_MENU
-    PtWidget_t	*vimMenuBar;
+    PtWidget_t	*mnvMenuBar;
 # endif
 # ifdef FEAT_TOOLBAR
-    PtWidget_t	*vimToolBar;
+    PtWidget_t	*mnvToolBar;
     int		toolbar_height;
 # endif
     PhEvent_t	*event_buffer;
@@ -506,7 +506,7 @@ typedef enum
  * rare occasions where the comma operator comes in handy :)
  *
  * Note: Do NOT keep the result around when handling control back to
- * the main Vim!  The user could change 'encoding' at any time.
+ * the main MNV!  The user could change 'encoding' at any time.
  */
 # define CONVERT_TO_UTF8(String)				\
     ((output_conv.vc_type == CONV_NONE || (String) == NULL)	\
@@ -516,7 +516,7 @@ typedef enum
 # define CONVERT_TO_UTF8_FREE(String)				\
     ((String) = ((output_conv.vc_type == CONV_NONE)		\
 			? (char_u *)NULL			\
-			: (vim_free(String), (char_u *)NULL)))
+			: (mnv_free(String), (char_u *)NULL)))
 
 # define CONVERT_FROM_UTF8(String)				\
     ((input_conv.vc_type == CONV_NONE || (String) == NULL)	\
@@ -526,7 +526,7 @@ typedef enum
 # define CONVERT_FROM_UTF8_FREE(String)				\
     ((String) = ((input_conv.vc_type == CONV_NONE)		\
 			? (char_u *)NULL			\
-			: (vim_free(String), (char_u *)NULL)))
+			: (mnv_free(String), (char_u *)NULL)))
 
 #else
 # define CONVERT_TO_UTF8(String) (String)

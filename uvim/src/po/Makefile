@@ -1,4 +1,4 @@
-# Makefile for the Vim message translations.
+# Makefile for the MNV message translations.
 
 # Include stuff found by configure.
 include ../auto/config.mk
@@ -9,9 +9,9 @@ include Make_all.mak
 # Note: ja.sjis, *.cp1250 and zh_CN.cp936 are only for MS-Windows, they are
 # not installed on Unix.
 
-PACKAGE = vim
+PACKAGE = mnv
 SHELL = /bin/sh
-VIMPROG = ../vim
+MNVPROG = ../mnv
 
 # MacOS sed is locale aware, set $LANG to avoid problems.
 SED = LANG=C sed
@@ -40,8 +40,8 @@ converted: $(MOCONVERTED)
 	$(MSGFMTCMD) -o $@ $<
 
 .po.ck:
-	$(VIMPROG) -u NONE --noplugins -e -s -X --cmd "set enc=utf-8" \
-		-S check.vim -c "if error == 0 | q | else | num 2 | cq | endif" \
+	$(MNVPROG) -u NONE --noplugins -e -s -X --cmd "set enc=utf-8" \
+		-S check.mnv -c "if error == 0 | q | else | num 2 | cq | endif" \
 		$<
 	touch $@
 
@@ -180,9 +180,9 @@ zh_TW.po: zh_TW.UTF-8.po
 #
 #  06.11.23, added by Restorer
 #  For more details, see:
-#  https://github.com/vim/vim/pull/3261
-#  https://github.com/vim/vim/pull/3476
-#  https://github.com/vim/vim/pull/12153
+#  https://github.com/Project-Tick/Project-Tick/pull/3261
+#  https://github.com/Project-Tick/Project-Tick/pull/3476
+#  https://github.com/Project-Tick/Project-Tick/pull/12153
 #  (read all comments)
 #
 #  I checked the workability on the list of backslash characters
@@ -236,7 +236,7 @@ prefixcheck:
 
 clean: checkclean
 	- rm -f core core.* *.old.po *.mo sjiscorr
-	- rm -f LINGUAS vim.desktop gvim.desktop tmp_*desktop
+	- rm -f LINGUAS mnv.desktop gmnv.desktop tmp_*desktop
 	- rm -f ./allfiles
 #	- rm -f big5corr
 
@@ -248,50 +248,50 @@ checkclean:
 PO_INPUTLIST = \
 	../*.c \
 	../if_perl.xs \
-	../GvimExt/gvimext.cpp \
+	../GmnvExt/gmnvext.cpp \
 	../errors.h \
 	../globals.h \
 	../if_py_both.h \
-	../vim.h \
-	gvim.desktop.in \
-	vim.desktop.in
+	../mnv.h \
+	gmnv.desktop.in \
+	mnv.desktop.in
 
-$(PACKAGE).pot: $(PO_INPUTLIST) $(PO_VIM_INPUTLIST)
-	# Convert the Vim scripts to (what looks like) Javascript.
-	$(VIMPROG) -u NONE --not-a-term -S tojavascript.vim $(PACKAGE).pot \
-		$(PO_VIM_INPUTLIST)
+$(PACKAGE).pot: $(PO_INPUTLIST) $(PO_MNV_INPUTLIST)
+	# Convert the MNV scripts to (what looks like) Javascript.
+	$(MNVPROG) -u NONE --not-a-term -S tojavascript.mnv $(PACKAGE).pot \
+		$(PO_MNV_INPUTLIST)
 	@ echo ${PO_INPUTLIST} | tr ' ' '\n' > ./allfiles
-	@ cat ./vim_to_js >> ./allfiles
-	# Create vim.pot.
+	@ cat ./mnv_to_js >> ./allfiles
+	# Create mnv.pot.
 	$(XGETTEXT) --default-domain=$(PACKAGE) --output=$(PACKAGE).pot \
 		--add-comments $(XGETTEXT_KEYWORDS) --files-from=./allfiles \
-		--no-location --copyright-holder="$$(date +%Y), The Vim Project" \
-		--package-name=Vim --msgid-bugs-address="vim-dev@vim.org"
-	# Fix Vim scripts names, so that "gf" works.
-	$(VIMPROG) -u NONE --not-a-term -S fixfilenames.vim $(PACKAGE).pot \
-		$(PO_VIM_INPUTLIST)
+		--no-location --copyright-holder="$$(date +%Y), The MNV Project" \
+		--package-name=MNV --msgid-bugs-address="mnv-dev@mnv.org"
+	# Fix MNV scripts names, so that "gf" works.
+	$(MNVPROG) -u NONE --not-a-term -S fixfilenames.mnv $(PACKAGE).pot \
+		$(PO_MNV_INPUTLIST)
 	# Delete the temporary files.
-	rm -f *.js ./vim_to_js allfiles
+	rm -f *.js ./mnv_to_js allfiles
 
-vim.desktop: vim.desktop.in $(POFILES)
+mnv.desktop: mnv.desktop.in $(POFILES)
 	echo $(LANGUAGES) | tr " " "\n" |$(SED) -e '/[.]/d' | sort > LINGUAS
-	$(MSGFMT) --desktop -d . --template vim.desktop.in -o tmp_vim.desktop
+	$(MSGFMT) --desktop -d . --template mnv.desktop.in -o tmp_mnv.desktop
 	rm -f LINGUAS
 	if command -v desktop-file-validate; \
-		then desktop-file-validate tmp_vim.desktop; fi
-	mv tmp_vim.desktop vim.desktop
-	cp vim.desktop ../../runtime/
+		then desktop-file-validate tmp_mnv.desktop; fi
+	mv tmp_mnv.desktop mnv.desktop
+	cp mnv.desktop ../../runtime/
 
-# The dependency on vim.desktop is only to avoid the two targets are build at
+# The dependency on mnv.desktop is only to avoid the two targets are build at
 # the same time, which causes a race for the LINGUAS file.
-gvim.desktop: gvim.desktop.in $(POFILES) vim.desktop
+gmnv.desktop: gmnv.desktop.in $(POFILES) mnv.desktop
 	echo $(LANGUAGES) | tr " " "\n" |$(SED) -e '/[.]/d' | sort > LINGUAS
-	$(MSGFMT) --desktop -d . --template gvim.desktop.in -o tmp_gvim.desktop
+	$(MSGFMT) --desktop -d . --template gmnv.desktop.in -o tmp_gmnv.desktop
 	rm -f LINGUAS
 	if command -v desktop-file-validate; \
-		then desktop-file-validate tmp_gvim.desktop; fi
-	mv tmp_gvim.desktop gvim.desktop
-	cp gvim.desktop ../../runtime/
+		then desktop-file-validate tmp_gmnv.desktop; fi
+	mv tmp_gmnv.desktop gmnv.desktop
+	cp gmnv.desktop ../../runtime/
 
 # Only original translations with default encoding should be updated.
 # The files that are converted to a different encoding clearly state "DO NOT EDIT".
@@ -316,19 +316,19 @@ $(LANGUAGES):
 # Preparing the POT file of the plug-in package
 POT_PLUGPACKAGE_PATH = $(PWD)
 $(PLUGPACKAGE).pot: $(PO_PLUG_INPUTLIST)
-	$(VIMPROG) -u NONE --not-a-term -S tojavascript.vim \
+	$(MNVPROG) -u NONE --not-a-term -S tojavascript.mnv \
 		$(PLUGPACKAGE).pot $?
 	$(XGETTEXT) --from-code=UTF-8 --default-domain=$(PLUGPACKAGE) \
 		--package-name=$(PLUGPACKAGE) \
 		--output-dir=$(POT_PLUGPACKAGE_PATH) \
-		--output=$(PLUGPACKAGE).pot --files-from=./vim_to_js
-	$(VIMPROG) -u NONE --not-a-term -S fixfilenames.vim \
+		--output=$(PLUGPACKAGE).pot --files-from=./mnv_to_js
+	$(MNVPROG) -u NONE --not-a-term -S fixfilenames.mnv \
 		$(POT_PLUGPACKAGE_PATH)/$(PLUGPACKAGE).pot $?
-	rm -f *.js ./vim_to_js
+	rm -f *.js ./mnv_to_js
 
 # Converting the PO file of the plug-in package to the binary format of the MO
 MO_PLUGPACKAGE_PATH = $(PWD)
 $(PLUGPACKAGE).mo: $(PO_PLUGPACKAGE)
 	$(MSGFMTCMD) -o $(MO_PLUGPACKAGE_PATH)/$@ $?
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=0 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=0 ft=make:

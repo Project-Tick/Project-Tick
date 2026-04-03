@@ -1,9 +1,9 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 #ifndef OS_MAC__H
@@ -28,7 +28,7 @@
  */
 #if defined(__APPLE_CC__) // for Project Builder and ...
 # include <unistd.h>
-// Get stat.h or something similar. Comment: How come some OS get in vim.h
+// Get stat.h or something similar. Comment: How come some OS get in mnv.h
 # include <sys/stat.h>
 // && defined(HAVE_CURSE)
 // The curses.h from MacOS X provides by default some BACKWARD compatibility
@@ -58,21 +58,21 @@
 // This will go away when CMD_KEY fully tested
 #define USE_CMD_KEY
 // On MacOS X use the / not the :
-// TODO: Should file such as ~/.vimrc reside instead in
-//       ~/Library/Vim or ~/Library/Preferences/org.vim.vim/ ? (Dany)
+// TODO: Should file such as ~/.mnvrc reside instead in
+//       ~/Library/MNV or ~/Library/Preferences/org.mnv.mnv/ ? (Dany)
 // When compiled under MacOS X (including CARBON version)
 // we use the Unix File path style.  Also when UNIX is defined.
 #define USE_UNIXFILENAME
 
 
 /*
- * Generic Vim #define for Mac
+ * Generic MNV #define for Mac
  */
 
 #define FEAT_SOURCE_FFS
 #define FEAT_SOURCE_FF_MAC
 
-#define USE_EXE_NAME		    // to find  $VIM
+#define USE_EXE_NAME		    // to find  $MNV
 #define CASE_INSENSITIVE_FILENAME   // ignore case when comparing file names
 #define SPACE_IN_FILENAME
 
@@ -102,43 +102,43 @@
  * Some of these may have been defined in the makefile.
  */
 
-#ifndef SYS_VIMRC_FILE
-# define SYS_VIMRC_FILE "$VIM/vimrc"
+#ifndef SYS_MNVRC_FILE
+# define SYS_MNVRC_FILE "$MNV/mnvrc"
 #endif
-#ifndef SYS_GVIMRC_FILE
-# define SYS_GVIMRC_FILE "$VIM/gvimrc"
+#ifndef SYS_GMNVRC_FILE
+# define SYS_GMNVRC_FILE "$MNV/gmnvrc"
 #endif
 #ifndef SYS_MENU_FILE
-# define SYS_MENU_FILE	"$VIMRUNTIME/menu.vim"
+# define SYS_MENU_FILE	"$MNVRUNTIME/menu.mnv"
 #endif
 #ifndef SYS_OPTWIN_FILE
-# define SYS_OPTWIN_FILE "$VIMRUNTIME/optwin.vim"
+# define SYS_OPTWIN_FILE "$MNVRUNTIME/optwin.mnv"
 #endif
-#ifndef VIM_DEFAULTS_FILE
-# define VIM_DEFAULTS_FILE "$VIMRUNTIME/defaults.vim"
+#ifndef MNV_DEFAULTS_FILE
+# define MNV_DEFAULTS_FILE "$MNVRUNTIME/defaults.mnv"
 #endif
-#ifndef EVIM_FILE
-# define EVIM_FILE	"$VIMRUNTIME/evim.vim"
+#ifndef EMNV_FILE
+# define EMNV_FILE	"$MNVRUNTIME/emnv.mnv"
 #endif
 
 #ifdef FEAT_GUI
-# ifndef USR_GVIMRC_FILE
-#  define USR_GVIMRC_FILE "~/.gvimrc"
+# ifndef USR_GMNVRC_FILE
+#  define USR_GMNVRC_FILE "~/.gmnvrc"
 # endif
-# ifndef GVIMRC_FILE
-#  define GVIMRC_FILE	"_gvimrc"
+# ifndef GMNVRC_FILE
+#  define GMNVRC_FILE	"_gmnvrc"
 # endif
 #endif
-#ifndef USR_VIMRC_FILE
-# define USR_VIMRC_FILE	"~/.vimrc"
+#ifndef USR_MNVRC_FILE
+# define USR_MNVRC_FILE	"~/.mnvrc"
 #endif
 
 #ifndef USR_EXRC_FILE
 # define USR_EXRC_FILE	"~/.exrc"
 #endif
 
-#ifndef VIMRC_FILE
-# define VIMRC_FILE	"_vimrc"
+#ifndef MNVRC_FILE
+# define MNVRC_FILE	"_mnvrc"
 #endif
 
 #ifndef EXRC_FILE
@@ -146,18 +146,18 @@
 #endif
 
 #ifndef DFLT_HELPFILE
-# define DFLT_HELPFILE	"$VIMRUNTIME/doc/help.txt"
+# define DFLT_HELPFILE	"$MNVRUNTIME/doc/help.txt"
 #endif
 
 #ifndef SYNTAX_FNAME
-# define SYNTAX_FNAME	"$VIMRUNTIME/syntax/%s.vim"
+# define SYNTAX_FNAME	"$MNVRUNTIME/syntax/%s.mnv"
 #endif
 
-#ifdef FEAT_VIMINFO
-# ifndef VIMINFO_FILE
-#  define VIMINFO_FILE	"~/.viminfo"
+#ifdef FEAT_MNVINFO
+# ifndef MNVINFO_FILE
+#  define MNVINFO_FILE	"~/.mnvinfo"
 # endif
-#endif // FEAT_VIMINFO
+#endif // FEAT_MNVINFO
 
 #ifndef DFLT_BDIR
 # define DFLT_BDIR	"."	// default for 'backupdir'
@@ -168,16 +168,16 @@
 #endif
 
 #ifndef DFLT_VDIR
-# define DFLT_VDIR	"$VIM/vimfiles/view"	// default for 'viewdir'
+# define DFLT_VDIR	"$MNV/mnvfiles/view"	// default for 'viewdir'
 #endif
 
 #define DFLT_ERRORFILE		"errors.err"
 
 #ifndef DFLT_RUNTIMEPATH
-# define DFLT_RUNTIMEPATH	"~/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/after"
+# define DFLT_RUNTIMEPATH	"~/.mnv,$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after,~/.mnv/after"
 #endif
 #ifndef CLEAN_RUNTIMEPATH
-# define CLEAN_RUNTIMEPATH	"$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after"
+# define CLEAN_RUNTIMEPATH	"$MNV/mnvfiles,$MNVRUNTIME,$MNV/mnvfiles/after"
 #endif
 
 /*
@@ -190,7 +190,7 @@
 #endif
 
 #ifndef DFLT_MAXMEMTOT
-# define DFLT_MAXMEMTOT	2048	// use up to 2048 Kbyte for Vim
+# define DFLT_MAXMEMTOT	2048	// use up to 2048 Kbyte for MNV
 #endif
 
 #define WILDCHAR_LIST "*?[{`$"
@@ -203,9 +203,9 @@
 #  define mch_getenv(name)  ((char_u *)getenv((char *)(name)))
 #  define mch_setenv(name, val, x) setenv(name, val, x)
 # else
-  // vim_getenv() is in pty.c
-#  define USE_VIMPTY_GETENV
-#  define mch_getenv(x) vimpty_getenv(x)
+  // mnv_getenv() is in pty.c
+#  define USE_MNVPTY_GETENV
+#  define mch_getenv(x) mnvpty_getenv(x)
 #  define mch_setenv(name, val, x) setenv(name, val, x)
 # endif
 #endif

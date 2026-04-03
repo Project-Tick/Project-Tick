@@ -1,4 +1,4 @@
-*helpcurwin.txt*	For Vim version 9.1.	Last change: 2025 Dec 02
+*helpcurwin.txt*	For MNV version 9.1.	Last change: 2025 Dec 02
 
 The helpcurwin optional package enables opening help in the current window.
 
@@ -33,9 +33,9 @@ for example: >vi
 ==============================================================================
 2. helpcurwin#Open()					*helpcurwin-function*
 
-The underlying `:def` function may also be used, for example: >vim
+The underlying `:def` function may also be used, for example: >mnv
 
-	:vim9cmd helpcurwin#Open('version9.2')
+	:mnv9cmd helpcurwin#Open('version9.2')
 <
 This may be useful from other scripts where you want to bring up help on
 {subject} in the current window.
@@ -45,8 +45,8 @@ This may be useful from other scripts where you want to bring up help on
 3. <Plug>HelpCurwin;					*helpcurwin-mapping*
 
 There may be times when you want to get the help for a WORD, such as when it
-is in a Vim9 script.  If you want to open it in the same window, you can map
-<Plug>HelpCurwin; to keys of your choosing to enable that.  For example: >vim9
+is in a MNV9 script.  If you want to open it in the same window, you can map
+<Plug>HelpCurwin; to keys of your choosing to enable that.  For example: >mnv9
 
 	nnoremap <Leader>hc <Plug>HelpCurwin;
 
@@ -56,4 +56,4 @@ is, the |WORD| under the cursor), if it exists.
 
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

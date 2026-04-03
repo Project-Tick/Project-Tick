@@ -1,10 +1,10 @@
-# Aap recipe for Welsh Vim spell files.
+# Aap recipe for Welsh MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = cy_GB.aff cy_GB.dic
@@ -13,11 +13,11 @@ all: $SPELLDIR/cy.iso-8859-14.spl $SPELLDIR/cy.utf-8.spl \
          ../README_cy.txt
 
 $SPELLDIR/cy.iso-8859-14.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=iso-8859-14" 
+        :sys $MNV -u NONE -e -c "set enc=iso-8859-14" 
                 -c "mkspell! $SPELLDIR/cy cy_GB" -c q
 
 $SPELLDIR/cy.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8"
+        :sys $MNV -u NONE -e -c "set enc=utf-8"
                 -c "mkspell! $SPELLDIR/cy cy_GB" -c q
 
 ../README_cy.txt : README_cy_GB.txt
@@ -36,9 +36,9 @@ cy_GB.aff cy_GB.dic: {buildcheck=}
         :fetch cy_GB.zip
         :sys $UNZIP cy_GB.zip
         :delete cy_GB.zip
-        :sys $VIM cy_GB.aff -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM cy_GB.dic -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM README_cy_GB.txt -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV cy_GB.aff -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV cy_GB.dic -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV README_cy_GB.txt -u NONE -e -c "set ff=unix" -c update -c q
         @if not os.path.exists('cy_GB.orig.aff'):
             :copy cy_GB.aff cy_GB.orig.aff
         @if not os.path.exists('cy_GB.orig.dic'):
@@ -48,7 +48,7 @@ cy_GB.aff cy_GB.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -79,4 +79,4 @@ check:
             :delete cy_GB.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

@@ -1,10 +1,10 @@
-# Aap recipe for Greek Vim spell files.
+# Aap recipe for Greek MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = el_GR.aff el_GR.dic
@@ -13,11 +13,11 @@ all: $SPELLDIR/el.iso-8859-7.spl $SPELLDIR/el.utf-8.spl ../README_el.txt
 
 $SPELLDIR/el.iso-8859-7.spl : $FILES
         :sys env LANG=el_GR.ISO8859-7
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/el el_GR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/el el_GR" -c q
 
 $SPELLDIR/el.utf-8.spl : $FILES
         :sys env LANG=el_GR.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/el el_GR" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/el el_GR" -c q
 
 ../README_el.txt : README_el_GR.txt
         :copy $source $target
@@ -44,7 +44,7 @@ el_GR.aff el_GR.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -75,4 +75,4 @@ check:
             :delete el_GR.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

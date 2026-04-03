@@ -5,12 +5,12 @@
  * inclusion of this notice.
  */
 
-// Modified by Bram Moolenaar for use with VIM - Vi Improved.
+// Modified by Bram Moolenaar for use with MNV - MNV is not Vim.
 // A few bugs removed by Olaf 'Rhialto' Seibert.
 
 // TERMLIB: Terminal independent database.
 
-#include "vim.h"
+#include "mnv.h"
 #include "termlib.pro"
 
 #if !defined(AMIGA) && !defined(VMS)
@@ -58,7 +58,7 @@ short	ospeed;		      // Baud rate (1-16, 1=300, 16=19200), as in stty
 #  define TERMCAPFILE "s:termcap"
 # else
 #  ifdef VMS
-#   define TERMCAPFILE "VIMRUNTIME:termcap"
+#   define TERMCAPFILE "MNVRUNTIME:termcap"
 #  else
 #   define TERMCAPFILE "/etc/termcap"
 #  endif
@@ -104,7 +104,7 @@ tgetent(
 		nexttmp  = _find(tmp, ":|");	// Rhialto
 		if (tmp+tlen == nexttmp && _match(tmp, term) == tlen)
 		{
-		    vim_strncpy(tbuf, tmp, TBUFSZ - 1);
+		    mnv_strncpy(tbuf, tmp, TBUFSZ - 1);
 		    tent = tbuf;
 		    return 1;
 		}
@@ -115,7 +115,7 @@ tgetent(
     }
     if (!(termcap = mch_fopen(tcap, "r")))
     {
-	vim_strncpy(tbuf, tcap, TBUFSZ - 1);
+	mnv_strncpy(tbuf, tcap, TBUFSZ - 1);
 	return -1;
     }
 
@@ -334,7 +334,7 @@ tgetstr(char *id, char **buf)
 		    case '9':
 			**buf = 0;
 			    // get up to three digits
-			for (i = 0; i < 3 && VIM_ISDIGIT(*tmp); ++i)
+			for (i = 0; i < 3 && MNV_ISDIGIT(*tmp); ++i)
 			    **buf = **buf * 8 + *tmp++ - '0';
 			(*buf)++;
 			tmp--;
@@ -486,7 +486,7 @@ tgoto(
 	if (UP)
 	{
 	    ptr=UP;
-	    while (VIM_ISDIGIT(*ptr) || *ptr == '.')
+	    while (MNV_ISDIGIT(*ptr) || *ptr == '.')
 		ptr++;
 	    if (*ptr == '*')
 		ptr++;
@@ -498,7 +498,7 @@ tgoto(
 	if (BC)
 	{
 	    ptr=BC;
-	    while (VIM_ISDIGIT(*ptr) || *ptr == '.')
+	    while (MNV_ISDIGIT(*ptr) || *ptr == '.')
 		ptr++;
 	    if (*ptr == '*')
 		ptr++;
@@ -549,14 +549,14 @@ tputs(
 	counter,			// digits
 	atol(const char *);
 
-    if (VIM_ISDIGIT(*cp))
+    if (MNV_ISDIGIT(*cp))
     {
 	counter = 0;
 	frac = 1000;
-	while (VIM_ISDIGIT(*cp))
+	while (MNV_ISDIGIT(*cp))
 	    counter = counter * 10L + (long)(*cp++ - '0');
 	if (*cp == '.')
-	    while (VIM_ISDIGIT(*++cp))
+	    while (MNV_ISDIGIT(*++cp))
 	    {
 		counter = counter * 10L + (long)(*cp++ - '0');
 		frac = frac * 10;

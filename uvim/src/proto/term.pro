@@ -100,4 +100,4 @@ void send_decrqm_modes(void);
 void term_disable_dec(void);
 void term_set_win_resize(bool state);
 void term_set_sync_output(int flags);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

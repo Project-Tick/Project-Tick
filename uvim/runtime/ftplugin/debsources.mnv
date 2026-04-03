@@ -1,0 +1,16 @@
+" Language:     Debian sources.list
+" Maintainer:   Debian MNV Maintainers <team+mnv@tracker.debian.org>
+" Last Change:  2024 May 25
+" License:      MNV License
+" URL:          https://salsa.debian.org/mnv-team/mnv-debian/blob/main/ftplugin/debsources.mnv
+
+if exists('b:did_ftplugin')
+  finish
+endif
+let b:did_ftplugin=1
+
+setlocal comments=:#
+setlocal commentstring=#\ %s
+setlocal formatoptions-=t
+
+let b:undo_ftplugin = 'setlocal comments< commentstring< formatoptions<'

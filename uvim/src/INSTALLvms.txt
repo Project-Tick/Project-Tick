@@ -1,12 +1,12 @@
-INSTALLvms.txt - Installation of Vim on OpenVMS
+INSTALLvms.txt - Installation of MNV on OpenVMS
 
 Maintainer:   Zoltan Arpadffy <zoltan.arpadffy@gmail.com>
 Last change:  2025 Aug 10
 
-This file contains instructions for compiling Vim on Openvms.
-If you already have an executable version of Vim, you don't need this.
+This file contains instructions for compiling MNV on Openvms.
+If you already have an executable version of MNV, you don't need this.
 
-If you skip settings described here, then you will get the default Vim
+If you skip settings described here, then you will get the default MNV
 behavior as it is documented, which should be fine for most users.
 
 The file "feature.h" can be edited to match your preferences, but this file
@@ -15,7 +15,7 @@ parameters from MAKE_VMS.MMS actively use and set up parameters in relation
 with feature.h
 
 More information and case analysis you can find in os_vms.txt
-([runtime.doc]os_vms.txt or :help vms from vim prompt)
+([runtime.doc]os_vms.txt or :help vms from mnv prompt)
 
 Contents:
 1. Download files
@@ -31,10 +31,10 @@ Contents:
 ----------------------------------------------------------------------------
 1. Download files
 
-1.1. Visit the Vim Repository Home
+1.1. Visit the MNV Repository Home
 
-You may want to clone the latest source code from https://www.github.com/vim/vim
-Or the last tested on OpenVMS from http://polarhome.com/vim/files/source/vms/
+You may want to clone the latest source code from https://www.github.com/mnv/mnv
+Or the last tested on OpenVMS from http://polarhome.com/mnv/files/source/vms/
 
 1.2. Expand the three archives.
 
@@ -45,7 +45,7 @@ Or the last tested on OpenVMS from http://polarhome.com/vim/files/source/vms/
      of it called mmk (VMS has no make utility in the standard distribution).
      You can download mmk from (defunct link) openvms.digital.com/freeware/MMK/
 
-1.5. If you want to have Perl, Python or Tcl support in Vim you will need VMS
+1.5. If you want to have Perl, Python or Tcl support in MNV you will need VMS
      distributions for them as well.
 
 1.6  If you want to have GTK executable, you need to have properly installed
@@ -53,8 +53,8 @@ Or the last tested on OpenVMS from http://polarhome.com/vim/files/source/vms/
 
 NOTE: procedure in chapter 1 describes source code preparation from multi OS
 code, however it is available OpenVMS optimized (and tested) source code from:
-ftp://ftp.polarhome.com/pub/vim/source/vms/
-(http://www.polarhome.com/vim/files/source/vms/)
+ftp://ftp.polarhome.com/pub/mnv/source/vms/
+(http://www.polarhome.com/mnv/files/source/vms/)
 
 Current OpenVMS source code as .zip or .tar.gz file is possible to download
 from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
@@ -62,14 +62,14 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
 
 2.   Configuration
 
-2.1. Edit vim-X.X/src/feature.h for your preference.  (You can skip
+2.1. Edit mnv-X.X/src/feature.h for your preference.  (You can skip
      this, then you will get the default behavior as is documented,
      which should be fine for most people.)
 
      For example, if you want to add the MULTI_BYTE feature, turn on
      #define MULTI_BYTE
 
-2.2  Edit vim-X.X/src/Make_vms.mms to customize your Vim. Options are:
+2.2  Edit mnv-X.X/src/Make_vms.mms to customize your MNV. Options are:
 
 	Parameter name	: MODEL
 	Description	: Build model selection
@@ -113,45 +113,45 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
 	Default		: CCVER = YES
 
 	Parameter name	: DEBUG
-	Description	: Building a debug version (DVIM.EXE)
+	Description	: Building a debug version (DMNV.EXE)
 	Options:	: YES - debug version will be built
 			  Uncommented - building normal executable
 	Default		: Uncommented
 
-	Parameter name	: VIM_TCL
+	Parameter name	: MNV_TCL
 	Description	: Add Tcl support
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_PERL
+	Parameter name	: MNV_PERL
 	Description	: Add Perl support
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_PYTHON
+	Parameter name	: MNV_PYTHON
 	Description	: Add Python support
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_XIM
+	Parameter name	: MNV_XIM
 	Description	: X Input Method. For entering special languages
 			  like Chinese and Japanese. Please define just
-			  one: VIM_XIM or VIM_HANGULIN
+			  one: MNV_XIM or MNV_HANGULIN
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_HANGULIN
+	Parameter name	: MNV_HANGULIN
 	Description	: Internal Hangul input method. GUI only.
-			  Please define just one: VIM_XIM or VIM_HANGULIN
+			  Please define just one: MNV_XIM or MNV_HANGULIN
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_TAG_ANYWHITE
+	Parameter name	: MNV_TAG_ANYWHITE
 	Description	: Allow any white space to separate the fields in a
 			  tags file
 			  When not defined, only a TAB is allowed.
@@ -159,25 +159,25 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_RUBY
+	Parameter name	: MNV_RUBY
 	Description	: Add Ruby support
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_LUA
+	Parameter name	: MNV_LUA
 	Description	: Add Lua support
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
 	Default		: Uncommented
 
-	Parameter name	: VIM_MZSCHEME
+	Parameter name	: MNV_MZSCHEME
 	Description	: Add support for FEATURE_MZSCHEM
 	Options:	: YES - Build with support
 			  Uncommented - build without FEATURE_MZSCHEM.
 	Default		: Uncommented
 
-	Parameter name	: VIM_ICONV
+	Parameter name	: MNV_ICONV
 	Description	: Build with using the ICONV library
 	Options:	: YES - Build with support
 			  Uncommented - build without support.
@@ -198,7 +198,7 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
 
 	mms /descrip=Make_vms.mms
 
-     will start building your own customized version of Vim.
+     will start building your own customized version of MNV.
      The adequate command for mmk is:
 
 	mmk /descrip=Make_vms.mms
@@ -234,7 +234,7 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
 
 5. CTAGS, XXD
 
-5.1. MMS_VIM.EXE is building together with VIM.EXE, but for CTAGS.EXE and
+5.1. MMS_MNV.EXE is building together with MNV.EXE, but for CTAGS.EXE and
      XXD.EXE you should change to subdirectory <.CTAGS> or <.XXD> and build
      them separately.
 
@@ -245,23 +245,23 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
 
 6.1. Copy over all executables to the deployment directory.
 
-6.2. Vim uses a special directory structure to hold the document and runtime
+6.2. MNV uses a special directory structure to hold the document and runtime
      files:
 
-   vim (or wherever)
+   mnv (or wherever)
     |-- doc
     |-- syntax
-    vimrc    (system rc files)
-    gvimrc
+    mnvrc    (system rc files)
+    gmnvrc
 
-6.3 Define logicals VIM
+6.3 Define logicals MNV
 
-	define/nolog VIM device:[leading-path-here.vim]
+	define/nolog MNV device:[leading-path-here.mnv]
 
-     to get vim.exe to find its document, filetype, and syntax files.
+     to get mnv.exe to find its document, filetype, and syntax files.
 
      Now, if you are lucky you should have one own built, customized and
-     working Vim.
+     working MNV.
 
 7.   GTK and other features
 
@@ -305,7 +305,7 @@ from CVS mirror ftp://ftp.polarhome.com/pub/cvs/SOURCE/
      Example:
      PERL_LIB = ,OS_VMS_PERL.OPT/OPT
 
-.IFDEF VIM_PERL
+.IFDEF MNV_PERL
 perl_env :
 	-@ write sys$output "creating OS_VMS_PERL.OPT file."
 	-@ open/write opt_file OS_VMS_PERL.OPT
@@ -324,7 +324,7 @@ perl_env :
 
 7.2  GTK
 
-     To build VIM with GTK you have to install GTK on your OpenVMS.
+     To build MNV with GTK you have to install GTK on your OpenVMS.
      So far it works just on Alpha and IA64. More information at:
      defunct link: openvms.compaq.com/openvms/products/ips/gtk.html
 
@@ -333,7 +333,7 @@ perl_env :
 
      Source code for GTK and porting library that is used to build
      VMS executables at polarhome.com are at
-     http://www.polarhome.com/vim/files/source/vms/
+     http://www.polarhome.com/mnv/files/source/vms/
 
      Enable GTK in make_vms.mms file with GTK = YES
      Define GTK_ROOT that points to your GTK root directory.
@@ -370,7 +370,7 @@ perl_env :
      You need defined PERLSHR logical that points to PERL shareable image
      (or you can just copy over to SYS$LIBRARY:)
 
-     Enable Perl feature at make_vms.mms with VIM_PERL = YES
+     Enable Perl feature at make_vms.mms with MNV_PERL = YES
 
      Edit PERL_INC = to point to perl includes directory where is extern.h
 
@@ -384,7 +384,7 @@ perl_env :
      You have to have defined PYTHON_INCLUDE and PYTHON_OLB logicals.
      PYTHON_INCLUDE should point to Python include files where for ex:
      python.h is located.
-     Enable Python feature at make_vms.mms with VIM_PYTHON = YES
+     Enable Python feature at make_vms.mms with MNV_PYTHON = YES
 
      Build as usual.
 
@@ -395,7 +395,7 @@ perl_env :
 
      You have to have defined TCLSHR logical that points to shareable image.
 
-     Enable TCL feature at make_vms.mms with VIM_TCL = YES
+     Enable TCL feature at make_vms.mms with MNV_TCL = YES
 
      Edit TCL_INC = to point to TCL includes directory where is tcl.h
 
@@ -412,8 +412,8 @@ perl_env :
      "unsigned" and the compiler issue a message whenever the comparison is
      done with '<=' to 0. However, the code is correct and will behave as
      expected.
-     ( Jerome Lauret <JLAURET@mail.chem.sunysb.edu> Vim 6.0n )
-	NOTE: from version 6.0ad Vim code has been reviewed and these warnings
+     ( Jerome Lauret <JLAURET@mail.chem.sunysb.edu> MNV 6.0n )
+	NOTE: from version 6.0ad MNV code has been reviewed and these warnings
 	have been corrected.
 
 9.   Authors

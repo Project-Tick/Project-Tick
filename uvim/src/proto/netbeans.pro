@@ -25,4 +25,4 @@ void netbeans_deleted_all_lines(buf_T *bufp);
 int netbeans_is_guarded(linenr_T top, linenr_T bot);
 void netbeans_draw_multisign_indicator(int row);
 void netbeans_gutter_click(linenr_T lnum);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

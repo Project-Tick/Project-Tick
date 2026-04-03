@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * Text properties implementation.  See ":help text-properties".
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_PROP_POPUP)
 
@@ -141,7 +141,7 @@ f_prop_add(typval_T *argvars, typval_T *rettv)
     linenr_T	start_lnum;
     colnr_T	start_col;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_number_arg(argvars, 1) == FAIL
 		|| check_for_dict_arg(argvars, 2) == FAIL))
@@ -318,7 +318,7 @@ prop_add_one(
 					    sizeof(textprop_T) * (proplen - i));
 
 	if (buf->b_ml.ml_flags & (ML_LINE_DIRTY | ML_ALLOCATED))
-	    vim_free(buf->b_ml.ml_line_ptr);
+	    mnv_free(buf->b_ml.ml_line_ptr);
 	buf->b_ml.ml_line_ptr = newtext;
 	buf->b_ml.ml_line_len += sizeof(textprop_T);
 	buf->b_ml.ml_flags |= ML_LINE_DIRTY;
@@ -329,7 +329,7 @@ prop_add_one(
     res = OK;
 
 theend:
-    vim_free(text);
+    mnv_free(text);
     return res;
 }
 
@@ -373,7 +373,7 @@ f_prop_add_list(typval_T *argvars, typval_T *rettv UNUSED)
 
     if (dict_has_key(dict, "id"))
     {
-	vimlong_T x;
+	mnvlong_T x;
 	x = dict_get_number(dict, "id");
 	if (x > INT_MAX || x  <= INT_MIN)
 	{
@@ -503,7 +503,7 @@ prop_add_common(
 
     if (dict_has_key(dict, "id"))
     {
-	vimlong_T x;
+	mnvlong_T x;
 	x = dict_get_number(dict, "id");
 	if (x > INT_MAX || x  <= INT_MIN)
 	{
@@ -616,7 +616,7 @@ prop_add_common(
     redraw_buf_later(buf, UPD_VALID);
 
 theend:
-    vim_free(text);
+    mnv_free(text);
     return id;
 }
 
@@ -869,7 +869,7 @@ set_text_props(linenr_T lnum, char_u *props, int len)
     if (len > 0)
 	mch_memmove(newtext + textlen, props, len);
     if (curbuf->b_ml.ml_flags & (ML_LINE_DIRTY | ML_ALLOCATED))
-	vim_free(curbuf->b_ml.ml_line_ptr);
+	mnv_free(curbuf->b_ml.ml_line_ptr);
     curbuf->b_ml.ml_line_ptr = newtext;
     curbuf->b_ml.ml_line_len = textlen + len;
     curbuf->b_ml.ml_flags |= ML_LINE_DIRTY;
@@ -892,7 +892,7 @@ add_text_props(linenr_T lnum, textprop_T *text_props, int text_prop_count)
     mch_memmove(newtext, text, curbuf->b_ml.ml_line_len);
     mch_memmove(newtext + curbuf->b_ml.ml_line_len, text_props, proplen);
     if (curbuf->b_ml.ml_flags & (ML_LINE_DIRTY | ML_ALLOCATED))
-	vim_free(curbuf->b_ml.ml_line_ptr);
+	mnv_free(curbuf->b_ml.ml_line_ptr);
     curbuf->b_ml.ml_line_ptr = newtext;
     curbuf->b_ml.ml_line_len += proplen;
     curbuf->b_ml.ml_flags |= ML_LINE_DIRTY;
@@ -1060,7 +1060,7 @@ f_prop_clear(typval_T *argvars, typval_T *rettv UNUSED)
     buf_T    *buf = curbuf;
     int	    did_clear = FALSE;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -1098,13 +1098,13 @@ f_prop_clear(typval_T *argvars, typval_T *rettv UNUSED)
 	    did_clear = TRUE;
 	    if (!(buf->b_ml.ml_flags & ML_LINE_DIRTY))
 	    {
-		char_u *newtext = vim_strsave(text);
+		char_u *newtext = mnv_strsave(text);
 
 		// need to allocate the line now
 		if (newtext == NULL)
 		    return;
 		if (buf->b_ml.ml_flags & ML_ALLOCATED)
-		    vim_free(buf->b_ml.ml_line_ptr);
+		    mnv_free(buf->b_ml.ml_line_ptr);
 		buf->b_ml.ml_line_ptr = newtext;
 		buf->b_ml.ml_flags |= ML_LINE_DIRTY;
 	    }
@@ -1137,7 +1137,7 @@ f_prop_find(typval_T *argvars, typval_T *rettv)
     int		dir = FORWARD;    // FORWARD == 1, BACKWARD == -1
     int		both;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_dict_arg(argvars, 0) == FAIL
 		|| check_for_opt_string_arg(argvars, 1) == FAIL))
 	return;
@@ -1414,7 +1414,7 @@ get_prop_types_from_names(list_T *l, buf_T *buf, int *num_types)
     return prop_types;
 
 errret:
-    VIM_CLEAR(prop_types);
+    MNV_CLEAR(prop_types);
     return NULL;
 }
 
@@ -1453,7 +1453,7 @@ get_prop_ids_from_list(list_T *l, int *num_ids)
     return prop_ids;
 
 errret:
-    VIM_CLEAR(prop_ids);
+    MNV_CLEAR(prop_ids);
     return NULL;
 }
 
@@ -1475,7 +1475,7 @@ f_prop_list(typval_T *argvars, typval_T *rettv)
     list_T	*l;
     dictitem_T	*di;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_number_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -1556,8 +1556,8 @@ f_prop_list(typval_T *argvars, typval_T *rettv)
 		    rettv->vval.v_list, add_lnum);
 
 errret:
-    VIM_CLEAR(prop_types);
-    VIM_CLEAR(prop_ids);
+    MNV_CLEAR(prop_types);
+    MNV_CLEAR(prop_ids);
 }
 
 /*
@@ -1583,7 +1583,7 @@ f_prop_remove(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = 0;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_dict_arg(argvars, 0) == FAIL
 		|| check_for_opt_number_arg(argvars, 1) == FAIL
 		|| (argvars[1].v_type != VAR_UNKNOWN
@@ -1723,7 +1723,7 @@ f_prop_remove(typval_T *argvars, typval_T *rettv)
 			mch_memmove(newptr, buf->b_ml.ml_line_ptr,
 							buf->b_ml.ml_line_len);
 			if (buf->b_ml.ml_flags & ML_ALLOCATED)
-			    vim_free(buf->b_ml.ml_line_ptr);
+			    mnv_free(buf->b_ml.ml_line_ptr);
 			buf->b_ml.ml_line_ptr = newptr;
 			buf->b_ml.ml_flags |= ML_LINE_DIRTY;
 
@@ -1748,7 +1748,7 @@ f_prop_remove(typval_T *argvars, typval_T *rettv)
 			if (ii < gap->ga_len)
 			{
 			    char_u **p = ((char_u **)gap->ga_data) + ii;
-			    VIM_CLEAR(*p);
+			    MNV_CLEAR(*p);
 			    did_remove_text = TRUE;
 			}
 		    }
@@ -1782,7 +1782,7 @@ f_prop_remove(typval_T *argvars, typval_T *rettv)
     }
 
 cleanup_prop_remove:
-    vim_free(type_ids);
+    mnv_free(type_ids);
 }
 
 /*
@@ -1797,7 +1797,7 @@ prop_type_set(typval_T *argvars, int add)
     dictitem_T  *di;
     proptype_T	*prop;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -1832,19 +1832,19 @@ prop_type_set(typval_T *argvars, int add)
 	if (buf == NULL)
 	{
 	    htp = &global_proptypes;
-	    VIM_CLEAR(global_proparray);
+	    MNV_CLEAR(global_proparray);
 	}
 	else
 	{
 	    htp = &buf->b_proptypes;
-	    VIM_CLEAR(buf->b_proparray);
+	    MNV_CLEAR(buf->b_proparray);
 	}
 	if (*htp == NULL)
 	{
 	    *htp = ALLOC_ONE(hashtab_T);
 	    if (*htp == NULL)
 	    {
-		vim_free(prop);
+		mnv_free(prop);
 		return;
 	    }
 	    hash_init(*htp);
@@ -1950,7 +1950,7 @@ f_prop_type_delete(typval_T *argvars, typval_T *rettv UNUSED)
     buf_T	*buf = NULL;
     hashitem_T	*hi;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -1978,15 +1978,15 @@ f_prop_type_delete(typval_T *argvars, typval_T *rettv UNUSED)
     if (buf == NULL)
     {
 	ht = global_proptypes;
-	VIM_CLEAR(global_proparray);
+	MNV_CLEAR(global_proparray);
     }
     else
     {
 	ht = buf->b_proptypes;
-	VIM_CLEAR(buf->b_proparray);
+	MNV_CLEAR(buf->b_proparray);
     }
     hash_remove(ht, hi, "prop type delete");
-    vim_free(prop);
+    mnv_free(prop);
 
     // currently visible text properties will disappear
     redraw_all_later(UPD_CLEAR);
@@ -2001,7 +2001,7 @@ f_prop_type_get(typval_T *argvars, typval_T *rettv)
 {
     char_u *name;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -2074,7 +2074,7 @@ f_prop_type_list(typval_T *argvars, typval_T *rettv)
     if (rettv_list_alloc(rettv) == FAIL)
 	return;
 
-    if (in_vim9script() && check_for_opt_dict_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_dict_arg(argvars, 0) == FAIL)
 	return;
 
     if (argvars[0].v_type != VAR_UNKNOWN)
@@ -2110,13 +2110,13 @@ clear_ht_prop_types(hashtab_T *ht)
 	{
 	    proptype_T *prop = HI2PT(hi);
 
-	    vim_free(prop);
+	    mnv_free(prop);
 	    --todo;
 	}
     }
 
     hash_clear(ht);
-    vim_free(ht);
+    mnv_free(ht);
 }
 
 #if defined(EXITFREE)
@@ -2128,7 +2128,7 @@ clear_global_prop_types(void)
 {
     clear_ht_prop_types(global_proptypes);
     global_proptypes = NULL;
-    VIM_CLEAR(global_proparray);
+    MNV_CLEAR(global_proparray);
 }
 #endif
 
@@ -2140,7 +2140,7 @@ clear_buf_prop_types(buf_T *buf)
 {
     clear_ht_prop_types(buf->b_proptypes);
     buf->b_proptypes = NULL;
-    VIM_CLEAR(buf->b_proparray);
+    MNV_CLEAR(buf->b_proparray);
 }
 
 // Struct used to return two values from adjust_prop().
@@ -2295,10 +2295,10 @@ adjust_prop_columns(
 
 	if ((curbuf->b_ml.ml_flags & ML_LINE_DIRTY) == 0)
 	{
-	    char_u *p = vim_memsave(curbuf->b_ml.ml_line_ptr, newlen);
+	    char_u *p = mnv_memsave(curbuf->b_ml.ml_line_ptr, newlen);
 
 	    if (curbuf->b_ml.ml_flags & ML_ALLOCATED)
-		vim_free(curbuf->b_ml.ml_line_ptr);
+		mnv_free(curbuf->b_ml.ml_line_ptr);
 	    curbuf->b_ml.ml_line_ptr = p;
 	}
 	curbuf->b_ml.ml_flags |= ML_LINE_DIRTY;

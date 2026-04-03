@@ -1,10 +1,10 @@
-# EditorConfig Vim Plugin
+# EditorConfig MNV Plugin
 
-[![Travis Build Status](https://img.shields.io/travis/cxw42/editorconfig-vim.svg?logo=travis)](https://travis-ci.org/editorconfig/editorconfig-vim)
-[![Appveyor Build Status](https://img.shields.io/appveyor/ci/cxw42/editorconfig-vim.svg?logo=appveyor)](https://ci.appveyor.com/project/cxw42/editorconfig-vim)
+[![Travis Build Status](https://img.shields.io/travis/cxw42/editorconfig-mnv.svg?logo=travis)](https://travis-ci.org/editorconfig/editorconfig-mnv)
+[![Appveyor Build Status](https://img.shields.io/appveyor/ci/cxw42/editorconfig-mnv.svg?logo=appveyor)](https://ci.appveyor.com/project/cxw42/editorconfig-mnv)
 
-This is an [EditorConfig][] plugin for Vim. This plugin can be found on both
-[GitHub][] and [Vim online][].
+This is an [EditorConfig][] plugin for MNV. This plugin can be found on both
+[GitHub][] and [MNV online][].
 
 ## Installation
 
@@ -12,46 +12,46 @@ To install this plugin, you can use one of the following ways:
 
 ### Install with the archive
 
-Download the [archive][] and extract it into your Vim runtime directory
-(`~/.vim` on UNIX/Linux and `$VIM_INSTALLATION_FOLDER\vimfiles` on windows).
+Download the [archive][] and extract it into your MNV runtime directory
+(`~/.mnv` on UNIX/Linux and `$MNV_INSTALLATION_FOLDER\mnvfiles` on windows).
 You should have 4 sub-directories in this runtime directory now: "autoload",
 "doc", "ftdetect" and "plugin".
 
-### Install as Vim8 plugin
+### Install as MNV8 plugin
 
-Install as a Vim 8 plugin. Note `local` can be any name, but some path
-element must be present. On Windows, instead of `~/.vim` use
-`$VIM_INSTALLATION_FOLDER\vimfiles`.
+Install as a MNV 8 plugin. Note `local` can be any name, but some path
+element must be present. On Windows, instead of `~/.mnv` use
+`$MNV_INSTALLATION_FOLDER\mnvfiles`.
 ```shell
-mkdir -p ~/.vim/pack/local/start
-cd ~/.vim/pack/local/start
-git clone https://github.com/editorconfig/editorconfig-vim.git
+mkdir -p ~/.mnv/pack/local/start
+cd ~/.mnv/pack/local/start
+git clone https://github.com/editorconfig/editorconfig-mnv.git
 ```
 
 ### Install with [pathogen][]
 
 Use pathogen (the git repository of this plugin is
-https://github.com/editorconfig/editorconfig-vim.git)
+https://github.com/editorconfig/editorconfig-mnv.git)
 
 ### Install with [Vundle][]
 
-Use Vundle by adding to your `.vimrc` Vundle plugins section:
+Use Vundle by adding to your `.mnvrc` Vundle plugins section:
 
-```viml
-Plugin 'editorconfig/editorconfig-vim'
+```mnvl
+Plugin 'editorconfig/editorconfig-mnv'
 ```
 
 Then call `:PluginInstall`.
 
-### Install with [vim-plug][]
+### Install with [mnv-plug][]
 
-Use vim-plug by adding to your `.vimrc` in your plugin section:
+Use mnv-plug by adding to your `.mnvrc` in your plugin section:
 
-```viml
-Plug 'editorconfig/editorconfig-vim'
+```mnvl
+Plug 'editorconfig/editorconfig-mnv'
 ```
 
-Source your `.vimrc` by calling `:source $MYVIMRC`.
+Source your `.mnvrc` by calling `:source $MYMNVRC`.
 
 Then call `:PlugInstall`.
 
@@ -64,14 +64,14 @@ core separately.
 
 ## Supported properties
 
-The EditorConfig Vim plugin supports the following EditorConfig [properties][]:
+The EditorConfig MNV plugin supports the following EditorConfig [properties][]:
 
 * `indent_style`
 * `indent_size`
 * `tab_width`
 * `end_of_line`
 * `charset`
-* `insert_final_newline` (Feature `+fixendofline`, available on Vim 7.4.785+,
+* `insert_final_newline` (Feature `+fixendofline`, available on MNV 7.4.785+,
   or [PreserveNoEOL][] is required for this property)
 * `trim_trailing_whitespace`
 * `max_line_length`
@@ -81,26 +81,26 @@ The EditorConfig Vim plugin supports the following EditorConfig [properties][]:
 
 The supported options are documented in [editorconfig.txt][]
 and can be viewed by executing the following: `:help editorconfig`. You may
-need to execute `:helptags ALL` so that Vim is aware of editorconfig.txt.
+need to execute `:helptags ALL` so that MNV is aware of editorconfig.txt.
 
 ### Excluded patterns
 
 To ensure that this plugin works well with [Tim Pope's fugitive][], use the
 following patterns array:
 
-```viml
+```mnvl
 let g:EditorConfig_exclude_patterns = ['fugitive://.*']
 ```
 
 If you wanted to avoid loading EditorConfig for any remote files over ssh:
 
-```viml
+```mnvl
 let g:EditorConfig_exclude_patterns = ['scp://.*']
 ```
 
 Of course these two items could be combined into the following:
 
-```viml
+```mnvl
 let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 ```
 
@@ -111,7 +111,7 @@ You can disable this plugin for a specific buffer by setting
 plugin for all buffers of a specific filetype. For example, to disable
 EditorConfig for all git commit messages (filetype `gitcommit`):
 
-```viml
+```mnvl
 au FileType gitcommit let b:EditorConfig_disable = 1
 ```
 
@@ -119,10 +119,10 @@ au FileType gitcommit let b:EditorConfig_disable = 1
 
 In very rare cases,
 you might need to override some project-specific EditorConfig rules in global
-or local vimrc in some cases, e.g., to resolve conflicts of trailing whitespace
+or local mnvrc in some cases, e.g., to resolve conflicts of trailing whitespace
 trimming and buffer autosaving.  This is not recommended, but you can:
 
-```viml
+```mnvl
 let g:EditorConfig_disable_rules = ['trim_trailing_whitespace']
 ```
 
@@ -134,15 +134,15 @@ Feel free to submit bugs, feature requests, and other issues to the
 [issue tracker][]. Be sure you have read the [contribution guidelines][]!
 
 [EditorConfig]: http://editorconfig.org
-[GitHub]: https://github.com/editorconfig/editorconfig-vim
-[PreserveNoEOL]: http://www.vim.org/scripts/script.php?script_id=4550
-[Tim Pope's fugitive]: https://github.com/tpope/vim-fugitive
-[Vim online]: http://www.vim.org/scripts/script.php?script_id=3934
-[Vundle]: https://github.com/gmarik/Vundle.vim
-[archive]: https://github.com/editorconfig/editorconfig-vim/archive/master.zip
+[GitHub]: https://github.com/editorconfig/editorconfig-mnv
+[PreserveNoEOL]: http://www.mnv.org/scripts/script.php?script_id=4550
+[Tim Pope's fugitive]: https://github.com/tpope/mnv-fugitive
+[MNV online]: http://www.mnv.org/scripts/script.php?script_id=3934
+[Vundle]: https://github.com/gmarik/Vundle.mnv
+[archive]: https://github.com/editorconfig/editorconfig-mnv/archive/master.zip
 [contribution guidelines]: https://github.com/editorconfig/editorconfig/blob/master/CONTRIBUTING.md#submitting-an-issue
-[issue tracker]: https://github.com/editorconfig/editorconfig-vim/issues
-[pathogen]: https://github.com/tpope/vim-pathogen
+[issue tracker]: https://github.com/editorconfig/editorconfig-mnv/issues
+[pathogen]: https://github.com/tpope/mnv-pathogen
 [properties]: http://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties
-[editorconfig.txt]: https://github.com/editorconfig/editorconfig-vim/blob/master/doc/editorconfig.txt
-[vim-plug]: https://github.com/junegunn/vim-plug
+[editorconfig.txt]: https://github.com/editorconfig/editorconfig-mnv/blob/master/doc/editorconfig.txt
+[mnv-plug]: https://github.com/junegunn/mnv-plug

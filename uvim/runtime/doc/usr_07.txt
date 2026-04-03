@@ -1,13 +1,13 @@
-*usr_07.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_07.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			  Editing more than one file
 
 
-No matter how many files you have, you can edit them without leaving Vim.
+No matter how many files you have, you can edit them without leaving MNV.
 Define a list of files to work on and jump from one to the other.  Copy text
 from one file and put it in another one.
 
@@ -26,19 +26,19 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *07.1*	Edit another file
 
-So far you had to start Vim for every file you wanted to edit.  There is a
+So far you had to start MNV for every file you wanted to edit.  There is a
 simpler way.  To start editing another file, use this command: >
 
 	:edit foo.txt
 
-You can use any file name instead of "foo.txt".  Vim will close the current
+You can use any file name instead of "foo.txt".  MNV will close the current
 file and open the new one.  If the current file has unsaved changes, however,
-Vim displays an error message and does not open the new file:
+MNV displays an error message and does not open the new file:
 
 	E37: No write since last change (use ! to override) ~
 
 	Note:
-	Vim puts an error ID at the start of each error message.  If you do
+	MNV puts an error ID at the start of each error message.  If you do
 	not understand the message or what caused it, look in the help system
 	for this ID.  In this case: >
 
@@ -49,7 +49,7 @@ using this command: >
 
 	:write
 
-Or you can force Vim to discard your changes and edit the new file, using the
+Or you can force MNV to discard your changes and edit the new file, using the
 force (!) character: >
 
 	:edit! foo.txt
@@ -65,12 +65,12 @@ explained in section |22.4|: The buffer list.
 ==============================================================================
 *07.2*	A list of files
 
-You can start Vim to edit a sequence of files.  For example: >
+You can start MNV to edit a sequence of files.  For example: >
 
-	vim one.c two.c three.c
+	mnv one.c two.c three.c
 
-This command starts Vim and tells it that you will be editing three files.
-Vim displays just the first file.  After you have done your thing in this
+This command starts MNV and tells it that you will be editing three files.
+MNV displays just the first file.  After you have done your thing in this
 file, to edit the next file you use this command: >
 
 	:next
@@ -105,7 +105,7 @@ This is short for "arguments".  The output might look like this:
 
 	one.c [two.c] three.c ~
 
-These are the files you started Vim with.  The one you are currently editing,
+These are the files you started MNV with.  The one you are currently editing,
 "two.c", is in square brackets.
 
 
@@ -140,7 +140,7 @@ AUTOMATIC WRITING
 
 When moving around the files and making changes, you have to remember to use
 ":write".  Otherwise you will get an error message.  If you are sure you
-always want to write modified files, you can tell Vim to automatically write
+always want to write modified files, you can tell MNV to automatically write
 them: >
 
 	:set autowrite
@@ -153,7 +153,7 @@ again: >
 
 EDITING ANOTHER LIST OF FILES
 
-You can redefine the list of files without the need to exit Vim and start it
+You can redefine the list of files without the need to exit MNV and start it
 again.  Use this command to edit three other files: >
 
 	:args five.c six.c seven.h
@@ -162,14 +162,14 @@ Or use a wildcard, like it's used in the shell: >
 
 	:args *.txt
 
-Vim will take you to the first file in the list.  Again, if the current file
+MNV will take you to the first file in the list.  Again, if the current file
 has changes, you can either write the file first, or use ":args!" (with !
 added) to abandon the changes.
 
 
 DID YOU EDIT THE LAST FILE?
 							*arglist-quit*
-When you use a list of files, Vim assumes you want to edit them all.  To
+When you use a list of files, MNV assumes you want to edit them all.  To
 protect you from exiting too early, you will get this error when you didn't
 edit the last file in the list yet:
 
@@ -201,7 +201,7 @@ of where you are in the list of files.  Only commands like ":next" and
 ":previous" do that.
 
 The file you were previously editing is called the "alternate" file.  When you
-just started Vim CTRL-^ will not work, since there isn't a previous file.
+just started MNV CTRL-^ will not work, since there isn't a previous file.
 
 
 PREDEFINED MARKS
@@ -220,7 +220,7 @@ change: >
 Suppose you are editing the file "one.txt".  Somewhere halfway through the
 file you use "x" to delete a character.  Then you go to the last line with "G"
 and write the file with ":w".  You edit several other files, and then use
-":edit one.txt" to come back to "one.txt".  If you now use `" Vim jumps to the
+":edit one.txt" to come back to "one.txt".  If you now use `" MNV jumps to the
 last line of the file.  Using `. takes you to the position where you deleted
 the character.  Even when you move around in the file `" and `. will take you
 to the remembered position.  At least until you make another change or leave
@@ -268,7 +268,7 @@ positions without placing marks there.
 ==============================================================================
 *07.4*	Backup files
 
-Usually Vim does not produce a backup file.  If you want to have one, all you
+Usually MNV does not produce a backup file.  If you want to have one, all you
 need to do is execute the following command: >
 
 	:set backup
@@ -287,7 +287,7 @@ backup file is written.  The default, to write the backup in the same
 directory as the original file, will mostly be the right thing.
 
 	Note:
-	When the 'backup' option isn't set but the 'writebackup' is, Vim will
+	When the 'backup' option isn't set but the 'writebackup' is, MNV will
 	still create a backup file.  However, it is deleted as soon as writing
 	the file was completed successfully.  This functions as a safety
 	against losing your original file when writing fails in some way (disk
@@ -300,16 +300,16 @@ KEEPING THE ORIGINAL FILE
 If you are editing source files, you might want to keep the file before you
 make any changes.  But the backup file will be overwritten each time you write
 the file.  Thus it only contains the previous version, not the first one.
-   To make Vim keep the original file, set the 'patchmode' option.  This
+   To make MNV keep the original file, set the 'patchmode' option.  This
 specifies the extension used for the first backup of a changed file.  Usually
 you would do this: >
 
 	:set patchmode=.orig
 
 When you now edit the file data.txt for the first time, make changes and write
-the file, Vim will keep a copy of the unchanged file under the name
+the file, MNV will keep a copy of the unchanged file under the name
 "data.txt.orig".
-   If you make further changes to the file, Vim will notice that
+   If you make further changes to the file, MNV will notice that
 "data.txt.orig" already exists and leave it alone.  Further backup files will
 then be called "data.txt~" (or whatever you specified with 'backupext').
    If you leave 'patchmode' empty (that is the default), the original file
@@ -341,7 +341,7 @@ select whole lines start Visual mode with "V".  Or use CTRL-V to select a
 rectangular block.  Or use "Y" to yank a single line, "yaw" to yank-a-word,
 etc.
    The "p" command puts the text after the cursor.  Use "P" to put the text
-before the cursor.  Notice that Vim remembers if you yanked a whole line or a
+before the cursor.  Notice that MNV remembers if you yanked a whole line or a
 block, and puts it back that way.
 
 
@@ -350,13 +350,13 @@ USING REGISTERS
 When you want to copy several pieces of text from one file to another, having
 to switch between the files and writing the target file takes a lot of time.
 To avoid this, copy each piece of text to its own register.
-   A register is a place where Vim stores text.  Here we will use the
+   A register is a place where MNV stores text.  Here we will use the
 registers named a to z (later you will find out there are others).  Let's copy
 a sentence to the f register (f for First): >
 
 	"fyas
 
-The "yas" command yanks a sentence like before.  It's the "f that tells Vim
+The "yas" command yanks a sentence like before.  It's the "f that tells MNV
 the text should be placed in the f register.  This must come just before the
 yank command.
    Now yank three whole lines to the l register (l for line): >
@@ -409,9 +409,9 @@ end of a file.
 Sometimes you only want to see what a file contains, without the intention to
 ever write it back.  There is the risk that you type ":w" without thinking and
 overwrite the original file anyway.  To avoid this, edit the file read-only.
-   To start Vim in readonly mode, use this command: >
+   To start MNV in readonly mode, use this command: >
 
-	vim -R file
+	mnv -R file
 
 On Unix this command should do the same thing: >
 
@@ -419,7 +419,7 @@ On Unix this command should do the same thing: >
 
 You are now editing "file" in read-only mode.  When you try using ":w" you
 will get an error message and the file won't be written.
-   When you try to make a change to the file Vim will give you a warning:
+   When you try to make a change to the file MNV will give you a warning:
 
 	W10: Warning: Changing a readonly file ~
 
@@ -430,14 +430,14 @@ still write it.  Add the ! to the write command to force writing.
 
 If you really want to forbid making changes in a file, do this: >
 
-	vim -M file
+	mnv -M file
 
 Now every attempt to change the text will fail.  The help files are like this,
 for example.  If you try to make a change you get this error message:
 
 	E21: Cannot make changes, 'modifiable' is off ~
 
-You could use the -M argument to setup Vim to work in a viewer mode.  This is
+You could use the -M argument to setup MNV to work in a viewer mode.  This is
 only voluntary though, since these commands will remove the protection: >
 
 	:set modifiable
@@ -458,7 +458,7 @@ a new name.  The ":saveas" command can be used for this: >
 
 	:saveas move.c
 
-Vim will write the file under the given name, and edit that file.  Thus the
+MNV will write the file under the given name, and edit that file.  Thus the
 next time you do ":write", it will write "move.c".  "copy.c" remains
 unmodified.
    When you want to change the name of the file you are editing, but don't
@@ -466,7 +466,7 @@ want to write the file, you can use this command: >
 
 	:file move.c
 
-Vim will mark the file as "not edited".  This means that Vim knows this is not
+MNV will mark the file as "not edited".  This means that MNV knows this is not
 the file you started editing.  When you try to write the file, you might get
 this message:
 
@@ -478,4 +478,4 @@ This protects you from accidentally overwriting another file.
 
 Next chapter: |usr_08.txt|  Splitting windows
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

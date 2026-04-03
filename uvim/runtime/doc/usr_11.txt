@@ -1,13 +1,13 @@
-*usr_11.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_11.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			   Recovering from a crash
 
 
-Did your computer crash?  And you just spent hours editing?  Don't panic!  Vim
+Did your computer crash?  And you just spent hours editing?  Don't panic!  MNV
 stores enough information to be able to restore most of your work.  This
 chapter shows you how to get your work back and explains how the swap file is
 used.
@@ -25,17 +25,17 @@ Table of contents: |usr_toc.txt|
 *11.1*	Basic recovery
 
 In most cases recovering a file is quite simple, assuming you know which file
-you were editing (and the harddisk is still working).  Start Vim on the file,
+you were editing (and the harddisk is still working).  Start MNV on the file,
 with the "-r" argument added: >
 
-	vim -r help.txt
+	mnv -r help.txt
 
-Vim will read the swap file (used to store text you were editing) and may read
-bits and pieces of the original file.  If Vim recovered your changes you will
+MNV will read the swap file (used to store text you were editing) and may read
+bits and pieces of the original file.  If MNV recovered your changes you will
 see these messages (with different file names, of course):
 
 	Using swap file ".help.txt.swp" ~
-	Original file "~/vim/runtime/doc/help.txt" ~
+	Original file "~/mnv/runtime/doc/help.txt" ~
 	Recovery completed. You should check if everything is OK. ~
 	(You might want to write out this file under another name ~
 	and run diff with the original file to check for changes) ~
@@ -46,7 +46,7 @@ To be on the safe side, write this file under another name: >
 	:write help.txt.recovered
 
 Compare the file with the original file to check if you ended up with what you
-expected.  Vimdiff is very useful for this |08.7|.  For example: >
+expected.  MNVdiff is very useful for this |08.7|.  For example: >
 
 	:write help.txt.recovered
 	:edit #
@@ -54,43 +54,43 @@ expected.  Vimdiff is very useful for this |08.7|.  For example: >
 
 Watch out for the original file to contain a more recent version (you saved
 the file just before the computer crashed).  And check that no lines are
-missing (something went wrong that Vim could not recover).
-   If Vim produces warning messages when recovering, read them carefully.
+missing (something went wrong that MNV could not recover).
+   If MNV produces warning messages when recovering, read them carefully.
 This is rare though.
 
 If the recovery resulted in text that is exactly the same as the file
 contents, you will get this message:
 
 	Using swap file ".help.txt.swp" ~
-	Original file "~/vim/runtime/doc/help.txt" ~
+	Original file "~/mnv/runtime/doc/help.txt" ~
 	Recovery completed. Buffer contents equals file contents. ~
 	You may want to delete the .swp file now. ~
 
 This usually happens if you already recovered your changes, or you wrote the
 file after making changes.  It is safe to delete the swap file now.
 
-It is normal that the last few changes can not be recovered.  Vim flushes the
+It is normal that the last few changes can not be recovered.  MNV flushes the
 changes to disk when you don't type for about four seconds, or after typing
 about two hundred characters.  This is set with the 'updatetime' and
-'updatecount' options.  Thus when Vim didn't get a chance to save itself when
+'updatecount' options.  Thus when MNV didn't get a chance to save itself when
 the system went down, the changes after the last flush will be lost.
 
 If you were editing without a file name, give an empty string as argument: >
 
-	vim -r ""
+	mnv -r ""
 
-You must be in the right directory, otherwise Vim can't find the swap file.
+You must be in the right directory, otherwise MNV can't find the swap file.
 
 ==============================================================================
 *11.2*	Where is the swap file?
 
-Vim can store the swap file in several places.  Normally it is in the same
+MNV can store the swap file in several places.  Normally it is in the same
 directory as the original file.  To find it, change to the directory of the
 file, and use: >
 
-	vim -r
+	mnv -r
 
-Vim will list the swap files that it can find.  It will also look in other
+MNV will list the swap files that it can find.  It will also look in other
 directories where the swap file for files in the current directory may be
 located.  It will not find swap files in any other directories though, it
 doesn't search the directory tree.
@@ -100,7 +100,7 @@ doesn't search the directory tree.
 	   In current directory: ~
 	1.    .main.c.swp ~
 		  owned by: mool   dated: Tue May 29 21:00:25 2001 ~
-		 file name: ~mool/vim/vim6/src/main.c ~
+		 file name: ~mool/mnv/mnv6/src/main.c ~
 		  modified: YES ~
 		 user name: mool   host name: masaka.moolenaar.net ~
 		process ID: 12525 ~
@@ -122,38 +122,38 @@ the resulting files if they are what you expected.
 USING A SPECIFIC SWAP FILE
 
 If you know which swap file needs to be used, you can recover by giving the
-swap file name.  Vim will then find out the name of the original file from
+swap file name.  MNV will then find out the name of the original file from
 the swap file.
 
 Example: >
-	vim -r .help.txt.swo
+	mnv -r .help.txt.swo
 
 This is also handy when the swap file is in another directory than expected.
-Vim recognizes files with the pattern "*.s[uvw][a-z]" as swap files.
+MNV recognizes files with the pattern "*.s[uvw][a-z]" as swap files.
 
-If this still does not work, see what file names Vim reports and rename the
-files accordingly.  Check the 'directory' option to see where Vim may have
+If this still does not work, see what file names MNV reports and rename the
+files accordingly.  Check the 'directory' option to see where MNV may have
 put the swap file.
 
 	Note:
-	Vim tries to find the swap file by searching the directories in the
+	MNV tries to find the swap file by searching the directories in the
 	'dir' option, looking for files that match "filename.sw?".  If
 	wildcard expansion doesn't work (e.g., when the 'shell' option is
-	invalid), Vim does a desperate try to find the file "filename.swp".
+	invalid), MNV does a desperate try to find the file "filename.swp".
 	If that fails too, you will have to give the name of the swapfile
 	itself to be able to recover the file.
 
 ==============================================================================
 *11.3*	Crashed or not?					*ATTENTION* *E325*
 
-Vim tries to protect you from doing stupid things.  Suppose you innocently
+MNV tries to protect you from doing stupid things.  Suppose you innocently
 start editing a file, expecting the contents of the file to show up.  Instead,
-Vim produces a very long message:
+MNV produces a very long message:
 
 		E325: ATTENTION ~
 	Found a swap file by the name ".main.c.swp" ~
 		  owned by: mool   dated: Tue May 29 21:09:28 2001 ~
-		 file name: ~mool/vim/vim6/src/main.c ~
+		 file name: ~mool/mnv/mnv6/src/main.c ~
 		  modified: no ~
 		 user name: mool   host name: masaka.moolenaar.net ~
 		process ID: 12559 (still running) ~
@@ -166,12 +166,12 @@ Vim produces a very long message:
 	    Quit, or continue with caution. ~
  ~
 	(2) An edit session for this file crashed. ~
-	    If this is the case, use ":recover" or "vim -r main.c" ~
+	    If this is the case, use ":recover" or "mnv -r main.c" ~
 	    to recover the changes (see ":help recovery"). ~
 	    If you did this already, delete the swap file ".main.c.swp" ~
 	    to avoid this message. ~
 
-You get this message, because, when starting to edit a file, Vim checks if a
+You get this message, because, when starting to edit a file, MNV checks if a
 swap file already exists for that file.  If there is one, there must be
 something wrong.  It may be one of these two situations.
 
@@ -185,12 +185,12 @@ something wrong.  It may be one of these two situations.
    get this extra hint.  When editing a file over a network, you may not see
    the hint, because the process might be running on another computer.  In
    those two cases you must find out what the situation is yourself.
-      If there is another Vim editing the same file, continuing to edit will
+      If there is another MNV editing the same file, continuing to edit will
    result in two versions of the same file.  The one that is written last will
    overwrite the other one, resulting in loss of changes.  You better quit
-   this Vim.
+   this MNV.
 
-2. The swap file might be the result from a previous crash of Vim or the
+2. The swap file might be the result from a previous crash of MNV or the
    computer.  Check the dates mentioned in the message.  If the date of the
    swap file is newer than the file you were editing, and this line appears:
 
@@ -201,13 +201,13 @@ something wrong.  It may be one of these two situations.
    either it was changed after the crash (perhaps you recovered it earlier,
    but didn't delete the swap file?), or else the file was saved before the
    crash but after the last write of the swap file (then you're lucky: you
-   don't even need that old swap file).  Vim will warn you for this with this
+   don't even need that old swap file).  MNV will warn you for this with this
    extra line:
 
       NEWER than swap file! ~
 
 
-NOTE that in the following situation Vim knows the swap file is not useful and
+NOTE that in the following situation MNV knows the swap file is not useful and
 will automatically delete it:
 - The file is a valid swap file (Magic number is correct).
 - The flag that the file was modified is not set.
@@ -257,16 +257,16 @@ O  Open the file readonly.  Use this when you just want to view the file and
    changes.
 
 E  Edit the file anyway.  Use this with caution!  If the file is being edited
-   in another Vim, you might end up with two versions of the file.  Vim will
+   in another MNV, you might end up with two versions of the file.  MNV will
    try to warn you when this happens, but better be safe than sorry.
 
 R  Recover the file from the swap file.  Use this if you know that the swap
    file contains changes that you want to recover.
 
 Q  Quit.  This avoids starting to edit the file.  Use this if there is another
-   Vim editing the same file.
-      When you just started Vim, this will exit Vim.  When starting Vim with
-   files in several windows, Vim quits only if there is a swap file for the
+   MNV editing the same file.
+      When you just started MNV, this will exit MNV.  When starting MNV with
+   files in several windows, MNV quits only if there is a swap file for the
    first one.  When using an edit command, the file will not be loaded and you
    are taken back to the previously edited file.
 
@@ -280,17 +280,17 @@ D  Delete the swap file.  Use this when you are sure you no longer need it.
       On Unix this choice is only offered when the process that created the
    swap file does not appear to be running.
 
-If you do not get the dialog (you are running a version of Vim that does not
+If you do not get the dialog (you are running a version of MNV that does not
 support it), you will have to do it manually.  To recover the file, use this
 command: >
 
 	:recover
 
 
-Vim cannot always detect that a swap file already exists for a file.  This is
+MNV cannot always detect that a swap file already exists for a file.  This is
 the case when the other edit session puts the swap files in another directory
 or when the path name for the file is different when editing it on different
-machines.  Therefore, don't rely on Vim always warning you.
+machines.  Therefore, don't rely on MNV always warning you.
 
 If you really don't want to see this message, you can add the 'A' flag to the
 'shortmess' option.  But it's very unusual that you need this.
@@ -317,4 +317,4 @@ For programmatic access to the swap file, see |swapinfo()|.
 
 Next chapter: |usr_12.txt|  Clever tricks
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

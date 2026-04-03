@@ -1,8 +1,8 @@
 ===============================================================================
-=    D o b r o d o š l i   u   VIM   p r i r u č n i k  -    Verzija 1.7      =
+=    D o b r o d o š l i   u   MNV   p r i r u č n i k  -    Verzija 1.7      =
 ===============================================================================
 
-     Vim je vrlo moćan editor koji ima mnogo naredbi, previše da bi ih
+     MNV je vrlo moćan editor koji ima mnogo naredbi, previše da bi ih
      se svih ovdje spomenulo.  Namjena priručnika je objasniti dovoljno
      naredbi kako bi početnici znatno lakše koristili ovaj svestran editor.
 
@@ -12,10 +12,10 @@
      UPOZORENJE:
      Naredbe u ovom priručniku će promijeniti ovaj tekst.
      Napravite kopiju ove datoteke kako bi ste na istoj vježbali
-     (ako ste pokrenuli "vimtutor" ovo je već kopija).
+     (ako ste pokrenuli "mnvtutor" ovo je već kopija).
 
      Vrlo je važno primijetiti da je ovaj priručnik namijenjen za vježbanje.
-     Preciznije, morate izvršiti naredbe u Vim-u kako bi ste iste naučili
+     Preciznije, morate izvršiti naredbe u MNV-u kako bi ste iste naučili
      pravilno koristiti. Ako samo čitate tekst, zaboraviti će te naredbe!
 
      Ako je CapsLock uključen ISKLJUČITE ga.  Pritiskajte tipku  j  kako
@@ -45,19 +45,19 @@ NAPOMENA:  Kursorske tipke rade isto.  Korištenje hjkl tipaka je znatno
            brže, nakon što se jednom naviknete na njihovo korištenje.  Stvarno!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			   Lekcija 1.1.2: IZLAZ IZ VIM-a
+			   Lekcija 1.1.2: IZLAZ IZ MNV-a
 
 
   !! UPOZORENJE: Prije izvođenja bilo kojeg koraka,
                  pročitajte cijelu lekciju!!
 
-  1. Pritisnite <ESC> tipku (Vim je sada u Normal modu).
+  1. Pritisnite <ESC> tipku (MNV je sada u Normal modu).
 
   2. Otipkajte:	:q! <ENTER>.
      Izlaz iz editora, GUBE se sve napravljene promjene.
 
   3. Kada se pojavi ljuska, utipkajte naredbu koja je pokrenula
-     ovaj priručnik:		vimtutor <ENTER>
+     ovaj priručnik:		mnvtutor <ENTER>
 
   4. Ako ste upamtili ove korake, izvršite ih redom od 1 do 3
      kako bi ponovno pokrenuli editor.
@@ -103,7 +103,7 @@ NAPOMENA:  Koristeći ovaj priručnik ne pokušavajte pamtiti
 
   3. Pritisnite  i  te utipkajte potrebne nadopune.
 
-  4. Nakon što ispravite pogrešku pritisnite <ESC> kako bi vratili Vim
+  4. Nakon što ispravite pogrešku pritisnite <ESC> kako bi vratili MNV
      u Normal mod. Ponovite korake od 2 do 4 kako bi ispravili sve pogreške.
 
 ---> Nedje no teka od v lin.
@@ -140,21 +140,21 @@ NAPOMENA:  Koristeći ovaj priručnik ne pokušavajte pamtiti
 		     Lekcija 1.1.6: PROMJENA DATOTEKE
 
 
-     ** Koristite  :wq  za spremanje teksta i napuštanje Vim-a. **
+     ** Koristite  :wq  za spremanje teksta i napuštanje MNV-a. **
 
   !! UPOZORENJE: Prije izvršavanja bilo kojeg koraka, pročitajte lekciju!!
 
   1. Izađite iz programa kao sto ste napravili u lekciji 1.1.2:  :q!
 
-  2. Iz ljuske utipkajte sljedeću naredbu:  vim tutor <ENTER>
-     'vim' je naredba pokretanja Vim editora, 'tutor' je ime datoteke koju
+  2. Iz ljuske utipkajte sljedeću naredbu:  mnv tutor <ENTER>
+     'mnv' je naredba pokretanja MNV editora, 'tutor' je ime datoteke koju
      želite uređivati.  Koristite datoteku koju imate ovlasti mijenjati.
 
   3. Ubacite i izbrišite tekst kao što ste to napravili u lekcijama prije.
 
-  4. Sačuvajte promjenjeni tekst i izađite iz Vim-a:  :wq  <ENTER>
+  4. Sačuvajte promjenjeni tekst i izađite iz MNV-a:  :wq  <ENTER>
 
-  5. Ponovno pokrenite vimtutor i nastavite čitati sažetak koji sljedi.
+  5. Ponovno pokrenite mnvtutor i nastavite čitati sažetak koji sljedi.
 
   6. Nakon sto pročitate gornje korake i u potpunosti ih razumijete:
      izvršite ih.
@@ -166,7 +166,7 @@ NAPOMENA:  Koristeći ovaj priručnik ne pokušavajte pamtiti
   1. Kursor se pomiče strelicama ili pomoću hjkl tipaka.
 	h (lijevo)	j (dolje)	k (gore)	l (desno)
 
-  2. Pokretanje Vim-a iz ljuske:  vim IME_DATOTEKE <ENTER>
+  2. Pokretanje MNV-a iz ljuske:  mnv IME_DATOTEKE <ENTER>
 
   3. Izlaz:	<ESC>	:q! <ENTER> 	sve promjene su izgubljene.
        ILI:	<ESC>	:wq <ENTER> 	promjene su sačuvane.
@@ -177,7 +177,7 @@ NAPOMENA:  Koristeći ovaj priručnik ne pokušavajte pamtiti
 	 i   utipkajte tekst <ESC>	unos ispred kursora
 	 A   utipkajte tekst <ESC>	dodavanje na kraju linije
 
-NAPOMENA:  Tipkanjem tipke <ESC> prebacuje Vim u Normal mod i
+NAPOMENA:  Tipkanjem tipke <ESC> prebacuje MNV u Normal mod i
            prekida neželjenu ili djelomično završenu naredbu.
 
 Nastavite čitati Lekciju 2.
@@ -188,7 +188,7 @@ Nastavite čitati Lekciju 2.
 
 		 ** Tipkajte  dw  za brisanje riječi. **
 
-  1. Pritisnite  <ESC>  kako bi bili sigurni da je Vim u Normal modu.
+  1. Pritisnite  <ESC>  kako bi bili sigurni da je MNV u Normal modu.
 
   2. Pomaknite kursor na liniju označenu s --->.
 
@@ -196,8 +196,8 @@ Nastavite čitati Lekciju 2.
 
   4. Otipkajte  dw  kako bi uklonili riječ.
 
-NAPOMENA:  Vim će prikazati slovo  d  na zadnjoj liniji kad ga otipkate.
-           Vim čeka da otipkate  w .  Ako je prikazano neko drugo slovo,
+NAPOMENA:  MNV će prikazati slovo  d  na zadnjoj liniji kad ga otipkate.
+           MNV čeka da otipkate  w .  Ako je prikazano neko drugo slovo,
            krivo ste otipkali; pritisnite <ESC> i pokušajte ponovno.
 
 ---> Neke riječi smiješno ne pripadaju na papir ovoj rečenici.
@@ -212,7 +212,7 @@ NAPOMENA:  Vim će prikazati slovo  d  na zadnjoj liniji kad ga otipkate.
        ** Otipkajte  d$ za brisanje znakova do kraja linije. **
 
   1. Pritisnite  <ESC>  kako bi bili
-     sigurni da je Vim u Normal modu.
+     sigurni da je MNV u Normal modu.
 
   2. Pomaknite kursor na liniju označenu s  --->.
 
@@ -265,7 +265,7 @@ NAPOMENA:  Pritiskajući samo pokrete dok ste u Normal modu bez operatora će
 
   4. Otipkajte  0  (nulu) da pomaknete kursor na početak linije.
 
-  5. Ponovite korake 2 i 3 s nekim drugim brojevima.
+  5. Ponovite korake 2 i 3 s nekim drugim brojemnva.
 
 ---> Rečenica sa riječima po kojoj možete pomicati kursor.
 
@@ -285,13 +285,13 @@ NAPOMENA:  Pritiskajući samo pokrete dok ste u Normal modu bez operatora će
 
 	 d   broj   pokret
 
-  1. Pomaknite kursor na prvo slovo u riječi sa VELIKIM SLOVIMA
+  1. Pomaknite kursor na prvo slovo u riječi sa VELIKIM SLOMNVA
      označenu s --->.
 
-  2. Otipkajte  2dw  da izbrišete dvije riječi sa VELIKIM SLOVIMA
+  2. Otipkajte  2dw  da izbrišete dvije riječi sa VELIKIM SLOMNVA
 
-  3. Ponovite korake 1 i 2 sa različitim brojevima da izbrišete
-     uzastopne riječi sa VELIKIM SLOVIMA sa samo jednom naredbom.
+  3. Ponovite korake 1 i 2 sa različitim brojemnva da izbrišete
+     uzastopne riječi sa VELIKIM SLOMNVA sa samo jednom naredbom.
 
 ---> ova ABCČĆ DĐE linija FGHI JK LMN OP riječi je RSŠ TUVZŽ popravljena.
 
@@ -374,7 +374,7 @@ NAPOMENA:  Pritiskajući samo pokrete dok ste u Normal modu bez operatora će
 
   1. Pomaknite kursor na prvu sljedeću liniju označenu s --->.
 
-  2. Otipkajte  dd  kako bi izbrisali liniju i spremili je u Vim registar.
+  2. Otipkajte  dd  kako bi izbrisali liniju i spremili je u MNV registar.
 
   3. Pomaknite kursor na liniju c), IZNAD linije koju trebate unijeti.
 
@@ -433,7 +433,7 @@ NAPOMENA:  Prisjetite da trebate učiti vježbanjem, ne pamćenjem.
 ---> Ova lackmb ima nekoliko rjlcah koje trfcb mijdmlfsz.
 ---> Ova linija ima nekoliko riječi koje treba mijenjati.
 
-Primijetite da  ce  briše riječ i postavlja Vim u Insert mod.
+Primijetite da  ce  briše riječ i postavlja MNV u Insert mod.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	         Lekcija 1.3.4: JOŠ MIJENJANJA KORIŠTENJEM c
@@ -490,7 +490,7 @@ Prijeđite na sljedeću lekciju.
 NAPOMENA:  Pročitajte cijelu lekciju prije izvršenja bilo kojeg koraka!!
 
   1. Držite Ctrl tipku pritisnutom i pritisnite  g .  Ukratko: CTRL-G.
-     Vim će ispisati poruku na dnu ekrana sa imenom datoteke i pozicijom
+     MNV će ispisati poruku na dnu ekrana sa imenom datoteke i pozicijom
      kursora u datoteci.  Zapamtite broj linije za 3. korak.
 
 NAPOMENA:  Možete vidjeti poziciju kursora u donjem desnom kutu ako
@@ -631,11 +631,11 @@ NAPOMENA:  Sve  :  naredbe se izvršavaju nakon što pritisnete <ENTER>
 
   3. Otipkajte:	 :w TEST   (gdje je TEST ime koje ste prethodno odabrali.)
 
-  4. Time će te spremiti cijelu datoteku (Vim Tutor) pod imenom TEST.
+  4. Time će te spremiti cijelu datoteku (MNV Tutor) pod imenom TEST.
      Za provjeru, otipkajte ponovno   :!dir   ili   :!ls
      za pregled direktorija.
 
-NAPOMENA:  Ako bi napustili Vim i ponovno ga pokrenuli sa vim TEST ,
+NAPOMENA:  Ako bi napustili MNV i ponovno ga pokrenuli sa mnv TEST ,
            datoteka bi bila potpuna kopija ove datoteke u trenutku
            kada ste je spremili.
 
@@ -659,7 +659,7 @@ NAPOMENA:  Ako bi napustili Vim i ponovno ga pokrenuli sa vim TEST ,
      Provjerite da zaista piše  :'<,'>w TEST
      prije nego što pritisnite <ENTER>.
 
-  5. Vim će spremiti označeni tekst u TEST.  Provjerite sa :!dir  ili  :!ls .
+  5. MNV će spremiti označeni tekst u TEST.  Provjerite sa :!dir  ili  :!ls .
      Nemojte je još brisati!  Koristiti će te je u sljedećoj lekciji.
 
 NAPOMENA:  Tipka  v  započinje Vizualno označavanje.  Možete pomicati kursor
@@ -839,7 +839,7 @@ NAPOMENA:  Bez razlikovanja velikih i malih slova u samo jednoj naredbi
 
   4. Operator  y  kopira tekst,  p  ga lijepi.
 
-  5. Tipkanjem velikog  R  Vim prelazi u Replace mod dok ne pritisnete <ESC> .
+  5. Tipkanjem velikog  R  MNV prelazi u Replace mod dok ne pritisnete <ESC> .
 
   6. Tipkanjem ":set xxx" aktivira postavku "xxx".  Neke postavke su:
   	'ic' 'ignorecase'	ne razlikuje velika/mala slova pri traženju
@@ -855,7 +855,7 @@ NAPOMENA:  Bez razlikovanja velikih i malih slova u samo jednoj naredbi
 
 		   ** Koristite on-line sustav pomoći **
 
-  Vim ima detaljan on-line sustav pomoći.
+  MNV ima detaljan on-line sustav pomoći.
   Za početak, pokušajte jedno od sljedećeg:
 	- pritisnite <HELP> tipku (ako je vaša tipkovnica ima)
 	- pritisnite <F1> tipku (ako je vaša tipkovnica ima)
@@ -876,24 +876,24 @@ NAPOMENA:  Bez razlikovanja velikih i malih slova u samo jednoj naredbi
 			Lekcija 1.7.2: PRAVLJENJE SKRIPTE
 
 
-		       ** Aktivirajte Vim mogućnosti **
+		       ** Aktivirajte MNV mogućnosti **
 
-  Vim ima mnogo više alata od Vi-ja, ali većina njih nije aktivirana.
-  Kako bi mogli koristiti više mogućnosti napravite "vimrc" datoteku.
+  MNV ima mnogo više alata od Vi-ja, ali većina njih nije aktivirana.
+  Kako bi mogli koristiti više mogućnosti napravite "mnvrc" datoteku.
 
-  1. Uredite "vimrc" datoteku.  Ovo ovisi o vašem sistemu:
-	:e ~/.vimrc		za Unix
-	:e ~/_vimrc		za MS-Windows
+  1. Uredite "mnvrc" datoteku.  Ovo ovisi o vašem sistemu:
+	:e ~/.mnvrc		za Unix
+	:e ~/_mnvrc		za MS-Windows
 
-  2. Sada učitajte primjer sadržaja "vimrc" datoteke:
-	:r $VIMRUNTIME/vimrc_example.vim
+  2. Sada učitajte primjer sadržaja "mnvrc" datoteke:
+	:r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Sačuvajte datoteku sa:
 	:w
 
-  Sljedećeg puta kada pokrenete Vim, bojanje sintakse teksta biti će
-  aktivirano. Sve vaše postavke možete dodati u "vimrc" datoteku.
-  Za više informacija otipkajte  :help vimrc-intro
+  Sljedećeg puta kada pokrenete MNV, bojanje sintakse teksta biti će
+  aktivirano. Sve vaše postavke možete dodati u "mnvrc" datoteku.
+  Za više informacija otipkajte  :help mnvrc-intro
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		     Lekcija 1.7.3: AUTOMATSKO DOVRŠAVANJE
@@ -901,7 +901,7 @@ NAPOMENA:  Bez razlikovanja velikih i malih slova u samo jednoj naredbi
 
 	** Dovršavanje iz naredbene linije pomoću CTRL-D i <TAB> **
 
-  1. Provjerite da Vim nije u Vi modu:  :set nocp
+  1. Provjerite da MNV nije u Vi modu:  :set nocp
 
   2. Pogledajte koje datoteke postoje u direktoriju:  :!ls   or  :!dir
 
@@ -909,11 +909,11 @@ NAPOMENA:  Bez razlikovanja velikih i malih slova u samo jednoj naredbi
 
   4. Tipkajte  CTRL-D  i prikazati će se lista naredbi koje započinju sa "e".
 
-  5. Pritisnite <TAB>  i Vim će dopuniti unos u naredbu ":edit".
+  5. Pritisnite <TAB>  i MNV će dopuniti unos u naredbu ":edit".
 
   6. Dodajte razmak i početak datoteke:  :edit FIL
 
-  7. Pritisnite <TAB>.  Vim će nadopuniti ime datoteke (ako je jedinstveno).
+  7. Pritisnite <TAB>.  MNV će nadopuniti ime datoteke (ako je jedinstveno).
 
 NAPOMENA:  Moguće je dopuniti mnoge naredbe.  Koristite CTRL-D i <TAB>.
            Naročito je korisno za  :help  naredbe.
@@ -930,7 +930,7 @@ NAPOMENA:  Moguće je dopuniti mnoge naredbe.  Koristite CTRL-D i <TAB>.
 
   4. Otipkajte  :q  kako bi zatvorili prozor pomoći
 
-  5. Napravite vimrc skriptu za podizanje kako bi u nju spremali
+  5. Napravite mnvrc skriptu za podizanje kako bi u nju spremali
      vaše omiljene postavke.
 
   6. Kada tipkate naredbu koja započinje sa  :
@@ -942,22 +942,22 @@ NAPOMENA:  Moguće je dopuniti mnoge naredbe.  Koristite CTRL-D i <TAB>.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  Kraj.  Cilj priručnika je da pokaže kratak pregled Vim editora, tek toliko
-  da omogući njegovo korištenje. Priručnik nije potpun jer Vim ima mnogo više
+  Kraj.  Cilj priručnika je da pokaže kratak pregled MNV editora, tek toliko
+  da omogući njegovo korištenje. Priručnik nije potpun jer MNV ima mnogo više
   naredbi. Za više informacija: ":help user-manual".
 
   Za čitanje i korištenje, preporučamo:
-	Vim - Vi Improved - by Steve Oualline
+	MNV - MNV is not Vim - by Steve Oualline
 	Izdavač: New Riders
-  Prva knjiga potpuno posvećena Vim-u. Vrlo korisna za početnike.
+  Prva knjiga potpuno posvećena MNV-u. Vrlo korisna za početnike.
   Sa mnogo primjera i slika.
   Posjetite https://iccf-holland.org/click5.html
 
-  Sljedeća knjiga je nešto starija i više o Vi-u nego o Vim-u, preporučamo:
+  Sljedeća knjiga je nešto starija i više o Vi-u nego o MNV-u, preporučamo:
 	Learning the Vi Editor - by Linda Lamb
 	Izdavač: O'Reilly & Associates Inc.
   Solidna knjiga, možete saznati skoro sve što možete napraviti
-  u Vi-u. Šesto izdanje ima nešto informacija i o Vim-u.
+  u Vi-u. Šesto izdanje ima nešto informacija i o MNV-u.
 
   Ovaj priručnik su napisali: Michael C. Pierce i Robert K. Ware,
   Colorado School of Mines koristeći ideje Charles Smith,

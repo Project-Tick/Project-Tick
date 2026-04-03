@@ -1,4 +1,4 @@
-# vim:ft=make
+# mnv:ft=make
 # START_INDENT
 .POSIX :
 MAKEFLAGS += -rR

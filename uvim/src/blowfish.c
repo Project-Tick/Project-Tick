@@ -1,12 +1,12 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  *
- * Blowfish encryption for Vim; in Blowfish cipher feedback mode.
+ * Blowfish encryption for MNV; in Blowfish cipher feedback mode.
  * Contributed by Mohsin Ahmed
  * Original link (www.cs.albany.edu/~mosh) is no longer available.
  * Based on http://www.schneier.com/blowfish.html by Bruce Schneier.
@@ -20,7 +20,7 @@
  *   repeats.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_CRYPT)
 
@@ -566,7 +566,7 @@ bf_cfb_init(
     int i, mi;
 
     bfs->randbyte_offset = bfs->update_offset = 0;
-    vim_memset(bfs->cfb_buffer, 0, bfs->cfb_len);
+    mnv_memset(bfs->cfb_buffer, 0, bfs->cfb_len);
     if (seed_len > 0)
     {
 	mi = seed_len > bfs->cfb_len ? seed_len : bfs->cfb_len;

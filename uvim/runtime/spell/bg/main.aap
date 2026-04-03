@@ -1,10 +1,10 @@
-# Aap recipe for Bulgarian Vim spell files.
+# Aap recipe for Bulgarian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = bg_BG.aff bg_BG.dic
@@ -12,10 +12,10 @@ FILES    = bg_BG.aff bg_BG.dic
 all: $SPELLDIR/bg.cp1251.spl $SPELLDIR/bg.utf-8.spl ../README_bg.txt
 
 $SPELLDIR/bg.cp1251.spl : $FILES
-        :sys env LANG=bg_BG.CP1251 $VIM -u NONE -e -c "mkspell! $SPELLDIR/bg bg_BG" -c q
+        :sys env LANG=bg_BG.CP1251 $MNV -u NONE -e -c "mkspell! $SPELLDIR/bg bg_BG" -c q
 
 $SPELLDIR/bg.utf-8.spl : $FILES
-        :sys env LANG=bg_BG.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/bg bg_BG" -c q
+        :sys env LANG=bg_BG.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/bg bg_BG" -c q
 
 ../README_bg.txt: README_bg_BG.txt
         :copy $source $target
@@ -34,9 +34,9 @@ bg_BG.aff bg_BG.dic: {buildcheck=}
         :fetch bg_BG.zip
         :sys $UNZIP bg_BG.zip
         :delete bg_BG.zip
-        :sys $VIM bg_BG.aff -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM bg_BG.dic -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM README_bg_BG.txt -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV bg_BG.aff -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV bg_BG.dic -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV README_bg_BG.txt -u NONE -e -c "set ff=unix" -c update -c q
         @if not os.path.exists('bg_BG.orig.aff'):
             :copy bg_BG.aff bg_BG.orig.aff
         @if not os.path.exists('bg_BG.orig.dic'):
@@ -46,7 +46,7 @@ bg_BG.aff bg_BG.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -77,4 +77,4 @@ check:
             :delete bg_BG.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

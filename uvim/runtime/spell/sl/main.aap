@@ -1,10 +1,10 @@
-# Aap recipe for Slovenian Vim spell files.
+# Aap recipe for Slovenian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = sl_SI.aff sl_SI.dic
@@ -13,13 +13,13 @@ all: $SPELLDIR/sl.iso-8859-2.spl $SPELLDIR/sl.utf-8.spl \
         $SPELLDIR/sl.cp1250.spl ../README_sl.txt
 
 $SPELLDIR/sl.iso-8859-2.spl : $FILES
-        :sys env LANG=sl_SI.ISO8859-2 $VIM -u NONE -e -c "mkspell! $SPELLDIR/sl sl_SI" -c q
+        :sys env LANG=sl_SI.ISO8859-2 $MNV -u NONE -e -c "mkspell! $SPELLDIR/sl sl_SI" -c q
 
 $SPELLDIR/sl.utf-8.spl : $FILES
-        :sys env LANG=sl_SI.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/sl sl_SI" -c q
+        :sys env LANG=sl_SI.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/sl sl_SI" -c q
 
 $SPELLDIR/sl.cp1250.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/sl sl_SI" -c q
+        :sys $MNV -u NONE -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/sl sl_SI" -c q
 
 ../README_sl.txt: README_sl_SI.txt
         :copy $source $target
@@ -47,7 +47,7 @@ sl_SI.aff sl_SI.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -78,4 +78,4 @@ check:
             :delete sl_SI.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

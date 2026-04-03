@@ -1,0 +1,53 @@
+.TH EMNV 1 "2024 August 12"
+.SH 名前
+emnv \- easy MNV, モードレスエディタ MNV
+.SH 書式
+.br
+.B emnv
+[options] [file ..]
+.br
+.B eview
+.SH 説明
+.B eMNV
+は
+.B MNV
+を起動して、モードレスエディタとして動作するためのオプションを設定します。
+MNV の動作が point-and-click エディタのような動作になります。
+MS-Windows のメモ帳のような動作です。
+.B eMNV
+は常に GUI で起動し、メニューとツールバーを表示します。
+.PP
+どうしても MNV の操作に馴染めない場合に使ってください。
+編集効率は下がります。
+.PP
+.B eview
+は同様に、読み込み専用モードで起動します。emnv \-R と同じです。
+.PP
+引数や MNV についての詳細は mnv(1) を参照してください。
+.PP
+オプション 'insertmode' が設定され、テキストを直接、入力できるようになります。
+.br
+コピーとペーストのキー操作が MS-Windows と同じになるように、マップが設定されます。
+CTRL-X が切り取り、CTRL-C がコピー、CTRL-V がペーストです。
+標準の CTRL-V の操作は CTRL-Q に割り当てられます。
+.SH オプション
+mnv(1) を参照してください。
+.SH ファイル
+.TP 15
+/usr/local/share/mnv/mnv??/emnv.mnv
+eMNV の初期化スクリプト。
+.br
+.I mnv??
+は短いバージョン番号で
+.B MNV 9.1
+では mnv91 です。
+.SH 別名
+emnv は "gumbies のための MNV" とも呼ばれています。
+emnv を使っているあなたはきっと、頭にハンカチをかぶっているのです。
+(訳注: gumbies は Monty Python に登場するおもしろ集団。ハンカチをかぶっている。)
+.SH 関連項目
+mnv(1)
+.SH 著者
+.B MNV
+のほとんどの機能は Bram Moolenaar が開発し、多くの人が協力しました。
+メニューの Help/Credits を参照してください。

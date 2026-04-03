@@ -1,10 +1,10 @@
-# Aap recipe for Kiswahili Vim spell files.
+# Aap recipe for Kiswahili MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = sw_KE.aff sw_KE.dic
@@ -14,11 +14,11 @@ all: $SPELLDIR/sw.latin1.spl $SPELLDIR/sw.utf-8.spl ../README_sw.txt
 # I don't have a Kiswahili locale, use the Dutch one instead.
 $SPELLDIR/sw.latin1.spl : $FILES
         :sys env LANG=nl_NL.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/sw sw_KE" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/sw sw_KE" -c q
 
 $SPELLDIR/sw.utf-8.spl : $FILES
         :sys env LANG=nl_NL.UTF-8
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/sw sw_KE" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/sw sw_KE" -c q
 
 ../README_sw.txt : README_sw_KE.txt
         :copy $source $target
@@ -45,7 +45,7 @@ sw_KE.aff sw_KE.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -76,4 +76,4 @@ check:
             :delete sw_KE.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

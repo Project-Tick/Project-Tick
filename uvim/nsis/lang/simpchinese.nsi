@@ -1,6 +1,6 @@
 # vi:set ts=8 sts=4 sw=4 et fdm=marker:
 #
-# simpchinese.nsi: Simplified Chinese language strings for gvim NSIS
+# simpchinese.nsi: Simplified Chinese language strings for gmnv NSIS
 # installer.
 #
 # Locale ID    : 2052
@@ -29,14 +29,14 @@ LicenseLangString page_lic_file ${LANG_SIMPCHINESE} \
 # Translated README.txt file, which is opened after installation          {{{1
 ##############################################################################
 
-LangString vim_readme_file ${LANG_SIMPCHINESE} "README.zh_cn.txt"
+LangString mnv_readme_file ${LANG_SIMPCHINESE} "README.zh_cn.txt"
 
 ##############################################################################
 # MUI Configuration Strings                                               {{{1
 ##############################################################################
 
 #LangString str_dest_folder          ${LANG_SIMPCHINESE} \
-#    "安装路径 (必须以 vim 结尾)"
+#    "安装路径 (必须以 mnv 结尾)"
 
 LangString str_show_readme          ${LANG_SIMPCHINESE} \
     "安装完成后显示 README 文件"
@@ -59,68 +59,68 @@ LangString str_type_full            ${LANG_SIMPCHINESE} \
 LangString str_section_old_ver      ${LANG_SIMPCHINESE} \
     "卸载旧版本"
 LangString str_desc_old_ver         ${LANG_SIMPCHINESE} \
-    "卸载系统上已存在的 Vim 版本"
+    "卸载系统上已存在的 MNV 版本"
 
 LangString str_section_exe          ${LANG_SIMPCHINESE} \
-    "安装 Vim 图形界面"
+    "安装 MNV 图形界面"
 LangString str_desc_exe             ${LANG_SIMPCHINESE} \
-    "安装 Vim 图形界面及运行时文件。此项为必选。"
+    "安装 MNV 图形界面及运行时文件。此项为必选。"
 
 LangString str_section_console      ${LANG_SIMPCHINESE} \
-    "安装 Vim 控制台版本"
+    "安装 MNV 控制台版本"
 LangString str_desc_console         ${LANG_SIMPCHINESE} \
-    "安装 Vim 的控制台版本（vim.exe）。"
+    "安装 MNV 的控制台版本（mnv.exe）。"
 
 LangString str_section_batch        ${LANG_SIMPCHINESE} \
     "安装批处理文件"
 LangString str_desc_batch           ${LANG_SIMPCHINESE} \
-    "为 Vim 的各种变体创建批处理文件，以便在命令行下运行 Vim。"
+    "为 MNV 的各种变体创建批处理文件，以便在命令行下运行 MNV。"
 
 LangString str_group_icons          ${LANG_SIMPCHINESE} \
     "创建图标"
 LangString str_desc_icons           ${LANG_SIMPCHINESE} \
-    "为 Vim 创建若干图标，以方便使用 Vim。"
+    "为 MNV 创建若干图标，以方便使用 MNV。"
 
 LangString str_section_desktop      ${LANG_SIMPCHINESE} \
     "桌面图标"
 LangString str_desc_desktop         ${LANG_SIMPCHINESE} \
-    "创建 Vim 的桌面快捷方式图标。"
+    "创建 MNV 的桌面快捷方式图标。"
 
 LangString str_section_start_menu   ${LANG_SIMPCHINESE} \
     "「开始」菜单程序组"
 LangString str_desc_start_menu      ${LANG_SIMPCHINESE} \
-    "在开始菜单中添加 Vim 程序组（适用于 Windows 95 及以上版本）"
+    "在开始菜单中添加 MNV 程序组（适用于 Windows 95 及以上版本）"
 
 #LangString str_section_quick_launch ${LANG_SIMPCHINESE} \
 #    "在快速启动启动栏中"
 #LangString str_desc_quick_launch    ${LANG_SIMPCHINESE} \
-#    "在快速启动栏中添加 Vim 图标。"
+#    "在快速启动栏中添加 MNV 图标。"
 
 LangString str_section_edit_with    ${LANG_SIMPCHINESE} \
     "添加到快捷菜单"
 LangString str_desc_edit_with       ${LANG_SIMPCHINESE} \
-    "将“用 Vim 编辑”添加到快捷菜单中。"
+    "将“用 MNV 编辑”添加到快捷菜单中。"
 
 #LangString str_section_edit_with32  ${LANG_SIMPCHINESE} \
 #    "32 位版本"
 #LangString str_desc_edit_with32     ${LANG_SIMPCHINESE} \
-#    "将 Vim 添加到 32 位程序的“打开方式”快捷菜单中。"
+#    "将 MNV 添加到 32 位程序的“打开方式”快捷菜单中。"
 
 #LangString str_section_edit_with64  ${LANG_SIMPCHINESE} \
 #    "64 位版本"
 #LangString str_desc_edit_with64     ${LANG_SIMPCHINESE} \
-#    "将 Vim 添加到 64 位程序的“打开方式”快捷菜单中。"
+#    "将 MNV 添加到 64 位程序的“打开方式”快捷菜单中。"
 
-LangString str_section_vim_rc       ${LANG_SIMPCHINESE} \
+LangString str_section_mnv_rc       ${LANG_SIMPCHINESE} \
     "创建默认配置文件"
-LangString str_desc_vim_rc          ${LANG_SIMPCHINESE} \
-    "在安装目录下生成默认的 Vim 配置文件(_vimrc)。\
+LangString str_desc_mnv_rc          ${LANG_SIMPCHINESE} \
+    "在安装目录下生成默认的 MNV 配置文件(_mnvrc)。\
      如果该文件已经存在，则跳过该项。"
 
 LangString str_group_plugin         ${LANG_SIMPCHINESE} \
     "创建插件目录"
 LangString str_desc_plugin          ${LANG_SIMPCHINESE} \
-    "创建(空的)插件目录结构。插件目录用于安装 Vim 扩展插件，\
+    "创建(空的)插件目录结构。插件目录用于安装 MNV 扩展插件，\
      只要将文件复制到相关的子目录中即可。"
 
 LangString str_section_plugin_home  ${LANG_SIMPCHINESE} \
@@ -128,10 +128,10 @@ LangString str_section_plugin_home  ${LANG_SIMPCHINESE} \
 LangString str_desc_plugin_home     ${LANG_SIMPCHINESE} \
     "在主目录创建私有插件目录。"
 
-LangString str_section_plugin_vim   ${LANG_SIMPCHINESE} \
+LangString str_section_plugin_mnv   ${LANG_SIMPCHINESE} \
     "公共插件目录"
-LangString str_desc_plugin_vim      ${LANG_SIMPCHINESE} \
-    "在 Vim 安装目录下创建(空的)插件目录结构，系统上所有用户都能使用安装在\
+LangString str_desc_plugin_mnv      ${LANG_SIMPCHINESE} \
+    "在 MNV 安装目录下创建(空的)插件目录结构，系统上所有用户都能使用安装在\
      该目录下的扩展插件。"
 
 LangString str_section_nls          ${LANG_SIMPCHINESE} \
@@ -140,14 +140,14 @@ LangString str_desc_nls             ${LANG_SIMPCHINESE} \
     "安装用于多语言支持的文件。"
 
 LangString str_unsection_register   ${LANG_SIMPCHINESE} \
-    "删除 Vim 系统配置"
+    "删除 MNV 系统配置"
 LangString str_desc_unregister      ${LANG_SIMPCHINESE} \
-    "删除和 Vim 相关的系统配置。"
+    "删除和 MNV 相关的系统配置。"
 
 LangString str_unsection_exe        ${LANG_SIMPCHINESE} \
-    "删除 Vim 执行文件以及脚本"
+    "删除 MNV 执行文件以及脚本"
 LangString str_desc_rm_exe          ${LANG_SIMPCHINESE} \
-    "删除 Vim 的所有执行文件及脚本。"
+    "删除 MNV 的所有执行文件及脚本。"
 
 LangString str_ungroup_plugin       ${LANG_SIMPCHINESE} \
     "移除插件目录"
@@ -159,15 +159,15 @@ LangString str_unsection_plugin_home ${LANG_SIMPCHINESE} \
 LangString str_desc_rm_plugin_home  ${LANG_SIMPCHINESE} \
     "从主目录中移除私有插件目录。"
 
-LangString str_unsection_plugin_vim ${LANG_SIMPCHINESE} \
+LangString str_unsection_plugin_mnv ${LANG_SIMPCHINESE} \
     "公共插件目录"
-LangString str_desc_rm_plugin_vim   ${LANG_SIMPCHINESE} \
-    "从 Vim 安装目录下移除插件目录。"
+LangString str_desc_rm_plugin_mnv   ${LANG_SIMPCHINESE} \
+    "从 MNV 安装目录下移除插件目录。"
 
 LangString str_unsection_rootdir    ${LANG_SIMPCHINESE} \
-    "移除 Vim 主目录"
+    "移除 MNV 主目录"
 LangString str_desc_rm_rootdir      ${LANG_SIMPCHINESE} \
-    "移除 Vim 的主目录，该目录包含您的配置文件！"
+    "移除 MNV 的主目录，该目录包含您的配置文件！"
 
 
 ##############################################################################
@@ -175,28 +175,28 @@ LangString str_desc_rm_rootdir      ${LANG_SIMPCHINESE} \
 ##############################################################################
 
 #LangString str_msg_too_many_ver  ${LANG_SIMPCHINESE} \
-#    "您的系统上安装了 $vim_old_ver_count 个不同版本的 Vim，$\r$\n\
-#     但本安装程序最多只能处理 ${VIM_MAX_OLD_VER} 个版本。$\r$\n\
+#    "您的系统上安装了 $mnv_old_ver_count 个不同版本的 MNV，$\r$\n\
+#     但本安装程序最多只能处理 ${MNV_MAX_OLD_VER} 个版本。$\r$\n\
 #     请您手工删除一些旧版本以后再运行本安装程序。"
 
 #LangString str_msg_invalid_root  ${LANG_SIMPCHINESE} \
-#    "安装路径“$vim_install_root”无效！$\r$\n\
-#     该路径必须以 vim 结尾。"
+#    "安装路径“$mnv_install_root”无效！$\r$\n\
+#     该路径必须以 mnv 结尾。"
 
 #LangString str_msg_bin_mismatch  ${LANG_SIMPCHINESE} \
-#    "Vim 执行程序安装路径异常！$\r$\n$\r$\n\
-#     该版本 Vim 的执行程序安装路径应该是“$vim_bin_path”,$\r$\n\
+#    "MNV 执行程序安装路径异常！$\r$\n$\r$\n\
+#     该版本 MNV 的执行程序安装路径应该是“$mnv_bin_path”,$\r$\n\
 #     而系统却指示该路径为“$INSTDIR”。"
 
-#LangString str_msg_vim_running   ${LANG_SIMPCHINESE} \
-#    "您的系统上仍有 Vim 在运行，$\r$\n\
-#     请您在执行后续步骤前退出这些 Vim。"
+#LangString str_msg_mnv_running   ${LANG_SIMPCHINESE} \
+#    "您的系统上仍有 MNV 在运行，$\r$\n\
+#     请您在执行后续步骤前退出这些 MNV。"
 
 #LangString str_msg_register_ole  ${LANG_SIMPCHINESE} \
-#    "试图注册 Vim OLE 服务器。请注意无论成功与否都不再显示进一步的信息。"
+#    "试图注册 MNV OLE 服务器。请注意无论成功与否都不再显示进一步的信息。"
 
 #LangString str_msg_unreg_ole     ${LANG_SIMPCHINESE} \
-#    "试图注销 Vim OLE 服务器。请注意无论成功与否都不再显示进一步的信息。"
+#    "试图注销 MNV OLE 服务器。请注意无论成功与否都不再显示进一步的信息。"
 
 #LangString str_msg_rm_start      ${LANG_SIMPCHINESE} \
 #    "开始卸载以下版本："
@@ -230,7 +230,7 @@ LangString str_msg_rm_exe_fail   ${LANG_SIMPCHINESE} \
      您只能手工删除该目录。"
 
 #LangString str_msg_rm_root_fail  ${LANG_SIMPCHINESE} \
-#    "警告：无法删除 Vim 安装目录“$vim_install_root”，\
+#    "警告：无法删除 MNV 安装目录“$mnv_install_root”，\
 #     该目录下仍有其他文件。"
 
 LangString str_msg_uninstalling  ${LANG_SIMPCHINESE} \
@@ -247,23 +247,23 @@ LangString str_msg_unregistering ${LANG_SIMPCHINESE} \
 # Dialog Box                                                              {{{1
 ##############################################################################
 
-LangString str_vimrc_page_title    ${LANG_SIMPCHINESE} \
-    "设置 _vimrc"
-LangString str_vimrc_page_subtitle ${LANG_SIMPCHINESE} \
+LangString str_mnvrc_page_title    ${LANG_SIMPCHINESE} \
+    "设置 _mnvrc"
+LangString str_mnvrc_page_subtitle ${LANG_SIMPCHINESE} \
     "选择键盘、鼠标和扩展设置。"
 
 LangString str_msg_compat_title    ${LANG_SIMPCHINESE} \
-    "Vi / Vim 行为"
+    "Vi / MNV 行为"
 LangString str_msg_compat_desc     ${LANG_SIMPCHINESE} \
     "兼容性与扩展(&B)"
 LangString str_msg_compat_vi       ${LANG_SIMPCHINESE} \
     "原始 Vi"
-LangString str_msg_compat_vim      ${LANG_SIMPCHINESE} \
-    "原始 Vim"
+LangString str_msg_compat_mnv      ${LANG_SIMPCHINESE} \
+    "原始 MNV"
 LangString str_msg_compat_defaults ${LANG_SIMPCHINESE} \
-    "Vim 原始版本和部分扩展 (加载 defaults.vim)"
+    "MNV 原始版本和部分扩展 (加载 defaults.mnv)"
 LangString str_msg_compat_all      ${LANG_SIMPCHINESE} \
-    "Vim 原始版本和所有扩展 (加载 vimrc_example.vim) (缺省)"
+    "MNV 原始版本和所有扩展 (加载 mnvrc_example.mnv) (缺省)"
 
 LangString str_msg_keymap_title   ${LANG_SIMPCHINESE} \
     "键盘映射"

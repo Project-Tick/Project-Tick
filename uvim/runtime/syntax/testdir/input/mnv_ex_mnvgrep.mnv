@@ -1,0 +1,69 @@
+" MNV :*mnvgrep and :*mnvgrepadd commands
+" MNV_TEST_SETUP hi link mnvMNVgrepFile Todo
+" MNV_TEST_SETUP hi link mnvCmdSep Operator
+" MNV_TEST_SETUP hi link mnvMNVgrepBarEscape Special
+
+
+mnvgrep pa\%(tt\)ern   foo.txt
+mnvgrep /pa\%(tt\)ern/ foo.txt
+
+mnvgrep! pa\%(tt\)ern   foo.txt
+mnvgrep! /pa\%(tt\)ern/ foo.txt
+
+mnvgrep /pa\%(tt\)ern/gjf foo.txt
+
+" trailing bar, no tail comment
+mnvgrep /pa\%(t|t\)ern/ b\|a\|r.txt | echo "Foo"
+mnvgrep /pa\%(t"t\)ern/ b"a"r.txt   | echo "Foo"
+
+mnvgrepadd pa\%(tt\)ern   foo.txt
+mnvgrepadd /pa\%(tt\)ern/ foo.txt
+
+mnvgrepadd! pa\%(tt\)ern   foo.txt
+mnvgrepadd! /pa\%(tt\)ern/ foo.txt
+
+mnvgrepadd /pa\%(tt\)ern/gjf foo.txt
+
+" trailing bar, no tail comment
+mnvgrepadd /pa\%(t|t\)ern/ b\|a\|r.txt | echo "Foo"
+mnvgrepadd /pa\%(t"t\)ern/ b"a"r.txt   | echo "Foo"
+
+lmnvgrep pa\%(tt\)ern   foo.txt
+lmnvgrep /pa\%(tt\)ern/ foo.txt
+
+lmnvgrep! pa\%(tt\)ern   foo.txt
+lmnvgrep! /pa\%(tt\)ern/ foo.txt
+
+lmnvgrep /pa\%(tt\)ern/gjf foo.txt
+
+" trailing bar, no tail comment
+lmnvgrep /pa\%(t|t\)ern/ b\|a\|r.txt | echo "Foo"
+lmnvgrep /pa\%(t"t\)ern/ b"a"r.txt   | echo "Foo"
+
+lmnvgrepadd pa\%(tt\)ern   foo.txt
+lmnvgrepadd /pa\%(tt\)ern/ foo.txt
+
+lmnvgrepadd! pa\%(tt\)ern   foo.txt
+lmnvgrepadd! /pa\%(tt\)ern/ foo.txt
+
+lmnvgrepadd /pa\%(tt\)ern/gjf foo.txt
+
+" trailing bar, no tail comment
+lmnvgrepadd /pa\%(t|t\)ern/ b\|a\|r.txt | echo "Foo"
+lmnvgrepadd /pa\%(t"t\)ern/ b"a"r.txt   | echo "Foo"
+
+
+" file args
+
+" multiple files
+mnvgrep pa\%(tt\)ern   foo.txt bar.txt
+mnvgrep /pa\%(tt\)ern/ foo.txt bar.txt
+
+" wildcard patterns
+mnvgrep pa\%(tt\)ern   **/*.txt
+mnvgrep /pa\%(tt\)ern/ **/*.txt
+
+" special filename characters
+mnvgrep pa\%(tt\)ern   %
+mnvgrep /pa\%(tt\)ern/ %
+

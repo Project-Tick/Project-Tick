@@ -8,7 +8,7 @@
 .\" 21st May 1996
 .\" Man page author:
 .\"    Tony Nugent <tony@sctnugen.ppp.gu.edu.au> <T.Nugent@sct.gu.edu.au>
-.\"    Changes by Bram Moolenaar <Bram@vim.org>
+.\"    Changes by Bram Moolenaar <Bram@mnv.org>
 .SH NAMN
 \fIxxd\fP \- gör en hexdump eller gör det omvända.
 .SH SYNOPSIS
@@ -287,17 +287,17 @@ bytena.
 .br
 \fI% echo "010000: 41" | xxd \-r \-s \-0x10000 > fil\fP
 .PP
-Använd xxd som filter i en redigerare som \fBvim(1)\fP för att hexdumpning av
+Använd xxd som filter i en redigerare som \fBmnv(1)\fP för att hexdumpning av
 ett område markerat mellan `a' och `z'.
 .br
 \fI:'a,'z!xxd\fP
 .PP
-Använd xxd som filter i en redigerare som \fBvim(1)\fP för att återställa en
+Använd xxd som filter i en redigerare som \fBmnv(1)\fP för att återställa en
 binär hexdump markerad mellan `a' och `z'.
 .br
 \fI:'a,'z!xxd \-r\fP
 .PP
-Använd xxd som filter i en redigerare som \fBvim(1)\fP för att återställa en
+Använd xxd som filter i en redigerare som \fBmnv(1)\fP för att återställa en
 rad i en hexdump. Flytta markören över raden och skriv:
 .br
 \fI!!xxd \-r\fP
@@ -358,6 +358,6 @@ Manualsida skapad av Tony Nugent
 Små ändringar av Bram Moolenaar. Redigerat av Juergen Weigert.
 .PP
 .SH SVENSK ÖVERSÄTTNING
-Vim översattes ursprungligen av Johan Svedberg 2003-2007 och har under 2025
-uppdaterats av Daniel Nylander, speciellt manualsidor samt själva Vim.
+MNV översattes ursprungligen av Johan Svedberg 2003-2007 och har under 2025
+uppdaterats av Daniel Nylander, speciellt manualsidor samt själva MNV.
 Om du hittar fel i översättningen, kontakta <tp-sv@listor.tp-sv.se>.

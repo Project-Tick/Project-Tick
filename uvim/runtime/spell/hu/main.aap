@@ -1,26 +1,26 @@
-# Aap recipe for Hungarian Vim spell files.
+# Aap recipe for Hungarian MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
-VIMRC = ../spell.vim
+MNVRC = ../spell.mnv
 FILES    = hu_HU.aff hu_HU.dic
 
 all: $SPELLDIR/hu.iso-8859-2.spl $SPELLDIR/hu.utf-8.spl \
         $SPELLDIR/hu.cp1250.spl ../README_hu.txt
 
 $SPELLDIR/hu.iso-8859-2.spl : $FILES
-        :sys env LANG=hu_HU.ISO8859-2 $VIM -u $VIMRC -e -c "mkspell! $SPELLDIR/hu hu_HU" -c q
+        :sys env LANG=hu_HU.ISO8859-2 $MNV -u $MNVRC -e -c "mkspell! $SPELLDIR/hu hu_HU" -c q
 
 $SPELLDIR/hu.utf-8.spl : $FILES
-        :sys env LANG=hu_HU.UTF-8 $VIM -u $VIMRC -e -c "mkspell! $SPELLDIR/hu hu_HU" -c q
+        :sys env LANG=hu_HU.UTF-8 $MNV -u $MNVRC -e -c "mkspell! $SPELLDIR/hu hu_HU" -c q
 
 $SPELLDIR/hu.cp1250.spl : $FILES
-        :sys $VIM -u $VIMRC -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/hu hu_HU" -c q
+        :sys $MNV -u $MNVRC -e -c "set enc=cp1250" -c "mkspell! $SPELLDIR/hu hu_HU" -c q
 
 ../README_hu.txt: README_hu_HU.txt
         :copy $source $target
@@ -48,7 +48,7 @@ hu_HU.aff hu_HU.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -79,4 +79,4 @@ check:
             :delete hu_HU.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

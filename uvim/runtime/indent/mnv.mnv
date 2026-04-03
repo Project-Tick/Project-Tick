@@ -1,0 +1,25 @@
+mnv9script
+
+# MNV indent file
+# Language:	MNV script
+# Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+# Last Change:	2024 Jul 12
+# Former Maintainer:	Bram Moolenaar <Bram@mnv.org>
+
+# Only load this indent file when no other was loaded.
+if exists('b:did_indent')
+    finish
+endif
+
+b:did_indent = true
+b:undo_indent = 'setlocal indentkeys< indentexpr<'
+
+import autoload '../autoload/dist/mnvindent.mnv'
+
+# export indentexpr as a global function, so it can be easily manipulated by plugins
+g:MNVIndent = mnvindent.Expr
+setlocal indentexpr=g:MNVIndent()
+setlocal indentkeys+==endif,=enddef,=endfu,=endfor,=endwh,=endtry,=endclass,=endinterface,=endenum,=},=else,=cat,=finall,=END,0\\
+execute('setlocal indentkeys+=0=\"\\\ ,0=#\\\ ')
+setlocal indentkeys-=0#
+setlocal indentkeys-=:

@@ -1,10 +1,10 @@
-# Aap recipe for Scottish Gaelic Vim spell files.
+# Aap recipe for Scottish Gaelic MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = gd_GB.aff gd_GB.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/gd.latin1.spl $SPELLDIR/gd.utf-8.spl ../README_gd.txt
 
 $SPELLDIR/gd.latin1.spl : $FILES
         :sys env LANG=gd_GB.ISO8859-15
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/gd gd_GB" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/gd gd_GB" -c q
 
 $SPELLDIR/gd.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8" -c "mkspell! $SPELLDIR/gd gd_GB" -c q
+        :sys $MNV -u NONE -e -c "set enc=utf-8" -c "mkspell! $SPELLDIR/gd gd_GB" -c q
 
 ../README_gd.txt : README_gd_GB.txt
         :copy $source $target
@@ -43,7 +43,7 @@ gd_GB.aff gd_GB.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -74,4 +74,4 @@ check:
             :delete gd_GB.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

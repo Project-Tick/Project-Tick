@@ -6,6 +6,6 @@ void ex_rubydo(exarg_T *eap);
 void ex_rubyfile(exarg_T *eap);
 void ruby_buffer_free(buf_T *buf);
 void ruby_window_free(win_T *win);
-void vim_ruby_init(void *stack_start);
+void mnv_ruby_init(void *stack_start);
 void do_rubyeval(char_u *str, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

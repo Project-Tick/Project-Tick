@@ -4,13 +4,13 @@
 
 #include "utf8.h"
 
-// VIM: added
+// MNV: added
 int vterm_is_modify_other_keys(VTerm *vt)
 {
   return vt->state->mode.modify_other_keys;
 }
 
-// VIM: added
+// MNV: added
 int vterm_is_kitty_keyboard(VTerm *vt)
 {
   return vt->state->mode.kitty_keyboard;
@@ -19,13 +19,13 @@ int vterm_is_kitty_keyboard(VTerm *vt)
 
 void vterm_keyboard_unichar(VTerm *vt, uint32_t c, VTermModifier mod)
 {
-  // VIM: added modifyOtherKeys support
+  // MNV: added modifyOtherKeys support
   if (vterm_is_modify_other_keys(vt) && mod != 0) {
     vterm_push_output_sprintf_ctrl(vt, C1_CSI, "27;%d;%d~", mod+1, c);
     return;
   }
 
-  // VIM: added kitty keyboard protocol support
+  // MNV: added kitty keyboard protocol support
   if (vterm_is_kitty_keyboard(vt) && mod != 0) {
     vterm_push_output_sprintf_ctrl(vt, C1_CSI, "%d;%du", c, mod+1);
     return;

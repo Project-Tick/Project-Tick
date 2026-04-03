@@ -1,4 +1,4 @@
-# Makefile for the Vim message translations for mingw32
+# Makefile for the MNV message translations for mingw32
 #
 # Eduardo F. Amatria <eferna1@platea.pntic.mec.es>
 #
@@ -10,22 +10,22 @@
 # language (xx) and add it to the next three lines.
 #
 
-ifndef VIMRUNTIME
+ifndef MNVRUNTIME
 ifeq (sh.exe, $(SHELL))
-VIMRUNTIME = ..\..\runtime
+MNVRUNTIME = ..\..\runtime
 else
-VIMRUNTIME = ../../runtime
+MNVRUNTIME = ../../runtime
 endif
 endif
 
 # get LANGUAGES, MOFILES, MOCONVERTED and others
 include Make_all.mak
 
-PACKAGE = vim
+PACKAGE = mnv
 ifeq (sh.exe, $(SHELL))
-VIMPROG = ..\vim
+MNVPROG = ..\mnv
 else
-VIMPROG = ../vim
+MNVPROG = ../mnv
 endif
 
 # Uncomment one of the lines below or modify it to put the path to your
@@ -68,27 +68,27 @@ all: $(MOFILES) $(MOCONVERTED)
 PO_INPUTLIST = \
 	$(wildcard ../*.c) \
 	../if_perl.xs \
-	../GvimExt/gvimext.cpp \
+	../GmnvExt/gmnvext.cpp \
 	../errors.h \
 	../globals.h \
 	../if_py_both.h \
-	../vim.h \
-	gvim.desktop.in \
-	vim.desktop.in
+	../mnv.h \
+	gmnv.desktop.in \
+	mnv.desktop.in
 
-first_time: $(PO_INPUTLIST) $(PO_VIM_INPUTLIST)
-	$(VIMPROG) -u NONE --not-a-term -S tojavascript.vim $(LANGUAGE).pot $(PO_VIM_INPUTLIST)
+first_time: $(PO_INPUTLIST) $(PO_MNV_INPUTLIST)
+	$(MNVPROG) -u NONE --not-a-term -S tojavascript.mnv $(LANGUAGE).pot $(PO_MNV_INPUTLIST)
 	$(XGETTEXT) --default-domain=$(LANGUAGE) \
-		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_VIM_JSLIST)
-	$(VIMPROG) -u NONE --not-a-term -S fixfilenames.vim $(LANGUAGE).pot $(PO_VIM_INPUTLIST)
+		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_MNV_JSLIST)
+	$(MNVPROG) -u NONE --not-a-term -S fixfilenames.mnv $(LANGUAGE).pot $(PO_MNV_INPUTLIST)
 	$(RM) *.js
 
-$(PACKAGE).pot: $(PO_INPUTLIST) $(PO_VIM_INPUTLIST)
-	$(VIMPROG) -u NONE --not-a-term -S tojavascript.vim $(PACKAGE).pot $(PO_VIM_INPUTLIST)
+$(PACKAGE).pot: $(PO_INPUTLIST) $(PO_MNV_INPUTLIST)
+	$(MNVPROG) -u NONE --not-a-term -S tojavascript.mnv $(PACKAGE).pot $(PO_MNV_INPUTLIST)
 	$(XGETTEXT) --default-domain=$(PACKAGE) \
-		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_VIM_JSLIST)
+		--add-comments $(XGETTEXT_KEYWORDS) $(PO_INPUTLIST) $(PO_MNV_JSLIST)
 	$(MV) $(PACKAGE).po $(PACKAGE).pot
-	$(VIMPROG) -u NONE --not-a-term -S fixfilenames.vim $(PACKAGE).pot $(PO_VIM_INPUTLIST)
+	$(MNVPROG) -u NONE --not-a-term -S fixfilenames.mnv $(PACKAGE).pot $(PO_MNV_INPUTLIST)
 	$(RM) *.js
 
 # Don't add a dependency here, we only want to update the .po files manually
@@ -100,20 +100,20 @@ $(LANGUAGES):
 	$(RM) $@.po.old
 
 install:
-	$(MKD) $(VIMRUNTIME)\lang\$(LANGUAGE)
-	$(MKD) $(VIMRUNTIME)\lang\$(LANGUAGE)\LC_MESSAGES
-	$(CP) $(LANGUAGE).mo $(VIMRUNTIME)\lang\$(LANGUAGE)\LC_MESSAGES\$(PACKAGE).mo
+	$(MKD) $(MNVRUNTIME)\lang\$(LANGUAGE)
+	$(MKD) $(MNVRUNTIME)\lang\$(LANGUAGE)\LC_MESSAGES
+	$(CP) $(LANGUAGE).mo $(MNVRUNTIME)\lang\$(LANGUAGE)\LC_MESSAGES\$(PACKAGE).mo
 
 ifeq (sh.exe, $(SHELL))
 install-all: all
-	FOR %%l IN ($(LANGUAGES)) DO @IF NOT EXIST $(VIMRUNTIME)\lang\%%l $(MKD) $(VIMRUNTIME)\lang\%%l
-	FOR %%l IN ($(LANGUAGES)) DO @IF NOT EXIST $(VIMRUNTIME)\lang\%%l\LC_MESSAGES $(MKD) $(VIMRUNTIME)\lang\%%l\LC_MESSAGES
-	FOR %%l IN ($(LANGUAGES)) DO @$(CP) %%l.mo $(VIMRUNTIME)\lang\%%l\LC_MESSAGES\$(PACKAGE).mo
+	FOR %%l IN ($(LANGUAGES)) DO @IF NOT EXIST $(MNVRUNTIME)\lang\%%l $(MKD) $(MNVRUNTIME)\lang\%%l
+	FOR %%l IN ($(LANGUAGES)) DO @IF NOT EXIST $(MNVRUNTIME)\lang\%%l\LC_MESSAGES $(MKD) $(MNVRUNTIME)\lang\%%l\LC_MESSAGES
+	FOR %%l IN ($(LANGUAGES)) DO @$(CP) %%l.mo $(MNVRUNTIME)\lang\%%l\LC_MESSAGES\$(PACKAGE).mo
 else
 install-all: all
 	for TARGET in $(LANGUAGES); do \
-		$(MKD) $(VIMRUNTIME)/lang/$$TARGET/LC_MESSAGES ; \
-		$(CP) $$TARGET.mo $(VIMRUNTIME)/lang/$$TARGET/LC_MESSAGES/$(PACKAGE).mo ; \
+		$(MKD) $(MNVRUNTIME)/lang/$$TARGET/LC_MESSAGES ; \
+		$(CP) $$TARGET.mo $(MNVRUNTIME)/lang/$$TARGET/LC_MESSAGES/$(PACKAGE).mo ; \
 	done
 endif
 

@@ -9917,7 +9917,7 @@ V2.25 - 1-JUN-2015
 6534) Bahamians (added plural)
 6535) Cameroonian (+plural)
 6536) Mariel (+'s - name - Wikipedia)
-6537) Savimbi (+'s - name - Wikipedia)
+6537) Samnvbi (+'s - name - Wikipedia)
 6538) McKenna (+'s - name - Wikipedia)
 6539) Robichaud (+'s - name - Wikipedia)
 6540) plugger (+plural)

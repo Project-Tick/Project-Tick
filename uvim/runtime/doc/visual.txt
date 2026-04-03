@@ -1,7 +1,7 @@
-*visual.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*visual.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Visual mode				*Visual* *Visual-mode* *visual-mode*
@@ -20,7 +20,7 @@ This is introduced in section |04.4| of the user manual.
 7. Examples				|visual-examples|
 8. Select mode				|Select-mode|
 
-{Since Vim 7.4.200 the |+visual| feature is always included}
+{Since MNV 7.4.200 the |+visual| feature is always included}
 
 ==============================================================================
 1. Using Visual mode					*visual-use*
@@ -488,7 +488,7 @@ Entering Select mode:
 
 Commands in Select mode:
 - Printable characters, <NL> and <CR> cause the selection to be deleted, and
-  Vim enters Insert mode.  The typed character is inserted.
+  MNV enters Insert mode.  The typed character is inserted.
 - Non-printable movement commands, with the Shift key pressed, extend the
   selection.  'keymodel' must include "startsel".
 - Non-printable movement commands, with the Shift key NOT pressed, stop Select
@@ -513,7 +513,7 @@ Mappings and menus in Select mode.			*Select-mode-mapping*
 
 When mappings and menus are defined with the |:vmap| or |:vmenu| command they
 work both in Visual mode and in Select mode.  When these are used in Select
-mode Vim automatically switches to Visual mode, so that the same behavior as
+mode MNV automatically switches to Visual mode, so that the same behavior as
 in Visual mode is effective.  If you don't want this use |:xmap| or |:smap|.
 
 One particular edge case: >
@@ -558,4 +558,4 @@ g CTRL-H		Start Select mode, blockwise.  This is like CTRL-V,
 			but starts Select mode instead of Visual mode.
 			Mnemonic: "get Highlighted".
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

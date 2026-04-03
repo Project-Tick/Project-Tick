@@ -1,7 +1,7 @@
-*autocmd.txt*	For Vim version 9.2.  Last change: 2026 Feb 25
+*autocmd.txt*	For MNV version 9.2.  Last change: 2026 Feb 25
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Automatic commands				*autocommand* *autocommands*
@@ -25,11 +25,11 @@ For a basic explanation, see section |40.3| in the user manual.
 1. Introduction						*autocmd-intro*
 
 You can specify commands to be executed automatically when reading or writing
-a file, when entering or leaving a buffer or window, and when exiting Vim.
+a file, when entering or leaving a buffer or window, and when exiting MNV.
 For example, you can create an autocommand to set the 'cindent' option for
 files matching *.c.  You can also use autocommands to implement advanced
 features, such as editing compressed files (see |gzip-example|).  The usual
-place to put autocommands is in your .vimrc or .exrc file.
+place to put autocommands is in your .mnvrc or .exrc file.
 
 				*E203* *E204* *E143* *E855* *E937* *E952*
 WARNING: Using autocommands is very powerful, and may lead to unexpected side
@@ -38,7 +38,7 @@ effects.  Be careful not to destroy your text.
   For example: If you use autocommands to decompress a file when starting to
   edit it, make sure that the autocommands for compressing when writing work
   correctly.
-- Be prepared for an error halfway through (e.g., disk full).  Vim will mostly
+- Be prepared for an error halfway through (e.g., disk full).  MNV will mostly
   be able to undo the changes to the buffer, but you may have to clean up the
   changes to other files by hand (e.g., compress a file that has been
   decompressed).
@@ -53,7 +53,7 @@ Recommended use:
 - Make it so that the script it is defined in can be sourced several times
   without the autocommand being repeated.
 
-Example in Vim9 script: >
+Example in MNV9 script: >
    autocmd_add([{replace: true,
 		group:   'DemoGroup',
 		event:   'BufEnter',
@@ -74,18 +74,18 @@ In legacy script: >
 
 							*:au* *:autocmd*
 :au[tocmd] [group] {event} {aupat} [++once] [++nested] {cmd}
-			Add {cmd} to the list of commands that Vim will
+			Add {cmd} to the list of commands that MNV will
 			execute automatically on {event} for a file matching
 			{aupat} |autocmd-patterns|.
 			Here {event} cannot be "*".  *E1155*
 			Note: A quote character is seen as argument to the
 			:autocmd and won't start a comment.
-			Vim always adds the {cmd} after existing autocommands,
+			MNV always adds the {cmd} after existing autocommands,
 			so that the autocommands execute in the order in which
 			they were given.
 			See |autocmd-nested| for [++nested].  "nested"
 			(without the ++) can also be used, for backwards
-			compatibility, but not in |Vim9| script. *E1078*
+			compatibility, but not in |MNV9| script. *E1078*
 							*autocmd-once*
 			If [++once] is supplied the command is executed once,
 			then removed ("one shot").
@@ -93,8 +93,8 @@ In legacy script: >
 The special pattern <buffer> or <buffer=N> defines a buffer-local autocommand.
 See |autocmd-buflocal|.
 
-If the `:autocmd` is in Vim9 script (a script that starts with `:vim9script`
-and in a `:def` function) then {cmd} will be executed as in Vim9
+If the `:autocmd` is in MNV9 script (a script that starts with `:mnv9script`
+and in a `:def` function) then {cmd} will be executed as in MNV9
 script.  Thus this depends on where the autocmd is defined, not where it is
 triggered.
 							*:autocmd-block*
@@ -105,7 +105,7 @@ triggered.
 		}
 
 The |autocmd_add()| function can be used to add a list of autocmds and autocmd
-groups from a Vim script.  It is preferred if you have anything that would
+groups from a MNV script.  It is preferred if you have anything that would
 require using `:execute` with `:autocmd`.
 
 Note: The ":autocmd" command can only be followed by another command when the
@@ -127,41 +127,41 @@ arguments are not expanded when the autocommand is defined.  These will be
 expanded when the Event is recognized, and the {cmd} is executed.  The only
 exception is that "<sfile>" is expanded when the autocmd is defined.  Example:
 >
-	:au BufNewFile,BufRead *.html so <sfile>:h/html.vim
+	:au BufNewFile,BufRead *.html so <sfile>:h/html.mnv
 
-Here Vim expands <sfile> to the name of the file containing this line.
+Here MNV expands <sfile> to the name of the file containing this line.
 However, <sfile> works differently in a function, in which case it's better to
 use `:execute` with <script> to achieve the same purpose:
 >
-	:exe $'au BufNewFile,BufRead *.html so {expand("<script>:h")}/html.vim'
+	:exe $'au BufNewFile,BufRead *.html so {expand("<script>:h")}/html.mnv'
 
 `:autocmd` adds to the list of autocommands regardless of whether they are
-already present.  When your .vimrc file is sourced twice, the autocommands
+already present.  When your .mnvrc file is sourced twice, the autocommands
 will appear twice.  To avoid this, define your autocommands in a group, so
 that you can easily clear them: >
 
-	augroup vimrc
-	  " Remove all vimrc autocommands
+	augroup mnvrc
+	  " Remove all mnvrc autocommands
 	  autocmd!
-	  au BufNewFile,BufRead *.html so <sfile>:h/html.vim
+	  au BufNewFile,BufRead *.html so <sfile>:h/html.mnv
 	augroup END
 
 If you don't want to remove all autocommands, you can instead use a variable
-to ensure that Vim includes the autocommands only once: >
+to ensure that MNV includes the autocommands only once: >
 
 	:if !exists("autocommands_loaded")
 	:  let autocommands_loaded = 1
 	:  au ...
 	:endif
 
-When the [group] argument is not given, Vim uses the current group (as defined
-with ":augroup"); otherwise, Vim uses the group defined with [group].  Note
+When the [group] argument is not given, MNV uses the current group (as defined
+with ":augroup"); otherwise, MNV uses the group defined with [group].  Note
 that [group] must have been defined before.  You cannot define a new group
 with ":au group ..."; use ":augroup" for that.
 
 While testing autocommands, you might find the 'verbose' option to be useful: >
 	:set verbose=9
-This setting makes Vim echo the autocommands as it executes them.
+This setting makes MNV echo the autocommands as it executes them.
 
 When defining an autocommand in a script, it will be able to call functions
 local to the script and use mappings local to the script.  When the event is
@@ -177,7 +177,7 @@ prompt.  When one command outputs two messages this can happen anyway.
 3. Removing autocommands				*autocmd-remove*
 
 In addition to the below described commands, the |autocmd_delete()| function can
-be used to remove a list of autocmds and autocmd groups from a Vim script.
+be used to remove a list of autocmds and autocmd groups from a MNV script.
 
 :au[tocmd]! [group] {event} {aupat} [++once] [++nested] {cmd}
 			Remove all autocommands associated with {event} and
@@ -205,8 +205,8 @@ be used to remove a list of autocmds and autocmd groups from a Vim script.
 			Warning: You should normally not do this without a
 			group, it breaks plugins, syntax highlighting, etc.
 
-When the [group] argument is not given, Vim uses the current group (as defined
-with ":augroup"); otherwise, Vim uses the group defined with [group].
+When the [group] argument is not given, MNV uses the current group (as defined
+with ":augroup"); otherwise, MNV uses the group defined with [group].
 
 ==============================================================================
 4. Listing autocommands					*autocmd-list*
@@ -224,14 +224,14 @@ with ":augroup"); otherwise, Vim uses the group defined with [group].
 
 :au[tocmd] [group]	Show all autocommands.
 
-If you provide the [group] argument, Vim lists only the autocommands for
-[group]; otherwise, Vim lists the autocommands for ALL groups.  Note that this
+If you provide the [group] argument, MNV lists only the autocommands for
+[group]; otherwise, MNV lists the autocommands for ALL groups.  Note that this
 argument behavior differs from that for defining and removing autocommands.
 
 In order to list buffer-local autocommands, use a pattern in the form <buffer>
 or <buffer=N>.  See |autocmd-buflocal|.
 
-The |autocmd_get()| function can be used from a Vim script to get a list of
+The |autocmd_get()| function can be used from a MNV script to get a list of
 autocmds.
 
 							*:autocmd-verbose*
@@ -241,7 +241,7 @@ was last defined.  Example: >
     :verbose autocmd BufEnter
     FileExplorer  BufEnter
 	*	  call s:LocalBrowse(expand("<amatch>"))
-	    Last set from /usr/share/vim/vim-7.0/plugin/NetrwPlugin.vim
+	    Last set from /usr/share/mnv/mnv-7.0/plugin/NetrwPlugin.mnv
 <
 See |:verbose-cmd| for more information.
 
@@ -256,7 +256,7 @@ For READING FILES there are four kinds of events possible:
 	BufReadPre	BufReadPost	starting to edit an existing file
 	FilterReadPre	FilterReadPost	read the temp file with filter output
 	FileReadPre	FileReadPost	any other file read
-Vim uses only one of these four kinds when reading a file.  The "Pre" and
+MNV uses only one of these four kinds when reading a file.  The "Pre" and
 "Post" events are both triggered, before and after reading the file.
 
 Note that the autocommands for the *ReadPre events and all the Filter events
@@ -270,7 +270,7 @@ autocommands, this doesn't happen.
 You can use the 'eventignore' option to ignore a number of events or all
 events.
 					*autocommand-events* *{event}*
-Vim recognizes the following events.  Vim ignores the case of event names
+MNV recognizes the following events.  MNV ignores the case of event names
 (e.g., you can use "BUFread" or "bufread" instead of "BufRead").
 
 First an overview by function with a short explanation.  Then the list
@@ -340,7 +340,7 @@ Name			triggered by ~
 |OptionSet|		after setting any option
 
 	Startup and exit
-|VimEnter|		after doing all the startup stuff
+|MNVEnter|		after doing all the startup stuff
 |GUIEnter|		after starting the GUI successfully
 |GUIFailed|		after starting the GUI failed
 |TermResponse|		after the terminal response to |t_RV| is received
@@ -348,19 +348,19 @@ Name			triggered by ~
 			received
 
 |QuitPre|		when using `:quit`, before deciding whether to exit
-|ExitPre|		when using a command that may make Vim exit
-|VimLeavePre|		before exiting Vim, before writing the viminfo file
-|VimLeave|		before exiting Vim, after writing the viminfo file
+|ExitPre|		when using a command that may make MNV exit
+|MNVLeavePre|		before exiting MNV, before writing the mnvinfo file
+|MNVLeave|		before exiting MNV, after writing the mnvinfo file
 
-|VimSuspend|		when suspending Vim
-|VimResume|		when Vim is resumed after being suspended
+|MNVSuspend|		when suspending MNV
+|MNVResume|		when MNV is resumed after being suspended
 
 	Terminal
 |TerminalOpen|		after a terminal buffer was created
 |TerminalWinOpen|	after a terminal buffer was created in a new window
 
 	Various
-|FileChangedShell|	Vim notices that a file changed since editing started
+|FileChangedShell|	MNV notices that a file changed since editing started
 |FileChangedShellPost|	After handling a file changed since editing started
 |FileChangedRO|		before making the first change to a read-only file
 
@@ -374,13 +374,13 @@ Name			triggered by ~
 |CmdUndefined|		a user command is used but it isn't defined
 |FuncUndefined|		a user function is used but it isn't defined
 |SpellFileMissing|	a spell file is used but it can't be found
-|SourcePre|		before sourcing a Vim script
-|SourcePost|		after sourcing a Vim script
-|SourceCmd|		before sourcing a Vim script |Cmd-event|
+|SourcePre|		before sourcing a MNV script
+|SourcePost|		after sourcing a MNV script
+|SourceCmd|		before sourcing a MNV script |Cmd-event|
 
-|VimResized|		after the Vim window size changed
-|FocusGained|		Vim got input focus
-|FocusLost|		Vim lost input focus
+|MNVResized|		after the MNV window size changed
+|FocusGained|		MNV got input focus
+|FocusLost|		MNV lost input focus
 |CursorHold|		the user doesn't press a key for a while
 |CursorHoldI|		the user doesn't press a key for a while in Insert
 			mode
@@ -430,7 +430,7 @@ Name			triggered by ~
 |ColorSchemePre|	before loading a color scheme
 |ColorScheme|		after loading a color scheme
 
-|RemoteReply|		a reply from a server Vim was received
+|RemoteReply|		a reply from a server MNV was received
 
 |QuickFixCmdPre|	before a quickfix command is run
 |QuickFixCmdPost|	after a quickfix command is run
@@ -497,7 +497,7 @@ BufHidden			Just before a buffer becomes hidden.  That is,
 				when there are no longer windows that show
 				the buffer, but the buffer is not unloaded or
 				deleted.  Not used for ":qa" or ":q" when
-				exiting Vim.
+				exiting MNV.
 				NOTE: When this autocommand is executed, the
 				current buffer "%" may be different from the
 				buffer being unloaded "<afile>".
@@ -505,7 +505,7 @@ BufHidden			Just before a buffer becomes hidden.  That is,
 BufLeave			Before leaving to another buffer.  Also when
 				leaving or closing the current window and the
 				new current window is not for the same buffer.
-				Not used for ":qa" or ":q" when exiting Vim.
+				Not used for ":qa" or ":q" when exiting MNV.
 							*BufNew*
 BufNew				Just after creating a new buffer.  Also used
 				just after a buffer has been renamed.  When
@@ -545,7 +545,7 @@ BufUnload			Before unloading a buffer.  This is when the
 				text in the buffer is going to be freed.  This
 				may be after a BufWritePost and before a
 				BufDelete.  Also used for all buffers that are
-				loaded when Vim is going to exit.
+				loaded when MNV is going to exit.
 				NOTE: When this autocommand is executed, the
 				current buffer "%" may be different from the
 				buffer being unloaded "<afile>".
@@ -624,7 +624,7 @@ CmdUndefined			When a user command is used but it isn't
 							*CmdlineChanged*
 CmdlineChanged			After a change was made to the text in the
 				command line.  Be careful not to mess up
-				the command line, it may cause Vim to lock up.
+				the command line, it may cause MNV to lock up.
 				<afile> is set to a single character,
 				indicating the type of command-line.
 				|cmdwin-char|
@@ -741,7 +741,7 @@ CompleteDone			After Insert mode completion is done.  Either
 CursorHold			When the user doesn't press a key for the time
 				specified with 'updatetime'.  Not triggered
 				until the user has pressed a key (i.e. doesn't
-				fire every 'updatetime' ms if you leave Vim to
+				fire every 'updatetime' ms if you leave MNV to
 				make some coffee. :)  See |CursorHold-example|
 				for previewing tags.
 				This event is only triggered in Normal mode.
@@ -789,7 +789,7 @@ CursorMoved			After the cursor was moved in Normal or Visual
 							*CursorMovedC*
 CursorMovedC			After the cursor was moved in the command
 				line.  Be careful not to mess up the command
-				line, it may cause Vim to lock up.
+				line, it may cause MNV to lock up.
 				<afile> is set to a single character,
 				indicating the type of command-line.
 				|cmdwin-char|
@@ -823,11 +823,11 @@ EncodingChanged			Fires off after the 'encoding' option has been
 				changed.  Useful to set up fonts, for example.
 							*ExitPre*
 ExitPre				When using `:quit`, `:wq` in a way it makes
-				Vim exit, or using `:qall`, just after
+				MNV exit, or using `:qall`, just after
 				|QuitPre|.  Can be used to close any
 				non-essential window.  Exiting may still be
 				cancelled if there is a modified buffer that
-				isn't automatically saved, use |VimLeavePre|
+				isn't automatically saved, use |MNVLeavePre|
 				for really exiting.
 							*FileAppendCmd*
 FileAppendCmd			Before appending to a file.  Should do the
@@ -857,14 +857,14 @@ FileChangedRO			Before making the first change to a read-only
 				If the number of lines changes saving for undo
 				may fail and the change will be aborted.
 							*FileChangedShell*
-FileChangedShell		When Vim notices that the modification time of
+FileChangedShell		When MNV notices that the modification time of
 				a file has changed since editing started.
 				Also when the file attributes of the file
 				change or when the size of the file changes.
 				|timestamp|
 				Mostly triggered after executing a shell
 				command, but also with a |:checktime| command
-				or when gvim regains input focus.
+				or when gmnv regains input focus.
 				This autocommand is triggered for each changed
 				file.  It is not used when 'autoread' is set
 				and the buffer was not changed.  If a
@@ -872,7 +872,7 @@ FileChangedShell		When Vim notices that the modification time of
 				warning message and prompt is not given.
 				The |v:fcs_reason| variable is set to indicate
 				what happened and |v:fcs_choice| can be used
-				to tell Vim what to do next.
+				to tell MNV what to do next.
 				NOTE: When this autocommand is executed, the
 				current buffer "%" may be different from the
 				buffer that was changed, which is in
@@ -887,7 +887,7 @@ FileChangedShell		When Vim notices that the modification time of
 				triggered.
 							*FileChangedShellPost*
 FileChangedShellPost		After handling a file that was changed outside
-				of Vim.  Can be used to update the statusline.
+				of MNV.  Can be used to update the statusline.
 							*FileEncoding*
 FileEncoding			Obsolete.  It still works and is equivalent
 				to |EncodingChanged|.
@@ -896,7 +896,7 @@ FileReadCmd			Before reading a file with a ":read" command.
 				Should do the reading of the file. |Cmd-event|
 							*FileReadPost*
 FileReadPost			After reading a file with a ":read" command.
-				Note that Vim sets the '[ and '] marks to the
+				Note that MNV sets the '[ and '] marks to the
 				first and last line of the read.  This can be
 				used to operate on the lines just read.
 							*FileReadPre*
@@ -924,12 +924,12 @@ FileWritePre			Before writing to a file, when not writing the
 				range of lines.
 							*FilterReadPost*
 FilterReadPost			After reading a file from a filter command.
-				Vim checks the pattern against the name of
+				MNV checks the pattern against the name of
 				the current buffer as with FilterReadPre.
 				Not triggered when 'shelltemp' is off.
 							*FilterReadPre* *E135*
 FilterReadPre			Before reading a file from a filter command.
-				Vim checks the pattern against the name of
+				MNV checks the pattern against the name of
 				the current buffer, not the name of the
 				temporary file that is the output of the
 				filter command.
@@ -938,23 +938,23 @@ FilterReadPre			Before reading a file from a filter command.
 FilterWritePost			After writing a file for a filter command or
 				making a diff with an external diff (see
 				|DiffUpdated| for internal diff).
-				Vim checks the pattern against the name of
+				MNV checks the pattern against the name of
 				the current buffer as with FilterWritePre.
 				Not triggered when 'shelltemp' is off.
 							*FilterWritePre*
 FilterWritePre			Before writing a file for a filter command or
 				making a diff with an external diff.
-				Vim checks the pattern against the name of
+				MNV checks the pattern against the name of
 				the current buffer, not the name of the
 				temporary file that is the output of the
 				filter command.
 				Not triggered when 'shelltemp' is off.
 							*FocusGained*
-FocusGained			When Vim got input focus.  Only for the GUI
+FocusGained			When MNV got input focus.  Only for the GUI
 				version and a few console versions where this
 				can be detected. |xterm-focus-event|
 							*FocusLost*
-FocusLost			When Vim lost input focus.  Only for the GUI
+FocusLost			When MNV lost input focus.  Only for the GUI
 				version and a few console versions where this
 				can be detected. |xterm-focus-event|
 				May also happen when a dialog pops up.
@@ -966,22 +966,22 @@ FuncUndefined			When a user function is used but it isn't
 				<afile> are set to the name of the function.
 				This is triggered even when inside an
 				autocommand defined without |autocmd-nested|,
-				but not triggered when compiling a |Vim9|
+				but not triggered when compiling a |MNV9|
 				function.
-				NOTE: When writing Vim scripts a better
+				NOTE: When writing MNV scripts a better
 				alternative is to use an autoloaded function.
 				See |autoload-functions|.
 							*GUIEnter*
 GUIEnter			After starting the GUI successfully, and after
 				opening the window.  It is triggered before
-				VimEnter when using gvim.  Can be used to
-				position the window from a .gvimrc file: >
+				MNVEnter when using gmnv.  Can be used to
+				position the window from a .gmnvrc file: >
 	:autocmd GUIEnter * winpos 100 50
 <							*GUIFailed*
-GUIFailed			After starting the GUI failed.  Vim may
+GUIFailed			After starting the GUI failed.  MNV may
 				continue to run in the terminal, if possible
 				(only on Unix and alikes, when connecting the
-				X server fails).  You may want to quit Vim: >
+				X server fails).  You may want to quit MNV: >
 	:autocmd GUIFailed * qall
 <							*InsertChange*
 InsertChange			When typing <Insert> while in Insert or
@@ -1118,8 +1118,8 @@ OptionSet			After setting an option.  The pattern is
 							*QuickFixCmdPre*
 QuickFixCmdPre			Before a quickfix command is run (|:make|,
 				|:lmake|, |:grep|, |:lgrep|, |:grepadd|,
-				|:lgrepadd|, |:vimgrep|, |:lvimgrep|,
-				|:vimgrepadd|, |:lvimgrepadd|, |:cscope|,
+				|:lgrepadd|, |:mnvgrep|, |:lmnvgrep|,
+				|:mnvgrepadd|, |:lmnvgrepadd|, |:cscope|,
 				|:cfile|, |:cgetfile|, |:caddfile|, |:lfile|,
 				|:lgetfile|, |:laddfile|, |:helpgrep|,
 				|:lhelpgrep|, |:cexpr|, |:cgetexpr|,
@@ -1142,13 +1142,13 @@ QuickFixCmdPost			Like QuickFixCmdPre, but after a quickfix
 							*QuitPre*
 QuitPre				When using `:quit`, `:wq` or `:qall`, before
 				deciding whether it closes the current window
-				or quits Vim.  For `:wq` the buffer is written
+				or quits MNV.  For `:wq` the buffer is written
 				before QuitPre is triggered.  Can be used to
 				close any non-essential window if the current
 				window is the last ordinary window.
 				Also see |ExitPre|.
 							*RemoteReply*
-RemoteReply			When a reply from a Vim that functions as
+RemoteReply			When a reply from a MNV that functions as
 				server was received |server2client()|.  The
 				pattern is matched against the {serverid}.
 				<amatch> is equal to the {serverid} from which
@@ -1169,7 +1169,7 @@ SafeState			When nothing is pending, going to wait for the
 				- Insert mode completion is active
 				- Command line completion is active
 				You can use `mode()` to find out what state
-				Vim is in.  That may be:
+				MNV is in.  That may be:
 				- Visual mode
 				- Normal mode
 				- Insert mode
@@ -1201,16 +1201,16 @@ ShellFilterPost			After executing a shell command with
 				":{range}!cmd", ":w !cmd" or ":r !cmd".
 				Can be used to check for any changed files.
 							*SourcePre*
-SourcePre			Before sourcing a Vim script. |:source|
+SourcePre			Before sourcing a MNV script. |:source|
 				<afile> is the name of the file being sourced.
 							*SourcePost*
-SourcePost			After sourcing a Vim script. |:source|
+SourcePost			After sourcing a MNV script. |:source|
 				<afile> is the name of the file being sourced.
 				Not triggered when sourcing was interrupted.
 				Also triggered after a SourceCmd autocommand
 				was triggered.
 							*SourceCmd*
-SourceCmd			When sourcing a Vim script. |:source|
+SourceCmd			When sourcing a MNV script. |:source|
 				<afile> is the name of the file being sourced.
 				The autocommand must source this file.
 				|Cmd-event|
@@ -1223,16 +1223,16 @@ SpellFileMissing		When trying to load a spell checking file and
 							*StdinReadPost*
 StdinReadPost			After reading from the stdin into the buffer,
 				before executing the modelines.  Only used
-				when the "-" argument was used when Vim was
+				when the "-" argument was used when MNV was
 				started |--|.
 							*StdinReadPre*
 StdinReadPre			Before reading from stdin into the buffer.
 				Only used when the "-" argument was used when
-				Vim was started |--|.
+				MNV was started |--|.
 							*SwapExists*
 SwapExists			Detected an existing swap file when starting
 				to edit a file.  Only when it is possible to
-				select a way to handle the situation, when Vim
+				select a way to handle the situation, when MNV
 				would ask the user what to do.
 				The |v:swapname| variable holds the name of
 				the swap file found, <afile> the file being
@@ -1240,7 +1240,7 @@ SwapExists			Detected an existing swap file when starting
 				to be executed in the opened file.
 				The commands should set the |v:swapchoice|
 				variable to a string with one character to
-				tell Vim what should be done next:
+				tell MNV what should be done next:
 					'o'	open read-only
 					'e'	edit the file anyway
 					'r'	recover
@@ -1300,7 +1300,7 @@ TermResponse			After the response to |t_RV| is received from
 				the terminal.  The value of |v:termresponse|
 				can be used to do things depending on the
 				terminal version.
-				This is used in |defaults.vim| to detect
+				This is used in |defaults.mnv| to detect
 				putty terminal and set a dark background: >
 
 				au TermResponse *
@@ -1383,7 +1383,7 @@ TextYankPost			After text has been yanked or deleted in the
 				called recursively.
 				It is not allowed to change the buffer text,
 				see |textlock|. *E1064*
-				Also triggered indirectly when Vim tries to
+				Also triggered indirectly when MNV tries to
 				become owner of the Visual selection because
 				of setting "autoselect" for 'guioptions' or
 				'clipboard'.
@@ -1406,7 +1406,7 @@ User				Never executed automatically.  To be used for
 <
 							*SigUSR1*
 SigUSR1				After the SIGUSR1 signal has been detected.
-				Could be used if other ways of notifying Vim
+				Could be used if other ways of notifying MNV
 				are not feasible.  E.g. to check for the
 				result of a build that takes a long time, or
 				when a motion sensor is triggered.
@@ -1415,53 +1415,53 @@ SigUSR1				After the SIGUSR1 signal has been detected.
 							*UserGettingBored*
 UserGettingBored		When the user presses the same key 42 times.
 				Just kidding! :-)
-							*VimEnter*
-VimEnter			After doing all the startup stuff, including
-				loading .vimrc files, executing the "-c cmd"
+							*MNVEnter*
+MNVEnter			After doing all the startup stuff, including
+				loading .mnvrc files, executing the "-c cmd"
 				arguments, creating all windows and loading
 				the buffers in them.
 				Just before this event is triggered the
-				|v:vim_did_enter| variable is set, so that you
+				|v:mnv_did_enter| variable is set, so that you
 				can do: >
-				   if v:vim_did_enter
+				   if v:mnv_did_enter
 				     call s:init()
 				   else
-				     au VimEnter * call s:init()
+				     au MNVEnter * call s:init()
 				   endif
-<							*VimLeave*
-VimLeave			Before exiting Vim, just after writing the
-				.viminfo file.  Executed only once, like
-				VimLeavePre.
+<							*MNVLeave*
+MNVLeave			Before exiting MNV, just after writing the
+				.mnvinfo file.  Executed only once, like
+				MNVLeavePre.
 				To detect an abnormal exit use |v:dying|.
 				When v:dying is 2 or more this event is not
 				triggered.
 				To get the exit code use |v:exiting|.
-							*VimLeavePre*
-VimLeavePre			Before exiting Vim, just before writing the
-				.viminfo file.  This is executed only once,
+							*MNVLeavePre*
+MNVLeavePre			Before exiting MNV, just before writing the
+				.mnvinfo file.  This is executed only once,
 				if there is a match with the name of what
 				happens to be the current buffer when exiting.
 				Mostly useful with a "*" pattern. >
-	:autocmd VimLeavePre * call CleanupStuff()
+	:autocmd MNVLeavePre * call CleanupStuff()
 <				To detect an abnormal exit use |v:dying|.
 				When v:dying is 2 or more this event is not
 				triggered.
 				To get the exit code use |v:exiting|.
-							*VimResized*
-VimResized			After the Vim window was resized, thus 'lines'
+							*MNVResized*
+MNVResized			After the MNV window was resized, thus 'lines'
 				and/or 'columns' changed.  Not when starting
 				up though.
-							*VimResume*
-VimResume			When the Vim instance is resumed after being
-				suspended and |VimSuspend| was triggered.
+							*MNVResume*
+MNVResume			When the MNV instance is resumed after being
+				suspended and |MNVSuspend| was triggered.
 				Useful for triggering |:checktime| and ensure
-				the buffers content did not change while Vim
+				the buffers content did not change while MNV
 				was suspended: >
-	:autocmd VimResume * checktime
-<							*VimSuspend*
-VimSuspend			When the Vim instance is suspended.  Only when
-				CTRL-Z was typed inside Vim, or when the
-				SIGTSTP signal was sent to Vim, but not for
+	:autocmd MNVResume * checktime
+<							*MNVSuspend*
+MNVSuspend			When the MNV instance is suspended.  Only when
+				CTRL-Z was typed inside MNV, or when the
+				SIGTSTP signal was sent to MNV, but not for
 				SIGSTOP.
 							*WinClosed*
 WinClosed			When closing a window, just before it is
@@ -1472,9 +1472,9 @@ WinClosed			When closing a window, just before it is
 				trigger itself).
 							*WinEnter*
 WinEnter			After entering another window.  Not done for
-				the first window, when Vim has just started.
+				the first window, when MNV has just started.
 				Useful for setting the window height.
-				If the window is for another buffer, Vim
+				If the window is for another buffer, MNV
 				executes the BufEnter autocommands after the
 				WinEnter autocommands.
 				Note: For split and tabpage commands the
@@ -1483,10 +1483,10 @@ WinEnter			After entering another window.  Not done for
 
 							*WinLeave*
 WinLeave			Before leaving a window.  If the window to be
-				entered next is for a different buffer, Vim
+				entered next is for a different buffer, MNV
 				executes the BufLeave autocommands before the
 				WinLeave autocommands (but not for ":new").
-				Not used for ":qa" or ":q" when exiting Vim.
+				Not used for ":qa" or ":q" when exiting MNV.
 
 							*WinNewPre*
 WinNewPre			Before creating a new window.  Triggered
@@ -1504,7 +1504,7 @@ WinNewPre			Before creating a new window.  Triggered
 
 							*WinNew*
 WinNew				When a new window was created.  Not done for
-				the first window, when Vim has just started.
+				the first window, when MNV has just started.
 				Before a WinEnter event.
 
 							*WinScrolled*
@@ -1515,7 +1515,7 @@ WinScrolled			After any window in the current tab page
 
 				Note: This can not be skipped with
 				`:noautocmd`, because it triggers after
-				processing normal commands when Vim is back in
+				processing normal commands when MNV is back in
 				the main loop.  If you want to disable this,
 				consider setting the 'eventignore' option
 				instead.
@@ -1564,9 +1564,9 @@ Is equivalent to: >
 
 The file pattern {aupat} is tested for a match against the file name in one of
 two ways:
-1. When there is no '/' in the pattern, Vim checks for a match against only
+1. When there is no '/' in the pattern, MNV checks for a match against only
    the tail part of the file name (without its leading directory path).
-2. When there is a '/' in the pattern, Vim checks for a match against both the
+2. When there is a '/' in the pattern, MNV checks for a match against both the
    short file name (as you typed it) and the full file name (after expanding
    it to a full path and resolving symbolic links).
 
@@ -1578,11 +1578,11 @@ Examples: >
 	:autocmd BufRead *.txt		set et
 Set the 'et' option for all text files. >
 
-	:autocmd BufRead /vim/src/*.c	set cindent
-Set the 'cindent' option for C files in the /vim/src directory. >
+	:autocmd BufRead /mnv/src/*.c	set cindent
+Set the 'cindent' option for C files in the /mnv/src directory. >
 
 	:autocmd BufRead /tmp/*.c	set ts=5
-If you have a link from "/tmp/test.c" to "/home/nobody/vim/src/test.c", and
+If you have a link from "/tmp/test.c" to "/home/nobody/mnv/src/test.c", and
 you start editing "/tmp/test.c", this autocommand will match.
 
 Note:  To match part of a path, but not from the root directory, use a '*' as
@@ -1603,9 +1603,9 @@ expect.
 
 
 Environment variables can be used in a pattern: >
-	:autocmd BufRead $VIMRUNTIME/doc/*.txt  set expandtab
+	:autocmd BufRead $MNVRUNTIME/doc/*.txt  set expandtab
 And ~ can be used for the home directory (if $HOME is defined): >
-	:autocmd BufWritePost ~/.vimrc   so ~/.vimrc
+	:autocmd BufWritePost ~/.mnvrc   so ~/.mnvrc
 	:autocmd BufRead ~archive/*      set readonly
 The environment variable is expanded when the autocommand is defined, not when
 the autocommand is executed.  This is different from the command!
@@ -1646,7 +1646,7 @@ change which autocommands will be executed.  Example: >
 	au BufEnter *.foo  set modified
 
 This will delete the current buffer and then set 'modified' in what has become
-the current buffer instead.  Vim doesn't take into account that "*.foo"
+the current buffer instead.  MNV doesn't take into account that "*.foo"
 doesn't match with that buffer name.  It matches "*.foo" with the name of the
 buffer at the moment the event was triggered.
 
@@ -1712,12 +1712,12 @@ executing a group of autocommands.  For example, all the autocommands for
 syntax highlighting are put in the "highlight" group, to be able to execute
 ":doautoall highlight BufRead" when the GUI starts.
 
-When no specific group is selected, Vim uses the default group.  The default
+When no specific group is selected, MNV uses the default group.  The default
 group does not have a name.  You cannot execute the autocommands from the
 default group separately; you can execute them only by executing autocommands
 for all groups.
 
-Normally, when executing autocommands automatically, Vim uses the autocommands
+Normally, when executing autocommands automatically, MNV uses the autocommands
 for all groups.  The group only matters when executing autocommands with
 ":doautocmd" or ":doautoall", or when defining or deleting autocommands.
 
@@ -1755,11 +1755,11 @@ Example: >
 	:augroup END
 
 This prevents having the autocommands defined twice (e.g., after sourcing the
-.vimrc file again).
+.mnvrc file again).
 
 						*FileExplorer*
-There is one group that is recognized by Vim: FileExplorer.  If this group
-exists Vim assumes that editing a directory is possible and will trigger a
+There is one group that is recognized by MNV: FileExplorer.  If this group
+exists MNV assumes that editing a directory is possible and will trigger a
 plugin that lists the files in that directory.  This is used by the |netrw|
 plugin.  This allows you to do: >
 	browse edit
@@ -1767,8 +1767,8 @@ plugin.  This allows you to do: >
 ==============================================================================
 9. Executing autocommands				*autocmd-execute*
 
-Vim can also execute Autocommands non-automatically.  This is useful if you
-have changed autocommands, or when Vim has executed the wrong autocommands
+MNV can also execute Autocommands non-automatically.  This is useful if you
+have changed autocommands, or when MNV has executed the wrong autocommands
 (e.g., the file pattern match was wrong).
 
 Note that the 'eventignore' option applies here too.  Events listed in this
@@ -1784,16 +1784,16 @@ option will not cause any commands to be executed.
 			It's possible to use this inside an autocommand too,
 			so you can base the autocommands for one extension on
 			another extension.  Example: >
-				:au BufEnter *.cpp so ~/.vimrc_cpp
+				:au BufEnter *.cpp so ~/.mnvrc_cpp
 				:au BufEnter *.cpp doau BufEnter x.c
 <			Be careful to avoid endless loops.  See
 			|autocmd-nested|.
 
-			When the [group] argument is not given, Vim executes
+			When the [group] argument is not given, MNV executes
 			the autocommands for all groups.  When the [group]
-			argument is included, Vim executes only the matching
+			argument is included, MNV executes only the matching
 			autocommands for that group.  Note: if you use an
-			undefined group name, Vim gives you an error message.
+			undefined group name, MNV gives you an error message.
 							*<nomodeline>*
 			After applying the autocommands the modelines are
 			processed, so that their settings overrule the
@@ -1829,7 +1829,7 @@ option will not cause any commands to be executed.
 ==============================================================================
 10. Using autocommands					*autocmd-use*
 
-For WRITING FILES there are four possible sets of events.  Vim uses only one
+For WRITING FILES there are four possible sets of events.  MNV uses only one
 of these sets for a write command:
 
 BufWriteCmd	BufWritePre	BufWritePost	writing the whole buffer
@@ -1892,7 +1892,7 @@ The "gzip" group is used to be able to delete any existing autocommands with
 ("<afile>:r" is the file name without the extension, see |:_%:|)
 
 The commands executed for the BufNewFile, BufRead/BufReadPost, BufWritePost,
-FileAppendPost and VimLeave events do not set or reset the changed flag of the
+FileAppendPost and MNVLeave events do not set or reset the changed flag of the
 buffer.  When you decompress the buffer with the BufReadPost autocommands, you
 can still exit with ":q".  When you use ":undo" in BufWritePost to undo the
 changes made by BufWritePre commands, you can still do ":q" (this also makes
@@ -1910,7 +1910,7 @@ instead of ":q!".
 
 							*autocmd-nested* *E218*
 By default, autocommands do not nest.  For example, if you use ":e" or ":w" in
-an autocommand, Vim does not execute the BufRead and BufWrite autocommands for
+an autocommand, MNV does not execute the BufRead and BufWrite autocommands for
 those commands.  If you do want this, use the "nested" flag for those commands
 in which you want nesting.  For example: >
   :autocmd FileChangedShell *.c ++nested e!
@@ -1924,9 +1924,9 @@ If you want to skip autocommands for one command, use the |:noautocmd| command
 modifier or the 'eventignore' option.
 
 Note: When reading a file (with ":read file" or with a filter command) and the
-last line in the file does not have an <EOL>, Vim remembers this.  At the next
+last line in the file does not have an <EOL>, MNV remembers this.  At the next
 write (with ":write file" or with a filter command), if the same line is
-written again as the last line in a file AND 'binary' is set, Vim does not
+written again as the last line in a file AND 'binary' is set, MNV does not
 supply an <EOL>.  This makes a filter command on the just read lines write the
 same file as was read, and makes a write command on just filtered lines write
 the same file as was read from the filter.  For example, another way to write
@@ -1962,9 +1962,9 @@ entered, rather than from the start of the file.
 						*skeleton* *template*
 To read a skeleton (template) file when opening a new file: >
 
-  :autocmd BufNewFile  *.c	0r ~/vim/skeleton.c
-  :autocmd BufNewFile  *.h	0r ~/vim/skeleton.h
-  :autocmd BufNewFile  *.java	0r ~/vim/skeleton.java
+  :autocmd BufNewFile  *.c	0r ~/mnv/skeleton.c
+  :autocmd BufNewFile  *.h	0r ~/mnv/skeleton.h
+  :autocmd BufNewFile  *.java	0r ~/mnv/skeleton.java
 
 To insert the current date and time in a *.html file when writing it: >
 
@@ -1980,7 +1980,7 @@ To insert the current date and time in a *.html file when writing it: >
   :endfun
 
 You need to have a line "Last modified: <date time>" in the first 20 lines
-of the file for this to work.  Vim replaces <date time> (and anything in the
+of the file for this to work.  MNV replaces <date time> (and anything in the
 same line after it) with the current date and time.  Explanation:
 	ks		mark current position with mark 's'
 	call LastMod()  call the LastMod() function to do the work
@@ -1995,7 +1995,7 @@ function.  You can change its argument to get another date string.
 When entering :autocmd on the command-line, completion of events and command
 names may be done (with <Tab>, CTRL-D, etc.) where appropriate.
 
-Vim executes all matching autocommands in the order that you specify them.
+MNV executes all matching autocommands in the order that you specify them.
 It is recommended that your first autocommand be used for all files by using
 "*" as the file pattern.  This means that you can define defaults you like
 here for any settings, and if there is another matching autocommand it will
@@ -2005,7 +2005,7 @@ which autocommands did match).  Note that "*" will also match files starting
 with ".", unlike Unix shells.
 
 						    *autocmd-searchpat*
-Autocommands do not change the current search patterns.  Vim saves the current
+Autocommands do not change the current search patterns.  MNV saves the current
 search patterns before executing autocommands then restores them after the
 autocommands finish.  This means that autocommands do not affect the strings
 highlighted with the 'hlsearch' option.  Within autocommands, you can still
@@ -2013,8 +2013,8 @@ use search patterns normally, e.g., with the "n" command.
 If you want an autocommand to set the search pattern, such that it is used
 after the autocommand finishes, use the ":let @/ =" command.
 The search-highlighting cannot be switched off with ":nohlsearch" in an
-autocommand.  Use the 'h' flag in the 'viminfo' option to disable search-
-highlighting when starting Vim.
+autocommand.  Use the 'h' flag in the 'mnvinfo' option to disable search-
+highlighting when starting MNV.
 
 							*Cmd-event*
 When using one of the "*Cmd" events, the matching autocommands are expected to
@@ -2025,8 +2025,8 @@ making it impossible to read or write the matching files!  Make sure you test
 your autocommands properly.  Best is to use a pattern that will never match a
 normal file name, for example "ftp://*".
 
-When defining a BufReadCmd it will be difficult for Vim to recover a crashed
-editing session.  When recovering from the original file, Vim reads only those
+When defining a BufReadCmd it will be difficult for MNV to recover a crashed
+editing session.  When recovering from the original file, MNV reads only those
 parts of a file that are not found in the swap file.  Since that is not
 possible with a BufReadCmd, use the |:preserve| command to make sure the
 original file isn't needed for recovery.  You might want to do this only when
@@ -2037,7 +2037,7 @@ and "++ff=" argument that are effective.  These should be used for the command
 that reads/writes the file.  The |v:cmdbang| variable is one when "!" was
 used, zero otherwise.
 
-See the $VIMRUNTIME/plugin/netrwPlugin.vim for examples.
+See the $MNVRUNTIME/plugin/netrwPlugin.mnv for examples.
 
 ==============================================================================
 11. Disabling autocommands				*autocmd-disable*
@@ -2063,4 +2063,4 @@ Note that some autocommands are not triggered right away, but only later.
 This specifically applies to |CursorMoved| and |TextChanged|.
 
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

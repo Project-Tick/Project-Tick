@@ -1,4 +1,4 @@
-TRANSLATING VIM MESSAGES
+TRANSLATING MNV MESSAGES
 
 This file explains how to create and maintain po files using a number of
 GnuWin packages.  You will need gettext, libiconv and libexpat.  As of
@@ -21,13 +21,13 @@ iconv 1.16 for Windows on his site:
 	https://mlocati.github.io/articles/gettext-iconv-windows.html
 
 First read the README.txt file in this directory for general remarks on
-translating Vim messages.
+translating MNV messages.
 
 
 SETUP
 
 Set the environment variable LANGUAGE to the language code for the language
-you are translating Vim messages to.  Language codes are typically two
+you are translating MNV messages to.  Language codes are typically two
 characters and you can find a list of them at:
 
 	https://www.loc.gov/standards/iso639-2/php/code_list.php
@@ -72,22 +72,22 @@ To create the initial .po file for your language you must use the command:
 
 Note: You need to be in the po directory when using this makefile.
 
-Once you have your new .po file load it into Vim and source cleanup.vim, this
+Once you have your new .po file load it into MNV and source cleanup.mnv, this
 will convert untranslated messages to comments.  If you have syntax
 highlighting turned on then untranslated messages will stand out more easily.
 
 You will also need to edit the file names in the comments in the .po file.
 You need to remove the absolute directory specification (which has the form
-c:\vim91\src\).  You can do this in Vim with the following command with the
-appropriate directory specification for where you have installed the Vim
+c:\mnv91\src\).  You can do this in MNV with the following command with the
+appropriate directory specification for where you have installed the MNV
 source:
 
-	%s/c:\\vim91\\src\\//g
+	%s/c:\\mnv91\\src\\//g
 
 
 UPDATING A TRANSLATION
 
-If there are new or changed messages in Vim that need translating, then the
+If there are new or changed messages in MNV that need translating, then the
 first thing to do is merge them into the existing translations.  This is done
 with the following command:
 
@@ -104,7 +104,7 @@ need it.  See README.txt for specific instructions.
 
 Once you have finished translating the messages you should make sure all
 non-translated strings are commented out.  This can be done by sourcing
-cleanup.vim once again.
+cleanup.mnv once again.
 
 
 CHECKING THE TRANSLATION
@@ -138,16 +138,16 @@ command:
 	nmake.exe -f Make_mvc.mak clean
 
 
-TRANSLATION OF VIM THE EDITOR PLUG-INS
+TRANSLATION OF MNV THE EDITOR PLUG-INS
 
-Vim supports displaying plugin messages for various native languages.
-Translation is available both for plugins that are supplied as part of the Vim
-editor (e.g. "optwin.vim") and for third-party plugin packages.
+MNV supports displaying plugin messages for various native languages.
+Translation is available both for plugins that are supplied as part of the MNV
+editor (e.g. "optwin.mnv") and for third-party plugin packages.
 
-To translate the plugins supplied with the Vim editor, you must specify a
+To translate the plugins supplied with the MNV editor, you must specify a
 gettext() function call for the strings you want to translate.
 The translation of these strings will be retrieved by gettext() from the MO
-file "vim.mo".
+file "mnv.mo".
 
 For third-party plugins, it is necessary to specify a one-time call to the
 bindtextdomain() function in scripts containing translation strings and for
@@ -155,4 +155,4 @@ all message strings to add a {package} argument to the gettext() function. For
 more information, see ":help package-translation".
 
 
-vim:tw=78:
+mnv:tw=78:

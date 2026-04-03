@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -13,7 +13,7 @@
  * Amiga system-dependent routines.
  */
 
-#include "vim.h"
+#include "mnv.h"
 #include "version.h"
 
 #ifdef Window
@@ -47,7 +47,7 @@
 # include <dos/anchorpath.h>
 # define	free_fib(x) FreeDosObject(DOS_FIB, x)
 #else
-# define	free_fib(x) vim_free(fib)
+# define	free_fib(x) mnv_free(fib)
 #endif
 
 #if defined(LATTICE) && !defined(SASC) && defined(FEAT_ARP)
@@ -85,7 +85,7 @@ static int sortcmp(const void *a, const void *b);
 
 static BPTR		raw_in = (BPTR)NULL;
 static BPTR		raw_out = (BPTR)NULL;
-static int		close_win = FALSE;  // set if Vim opened the window
+static int		close_win = FALSE;  // set if MNV opened the window
 
 /* Use autoopen for AmigaOS4, AROS and MorphOS */
 #if !defined(__amigaos4__) && !defined(__AROS__) && !defined(__MORPHOS__)
@@ -105,9 +105,9 @@ int			size_set = FALSE;   // set to TRUE if window size was set
 
 #ifdef __GNUC__
 static char version[] __attribute__((used)) =
-    "\0$VER: Vim "
-    VIM_VERSION_MAJOR_STR "."
-    VIM_VERSION_MINOR_STR
+    "\0$VER: MNV "
+    MNV_VERSION_MAJOR_STR "."
+    MNV_VERSION_MINOR_STR
 # ifdef PATCHLEVEL
     "." PATCHLEVEL
 # endif
@@ -259,7 +259,7 @@ mch_init(void)
 #endif
 
 #ifdef AZTEC_C
-    Enable_Abort = 0;		// disallow vim to be aborted
+    Enable_Abort = 0;		// disallow mnv to be aborted
 #endif
     Columns = 80;
     Rows = 24;
@@ -273,8 +273,8 @@ mch_init(void)
 	raw_out = Output();
 	/*
 	 * If Input() is not interactive, then Output() will be (because of
-	 * check in mch_check_win()).  Used for "Vim -".
-	 * Also check the other way around, for "Vim -h | more".
+	 * check in mch_check_win()).  Used for "MNV -".
+	 * Also check the other way around, for "MNV -h | more".
 	 */
 	if (!IsInteractive(raw_in))
 	    raw_in = raw_out;
@@ -322,7 +322,7 @@ mch_check_win(int argc, char **argv)
     static char_u   *(constrings[3]) = {(char_u *)"con:0/0/662/210/",
 					(char_u *)"con:0/0/640/200/",
 					(char_u *)"con:0/0/320/200/"};
-    static char_u   *winerr = (char_u *)N_("VIM: Can't open window!\n");
+    static char_u   *winerr = (char_u *)N_("MNV: Can't open window!\n");
     struct WBArg    *argp;
     int		    ac;
     char	    *av;
@@ -490,10 +490,10 @@ mch_check_win(int argc, char **argv)
 	    ++i;
 	    continue;
 	}
-	if (vim_strchr((char_u *)av, ' '))
+	if (mnv_strchr((char_u *)av, ' '))
 	    Write(fh, "\"", 1L);
 	Write(fh, av, (long)strlen(av));
-	if (vim_strchr((char_u *)av, ' '))
+	if (mnv_strchr((char_u *)av, ' '))
 	    Write(fh, "\"", 1L);
 	Write(fh, " ", 1L);
     }
@@ -670,7 +670,7 @@ mch_get_user_name(char_u *s, int len)
 
     if (pwd != NULL && pwd->pw_name && len > 0)
     {
-	vim_strncpy(s, (char_u *)pwd->pw_name, len - 1);
+	mnv_strncpy(s, (char_u *)pwd->pw_name, len - 1);
 	return OK;
     }
 #endif
@@ -687,7 +687,7 @@ mch_get_host_name(char_u *s, int len)
 #if !defined(__AROS__)
     gethostname(s, len);
 #else
-    vim_strncpy(s, "Amiga", len - 1);
+    mnv_strncpy(s, "Amiga", len - 1);
 #endif
 }
 
@@ -759,7 +759,7 @@ mch_FullName(
 		{
 		    if (i < len - 1 && (i == 0 || buf[i - 1] != ':'))
 			buf[i++] = '/';
-		    vim_strncpy(buf + i, fname, len - i - 1);
+		    mnv_strncpy(buf + i, fname, len - i - 1);
 		}
 	    }
 	}
@@ -775,7 +775,7 @@ mch_FullName(
     int
 mch_isFullName(char_u *fname)
 {
-    return (vim_strchr(fname, ':') != NULL && *fname != ':');
+    return (mnv_strchr(fname, ':') != NULL && *fname != ':');
 }
 
 /*
@@ -983,7 +983,7 @@ mch_exit(int r)
     if (close_win)
 	Close(raw_in);
     if (r)
-	printf(_("Vim exiting with %d\n"), r); // somehow this makes :cq work!?
+	printf(_("MNV exiting with %d\n"), r); // somehow this makes :cq work!?
     exit(r);
 }
 
@@ -1064,7 +1064,7 @@ mch_get_shellsize(void)
 	    // Read return sequence from input.
 	    if (Read(raw_in, answ, sizeof(answ) - 1) > 0)
 	    {
-		// Parse result and set Vim globals.
+		// Parse result and set MNV globals.
 		if (sscanf(answ, scan, &Rows, &Columns) == 2)
 		{
 		    // Restore console mode.
@@ -1272,7 +1272,7 @@ dos_packet(
     int
 mch_call_shell(
     char_u	*cmd,
-    int		options)	// SHELL_*, see vim.h
+    int		options)	// SHELL_*, see mnv.h
 {
     BPTR	mydir;
     int		x;
@@ -1286,7 +1286,7 @@ mch_call_shell(
 
     if (close_win)
     {
-	// if Vim opened a window: Executing a shell may cause crashes
+	// if MNV opened a window: Executing a shell may cause crashes
 	emsg(_(e_cannot_execute_shell_with_f_option));
 	return -1;
     }
@@ -1366,7 +1366,7 @@ mch_call_shell(
 	/*
 	 * separate shell name from argument
 	 */
-	shellcmd = vim_strsave(p_sh);
+	shellcmd = mnv_strsave(p_sh);
 	if (shellcmd == NULL)	    // out of memory, use Execute
 	    use_execute = 1;
 	else
@@ -1458,7 +1458,7 @@ mch_call_shell(
 	    retval = x;
 	}
     }
-    vim_free(shellcmd);
+    mnv_free(shellcmd);
 #endif	// AZTEC_C
 
     if ((mydir = CurrentDir(mydir)) != 0) // make sure we stay in the same directory
@@ -1588,7 +1588,7 @@ mch_expandpath(
 	}
 	*dp = NUL;
 	Result = MatchFirst((UBYTE *)starbuf, Anchor);
-	vim_free(starbuf);
+	mnv_free(starbuf);
 #ifdef FEAT_ARP
     }
     else
@@ -1644,7 +1644,7 @@ Return:
 #ifdef __amigaos4__
     FreeDosObject(DOS_ANCHORPATH, Anchor);
 #else
-    vim_free(Anchor);
+    mnv_free(Anchor);
 #endif
 
     return matches;
@@ -1669,7 +1669,7 @@ mch_has_exp_wildcard(char_u *p)
     {
 	if (*p == '\\' && p[1] != NUL)
 	    ++p;
-	else if (vim_strchr((char_u *)"*?[(#", *p) != NULL)
+	else if (mnv_strchr((char_u *)"*?[(#", *p) != NULL)
 	    return TRUE;
     }
     return FALSE;
@@ -1683,7 +1683,7 @@ mch_has_wildcard(char_u *p)
 	if (*p == '\\' && p[1] != NUL)
 	    ++p;
 	else
-	    if (vim_strchr((char_u *)"*?[(#$`", *p) != NULL
+	    if (mnv_strchr((char_u *)"*?[(#$`", *p) != NULL
 		    || (*p == '~' && p[1] != NUL))
 		return TRUE;
     }
@@ -1711,7 +1711,7 @@ mch_getenv(char_u *var)
     else
 #endif
     {
-	VIM_CLEAR(alloced);
+	MNV_CLEAR(alloced);
 	retval = NULL;
 
 	buf = alloc(IOSIZE);
@@ -1721,16 +1721,16 @@ mch_getenv(char_u *var)
 	len = GetVar((UBYTE *)var, buf, (long)(IOSIZE - 1), (long)0);
 	if (len >= 0)
 	{
-	    retval = vim_strsave((char_u *)buf);
+	    retval = mnv_strsave((char_u *)buf);
 	    alloced = retval;
 	}
 
-	vim_free(buf);
+	mnv_free(buf);
     }
 
-    // if $VIM is not defined, use "vim:" instead
-    if (retval == NULL && STRCMP(var, "VIM") == 0)
-	retval = (char_u *)"vim:";
+    // if $MNV is not defined, use "mnv:" instead
+    if (retval == NULL && STRCMP(var, "MNV") == 0)
+	retval = (char_u *)"mnv:";
 
     return retval;
 }

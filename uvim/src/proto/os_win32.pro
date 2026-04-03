@@ -1,6 +1,6 @@
 /* os_win32.c */
 void mch_get_exe_name(void);
-HINSTANCE vimLoadLib(const char *name);
+HINSTANCE mnvLoadLib(const char *name);
 int mch_is_gui_executable(void);
 HINSTANCE find_imported_module_by_funcname(HINSTANCE hInst, const char *funcname);
 void *get_dll_import_func(HINSTANCE hInst, const char *funcname);
@@ -40,9 +40,9 @@ int win32_fileinfo(char_u *fname, BY_HANDLE_FILE_INFORMATION *info);
 int mch_writable(char_u *name);
 int mch_can_exe(char_u *name, char_u **path, int use_path);
 int mch_nodetype(char_u *name);
-vim_acl_T mch_get_acl(char_u *fname);
-void mch_set_acl(char_u *fname, vim_acl_T acl);
-void mch_free_acl(vim_acl_T acl);
+mnv_acl_T mch_get_acl(char_u *fname);
+void mch_set_acl(char_u *fname, mnv_acl_T acl);
+void mch_free_acl(mnv_acl_T acl);
 void mch_settmode(tmode_T tmode);
 int mch_get_shellsize(void);
 void mch_set_shellsize(void);
@@ -90,4 +90,4 @@ void resize_console_buf(void);
 char *GetWin32Error(void);
 void stop_timeout(void);
 volatile sig_atomic_t *start_timeout(long msec);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

@@ -7,7 +7,7 @@
  *  - Yasuhiro Matsumoto
  *
  * Copyright (C) 2013 MURAOKA Taro <koron.kaoriya@gmail.com>
- * THIS FILE IS DISTRIBUTED UNDER THE VIM LICENSE.
+ * THIS FILE IS DISTRIBUTED UNDER THE MNV LICENSE.
  */
 
 #ifndef GUI_DWRITE_H

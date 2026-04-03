@@ -1,4 +1,4 @@
-Vim		Vi IMproved.  A clone of the UNIX text editor Vi.  Very useful
+MNV		MNV is not Vim.  A clone of the UNIX text editor Vi.  Very useful
 		for editing programs and other plain ASCII text.  Full Vi
 		compatibility and includes all Ex commands.  Extra features
 		above Vi: Multilevel undo, multiple windows, syntax
@@ -10,9 +10,9 @@ Vim		Vi IMproved.  A clone of the UNIX text editor Vi.  Very useful
 		help, rectangular cut/paste, etc., etc., etc...
 
 		Version 9.2.  Also runs under UNIX, MS-Windows, Mac, etc.
-		vim92rt.tgz  contains the documentation and syntax files.
-		vim92bin.tgz contains the binaries.
-		vim92src.tgz contains the sources.
+		mnv92rt.tgz  contains the documentation and syntax files.
+		mnv92bin.tgz contains the binaries.
+		mnv92src.tgz contains the sources.
 		Author: Bram Moolenaar et al.
 
 

@@ -27,4 +27,4 @@ void blob_reduce(typval_T *argvars, typval_T *expr, typval_T *rettv);
 void blob_reverse(blob_T *b, typval_T *rettv);
 void f_blob2list(typval_T *argvars, typval_T *rettv);
 void f_list2blob(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

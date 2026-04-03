@@ -1,7 +1,7 @@
 *ft_hare.txt*	Support for the Hare programming language
 
 ==============================================================================
-CONTENTS						*hare* *hare.vim*
+CONTENTS						*hare* *hare.mnv*
 
 1. Introduction			|ft-hare-intro|
 2. Filetype plugin		|ft-hare-plugin|
@@ -19,12 +19,12 @@ functionality for the Hare programming language.
 FILETYPE PLUGIN						*ft-hare-plugin*
 
 This plugin has a few different variables that can be defined inside your
-|vimrc| to adjust its behavior.
+|mnvrc| to adjust its behavior.
 
 							*hare-folding*
 This plugin supports folding `{ }` blocks.  To enable folding, add the
 following to a file inside your |after-directory| (e.g.
-~/.vim/after/ftplugin/hare.vim): >
+~/.mnv/after/ftplugin/hare.mnv): >
 
 	setlocal foldmethod=syntax
 
@@ -34,7 +34,7 @@ setting a few related options, such as 'foldminlines' or 'foldnestmax'.
 						*hare-symbol-operators*
 Most symbolic operators do not receive any highlighting by default (with the
 exception of "?", "!", and "::").  If you prefer highlighting all operators,
-you can link them to your preferred highlight group inside your |vimrc|.  For
+you can link them to your preferred highlight group inside your |mnvrc|.  For
 example: >
 
 	hi def link hareCast hareSymbolOperator
@@ -50,14 +50,14 @@ style guide: >
 	setlocal tabstop=8
 	setlocal textwidth=80
 
-To disable this behavior, add the following to your |vimrc|: >
+To disable this behavior, add the following to your |mnvrc|: >
 
 	let g:hare_recommended_style = 0
 <
 							*g:hare_space_error*
 By default, trailing whitespace and spaces followed by <Tab> characters are
 highlighted as errors.  This is automatically disabled while in insert mode.
-To turn off this highlighting completely, add the following to your |vimrc|: >
+To turn off this highlighting completely, add the following to your |mnvrc|: >
 
 	let g:hare_space_error = 0
 
@@ -99,7 +99,7 @@ only indented one level: >hare
 	// ...
 
 If you prefer indenting them two levels, more closely resembling "if" and
-"for" conditions, add the following line to your |vimrc|: >
+"for" conditions, add the following line to your |mnvrc|: >
 
 	let g:hare_indent_match_switch = 2
 <
@@ -127,4 +127,4 @@ When using "hare build", additional compiler options may be appended to
 printing to stdout when building.
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

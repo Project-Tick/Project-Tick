@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -14,7 +14,7 @@
  */
 #define USING_FLOAT_STUFF
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 
@@ -31,7 +31,7 @@ json_encode_gap(garray_T *gap, typval_T *val, int options)
     if (json_encode_item(gap, val, get_copyID(), options, 0) == FAIL)
     {
 	ga_clear(gap);
-	gap->ga_data = vim_strsave((char_u *)"");
+	gap->ga_data = mnv_strsave((char_u *)"");
 	return FAIL;
     }
     return OK;
@@ -105,7 +105,7 @@ json_encode_lsp_msg(typval_T *val)
 
     ga_init2(&lspga, 1, 4000);
     // Header according to LSP specification.
-    IObufflen = vim_snprintf_safelen((char *)IObuff, IOSIZE,
+    IObufflen = mnv_snprintf_safelen((char *)IObuff, IOSIZE,
 	    "Content-Length: %u\r\n\r\n",
 	    ga.ga_len - 1);
     ga_concat_len(&lspga, IObuff, IObufflen);
@@ -139,7 +139,7 @@ write_string(garray_T *gap, char_u *str)
     char_u	numbuf[NUMBUFLEN];
     char_u	*from;
 #if defined(USE_ICONV)
-    vimconv_T   conv;
+    mnvconv_T   conv;
     char_u	*converted = NULL;
 #endif
     int		c;
@@ -204,7 +204,7 @@ write_string(garray_T *gap, char_u *str)
 		{
 		    size_t  numbuflen;
 
-		    numbuflen = vim_snprintf_safelen((char *)numbuf,
+		    numbuflen = mnv_snprintf_safelen((char *)numbuf,
 			sizeof(numbuf), "\\u%04lx", (long)c);
 		    ga_concat_len(gap, numbuf, numbuflen);
 		}
@@ -242,7 +242,7 @@ write_string(garray_T *gap, char_u *str)
 
     ga_append(gap, '"');
 #if defined(USE_ICONV)
-    vim_free(converted);
+    mnv_free(converted);
 #endif
 }
 
@@ -259,7 +259,7 @@ is_simple_key(char_u *key)
     if (!ASCII_ISALPHA(*key))
 	return FALSE;
     for (p = key + 1; *p != NUL; ++p)
-	if (!ASCII_ISALPHA(*p) && *p != '_' && !vim_isdigit(*p))
+	if (!ASCII_ISALPHA(*p) && *p != '_' && !mnv_isdigit(*p))
 	    return FALSE;
     return TRUE;
 }
@@ -311,7 +311,7 @@ json_encode_item(garray_T *gap, typval_T *val, int copyID, int options, int dept
 	    {
 		size_t  numbuflen;
 
-		numbuflen = vim_snprintf_safelen((char *)numbuf, sizeof(numbuf),
+		numbuflen = mnv_snprintf_safelen((char *)numbuf, sizeof(numbuf),
 		    "%lld", (varnumber_T)val->vval.v_number);
 		ga_concat_len(gap, numbuf, numbuflen);
 	    }
@@ -498,7 +498,7 @@ json_encode_item(garray_T *gap, typval_T *val, int copyID, int options, int dept
 	    {
 		size_t	numbuflen;
 
-		numbuflen = vim_snprintf_safelen((char *)numbuf, sizeof(numbuf),
+		numbuflen = mnv_snprintf_safelen((char *)numbuf, sizeof(numbuf),
 		    "%g", val->vval.v_float);
 		ga_concat_len(gap, numbuf, numbuflen);
 	    }
@@ -613,7 +613,7 @@ json_decode_string(js_read_T *reader, typval_T *res, int quote)
 		    }
 		    nr = 0;
 		    len = 0;
-		    vim_str2nr(p + 2, NULL, &len,
+		    mnv_str2nr(p + 2, NULL, &len,
 			     STR2NR_HEX + STR2NR_FORCE, &nr, NULL, 4, TRUE, NULL);
 		    if (len == 0)
 		    {
@@ -630,7 +630,7 @@ json_decode_string(js_read_T *reader, typval_T *res, int quote)
 
 			// decode surrogate pair: \ud812\u3456
 			len = 0;
-			vim_str2nr(p + 2, NULL, &len, STR2NR_HEX + STR2NR_FORCE,
+			mnv_str2nr(p + 2, NULL, &len, STR2NR_HEX + STR2NR_FORCE,
 						    &nr2, NULL, 4, TRUE, NULL);
 			if (len == 0)
 			{
@@ -702,7 +702,7 @@ json_decode_string(js_read_T *reader, typval_T *res, int quote)
 #if defined(USE_ICONV)
 	    if (!enc_utf8)
 	    {
-		vimconv_T   conv;
+		mnvconv_T   conv;
 
 		// Convert the utf-8 string to 'encoding'.
 		conv.vc_type = CONV_NONE;
@@ -711,7 +711,7 @@ json_decode_string(js_read_T *reader, typval_T *res, int quote)
 		{
 		    res->vval.v_string =
 				      string_convert(&conv, ga.ga_data, NULL);
-		    vim_free(ga.ga_data);
+		    mnv_free(ga.ga_data);
 		}
 		convert_setup(&conv, NULL, NULL);
 	    }
@@ -820,7 +820,7 @@ json_decode_item(js_read_T *reader, typval_T *res, int options)
 	    if (cur_item != NULL)
 	    {
 		cur_item->v_type = VAR_STRING;
-		cur_item->vval.v_string = vim_strnsave(key, p - key);
+		cur_item->vval.v_string = mnv_strnsave(key, p - key);
 		top_item->jd_key = cur_item->vval.v_string;
 	    }
 	    reader->js_used += (int)(p - key);
@@ -935,8 +935,8 @@ json_decode_item(js_read_T *reader, typval_T *res, int options)
 		    break;
 
 		default:
-		    if (VIM_ISDIGIT(*p) || (*p == '-'
-					&& (VIM_ISDIGIT(p[1]) || p[1] == NUL)))
+		    if (MNV_ISDIGIT(*p) || (*p == '-'
+					&& (MNV_ISDIGIT(p[1]) || p[1] == NUL)))
 		    {
 			char_u  *sp = p;
 
@@ -948,7 +948,7 @@ json_decode_item(js_read_T *reader, typval_T *res, int options)
 				retval = MAYBE;
 				break;
 			    }
-			    if (!VIM_ISDIGIT(*sp))
+			    if (!MNV_ISDIGIT(*sp))
 			    {
 				semsg(_(e_json_decode_error_at_str), p);
 				retval = FAIL;
@@ -975,7 +975,7 @@ json_decode_item(js_read_T *reader, typval_T *res, int options)
 			{
 			    varnumber_T nr;
 
-			    vim_str2nr(reader->js_buf + reader->js_used,
+			    mnv_str2nr(reader->js_buf + reader->js_used,
 				    NULL, &len, 0, // what
 				    &nr, NULL, 0, TRUE, NULL);
 			    if (len == 0)
@@ -1330,7 +1330,7 @@ f_js_decode(typval_T *argvars, typval_T *rettv)
 {
     js_read_T	reader;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     reader.js_buf = tv_get_string(&argvars[0]);
@@ -1358,7 +1358,7 @@ f_json_decode(typval_T *argvars, typval_T *rettv)
 {
     js_read_T	reader;
 
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     reader.js_buf = tv_get_string(&argvars[0]);

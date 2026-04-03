@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -13,7 +13,7 @@
  *		clipboard code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef FEAT_CYGWIN_WIN32_CLIPBOARD
 # define WIN32_LEAN_AND_MEAN
@@ -113,8 +113,8 @@ typedef struct {
 // Mimes with a lower index in the array are prioritized first when we are
 // receiving data.
 static const char *supported_mimes[] = {
-    VIMENC_ATOM_NAME,
-    VIM_ATOM_NAME,
+    MNVENC_ATOM_NAME,
+    MNV_ATOM_NAME,
     "text/plain;charset=utf-8",
     "text/plain",
     "UTF8_STRING",
@@ -365,7 +365,7 @@ clip_copy_selection(Clipboard_T *clip)
 
 /*
  * Save and restore clip_unnamed before doing possibly many changes. This
- * prevents accessing the clipboard very often which might slow down Vim
+ * prevents accessing the clipboard very often which might slow down MNV
  * considerably.
  */
 static int global_change_count = 0; // if set, inside a start_global_changes
@@ -458,8 +458,8 @@ clip_isautosel_star(void)
 # endif
 # ifdef FEAT_GUI
     if (gui.in_use)
-	return vim_strchr(p_go, GO_ASEL) != NULL
-	    && vim_strchr(p_go, GO_ASELPLUS) == NULL;
+	return mnv_strchr(p_go, GO_ASEL) != NULL
+	    && mnv_strchr(p_go, GO_ASELPLUS) == NULL;
 # endif
     return clip_autoselect_star;
 }
@@ -477,7 +477,7 @@ clip_isautosel_plus(void)
 # endif
 # ifdef FEAT_GUI
     if (gui.in_use)
-	return vim_strchr(p_go, GO_ASELPLUS) != NULL;
+	return mnv_strchr(p_go, GO_ASELPLUS) != NULL;
 # endif
     return clip_autoselect_plus;
 }
@@ -700,7 +700,7 @@ clip_update_modeless_selection(
  * Find the starting and ending positions of the word at the given row and
  * column.  Only white-separated words are recognized here.
  */
-# define CHAR_CLASS(c)	(c <= ' ' ? ' ' : vim_iswordc(c))
+# define CHAR_CLASS(c)	(c <= ' ' ? ' ' : mnv_iswordc(c))
 
     static void
 clip_get_word_boundaries(Clipboard_T *cb, int row, int col)
@@ -902,7 +902,7 @@ clip_process_selection(
 	if (clip_isautosel_star() || clip_isautosel_plus()
 		|| (
 # ifdef FEAT_GUI
-		    gui.in_use ? (vim_strchr(p_go, GO_ASELML) != NULL) :
+		    gui.in_use ? (mnv_strchr(p_go, GO_ASELML) != NULL) :
 # endif
 		    clip_autoselectml))
 	    clip_copy_modeless_selection(FALSE);
@@ -1330,7 +1330,7 @@ clip_copy_modeless_selection(int both UNUSED)
 	clip_gen_set_selection(other);
     }
 # endif
-    vim_free(buffer);
+    mnv_free(buffer);
 }
 
     void
@@ -1339,7 +1339,7 @@ clip_gen_set_selection(Clipboard_T *cbd)
     if (!clip_did_set_selection)
     {
 	// Updating postponed, so that accessing the system clipboard won't
-	// hang Vim when accessing it many times (e.g. on a :g command).
+	// hang MNV when accessing it many times (e.g. on a :g command).
 	if ((cbd == &clip_plus && (clip_unnamed_saved & CLIP_UNNAMED_PLUS))
 		|| (cbd == &clip_star && (clip_unnamed_saved & CLIP_UNNAMED)))
 	{
@@ -1463,8 +1463,8 @@ open_app_context(void)
     }
 }
 
-static Atom	vim_atom;	// Vim's own special selection format
-static Atom	vimenc_atom;	// Vim's extended selection format
+static Atom	mnv_atom;	// MNV's own special selection format
+static Atom	mnvenc_atom;	// MNV's extended selection format
 static Atom	utf8_atom;
 static Atom	compound_text_atom;
 static Atom	text_atom;
@@ -1474,8 +1474,8 @@ static Atom	timestamp_atom;	// Used to get a timestamp
     void
 x11_setup_atoms(Display *dpy)
 {
-    vim_atom	       = XInternAtom(dpy, VIM_ATOM_NAME,   False);
-    vimenc_atom	       = XInternAtom(dpy, VIMENC_ATOM_NAME,False);
+    mnv_atom	       = XInternAtom(dpy, MNV_ATOM_NAME,   False);
+    mnvenc_atom	       = XInternAtom(dpy, MNVENC_ATOM_NAME,False);
     utf8_atom	       = XInternAtom(dpy, "UTF8_STRING",   False);
     compound_text_atom = XInternAtom(dpy, "COMPOUND_TEXT", False);
     text_atom	       = XInternAtom(dpy, "TEXT",	   False);
@@ -1522,8 +1522,8 @@ clip_x11_convert_selection_cb(
 	*value = (XtPointer)array;
 	i = 0;
 	array[i++] = targets_atom;
-	array[i++] = vimenc_atom;
-	array[i++] = vim_atom;
+	array[i++] = mnvenc_atom;
+	array[i++] = mnv_atom;
 	if (enc_utf8)
 	    array[i++] = utf8_atom;
 	array[i++] = XA_STRING;
@@ -1539,9 +1539,9 @@ clip_x11_convert_selection_cb(
     }
 
     if (       *target != XA_STRING
-	    && *target != vimenc_atom
+	    && *target != mnvenc_atom
 	    && (*target != utf8_atom || !enc_utf8)
-	    && *target != vim_atom
+	    && *target != mnv_atom
 	    && *target != text_atom
 	    && *target != compound_text_atom)
 	return False;
@@ -1552,11 +1552,11 @@ clip_x11_convert_selection_cb(
 	return False;
 
     // For our own format, the first byte contains the motion type
-    if (*target == vim_atom)
+    if (*target == mnv_atom)
 	(*length)++;
 
     // Our own format with encoding: motion 'encoding' NUL text
-    if (*target == vimenc_atom)
+    if (*target == mnvenc_atom)
 	*length += STRLEN(p_enc) + 2;
 
     if (save_length < *length || save_length / 2 >= *length)
@@ -1565,7 +1565,7 @@ clip_x11_convert_selection_cb(
 	*value = save_result;
     if (*value == NULL)
     {
-	vim_free(string);
+	mnv_free(string);
 	return False;
     }
     save_result = (char_u *)*value;
@@ -1589,7 +1589,7 @@ clip_x11_convert_selection_cb(
 					   1, XCompoundTextStyle, &text_prop);
 	if (conv_result != Success)
 	{
-	    vim_free(string);
+	    mnv_free(string);
 	    return False;
 	}
 	*value = (XtPointer)(text_prop.value);	//    from plain text
@@ -1599,23 +1599,23 @@ clip_x11_convert_selection_cb(
 	save_result = (char_u *)*value;
 	save_length = *length;
     }
-    else if (*target == vimenc_atom)
+    else if (*target == mnvenc_atom)
     {
 	int l = STRLEN(p_enc);
 
 	save_result[0] = motion_type;
 	STRCPY(save_result + 1, p_enc);
 	mch_memmove(save_result + l + 2, string, (size_t)(*length - l - 2));
-	*type = vimenc_atom;
+	*type = mnvenc_atom;
     }
     else
     {
 	save_result[0] = motion_type;
 	mch_memmove(save_result + 1, string, (size_t)(*length - 1));
-	*type = vim_atom;
+	*type = mnv_atom;
     }
     *format = 8;	    // 8 bits per char
-    vim_free(string);
+    mnv_free(string);
     return True;
 }
 
@@ -1722,16 +1722,16 @@ clip_x11_request_selection_cb(
     }
     p = (char_u *)value;
     len = *length;
-    if (*type == vim_atom)
+    if (*type == mnv_atom)
     {
 	motion_type = *p++;
 	len--;
     }
 
-    else if (*type == vimenc_atom)
+    else if (*type == mnvenc_atom)
     {
 	char_u		*enc;
-	vimconv_T	conv;
+	mnvconv_T	conv;
 	int		convlen;
 
 	motion_type = *p++;
@@ -1788,7 +1788,7 @@ clip_x11_request_selection_cb(
 
     if (text_list != NULL)
 	XFreeStringList(text_list);
-    vim_free(tmpbuf);
+    mnv_free(tmpbuf);
     XtFree((char *)value);
     *(int *)success = TRUE;
 }
@@ -1810,8 +1810,8 @@ clip_x11_request_selection(
     {
 	switch (i)
 	{
-	    case 0:  type = vimenc_atom;	break;
-	    case 1:  type = vim_atom;		break;
+	    case 0:  type = mnvenc_atom;	break;
+	    case 1:  type = mnv_atom;		break;
 	    case 2:  type = utf8_atom;		break;
 	    case 3:  type = compound_text_atom; break;
 	    case 4:  type = text_atom;		break;
@@ -1953,7 +1953,7 @@ yank_cut_buffer0(Display *dpy, Clipboard_T *cbd)
 	if (has_mbyte)
 	{
 	    char_u	*conv_buf;
-	    vimconv_T	vc;
+	    mnvconv_T	vc;
 
 	    vc.vc_type = CONV_NONE;
 	    if (convert_setup(&vc, (char_u *)"latin1", p_enc) == OK)
@@ -1962,7 +1962,7 @@ yank_cut_buffer0(Display *dpy, Clipboard_T *cbd)
 		if (conv_buf != NULL)
 		{
 		    clip_yank_selection(MCHAR, conv_buf, (long)nbytes, cbd);
-		    vim_free(conv_buf);
+		    mnv_free(conv_buf);
 		    done = TRUE;
 		}
 		convert_setup(&vc, NULL, NULL);
@@ -2001,7 +2001,7 @@ yank_cut_buffer0(Display *dpy, Clipboard_T *cbd)
 
 /*
  * Routine to export any final X selection we had to the environment
- * so that the text is still available after Vim has exited. X selections
+ * so that the text is still available after MNV has exited. X selections
  * only exist while the owning application exists, so we write to the
  * permanent (while X runs) store CUT_BUFFER0.
  * Dump the CLIPBOARD selection if we own it (it's logically the more
@@ -2045,7 +2045,7 @@ x11_export_final_selection(void)
 	// encoding conversion usually doesn't work, so keep the text as-is.
 	if (has_mbyte)
 	{
-	    vimconv_T	vc;
+	    mnvconv_T	vc;
 
 	    vc.vc_type = CONV_NONE;
 	    if (convert_setup(&vc, p_enc, (char_u *)"latin1") == OK)
@@ -2058,7 +2058,7 @@ x11_export_final_selection(void)
 		len = intlen;
 		if (conv_str != NULL)
 		{
-		    vim_free(str);
+		    mnv_free(str);
 		    str = conv_str;
 		}
 		else
@@ -2082,7 +2082,7 @@ x11_export_final_selection(void)
 	}
     }
 
-    vim_free(str);
+    mnv_free(str);
 }
 # endif
 
@@ -2406,7 +2406,7 @@ clip_wl_destroy_buffer_store(clip_wl_buffer_store_T *store)
 
     close(store->fd);
 
-    vim_free(store);
+    mnv_free(store);
 }
 
 /*
@@ -2505,7 +2505,7 @@ clip_wl_destroy_fs_surface(clip_wl_fs_surface_T *store)
 	else
 	    wl_keyboard_destroy(store->keyboard);
     }
-    vim_free(store);
+    mnv_free(store);
 }
 
 VWL_FUNCS_DUMMY_KEYBOARD_EVENTS()
@@ -2583,7 +2583,7 @@ clip_wl_init_fs_surface(
 	    wayland_ct->gobjects.xdg_wm_base, store->surface);
     store->shell.toplevel = xdg_surface_get_toplevel(store->shell.surface);
 
-    xdg_toplevel_set_title(store->shell.toplevel, "Vim clipboard");
+    xdg_toplevel_set_title(store->shell.toplevel, "MNV clipboard");
 
     xdg_surface_add_listener(store->shell.surface,
 	    &xdg_surface_listener, NULL);
@@ -2727,7 +2727,7 @@ vwl_data_device_listener_event_finished(
 	// Shouldn't happen
 	return;
 
-    vim_free(sel->contents);
+    mnv_free(sel->contents);
     vwl_data_source_destroy(sel->source);
     vwl_data_offer_destroy(sel->offer);
     sel->available = FALSE;
@@ -2873,7 +2873,7 @@ clip_uninit_wayland(void)
     sel = &clip_wl.regular;
     while (true)
     {
-	vim_free(sel->contents);
+	mnv_free(sel->contents);
 	vwl_data_source_destroy(sel->source);
 	vwl_data_offer_destroy(sel->offer);
 	sel->available = false;
@@ -2883,7 +2883,7 @@ clip_uninit_wayland(void)
 	sel = &clip_wl.primary;
     }
 
-    vim_memset(&clip_wl, 0, sizeof(clip_wl));
+    mnv_memset(&clip_wl, 0, sizeof(clip_wl));
 }
 
     int
@@ -2974,14 +2974,14 @@ clip_wl_receive_data(Clipboard_T *cbd, const char *mime_type, int fd)
 
     final = buf.ga_data;
 
-    if (STRCMP(mime_type, VIM_ATOM_NAME) == 0 && buf.ga_len >= 2)
+    if (STRCMP(mime_type, MNV_ATOM_NAME) == 0 && buf.ga_len >= 2)
     {
 	motion_type = *final++;
 	buf.ga_len--;
     }
-    else if (STRCMP(mime_type, VIMENC_ATOM_NAME) == 0 && buf.ga_len >= 3)
+    else if (STRCMP(mime_type, MNVENC_ATOM_NAME) == 0 && buf.ga_len >= 3)
     {
-	vimconv_T   conv;
+	mnvconv_T   conv;
 	int	    convlen;
 
 	// first byte is motion type
@@ -3100,7 +3100,7 @@ vwl_data_source_listener_event_send(
     char_u		*string; // Will be reallocated to a bigger size if
 				 // needed.
     int			offset = 0;
-    bool		is_vim, is_vimenc;
+    bool		is_mnv, is_mnvenc;
     size_t		total = 0;
 #  ifndef HAVE_SELECT
     struct pollfd   pfd;
@@ -3126,16 +3126,16 @@ vwl_data_source_listener_event_send(
     if (!have_mime)
 	goto exit;
 
-    // First byte sent is motion type for vim specific formats. For the vimenc
+    // First byte sent is motion type for mnv specific formats. For the mnvenc
     // format, after the first byte is the encoding type, which is null
     // terminated.
 
-    is_vimenc = STRCMP(mime_type, VIMENC_ATOM_NAME) == 0;
-    is_vim = STRCMP(mime_type, VIM_ATOM_NAME) == 0;
+    is_mnvenc = STRCMP(mime_type, MNVENC_ATOM_NAME) == 0;
+    is_mnv = STRCMP(mime_type, MNV_ATOM_NAME) == 0;
 
-    if (is_vimenc)
+    if (is_mnvenc)
 	offset += 2 + STRLEN(p_enc);
-    else if (is_vim)
+    else if (is_mnv)
 	offset += 1;
 
     clip_get_selection(cbd);
@@ -3144,13 +3144,13 @@ vwl_data_source_listener_event_send(
     if (motion_type < 0)
 	goto exit;
 
-    if (is_vimenc)
+    if (is_mnvenc)
     {
 	string[0] = (char_u)motion_type;
-	// Use vim_strncpy for safer copying
-	vim_strncpy(string + 1, p_enc, STRLEN(p_enc));
+	// Use mnv_strncpy for safer copying
+	mnv_strncpy(string + 1, p_enc, STRLEN(p_enc));
     }
-    else if (is_vim)
+    else if (is_mnv)
 	string[0] = (char_u)motion_type;
 
 
@@ -3169,7 +3169,7 @@ vwl_data_source_listener_event_send(
 	total += w;
     }
 
-    vim_free(string);
+    mnv_free(string);
 exit:
     close(fd);
 }
@@ -3383,8 +3383,8 @@ get_clipmethod(char_u *str)
 		method = CLIPMETHOD_PROVIDER;
 		if (ret == CLIPMETHOD_FAIL)
 		{
-		    vim_free(clip_provider);
-		    clip_provider = vim_strsave(buf);
+		    mnv_free(clip_provider);
+		    clip_provider = mnv_strsave(buf);
 		    if (clip_provider == NULL)
 			goto fail;
 		}
@@ -3409,7 +3409,7 @@ fail:
     ret = (ret == CLIPMETHOD_FAIL) ? CLIPMETHOD_NONE : ret;
 
 exit:
-    vim_free(buf);
+    mnv_free(buf);
     return ret;
 }
 
@@ -3516,7 +3516,7 @@ exit:
     clipmethod = method;
 
 # ifdef FEAT_EVAL
-    set_vim_var_string(VV_CLIPMETHOD, (char_u*)clipmethod_to_str(method), -1);
+    set_mnv_var_string(VV_CLIPMETHOD, (char_u*)clipmethod_to_str(method), -1);
 # endif
 
     return NULL;
@@ -3634,7 +3634,7 @@ did_set_clipboard(optset_T *args UNUSED)
 	else if (STRNCMP(p, "exclude:", 8) == 0 && new_exclude_prog == NULL)
 	{
 	    p += 8;
-	    new_exclude_prog = vim_regcomp(p, RE_MAGIC);
+	    new_exclude_prog = mnv_regcomp(p, RE_MAGIC);
 	    if (new_exclude_prog == NULL)
 		errmsg = e_invalid_argument;
 	    break;
@@ -3663,7 +3663,7 @@ did_set_clipboard(optset_T *args UNUSED)
 	clip_autoselect_plus = new_autoselect_plus;
 	clip_autoselectml = new_autoselectml;
 	clip_html = new_html;
-	vim_regfree(clip_exclude_prog);
+	mnv_regfree(clip_exclude_prog);
 	clip_exclude_prog = new_exclude_prog;
 # endif
 # ifdef FEAT_GUI_GTK
@@ -3676,7 +3676,7 @@ did_set_clipboard(optset_T *args UNUSED)
 # endif
     }
     else
-	vim_regfree(new_exclude_prog);
+	mnv_regfree(new_exclude_prog);
 
     return errmsg;
 }
@@ -3692,7 +3692,7 @@ did_set_clipboard(optset_T *args UNUSED)
     static int
 clip_provider_is_available(char_u *provider)
 {
-    dict_T	*providers = get_vim_var_dict(VV_CLIPPROVIDERS);
+    dict_T	*providers = get_mnv_var_dict(VV_CLIPPROVIDERS);
     typval_T	provider_tv = {0};
     callback_T	callback = {0};
     typval_T	rettv = {0};
@@ -3744,7 +3744,7 @@ clip_provider_get_callback(
 	char_u *function,
 	callback_T *callback)
 {
-    dict_T	*providers = get_vim_var_dict(VV_CLIPPROVIDERS);
+    dict_T	*providers = get_mnv_var_dict(VV_CLIPPROVIDERS);
     typval_T	provider_tv;
     typval_T	action_tv;
     typval_T	func_tv;
@@ -3957,7 +3957,7 @@ clip_provider_paste(char_u *reg, char_u *provider)
 		{
 		    // Need to make a copy, next tv_get_string_buf_chk() will
 		    // overwrite the string.
-		    strval = vim_strsave(buf);
+		    strval = mnv_strsave(buf);
 		    if (strval == NULL)
 			goto free_lstval;
 		    *curallocval++ = strval;
@@ -3997,8 +3997,8 @@ clip_provider_paste(char_u *reg, char_u *provider)
 
 free_lstval:
 	while (curallocval > allocval)
-	    vim_free(*--curallocval);
-	vim_free(lstval);
+	    mnv_free(*--curallocval);
+	mnv_free(lstval);
     }
 
 exit:

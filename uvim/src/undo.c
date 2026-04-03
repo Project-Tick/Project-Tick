@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -84,7 +84,7 @@
 // Size of buffer used for encryption.
 #define CRYPT_BUF_SIZE 8192
 
-#include "vim.h"
+#include "mnv.h"
 
 // Structure passed around between functions.
 // Avoids passing cryptstate_T when encryption not available.
@@ -365,14 +365,14 @@ u_save_line(undoline_T *ul, linenr_T lnum)
     if (curbuf->b_ml.ml_line_len == 0)
     {
 	ul->ul_len = 1;
-	ul->ul_line = vim_strsave((char_u *)"");
+	ul->ul_line = mnv_strsave((char_u *)"");
     }
     else
     {
 	// This uses the length in the memline, thus text properties are
 	// included.
 	ul->ul_len = curbuf->b_ml.ml_line_len;
-	ul->ul_line = vim_memsave(line, ul->ul_len);
+	ul->ul_line = mnv_memsave(line, ul->ul_len);
     }
     return ul->ul_line == NULL ? FAIL : OK;
 }
@@ -582,7 +582,7 @@ u_savecommon(
 
 	uhp->uh_seq = ++curbuf->b_u_seq_last;
 	curbuf->b_u_seq_cur = uhp->uh_seq;
-	uhp->uh_time = vim_time();
+	uhp->uh_time = mnv_time();
 	uhp->uh_save_nr = 0;
 	curbuf->b_u_time_cur = uhp->uh_time + 1;
 
@@ -762,7 +762,7 @@ nomem:
 
 #if defined(FEAT_PERSISTENT_UNDO)
 
-# define UF_START_MAGIC	    "Vim\237UnDo\345"  // magic at start of undofile
+# define UF_START_MAGIC	    "MNV\237UnDo\345"  // magic at start of undofile
 # define UF_START_MAGIC_LEN	9
 # define UF_HEADER_MAGIC	0x5fd0	// magic at start of header
 # define UF_HEADER_END_MAGIC	0xe7aa	// magic after last header
@@ -837,7 +837,7 @@ u_get_undo_file_name(char_u *buf_ffname, int reading)
 	{
 	    // Use same directory as the ffname,
 	    // "dir/name" -> "dir/.name.un~"
-	    undo_file_name = vim_strnsave(ffname, ffnamelen + 5);
+	    undo_file_name = mnv_strnsave(ffname, ffnamelen + 5);
 	    if (undo_file_name == NULL)
 		break;
 	    p = gettail(undo_file_name);
@@ -864,11 +864,11 @@ u_get_undo_file_name(char_u *buf_ffname, int reading)
 	    {
 		if (munged_name == NULL)
 		{
-		    munged_name = vim_strnsave(ffname, ffnamelen);
+		    munged_name = mnv_strnsave(ffname, ffnamelen);
 		    if (munged_name == NULL)
 			return NULL;
 		    for (p = munged_name; *p != NUL; MB_PTR_ADV(p))
-			if (vim_ispathsep(*p))
+			if (mnv_ispathsep(*p))
 			    *p = '%';
 		}
 		undo_file_name = concat_fnames(dir_name, munged_name, TRUE);
@@ -879,10 +879,10 @@ u_get_undo_file_name(char_u *buf_ffname, int reading)
 	if (undo_file_name != NULL && (!reading
 			       || mch_stat((char *)undo_file_name, &st) >= 0))
 	    break;
-	VIM_CLEAR(undo_file_name);
+	MNV_CLEAR(undo_file_name);
     }
 
-    vim_free(munged_name);
+    mnv_free(munged_name);
     return undo_file_name;
 }
 
@@ -905,7 +905,7 @@ u_free_uhp(u_header_T *uhp)
 	u_freeentry(uep, uep->ue_size);
 	uep = nuep;
     }
-    vim_free(uhp);
+    mnv_free(uhp);
 }
 
 /*
@@ -991,7 +991,7 @@ fwrite_crypt(bufinfo_T *bi, char_u *ptr, size_t len)
 	crypt_encode(bi->bi_state, ptr, len, copy, TRUE);
 	i = fwrite(copy, len, (size_t)1, bi->bi_fp);
 	if (copy != small_buf)
-	    vim_free(copy);
+	    mnv_free(copy);
 	return i == 1 ? OK : FAIL;
     }
 # endif
@@ -1141,7 +1141,7 @@ undo_read(bufinfo_T *bi, char_u *buffer, size_t size)
     if (retval == FAIL)
 	// Error may be checked for only later.  Fill with zeros,
 	// so that the reader won't use garbage.
-	vim_memset(buffer, 0, size);
+	mnv_memset(buffer, 0, size);
     return retval;
 }
 
@@ -1162,7 +1162,7 @@ read_string_decrypt(bufinfo_T *bi, int len)
 
     if (len > 0 && undo_read(bi, ptr, len) == FAIL)
     {
-	vim_free(ptr);
+	mnv_free(ptr);
 	return NULL;
     }
     // In case there are text properties there already is a NUL, but
@@ -1204,7 +1204,7 @@ serialize_header(bufinfo_T *bi, char_u *hash)
 	if (bi->bi_state == NULL)
 	    return FAIL;
 	len = (long)fwrite(header, (size_t)header_len, (size_t)1, fp);
-	vim_free(header);
+	mnv_free(header);
 	if (len != 1)
 	{
 	    crypt_free_state(bi->bi_state);
@@ -1331,7 +1331,7 @@ unserialize_uhp(bufinfo_T *bi, char_u *file_name)
     if (uhp->uh_seq <= 0)
     {
 	corruption_error("uh_seq", file_name);
-	vim_free(uhp);
+	mnv_free(uhp);
 	return NULL;
     }
     unserialize_pos(bi, &uhp->uh_cursor);
@@ -1452,7 +1452,7 @@ unserialize_uep(bufinfo_T *bi, int *error, char_u *file_name)
 	    *error = TRUE;
 	    return uep;
 	}
-	vim_memset(array, 0, sizeof(undoline_T) * uep->ue_size);
+	mnv_memset(array, 0, sizeof(undoline_T) * uep->ue_size);
     }
     uep->ue_array = array;
 
@@ -1775,7 +1775,7 @@ u_write_undo(
 
 # if defined(UNIX) && defined(HAVE_FSYNC)
     if ((buf->b_p_fs >= 0 ? buf->b_p_fs : p_fs) && fflush(fp) == 0
-	    && vim_fsync(fd) != 0)
+	    && mnv_fsync(fd) != 0)
 	write_ok = FALSE;
 # endif
 
@@ -1793,7 +1793,7 @@ write_error:
 # ifdef HAVE_ACL
     if (buf->b_ffname != NULL)
     {
-	vim_acl_T	    acl;
+	mnv_acl_T	    acl;
 
 	// For systems that support ACL: get the ACL from the original file.
 	acl = mch_get_acl(buf->b_ffname);
@@ -1806,10 +1806,10 @@ theend:
 # ifdef FEAT_CRYPT
     if (bi.bi_state != NULL)
 	crypt_free_state(bi.bi_state);
-    vim_free(bi.bi_buffer);
+    mnv_free(bi.bi_buffer);
 # endif
     if (file_name != name)
-	vim_free(file_name);
+	mnv_free(file_name);
 }
 
 /*
@@ -2143,13 +2143,13 @@ u_read_undo(char_u *name, char_u *hash, char_u *orig_name UNUSED)
     curbuf->b_u_save_nr_cur = last_save_nr;
 
     curbuf->b_u_synced = TRUE;
-    vim_free(uhp_table);
+    mnv_free(uhp_table);
 
 # ifdef U_DEBUG
     for (i = 0; i < num_head; ++i)
 	if (uhp_table_used[i] == 0)
 	    semsg("uhp_table entry %ld not used, leaking memory", i);
-    vim_free(uhp_table_used);
+    mnv_free(uhp_table_used);
     u_check(TRUE);
 # endif
 
@@ -2158,25 +2158,25 @@ u_read_undo(char_u *name, char_u *hash, char_u *orig_name UNUSED)
     goto theend;
 
 error:
-    vim_free(line_ptr.ul_line);
+    mnv_free(line_ptr.ul_line);
     if (uhp_table != NULL)
     {
 	for (i = 0; i < num_read_uhps; i++)
 	    if (uhp_table[i] != NULL)
 		u_free_uhp(uhp_table[i]);
-	vim_free(uhp_table);
+	mnv_free(uhp_table);
     }
 
 theend:
 # ifdef FEAT_CRYPT
     if (bi.bi_state != NULL)
 	crypt_free_state(bi.bi_state);
-    vim_free(bi.bi_buffer);
+    mnv_free(bi.bi_buffer);
 # endif
     if (fp != NULL)
 	fclose(fp);
     if (file_name != name)
-	vim_free(file_name);
+	mnv_free(file_name);
     return;
 }
 
@@ -2201,7 +2201,7 @@ u_undo(int count)
 	count = 1;
     }
 
-    if (vim_strchr(p_cpo, CPO_UNDO) == NULL)
+    if (mnv_strchr(p_cpo, CPO_UNDO) == NULL)
 	undo_undoes = TRUE;
     else
 	undo_undoes = !undo_undoes;
@@ -2215,7 +2215,7 @@ u_undo(int count)
     void
 u_redo(int count)
 {
-    if (vim_strchr(p_cpo, CPO_UNDO) == NULL)
+    if (mnv_strchr(p_cpo, CPO_UNDO) == NULL)
 	undo_undoes = FALSE;
     u_doit(count);
 }
@@ -2396,7 +2396,7 @@ undo_time(
 	else
 	{
 	    if (dosec)
-		closest = (long)(vim_time() + 1);
+		closest = (long)(mnv_time() + 1);
 	    else if (dofile)
 		closest = curbuf->b_u_save_nr_last + 2;
 	    else
@@ -2816,9 +2816,9 @@ u_undoredo(int undo)
 		else
 		    ml_append_flags(lnum, uep->ue_array[i].ul_line,
 			     (colnr_T)uep->ue_array[i].ul_len, ML_APPEND_UNDO);
-		vim_free(uep->ue_array[i].ul_line);
+		mnv_free(uep->ue_array[i].ul_line);
 	    }
-	    vim_free((char_u *)uep->ue_array);
+	    mnv_free((char_u *)uep->ue_array);
 	}
 
 	// adjust marks
@@ -3112,7 +3112,7 @@ ex_undolist(exarg_T *eap UNUSED)
 	{
 	    if (ga_grow(&ga, 1) == FAIL)
 		break;
-	    len = vim_snprintf((char *)IObuff, IOSIZE, "%6ld %7d  ",
+	    len = mnv_snprintf((char *)IObuff, IOSIZE, "%6ld %7d  ",
 							uhp->uh_seq, changes);
 	    add_time(IObuff + len, IOSIZE - len, uhp->uh_time);
 
@@ -3123,9 +3123,9 @@ ex_undolist(exarg_T *eap UNUSED)
 	    {
 		int n = (len >= 33) ? 0 : 33 - len;
 
-		len += vim_snprintf((char *)IObuff + len, IOSIZE - len, "%*.*s  %3ld", n, n, " ", uhp->uh_save_nr);
+		len += mnv_snprintf((char *)IObuff + len, IOSIZE - len, "%*.*s  %3ld", n, n, " ", uhp->uh_save_nr);
 	    }
-	    ((char_u **)(ga.ga_data))[ga.ga_len++] = vim_strnsave(IObuff, len);
+	    ((char_u **)(ga.ga_data))[ga.ga_len++] = mnv_strnsave(IObuff, len);
 	}
 
 	uhp->uh_walk = mark;
@@ -3450,7 +3450,7 @@ u_freeentries(
 #ifdef U_DEBUG
     uhp->uh_magic = 0;
 #endif
-    vim_free((char_u *)uhp);
+    mnv_free((char_u *)uhp);
     --buf->b_u_numhead;
 }
 
@@ -3461,12 +3461,12 @@ u_freeentries(
 u_freeentry(u_entry_T *uep, long n)
 {
     while (n > 0)
-	vim_free(uep->ue_array[--n].ul_line);
-    vim_free((char_u *)uep->ue_array);
+	mnv_free(uep->ue_array[--n].ul_line);
+    mnv_free((char_u *)uep->ue_array);
 #ifdef U_DEBUG
     uep->ue_magic = 0;
 #endif
-    vim_free((char_u *)uep);
+    mnv_free((char_u *)uep);
 }
 
 /*
@@ -3492,7 +3492,7 @@ u_blockfree(buf_T *buf)
 {
     while (buf->b_u_oldhead != NULL)
 	u_freeheader(buf, buf->b_u_oldhead, NULL);
-    vim_free(buf->b_u_line_ptr.ul_line);
+    mnv_free(buf->b_u_line_ptr.ul_line);
 }
 
 /*
@@ -3538,7 +3538,7 @@ u_clearline(void)
     if (curbuf->b_u_line_ptr.ul_line == NULL)
 	return;
 
-    VIM_CLEAR(curbuf->b_u_line_ptr.ul_line);
+    MNV_CLEAR(curbuf->b_u_line_ptr.ul_line);
     curbuf->b_u_line_ptr.ul_len = 0;
     curbuf->b_u_line_ptr.ul_textlen = 0;
     curbuf->b_u_line_lnum = 0;
@@ -3686,7 +3686,7 @@ u_eval_tree(buf_T *buf, u_header_T *first_uhp, list_T *list)
     void
 f_undofile(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_string_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_string_arg(argvars, 0) == FAIL)
 	return;
 
     rettv->v_type = VAR_STRING;
@@ -3705,7 +3705,7 @@ f_undofile(typval_T *argvars, typval_T *rettv)
 
 	    if (ffname != NULL)
 		rettv->vval.v_string = u_get_undo_file_name(ffname, FALSE);
-	    vim_free(ffname);
+	    mnv_free(ffname);
 	}
     }
 # else
@@ -3728,7 +3728,7 @@ u_undofile_reset_and_delete(buf_T *buf)
     if (file_name != NULL)
     {
 	mch_remove(file_name);
-	vim_free(file_name);
+	mnv_free(file_name);
     }
 
     set_option_value_give_err((char_u *)"undofile", 0L, NULL, OPT_LOCAL);
@@ -3741,7 +3741,7 @@ u_undofile_reset_and_delete(buf_T *buf)
     void
 f_undotree(typval_T *argvars, typval_T *rettv)
 {
-    if (in_vim9script() && check_for_opt_buffer_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_opt_buffer_arg(argvars, 0) == FAIL)
 	return;
 
     if (rettv_dict_alloc(rettv) == FAIL)

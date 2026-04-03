@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Used by Test_channel_dap_mode in test_channel.vim to test DAP functionality.
+# Used by Test_channel_dap_mode in test_channel.mnv to test DAP functionality.
 
 import json
 import socket

@@ -1,7 +1,7 @@
-INSTALLami.txt - Installation of Vim from source on Amiga and MorphOS
+INSTALLami.txt - Installation of MNV from source on Amiga and MorphOS
 
-This file contains instructions for compiling Vim. If you already have an
-executable version of Vim, you don't need this.
+This file contains instructions for compiling MNV. If you already have an
+executable version of MNV, you don't need this.
 
 The file "feature.h" can be edited to match your preferences. You can skip
 this, then you will get the default behavior as is documented, which should

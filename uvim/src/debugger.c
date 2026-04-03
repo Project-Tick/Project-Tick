@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
- * debugger.c: Vim script debugger functions
+ * debugger.c: MNV script debugger functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 static int debug_greedy = FALSE;	// batch mode debugging: don't save
@@ -97,17 +97,17 @@ do_debug(char_u *cmd)
     if (debug_oldval != NULL)
     {
 	smsg(_("Oldval = \"%s\""), debug_oldval);
-	VIM_CLEAR(debug_oldval);
+	MNV_CLEAR(debug_oldval);
     }
     if (debug_newval != NULL)
     {
 	smsg(_("Newval = \"%s\""), debug_newval);
-	VIM_CLEAR(debug_newval);
+	MNV_CLEAR(debug_newval);
     }
     sname = estack_sfile(ESTACK_NONE);
     if (sname != NULL)
 	msg((char *)sname);
-    vim_free(sname);
+    mnv_free(sname);
     if (SOURCING_LNUM != 0)
 	smsg(_("line %ld: %s"), SOURCING_LNUM, cmd);
     else
@@ -138,7 +138,7 @@ do_debug(char_u *cmd)
 	n = debug_break_level;
 	debug_break_level = -1;
 
-	vim_free(cmdline);
+	mnv_free(cmdline);
 	cmdline = getcmdline_prompt('>', NULL, 0, EXPAND_NOTHING, NULL);
 
 	debug_break_level = n;
@@ -285,7 +285,7 @@ do_debug(char_u *cmd)
 	}
 	lines_left = Rows - 1;
     }
-    vim_free(cmdline);
+    mnv_free(cmdline);
 
     if (RedrawingDisabled > 0)
 	--RedrawingDisabled;
@@ -358,7 +358,7 @@ do_checkbacktracelevel(void)
 	    debug_backtrace_level = max;
 	    smsg(_("frame at highest level: %d"), max);
 	}
-	vim_free(sname);
+	mnv_free(sname);
     }
 }
 
@@ -391,7 +391,7 @@ do_showbacktrace(char_u *cmd)
 	    *next = '.';
 	    cur = next + 2;
 	}
-	vim_free(sname);
+	mnv_free(sname);
     }
 
     if (SOURCING_LNUM != 0)
@@ -573,7 +573,7 @@ eval_expr_no_emsg(struct debuggy *bp)
 {
     typval_T	*tv;
 
-    // Disable error messages, a bad expression would make Vim unusable.
+    // Disable error messages, a bad expression would make MNV unusable.
     ++emsg_off;
     tv = eval_expr(bp->dbg_name, NULL);
     --emsg_off;
@@ -640,7 +640,7 @@ dbg_parsearg(
 #ifdef FEAT_PROFILE
 	    gap != &prof_ga &&
 #endif
-	    VIM_ISDIGIT(*p))
+	    MNV_ISDIGIT(*p))
     {
 	bp->dbg_lnum = getdigits(&p);
 	p = skipwhite(p);
@@ -658,12 +658,12 @@ dbg_parsearg(
     }
 
     if (bp->dbg_type == DBG_FUNC)
-	bp->dbg_name = vim_strsave(STRNCMP(p, "g:", 2) == 0 ? p + 2 : p);
+	bp->dbg_name = mnv_strsave(STRNCMP(p, "g:", 2) == 0 ? p + 2 : p);
     else if (here)
-	bp->dbg_name = vim_strsave(curbuf->b_ffname);
+	bp->dbg_name = mnv_strsave(curbuf->b_ffname);
     else if (bp->dbg_type == DBG_EXPR)
     {
-	bp->dbg_name = vim_strsave(p);
+	bp->dbg_name = mnv_strsave(p);
 	if (bp->dbg_name != NULL)
 	    bp->dbg_val = eval_expr_no_emsg(bp);
     }
@@ -676,13 +676,13 @@ dbg_parsearg(
 	if (q == NULL)
 	    return FAIL;
 	p = expand_env_save(q);
-	vim_free(q);
+	mnv_free(q);
 	if (p == NULL)
 	    return FAIL;
 	if (*p != '*')
 	{
 	    bp->dbg_name = fix_fname(p);
-	    vim_free(p);
+	    mnv_free(p);
 	}
 	else
 	    bp->dbg_name = p;
@@ -720,11 +720,11 @@ ex_breakadd(exarg_T *eap)
 	pat = file_pat_to_reg_pat(bp->dbg_name, NULL, NULL, FALSE);
 	if (pat != NULL)
 	{
-	    bp->dbg_prog = vim_regcomp(pat, RE_MAGIC + RE_STRING);
-	    vim_free(pat);
+	    bp->dbg_prog = mnv_regcomp(pat, RE_MAGIC + RE_STRING);
+	    mnv_free(pat);
 	}
 	if (pat == NULL || bp->dbg_prog == NULL)
-	    vim_free(bp->dbg_name);
+	    mnv_free(bp->dbg_name);
 	else
 	{
 	    if (bp->dbg_lnum == 0)	// default line number is 1
@@ -810,7 +810,7 @@ ex_breakdel(exarg_T *eap)
 #endif
     }
 
-    if (vim_isdigit(*eap->arg))
+    if (mnv_isdigit(*eap->arg))
     {
 	// ":breakdel {nr}"
 	nr = atol((char *)eap->arg);
@@ -846,7 +846,7 @@ ex_breakdel(exarg_T *eap)
 		best_lnum = bpi->dbg_lnum;
 	    }
 	}
-	vim_free(bp->dbg_name);
+	mnv_free(bp->dbg_name);
     }
 
     if (todel < 0)
@@ -857,13 +857,13 @@ ex_breakdel(exarg_T *eap)
 
     while (gap->ga_len > 0)
     {
-	vim_free(DEBUGGY(gap, todel).dbg_name);
+	mnv_free(DEBUGGY(gap, todel).dbg_name);
 #ifdef FEAT_EVAL
 	if (DEBUGGY(gap, todel).dbg_type == DBG_EXPR
 		&& DEBUGGY(gap, todel).dbg_val != NULL)
 	    free_tv(DEBUGGY(gap, todel).dbg_val);
 #endif
-	vim_regfree(DEBUGGY(gap, todel).dbg_prog);
+	mnv_regfree(DEBUGGY(gap, todel).dbg_prog);
 	--gap->ga_len;
 	if (todel < gap->ga_len)
 	    mch_memmove(&DEBUGGY(gap, todel), &DEBUGGY(gap, todel + 1),
@@ -1059,7 +1059,7 @@ debuggy_find(
     // Also match a script-specific name.
     if (!is_file && fname[0] == K_SPECIAL)
     {
-	short_name = vim_strchr(fname, '_') + 1;
+	short_name = mnv_strchr(fname, '_') + 1;
 	name = alloc(STRLEN(fname) + 3);
 	if (name != NULL)
 	{
@@ -1086,8 +1086,8 @@ debuggy_find(
 	    prev_got_int = got_int;
 	    got_int = FALSE;
 	    if ((name != NULL
-		   && vim_regexec_prog(&bp->dbg_prog, FALSE, name, (colnr_T)0))
-		    || vim_regexec_prog(&bp->dbg_prog, FALSE,
+		   && mnv_regexec_prog(&bp->dbg_prog, FALSE, name, (colnr_T)0))
+		    || mnv_regexec_prog(&bp->dbg_prog, FALSE,
 						       short_name, (colnr_T)0))
 	    {
 		lnum = bp->dbg_lnum;
@@ -1111,10 +1111,10 @@ debuggy_find(
 	    {
 		if (bp->dbg_val == NULL)
 		{
-		    vim_free(debug_oldval);
+		    mnv_free(debug_oldval);
 		    debug_oldval = typval_tostring(NULL, TRUE);
 		    bp->dbg_val = tv;
-		    vim_free(debug_newval);
+		    mnv_free(debug_newval);
 		    debug_newval = typval_tostring(bp->dbg_val, TRUE);
 		    line = TRUE;
 		}
@@ -1131,12 +1131,12 @@ debuggy_find(
 			typval_T *v;
 
 			line = TRUE;
-			vim_free(debug_oldval);
+			mnv_free(debug_oldval);
 			debug_oldval = typval_tostring(bp->dbg_val, TRUE);
 			// Need to evaluate again, typval_compare() overwrites
 			// "tv".
 			v = eval_expr_no_emsg(bp);
-			vim_free(debug_newval);
+			mnv_free(debug_newval);
 			debug_newval = typval_tostring(v, TRUE);
 			free_tv(bp->dbg_val);
 			bp->dbg_val = v;
@@ -1146,9 +1146,9 @@ debuggy_find(
 	    }
 	    else if (bp->dbg_val != NULL)
 	    {
-		vim_free(debug_oldval);
+		mnv_free(debug_oldval);
 		debug_oldval = typval_tostring(bp->dbg_val, TRUE);
-		vim_free(debug_newval);
+		mnv_free(debug_newval);
 		debug_newval = typval_tostring(NULL, TRUE);
 		free_tv(bp->dbg_val);
 		bp->dbg_val = NULL;
@@ -1164,7 +1164,7 @@ debuggy_find(
 #endif
     }
     if (name != fname)
-	vim_free(name);
+	mnv_free(name);
 
     return lnum;
 }

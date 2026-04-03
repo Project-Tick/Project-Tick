@@ -1,0 +1,19 @@
+" MNV :catch command
+
+
+" :help :catch
+
+catch /^MNV:Interrupt$/		" catch interrupts (CTRL-C)
+catch /^MNV\%((\a\+)\)\=:E/	" catch all MNV errors
+catch /^MNV\%((\a\+)\)\=:/	" catch errors and interrupts
+catch /^MNV(write):/		" catch all errors in :write
+catch /^MNV\%((\a\+)\)\=:E123:/	" catch error E123
+catch /my-exception/		" catch user exception
+catch /.*/			" catch everything
+catch				" same as /.*/
+
+" :help :try
+
+try | sleep 100 | catch /^MNV:Interrupt$/ | endtry
+try | edit | catch /^MNV(edit):E\d\+/ | echo "error" | endtry
+

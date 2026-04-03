@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * indent.c: Indentation related functions
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_VARTABS)
 
@@ -49,7 +49,7 @@ tabstop_set(char_u *var, int **array)
 	    }
 	}
 
-	if (VIM_ISDIGIT(*cp))
+	if (MNV_ISDIGIT(*cp))
 	    continue;
 	if (cp[0] == ',' && cp > var && cp[-1] != ',' && cp[1] != NUL)
 	{
@@ -74,7 +74,7 @@ tabstop_set(char_u *var, int **array)
 	if (n <= 0 || n > TABSTOP_MAX)
 	{
 	    semsg(_(e_invalid_argument_str), cp);
-	    VIM_CLEAR(*array);
+	    MNV_CLEAR(*array);
 	    return FAIL;
 	}
 	(*array)[t++] = n;
@@ -557,7 +557,7 @@ set_indent(
 	    ind_done = 0;
 
 	    // count as many characters as we can use
-	    while (todo > 0 && VIM_ISWHITE(*p))
+	    while (todo > 0 && MNV_ISWHITE(*p))
 	    {
 		if (*p == TAB)
 		{
@@ -654,7 +654,7 @@ set_indent(
     }
 
     // Return if the indent is OK already.
-    if (!doit && !VIM_ISWHITE(*p) && !(flags & SIN_INSERT))
+    if (!doit && !MNV_ISWHITE(*p) && !(flags & SIN_INSERT))
 	return FALSE;
 
     // Allocate memory for the new line.
@@ -688,7 +688,7 @@ set_indent(
 
 	// Skip over any additional white space (useful when newindent is less
 	// than old)
-	while (VIM_ISWHITE(*p))
+	while (MNV_ISWHITE(*p))
 	    ++p;
 
     }
@@ -712,7 +712,7 @@ set_indent(
 	    p = oldline;
 	    ind_done = 0;
 
-	    while (todo > 0 && VIM_ISWHITE(*p))
+	    while (todo > 0 && MNV_ISWHITE(*p))
 	    {
 		if (*p == TAB)
 		{
@@ -820,7 +820,7 @@ set_indent(
 	retval = TRUE;
     }
     else
-	vim_free(newline);
+	mnv_free(newline);
 
     curwin->w_cursor.col = ind_len;
     return retval;
@@ -848,20 +848,20 @@ get_number_indent(linenr_T lnum)
     if ((State & MODE_INSERT) || has_format_option(FO_Q_COMS))
 	lead_len = get_leader_len(ml_get(lnum), NULL, FALSE, TRUE);
 
-    regmatch.regprog = vim_regcomp(curbuf->b_p_flp, RE_MAGIC);
+    regmatch.regprog = mnv_regcomp(curbuf->b_p_flp, RE_MAGIC);
     if (regmatch.regprog != NULL)
     {
 	regmatch.rm_ic = FALSE;
 
-	// vim_regexec() expects a pointer to a line.  This lets us
+	// mnv_regexec() expects a pointer to a line.  This lets us
 	// start matching for the flp beyond any comment leader...
-	if (vim_regexec(&regmatch, ml_get(lnum) + lead_len, (colnr_T)0))
+	if (mnv_regexec(&regmatch, ml_get(lnum) + lead_len, (colnr_T)0))
 	{
 	    pos.lnum = lnum;
 	    pos.col = (colnr_T)(*regmatch.endp - ml_get(lnum));
 	    pos.coladd = 0;
 	}
-	vim_regfree(regmatch.regprog);
+	mnv_regfree(regmatch.regprog);
     }
 
     if (pos.lnum == 0 || *ml_get_pos(&pos) == NUL)
@@ -898,12 +898,12 @@ briopt_check(
     {
 	// Note: Keep this in sync with p_briopt_values
 	if (STRNCMP(p, "shift:", 6) == 0
-		 && ((p[6] == '-' && VIM_ISDIGIT(p[7])) || VIM_ISDIGIT(p[6])))
+		 && ((p[6] == '-' && MNV_ISDIGIT(p[7])) || MNV_ISDIGIT(p[6])))
 	{
 	    p += 6;
 	    bri_shift = getdigits(&p);
 	}
-	else if (STRNCMP(p, "min:", 4) == 0 && VIM_ISDIGIT(p[4]))
+	else if (STRNCMP(p, "min:", 4) == 0 && MNV_ISDIGIT(p[4]))
 	{
 	    p += 4;
 	    bri_min = getdigits(&p);
@@ -998,8 +998,8 @@ get_breakindent_win(
 	)
     {
 	prev_fnum = wp->w_buffer->b_fnum;
-	vim_free(prev_line);
-	prev_line = vim_strsave(line);
+	mnv_free(prev_line);
+	prev_line = mnv_strsave(line);
 	prev_ts = wp->w_buffer->b_p_ts;
 # ifdef FEAT_VARTABS
 	prev_vts = wp->w_buffer->b_p_vts_array;
@@ -1017,20 +1017,20 @@ get_breakindent_win(
 	prev_list = 0;
 	prev_no_ts = no_ts;
 	prev_dy_uhex = (dy_flags & DY_UHEX);
-	vim_free(prev_flp);
-	prev_flp = vim_strsave(get_flp_value(wp->w_buffer));
+	mnv_free(prev_flp);
+	prev_flp = mnv_strsave(get_flp_value(wp->w_buffer));
 	// add additional indent for numbered lists
 	if (wp->w_briopt_list != 0 && wp->w_briopt_vcol == 0)
 	{
 	    regmatch_T	    regmatch;
 
-	    regmatch.regprog = vim_regcomp(prev_flp,
+	    regmatch.regprog = mnv_regcomp(prev_flp,
 				   RE_MAGIC + RE_STRING + RE_AUTO + RE_STRICT);
 
 	    if (regmatch.regprog != NULL)
 	    {
 		regmatch.rm_ic = FALSE;
-		if (vim_regexec(&regmatch, line, 0))
+		if (mnv_regexec(&regmatch, line, 0))
 		{
 		    if (wp->w_briopt_list > 0)
 			prev_list = wp->w_briopt_list;
@@ -1051,7 +1051,7 @@ get_breakindent_win(
 			prev_indent = indent;
 		    }
 		}
-		vim_regfree(regmatch.regprog);
+		mnv_regfree(regmatch.regprog);
 	    }
 	}
     }
@@ -1073,7 +1073,7 @@ get_breakindent_win(
 
     // indent minus the length of the showbreak string
     if (wp->w_briopt_sbr)
-	bri -= vim_strsize(get_showbreak_value(wp));
+	bri -= mnv_strsize(get_showbreak_value(wp));
 
 
     // never indent past left window margin
@@ -1102,7 +1102,7 @@ inindent(int extra)
     char_u	*ptr;
     colnr_T	col;
 
-    for (col = 0, ptr = ml_get_curline(); VIM_ISWHITE(*ptr); ++col)
+    for (col = 0, ptr = ml_get_curline(); MNV_ISWHITE(*ptr); ++col)
 	++ptr;
     if (col >= curwin->w_cursor.col + extra)
 	return TRUE;
@@ -1250,7 +1250,7 @@ ins_try_si(int c)
 	    ptr = ml_get(pos->lnum);
 	    i = pos->col;
 	    if (i > 0)		// skip blanks before '{'
-		while (--i > 0 && VIM_ISWHITE(ptr[i]))
+		while (--i > 0 && MNV_ISWHITE(ptr[i]))
 		    ;
 	    curwin->w_cursor.lnum = pos->lnum;
 	    curwin->w_cursor.col = i;
@@ -1333,7 +1333,7 @@ change_indent(
     // MODE_VREPLACE state needs to know what the line was like before changing
     if (State & VREPLACE_FLAG)
     {
-	orig_line = vim_strnsave(ml_get_curline(), ml_get_curline_len());  // Deal with NULL below
+	orig_line = mnv_strnsave(ml_get_curline(), ml_get_curline_len());  // Deal with NULL below
 	orig_col = curwin->w_cursor.col;
     }
 
@@ -1439,7 +1439,7 @@ change_indent(
 		while (--i >= 0)
 		    ptr[i] = ' ';
 		ins_str(ptr, ptrlen);
-		vim_free(ptr);
+		mnv_free(ptr);
 	    }
 	}
 
@@ -1511,10 +1511,10 @@ change_indent(
 	    return;
 
 	// Save new line
-	new_line = vim_strnsave(ml_get_curline(), ml_get_curline_len());
+	new_line = mnv_strnsave(ml_get_curline(), ml_get_curline_len());
 	if (new_line == NULL)
 	{
-	    vim_free(orig_line);
+	    mnv_free(orig_line);
 	    return;
 	}
 
@@ -1531,7 +1531,7 @@ change_indent(
 	// Insert new stuff into line again
 	ins_bytes(new_line);
 
-	vim_free(new_line);
+	mnv_free(new_line);
     }
 }
 
@@ -1569,7 +1569,7 @@ copy_indent(int size, char_u *src)
 	s = src;
 
 	// Count/copy the usable portion of the source line
-	while (todo > 0 && VIM_ISWHITE(*s))
+	while (todo > 0 && MNV_ISWHITE(*s))
 	{
 	    if (*s == TAB)
 	    {
@@ -1740,7 +1740,7 @@ ex_retab(exarg_T *eap)
     new_ts_str = ptr;
     if (tabstop_set(ptr, &new_vts_array) == FAIL)
 	return;
-    while (vim_isdigit(*ptr) || *ptr == ',')
+    while (mnv_isdigit(*ptr) || *ptr == ',')
 	++ptr;
 
     // This ensures that either new_vts_array and new_ts_str are freshly
@@ -1752,7 +1752,7 @@ ex_retab(exarg_T *eap)
 	new_ts_str = NULL;
     }
     else
-	new_ts_str = vim_strnsave(new_ts_str, ptr - new_ts_str);
+	new_ts_str = mnv_strnsave(new_ts_str, ptr - new_ts_str);
 #else
     if (ptr[0] != NUL && (ptr[0] != '0' || ptr[1] != NUL))
     {
@@ -1785,7 +1785,7 @@ ex_retab(exarg_T *eap)
 	did_undo = FALSE;
 	for (;;)
 	{
-	    if (VIM_ISWHITE(ptr[col]))
+	    if (MNV_ISWHITE(ptr[col]))
 	    {
 		if (!got_tab && num_spaces == 0)
 		{
@@ -1929,16 +1929,16 @@ ex_retab(exarg_T *eap)
 	    set_string_option_direct((char_u *)"vts", -1, new_ts_str,
 							OPT_FREE|OPT_LOCAL, 0);
 	    curbuf->b_p_vts_array = new_vts_array;
-	    vim_free(old_vts_ary);
+	    mnv_free(old_vts_ary);
 	}
 	else
 	{
 	    // 'vartabstop' wasn't in use and a single value was given to
 	    // retab then update 'tabstop'.
 	    curbuf->b_p_ts = tabstop_first(new_vts_array);
-	    vim_free(new_vts_array);
+	    mnv_free(new_vts_array);
 	}
-	vim_free(new_ts_str);
+	mnv_free(new_ts_str);
     }
 #else
     curbuf->b_p_ts = new_ts;
@@ -1970,7 +1970,7 @@ get_expr_indent(void)
     save_pos = curwin->w_cursor;
     save_curswant = curwin->w_curswant;
     save_set_curswant = curwin->w_set_curswant;
-    set_vim_var_nr(VV_LNUM, curwin->w_cursor.lnum);
+    set_mnv_var_nr(VV_LNUM, curwin->w_cursor.lnum);
     if (use_sandbox)
 	++sandbox;
     ++textlock;
@@ -1978,11 +1978,11 @@ get_expr_indent(void)
 
     // Need to make a copy, the 'indentexpr' option could be changed while
     // evaluating it.
-    inde_copy = vim_strsave(curbuf->b_p_inde);
+    inde_copy = mnv_strsave(curbuf->b_p_inde);
     if (inde_copy != NULL)
     {
 	indent = (int)eval_to_number(inde_copy, TRUE);
-	vim_free(inde_copy);
+	mnv_free(inde_copy);
     }
 
     if (use_sandbox)
@@ -2002,7 +2002,7 @@ get_expr_indent(void)
     State = save_State;
 
     // Reset did_throw, unless 'debug' has "throw" and inside a try/catch.
-    if (did_throw && (vim_strchr(p_debug, 't') == NULL || trylevel == 0))
+    if (did_throw && (mnv_strchr(p_debug, 't') == NULL || trylevel == 0))
     {
 	handle_did_throw();
 	did_throw = FALSE;
@@ -2060,7 +2060,7 @@ get_lisp_indent(void)
     int		vi_lisp;
 
     // Set vi_lisp to use the vi-compatible method
-    vi_lisp = (vim_strchr(p_cpo, CPO_LISP) != NULL);
+    vi_lisp = (mnv_strchr(p_cpo, CPO_LISP) != NULL);
 
     realpos = curwin->w_cursor;
     curwin->w_cursor.col = 0;
@@ -2175,7 +2175,7 @@ get_lisp_indent(void)
 
 		    init_chartabsize_arg(&cts, curwin, (colnr_T)(that - line),
 							   amount, line, that);
-		    while (VIM_ISWHITE(*cts.cts_ptr))
+		    while (MNV_ISWHITE(*cts.cts_ptr))
 		    {
 			cts.cts_vcol += lbr_chartabsize(&cts);
 			++cts.cts_ptr;
@@ -2203,7 +2203,7 @@ get_lisp_indent(void)
 				    && (*that < '0' || *that > '9')))
 			{
 			    while (*cts.cts_ptr
-				    && (!VIM_ISWHITE(*cts.cts_ptr)
+				    && (!MNV_ISWHITE(*cts.cts_ptr)
 					|| quotecount
 					|| parencount)
 				    && (!((*cts.cts_ptr == '('
@@ -2226,7 +2226,7 @@ get_lisp_indent(void)
 				cts.cts_vcol += lbr_chartabsize_adv(&cts);
 			    }
 			}
-			while (VIM_ISWHITE(*cts.cts_ptr))
+			while (MNV_ISWHITE(*cts.cts_ptr))
 			{
 			    cts.cts_vcol += lbr_chartabsize(&cts);
 			    ++cts.cts_ptr;
@@ -2314,7 +2314,7 @@ f_indent(typval_T *argvars, typval_T *rettv)
 {
     linenr_T	lnum;
 
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
     lnum = tv_get_lnum(argvars);
@@ -2322,7 +2322,7 @@ f_indent(typval_T *argvars, typval_T *rettv)
 	rettv->vval.v_number = get_indent_lnum(lnum);
     else
     {
-	if (in_vim9script())
+	if (in_mnv9script())
 	    semsg(_(e_invalid_line_number_nr), lnum);
 	rettv->vval.v_number = -1;
     }
@@ -2337,7 +2337,7 @@ f_lispindent(typval_T *argvars UNUSED, typval_T *rettv)
     pos_T	pos;
     linenr_T	lnum;
 
-    if (in_vim9script() && check_for_lnum_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_lnum_arg(argvars, 0) == FAIL)
 	return;
 
     pos = curwin->w_cursor;
@@ -2348,7 +2348,7 @@ f_lispindent(typval_T *argvars UNUSED, typval_T *rettv)
 	rettv->vval.v_number = get_lisp_indent();
 	curwin->w_cursor = pos;
     }
-    else if (in_vim9script())
+    else if (in_mnv9script())
 	semsg(_(e_invalid_line_number_nr), lnum);
     else
 	rettv->vval.v_number = -1;

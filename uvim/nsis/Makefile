@@ -1,5 +1,5 @@
 #
-# Makefile for UNIX-like for create self-installing exe of Vim.
+# Makefile for UNIX-like for create self-installing exe of MNV.
 # 2025-10-03, Restorer, restorer@mail2k.ru
 #
 
@@ -7,16 +7,16 @@
 .SUFFIXES:
 .PHONY: all makeinst prepare rename clean 
 
-ifdef VIMSRC
-MKNSISFLAGS := -D"VIMSRC=$(VIMSRC)"
+ifdef MNVSRC
+MKNSISFLAGS := -D"MNVSRC=$(MNVSRC)"
 endif
 
-ifdef VIMRT
-MKNSISFLAGS := $(MKNSISFLAGS) -D"VIMRT=$(VIMRT)"
+ifdef MNVRT
+MKNSISFLAGS := $(MKNSISFLAGS) -D"MNVRT=$(MNVRT)"
 endif
 
-ifdef VIMTOOLS
-MKNSISFLAGS := $(MKNSISFLAGS) -D"VIMTOOLS=$(VIMTOOLS)"
+ifdef MNVTOOLS
+MKNSISFLAGS := $(MKNSISFLAGS) -D"MNVTOOLS=$(MNVTOOLS)"
 endif
 
 ifdef GETTEXT
@@ -56,7 +56,7 @@ MKNSISFLAGS := -INPUTCHARSET UTF8 $(MKNSISFLAGS)
 all: makeinst
 
 makeinst: prepare
-	makensis $(MKNSISFLAGS) gvim.nsi $(XX)
+	makensis $(MKNSISFLAGS) gmnv.nsi $(XX)
 
 prepare: unzipicons license rename
 
@@ -77,6 +77,6 @@ rename:
 clean:
 	rm -f ../lang/LICENSE*.nsis.txt
 	if test -d icons ; then rm -rf icons ; fi
-	if test -f gvim??.exe ; then rm -f gvim??.exe ; fi
+	if test -f gmnv??.exe ; then rm -f gmnv??.exe ; fi
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=0 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=0 ft=make:

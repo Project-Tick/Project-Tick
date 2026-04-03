@@ -1,10 +1,10 @@
-# Aap recipe for Tagalog Vim spell files.
+# Aap recipe for Tagalog MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = tl_PH.aff tl_PH.dic
@@ -13,10 +13,10 @@ all: $SPELLDIR/tl.latin1.spl $SPELLDIR/tl.utf-8.spl ../README_tl.txt
 
 $SPELLDIR/tl.latin1.spl : $FILES
         :sys env LANG=tl_PH.ISO8859-1
-		$VIM -u NONE -e -c "mkspell! $SPELLDIR/tl tl_PH" -c q
+		$MNV -u NONE -e -c "mkspell! $SPELLDIR/tl tl_PH" -c q
 
 $SPELLDIR/tl.utf-8.spl : $FILES
-        :sys $VIM -u NONE -e -c "set enc=utf-8" -c "mkspell! $SPELLDIR/tl tl_PH" -c q
+        :sys $MNV -u NONE -e -c "set enc=utf-8" -c "mkspell! $SPELLDIR/tl tl_PH" -c q
 
 ../README_tl.txt : README_tl_PH.txt
         :copy $source $target
@@ -43,7 +43,7 @@ tl_PH.aff tl_PH.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -74,4 +74,4 @@ check:
             :delete tl_PH.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

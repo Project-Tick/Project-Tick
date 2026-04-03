@@ -1,5 +1,5 @@
 #
-# Makefile for MS Windows for create self-installing exe of Vim.
+# Makefile for MS Windows for create self-installing exe of MNV.
 # 2025-10-03, Restorer, restorer@mail2k.ru
 #
 
@@ -15,16 +15,16 @@ ProgFiles=%%PROGRAMFILES(x86)%%
 ProgFiles=$(PROGRAMFILES)
 !ENDIF
 
-!IFDEF VIMSRC
-MKNSISFLAGS = /D"VIMSRC=$(VIMSRC)"
+!IFDEF MNVSRC
+MKNSISFLAGS = /D"MNVSRC=$(MNVSRC)"
 !ENDIF
 
-!IFDEF VIMRT
-MKNSISFLAGS = $(MKNSISFLAGS) /D"VIMRT=$(VIMRT)"
+!IFDEF MNVRT
+MKNSISFLAGS = $(MKNSISFLAGS) /D"MNVRT=$(MNVRT)"
 !ENDIF
 
-!IFDEF VIMTOOLS
-MKNSISFLAGS = $(MKNSISFLAGS) /D"VIMTOOLS=$(VIMTOOLS)"
+!IFDEF MNVTOOLS
+MKNSISFLAGS = $(MKNSISFLAGS) /D"MNVTOOLS=$(MNVTOOLS)"
 !ENDIF
 
 !IFDEF GETTEXT
@@ -69,7 +69,7 @@ MKNSISFLAGS = /INPUTCHARSET UTF8 $(MKNSISFLAGS)
 all : makeinst
 
 makeinst : prepare
-	^"$(MKNSIS)" $(MKNSISFLAGS) gvim.nsi $(XX)
+	^"$(MKNSIS)" $(MKNSISFLAGS) gmnv.nsi $(XX)
 
 prepare : unzipicons license rename
 
@@ -90,6 +90,6 @@ rename :
 clean :
 	@ if exist ..\lang\LICENSE*.nsis.txt $(RM) ..\lang\LICENSE*.nsis.txt
 	@ if exist .\icons\nul $(RD) .\icons
-	@ if exist .\gvim??.exe $(RM) .\gvim??.exe
+	@ if exist .\gmnv??.exe $(RM) .\gmnv??.exe
 
-# vim: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:
+# mnv: set noet sw=8 ts=8 sts=0 wm=0 tw=79 ft=make:

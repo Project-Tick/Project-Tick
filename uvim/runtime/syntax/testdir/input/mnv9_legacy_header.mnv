@@ -1,0 +1,20 @@
+" MNV9 legacy script header
+
+
+" comment
+
+if !has('mnv9script')
+  # 42 " comment
+  source foo.mnv
+  finish
+endif
+
+" comment
+
+mnv9script noclear
+
+# comment
+
+ # string only recognised with leading char
+ "useless string"
+

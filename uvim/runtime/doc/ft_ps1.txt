@@ -1,12 +1,12 @@
-*ft_ps1.txt*  A Windows PowerShell syntax plugin for Vim
+*ft_ps1.txt*  A Windows PowerShell syntax plugin for MNV
 
 Author:  Peter Provost <https://www.github.com/PProvost>
 License: Apache 2.0
-URL:     https://github.com/PProvost/vim-ps1
+URL:     https://github.com/PProvost/mnv-ps1
 
 INTRODUCTION                                                    *ps1-syntax*
 
-This plugin provides Vim syntax, indent and filetype detection for Windows
+This plugin provides MNV syntax, indent and filetype detection for Windows
 PowerShell scripts, modules, and XML configuration files.
 
 
@@ -14,7 +14,7 @@ ABOUT                                                           *ps1-about*
 
 Grab the latest version or report a bug on GitHub:
 
-https://github.com/PProvost/vim-ps1
+https://github.com/PProvost/mnv-ps1
 
 
 FOLDING                                                         *ps1-folding*
@@ -23,7 +23,7 @@ The ps1 syntax file provides syntax folding (see |:syn-fold|) for script blocks
 and digital signatures in scripts.
 
 When 'foldmethod' is set to "syntax" then function script blocks will be
-folded unless you use the following in your .vimrc or before opening a script: >
+folded unless you use the following in your .mnvrc or before opening a script: >
 
     :let g:ps1_nofold_blocks = 1
 <
@@ -61,4 +61,4 @@ https://chocolatey.org/packages/less/. Make sure `less` is in a directory
 listed in the `PATH` environment variable, which chocolatey above does.
 
 ------------------------------------------------------------------------------
- vim:ft=help:
+ mnv:ft=help:

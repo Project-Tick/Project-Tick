@@ -1,7 +1,7 @@
-*usr_25.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_25.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			     Editing formatted text
@@ -9,7 +9,7 @@
 
 Text hardly ever comes in one sentence per line.  This chapter is about
 breaking sentences to make them fit on a page and other formatting.
-Vim also has useful features for editing single-line paragraphs and tables.
+MNV also has useful features for editing single-line paragraphs and tables.
 
 |25.1|	Breaking lines
 |25.2|	Aligning text
@@ -24,12 +24,12 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *25.1*	Breaking lines
 
-Vim has a number of functions that make dealing with text easier.  By default,
+MNV has a number of functions that make dealing with text easier.  By default,
 the editor does not perform automatic line breaks.  In other words, you have
 to press <Enter> yourself.  This is useful when you are writing programs where
 you want to decide where the line ends.  It is not so good when you are
 creating documentation and want the text to be at most 70 character wide.
-   If you set the 'textwidth' option, Vim automatically inserts line breaks.
+   If you set the 'textwidth' option, MNV automatically inserts line breaks.
 Suppose, for example, that you want a very narrow column of only 30
 characters.  You need to execute the following command: >
 
@@ -42,7 +42,7 @@ Now you start typing (ruler added):
 	I taught programming for a whi ~
 
 If you type "l" next, this makes the line longer than the 30-character limit.
-When Vim sees this, it inserts a line break and you get the following:
+When MNV sees this, it inserts a line break and you get the following:
 
 		 1	   2	     3
 	12345678901234567890123456789012345
@@ -59,18 +59,18 @@ Continuing on, you can type in the rest of the paragraph:
 	because my homework was too ~
 	hard. True story. ~
 
-You do not have to type newlines; Vim puts them in automatically.
+You do not have to type newlines; MNV puts them in automatically.
 
 	Note:
-	The 'wrap' option makes Vim display lines with a line break, but this
+	The 'wrap' option makes MNV display lines with a line break, but this
 	doesn't insert a line break in the file.
 
 
 REFORMATTING
 
-The Vim editor is not a word processor.  In a word processor, if you delete
+The MNV editor is not a word processor.  In a word processor, if you delete
 something at the beginning of the paragraph, the line breaks are reworked.  In
-Vim they are not; so if you delete the word "programming" from the first line,
+MNV they are not; so if you delete the word "programming" from the first line,
 all you get is a short line:
 
 		 1	   2	     3
@@ -124,11 +124,11 @@ whole file by typing this: >
 together.  A common mistake is to have a line with a space or tab.  That's a
 blank line, but not an empty line.
 
-Vim is able to format more than just plain text.  See |fo-table| for how to
+MNV is able to format more than just plain text.  See |fo-table| for how to
 change this.  See the 'joinspaces' option to change the number of spaces used
 after a full stop.
    It is possible to use an external program for formatting.  This is useful
-if your text can't be properly formatted with Vim's builtin command.  See the
+if your text can't be properly formatted with MNV's builtin command.  See the
 'formatprg' option.
 
 ==============================================================================
@@ -194,20 +194,20 @@ This results in the following:
 
 JUSTIFYING TEXT		*justify* *:Justify* *Justify()* *package-justify*
 
-Vim has no built-in way of justifying text.  However, there is a neat macro
+MNV has no built-in way of justifying text.  However, there is a neat macro
 package that does the job.  To use this package, execute the following
-command: >vim
+command: >mnv
 
 	:packadd justify
 
-Or put this line in your |vimrc|: >vim
+Or put this line in your |mnvrc|: >mnv
 
 	:packadd! justify
 
-This Vim script file defines a new visual command "_j".  To justify a block of
+This MNV script file defines a new visual command "_j".  To justify a block of
 text, highlight the text in Visual mode and then execute "_j".
    Look in the file for more explanations.  To go there, do "gf" on this name:
-$VIMRUNTIME/pack/dist/opt/justify/plugin/justify.vim.
+$MNVRUNTIME/pack/dist/opt/justify/plugin/justify.mnv.
 
 An alternative is to filter the text through an external program.  Example: >
 
@@ -259,7 +259,7 @@ this, set the 'softtabstop' option: >
 
 	:set softtabstop=4
 
-Vim now creates invisible tab stops for your cursor every 4 columns; hitting
+MNV now creates invisible tab stops for your cursor every 4 columns; hitting
 <Tab> jumps to the next stop and inserts the exact mix of spaces or tabs
 needed.
 
@@ -276,20 +276,20 @@ needed.
 *25.4*	Dealing with long lines
 
 Sometimes you will be editing a file that is wider than the number of columns
-in the window.  When that occurs, Vim wraps the lines so that everything fits
+in the window.  When that occurs, MNV wraps the lines so that everything fits
 on the screen.
    If you switch the 'wrap' option off, each line in the file shows up as one
 line on the screen.  Then the ends of the long lines disappear off the screen
 to the right.
-   When you move the cursor to a character that can't be seen, Vim will scroll
+   When you move the cursor to a character that can't be seen, MNV will scroll
 the text to show it.  This is like moving a viewport over the text in the
 horizontal direction.
-   By default, Vim does not display a horizontal scrollbar in the GUI.  If you
+   By default, MNV does not display a horizontal scrollbar in the GUI.  If you
 want to enable one, use the following command: >
 
 	:set guioptions+=b
 
-One horizontal scrollbar will appear at the bottom of the Vim window.
+One horizontal scrollbar will appear at the bottom of the MNV window.
 
 If you don't have a scrollbar or don't want to use it, use these commands to
 scroll the text.  The cursor will stay in the same place, but it's moved back
@@ -346,7 +346,7 @@ paragraphs without a line break.  A disadvantage of using 'nowrap' is that you
 can't see the whole sentence you are working on.  When 'wrap' is on, words are
 broken halfway, which makes them hard to read.
    A good solution for editing this kind of paragraph is setting the
-'linebreak' option.  Vim then breaks lines at an appropriate place when
+'linebreak' option.  MNV then breaks lines at an appropriate place when
 displaying the line.  The text in the file remains unchanged.
    Without 'linebreak' text might look like this:
 
@@ -467,14 +467,14 @@ Typing "0.693" results in:
 	input A		  0.534			 0.693 ~
 	input B		  0.913 ~
 
-Vim has automatically filled the gap in front of the new text for you.  Now,
+MNV has automatically filled the gap in front of the new text for you.  Now,
 to enter the next field in this column use "Bj".  "B" moves back to the start
 of a white space separated word.  Then "j" moves to the place where the next
 field can be entered.
 
 	Note:
 	You can move the cursor anywhere in the display, also beyond the end
-	of a line.  But Vim will not insert spaces there, until you insert a
+	of a line.  But MNV will not insert spaces there, until you insert a
 	character in that position.
 
 
@@ -565,7 +565,7 @@ REFORMATTING TABS IN TABLES
 
 You edit a file that contains tabular data and the original author of the file
 decided to align the tabular data using tab characters (instead of spaces).
-Alas, they were using tab stops separated by 4 columns and Vim's default
+Alas, they were using tab stops separated by 4 columns and MNV's default
 is 8 columns; the table looks wrong!  What can be done?
   To fix the appearance without modifying the file, adjust the setting
 temporarily: >
@@ -573,7 +573,7 @@ temporarily: >
 	:set tabstop=4
 
 This updates the visual layout, but the file itself remains unchanged.
-  Another possibility is to permanently reformat the file.  For this Vim
+  Another possibility is to permanently reformat the file.  For this MNV
 provides the |:retab| command.  First, set 'tabstop' to match original layout
 (as above), then run: >
 
@@ -590,4 +590,4 @@ real tab.
 
 Next chapter: |usr_26.txt|  Repeating
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

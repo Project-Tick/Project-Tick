@@ -1,18 +1,18 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
  * QNX port by Julian Kinraid
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
  * os_qnx.c
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 
 #if defined(FEAT_GUI_PHOTON)
@@ -33,10 +33,10 @@ void qnx_init(void)
 
 #if defined(FEAT_GUI_PHOTON) && defined(FEAT_CLIPBOARD)
 
-# define CLIP_TYPE_VIM "VIMTYPE"
+# define CLIP_TYPE_MNV "MNVTYPE"
 # define CLIP_TYPE_TEXT "TEXT"
 
-// Turn on the clipboard for a console vim when photon is running
+// Turn on the clipboard for a console mnv when photon is running
 void qnx_clip_init(void)
 {
     if (is_photon_available == TRUE && !gui.in_use)
@@ -70,8 +70,8 @@ clip_mch_request_selection(Clipboard_T *cbd)
     if (cbdata == NULL)
 	return;
 
-    // Look for the vim specific clip first
-    clip_header = PhClipboardPasteType(cbdata, CLIP_TYPE_VIM);
+    // Look for the mnv specific clip first
+    clip_header = PhClipboardPasteType(cbdata, CLIP_TYPE_MNV);
     if (clip_header != NULL && clip_header->data != NULL)
     {
 	switch(*(char *) clip_header->data)
@@ -106,7 +106,7 @@ clip_mch_set_selection(Clipboard_T *cbd)
 {
     int type;
     long_u  len;
-    char_u *text_clip, vim_clip[2], *str = NULL;
+    char_u *text_clip, mnv_clip[2], *str = NULL;
     PhClipHeader clip_header[2];
 
     // Prevent recursion from clip_get_selection()
@@ -122,13 +122,13 @@ clip_mch_set_selection(Clipboard_T *cbd)
     {
 	text_clip = alloc(len + 1); // Normal text
 
-	if (text_clip && vim_clip)
+	if (text_clip && mnv_clip)
 	{
 	    CLEAR_FIELD(clip_header);
 
-	    STRNCPY(clip_header[0].type, CLIP_TYPE_VIM, 8);
-	    clip_header[0].length = sizeof(vim_clip);
-	    clip_header[0].data   = vim_clip;
+	    STRNCPY(clip_header[0].type, CLIP_TYPE_MNV, 8);
+	    clip_header[0].length = sizeof(mnv_clip);
+	    clip_header[0].data   = mnv_clip;
 
 	    STRNCPY(clip_header[1].type, CLIP_TYPE_TEXT, 8);
 	    clip_header[1].length = len + 1;
@@ -137,19 +137,19 @@ clip_mch_set_selection(Clipboard_T *cbd)
 	    switch(type)
 	    {
 		default: // fallthrough to MLINE
-		case MLINE:	*vim_clip = 'L'; break;
-		case MCHAR:	*vim_clip = 'C'; break;
-		case MBLOCK:	*vim_clip = 'B'; break;
+		case MLINE:	*mnv_clip = 'L'; break;
+		case MCHAR:	*mnv_clip = 'C'; break;
+		case MBLOCK:	*mnv_clip = 'B'; break;
 	    }
 
-	    vim_strncpy(text_clip, str, len);
+	    mnv_strncpy(text_clip, str, len);
 
-	    vim_clip[ 1 ] = NUL;
+	    mnv_clip[ 1 ] = NUL;
 
 	    PhClipboardCopy(PhInputGroup(NULL), 2, clip_header);
 	}
-	vim_free(text_clip);
+	mnv_free(text_clip);
     }
-    vim_free(str);
+    mnv_free(str);
 }
 #endif

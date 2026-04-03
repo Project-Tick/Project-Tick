@@ -1,16 +1,16 @@
-*howto.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*howto.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 How to ...				*howdoi* *how-do-i* *howto* *how-to*
 
 |tutor|			get started
 |:quit|			exit?  I'm trapped, help me!
-|initialization|	initialize Vim
-|vimrc-intro|		write a Vim script file (vimrc)
-|suspend|		suspend Vim
+|initialization|	initialize MNV
+|mnvrc-intro|		write a MNV script file (mnvrc)
+|suspend|		suspend MNV
 |usr_11.txt|		recover after a crash
 |07.4|			keep a backup of my file when writing over it
 
@@ -49,7 +49,7 @@ How to ...				*howdoi* *how-do-i* *howto* *how-to*
 
 |mode-switching|	change modes
 |04.4|			use Visual mode
-'insertmode'		start Vim in Insert mode
+'insertmode'		start MNV in Insert mode
 
 |40.1|			map keys
 |24.7|			create abbreviations
@@ -69,13 +69,13 @@ How to ...				*howdoi* *how-do-i* *howto* *how-to*
 
 'autowrite'		write automatically
 |30.1|			speedup edit-compile-edit cycle or compile and fix
-			errors within Vim
+			errors within MNV
 
 |options|		set options
 |auto-setting|		set options automatically
 |term-dependent-settings| set options depending on terminal name
 |save-settings|		save settings
-|:quote|		comment my .vim files
+|:quote|		comment my .mnv files
 'helpheight'		change the default help height
 'highlight'		set various highlighting modes
 'title'			set the window title
@@ -83,14 +83,14 @@ How to ...				*howdoi* *how-do-i* *howto* *how-to*
 'report'		avoid seeing the change messages on every line
 'shortmess'		avoid |hit-enter| prompts
 
-|mouse-using|		use mouse with Vim
+|mouse-using|		use mouse with MNV
 |usr_08.txt|		manage multiple windows and buffers
 |gui.txt|		use the gui
 
-|You can't! (yet)|	do dishes using Vim
+|You can't! (yet)|	do dishes using MNV
 
 |usr_06.txt|		switch on syntax highlighting
-|2html.vim|		convert a colored file to HTML
-|less|			use Vim like less or more with syntax highlighting
+|2html.mnv|		convert a colored file to HTML
+|less|			use MNV like less or more with syntax highlighting
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

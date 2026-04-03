@@ -1,10 +1,10 @@
-*usr_50.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_50.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
-			 Advanced Vim script writing
+			 Advanced MNV script writing
 
 
 |50.1|	Exceptions
@@ -36,7 +36,7 @@ contains the error message.  And every error message has a number.  In this
 case, the error we catch contains "E484:".  This number is guaranteed to stay
 the same (the text may change, e.g., it may be translated).
 
-Besides being able to give a nice error message, Vim will also continue
+Besides being able to give a nice error message, MNV will also continue
 executing commands after the `:endtry`.  Otherwise, once an uncaught error is
 encountered, execution of the script/function/mapping will be aborted.
 
@@ -83,7 +83,7 @@ manual: |exception-handling|.
 ==============================================================================
 *50.2*	Function with variable number of arguments
 
-Vim enables you to define functions that have a variable number of arguments.
+MNV enables you to define functions that have a variable number of arguments.
 The following command, for instance, defines a function that must have 1
 argument (start) and can have up to 20 additional arguments: >
 
@@ -130,4 +130,4 @@ can be done with two functions: >
 
 Next chapter: |usr_51.txt|  Create a plugin
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

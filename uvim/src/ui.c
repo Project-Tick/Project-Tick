@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -15,7 +15,7 @@
  * 2. Input buffer stuff.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
     void
 ui_write(char_u *s, int len, int console UNUSED)
@@ -52,12 +52,12 @@ ui_write(char_u *s, int len, int console UNUSED)
 	mch_write(s, len);
 # if defined(HAVE_FSYNC)
 	if (console && s[len - 1] == '\n')
-	    vim_fsync(1);
+	    mnv_fsync(1);
 # endif
 
 # if !defined(MSWIN)
 	if (output_conv.vc_type != CONV_NONE)
-	    vim_free(tofree);
+	    mnv_free(tofree);
 # endif
     }
 #endif
@@ -90,7 +90,7 @@ ui_inchar_undo(char_u *s, int len)
     {
 	mch_memmove(new, ta_str + ta_off, (size_t)(ta_len - ta_off));
 	mch_memmove(new + ta_len - ta_off, s, (size_t)len);
-	vim_free(ta_str);
+	mnv_free(ta_str);
     }
     else
 	mch_memmove(new, s, (size_t)len);
@@ -131,7 +131,7 @@ ui_inchar(
 	if (maxlen >= ta_len - ta_off)
 	{
 	    mch_memmove(buf, ta_str + ta_off, (size_t)ta_len);
-	    VIM_CLEAR(ta_str);
+	    MNV_CLEAR(ta_str);
 	    return ta_len;
 	}
 	mch_memmove(buf, ta_str + ta_off, (size_t)maxlen);
@@ -149,7 +149,7 @@ ui_inchar(
     // Don't wait for character input when the window hasn't been opened yet.
     // Do try reading, this works when redirecting stdin from a file.
     // Must return something, otherwise we'll loop forever.  If we run into
-    // this very often we probably got stuck, exit Vim.
+    // this very often we probably got stuck, exit MNV.
     if (no_console_input())
     {
 	static int count = 0;
@@ -171,7 +171,7 @@ ui_inchar(
     if (wtime == -1 || wtime > 100L)
     {
 	// ... allow signals to kill us.
-	(void)vim_handle_signal(SIGNAL_UNBLOCK);
+	(void)mnv_handle_signal(SIGNAL_UNBLOCK);
 
 	// ... there is no need for CTRL-C to interrupt something, don't let
 	// it set got_int when it was mapped.
@@ -234,7 +234,7 @@ ui_inchar(
 
     if (wtime == -1 || wtime > 100L)
 	// block SIGHUP et al.
-	(void)vim_handle_signal(SIGNAL_BLOCK);
+	(void)mnv_handle_signal(SIGNAL_BLOCK);
 
     ctrl_c_interrupts = TRUE;
 
@@ -597,7 +597,7 @@ suspend_shell(void)
 #endif
 
 /*
- * Try to get the current Vim shell size.  Put the result in Rows and Columns.
+ * Try to get the current MNV shell size.  Put the result in Rows and Columns.
  * Use the new sizes as defaults for 'columns' and 'lines'.
  * Return OK when size could be determined, FAIL otherwise.
  */
@@ -625,7 +625,7 @@ ui_get_shellsize(void)
 }
 
 /*
- * Set the size of the Vim shell according to Rows and Columns, if possible.
+ * Set the size of the MNV shell according to Rows and Columns, if possible.
  * The gui_set_shellsize() or mch_set_shellsize() function will try to set the
  * new size.  If this is not possible, it will adjust Rows and Columns.
  */
@@ -674,7 +674,7 @@ ui_get_winpos(int *x, int *y, varnumber_T timeout UNUSED)
     if (gui.in_use)
 	return gui_mch_get_winpos(x, y);
 # endif
-# if defined(MSWIN) && (!defined(FEAT_GUI) || defined(VIMDLL))
+# if defined(MSWIN) && (!defined(FEAT_GUI) || defined(MNVDLL))
     return mch_get_winpos(x, y);
 # else
 #  if defined(HAVE_TGETENT) && defined(FEAT_TERMRESPONSE)
@@ -760,26 +760,26 @@ static char_u	inbuf[INBUFLEN + MAX_KEY_CODE_LEN];
 static int	inbufcount = 0;	    // number of chars in inbuf[]
 
 /*
- * vim_is_input_buf_full(), vim_is_input_buf_empty(), add_to_input_buf(), and
+ * mnv_is_input_buf_full(), mnv_is_input_buf_empty(), add_to_input_buf(), and
  * trash_input_buf() are functions for manipulating the input buffer.  These
  * are used by the gui_* calls when a GUI is used to handle keyboard input.
  */
 
     int
-vim_is_input_buf_full(void)
+mnv_is_input_buf_full(void)
 {
     return (inbufcount >= INBUFLEN);
 }
 
     int
-vim_is_input_buf_empty(void)
+mnv_is_input_buf_empty(void)
 {
     return (inbufcount == 0);
 }
 
 # if defined(FEAT_OLE)
     int
-vim_free_in_input_buf(void)
+mnv_free_in_input_buf(void)
 {
     return (INBUFLEN - inbufcount);
 }
@@ -787,7 +787,7 @@ vim_free_in_input_buf(void)
 
 # if defined(FEAT_GUI_GTK)
     int
-vim_used_in_input_buf(void)
+mnv_used_in_input_buf(void)
 {
     return inbufcount;
 }
@@ -842,9 +842,9 @@ set_input_buf(char_u *p, int overwrite)
 	    mch_memmove(inbuf, gap->ga_data, gap->ga_len);
 	    inbufcount += gap->ga_len;
 	}
-	vim_free(gap->ga_data);
+	mnv_free(gap->ga_data);
     }
-    vim_free(gap);
+    mnv_free(gap);
 }
 
 /*
@@ -938,13 +938,13 @@ fill_input_buf(int exit_on_error UNUSED)
     }
 # endif
 # if defined(UNIX) || defined(VMS) || defined(MACOS_X)
-    if (vim_is_input_buf_full())
+    if (mnv_is_input_buf_full())
 	return;
     /*
      * Fill_input_buf() is only called when we really need a character.
      * If we can't get any, but there is some in the buffer, just return.
      * If we can't get any, and there isn't any in the buffer, we give up and
-     * exit Vim.
+     * exit MNV.
      */
     if (rest != NULL)
     {
@@ -956,7 +956,7 @@ fill_input_buf(int exit_on_error UNUSED)
 	    unconverted = restlen;
 	mch_memmove(inbuf + inbufcount, rest, unconverted);
 	if (unconverted == restlen)
-	    VIM_CLEAR(rest);
+	    MNV_CLEAR(rest);
 	else
 	{
 	    restlen -= unconverted;
@@ -989,7 +989,7 @@ fill_input_buf(int exit_on_error UNUSED)
 	    break;
 	/*
 	 * If reading stdin results in an error, continue reading stderr.
-	 * This helps when using "foo | xargs vim".
+	 * This helps when using "foo | xargs mnv".
 	 */
 	if (!did_read_something && !isatty(read_cmd_fd) && read_cmd_fd == 0)
 	{
@@ -1002,7 +1002,7 @@ fill_input_buf(int exit_on_error UNUSED)
 #  ifdef HAVE_DUP
 	    // Use stderr for stdin, also works for shell commands.
 	    close(0);
-	    vim_ignored = dup(2);
+	    mnv_ignored = dup(2);
 #  else
 	    read_cmd_fd = 2;	// read from stderr instead of stdin
 #  endif
@@ -1078,7 +1078,7 @@ read_error_exit(void)
 {
     if (silent_mode)	// Normal way to exit for "ex -s"
 	getout(0);
-    STRCPY(IObuff, _("Vim: Error reading input, exiting...\n"));
+    STRCPY(IObuff, _("MNV: Error reading input, exiting...\n"));
     preserve_exit();
 }
 
@@ -1174,7 +1174,7 @@ ui_find_longest_lnum(void)
     // postponed.
     if (
 #ifdef FEAT_GUI
-	    (!gui.in_use || vim_strchr(p_go, GO_HORSCROLL) == NULL) &&
+	    (!gui.in_use || mnv_strchr(p_go, GO_HORSCROLL) == NULL) &&
 #endif
 	    curwin->w_topline <= curwin->w_cursor.lnum
 	    && curwin->w_botline > curwin->w_cursor.lnum
@@ -1218,7 +1218,7 @@ ui_focus_change(
     static time_t	last_time = (time_t)0;
     int			need_redraw = FALSE;
 
-    // When activated: Check if any file was modified outside of Vim.
+    // When activated: Check if any file was modified outside of MNV.
     // Only do this when not done within the last two seconds (could get
     // several events in a row).
     if (in_focus && last_time + 2 < time(NULL))

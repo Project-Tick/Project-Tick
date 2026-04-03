@@ -1,4 +1,4 @@
-/*  vim:set ts=4 sw=4:
+/*  mnv:set ts=4 sw=4:
  *
  *	Copyright (c) 1996, Paul Slootman
  *
@@ -14,8 +14,8 @@
  *
  * tee reads stdin, and writes what it reads to each of the specified
  * files. The primary reason of existence for this version is a quick
- * and dirty implementation to distribute with Vim, to make one of the
- * most useful features of Vim possible on OS/2: quickfix.
+ * and dirty implementation to distribute with MNV, to make one of the
+ * most useful features of MNV possible on OS/2: quickfix.
  *
  * Of course, not using tee but instead redirecting make's output directly
  * into a temp file and then processing that is possible, but if we have a
@@ -50,7 +50,7 @@ void usage(void)
 \nTee reads its input, and writes to each of the specified files,\n\
 as well as to the standard output.\n\
 \n\
-This version supplied with Vim 4.2 to make ':make' possible.\n\
+This version supplied with MNV 4.2 to make ':make' possible.\n\
 For a more complete and stable version, consider getting\n\
 [a port of] the GNU shellutils package.\n\
 ");

@@ -1,10 +1,10 @@
-# Aap recipe for Kurdish Vim spell files.
+# Aap recipe for Kurdish MNV spell files.
 
-# Use a freshly compiled Vim if it exists.
-@if os.path.exists('../../../src/vim'):
-    VIM = ../../../src/vim
+# Use a freshly compiled MNV if it exists.
+@if os.path.exists('../../../src/mnv'):
+    MNV = ../../../src/mnv
 @else:
-    :progsearch VIM vim
+    :progsearch MNV mnv
 
 SPELLDIR = ..
 FILES    = ku_TR.aff ku_TR.dic
@@ -14,10 +14,10 @@ all: $SPELLDIR/ku.iso-8859-9.spl $SPELLDIR/ku.utf-8.spl \
         ../README_ku.txt
 
 $SPELLDIR/ku.iso-8859-9.spl : $FILES
-        :sys env LANG=tr_TR.ISO8859-9 $VIM -u NONE -e -c "mkspell! $SPELLDIR/ku ku_TR" -c q
+        :sys env LANG=tr_TR.ISO8859-9 $MNV -u NONE -e -c "mkspell! $SPELLDIR/ku ku_TR" -c q
 
 $SPELLDIR/ku.utf-8.spl : $FILES
-        :sys env LANG=tr_TR.UTF-8 $VIM -u NONE -e -c "mkspell! $SPELLDIR/ku ku_TR" -c q
+        :sys env LANG=tr_TR.UTF-8 $MNV -u NONE -e -c "mkspell! $SPELLDIR/ku ku_TR" -c q
 
 ../README_ku.txt: README_ku_TR.txt
         :copy $source $target
@@ -36,9 +36,9 @@ ku_TR.aff ku_TR.dic: {buildcheck=}
         :fetch ku_TR.zip
         :sys $UNZIP ku_TR.zip
         :delete ku_TR.zip
-        :sys $VIM ku_TR.aff -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM ku_TR.dic -u NONE -e -c "set ff=unix" -c update -c q
-        :sys $VIM README_ku_TR.txt -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV ku_TR.aff -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV ku_TR.dic -u NONE -e -c "set ff=unix" -c update -c q
+        :sys $MNV README_ku_TR.txt -u NONE -e -c "set ff=unix" -c update -c q
         @if not os.path.exists('ku_TR.orig.aff'):
             :copy ku_TR.aff ku_TR.orig.aff
         @if not os.path.exists('ku_TR.orig.dic'):
@@ -48,7 +48,7 @@ ku_TR.aff ku_TR.dic: {buildcheck=}
 
 
 # Generate diff files, so that others can get the OpenOffice files and apply
-# the diffs to get the Vim versions.
+# the diffs to get the MNV versions.
 
 diff:
         :assertpkg diff
@@ -79,4 +79,4 @@ check:
             :delete ku_TR.zip
 
 
-# vim: set sts=4 sw=4 :
+# mnv: set sts=4 sw=4 :

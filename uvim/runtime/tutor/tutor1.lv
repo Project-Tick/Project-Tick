@@ -1,10 +1,10 @@
 ===============================================================================
-=         Ī s a          p a m ā c ī b a        V I M     -   Versija 1.7     =
+=         Ī s a          p a m ā c ī b a        M N V     -   Versija 1.7     =
 ===============================================================================
 
-   Vim ir jaudīgs teksta redaktors ar pārāk daudzām komandām, lai to
+   MNV ir jaudīgs teksta redaktors ar pārāk daudzām komandām, lai to
    aprakstītu tik īsā aprakstā kā šis. Šī pamācība ir paredzēta, lai
-   spētu iemācīties tik daudz, cik nepieciešams, lietojot Vim, kā plaša
+   spētu iemācīties tik daudz, cik nepieciešams, lietojot MNV, kā plaša
    pielietojuma teksta redaktoru.
 
    Atkarībā no tā, cik daudz laika veltīsiet eksperimentiem,
@@ -12,7 +12,7 @@
 
    UZMANĪBU:
    Darbojoties ar komandām, jūs izmainīsiet šo tekstu, tāpēc izveidojiet šī
-   faila kopiju (ja jūs palaidāt "vimtutor" komandu, šī jau ir kopija).
+   faila kopiju (ja jūs palaidāt "mnvtutor" komandu, šī jau ir kopija).
 
    Svarīgi atcerēties, ka šo pamācību ir paredzēts izpildīt praktiski!
    Ja jūs tikai lasīsiet šo tekstu, jūs komandas aizmirsīsiet!
@@ -45,7 +45,7 @@ PIEZĪME: Kursora vadībai var izmantot arī bultiņu taustiņus, bet ticiet —
       iemācīties vadīt ar j, k, l, h taustiņiem ir daudz parocīgāk!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                    1.1.2 nodarbība: IZIEŠANA NO VIM
+                    1.1.2 nodarbība: IZIEŠANA NO MNV
 
   !! PIEZĪME: Pirms izpildīt šīs nodarbības soļus, izlasiet visu instrukciju!
 
@@ -54,8 +54,8 @@ PIEZĪME: Kursora vadībai var izmantot arī bultiņu taustiņus, bet ticiet —
   2. Ievadiet komandu:   :q! <ENTER>.
      Ievadot šo komandu, jūs iziesiet no redaktora nesaglabājot izmaiņas.
 
-  3. Ja palaidāt vim komandrindā, tad pēc tam atkal to izsauciet, ievadot
-     vimtutor <ENTER>
+  3. Ja palaidāt mnv komandrindā, tad pēc tam atkal to izsauciet, ievadot
+     mnvtutor <ENTER>
 
   4. Kad esat iegaumējis 1. — 3. soli, izpildiet tos, lai atgrieztos
      redaktorā.
@@ -149,8 +149,8 @@ PIEZĪME: Izpildot šo pamācību, centieties mācīties nevis domājot,
   4. Saglabājiet faila izmaiņas, redaktorā ievadot  :w tutor <ENTER>
      Izejiet no redaktora, ievadot komandu  :wq <ENTER>
 
-  5. Palaidiet atkal šo pamācību, terminālī ievadot komandu: vim tutor
-     Šajā komandā vārds "vim" izsauc teksta redaktoru, bet
+  5. Palaidiet atkal šo pamācību, terminālī ievadot komandu: mnv tutor
+     Šajā komandā vārds "mnv" izsauc teksta redaktoru, bet
      vārds "tutor" ir faila nosaukums, kurā ir saglabāta izmainītā pamācība.
 
   5. Kad esat sapratis veicamās darbības, izpildiet tās.
@@ -162,9 +162,9 @@ PIEZĪME: Izpildot šo pamācību, centieties mācīties nevis domājot,
   1. Kursoru pārvieto ar bultiņu vai arī h,j,k,l taustiņiem:
 	 h (pa kreisi)   j (lejup)     k (augšup)   l (pa labi)
 
-  2. Lai ar Vim rediģētu noteiktu failu, ievadiet komandu:  vim fails <ENTER>
+  2. Lai ar MNV rediģētu noteiktu failu, ievadiet komandu:  mnv fails <ENTER>
 
-  3. Lai izietu no Vim ievadiet:
+  3. Lai izietu no MNV ievadiet:
      <ESC>   :q!         <ENTER>   lai pazaudētu izmaiņas.
      <ESC>   :wq         <ENTER>   lai saglabātu izmaiņas.
 
@@ -194,7 +194,7 @@ Tagad dodieties uz 1.2. nodarbību.
   4. Ievadiet   dw    lai izdzēstu nepieciešamo vārdu.
 
 PIEZĪME: Nospiežot d, ekrāna labajā apakšējā stūrī parādīsies d burts.
-         Tas ir tāpēc, ka Vim gaida nākamo komandu (burtu w).
+         Tas ir tāpēc, ka MNV gaida nākamo komandu (burtu w).
          Ja jūs redzat citu burtu, vai neredzat neko, esat kaut ko izdarījis
          nepareizi. Tad spiediet <ESC> un sāciet no sākuma.
 
@@ -541,7 +541,7 @@ PIEZĪME: Ja ir atrasta pēdējā meklējamā frāze faila beigās vai sākumā,
       ja vien nav atslēgta wrapscan opcija.
 
 PIEZĪME: Ja vairs nevēlaties izgaismot meklējamo tekstu, spiediet  /
-      un ievadiet nesakarīgu/neatrodamu frāzi. (VIM speciālisti parasti
+      un ievadiet nesakarīgu/neatrodamu frāzi. (MNV speciālisti parasti
       piekārto savu taustiņu kombināciju šai darbībai.)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -596,7 +596,7 @@ PIEZĪME: Šī iespēja ir ļoti noderīga, lai pārbaudītu nelīdzsvarotas iek
 
        ** Lai atkārtotu iepriekšējo darbību, spiediet  .  **
 
-  Atšķirībā no citiem teksta redaktoriem, Vim par vienu darbību uzskata
+  Atšķirībā no citiem teksta redaktoriem, MNV par vienu darbību uzskata
   vairāku ievadīto komandu virkni ārpus normālā režīma (t.i. ievietošanas,
   aizstāšanas u.tml.). Tas ļauj viegli atkārtot sarežģītas darbības, spiežot
   .  taustiņu.
@@ -644,7 +644,7 @@ PIEZĪME: Šī iespēja ir ļoti noderīga, lai pārbaudītu nelīdzsvarotas iek
 
   1. Nospiediet ierasto  :  lai parādītu uzaicinājumu statusa rindā
 
-  2. Šajā rindā ievadiet !  (izsaukuma zīmi). Tā norāda VIM, ka būs jāizpilda
+  2. Šajā rindā ievadiet !  (izsaukuma zīmi). Tā norāda MNV, ka būs jāizpilda
      ārēja (komandrindas čaulas) komanda
 
   3. Pēc tam ievadiet, piemēram  ls un spiediet <ENTER>
@@ -668,11 +668,11 @@ PIEZĪME: Izsaucamās komandas izpilda nospiežot <ENTER> taustiņu, kopš šī 
 
   3. Tagad ievadiet:  :w test1  (kur test ir jūsu izvēlētais faila nosaukums)
 
-  4. Šī komanda saglabās vim pamācību failā test
+  4. Šī komanda saglabās mnv pamācību failā test
      Lai pārbaudītu, ievadiet  :!ls  vai  :!dir un sameklējiet failu sarakstā
 
-PIEZĪME: Ja jūs iziesiet no vim un palaidīsiet to ar komandu  vim test
-     vim atvērs jūsu saglabāto test failu.
+PIEZĪME: Ja jūs iziesiet no mnv un palaidīsiet to ar komandu  mnv test
+     mnv atvērs jūsu saglabāto test failu.
 
   5. Tagad izdzēsiet šo failu, ievadot komandu:    :!rm test
      Vai, ja lietojat Windows, komandu:            :!del test
@@ -691,10 +691,10 @@ PIEZĪME: Ja jūs iziesiet no vim un palaidīsiet to ar komandu  vim test
   4. Ievadiet  w test  kur test ir izvēlētais faila nosaukums.
      Pirms spiest <ENTER>, pārliecinieties, ka  redzat :'<,'>w test
 
-  5. Vim saglabās iezīmēto tekstu failā test.
+  5. MNV saglabās iezīmēto tekstu failā test.
      Neizdzēsiet šo failu, mēs to izmantosim nākošajā nodarbībā!
 
-PIEZĪME: Spiežot v VIM pārslēdzas vizuālā iezīmēšanas režīmā. Jūs varat izmantot
+PIEZĪME: Spiežot v MNV pārslēdzas vizuālā iezīmēšanas režīmā. Jūs varat izmantot
        kursora pārvietošanas komandas, lai iezīmētu nepieciešamo tekstu.
        Pēc teksta iezīmēšanas, jūs varat izmantot dažādus operatorus, lai
        kaut ko darītu ar iezīmēto tekstu. Piemēram, spiežot  d  jūs izdzēsīsit
@@ -890,7 +890,7 @@ PIEZĪME:  Ja vēlaties meklēt gan lielos, gan mazos burtus vienā meklējumā,
 
 		      ** Iebūvētās palīdzības izmantošana **
 
-  Vim ir plaša iebūvētā palīdzības sistēma. Lai sāktu to lietot, ievadiet vieno
+  MNV ir plaša iebūvētā palīdzības sistēma. Lai sāktu to lietot, ievadiet vieno
   no sekojošām komandām:
 	- spiediet <HELP> taustiņu (ja jūsu tastatūrā tāds pastāv)
 	- spiediet <F1> taustiņu (ja jūsu tastatūrai ir tāds)
@@ -910,44 +910,44 @@ PIEZĪME:  Ja vēlaties meklēt gan lielos, gan mazos burtus vienā meklējumā,
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     1.7.2 nodarbība: IZVEIDOJIET SĀKŠANAS SKRIPTU
 
-			  ** Ieslēdziet Vim iespējas **
+			  ** Ieslēdziet MNV iespējas **
 
-  Vim ir daudz plašākas iespējas, nekā Vi, bet vairums no tām,
-  pēc noklusēšanas, nav ieslēgtas. Lai tās ieslēgtu, izveidojiet "vimrc" failu.
+  MNV ir daudz plašākas iespējas, nekā Vi, bet vairums no tām,
+  pēc noklusēšanas, nav ieslēgtas. Lai tās ieslēgtu, izveidojiet "mnvrc" failu.
 
-  1. Atkarībā no lietotās operētājsistēmas, atveriet "vimrc" failu sekojoši:
-	:e ~/.vimrc          Unix-veidīgā (t.sk. MacOS un Linux)
-	:e ~/_vimrc          VMS-veidīgā (t.sk. MS-Windows)
+  1. Atkarībā no lietotās operētājsistēmas, atveriet "mnvrc" failu sekojoši:
+	:e ~/.mnvrc          Unix-veidīgā (t.sk. MacOS un Linux)
+	:e ~/_mnvrc          VMS-veidīgā (t.sk. MS-Windows)
 
-  2. Ielasiet "vimrc" šablona faila saturu, ievadot:
-	:r $VIMRUNTIME/vimrc_example.vim
+  2. Ielasiet "mnvrc" šablona faila saturu, ievadot:
+	:r $MNVRUNTIME/mnvrc_example.mnv
 
   3. Saglabājiet šablona saturu savā iestatījumu failā:
 	:w
 
-  Kad nākamo reizi atvērsiet Vim, tajā tiks izmantota sintakses izgaismošana.
-  Jūs varat ievietot arī citas iestatījumu iespējas savā "vimrc" failā.
-  Papildu informācijai ievadiet   :help vimrc-intro
+  Kad nākamo reizi atvērsiet MNV, tajā tiks izmantota sintakses izgaismošana.
+  Jūs varat ievietot arī citas iestatījumu iespējas savā "mnvrc" failā.
+  Papildu informācijai ievadiet   :help mnvrc-intro
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     1.7.3 nodarbība: AUTOMĀTISKĀ PABEIGŠANA
 
       ** Automātisko pabeigšanu komandrindā izsauc ar CTRL-D un <TAB> **
 
-  1. Pārliecinieties, ka Vim ir ar Vi nesavietojamā režīmā:  :set nocp
+  1. Pārliecinieties, ka MNV ir ar Vi nesavietojamā režīmā:  :set nocp
 
-  2. Apskatiet tekošās mapes saturu Vim, ievadot:   :!ls   vai  :!dir
+  2. Apskatiet tekošās mapes saturu MNV, ievadot:   :!ls   vai  :!dir
 
   3. Ievadiet komandas sākumu ar:  :e
 
-  4. Spiediet CTRL-D  un Vim parādīs visas komandas, kuras sākas ar "e".
+  4. Spiediet CTRL-D  un MNV parādīs visas komandas, kuras sākas ar "e".
 
-  5. Spiediet <TAB>   un Vim automātiski pabeigs komandu uz ":edit".
+  5. Spiediet <TAB>   un MNV automātiski pabeigs komandu uz ":edit".
 
   6. Spiediet atstarpes taustiņu un sāciet ievadīt faila nosaukumu,
      piemēram:  :edit FIL
 
-  7. Spiediet <TAB>   un Vim pabeigs faila nosaukumu,
+  7. Spiediet <TAB>   un MNV pabeigs faila nosaukumu,
      ja norādītais sākums ir unikāls.
 
 PIEZĪME:  Pabeigšana strādā dažādām komandām.
@@ -966,7 +966,7 @@ PIEZĪME:  Pabeigšana strādā dažādām komandām.
 
   4. Lai aizvērtu tekošo logu, ievadiet:    :q
 
-  5. Izveidojiet savu "vimrc" sākšanas skriptu ar saviem iestatījumiem.
+  5. Izveidojiet savu "mnvrc" sākšanas skriptu ar saviem iestatījumiem.
 
   6. Ievadot  :  komanda  spiediet CTRL-D, lai apskatītu iespējamos pabeigšanas
      veidus. Lai pabeigtu komandu, spiediet <TAB> .
@@ -976,24 +976,24 @@ PIEZĪME:  Pabeigšana strādā dažādām komandām.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Ar šo Vim ievads ir pabeigts. Tajā tika sniegts īss Vim redaktora apraksts,
-  ar kuru pietiek, lai Vim lietotu vienkāršām darbībām.
-  Vim iespējas ir daudz plašākas, un tajā ir daudz vairāk komandu. Lai apskatītu
+  Ar šo MNV ievads ir pabeigts. Tajā tika sniegts īss MNV redaktora apraksts,
+  ar kuru pietiek, lai MNV lietotu vienkāršām darbībām.
+  MNV iespējas ir daudz plašākas, un tajā ir daudz vairāk komandu. Lai apskatītu
   tās,  ievadiet:  ":help user-manual".
 
   Tālākai apmācībai tiek rekomendētas sekojošas grāmatas:
 
-  Vim - Vi Improved, Steve Oualline, New Riders
+  MNV - MNV is not Vim, Steve Oualline, New Riders
 
-  Šī grāmata ir tieši par Vim, un ir ļoti ieteicama iesācējiem.
+  Šī grāmata ir tieši par MNV, un ir ļoti ieteicama iesācējiem.
   Daudzi piemēri un attēli no tās pieejami: https://iccf-holland.org/click5.html
 
-  Otra, vecāka grāmata ir par Vi, nevis Vim, bet arī ir ļoti noderīga:
+  Otra, vecāka grāmata ir par Vi, nevis MNV, bet arī ir ļoti noderīga:
 
   Learning the Vi Editor, Linda Lamb, O'Reilly & Associates Inc.
 
   Tajā ir visplašākais Vi iespēju apraksts, grāmatas sestajā laidienā ir
-  aprakstītas arī Vim iespējas.
+  aprakstītas arī MNV iespējas.
 
   Šīs pamācības variantu angļu valodā izveidoja:
 

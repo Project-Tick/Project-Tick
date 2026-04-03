@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 /*
  *
@@ -23,7 +23,7 @@
  */
 #define tgetstr tgetstr_defined_wrong
 
-#include "vim.h"
+#include "mnv.h"
 
 #ifdef HAVE_TGETENT
 # ifdef HAVE_TERMIOS_H
@@ -50,7 +50,7 @@
 
 #undef tgetstr
 
-// start of keys that are not directly used by Vim but can be mapped
+// start of keys that are not directly used by MNV but can be mapped
 #define BT_EXTRA_KEYS	0x101
 
 static void parse_builtin_tcap(char_u *s);
@@ -110,7 +110,7 @@ typedef struct
     int		    processing;	// If we are in the middle of an OSC response
     char_u	    start_char;	// First char in the OSC response
     garray_T	    buf;	// Buffer holding the OSC response, to be
-				// placed in the "v:termosc" vim var.
+				// placed in the "v:termosc" mnv var.
 
 #ifdef ELAPSED_FUNC
     elapsed_T	    start_tv;	// Set at the beginning of an OSC response.
@@ -200,15 +200,15 @@ char *UP, *BC, PC;
 #  endif
 # endif
 
-# define TGETSTR(s, p)	vim_tgetstr((s), (p))
+# define TGETSTR(s, p)	mnv_tgetstr((s), (p))
 # define TGETENT(b, t)	tgetent((char *)(b), (char *)(t))
-static char_u *vim_tgetstr(char *s, char_u **pp);
+static char_u *mnv_tgetstr(char *s, char_u **pp);
 #endif // HAVE_TGETENT
 
 static int  detected_8bit = FALSE;	// detected 8-bit terminal
 
 #if (defined(UNIX) || defined(VMS))
-static int focus_state = MAYBE; // TRUE if the Vim window has focus
+static int focus_state = MAYBE; // TRUE if the MNV window has focus
 #endif
 
 #ifdef FEAT_TERMRESPONSE
@@ -253,7 +253,7 @@ static bool win_resize_enabled = false;
  * The builtin termcap entries.
  *
  * The entries are also included when HAVE_TGETENT is defined, the system
- * termcap may be incomplete and a few Vim-specific entries are added.
+ * termcap may be incomplete and a few MNV-specific entries are added.
  *
  * When HAVE_TGETENT is defined, the builtin entries can be accessed with
  * "builtin_amiga", "builtin_ansi", "builtin_debug", etc.
@@ -438,7 +438,7 @@ static tcap_entry_T builtin_vt52[] = {
 };
 
 /*
- * Builtin xterm with Vim-specific entries.
+ * Builtin xterm with MNV-specific entries.
  */
 static tcap_entry_T builtin_xterm[] = {
     {(int)KS_CE,	"\033[K"},
@@ -687,7 +687,7 @@ static tcap_entry_T builtin_sync_output[] = {
 #endif
 
 /*
- * List of DECRQM modes that Vim supports
+ * List of DECRQM modes that MNV supports
  */
 static int dec_modes[] = {
     2026,   // Synchronized output
@@ -736,7 +736,7 @@ static tcap_entry_T builtin_iris_ansi[] = {
 #else
     {(int)KS_CDL,	"\033[%dM"},
 #endif
-#if 0	// The scroll region is not working as Vim expects.
+#if 0	// The scroll region is not working as MNV expects.
 # ifdef TERMINFO
     {(int)KS_CS,	"\033[%i%p1%d;%p2%dr"},
 # else
@@ -1050,7 +1050,7 @@ static tcap_entry_T builtin_win32[] = {
 
 #if defined(FEAT_GUI)
 /*
- * GUI uses made-up codes, only used inside Vim.
+ * GUI uses made-up codes, only used inside MNV.
  */
 static tcap_entry_T builtin_gui[] = {
     {(int)KS_CE,	"\033|$"},
@@ -1608,13 +1608,13 @@ find_builtin_term(char_u *term)
 	if (name == NULL)  // end marker
 	    break;
 #ifdef UNIX
-	if (STRCMP(name, "iris-ansi") == 0 && vim_is_iris(term))
+	if (STRCMP(name, "iris-ansi") == 0 && mnv_is_iris(term))
 	    return builtin_terminals[i].bitc_table;
-	if (STRCMP(name, "xterm") == 0 && vim_is_xterm(term))
+	if (STRCMP(name, "xterm") == 0 && mnv_is_xterm(term))
 	    return builtin_terminals[i].bitc_table;
 #endif
 #ifdef VMS
-	if (STRCMP(name, "vt320") == 0 && vim_is_vt300(term))
+	if (STRCMP(name, "vt320") == 0 && mnv_is_vt300(term))
 	    return builtin_terminals[i].bitc_table;
 #endif
 	if (STRCMP(term, name) == 0)
@@ -1649,7 +1649,7 @@ apply_builtin_tcap(char_u *term, tcap_entry_T *entries, int overwrite)
 		{
 		    char_u  *s, *t;
 
-		    s = vim_strsave((char_u *)p->bt_string);
+		    s = mnv_strsave((char_u *)p->bt_string);
 		    if (s != NULL)
 		    {
 			for (t = s; *t; ++t)
@@ -2002,7 +2002,7 @@ match_keyprotocol(char_u *term)
     {
 	// Isolate one comma separated item.
 	(void)copy_option_part(&p, buf, len, ",");
-	char_u *colon = vim_strchr(buf, ':');
+	char_u *colon = mnv_strchr(buf, ':');
 	if (colon == NULL || colon == buf || colon[1] == NUL)
 	    goto theend;
 	*colon = NUL;
@@ -2021,12 +2021,12 @@ match_keyprotocol(char_u *term)
 	regmatch_T regmatch;
 	CLEAR_FIELD(regmatch);
 	regmatch.rm_ic = TRUE;
-	regmatch.regprog = vim_regcomp(buf, RE_MAGIC);
+	regmatch.regprog = mnv_regcomp(buf, RE_MAGIC);
 	if (regmatch.regprog == NULL)
 	    goto theend;
 
-	int match = term != NULL && vim_regexec(&regmatch, term, (colnr_T)0);
-	vim_regfree(regmatch.regprog);
+	int match = term != NULL && mnv_regexec(&regmatch, term, (colnr_T)0);
+	mnv_regfree(regmatch.regprog);
 	if (match)
 	{
 	    ret = prot;
@@ -2039,7 +2039,7 @@ match_keyprotocol(char_u *term)
     ret = KEYPROTOCOL_NONE;
 
 theend:
-    vim_free(buf);
+    mnv_free(buf);
     return ret;
 }
 
@@ -2250,7 +2250,7 @@ set_termname(char_u *term)
  * If the termcap has no entry for 'bs' and/or 'del' and the ioctl() also
  * didn't work, use the default CTRL-H
  * The default for t_kD is DEL, unless t_kb is DEL.
- * The vim_strsave'd strings are probably lost forever, well it's only two
+ * The mnv_strsave'd strings are probably lost forever, well it's only two
  * bytes.  Don't do this when the GUI is active, it uses "t_kb" and "t_kD"
  * directly.
  */
@@ -2268,7 +2268,7 @@ set_termname(char_u *term)
     }
 
 #if defined(UNIX) || defined(VMS)
-    term_is_xterm = vim_is_xterm(term);
+    term_is_xterm = mnv_is_xterm(term);
 #endif
 #ifdef FEAT_TERMRESPONSE
     // Reset terminal properties that are set based on the termresponse, which
@@ -2284,7 +2284,7 @@ set_termname(char_u *term)
     {
 	char_u *p = T_CXM;
 
-	while (*p != NUL && !VIM_ISDIGIT(*p))
+	while (*p != NUL && !MNV_ISDIGIT(*p))
 	    ++p;
 	if (getdigits(&p) == 1006)
 	{
@@ -2382,7 +2382,7 @@ set_termname(char_u *term)
     /*
      * Initialize the terminal with the appropriate termcap codes.
      * Set the mouse and window title if possible.
-     * Don't do this when starting, need to parse the .vimrc first, because it
+     * Don't do this when starting, need to parse the .mnvrc first, because it
      * may redefine t_TI etc.
      */
     if (starting != NO_SCREEN)
@@ -2507,7 +2507,7 @@ invoke_tgetent(char_u *tbuf, char_u *term)
  * Fix that here.
  */
     static char_u *
-vim_tgetstr(char *s, char_u **pp)
+mnv_tgetstr(char *s, char_u **pp)
 {
     char	*p;
 
@@ -2992,8 +2992,8 @@ out_str_cf(char_u *s)
 	    out_flush();
 # ifdef ELAPSED_FUNC
 	    // Only sleep here if we can limit this happening in
-	    // vim_beep().
-	    p = vim_strchr(s, '>');
+	    // mnv_beep().
+	    p = mnv_strchr(s, '>');
 	    if (p == NULL || duration <= 0)
 	    {
 		// can't parse the time, don't sleep here
@@ -3161,7 +3161,7 @@ static int did_request_winpos = 0;
 
 #  if defined(FEAT_EVAL) || defined(FEAT_TERMINAL)
 /*
- * Try getting the Vim window position from the terminal.
+ * Try getting the MNV window position from the terminal.
  * Returns OK or FAIL.
  */
     int
@@ -3322,7 +3322,7 @@ term_bg_default(void)
 	    || STRNCMP(T_NAME, "cygwin", 6) == 0
 	    || STRNCMP(T_NAME, "putty", 5) == 0
 	    || ((p = mch_getenv((char_u *)"COLORFGBG")) != NULL
-		&& (p = vim_strrchr(p, ';')) != NULL
+		&& (p = mnv_strrchr(p, ';')) != NULL
 		&& ((p[1] >= '0' && p[1] <= '6') || p[1] == '8')
 		&& p[2] == NUL))
 	return (char_u *)"dark";
@@ -3344,7 +3344,7 @@ term_rgb_color(char_u *s, guicolor_T rgb)
 
     if (*s == NUL)
 	return;
-    vim_snprintf(buf, MAX_COLOR_STR_LEN,
+    mnv_snprintf(buf, MAX_COLOR_STR_LEN,
 				  (char *)s, RED(rgb), GREEN(rgb), BLUE(rgb));
 # ifdef FEAT_VTP
     if (use_vtp() && (p_tgc || t_colors >= 256))
@@ -3707,7 +3707,7 @@ win_new_shellsize(void)
 }
 
 /*
- * Call this function when the Vim shell has been resized in any way.
+ * Call this function when the MNV shell has been resized in any way.
  * Will obtain the current size and redraw (also when size didn't change).
  */
     void
@@ -3742,7 +3742,7 @@ shell_resized_check(void)
 }
 
 /*
- * Set size of the Vim shell.
+ * Set size of the MNV shell.
  * If 'mustset' is TRUE, we must set Rows and Columns, do not get the real
  * window size (this is used for the :win command).
  * If 'mustset' is FALSE, we may try to get the real window size and if
@@ -3939,7 +3939,7 @@ out_str_t_BE(void)
 /*
  * If t_TI was recently sent and there is no typeahead or work to do, now send
  * t_RK.  This is postponed to avoid the response arriving in a shell command
- * or after Vim exits.
+ * or after MNV exits.
  */
     void
 may_send_t_RK(void)
@@ -3966,7 +3966,7 @@ may_send_t_RK(void)
 settmode(tmode_T tmode)
 {
 #ifdef FEAT_GUI
-    // don't set the term where gvim was started to any mode
+    // don't set the term where gmnv was started to any mode
     if (gui.in_use)
 	return;
 #endif
@@ -4317,7 +4317,7 @@ swapping_screen(void)
 /*
  * By outputting the 'cursor very visible' termcap code, for some windowed
  * terminals this makes the screen scrolled to the correct position.
- * Used when starting Vim or returning from a shell.
+ * Used when starting MNV or returning from a shell.
  */
     void
 scroll_start(void)
@@ -4566,8 +4566,8 @@ static int termcode_star(char_u *code, int len);
 clear_termcodes(void)
 {
     while (tc_len > 0)
-	vim_free(termcodes[--tc_len].code);
-    VIM_CLEAR(termcodes);
+	mnv_free(termcodes[--tc_len].code);
+    MNV_CLEAR(termcodes);
     tc_max_len = 0;
 
 #ifdef HAVE_TGETENT
@@ -4626,14 +4626,14 @@ add_termcode(char_u *name, char_u *string, int flags)
     }
 
 #if defined(MSWIN) && !defined(FEAT_GUI)
-    s = vim_strnsave(string, STRLEN(string) + 1);
+    s = mnv_strnsave(string, STRLEN(string) + 1);
 #else
-# ifdef VIMDLL
+# ifdef MNVDLL
     if (!gui.in_use)
-	s = vim_strnsave(string, STRLEN(string) + 1);
+	s = mnv_strnsave(string, STRLEN(string) + 1);
     else
 # endif
-	s = vim_strsave(string);
+	s = mnv_strsave(string);
 #endif
     if (s == NULL)
 	return;
@@ -4645,8 +4645,8 @@ add_termcode(char_u *name, char_u *string, int flags)
 	s[0] = term_7to8bit(string);
     }
 
-#if defined(MSWIN) && (!defined(FEAT_GUI) || defined(VIMDLL))
-# ifdef VIMDLL
+#if defined(MSWIN) && (!defined(FEAT_GUI) || defined(MNVDLL))
+# ifdef MNVDLL
     if (!gui.in_use)
 # endif
     {
@@ -4672,12 +4672,12 @@ add_termcode(char_u *name, char_u *string, int flags)
 	if (new_tc == NULL)
 	{
 	    tc_max_len -= 20;
-	    vim_free(s);
+	    mnv_free(s);
 	    return;
 	}
 	for (i = 0; i < tc_len; ++i)
 	    new_tc[i] = termcodes[i];
-	vim_free(termcodes);
+	mnv_free(termcodes);
 	termcodes = new_tc;
     }
 
@@ -4714,7 +4714,7 @@ add_termcode(char_u *name, char_u *string, int flags)
 			ch_log(NULL, "Termcap entry %c%c did not change",
 							     name[0], name[1]);
 #endif
-			vim_free(s);
+			mnv_free(s);
 			return;
 		    }
 		}
@@ -4725,7 +4725,7 @@ add_termcode(char_u *name, char_u *string, int flags)
 		    ch_log(NULL, "Termcap entry %c%c was: %s",
 					  name[0], name[1], termcodes[i].code);
 #endif
-		    vim_free(termcodes[i].code);
+		    mnv_free(termcodes[i].code);
 		    --tc_len;
 		    break;
 		}
@@ -4764,7 +4764,7 @@ accept_modifiers_for_function_keys(void)
     regmatch_T regmatch;
     CLEAR_FIELD(regmatch);
     regmatch.rm_ic = TRUE;
-    regmatch.regprog = vim_regcomp((char_u *)"^\033[\\d\\+\\~$", RE_MAGIC);
+    regmatch.regprog = mnv_regcomp((char_u *)"^\033[\\d\\+\\~$", RE_MAGIC);
 
     for (int i = 0; i < tc_len; ++i)
     {
@@ -4777,7 +4777,7 @@ accept_modifiers_for_function_keys(void)
 	    continue;
 
 	char_u *s = termcodes[i].code;
-	if (s != NULL && vim_regexec(&regmatch, s, (colnr_T)0))
+	if (s != NULL && mnv_regexec(&regmatch, s, (colnr_T)0))
 	{
 	    size_t len = STRLEN(s);
 	    char_u *ns = alloc(len + 3);
@@ -4785,7 +4785,7 @@ accept_modifiers_for_function_keys(void)
 	    {
 		mch_memmove(ns, s, len - 1);
 		mch_memmove(ns + len - 1, ";*~", 4);
-		vim_free(s);
+		mnv_free(s);
 		termcodes[i].code = ns;
 		termcodes[i].len += 2;
 		adjust_modlen(i);
@@ -4793,7 +4793,7 @@ accept_modifiers_for_function_keys(void)
 	}
     }
 
-    vim_regfree(regmatch.regprog);
+    mnv_regfree(regmatch.regprog);
 }
 
 /*
@@ -4867,7 +4867,7 @@ del_termcode_idx(int idx)
 {
     int		i;
 
-    vim_free(termcodes[idx].code);
+    mnv_free(termcodes[idx].code);
     --tc_len;
     for (i = idx; i < tc_len; ++i)
 	termcodes[i] = termcodes[i + 1];
@@ -5074,7 +5074,7 @@ handle_u7_response(int *arg, char_u *tp UNUSED, int csi_len UNUSED)
 	    redraw_asap(UPD_CLEAR);
 #endif
 #ifdef FEAT_EVAL
-	    set_vim_var_string(VV_TERMU7RESP, tp, csi_len);
+	    set_mnv_var_string(VV_TERMU7RESP, tp, csi_len);
 #endif
 	    apply_autocmds(EVENT_TERMRESPONSEALL,
 					(char_u *)"ambiguouswidth", NULL, FALSE, curbuf);
@@ -5164,7 +5164,7 @@ handle_version_response(int first, int *arg, int argc, char_u *tp)
 	// Konsole sends 0;115;0 and works the same way
 	if ((version == 100 || version == 115) && arg[0] == 0 && arg[2] == 0)
 	{
-	    // If run from Vim $COLORS is set to the number of
+	    // If run from MNV $COLORS is set to the number of
 	    // colors the terminal supports.  Otherwise assume
 	    // 256, libvterm supports even more.
 	    if (mch_getenv((char_u *)"COLORS") == NULL)
@@ -5282,7 +5282,7 @@ handle_version_response(int first, int *arg, int argc, char_u *tp)
 	// It does not work for the real Xterm, it resets the background color.
 	// This may cause some flicker.  Alternative would be to set "t_8u"
 	// here if the terminal is expected to support it, but that might
-	// conflict with what was set in the .vimrc.
+	// conflict with what was set in the .mnvrc.
 	if (term_props[TPR_UNDERLINE_RGB].tpr_status != TPR_YES
 			&& *T_8U != NUL
 			&& !option_was_set((char_u *)"t_8u"))
@@ -5636,7 +5636,7 @@ handle_csi(
     int		csi_len;
 
     // Check for non-digit after CSI.
-    if (!VIM_ISDIGIT(*ap))
+    if (!MNV_ISDIGIT(*ap))
 	first = *ap++;
 
     if (first >= 'A' && first <= 'Z')
@@ -5656,14 +5656,14 @@ handle_csi(
 		return -1;
 	    if (*ap == ';')
 		arg[argc++] = -1;  // omitted number
-	    else if (VIM_ISDIGIT(*ap))
+	    else if (MNV_ISDIGIT(*ap))
 	    {
 		arg[argc] = 0;
 		for (;;)
 		{
 		    if (ap >= tp + len)
 			return -1;
-		    if (!VIM_ISDIGIT(*ap))
+		    if (!MNV_ISDIGIT(*ap))
 			break;
 		    arg[argc] = arg[argc] * 10 + (*ap - '0');
 		    ++ap;
@@ -5714,7 +5714,7 @@ handle_csi(
 
     // Cursor position report: {lead}{row};{col}R
     // Eat it when there are 2 arguments and it ends in 'R'.
-    // Also when u7_status is not "sent", it may be from a previous Vim that
+    // Also when u7_status is not "sent", it may be from a previous MNV that
     // just exited.  But not for <S-F3>, it sends something similar, check for
     // row and column to make sense.
     else if (first == -1 && argc == 2 && trail == 'R')
@@ -5733,7 +5733,7 @@ handle_csi(
 
 	*slen = csi_len;
 #ifdef FEAT_EVAL
-	set_vim_var_string(VV_TERMDA1, tp, *slen);
+	set_mnv_var_string(VV_TERMDA1, tp, *slen);
 #endif
 	apply_autocmds(EVENT_TERMRESPONSEALL,
 					(char_u *)"da1", NULL, FALSE, curbuf);
@@ -5801,7 +5801,7 @@ handle_csi(
 
 	*slen = csi_len;
 #ifdef FEAT_EVAL
-	set_vim_var_string(VV_TERMRESPONSE, tp, *slen);
+	set_mnv_var_string(VV_TERMRESPONSE, tp, *slen);
 #endif
 	apply_autocmds(EVENT_TERMRESPONSE,
 					NULL, NULL, FALSE, curbuf);
@@ -5831,7 +5831,7 @@ handle_csi(
 	key_name[1] = (int)KE_IGNORE;
 	*slen = csi_len;
 # ifdef FEAT_EVAL
-	set_vim_var_string(VV_TERMBLINKRESP, tp, *slen);
+	set_mnv_var_string(VV_TERMBLINKRESP, tp, *slen);
 # endif
 	apply_autocmds(EVENT_TERMRESPONSEALL,
 					(char_u *)"cursorblink", NULL, FALSE, curbuf);
@@ -5985,7 +5985,7 @@ check_for_color_response(char_u *resp, int len)
 		}
 
 #ifdef FEAT_EVAL
-		set_vim_var_string(is_bg ? VV_TERMRBGRESP
+		set_mnv_var_string(is_bg ? VV_TERMRBGRESP
 						  : VV_TERMRFGRESP, resp, len);
 #endif
 		apply_autocmds(EVENT_TERMRESPONSEALL,
@@ -6038,7 +6038,7 @@ handle_osc(char_u *tp, int len, char_u *key_name, int *slen)
 	// buffer until we read an OSC terminator or timeout.
 
 	// We can't use the previous buffer since we transferred ownership of it
-	// to the vim var.
+	// to the mnv var.
 	ga_init2(&osc_state.buf, 1, 1024);
 #ifdef ELAPSED_FUNC
 	ELAPSED_INIT(osc_state.start_tv);
@@ -6053,7 +6053,7 @@ handle_osc(char_u *tp, int len, char_u *key_name, int *slen)
     key_name[0] = (int)KS_EXTRA;
 
     // Read data and append to buffer. If we reach a terminator, then
-    // finally set the vim var.
+    // finally set the mnv var.
     for (int i = 0; i < len; i++)
 	if (tp[i] == '\007' || (osc_state.start_char == OSC ? tp[i] == STERM
 		    : ((tp[i] == ESC && i + 1 < len && tp[i + 1] == '\\')
@@ -6068,7 +6068,7 @@ handle_osc(char_u *tp, int len, char_u *key_name, int *slen)
 	    ga_append(&osc_state.buf, NUL);
 	    *slen = i + 1 + (tp[i] == ESC);
 #ifdef FEAT_EVAL
-	    set_vim_var_string_direct(VV_TERMOSC, osc_state.buf.ga_data);
+	    set_mnv_var_string_direct(VV_TERMOSC, osc_state.buf.ga_data);
 #endif
 	    // Check for background/foreground colour response
 	    check_for_color_response(osc_state.buf.ga_data, osc_state.buf.ga_len - 1);
@@ -6188,7 +6188,7 @@ handle_dcs(char_u *tp, char_u *argp, int len, char_u *key_name, int *slen)
 		key_name[1] = (int)KE_IGNORE;
 		*slen = i + 1;
 #ifdef FEAT_EVAL
-		set_vim_var_string(VV_TERMSTYLERESP, tp, *slen);
+		set_mnv_var_string(VV_TERMSTYLERESP, tp, *slen);
 #endif
 		apply_autocmds(EVENT_TERMRESPONSEALL,
 					(char_u *)"cursorshape", NULL, FALSE, curbuf);
@@ -6244,7 +6244,7 @@ check_termcode(
     int		idx = 0;
     int		cpo_koffset;
 
-    cpo_koffset = (vim_strchr(p_cpo, CPO_KOFFSET) != NULL);
+    cpo_koffset = (mnv_strchr(p_cpo, CPO_KOFFSET) != NULL);
 
     /*
      * Speed up the checks for terminal codes by gathering all first bytes
@@ -6388,7 +6388,7 @@ check_termcode(
 		     * key code.
 		     */
 		    if (termcodes[idx].name[0] == 'K'
-				       && (VIM_ISDIGIT(termcodes[idx].name[1])
+				       && (MNV_ISDIGIT(termcodes[idx].name[1])
 						|| ASCII_ISUPPER(termcodes[idx].name[1])))
 		    {
 			is_keypad = TRUE;
@@ -6508,7 +6508,7 @@ check_termcode(
 			    slen = j;
 			}
 			if (termcodes[idx].name[0] == 'K'
-					   && (VIM_ISDIGIT(termcodes[idx].name[1])
+					   && (MNV_ISDIGIT(termcodes[idx].name[1])
 						    || ASCII_ISUPPER(termcodes[idx].name[1])))
 			{
 			    is_keypad = TRUE;
@@ -6578,7 +6578,7 @@ check_termcode(
 	     */
 	    if (((tp[0] == ESC && len >= 3 && tp[1] == '[')
 			|| (tp[0] == CSI && len >= 2))
-		    && vim_strchr((char_u *)"0123456789>?ABCDEFHPQRS",
+		    && mnv_strchr((char_u *)"0123456789>?ABCDEFHPQRS",
 								*argp) != NULL)
 	    {
 		int resp = handle_csi(tp, len, argp, offset, buf,
@@ -6685,7 +6685,7 @@ handle_osc:
 	 * If using the GUI, then we get menu and scrollbar events.
 	 *
 	 * A menu event is encoded as K_SPECIAL, KS_MENU, KE_FILLER followed by
-	 * four bytes which are to be taken as a pointer to the vimmenu_T
+	 * four bytes which are to be taken as a pointer to the mnvmenu_T
 	 * structure.
 	 *
 	 * A tab line event is encoded as K_SPECIAL KS_TABLINE nr, where "nr"
@@ -6707,7 +6707,7 @@ handle_osc:
 
 	    if (num_bytes == -1)
 		return -1;
-	    current_menu = (vimmenu_T *)val;
+	    current_menu = (mnvmenu_T *)val;
 	    slen += num_bytes;
 
 	    // The menu may have been deleted right after it was used, check
@@ -6914,7 +6914,7 @@ term_get_bg_color(char_u *r, char_u *g, char_u *b)
 
 /*
  * Replace any terminal code strings in from[] with the equivalent internal
- * vim representation.	This is used for the "from" and "to" part of a
+ * mnv representation.	This is used for the "from" and "to" part of a
  * mapping, and the "to" part of a menu command.
  * Any strings like "<C-UP>" are also replaced, unless 'cpoptions' contains
  * '<'.
@@ -6959,10 +6959,10 @@ replace_termcodes(
     char_u	*result;	// buffer for resulting string
     garray_T	ga;
 
-    do_backslash = (vim_strchr(p_cpo, CPO_BSLASH) == NULL);
-    do_special = (vim_strchr(p_cpo, CPO_SPECI) == NULL)
+    do_backslash = (mnv_strchr(p_cpo, CPO_BSLASH) == NULL);
+    do_special = (mnv_strchr(p_cpo, CPO_SPECI) == NULL)
 						  || (flags & REPTERM_SPECIAL);
-    do_key_code = (vim_strchr(p_cpo, CPO_KEYCODE) == NULL);
+    do_key_code = (mnv_strchr(p_cpo, CPO_KEYCODE) == NULL);
     src = from;
 
     /*
@@ -6981,7 +6981,7 @@ replace_termcodes(
     /*
      * Check for #n at start only: function key n
      */
-    if ((flags & REPTERM_FROM_PART) && src[0] == '#' && VIM_ISDIGIT(src[1]))
+    if ((flags & REPTERM_FROM_PART) && src[0] == '#' && MNV_ISDIGIT(src[1]))
     {
 	result[dlen++] = K_SPECIAL;
 	result[dlen++] = 'k';
@@ -7022,8 +7022,8 @@ replace_termcodes(
 		    long    sid = sid_arg != 0 ? sid_arg : current_sctx.sc_sid;
 
 		    src += 5;
-		    if (in_vim9script()
-				       && (dot = vim_strchr(src, '.')) != NULL)
+		    if (in_mnv9script()
+				       && (dot = mnv_strchr(src, '.')) != NULL)
 		    {
 			imported_T *imp = find_imported(src, dot - src, FALSE);
 
@@ -7188,9 +7188,9 @@ replace_termcodes(
      * Copy the new string to allocated memory.
      * If this fails, just return from.
      */
-    if ((*bufp = vim_strsave(result)) != NULL)
+    if ((*bufp = mnv_strsave(result)) != NULL)
 	from = *bufp;
-    vim_free(result);
+    mnv_free(result);
     return from;
 }
 
@@ -7305,7 +7305,7 @@ gather_termleader(void)
     termleader[len] = NUL;
 
     for (i = 0; i < tc_len; ++i)
-	if (vim_strchr(termleader, termcodes[i].code[0]) == NULL)
+	if (mnv_strchr(termleader, termcodes[i].code[0]) == NULL)
 	{
 	    termleader[len++] = termcodes[i].code[0];
 	    termleader[len] = NUL;
@@ -7400,7 +7400,7 @@ show_termcodes(int flags)
 	    ui_breakcheck();
 	}
     }
-    vim_free(items);
+    mnv_free(items);
 }
 
 /*
@@ -7442,7 +7442,7 @@ show_one_termcode(char_u *name, char_u *code, int printit)
     if (code == NULL)
 	len += 4;
     else
-	len += vim_strsize(code);
+	len += mnv_strsize(code);
 
     if (printit)
     {
@@ -7596,7 +7596,7 @@ got_code_from_term(char_u *code, int len)
 							     name[0], name[1]);
 # endif
 		}
-		else if (i >= 0 && name[0] == 'K' && VIM_ISDIGIT(name[1]))
+		else if (i >= 0 && name[0] == 'K' && MNV_ISDIGIT(name[1]))
 		{
 		    // Would replace existing entry with keypad key - skip.
 # ifdef FEAT_EVAL
@@ -7674,7 +7674,7 @@ check_for_codes_from_term(void)
 }
 #endif
 
-#if defined(MSWIN) && (!defined(FEAT_GUI) || defined(VIMDLL))
+#if defined(MSWIN) && (!defined(FEAT_GUI) || defined(MNVDLL))
 static char ksme_str[20];
 static char ksmr_str[20];
 static char ksmd_str[20];
@@ -7826,7 +7826,7 @@ swap_tcap(void)
 #endif
 
 
-#if (defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(VIMDLL))) || defined(FEAT_TERMINAL)
+#if (defined(MSWIN) && (!defined(FEAT_GUI_MSWIN) || defined(MNVDLL))) || defined(FEAT_TERMINAL)
 static int cube_value[] = {
     0x00, 0x5F, 0x87, 0xAF, 0xD7, 0xFF
 };
@@ -7990,7 +7990,7 @@ send_decrqm_modes(void)
 	// Request setting of relevant DEC modes via DECRQM
 	for (int i = 0; i < (int)ARRAY_LENGTH(dec_modes); i++)
 	{
-	    vim_snprintf((char *)IObuff, IOSIZE, "\033[?%d$p", dec_modes[i]);
+	    mnv_snprintf((char *)IObuff, IOSIZE, "\033[?%d$p", dec_modes[i]);
 	    out_str(IObuff);
 	}
 	out_flush();

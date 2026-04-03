@@ -1,0 +1,53 @@
+.TH MNVTUTOR 1 "2. april 2001"
+.SH NAVN
+mnvtutor \- MNV-vejledningen
+.SH SYNOPSIS
+.br
+.B mnvtutor [\-g] [sprog]
+.SH BESKRIVELSE
+.B MNVtutor
+starter
+.B MNV\c
+-vejledningen.
+Det kopierer først vejledningsfilen, så den kan ændres uden at ændre
+den originale fil.
+.PP
+.B MNVtutor
+er nyttig til personer der vil lære deres første
+.B MNV\c
+-kommandoer.
+.PP
+Det valgfrie argument \-g starter mnvtutor med gmnv fremfor mnv, hvis
+GUI-versionen af mnv er tilgængelig, ellers bruges MNV hvis ikke gmnv findes.
+.PP
+Det valgfrie [sprog]-argument er navnet på et sprog, på 2 bogstaver, såsom
+"da" eller "fi".
+Hvis [sprog]-argumentet mangler, bruges sproget fra den nuværende lokalitet.
+Hvis der findes er en vejledning på dette sprog, så bruges den.
+Ellers bruges den engelske version.
+.PP
+.B MNV
+startes altid i Vi-kompatibel tilstand.
+.SH FILER
+.TP 15
+/usr/local/lib/mnv/tutor/tutor[.sprog]
+.B MNVtutor\c
+-tekstfilerne.
+.TP 15
+/usr/local/lib/mnv/tutor/tutor.mnv
+MNV-scriptet som bruges til at kopiere
+.B MNVtutor\c
+-tekstfilen.
+.SH FORFATTER
+.B MNVtutor
+blev oprindeligt skrevet til Vi af Michael C. Pierce og Robert K. Ware,
+Colorado School of Mines med ideer af Charles Smith,
+Colorado State University.
+E-mail: bware@mines.colorado.edu.
+.br
+Den blev ændret til
+.B MNV
+af Bram Moolenaar.
+Oversætternes navne kan ses i tutor-filerne.
+.SH SE OGSÅ
+mnv(1)

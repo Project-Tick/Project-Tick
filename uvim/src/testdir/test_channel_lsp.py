@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
-# Server that will accept connections from a Vim channel.
-# Used by test_channel.vim to test LSP functionality.
+# Server that will accept connections from a MNV channel.
+# Used by test_channel.mnv to test LSP functionality.
 #
 # This requires Python 2.6 or later.
 
@@ -81,7 +81,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         # test for sending extra fields in the http header
         v = {'jsonrpc': '2.0', 'id': msgid, 'result': resp_dict}
         s = json.dumps(v)
-        resp = "Host: abc.vim.org\r\n"
+        resp = "Host: abc.mnv.org\r\n"
         resp += "User-Agent: Python\r\n"
         resp += "Accept-Language: en-US,en\r\n"
         resp += "Content-Type: application/vscode-jsonrpc; charset=utf-8\r\n"

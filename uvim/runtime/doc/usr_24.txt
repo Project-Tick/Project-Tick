@@ -1,13 +1,13 @@
-*usr_24.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*usr_24.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		     VIM USER MANUAL	by Bram Moolenaar
+		     MNV USER MANUAL	by Bram Moolenaar
 
 
 			     Inserting quickly
 
 
-When entering text, Vim offers various ways to reduce the number of keystrokes
+When entering text, MNV offers various ways to reduce the number of keystrokes
 and avoid typing mistakes.  Use Insert mode completion to repeat previously
 typed words.  Abbreviate long words to short ones.  Type characters that
 aren't on your keyboard.
@@ -99,20 +99,20 @@ There are a few more, see |ins-special-special|.
 *24.2*	Showing matches
 
 When you type a ) it would be nice to see with which ( it matches.  To make
-Vim do that use this command: >
+MNV do that use this command: >
 
 	:set showmatch
 
-When you now type a text like "(example)", as soon as you type the ) Vim will
+When you now type a text like "(example)", as soon as you type the ) MNV will
 briefly move the cursor to the matching (, keep it there for half a second,
 and move back to where you were typing.
-   In case there is no matching (, Vim will beep.  Then you know that you
+   In case there is no matching (, MNV will beep.  Then you know that you
 might have forgotten the ( somewhere, or typed a ) too many.
    The match will also be shown for [] and {} pairs.  You don't have to wait
-with typing the next character, as soon as Vim sees it the cursor will move
+with typing the next character, as soon as MNV sees it the cursor will move
 back and inserting continues as before.
-   You can change the time Vim waits with the 'matchtime' option.  For
-example, to make Vim wait one and a half second: >
+   You can change the time MNV waits with the 'matchtime' option.  For
+example, to make MNV wait one and a half second: >
 
 	:set matchtime=15
 
@@ -121,8 +121,8 @@ The time is specified in tenths of a second.
 ==============================================================================
 *24.3*	Completion
 
-Vim can automatically complete words on insertion.  You type the first part of
-a word, press CTRL-P, and Vim guesses the rest.
+MNV can automatically complete words on insertion.  You type the first part of
+a word, press CTRL-P, and MNV guesses the rest.
    Suppose, for example, that you are creating a C program and want to type in
 the following:
 
@@ -132,8 +132,8 @@ You start by entering the following:
 
 	total = ch_array[0] + ch_ ~
 
-At this point, you tell Vim to complete the word using the command CTRL-P.
-Vim searches for a word that starts with what's in front of the cursor.  In
+At this point, you tell MNV to complete the word using the command CTRL-P.
+MNV searches for a word that starts with what's in front of the cursor.  In
 this case, it is "ch_", which matches with the word ch_array.  So typing
 CTRL-P gives you the following:
 
@@ -143,7 +143,7 @@ After a little more typing, you get this (ending in a space):
 
 	total = ch_array[0] + ch_array[1] +  ~
 
-If you now type CTRL-P Vim will search again for a word that completes the
+If you now type CTRL-P MNV will search again for a word that completes the
 word before the cursor.  Since there is nothing in front of the cursor, it
 finds the first word backwards, which is "ch_array".  Typing CTRL-P again
 gives you the next word that matches, in this case "total".  A third CTRL-P
@@ -155,7 +155,7 @@ To search forward, use CTRL-N.  Since the search wraps around the end of the
 file, CTRL-N and CTRL-P will find the same matches, but in a different
 sequence.  Hint: CTRL-N is Next-match and CTRL-P is Previous-match.
 
-The Vim editor goes through a lot of effort to find words to complete.  By
+The MNV editor goes through a lot of effort to find words to complete.  By
 default, it searches the following places:
 
 	1. Current file
@@ -175,7 +175,7 @@ when searching for matches.
 
 A special option for completion is 'infercase'.  This is useful to find
 matches while ignoring case ('ignorecase' must be set) but still using the
-case of the word typed so far.  Thus if you type "For" and Vim finds a match
+case of the word typed so far.  Thus if you type "For" and MNV finds a match
 "fortunately", it will result in "Fortunately".
 
 
@@ -192,7 +192,7 @@ with a certain type of item:
 	CTRL-X CTRL-R		contents from registers
 	CTRL-X CTRL-T		words from a thesaurus
 	CTRL-X CTRL-]		tags
-	CTRL-X CTRL-V		Vim command line
+	CTRL-X CTRL-V		MNV command line
 
 After each of them CTRL-N can be used to find the next match, CTRL-P to find
 the previous match.
@@ -213,7 +213,7 @@ Now enter Insert mode and start typing:
 
 	The exit code is in the file sub ~
 
-At this point, you enter the command CTRL-X CTRL-F.  Vim now completes the
+At this point, you enter the command CTRL-X CTRL-F.  MNV now completes the
 current word "sub" by looking at the files in the current directory.  The
 first match is sub_count.c.  This is not the one you want, so you match the
 next file by typing CTRL-N.  This match is sub_done.c.  Typing CTRL-N again
@@ -239,7 +239,7 @@ matches are sorted alphabetically.
 COMPLETING IN SOURCE CODE
 
 Source code files are well structured.  That makes it possible to do
-completion in an intelligent way.  In Vim this is called Omni completion.  In
+completion in an intelligent way.  In MNV this is called Omni completion.  In
 some other editors it's called intellisense, but that is a trademark.
 
 The key to Omni completion is CTRL-X CTRL-O.  Obviously the O stands for Omni
@@ -250,13 +250,13 @@ source:
 	    struct foo *p; ~
 	    p-> ~
 
-The cursor is after "p->".  Now type CTRL-X CTRL-O.  Vim will offer you a list
+The cursor is after "p->".  Now type CTRL-X CTRL-O.  MNV will offer you a list
 of alternatives, which are the items that "struct foo" contains.  That is
 quite different from using CTRL-P, which would complete any word, while only
 members of "struct foo" are valid here.
 
 For Omni completion to work you may need to do some setup.  At least make sure
-filetype plugins are enabled.  Your vimrc file should contain a line like
+filetype plugins are enabled.  Your mnvrc file should contain a line like
 this: >
 	filetype plugin on
 Or: >
@@ -373,9 +373,9 @@ use the command CTRL-R CTRL-R {register}.
 *24.7*	Abbreviations
 
 An abbreviation is a short word that takes the place of a long one.  For
-example, "ad" stands for "advertisement".  Vim enables you to type an
+example, "ad" stands for "advertisement".  MNV enables you to type an
 abbreviation and then will automatically expand it for you.
-   To tell Vim to expand "ad" into "advertisement" every time you insert it,
+   To tell MNV to expand "ad" into "advertisement" every time you insert it,
 use the following command: >
 
 	:iabbrev ad advertisement
@@ -410,7 +410,7 @@ These are used for creating boxed comments.  The comment starts with #b, which
 draws the top line.  I then type the comment text and use #e to draw the
 bottom line.
    Notice that the #e abbreviation begins with a space.  In other words, the
-first two characters are space-star.  Usually Vim ignores spaces between the
+first two characters are space-star.  Usually MNV ignores spaces between the
 abbreviation and the expansion.  To avoid that problem, I spell space as seven
 characters: <, S, p, a, c, e, >.
 
@@ -466,7 +466,7 @@ You can remove it with this command: >
 	:unabbreviate @f
 
 While you type this, you will notice that @f is expanded to "fresh".  Don't
-worry about this, Vim understands it anyway (except when you have an
+worry about this, MNV understands it anyway (except when you have an
 abbreviation for "fresh", but that's very unlikely).
    To remove all the abbreviations: >
 
@@ -541,7 +541,7 @@ a 16 bit and a 32 bit number (e.g., for a Unicode character): >
 *24.9*	Digraphs
 
 Some characters are not on the keyboard.  For example, the copyright character
-(©).  To type these characters in Vim, you use digraphs, where two characters
+(©).  To type these characters in MNV, you use digraphs, where two characters
 represent one.  To enter a ©, for example, you press three keys: >
 
 	CTRL-K Co
@@ -550,7 +550,7 @@ To find out what digraphs are available, use the following command: >
 
 	:digraphs
 
-Vim will display the digraph table.  Here are three lines of it:
+MNV will display the digraph table.  Here are three lines of it:
 
   AC ~_ 159  NS |  160  !I ¡  161  Ct ¢  162  Pd £  163  Cu ¤  164  Ye ¥  165 ~
   BB ¦  166  SE §  167  ': ¨  168  Co ©  169  -a ª  170  << «  171  NO ¬  172 ~
@@ -563,10 +563,10 @@ the character they will produce.  If you look through the list you will
 understand the logic.
    You can exchange the first and second character, if there is no digraph for
 that combination.  Thus CTRL-K dP also works.  Since there is no digraph for
-"dP" Vim will also search for a "Pd" digraph.
+"dP" MNV will also search for a "Pd" digraph.
 
 	Note:
-	The digraphs depend on the character set that Vim assumes you are
+	The digraphs depend on the character set that MNV assumes you are
 	using.  Always use ":digraphs" to find out which digraphs are
 	currently available.
 
@@ -605,4 +605,4 @@ This deletes up to the third word into register g.
 
 Next chapter: |usr_25.txt|  Editing formatted text
 
-Copyright: see |manual-copyright|  vim:tw=78:ts=8:noet:ft=help:norl:
+Copyright: see |manual-copyright|  mnv:tw=78:ts=8:noet:ft=help:norl:

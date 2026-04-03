@@ -1,7 +1,7 @@
-*mbyte.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*mbyte.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar et al.
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar et al.
 
 
 Multi-byte support				*multibyte* *multi-byte*
@@ -33,10 +33,10 @@ characters or boxes when using another encoding.
 ==============================================================================
 1. Getting started					*mbyte-first*
 
-This is a summary of the multibyte features in Vim.  If you are lucky it works
-as described and you can start using Vim without much trouble.  If something
+This is a summary of the multibyte features in MNV.  If you are lucky it works
+as described and you can start using MNV without much trouble.  If something
 doesn't work you will have to read the rest.  Don't be surprised if it takes
-quite a bit of work and experimenting to make Vim use all the multibyte
+quite a bit of work and experimenting to make MNV use all the multibyte
 features.  Unfortunately, every system has its own way to deal with multibyte
 languages and it is quite complicated.
 
@@ -55,11 +55,11 @@ also be called "ja_JP.EUCjp" or just "ja".  To see what is currently used: >
 
 	:language
 
-To change the locale inside Vim use: >
+To change the locale inside MNV use: >
 
 	:language ja_JP.EUC
 
-Vim will give an error message if this doesn't work.  This is a good way to
+MNV will give an error message if this doesn't work.  This is a good way to
 experiment and find the locale name you want to use.  But it's always better
 to set the locale in the shell, so that it is used right from the start.
 
@@ -68,19 +68,19 @@ See |mbyte-locale| for details.
 
 ENCODING
 
-If your locale works properly, Vim will try to set the 'encoding' option
+If your locale works properly, MNV will try to set the 'encoding' option
 accordingly.  If this doesn't work you can overrule its value: >
 
 	:set encoding=utf-8
 
 See |encoding-values| for a list of acceptable values.
 
-The result is that all the text that is used inside Vim will be in this
+The result is that all the text that is used inside MNV will be in this
 encoding.  Not only the text in the buffers, but also in registers, variables,
 etc.  This also means that changing the value of 'encoding' makes the existing
 text invalid!  The text doesn't change, but it will be displayed wrong.
 
-You can edit files in another encoding than what 'encoding' is set to.  Vim
+You can edit files in another encoding than what 'encoding' is set to.  MNV
 will convert the file when you read it and convert it back when you write it.
 See 'fileencoding', 'fileencodings' and |++enc|.
 
@@ -88,8 +88,8 @@ See 'fileencoding', 'fileencodings' and |++enc|.
 DISPLAY AND FONTS
 
 If you are working in a terminal (emulator) you must make sure it accepts the
-same encoding as which Vim is working with.  If this is not the case, you can
-use the 'termencoding' option to make Vim convert text automatically.
+same encoding as which MNV is working with.  If this is not the case, you can
+use the 'termencoding' option to make MNV convert text automatically.
 
 For the GUI you must select fonts that work with the current 'encoding'.  This
 is the difficult part.  It depends on the system you are using, the locale and
@@ -117,7 +117,7 @@ Example for UTF-8: >
 	:set guifont=-misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
 	:set guifontwide=-misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
 
-You can also set 'guifont' alone, Vim will try to find a matching
+You can also set 'guifont' alone, MNV will try to find a matching
 'guifontwide' for you.
 
 
@@ -136,7 +136,7 @@ the different input methods or disable them temporarily.
 
 The easiest setup is when your whole system uses the locale you want to work
 in.  But it's also possible to set the locale for one shell you are working
-in, or just use a certain locale inside Vim.
+in, or just use a certain locale inside MNV.
 
 
 WHAT IS A LOCALE?					*locale*
@@ -145,7 +145,7 @@ There are many languages in the world.  And there are different cultures and
 environments at least as many as the number of languages.  A linguistic
 environment corresponding to an area is called "locale".  This includes
 information about the used language, the charset, collating order for sorting,
-date format, currency format and so on.  For Vim only the language and charset
+date format, currency format and so on.  For MNV only the language and charset
 really matter.
 
 You can only use a locale if your system has support for it.  Some systems
@@ -163,7 +163,7 @@ different.  Some systems have a locale.alias file, which allows translation
 from a short name like "nl" to the full name "nl_NL.ISO_8859-1".
 
 Note that X-windows has its own locale stuff.  And unfortunately uses locale
-names different from what is used elsewhere.  This is confusing!  For Vim it
+names different from what is used elsewhere.  This is confusing!  For MNV it
 matters what the setlocale() function uses, which is generally NOT the
 X-windows stuff.  You might have to do some experiments to find out what
 really works.
@@ -207,30 +207,30 @@ use Korean and the |locale| name is "ko", do this:
 
 You can put this in your ~/.profile or ~/.cshrc file to always use it.
 
-To use a locale in Vim only, use the |:language| command: >
+To use a locale in MNV only, use the |:language| command: >
 
 	:language ko
 
-Put this in your ~/.vimrc file to use it always.
+Put this in your ~/.mnvrc file to use it always.
 
-Or specify $LANG when starting Vim:
+Or specify $LANG when starting MNV:
 
-   sh:    LANG=ko vim {vim-arguments}
-   csh:	  env LANG=ko vim {vim-arguments}
+   sh:    LANG=ko mnv {mnv-arguments}
+   csh:	  env LANG=ko mnv {mnv-arguments}
 
 You could make a small shell script for this.
 
 ==============================================================================
 3.  Encoding				*mbyte-encoding*
 
-Vim uses the 'encoding' option to specify how characters are identified and
-encoded when they are used inside Vim.  This applies to all the places where
+MNV uses the 'encoding' option to specify how characters are identified and
+encoded when they are used inside MNV.  This applies to all the places where
 text is used, including buffers (files loaded into memory), registers and
 variables.
 
 							*charset* *codeset*
 Charset is another name for encoding.  There are subtle differences, but these
-don't matter when using Vim.  "codeset" is another similar name.
+don't matter when using MNV.  "codeset" is another similar name.
 
 Each character is encoded as one or more bytes.  When all characters are
 encoded with one byte, we call this a single-byte encoding.  The most often
@@ -247,7 +247,7 @@ matter what language is used.  Thus you might see the right text even when the
 encoding was set wrong.
 
 							*encoding-names*
-Vim can use many different character encodings.  There are three major groups:
+MNV can use many different character encodings.  There are three major groups:
 
 1   8bit	Single-byte encodings, 256 different characters.  Mostly used
 		in USA and Europe.  Example: ISO-8859-1 (Latin1).  All
@@ -262,7 +262,7 @@ u   Unicode	Universal encoding, can replace all others.  ISO 10646.
 		Millions of different characters.  Example: UTF-8.  The
 		relation between bytes and screen cells is complex.
 
-Other encodings cannot be used by Vim internally.  But files in other
+Other encodings cannot be used by MNV internally.  But files in other
 encodings can be edited by using conversion, see 'fileencoding'.
 Note that all encodings must use ASCII for the characters up to 128 (except
 when compiled for EBCDIC).
@@ -273,7 +273,7 @@ Supported 'encoding' values are:			*encoding-values*
 1   koi8-r	Russian
 1   koi8-u	Ukrainian
 1   macroman    MacRoman (Macintosh encoding)
-1   8bit-{name} any 8-bit encoding (Vim specific name)
+1   8bit-{name} any 8-bit encoding (MNV specific name)
 1   cp437	similar to iso-8859-1
 1   cp737	similar to iso-8859-7
 1   cp775	Baltic
@@ -308,7 +308,7 @@ Supported 'encoding' values are:			*encoding-values*
 2   cp950	traditional Chinese (on Unix alias for big5)
 2   big5	traditional Chinese (on Windows alias for cp950)
 2   euc-tw	traditional Chinese (Unix only)
-2   2byte-{name} Unix: any double-byte encoding (Vim specific name)
+2   2byte-{name} Unix: any double-byte encoding (MNV specific name)
 2   cp{number}	MS-Windows: any installed double-byte codepage
 u   utf-8	32 bit UTF-8 encoded Unicode (ISO/IEC 10646-1)
 u   ucs-2	16 bit UCS-2 encoded Unicode (ISO/IEC 10646-1)
@@ -360,7 +360,7 @@ first):
 On MS-Windows systems you often want to use "ucs-2le", because it uses little
 endian UCS-2.
 
-There are a few encodings which are similar, but not exactly the same.  Vim
+There are a few encodings which are similar, but not exactly the same.  MNV
 treats them as if they were different encodings, so that conversion will be
 done when needed.  You might want to use the similar name to avoid conversion
 or when conversion is not possible:
@@ -371,12 +371,12 @@ or when conversion is not possible:
 							*encoding-table*
 Normally 'encoding' is equal to your current locale and 'termencoding' is
 empty.  This means that your keyboard and display work with characters encoded
-in your current locale, and Vim uses the same characters internally.
+in your current locale, and MNV uses the same characters internally.
 
-You can make Vim use characters in a different encoding by setting the
+You can make MNV use characters in a different encoding by setting the
 'encoding' option to a different value.  Since the keyboard and display still
 use the current locale, conversion needs to be done.  The 'termencoding' then
-takes over the value of the current locale, so Vim converts between 'encoding'
+takes over the value of the current locale, so MNV converts between 'encoding'
 and 'termencoding'.  Example: >
 	:let &termencoding = &encoding
 	:set encoding=utf-8
@@ -392,7 +392,7 @@ depends on the system used, no detailed list can be given.
 
  8bit	    8bit	Works.  When 'termencoding' is different from
 			'encoding' typing and displaying may be wrong for some
-			characters, Vim does NOT perform conversion (set
+			characters, MNV does NOT perform conversion (set
 			'encoding' to "utf-8" to get this).
  8bit      2byte	MS-Windows: works for all codepages installed on your
 			system; you can only type 8bit characters;
@@ -409,7 +409,7 @@ depends on the system used, no detailed list can be given.
 			locale is different from 'encoding'.
 			Other systems: Only works when 'termencoding' is equal
 			to 'encoding', you might as well leave it empty.
- 2byte	   Unicode	works, Vim will translate typed characters.
+ 2byte	   Unicode	works, MNV will translate typed characters.
 
  Unicode    8bit	works (unusual)
  Unicode    2byte	does NOT work
@@ -419,16 +419,16 @@ depends on the system used, no detailed list can be given.
 
 CONVERSION						*charset-conversion*
 
-Vim will automatically convert from one to another encoding in several places:
+MNV will automatically convert from one to another encoding in several places:
 - When reading a file and 'fileencoding' is different from 'encoding'
 - When writing a file and 'fileencoding' is different from 'encoding'
 - When displaying characters and 'termencoding' is different from 'encoding'
 - When reading input and 'termencoding' is different from 'encoding'
 - When displaying messages and the encoding used for LC_MESSAGES differs from
   'encoding' (requires a gettext version that supports this).
-- When reading a Vim script where |:scriptencoding| is different from
+- When reading a MNV script where |:scriptencoding| is different from
   'encoding'.
-- When reading or writing a |viminfo| file.
+- When reading or writing a |mnvinfo| file.
 Most of these require the |+iconv| feature.  Conversion for reading and
 writing files may also be specified with the 'charconvert' option.
 
@@ -443,7 +443,7 @@ Useful utilities for converting the charset:
 	facility of nkf is the guess of the input Kanji code.  So, you don't
 	need to know what the inputting file's |charset| is.  When convert to
 	EUC-JP from ISO-2022-JP or Shift_JIS, simply do the following command
-	in Vim:
+	in MNV:
 	    :%!nkf -e
 	Nkf can be found at:
 	http://www.sfc.wide.ad.jp/~max/FreeBSD/ports/distfiles/nkf-1.62.tar.gz
@@ -477,31 +477,31 @@ conversion needs to be done.  These conversions are supported:
 - Conversion specified with 'charconvert'
 - Conversion with the iconv library, if it is available.
 	Old versions of GNU iconv() may cause the conversion to fail (they
-	request a very large buffer, more than Vim is willing to provide).
+	request a very large buffer, more than MNV is willing to provide).
 	Try getting another iconv() implementation.
 
 							*iconv-dynamic*
-On MS-Windows Vim can be compiled with the |+iconv/dyn| feature.  This means
-Vim will search for the "iconv.dll" and "libiconv.dll" libraries.  When
-neither of them can be found Vim will still work but some conversions won't be
+On MS-Windows MNV can be compiled with the |+iconv/dyn| feature.  This means
+MNV will search for the "iconv.dll" and "libiconv.dll" libraries.  When
+neither of them can be found MNV will still work but some conversions won't be
 possible.
 
 ==============================================================================
 4. Using a terminal					*mbyte-terminal*
 
 The GUI fully supports multibyte characters.  It is also possible in a
-terminal, if the terminal supports the same encoding that Vim uses.  Thus this
+terminal, if the terminal supports the same encoding that MNV uses.  Thus this
 is less flexible.
 
-For example, you can run Vim in an xterm with added multibyte support and/or
+For example, you can run MNV in an xterm with added multibyte support and/or
 |XIM|.  Examples are kterm (Kanji term) and hanterm (for Korean), Eterm
 (Enlightened terminal) and rxvt.
 
 If your terminal does not support the right encoding, you can set the
-'termencoding' option.  Vim will then convert the typed characters from
+'termencoding' option.  MNV will then convert the typed characters from
 'termencoding' to 'encoding'.  And displayed text will be converted from
 'encoding' to 'termencoding'.  If the encoding supported by the terminal
-doesn't include all the characters that Vim uses, this leads to lost
+doesn't include all the characters that MNV uses, this leads to lost
 characters.  This may mess up the display.  If you use a terminal that
 supports Unicode, such as the xterm mentioned below, it should work just fine,
 since nearly every character set can be converted to Unicode without loss of
@@ -534,12 +534,12 @@ or, for bigger character: >
 and you will have a working UTF-8 terminal emulator.  Try both >
 
    cat utf-8-demo.txt
-   vim utf-8-demo.txt
+   mnv utf-8-demo.txt
 
 with the demo text that comes with ucs-fonts.tar.gz in order to see
 whether there are any problems with UTF-8 in your xterm.
 
-For Vim you may need to set 'encoding' to "utf-8".
+For MNV you may need to set 'encoding' to "utf-8".
 
 ==============================================================================
 5.  Fonts on X11					*mbyte-fonts-X11*
@@ -552,7 +552,7 @@ its XLFD is not supported; see 'guifont' for an example of how to
 set the font.  Do yourself a favor and ignore the |XLFD| and |xfontset|
 sections below.
 
-First of all, Vim only accepts fixed-width fonts for displaying text.  You
+First of all, MNV only accepts fixed-width fonts for displaying text.  You
 cannot use proportionally spaced fonts.  This excludes many of the available
 (and nicer looking) fonts.  However, for menus and tooltips any font can be
 used.
@@ -700,30 +700,30 @@ groups.
 
 USING RESOURCE FILES
 
-Instead of specifying 'guifontset', you can set X11 resources and Vim will
+Instead of specifying 'guifontset', you can set X11 resources and MNV will
 pick them up.  This is only for people who know how X resource files work.
 
 For Motif insert these three lines in your $HOME/.Xdefaults file:
 
-	Vim.font: |base_font_name_list|
-	Vim*fontSet: |base_font_name_list|
-	Vim*fontList: your_language_font
+	MNV.font: |base_font_name_list|
+	MNV*fontSet: |base_font_name_list|
+	MNV*fontList: your_language_font
 
-Note: Vim.font is for text area.
-      Vim*fontSet is for menu.
-      Vim*fontList is for menu (for Motif GUI)
+Note: MNV.font is for text area.
+      MNV*fontSet is for menu.
+      MNV*fontList is for menu (for Motif GUI)
 
 For example, when you are using Japanese and a 14 dots font, >
 
-	Vim.font: -misc-fixed-medium-r-normal--14-*
-	Vim*fontSet: -misc-fixed-medium-r-normal--14-*
-	Vim*fontList: -misc-fixed-medium-r-normal--14-*
+	MNV.font: -misc-fixed-medium-r-normal--14-*
+	MNV*fontSet: -misc-fixed-medium-r-normal--14-*
+	MNV*fontList: -misc-fixed-medium-r-normal--14-*
 <
 or: >
 
-	Vim*font: k14,r14
-	Vim*fontSet: k14,r14
-	Vim*fontList: k14,r14
+	MNV*font: k14,r14
+	MNV*fontSet: k14,r14
+	MNV*fontList: k14,r14
 <
 To have them take effect immediately you will have to do >
 
@@ -733,7 +733,7 @@ Otherwise you will have to stop and restart the X server before the changes
 take effect.
 
 
-The GTK+ version of GUI Vim does not use .Xdefaults, use ~/.gtkrc instead.
+The GTK+ version of GUI MNV does not use .Xdefaults, use ~/.gtkrc instead.
 The default mostly works OK.  But for the menus you might have to change
 it.  Example: >
 
@@ -752,7 +752,7 @@ that works well you can use this command to see its name: >
 
 	:set guifont
 
-Then add a command to your |gvimrc| file to set 'guifont': >
+Then add a command to your |gmnvrc| file to set 'guifont': >
 
 	:set guifont=courier_new:h12
 
@@ -834,9 +834,9 @@ Use the RPM or port for your system.
   of Preedit Area and Status Area: |OnTheSpot|, |OffTheSpot|, |OverTheSpot|
   and |Root|.
 
-  Currently, GUI Vim supports three styles, |OverTheSpot|, |OffTheSpot| and
+  Currently, GUI MNV supports three styles, |OverTheSpot|, |OffTheSpot| and
   |Root|.
-  When compiled with |+GUI_GTK| feature, GUI Vim supports two styles,
+  When compiled with |+GUI_GTK| feature, GUI MNV supports two styles,
   |OnTheSpot| and |OverTheSpot|.  You can select the style with the 'imstyle'
   option.
 
@@ -848,13 +848,13 @@ Use the RPM or port for your system.
     during pre-editing.
 *.  over-the-spot					*OverTheSpot*
     Status Area is created in a fixed position within the area of application,
-    in case of Vim, the position is the additional status line.  Preedit Area
+    in case of MNV, the position is the additional status line.  Preedit Area
     is made at present input position of application.  The input method
     displays pre-edit data in a window which it brings up directly over the
     text insertion position.
 *.  off-the-spot					*OffTheSpot*
     Preedit Area and Status Area are performed in the area of application, in
-    case of Vim, the area is additional status line.  The client application
+    case of MNV, the area is additional status line.  The client application
     provides display windows for the pre-edit data to the input method which
     displays into them directly.
 *.  root-window						*Root*
@@ -899,9 +899,9 @@ For example, when you are using kinput2 as |IM-server|, >
 	*.inputMethod: kinput2
 	*.preeditType: OverTheSpot
 <
-When using |OverTheSpot|, GUI Vim always connects to the IM Server even in
+When using |OverTheSpot|, GUI MNV always connects to the IM Server even in
 Normal mode, so you can input your language with commands like "f" and "r".
-But when using one of the other two methods, GUI Vim connects to the IM Server
+But when using one of the other two methods, GUI MNV connects to the IM Server
 only if it is not in Normal mode.
 
 If your IM Server does not support |OverTheSpot|, and if you want to use your
@@ -942,13 +942,13 @@ See 'imactivatekey' for the format.
 To input multibyte characters on Windows, you can use an Input Method Editor
 (IME).  In process of your editing text, you must switch status (on/off) of
 IME many many many times.  Because IME with status on is hooking all of your
-key inputs, you cannot input 'j', 'k', or almost all of keys to Vim directly.
+key inputs, you cannot input 'j', 'k', or almost all of keys to MNV directly.
 
 The |+multi_byte_ime| feature helps for this.  It reduces the number of times
 the IME status has to be switched manually.  In Normal mode, there is almost
 no need to use IME, even when editing multibyte text.  So when exiting Insert
-mode, Vim memorizes the last status of IME and turns off IME.  When
-re-entering Insert mode, Vim sets the IME status to that memorized status
+mode, MNV memorizes the last status of IME and turns off IME.  When
+re-entering Insert mode, MNV sets the IME status to that memorized status
 automatically.
 
 This works on not only insert-normal mode, but also search-command input and
@@ -973,7 +973,7 @@ of Windows you use.  For example, on my Windows 2000 box:
 
 MS-Windows IME Compatibility			*multibyte-ime-compatibility*
 
-Vim manages input methods on Windows systems via the `imm32.dll` (Input Method
+MNV manages input methods on Windows systems via the `imm32.dll` (Input Method
 Manager).  The implementation, dating back to the Windows 2000 era, may not be
 fully compatible with modern input methods.  Modern input method processing
 has shifted to the Text Services Framework (TSF), whose behavior may not fully
@@ -981,12 +981,12 @@ align with the traditional IME interface.  For details about IME and TSF,
 refer to the Microsoft documentation website (link is omitted since MS
 documentation URLs often change).
 
-In some cases Vim might incorrectly enable the Input Method (IM) in Normal
+In some cases MNV might incorrectly enable the Input Method (IM) in Normal
 mode upon startup when the Windows display language is set to a CJK language.
 To work around this issue, try adding the following configuration to your
-|gvimrc| file: >
+|gmnvrc| file: >
 
-	autocmd VimEnter * set imdisable | set noimdisable
+	autocmd MNVEnter * set imdisable | set noimdisable
 <
 If you make any progress in diagnosing or resolving these issues, feedback is
 welcome.
@@ -995,10 +995,10 @@ Note: IME behavior can vary due to differences in implementations by different
 vendors.  If you encounter issues with a specific input method, it is
 recommended to test with an alternative one.
 
-For proper integration with Vim's |+multi_byte_ime| system, changes in the
+For proper integration with MNV's |+multi_byte_ime| system, changes in the
 input method's status must be detectable by the `ImmGetOpenStatus()` function
-in Vim's source code.  Currently, some input methods that support
-multi-language input may have internal state changes that gVim cannot capture.
+in MNV's source code.  Currently, some input methods that support
+multi-language input may have internal state changes that gMNV cannot capture.
 
 
 Cursor color when IME or XIM is on				*CursorIM*
@@ -1009,7 +1009,7 @@ Cursor color when IME or XIM is on				*CursorIM*
     This works in the same way when using XIM.
 
     You can select cursor color when status is on by using highlight group
-    CursorIM.  For example, add these lines to your |gvimrc|: >
+    CursorIM.  For example, add these lines to your |gmnvrc|: >
 
 	if has('multi_byte_ime')
 	    highlight Cursor guifg=NONE guibg=Green
@@ -1025,22 +1025,22 @@ Cursor color when IME or XIM is on				*CursorIM*
 When the keyboard doesn't produce the characters you want to enter in your
 text, you can use the 'keymap' option.  This will translate one or more
 (English) characters to another (non-English) character.  This only happens
-when typing text, not when typing Vim commands.  This avoids having to switch
+when typing text, not when typing MNV commands.  This avoids having to switch
 between two keyboard settings.
 {only available when compiled with the |+keymap| feature}
 
 The value of the 'keymap' option specifies a keymap file to use.  The name of
 this file is one of these two:
 
-	keymap/{keymap}_{encoding}.vim
-	keymap/{keymap}.vim
+	keymap/{keymap}_{encoding}.mnv
+	keymap/{keymap}.mnv
 
 Here {keymap} is the value of the 'keymap' option and {encoding} of the
 'encoding' option.  The file name with the {encoding} included is tried first.
 
 'runtimepath' is used to find these files.  To see an overview of all
 available keymap files, use this: >
-	:echo globpath(&rtp, "keymap/*.vim")
+	:echo globpath(&rtp, "keymap/*.mnv")
 
 In Insert and Command-line mode you can use CTRL-^ to toggle between using the
 keyboard map or not. |i_CTRL-^| |c_CTRL-^|
@@ -1095,7 +1095,7 @@ The length of the two items together must not exceed 200 bytes.
 It's possible to have more than one character in the first column.  This works
 like a dead key.  Example: >
 	'a	á
-Since Vim doesn't know if the next character after a quote is really an "a",
+Since MNV doesn't know if the next character after a quote is really an "a",
 it will wait for the next character.  To be able to insert a single quote,
 also add this line: >
 	''	'
@@ -1132,8 +1132,8 @@ meaning in the mappings.  Examples: >
 	\\	y	maps \ to y
 
 If you write a keymap file that will be useful for others, consider submitting
-it to the Vim maintainer for inclusion in the distribution:
-<maintainer@vim.org>
+it to the MNV maintainer for inclusion in the distribution:
+<maintainer@mnv.org>
 
 
 HEBREW KEYMAP						*keymap-hebrew*
@@ -1270,8 +1270,8 @@ Combining forms:
 ==============================================================================
 10.  Input with imactivatefunc()				*mbyte-func*
 
-Vim has the 'imactivatefunc' and 'imstatusfunc' options.  These are useful to
-activate/deactivate the input method from Vim in any way, also with an
+MNV has the 'imactivatefunc' and 'imstatusfunc' options.  These are useful to
+activate/deactivate the input method from MNV in any way, also with an
 external command.  For example, fcitx provide fcitx-remote command: >
 
 	set iminsert=2
@@ -1292,7 +1292,7 @@ external command.  For example, fcitx provide fcitx-remote command: >
 	  return system('fcitx-remote')[0] is# '2'
 	endfunction
 
-Using this script, you can activate/deactivate XIM via Vim even when it is not
+Using this script, you can activate/deactivate XIM via MNV even when it is not
 compiled with |+xim|.
 
 ==============================================================================
@@ -1306,10 +1306,10 @@ to mix these languages in one file, which is impossible with other encodings.
 Unicode can be encoded in several ways.  The most popular one is UTF-8, which
 uses one or more bytes for each character and is backwards compatible with
 ASCII.   On MS-Windows UTF-16 is also used (previously UCS-2), which uses
-16-bit words.  Vim can support all of these encodings, but always uses UTF-8
+16-bit words.  MNV can support all of these encodings, but always uses UTF-8
 internally.
 
-Vim has comprehensive UTF-8 support.  It works well in:
+MNV has comprehensive UTF-8 support.  It works well in:
 - xterm with UTF-8 support enabled
 - Motif and GTK GUI
 - MS-Windows GUI
@@ -1373,9 +1373,9 @@ Useful commands:
   to automatically detect the encoding of a file.
 
 
-STARTING VIM
+STARTING MNV
 
-If your current locale is in an UTF-8 encoding, Vim will automatically start
+If your current locale is in an UTF-8 encoding, MNV will automatically start
 in UTF-8 mode.
 
 If you are using another locale: >
@@ -1394,7 +1394,7 @@ You need to specify a font to be used.  For double-wide characters another
 font is required, which is exactly twice as wide.  There are three ways to do
 this:
 
-1. Set 'guifont' and let Vim find a matching 'guifontwide'
+1. Set 'guifont' and let MNV find a matching 'guifontwide'
 2. Set 'guifont' and 'guifontwide'
 3. Set 'guifontset'
 
@@ -1417,7 +1417,7 @@ character as a sequence of ASCII characters.  See |mbyte-keymap|.
 
 Another method is to set the current locale to the language you want to use
 and for which you have a XIM available.  Then set 'termencoding' to that
-language and Vim will convert the typed characters to 'encoding' for you.
+language and MNV will convert the typed characters to 'encoding' for you.
 
 If everything else fails, you can type any character as four hex bytes: >
 
@@ -1431,7 +1431,7 @@ COMMAND ARGUMENTS					*utf-8-char-arg*
 
 Commands like |f|, |F|, |t| and |r| take an argument of one character.  For
 UTF-8 this argument may include one or two composing characters.  These need
-to be produced together with the base character, Vim doesn't wait for the next
+to be produced together with the base character, MNV doesn't wait for the next
 character to be typed to find out if it is a composing character or not.
 Using 'keymap' or |:lmap| is a nice way to type these characters.
 
@@ -1480,4 +1480,4 @@ Contributions specifically for the multibyte features by:
 	Taro Muraoka  <koron@tka.att.ne.jp>
 	Yasuhiro Matsumoto <mattn@mail.goo.ne.jp>
 
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

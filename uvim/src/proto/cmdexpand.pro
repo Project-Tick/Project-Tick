@@ -26,4 +26,4 @@ void wildmenu_cleanup(cmdline_info_T *cclp);
 void f_getcompletion(typval_T *argvars, typval_T *rettv);
 void f_getcompletiontype(typval_T *argvars, typval_T *rettv);
 void f_cmdcomplete_info(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

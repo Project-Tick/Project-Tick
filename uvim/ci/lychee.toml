@@ -32,12 +32,12 @@ exclude = [
   '^https?://(www\.)?adobe\.com.*$',
   '^https?://(www\.)?google\.com.*$',
   '^https?://(www\.)?forum\.vmssoftware\.com/.*$',
-  '^http://vim\.sourceforge\.net/scripts/script\.php\?script_id=40$',
+  '^http://mnv\.sourceforge\.net/scripts/script\.php\?script_id=40$',
   '^https://is\.gd/.*$',
-  '^https://wiki\.contextgarden\.net/Vim$',
+  '^https://wiki\.contextgarden\.net/MNV$',
   '^https://github\.com/you/foobar\.git$',
   '^https?://flatassembler\.net',
-  '^https?://www\.fleiner\.com/vim/download.html',
+  '^https?://www\.fleiner\.com/mnv/download.html',
 ]
 
 # Lychee only reads UTF-8 files

@@ -1,13 +1,13 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(HAVE_WCHAR_H)
 # include <wchar.h>	    // for towupper() and towlower()
@@ -189,7 +189,7 @@ parse_isopt(
 	    tilde = TRUE;
 	    ++p;
 	}
-	if (VIM_ISDIGIT(*p))
+	if (MNV_ISDIGIT(*p))
 	    c = getdigits(&p);
 	else if (has_mbyte)
 	    c = mb_ptr2char_adv(&p);
@@ -199,7 +199,7 @@ parse_isopt(
 	if (*p == '-' && p[1] != NUL)
 	{
 	    ++p;
-	    if (VIM_ISDIGIT(*p))
+	    if (MNV_ISDIGIT(*p))
 		c2 = getdigits(&p);
 	    else if (has_mbyte)
 		c2 = mb_ptr2char_adv(&p);
@@ -358,7 +358,7 @@ transstr(char_u *s)
 	    {
 		c = (*mb_ptr2char)(p);
 		p += l;
-		if (vim_isprintc(c))
+		if (mnv_isprintc(c))
 		    len += l;
 		else
 		{
@@ -378,7 +378,7 @@ transstr(char_u *s)
 	res = alloc(len + 1);
     }
     else
-	res = alloc(vim_strsize(s) + 1);
+	res = alloc(mnv_strsize(s) + 1);
 
     if (res == NULL)
 	return NULL;
@@ -390,7 +390,7 @@ transstr(char_u *s)
 	if (has_mbyte && (l = (*mb_ptr2len)(p)) > 1)
 	{
 	    c = (*mb_ptr2char)(p);
-	    if (vim_isprintc(c))
+	    if (mnv_isprintc(c))
 		STRNCAT(res, p, l);	// append printable multi-byte char
 	    else
 		transchar_hex(res + STRLEN(res), c);
@@ -544,7 +544,7 @@ transchar_buf(buf_T *buf, int c)
     }
 
     if ((!chartab_initialized && ((c >= ' ' && c <= '~')))
-					|| (c < 256 && vim_isprintc_strict(c)))
+					|| (c < 256 && mnv_isprintc_strict(c)))
     {
 	// printable character
 	transchar_charbuf[i] = c;
@@ -714,9 +714,9 @@ ptr2cells(char_u *p)
  * counting TABs as two characters: "^I".
  */
     int
-vim_strsize(char_u *s)
+mnv_strsize(char_u *s)
 {
-    return vim_strnsize(s, (int)MAXCOL);
+    return mnv_strnsize(s, (int)MAXCOL);
 }
 
 /*
@@ -724,7 +724,7 @@ vim_strsize(char_u *s)
  * screen, counting TABs as two characters: "^I".
  */
     int
-vim_strnsize(char_u *s, int len)
+mnv_strnsize(char_u *s, int len)
 {
     int		size = 0;
 
@@ -799,7 +799,7 @@ linetabsize_str(char_u *s)
 linetabsize_col(int startcol, char_u *s)
 {
     chartabsize_T cts;
-    vimlong_T vcol;
+    mnvlong_T vcol;
 
     init_chartabsize_arg(&cts, curwin, 0, startcol, s, s);
     vcol = cts.cts_vcol;
@@ -886,7 +886,7 @@ linetabsize_no_outer(win_T *wp, linenr_T lnum)
 	}
 	cts.cts_text_prop_count = write_idx;
 	if (cts.cts_text_prop_count == 0)
-	    VIM_CLEAR(cts.cts_text_props);
+	    MNV_CLEAR(cts.cts_text_props);
     }
 
     win_linetabsize_cts(&cts, (colnr_T)MAXCOL);
@@ -898,7 +898,7 @@ linetabsize_no_outer(win_T *wp, linenr_T lnum)
     void
 win_linetabsize_cts(chartabsize_T *cts, colnr_T len)
 {
-    vimlong_T vcol = cts->cts_vcol;
+    mnvlong_T vcol = cts->cts_vcol;
 #ifdef FEAT_PROP_POPUP
     cts->cts_with_trailing = len == MAXCOL;
 #endif
@@ -935,17 +935,17 @@ win_linetabsize_cts(chartabsize_T *cts, colnr_T len)
  * Letters and characters from the 'isident' option.
  */
     int
-vim_isIDc(int c)
+mnv_isIDc(int c)
 {
     return (c > 0 && c < 0x100 && (g_chartab[c] & CT_ID_CHAR));
 }
 
 /*
- * Like vim_isIDc() but not using the 'isident' option: letters, numbers and
+ * Like mnv_isIDc() but not using the 'isident' option: letters, numbers and
  * underscore.
  */
     int
-vim_isNormalIDc(int c)
+mnv_isNormalIDc(int c)
 {
     return ASCII_ISALNUM(c) || c == '_';
 }
@@ -956,13 +956,13 @@ vim_isNormalIDc(int c)
  * For multi-byte characters mb_get_class() is used (builtin rules).
  */
     int
-vim_iswordc(int c)
+mnv_iswordc(int c)
 {
-    return vim_iswordc_buf(c, curbuf);
+    return mnv_iswordc_buf(c, curbuf);
 }
 
     int
-vim_iswordc_buf(int c, buf_T *buf)
+mnv_iswordc_buf(int c, buf_T *buf)
 {
     if (c >= 0x100)
     {
@@ -976,22 +976,22 @@ vim_iswordc_buf(int c, buf_T *buf)
 }
 
 /*
- * Just like vim_iswordc() but uses a pointer to the (multi-byte) character.
+ * Just like mnv_iswordc() but uses a pointer to the (multi-byte) character.
  */
     int
-vim_iswordp(char_u *p)
+mnv_iswordp(char_u *p)
 {
-    return vim_iswordp_buf(p, curbuf);
+    return mnv_iswordp_buf(p, curbuf);
 }
 
     int
-vim_iswordp_buf(char_u *p, buf_T *buf)
+mnv_iswordp_buf(char_u *p, buf_T *buf)
 {
     int	c = *p;
 
     if (has_mbyte && MB_BYTE2LEN(c) > 1)
 	c = (*mb_ptr2char)(p);
-    return vim_iswordc_buf(c, buf);
+    return mnv_iswordc_buf(c, buf);
 }
 
 /*
@@ -1001,7 +1001,7 @@ vim_iswordp_buf(char_u *p, buf_T *buf)
  * To be used for commands like "gf".
  */
     int
-vim_isfilec(int c)
+mnv_isfilec(int c)
 {
     return (c >= 0x100 || (c > 0 && (g_chartab[c] & CT_FNAME_CHAR)));
 }
@@ -1012,9 +1012,9 @@ vim_isfilec(int c)
  * out of 'isfname' to make "gf" work, such as comma, space, '@', etc.
  */
     int
-vim_is_fname_char(int c)
+mnv_is_fname_char(int c)
 {
-    return vim_isfilec(c) || c == ',' || c == ' ' || c == '@';
+    return mnv_isfilec(c) || c == ',' || c == ' ' || c == '@';
 }
 #endif
 
@@ -1025,13 +1025,13 @@ vim_is_fname_char(int c)
  * returns false.
  */
     int
-vim_isfilec_or_wc(int c)
+mnv_isfilec_or_wc(int c)
 {
     char_u buf[2];
 
     buf[0] = (char_u)c;
     buf[1] = NUL;
-    return vim_isfilec(c) || c == ']' || mch_has_wildcard(buf);
+    return mnv_isfilec(c) || c == ']' || mch_has_wildcard(buf);
 }
 
 /*
@@ -1040,7 +1040,7 @@ vim_isfilec_or_wc(int c)
  * Unicode.
  */
     int
-vim_isprintc(int c)
+mnv_isprintc(int c)
 {
     if (enc_utf8 && c >= 0x100)
 	return utf_printable(c);
@@ -1048,11 +1048,11 @@ vim_isprintc(int c)
 }
 
 /*
- * Strict version of vim_isprintc(c), don't return TRUE if "c" is the head
+ * Strict version of mnv_isprintc(c), don't return TRUE if "c" is the head
  * byte of a double-byte character.
  */
     int
-vim_isprintc_strict(int c)
+mnv_isprintc_strict(int c)
 {
     if (enc_dbcs != 0 && c < 0x100 && MB_BYTE2LEN(c) > 1)
 	return FALSE;
@@ -1117,7 +1117,7 @@ init_chartabsize_arg(
 		if (!cts->cts_has_prop_with_text)
 		{
 		    // won't use the text properties, free them
-		    VIM_CLEAR(cts->cts_text_props);
+		    MNV_CLEAR(cts->cts_text_props);
 		    cts->cts_text_prop_count = 0;
 		}
 		else
@@ -1138,7 +1138,7 @@ init_chartabsize_arg(
 			for (i = 0; i < count; ++i)
 			    cts->cts_text_props[count - i - 1] =
 					cts->cts_text_props[text_prop_idxs[i]];
-			vim_free(text_prop_idxs);
+			mnv_free(text_prop_idxs);
 		    }
 		}
 	    }
@@ -1156,7 +1156,7 @@ clear_chartabsize_arg(chartabsize_T *cts UNUSED)
 #ifdef FEAT_PROP_POPUP
     if (cts->cts_text_prop_count > 0)
     {
-	VIM_CLEAR(cts->cts_text_props);
+	MNV_CLEAR(cts->cts_text_props);
 	cts->cts_text_prop_count = 0;
     }
 #endif
@@ -1334,7 +1334,7 @@ win_lbr_chartabsize(
 #  endif
 		    }
 		    else
-			cells = vim_strsize(p);
+			cells = mnv_strsize(p);
 		    cts->cts_cur_text_width += cells;
 		    if (tp->tp_flags & TP_FLAG_ALIGN_ABOVE)
 			cts->cts_first_char += cells;
@@ -1401,7 +1401,7 @@ win_lbr_chartabsize(
 	    if (wcol >= width2 && width2 > 0)
 		wcol %= width2;
 	    if (*sbr != NUL)
-		head_prev += vim_strsize(sbr);
+		head_prev += mnv_strsize(sbr);
 	    if (wp->w_p_bri)
 	    {
 		if (cts->cts_bri_size < 0)
@@ -1426,7 +1426,7 @@ win_lbr_chartabsize(
 	    // cells taken by 'showbreak'/'breakindent' halfway current char
 	    int	head_mid = 0;
 	    if (*sbr != NUL)
-		head_mid += vim_strsize(sbr);
+		head_mid += mnv_strsize(sbr);
 	    if (wp->w_p_bri)
 	    {
 		if (cts->cts_bri_size < 0)
@@ -1476,10 +1476,10 @@ win_lbr_chartabsize(
      * needs a break here.
      */
     if (wp->w_p_lbr && wp->w_p_wrap && wp->w_width != 0
-	    && VIM_ISBREAK((int)s[0]) && !VIM_ISBREAK((int)s[1]))
+	    && MNV_ISBREAK((int)s[0]) && !MNV_ISBREAK((int)s[1]))
     {
 	char_u	*t = cts->cts_line;
-	while (VIM_ISBREAK((int)t[0]))
+	while (MNV_ISBREAK((int)t[0]))
 	    t++;
 	// 'linebreak' is only needed when not in leading whitespace.
 	need_lbr = s >= t;
@@ -1508,9 +1508,9 @@ win_lbr_chartabsize(
 	    MB_PTR_ADV(s);
 	    int c = *s;
 	    if (!(c != NUL
-		    && (VIM_ISBREAK(c)
-			|| (!VIM_ISBREAK(c)
-			       && (vcol2 == vcol || !VIM_ISBREAK((int)*ps))))))
+		    && (MNV_ISBREAK(c)
+			|| (!MNV_ISBREAK(c)
+			       && (vcol2 == vcol || !MNV_ISBREAK((int)*ps))))))
 		break;
 
 	    vcol2 += win_chartabsize(wp, s, vcol2);
@@ -1811,7 +1811,7 @@ getvvcol(
 	{
 	    int c = (*mb_ptr2char)(ptr + pos->col);
 
-	    if (c != TAB && vim_isprintc(c))
+	    if (c != TAB && mnv_isprintc(c))
 	    {
 		endadd = (colnr_T)(char2cells(c) - 1);
 		if (coladd > endadd)	// past end of line
@@ -1879,7 +1879,7 @@ skipwhite(char_u *q)
 {
     char_u	*p = q;
 
-    while (VIM_ISWHITE(*p))
+    while (MNV_ISWHITE(*p))
 	++p;
     return p;
 }
@@ -1893,7 +1893,7 @@ skipwhite_and_nl(char_u *q)
 {
     char_u	*p = q;
 
-    while (VIM_ISWHITE(*p) || *p == NL)
+    while (MNV_ISWHITE(*p) || *p == NL)
 	++p;
     return p;
 }
@@ -1923,7 +1923,7 @@ skipdigits(char_u *q)
 {
     char_u	*p = q;
 
-    while (VIM_ISDIGIT(*p))	// skip to next non-digit
+    while (MNV_ISDIGIT(*p))	// skip to next non-digit
 	++p;
     return p;
 }
@@ -1937,7 +1937,7 @@ skipbin(char_u *q)
 {
     char_u	*p = q;
 
-    while (vim_isbdigit(*p))	// skip to next non-digit
+    while (mnv_isbdigit(*p))	// skip to next non-digit
 	++p;
     return p;
 }
@@ -1950,7 +1950,7 @@ skiphex(char_u *q)
 {
     char_u	*p = q;
 
-    while (vim_isxdigit(*p))	// skip to next non-digit
+    while (mnv_isxdigit(*p))	// skip to next non-digit
 	++p;
     return p;
 }
@@ -1964,7 +1964,7 @@ skiptobin(char_u *q)
 {
     char_u	*p = q;
 
-    while (*p != NUL && !vim_isbdigit(*p))	// skip to next digit
+    while (*p != NUL && !mnv_isbdigit(*p))	// skip to next digit
 	++p;
     return p;
 }
@@ -1977,7 +1977,7 @@ skiptodigit(char_u *q)
 {
     char_u	*p = q;
 
-    while (*p != NUL && !VIM_ISDIGIT(*p))	// skip to next digit
+    while (*p != NUL && !MNV_ISDIGIT(*p))	// skip to next digit
 	++p;
     return p;
 }
@@ -1990,7 +1990,7 @@ skiptohex(char_u *q)
 {
     char_u	*p = q;
 
-    while (*p != NUL && !vim_isxdigit(*p))	// skip to next digit
+    while (*p != NUL && !mnv_isxdigit(*p))	// skip to next digit
 	++p;
     return p;
 }
@@ -1999,10 +1999,10 @@ skiptohex(char_u *q)
  * Variant of isdigit() that can handle characters > 0x100.
  * We don't use isdigit() here, because on some systems it also considers
  * superscript 1 to be a digit.
- * Use the VIM_ISDIGIT() macro for simple arguments.
+ * Use the MNV_ISDIGIT() macro for simple arguments.
  */
     int
-vim_isdigit(int c)
+mnv_isdigit(int c)
 {
     return (c >= '0' && c <= '9');
 }
@@ -2013,7 +2013,7 @@ vim_isdigit(int c)
  * superscript 1 to be a digit.
  */
     int
-vim_isxdigit(int c)
+mnv_isxdigit(int c)
 {
     return (c >= '0' && c <= '9')
 	|| (c >= 'a' && c <= 'f')
@@ -2021,23 +2021,23 @@ vim_isxdigit(int c)
 }
 
 /*
- * Corollary of vim_isdigit and vim_isxdigit() that can handle
+ * Corollary of mnv_isdigit and mnv_isxdigit() that can handle
  * characters > 0x100.
  */
     int
-vim_isbdigit(int c)
+mnv_isbdigit(int c)
 {
     return (c == '0' || c == '1');
 }
 
     static int
-vim_isodigit(int c)
+mnv_isodigit(int c)
 {
     return (c >= '0' && c <= '7');
 }
 
 /*
- * Vim's own character class functions.  These exist because many library
+ * MNV's own character class functions.  These exist because many library
  * islower()/toupper() etc. do not work properly: they crash when used with
  * invalid values or can't handle latin1 when the locale is C.
  * Speed is most important here.
@@ -2050,7 +2050,7 @@ static char_u latin1upper[257] = "                                 !\"#$%&'()*+,
 static char_u latin1lower[257] = "                                 !\"#$%&'()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\x7f\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f\xa0\xa1\xa2\xa3\xa4\xa5\xa6\xa7\xa8\xa9\xaa\xab\xac\xad\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba\xbb\xbc\xbd\xbe\xbf\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xd7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xdf\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff";
 
     int
-vim_islower(int c)
+mnv_islower(int c)
 {
     if (c <= '@')
 	return FALSE;
@@ -2074,7 +2074,7 @@ vim_islower(int c)
 }
 
     int
-vim_isupper(int c)
+mnv_isupper(int c)
 {
     if (c <= '@')
 	return FALSE;
@@ -2098,13 +2098,13 @@ vim_isupper(int c)
 }
 
     int
-vim_isalpha(int c)
+mnv_isalpha(int c)
 {
-    return vim_islower(c) || vim_isupper(c);
+    return mnv_islower(c) || mnv_isupper(c);
 }
 
     int
-vim_toupper(int c)
+mnv_toupper(int c)
 {
     if (c <= '@')
 	return c;
@@ -2130,7 +2130,7 @@ vim_toupper(int c)
 }
 
     int
-vim_tolower(int c)
+mnv_tolower(int c)
 {
     if (c <= '@')
 	return c;
@@ -2211,14 +2211,14 @@ getdigits_quoted(char_u **pp)
 
     if (*p == '-')
 	++p;
-    while (VIM_ISDIGIT(*p))
+    while (MNV_ISDIGIT(*p))
     {
 	if (retval >= LONG_MAX / 10 - 10)
 	    retval = LONG_MAX;
 	else
 	    retval = retval * 10 - '0' + *p;
 	++p;
-	if (in_vim9script() && *p == '\'' && VIM_ISDIGIT(p[1]))
+	if (in_mnv9script() && *p == '\'' && MNV_ISDIGIT(p[1]))
 	    ++p;
     }
     if (**pp == '-')
@@ -2236,7 +2236,7 @@ getdigits_quoted(char_u **pp)
  * Return TRUE if "lbuf" is empty or only contains blanks.
  */
     int
-vim_isblankline(char_u *lbuf)
+mnv_isblankline(char_u *lbuf)
 {
     char_u	*p;
 
@@ -2268,7 +2268,7 @@ vim_isblankline(char_u *lbuf)
  * If strict is TRUE, check the number strictly. return *len = 0 if fail.
  */
     void
-vim_str2nr(
+mnv_str2nr(
     char_u		*start,
     int			*prep,	    // return: type of number 0 = decimal, 'x'
 				    // or 'X' is hex, '0', 'o' or 'O' is octal,
@@ -2302,17 +2302,17 @@ vim_str2nr(
     {
 	pre = ptr[1];
 	if ((what & STR2NR_HEX)
-		&& (pre == 'X' || pre == 'x') && vim_isxdigit(ptr[2])
+		&& (pre == 'X' || pre == 'x') && mnv_isxdigit(ptr[2])
 		&& (maxlen == 0 || maxlen > 2))
 	    // hexadecimal
 	    ptr += 2;
 	else if ((what & STR2NR_BIN)
-		&& (pre == 'B' || pre == 'b') && vim_isbdigit(ptr[2])
+		&& (pre == 'B' || pre == 'b') && mnv_isbdigit(ptr[2])
 		&& (maxlen == 0 || maxlen > 2))
 	    // binary
 	    ptr += 2;
 	else if ((what & STR2NR_OOCT)
-		&& (pre == 'O' || pre == 'o') && vim_isodigit(ptr[2])
+		&& (pre == 'O' || pre == 'o') && mnv_isodigit(ptr[2])
 		&& (maxlen == 0 || maxlen > 2))
 	    // octal with prefix "0o"
 	    ptr += 2;
@@ -2323,7 +2323,7 @@ vim_str2nr(
 	    if (what & STR2NR_OCT)
 	    {
 		// Don't interpret "0", "08" or "0129" as octal.
-		for (n = 1; n != maxlen && VIM_ISDIGIT(ptr[n]); ++n)
+		for (n = 1; n != maxlen && MNV_ISDIGIT(ptr[n]); ++n)
 		{
 		    if (ptr[n] > '7')
 		    {
@@ -2401,7 +2401,7 @@ vim_str2nr(
 	// hex
 	if (pre != 0)
 	    n += 2;	    // skip over "0x"
-	while (vim_isxdigit(*ptr))
+	while (mnv_isxdigit(*ptr))
 	{
 	    // avoid ubsan error for overflow
 	    if (un <= UVARNUM_MAX / 16)
@@ -2415,7 +2415,7 @@ vim_str2nr(
 	    ++ptr;
 	    if (n++ == maxlen)
 		break;
-	    if ((what & STR2NR_QUOTE) && *ptr == '\'' && vim_isxdigit(ptr[1]))
+	    if ((what & STR2NR_QUOTE) && *ptr == '\'' && mnv_isxdigit(ptr[1]))
 	    {
 		++ptr;
 		if (n++ == maxlen)
@@ -2426,7 +2426,7 @@ vim_str2nr(
     else
     {
 	// decimal
-	while (VIM_ISDIGIT(*ptr))
+	while (MNV_ISDIGIT(*ptr))
 	{
 	    uvarnumber_T    digit = (uvarnumber_T)(*ptr - '0');
 
@@ -2443,7 +2443,7 @@ vim_str2nr(
 	    ++ptr;
 	    if (n++ == maxlen)
 		break;
-	    if ((what & STR2NR_QUOTE) && *ptr == '\'' && VIM_ISDIGIT(ptr[1]))
+	    if ((what & STR2NR_QUOTE) && *ptr == '\'' && MNV_ISDIGIT(ptr[1]))
 	    {
 		++ptr;
 		if (n++ == maxlen)
@@ -2512,7 +2512,7 @@ hex2nr(int c)
     int
 hexhex2nr(char_u *p)
 {
-    if (!vim_isxdigit(p[0]) || !vim_isxdigit(p[1]))
+    if (!mnv_isxdigit(p[0]) || !mnv_isxdigit(p[1]))
 	return -1;
     return (hex2nr(p[0]) << 4) + hex2nr(p[1]);
 }
@@ -2523,7 +2523,7 @@ hexhex2nr(char_u *p)
  * backslash is not a normal file name character.
  * '$' is a valid file name character, we don't remove the backslash before
  * it.  This means it is not possible to use an environment variable after a
- * backslash.  "C:\$VIM\doc" is taken literally, only "$VIM\doc" works.
+ * backslash.  "C:\$MNV\doc" is taken literally, only "$MNV\doc" works.
  * Although "\ name" is valid, the backslash in "Program\ files" must be
  * removed.  Assume a file name doesn't start with a space.
  * For multi-byte names, never remove a backslash before a non-ascii
@@ -2540,7 +2540,7 @@ rem_backslash(char_u *str)
 		|| (str[1] != NUL
 		    && str[1] != '*'
 		    && str[1] != '?'
-		    && !vim_isfilec(str[1]))));
+		    && !mnv_isfilec(str[1]))));
 #else
     return (str[0] == '\\' && str[1] != NUL);
 #endif
@@ -2568,7 +2568,7 @@ backslash_halve_save(char_u *p)
 {
     char_u	*res;
 
-    res = vim_strsave(p);
+    res = mnv_strsave(p);
     if (res == NULL)
 	return p;
     backslash_halve(res);

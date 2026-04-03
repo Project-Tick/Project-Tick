@@ -1,7 +1,7 @@
-*print.txt*	For Vim version 9.2.  Last change: 2026 Feb 14
+*print.txt*	For MNV version 9.2.  Last change: 2026 Feb 14
 
 
-		  VIM REFERENCE MANUAL	  by Bram Moolenaar
+		  MNV REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Printing						*printing*
@@ -20,7 +20,7 @@ Printing						*printing*
 ==============================================================================
 1. Introduction						*print-intro*
 
-On MS-Windows Vim can print your text on any installed printer.  On other
+On MS-Windows MNV can print your text on any installed printer.  On other
 systems a PostScript file is produced.  This can be directly sent to a
 PostScript printer.  For other printers a program like ghostscript needs to be
 used.
@@ -89,7 +89,7 @@ This defines the name of the printer to be used when the |:hardcopy| command
 is issued with a bang (!) to skip the printer selection dialog.  On Win32, it
 should be the printer name exactly as it appears in the standard printer
 dialog.
-If the option is empty, then vim will use the system default printer for
+If the option is empty, then mnv will use the system default printer for
 ":hardcopy!"
 
 							*penc-option* *E620*
@@ -100,24 +100,24 @@ If the option is empty, then vim will use the system default printer for
 					HPUX: hp-roman8,
 					EBCDIC: ebcdic-uk)
 			global
-Sets the character encoding used when printing.  This option tells Vim which
+Sets the character encoding used when printing.  This option tells MNV which
 print character encoding file from the "print" directory in 'runtimepath' to
 use.
 
 This option will accept any value from |encoding-names|.  Any recognized names
-are converted to Vim standard names - see 'encoding' for more details.  Names
-not recognized by Vim will just be converted to lower case and underscores
+are converted to MNV standard names - see 'encoding' for more details.  Names
+not recognized by MNV will just be converted to lower case and underscores
 replaced with '-' signs.
 
-If 'printencoding' is empty or Vim cannot find the file then it will use
+If 'printencoding' is empty or MNV cannot find the file then it will use
 'encoding' (if it is set an 8-bit encoding) to find the print character
-encoding file.  If Vim is unable to find a character encoding file then it
+encoding file.  If MNV is unable to find a character encoding file then it
 will use the "latin1" print character encoding file.
 
-When 'encoding' is set to a multibyte encoding, Vim will try to convert
+When 'encoding' is set to a multibyte encoding, MNV will try to convert
 characters to the printing encoding for printing (if 'printencoding' is empty
 then the conversion will be to latin1).  Conversion to a printing encoding
-other than latin1 will require Vim to be compiled with the |+iconv| feature.
+other than latin1 will require MNV to be compiled with the |+iconv| feature.
 If no conversion is possible then printing will fail.  Any characters that
 cannot be converted will be replaced with upside down question marks.
 
@@ -173,7 +173,7 @@ file.  If you delete the file too soon it will not be printed.  These programs
 usually offer an option to have them remove the file when printing is done.
 							*E365*
 If evaluating the expression fails or it results in a non-zero number, you get
-an error message.  In that case Vim will delete the file.  In the default
+an error message.  In that case MNV will delete the file.  In the default
 value for non-MS-Windows a trick is used: Adding "v:shell_error" will result
 in a non-zero number when the system() call fails.
 
@@ -204,7 +204,7 @@ the font.  When omitted, the point size is 10.
 'printheader' 'pheader'  string  (default "%<%f%h%m%=Page %N")
 			 global
 This defines the format of the header produced in |:hardcopy| output.  The
-option is defined in the same way as the 'statusline' option.  If Vim has not
+option is defined in the same way as the 'statusline' option.  If MNV has not
 been compiled with the |+statusline| feature, this option has no effect and a
 simple default header is used, which shows the page number.  The same simple
 header is used when this option is empty.
@@ -213,7 +213,7 @@ header is used when this option is empty.
 'printmbcharset' 'pmbcs'  string (default "")
 			  global
 Sets the CJK character set to be used when generating CJK output from
-|:hardcopy|.  The following predefined values are currently recognised by Vim:
+|:hardcopy|.  The following predefined values are currently recognised by MNV:
 
 		Value		Description ~
   Chinese	GB_2312-80
@@ -280,7 +280,7 @@ Japanese text you would do the following; >
 
 If 'printmbcharset' is not one of the above values then it is assumed to
 specify a custom multibyte character set and no check will be made that it is
-compatible with the value for 'printencoding'.  Vim will look for a file
+compatible with the value for 'printencoding'.  MNV will look for a file
 defining the character set in the "print" directory in 'runtimepath'.
 
 							*pmbfn-option*
@@ -430,10 +430,10 @@ There are currently a number of limitations with PostScript printing:
   possible to get all the characters in an encoding to print by installing a
   new version of the Courier font family.
 
-- Multi-byte support - Currently Vim will try to convert multibyte characters
+- Multi-byte support - Currently MNV will try to convert multibyte characters
   to the 8-bit encoding specified by 'printencoding' (or latin1 if it is
   empty).  Any characters that are not successfully converted are shown as
-  unknown characters.  Printing will fail if Vim cannot convert the multibyte
+  unknown characters.  Printing will fail if MNV cannot convert the multibyte
   to the 8-bit encoding.
 
 ==============================================================================
@@ -444,35 +444,35 @@ you need to define your own PostScript font encoding vector.  Details on how
 to define a font encoding vector is beyond the scope of this help file, but
 you can find details in the PostScript Language Reference Manual, 3rd Edition,
 published by Addison-Wesley and available in PDF form at
-https://www.adobe.com/.  The following describes what you need to do for Vim
+https://www.adobe.com/.  The following describes what you need to do for MNV
 to locate and use your print character encoding.
 
 i.   Decide on a unique name for your encoding vector, one that does not clash
-     with any of the recognized or standard encoding names that Vim uses (see
+     with any of the recognized or standard encoding names that MNV uses (see
      |encoding-names| for a list), and that no one else is likely to use.
-ii.  Copy $VIMRUNTIME/print/latin1.ps to the print subdirectory in your
+ii.  Copy $MNVRUNTIME/print/latin1.ps to the print subdirectory in your
      'runtimepath' and rename it with your unique name.
 iii. Edit your renamed copy of latin1.ps, replacing all occurrences of latin1
      with your unique name (don't forget the line starting %%Title:), and
      modify the array of glyph names to define your new encoding vector.  The
      array must have exactly 256 entries or you will not be able to print!
-iv.  Within Vim, set 'printencoding' to your unique encoding name and then
-     print your file.  Vim will now use your custom print character encoding.
+iv.  Within MNV, set 'printencoding' to your unique encoding name and then
+     print your file.  MNV will now use your custom print character encoding.
 
-Vim will report an error with the resource file if you change the order or
+MNV will report an error with the resource file if you change the order or
 content of the first 3 lines, other than the name of the encoding on the line
 starting %%Title: or the version number on the line starting %%Version:.
 
-[Technical explanation for those that know PostScript - Vim looks for a file
+[Technical explanation for those that know PostScript - MNV looks for a file
 with the same name as the encoding it will use when printing.  The file
-defines a new PostScript Encoding resource called /VIM-name, where name is the
-print character encoding Vim will use.]
+defines a new PostScript Encoding resource called /MNV-name, where name is the
+print character encoding MNV will use.]
 
 ==============================================================================
 5. PostScript CJK Printing			*postscript-cjk-printing*
 							*E673* *E674* *E675*
 
-Vim supports printing of Chinese, Japanese, and Korean files.  Setting up Vim
+MNV supports printing of Chinese, Japanese, and Korean files.  Setting up MNV
 to correctly print CJK files requires setting up a few more options.
 
 Each of these countries has many standard character sets and encodings which
@@ -493,7 +493,7 @@ option allows you to specify different fonts to use when printing characters
 which are syntax highlighted with the font styles normal, italic, bold and
 bold-italic.
 
-No CJK fonts are supplied with Vim.  There are some free Korean, Japanese, and
+No CJK fonts are supplied with MNV.  There are some free Korean, Japanese, and
 Traditional Chinese fonts available at:
 
   http://examples.oreilly.com/cjkvinfo/adobe/samples/
@@ -509,7 +509,7 @@ CJK fonts can be large containing several thousand glyphs, and it is not
 uncommon to find that they only contain a subset of a national standard.  It
 is not unusual to find the fonts to not include characters for codes in the
 ASCII code range.  If you find half-width Roman characters are not appearing
-in your printout then you should configure Vim to use the Courier font the
+in your printout then you should configure MNV to use the Courier font the
 half-width ASCII characters with 'printmbfont'.  If your font does not include
 other characters then you will need to find another font that does.
 
@@ -517,7 +517,7 @@ Another issue with ASCII characters, is that the various national character
 sets specify a couple of different glyphs in the ASCII code range.  If you
 print ASCII text using the national character set you may see some unexpected
 characters.  If you want true ASCII code printing then you need to configure
-Vim to output ASCII characters for the ASCII code range with 'printmbfont'.
+MNV to output ASCII characters for the ASCII code range with 'printmbfont'.
 
 It is possible to define your own multibyte character set although this
 should not be attempted lightly.  A discussion on the process if beyond the
@@ -536,13 +536,13 @@ print job completing.
 There are a number of possible causes as to why the printing may have failed:
 
 - Wrong version of the prolog resource file.  The prolog resource file
-  contains some PostScript that Vim needs to be able to print.  Each version
-  of Vim needs one particular version.  Make sure you have correctly installed
+  contains some PostScript that MNV needs to be able to print.  Each version
+  of MNV needs one particular version.  Make sure you have correctly installed
   the runtime files, and don't have any old versions of a file called prolog
   in the print directory in your 'runtimepath' directory.
 
 - Paper size.  Some PostScript printers will abort printing a file if they do
-  not support the requested paper size.  By default Vim uses A4 paper.  Find
+  not support the requested paper size.  By default MNV uses A4 paper.  Find
   out what size paper your printer normally uses and set the appropriate paper
   size with 'printoptions'.  If you cannot find the name of the paper used,
   measure a sheet and compare it with the table of supported paper sizes
@@ -665,7 +665,7 @@ complex print document creation.
 
 N-UP PRINTING
 
-The psnup utility takes an existing PostScript file generated from Vim and
+The psnup utility takes an existing PostScript file generated from MNV and
 convert it to an n-up version.  The simplest way to create a 2-up printout is
 to first create a PostScript file with: >
 
@@ -721,16 +721,16 @@ There are a couple of points to bear in mind:
 ==============================================================================
 8. Formfeed Characters					*printing-formfeed*
 
-By default Vim does not do any special processing of formfeed control
-characters.  Setting the 'printoptions' formfeed item will make Vim recognize
+By default MNV does not do any special processing of formfeed control
+characters.  Setting the 'printoptions' formfeed item will make MNV recognize
 formfeed characters and continue printing the current line at the beginning
 of the first line on a new page.  The use of formfeed characters provides
 rudimentary print control but there are certain things to be aware of.
 
-Vim will always start printing a line (including a line number if enabled)
+MNV will always start printing a line (including a line number if enabled)
 containing a formfeed character, even if it is the first character on the
 line.  This means if a line starting with a formfeed character is the first
-line of a page then Vim will print a blank page.
+line of a page then MNV will print a blank page.
 
 Since the line number is printed at the start of printing the line containing
 the formfeed character, the remainder of the line printed on the new page
@@ -739,7 +739,7 @@ lines of a long line when wrap in 'printoptions' is enabled).
 
 If the formfeed character is the last character on a line, then printing will
 continue on the second line of the new page, not the first.  This is due to
-Vim processing the end of the line after the formfeed character and moving
+MNV processing the end of the line after the formfeed character and moving
 down a line to continue printing.
 
 Due to the points made above it is recommended that when formfeed character
@@ -749,4 +749,4 @@ to adjust the number of lines before a formfeed character to prevent
 accidental blank pages.
 
 ==============================================================================
- vim:tw=78:ts=8:noet:ft=help:norl:
+ mnv:tw=78:ts=8:noet:ft=help:norl:

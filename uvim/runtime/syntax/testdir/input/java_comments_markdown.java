@@ -1,18 +1,18 @@
-// VIM_TEST_SETUP unlet! g:java_no_tab_space_error g:java_ignore_javadoc
-// VIM_TEST_SETUP unlet! g:java_no_trail_space_error
-// VIM_TEST_SETUP let[g:java_space_errors,g:java_comment_strings]=[1,1]
-// VIM_TEST_SETUP let[g:java_ignore_html,g:markdown_syntax_conceal]=[1,1]
-// VIM_TEST_SETUP let g:html_syntax_folding = 1
-// VIM_TEST_SETUP let g:java_consent_to_html_syntax_folding = 1
-// VIM_TEST_SETUP let g:markdown_fenced_languages = ["java"]
+// MNV_TEST_SETUP unlet! g:java_no_tab_space_error g:java_ignore_javadoc
+// MNV_TEST_SETUP unlet! g:java_no_trail_space_error
+// MNV_TEST_SETUP let[g:java_space_errors,g:java_comment_strings]=[1,1]
+// MNV_TEST_SETUP let[g:java_ignore_html,g:markdown_syntax_conceal]=[1,1]
+// MNV_TEST_SETUP let g:html_syntax_folding = 1
+// MNV_TEST_SETUP let g:java_consent_to_html_syntax_folding = 1
+// MNV_TEST_SETUP let g:markdown_fenced_languages = ["java"]
 
 
-// VIM_TEST_SETUP defer execute('match Visual /\%>21l\s\+$/')
-// VIM_TEST_SETUP setl spell fdc=2 fdl=64 fdm=syntax fen cole=3 cocu=n
-// VIM_TEST_SETUP highlight link javaCommentStart Todo
-// VIM_TEST_SETUP highlight link javaMarkdownCommentTitle Underlined
-// VIM_TEST_SETUP highlight link markdownH2 NonText
-// VIM_TEST_SETUP highlight link markdownHeadingRule NonText
+// MNV_TEST_SETUP defer execute('match Visual /\%>21l\s\+$/')
+// MNV_TEST_SETUP setl spell fdc=2 fdl=64 fdm=syntax fen cole=3 cocu=n
+// MNV_TEST_SETUP highlight link javaCommentStart Todo
+// MNV_TEST_SETUP highlight link javaMarkdownCommentTitle Underlined
+// MNV_TEST_SETUP highlight link markdownH2 NonText
+// MNV_TEST_SETUP highlight link markdownHeadingRule NonText
 
 
 

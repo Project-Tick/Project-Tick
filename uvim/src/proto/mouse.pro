@@ -23,4 +23,4 @@ int mouse_comp_pos(win_T *win, int *rowp, int *colp, linenr_T *lnump, int *pline
 win_T *mouse_find_win(int *rowp, int *colp, mouse_find_T popup);
 int vcol2col(win_T *wp, linenr_T lnum, int vcol, colnr_T *coladdp);
 void f_getmousepos(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

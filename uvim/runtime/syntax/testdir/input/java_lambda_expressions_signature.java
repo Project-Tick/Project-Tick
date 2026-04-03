@@ -1,5 +1,5 @@
-// VIM_TEST_SETUP let g:java_highlight_functions = 'style'
-// VIM_TEST_SETUP let g:java_highlight_signature = 1
+// MNV_TEST_SETUP let g:java_highlight_functions = 'style'
+// MNV_TEST_SETUP let g:java_highlight_signature = 1
 
 import java.lang.annotation.ElementType;
 import java.util.function.BinaryOperator;

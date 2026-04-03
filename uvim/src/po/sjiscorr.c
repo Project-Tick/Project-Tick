@@ -57,4 +57,4 @@ main(int argc, char **argv)
 	}
 }
 
-// vim:set ts=4 sts=4 sw=4 noet:
+// mnv:set ts=4 sts=4 sw=4 noet:

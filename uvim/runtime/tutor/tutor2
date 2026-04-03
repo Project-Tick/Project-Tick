@@ -1,12 +1,12 @@
 ===============================================================================
-=    W e l c o m e   t o   t h e   V I M   T u t o r    -    Version 1.7      =
+=    W e l c o m e   t o   t h e   M N V   T u t o r    -    Version 1.7      =
 ===============================================================================
 =			    C H A P T E R   TWO				      =
 ===============================================================================
 
-     Hic Sunt Dracones: if this is your first exposure to vim and you
+     Hic Sunt Dracones: if this is your first exposure to mnv and you
      intended to avail yourself of the introductory chapter, kindly type
-     :q!<ENTER> and run vimtutor for Chapter 1 instead.
+     :q!<ENTER> and run mnvtutor for Chapter 1 instead.
 
      The approximate time required to complete this chapter is 8-10 minutes,
      depending upon how much time is spent with experimentation.
@@ -23,7 +23,7 @@
      - Type  daw  to delete A WORD (including trailing whitespace)
      - Try with other operators:  ciw  (change),  yiw  (yank),  gqiw  (format)
 
----> Practice on: "Vim's", (text_object), and 'powerful' words here.
+---> Practice on: "MNV's", (text_object), and 'powerful' words here.
 
   2. Work with bracketed content:
      - Put cursor inside any () {} [] <> pair below
@@ -150,7 +150,7 @@ REFERENCE: 	Numbered Registers 	:h quote0
  ** Use system clipboard and blackhole registers for advanced editing **
 
  Note: Clipboard use requires X11/Wayland libraries on Linux systems AND
-       a Vim built with "+clipboard" (usually a Huge build). Check with
+       a MNV built with "+clipboard" (usually a Huge build). Check with
        ":version"  and ":echo has('clipboard_working')"
 
   1. Clipboard registers  +  and  *  :
@@ -177,16 +177,16 @@ REFERENCE: 	Numbered Registers 	:h quote0
      - Try opening another application and paste from clipboard
 
   4. Remember:
-     - Clipboard registers work across different Vim instances
+     - Clipboard registers work across different MNV instances
      - Clipboard register is not always working
      - Blackhole prevents accidental register overwrites
      - Default " register is still available for normal yank/paste
-     - Named registers (a-z) remain private to each Vim session
+     - Named registers (a-z) remain private to each MNV session
 
   5. Clipboard troubleshooting:
      - Check support with :echo has('clipboard_working')
      - 1 means available, 0 means not compiled in
-     - On Linux, may need vim-gtk or vim-x11 package
+     - On Linux, may need mnv-gtk or mnv-x11 package
        (check :version output)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -285,7 +285,7 @@ REFERENCE: 	Marks 		:h marks
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  This concludes chapter two of the Vim Tutor. It is a work in progress.
+  This concludes chapter two of the MNV Tutor. It is a work in progress.
 
   This chapter was written by Paul D. Parker and Christian Brabandt.
 

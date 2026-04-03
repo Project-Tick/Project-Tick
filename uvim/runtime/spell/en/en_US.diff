@@ -167,7 +167,7 @@
 ! 
   NOSUGGEST !
   
-! # This is disabled, because if Vim does not support NOCOMPOUNDSUGS giving
+! # This is disabled, because if MNV does not support NOCOMPOUNDSUGS giving
 ! # suggestions is extremely slow.
 ! # This is disabled, because without NOCOMPOUNDSUGS support giving suggestions
 ! # is extremely slow.

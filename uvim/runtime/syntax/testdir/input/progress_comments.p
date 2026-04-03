@@ -1,5 +1,5 @@
 /*
- * VIM_TEST_SETUP set filetype=progress
+ * MNV_TEST_SETUP set filetype=progress
  */
 
 define variable customer_name as character no-undo.

@@ -1,15 +1,15 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  * VMS port			by Henk Elbers
  * VMS deport			by Zoltan Arpadffy
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 // define _generic_64 for use in time functions
 #if !defined(VAX)
@@ -414,16 +414,16 @@ vms_wproc(char *name, int val)
 
 	// add more space to store matches
 	vms_match_alloced += EXPL_ALLOC_INC;
-	vms_fmatch = vim_realloc(old_vms_fmatch,
+	vms_fmatch = mnv_realloc(old_vms_fmatch,
 		sizeof(char **) * vms_match_alloced);
 	if (!vms_fmatch)
 	{
-	    vim_free(old_vms_fmatch);
+	    mnv_free(old_vms_fmatch);
 	    return 0;
 	}
 	vms_match_free = EXPL_ALLOC_INC;
     }
-    vms_fmatch[vms_match_num] = vim_strsave((char_u *)name);
+    vms_fmatch[vms_match_num] = mnv_strsave((char_u *)name);
 
     ++vms_match_num;
     return 1;
@@ -468,7 +468,7 @@ mch_expand_wildcards(
     for (i = 0; i < num_pat; i++)
     {
 	// expand environment var or home dir
-	if (vim_strchr(pat[i],'$') || vim_strchr(pat[i],'~'))
+	if (mnv_strchr(pat[i],'$') || mnv_strchr(pat[i],'~'))
 	    expand_env(pat[i],buf,MAXPATHL);
 	else
 	    STRCPY(buf,pat[i]);
@@ -511,10 +511,10 @@ mch_expand_wildcards(
 		char_u **old_file = *file;
 
 		files_alloced += EXPL_ALLOC_INC;
-		*file = vim_realloc(old_file, sizeof(char_u **) * files_alloced);
+		*file = mnv_realloc(old_file, sizeof(char_u **) * files_alloced);
 		if (*file == NULL)
 		{
-		    vim_free(old_file);
+		    mnv_free(old_file);
 		    *file = (char_u **)"";
 		    *num_file = 0;
 		    return(FAIL);
@@ -687,7 +687,7 @@ vms_fixfilename(void *instring)
     if (len > buflen)
     {
 	buflen = len + 128;
-	buf = vim_realloc(buf, buflen * sizeof(char));
+	buf = mnv_realloc(buf, buflen * sizeof(char));
     }
 
 #ifdef DEBUG

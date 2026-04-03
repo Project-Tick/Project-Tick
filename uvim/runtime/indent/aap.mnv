@@ -1,0 +1,13 @@
+" MNV indent file
+" Language:	Aap recipe
+" Maintainer:	The MNV Project <https://github.com/Project-Tick/Project-Tick>
+" Last Change:	2023 Aug 10
+" Former Maintainer:	Bram Moolenaar <Bram@mnv.org>
+
+" Only load this indent file when no other was loaded.
+if exists("b:did_indent")
+  finish
+endif
+
+" Works mostly like Python.
+runtime! indent/python.mnv

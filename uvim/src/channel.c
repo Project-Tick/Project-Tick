@@ -1,16 +1,16 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
  */
 
 /*
  * Implements communication through a socket or any file handle.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_JOB_CHANNEL)
 
@@ -308,7 +308,7 @@ channel_free_channel(channel_T *channel)
 	first_channel = channel->ch_next;
     else
 	channel->ch_prev->ch_next = channel->ch_next;
-    vim_free(channel);
+    mnv_free(channel);
 }
 
     static void
@@ -865,7 +865,7 @@ channel_open_unix(
 
     channel->CH_SOCK_FD = (sock_T)sd;
     channel->ch_nb_close_cb = nb_close_cb;
-    channel->ch_hostname = (char *)vim_strsave((char_u *)path);
+    channel->ch_hostname = (char *)mnv_strsave((char_u *)path);
     channel->ch_port = 0;
     channel->ch_to_be_closed |= (1U << PART_SOCK);
 
@@ -1075,7 +1075,7 @@ channel_open(
 
     channel->CH_SOCK_FD = (sock_T)sd;
     channel->ch_nb_close_cb = nb_close_cb;
-    channel->ch_hostname = (char *)vim_strsave((char_u *)hostname);
+    channel->ch_hostname = (char *)mnv_strsave((char_u *)hostname);
     channel->ch_port = port;
     channel->ch_to_be_closed |= (1U << PART_SOCK);
 
@@ -1305,7 +1305,7 @@ channel_open_func(typval_T *argvars)
     jobopt_T    opt;
     channel_T	*channel = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return NULL;
@@ -1330,7 +1330,7 @@ channel_open_func(typval_T *argvars)
     {
 	// ipv6 address
 	is_ipv6 = TRUE;
-	p = vim_strchr(address + 1, ']');
+	p = mnv_strchr(address + 1, ']');
 	if (p == NULL || *++p != ':')
 	{
 	    semsg(_(e_invalid_argument_str), address);
@@ -1340,7 +1340,7 @@ channel_open_func(typval_T *argvars)
     else
     {
 	// ipv4 address
-	p = vim_strchr(address, ':');
+	p = mnv_strchr(address, ':');
 	if (p == NULL)
 	{
 	    semsg(_(e_invalid_argument_str), address);
@@ -1408,7 +1408,7 @@ channel_listen_func(typval_T *argvars)
     jobopt_T    opt;
     channel_T	*channel = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_string_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return NULL;
@@ -1433,7 +1433,7 @@ channel_listen_func(typval_T *argvars)
     else if (*address == '[')
     {
 	// ipv6 address
-	p = vim_strchr(address + 1, ']');
+	p = mnv_strchr(address + 1, ']');
 	if (p == NULL || *++p != ':')
 	{
 	    semsg(_(e_invalid_argument_str), address);
@@ -1452,7 +1452,7 @@ channel_listen_func(typval_T *argvars)
     else
     {
 	// ipv4 address
-	p = vim_strchr(address, ':');
+	p = mnv_strchr(address, ':');
 	if (p == NULL)
 	{
 	    semsg(_(e_invalid_argument_str), address);
@@ -1526,7 +1526,7 @@ channel_listen(
 
     // Get the server internet address and put into addr structure
     // fill in the socket address structure and bind to port
-    vim_memset((char *)&server, 0, sizeof(server));
+    mnv_memset((char *)&server, 0, sizeof(server));
     server.sin_family = AF_INET;
     server.sin_port = htons(port_in);
     if (hostname != NULL && *hostname != NUL)
@@ -1631,7 +1631,7 @@ channel_listen(
     channel->ch_listen = TRUE;
     channel->CH_SOCK_FD = (sock_T)sd;
     channel->ch_nb_close_cb = nb_close_cb;
-    channel->ch_hostname = (char *)vim_strsave((char_u *)(hostname != NULL ? hostname : ""));
+    channel->ch_hostname = (char *)mnv_strsave((char_u *)(hostname != NULL ? hostname : ""));
     channel->ch_port = port_in;
     channel->ch_to_be_closed |= (1U << PART_SOCK);
 
@@ -1720,7 +1720,7 @@ channel_listen_unix(
     channel->ch_listen = TRUE;
     channel->CH_SOCK_FD = (sock_T)sd;
     channel->ch_nb_close_cb = nb_close_cb;
-    channel->ch_hostname = (char *)vim_strsave((char_u *)path);
+    channel->ch_hostname = (char *)mnv_strsave((char_u *)path);
     channel->ch_port = 0;
     channel->ch_to_be_closed |= (1U << PART_SOCK);
 
@@ -1895,7 +1895,7 @@ write_buf_line(buf_T *buf, linenr_T lnum, channel_T *channel)
     }
     p[len + 1] = NUL;
     channel_send(channel, PART_IN, p, len + 1, "write_buf_line");
-    vim_free(p);
+    mnv_free(p);
 }
 
 /*
@@ -2202,7 +2202,7 @@ channel_get(channel_T *channel, ch_part_T part, int *outlen)
 	head->rq_prev = NULL;
     else
 	node->rq_next->rq_prev = NULL;
-    vim_free(node);
+    mnv_free(node);
     return p;
 }
 
@@ -2237,7 +2237,7 @@ channel_get_all(channel_T *channel, ch_part_T part, int *outlen)
     do
     {
 	p = channel_get(channel, part, NULL);
-	vim_free(p);
+	mnv_free(p);
     } while (p != NULL);
 
     if (outlen != NULL)
@@ -2332,14 +2332,14 @@ channel_collapse(channel_T *channel, ch_part_T part, int want_nl)
 	return FAIL;	    // out of memory
     mch_memmove(p, node->rq_buffer, node->rq_buflen);
     p += node->rq_buflen;
-    vim_free(node->rq_buffer);
+    mnv_free(node->rq_buffer);
     node->rq_buffer = newbuf;
     for (n = node; n != last_node; )
     {
 	n = n->rq_next;
 	mch_memmove(p, n->rq_buffer, n->rq_buflen);
 	p += n->rq_buflen;
-	vim_free(n->rq_buffer);
+	mnv_free(n->rq_buffer);
     }
     *p = NUL;
     node->rq_buflen = (long_u)(p - newbuf);
@@ -2348,14 +2348,14 @@ channel_collapse(channel_T *channel, ch_part_T part, int want_nl)
     for (n = node->rq_next; n != last_node; )
     {
 	n = n->rq_next;
-	vim_free(n->rq_prev);
+	mnv_free(n->rq_prev);
     }
     node->rq_next = last_node->rq_next;
     if (last_node->rq_next == NULL)
 	head->rq_prev = node;
     else
 	last_node->rq_next->rq_prev = node;
-    vim_free(last_node);
+    mnv_free(last_node);
     return OK;
 }
 
@@ -2381,7 +2381,7 @@ channel_save(channel_T *channel, ch_part_T part, char_u *buf, int len,
     node->rq_buffer = alloc(len + 1);
     if (node->rq_buffer == NULL)
     {
-	vim_free(node);
+	mnv_free(node);
 	return FAIL;	    // out of memory
     }
 
@@ -2456,16 +2456,16 @@ channel_fill(js_read_T *reader)
 	p = alloc(keeplen + addlen + 1);
 	if (p == NULL)
 	{
-	    vim_free(next);
+	    mnv_free(next);
 	    return FALSE;
 	}
 	mch_memmove(p, reader->js_buf, keeplen);
 	mch_memmove(p + keeplen, next, addlen + 1);
-	vim_free(next);
+	mnv_free(next);
 	next = p;
     }
 
-    vim_free(reader->js_buf);
+    mnv_free(reader->js_buf);
     reader->js_buf = next;
     return TRUE;
 }
@@ -2624,7 +2624,7 @@ channel_parse_json(channel_T *channel, ch_part_T part)
 		item->jq_value = alloc_tv();
 		if (item->jq_value == NULL)
 		{
-		    vim_free(item);
+		    mnv_free(item);
 		    clear_tv(&listtv);
 		}
 		else
@@ -2715,7 +2715,7 @@ channel_parse_json(channel_T *channel, ch_part_T part)
     else
 	ret = FALSE;
 
-    vim_free(reader.js_buf);
+    mnv_free(reader.js_buf);
     return ret;
 }
 
@@ -2750,7 +2750,7 @@ remove_json_node(jsonq_T *head, jsonq_T *node)
 	head->jq_prev = node->jq_prev;
     else
 	node->jq_next->jq_prev = node->jq_prev;
-    vim_free(node);
+    mnv_free(node);
 }
 
 /*
@@ -2940,7 +2940,7 @@ channel_push_json(channel_T *channel, ch_part_T part, typval_T *rettv)
     newitem->jq_value = alloc_tv();
     if (newitem->jq_value == NULL)
     {
-	vim_free(newitem);
+	mnv_free(newitem);
 	clear_tv(rettv);
 	return;
     }
@@ -3012,7 +3012,7 @@ channel_exe_cmd(channel_T *channel, ch_part_T part, typval_T *argv)
 	    --emsg_silent;
 	if (called_emsg > called_emsg_before)
 	    ch_log(channel, "Ex command error: '%s'",
-					  (char *)get_vim_var_str(VV_ERRMSG));
+					  (char *)get_mnv_var_str(VV_ERRMSG));
     }
     else if (STRCMP(cmd, "normal") == 0)
     {
@@ -3083,7 +3083,7 @@ channel_exe_cmd(channel_T *channel, ch_part_T part, typval_T *argv)
 		{
 		    // If evaluation failed or the result can't be encoded
 		    // then return the string "ERROR".
-		    vim_free(json);
+		    mnv_free(json);
 		    err_tv.v_type = VAR_STRING;
 		    err_tv.vval.v_string = (char_u *)"ERROR";
 		    json = json_encode_nr_expr(id, &err_tv, options | JSON_NL);
@@ -3093,7 +3093,7 @@ channel_exe_cmd(channel_T *channel, ch_part_T part, typval_T *argv)
 		    channel_send(channel,
 				 part == PART_SOCK ? PART_SOCK : PART_IN,
 				 json, (int)STRLEN(json), (char *)cmd);
-		    vim_free(json);
+		    mnv_free(json);
 		}
 	    }
 	    --emsg_silent;
@@ -3128,7 +3128,7 @@ invoke_one_time_callback(
     remove_cb_node(cbhead, item);
     invoke_callback(channel, &item->cq_callback, argv);
     free_callback(&item->cq_callback);
-    vim_free(item);
+    mnv_free(item);
 }
 
     static void
@@ -3180,7 +3180,7 @@ append_to_buffer(
 
     u_sync(TRUE);
     // ignore undo failure, undo is not very useful here
-    vim_ignored = u_save(lnum - empty, lnum + 1);
+    mnv_ignored = u_save(lnum - empty, lnum + 1);
 
     if (empty)
     {
@@ -3258,7 +3258,7 @@ drop_messages(channel_T *channel, ch_part_T part)
     while ((msg = channel_get(channel, part, NULL)) != NULL)
     {
 	ch_log(channel, "Dropping message '%s'", (char *)msg);
-	vim_free(msg);
+	mnv_free(msg);
     }
 }
 
@@ -3447,7 +3447,7 @@ may_invoke_callback(channel_T *channel, ch_part_T part)
 	    {
 		// Copy the message into allocated memory (excluding the NL)
 		// and remove it from the buffer (including the NL).
-		msg = vim_strnsave(buf, nl - buf);
+		msg = mnv_strnsave(buf, nl - buf);
 		channel_consume(channel, part, (int)(nl - buf) + 1);
 	    }
 	}
@@ -3557,7 +3557,7 @@ may_invoke_callback(channel_T *channel, ch_part_T part)
 				}
 				*q = NUL;
 				write_to_term(buffer, crlf_msg, channel);
-				vim_free(crlf_msg);
+				mnv_free(crlf_msg);
 			    }
 			}
 			else
@@ -3593,16 +3593,16 @@ may_invoke_callback(channel_T *channel, ch_part_T part)
 		    char_u *cp = msg;
 		    char_u *nl;
 
-		    while ((nl = vim_strchr(cp, NL)) != NULL)
+		    while ((nl = mnv_strchr(cp, NL)) != NULL)
 		    {
 			long_u len = (long_u)(nl - cp);
 
 			if (len > 0 && cp[len - 1] == CAR)
 			    --len;
-			argv[1].vval.v_string = vim_strnsave(cp, len);
+			argv[1].vval.v_string = mnv_strnsave(cp, len);
 			if (argv[1].vval.v_string != NULL)
 			    invoke_callback(channel, callback, argv);
-			vim_free(argv[1].vval.v_string);
+			mnv_free(argv[1].vval.v_string);
 			cp = nl + 1;
 		    }
 		    if (*cp != NUL)
@@ -3611,10 +3611,10 @@ may_invoke_callback(channel_T *channel, ch_part_T part)
 
 			if (len > 0 && cp[len - 1] == CAR)
 			    --len;
-			argv[1].vval.v_string = vim_strnsave(cp, len);
+			argv[1].vval.v_string = mnv_strnsave(cp, len);
 			if (argv[1].vval.v_string != NULL)
 			    invoke_callback(channel, callback, argv);
-			vim_free(argv[1].vval.v_string);
+			mnv_free(argv[1].vval.v_string);
 		    }
 		    argv[1].vval.v_string = msg;
 		}
@@ -3629,7 +3629,7 @@ may_invoke_callback(channel_T *channel, ch_part_T part)
 
     if (listtv != NULL)
 	free_tv(listtv);
-    vim_free(msg);
+    mnv_free(msg);
 
     return TRUE;
 }
@@ -3742,7 +3742,7 @@ channel_part_info(channel_T *channel, dict_T *dict, char *name, ch_part_T part)
     char	*status;
     char	*s = "";
 
-    vim_strncpy((char_u *)namebuf, (char_u *)name, 4);
+    mnv_strncpy((char_u *)namebuf, (char_u *)name, 4);
     STRCAT(namebuf, "_");
     tail = STRLEN(namebuf);
 
@@ -3917,7 +3917,7 @@ remove_from_writeque(writeq_T *wq, writeq_T *entry)
 	wq->wq_prev = NULL;
     else
 	wq->wq_next->wq_prev = NULL;
-    vim_free(entry);
+    mnv_free(entry);
 }
 
 /*
@@ -3931,7 +3931,7 @@ channel_clear_one(channel_T *channel, ch_part_T part)
     cbq_T   *cb_head = &ch_part->ch_cb_head;
 
     while (channel_peek(channel, part) != NULL)
-	vim_free(channel_get(channel, part, NULL));
+	mnv_free(channel_get(channel, part, NULL));
 
     while (cb_head->cq_next != NULL)
     {
@@ -3939,7 +3939,7 @@ channel_clear_one(channel_T *channel, ch_part_T part)
 
 	remove_cb_node(cb_head, node);
 	free_callback(&node->cq_callback);
-	vim_free(node);
+	mnv_free(node);
     }
 
     while (json_head->jq_next != NULL)
@@ -3963,7 +3963,7 @@ channel_clear_one(channel_T *channel, ch_part_T part)
 channel_clear(channel_T *channel)
 {
     ch_log(channel, "Clearing channel");
-    VIM_CLEAR(channel->ch_hostname);
+    MNV_CLEAR(channel->ch_hostname);
     channel_clear_one(channel, PART_SOCK);
     channel_clear_one(channel, PART_OUT);
     channel_clear_one(channel, PART_ERR);
@@ -4307,11 +4307,11 @@ channel_read(channel_T *channel, ch_part_T part, char *func)
 		inet_ntop(AF_INET,
 			&((struct sockaddr_in*)&client)->sin_addr,
 			addr, sizeof(addr));
-		vim_snprintf((char *)namebuf, sizeof(namebuf), "%s:%d",
+		mnv_snprintf((char *)namebuf, sizeof(namebuf), "%s:%d",
 			addr,
 			ntohs(((struct sockaddr_in*)&client)->sin_port));
 #else
-		vim_snprintf((char *)namebuf, sizeof(namebuf), "%s:%d",
+		mnv_snprintf((char *)namebuf, sizeof(namebuf), "%s:%d",
 		    inet_ntoa(((struct sockaddr_in*)&client)->sin_addr),
 		    ntohs(((struct sockaddr_in*)&client)->sin_port));
 #endif
@@ -4324,22 +4324,22 @@ channel_read(channel_T *channel, ch_part_T part, char *func)
 		inet_ntop(AF_INET6,
 			&((struct sockaddr_in6*)&client)->sin6_addr,
 			addr, sizeof(addr));
-		vim_snprintf((char *)namebuf, sizeof(namebuf), "[%s]:%d",
+		mnv_snprintf((char *)namebuf, sizeof(namebuf), "[%s]:%d",
 			addr,
 			ntohs(((struct sockaddr_in6*)&client)->sin6_port));
 	    }
 #endif
 	    else if (client.ss_family == AF_UNIX)
-		vim_snprintf((char *)namebuf, sizeof(namebuf),
+		mnv_snprintf((char *)namebuf, sizeof(namebuf),
 							    "unix:anonymous");
 	    else
-		vim_snprintf((char *)namebuf, sizeof(namebuf), "unknown");
+		mnv_snprintf((char *)namebuf, sizeof(namebuf), "unknown");
 	    ++safe_to_invoke_callback;
 	    ++newchannel->ch_refcount;
 	    argv[0].v_type = VAR_CHANNEL;
 	    argv[0].vval.v_channel = newchannel;
 	    argv[1].v_type = VAR_STRING;
-	    argv[1].vval.v_string = vim_strsave(namebuf);
+	    argv[1].vval.v_string = mnv_strsave(namebuf);
 	    invoke_callback(newchannel, &channel->ch_callback, argv);
 	    --safe_to_invoke_callback;
 	    clear_tv(&argv[1]);
@@ -4452,7 +4452,7 @@ channel_read_block(
 	{
 	    // Copy the message into allocated memory and remove it from the
 	    // buffer.
-	    msg = vim_strnsave(buf, nl - buf);
+	    msg = mnv_strnsave(buf, nl - buf);
 	    channel_consume(channel, part, (int)(nl - buf) + 1);
 	}
     }
@@ -4645,7 +4645,7 @@ common_channel_read(typval_T *argvars, typval_T *rettv, int raw, int blob)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_chan_or_job_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -4688,7 +4688,7 @@ common_channel_read(typval_T *argvars, typval_T *rettv, int raw, int blob)
 		    rettv_blob_set(rettv, b);
 		}
 	    }
-	    vim_free(p);
+	    mnv_free(p);
 	}
     }
     else if (raw || mode == CH_MODE_RAW || mode == CH_MODE_NL)
@@ -4702,7 +4702,7 @@ common_channel_read(typval_T *argvars, typval_T *rettv, int raw, int blob)
 	if (listtv != NULL)
 	{
 	    *rettv = *listtv;
-	    vim_free(listtv);
+	    mnv_free(listtv);
 	}
 	else
 	{
@@ -4744,7 +4744,7 @@ channel_handle_events(int only_keep_open)
 	    //
 	    // But, in Windows conpty terminals, the final output of a
 	    // terminated process may be missed.  In this case, in order for
-	    // Vim to read the final output, it is necessary to set the timeout
+	    // MNV to read the final output, it is necessary to set the timeout
 	    // to 1 msec or more.  It seems that the final output can be
 	    // received by calling Sleep() once within channel_wait().  Note
 	    // that ch_killing can only be TRUE in conpty terminals, so it has
@@ -5062,7 +5062,7 @@ ch_expr_common(typval_T *argvars, typval_T *rettv, int eval)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_chan_or_job_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 2) == FAIL))
 	return;
@@ -5150,7 +5150,7 @@ ch_expr_common(typval_T *argvars, typval_T *rettv, int eval)
 
     channel = send_common(argvars, text, (int)STRLEN(text), id, eval, &opt,
 			    eval ? "ch_evalexpr" : "ch_sendexpr", &part_read);
-    vim_free(text);
+    mnv_free(text);
     if (channel != NULL && eval)
     {
 	if (opt.jo_set & JO_TIMEOUT)
@@ -5214,7 +5214,7 @@ ch_raw_common(typval_T *argvars, typval_T *rettv, int eval)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_chan_or_job_arg(argvars, 0) == FAIL
 		|| check_for_string_or_blob_arg(argvars, 1) == FAIL
 		|| check_for_opt_dict_arg(argvars, 2) == FAIL))
@@ -5550,7 +5550,7 @@ channel_parse_messages(void)
 	    if (channel_unref(channel) || (r == OK
 #ifdef ELAPSED_FUNC
 			// Limit the time we loop here to 100 msec, otherwise
-			// Vim becomes unresponsive when the callback takes
+			// MNV becomes unresponsive when the callback takes
 			// more than a bit of time.
 			&& ELAPSED_FUNC(start_tv) < 100L
 #endif
@@ -5681,7 +5681,7 @@ f_ch_canread(typval_T *argvars, typval_T *rettv)
     channel_T *channel;
 
     rettv->vval.v_number = 0;
-    if (in_vim9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
 	return;
 
     channel = get_channel_arg(&argvars[0], FALSE, FALSE, 0);
@@ -5699,7 +5699,7 @@ f_ch_close(typval_T *argvars, typval_T *rettv UNUSED)
 {
     channel_T *channel;
 
-    if (in_vim9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
 	return;
 
     channel = get_channel_arg(&argvars[0], TRUE, FALSE, 0);
@@ -5718,7 +5718,7 @@ f_ch_close_in(typval_T *argvars, typval_T *rettv UNUSED)
 {
     channel_T *channel;
 
-    if (in_vim9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
 	return;
 
     channel = get_channel_arg(&argvars[0], TRUE, FALSE, 0);
@@ -5736,7 +5736,7 @@ f_ch_getbufnr(typval_T *argvars, typval_T *rettv)
 
     rettv->vval.v_number = -1;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_chan_or_job_arg(argvars, 0) == FAIL
 		|| check_for_string_arg(argvars, 1) == FAIL))
 	return;
@@ -5768,7 +5768,7 @@ f_ch_getjob(typval_T *argvars, typval_T *rettv)
 {
     channel_T *channel;
 
-    if (in_vim9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
 	return;
 
     channel = get_channel_arg(&argvars[0], FALSE, FALSE, 0);
@@ -5789,7 +5789,7 @@ f_ch_info(typval_T *argvars, typval_T *rettv UNUSED)
 {
     channel_T *channel;
 
-    if (in_vim9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
+    if (in_mnv9script() && check_for_chan_or_job_arg(argvars, 0) == FAIL)
 	return;
 
     channel = get_channel_arg(&argvars[0], FALSE, FALSE, 0);
@@ -5893,7 +5893,7 @@ f_ch_setoptions(typval_T *argvars, typval_T *rettv UNUSED)
     channel_T	*channel;
     jobopt_T	opt;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_chan_or_job_arg(argvars, 0) == FAIL
 		|| check_for_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -5922,7 +5922,7 @@ f_ch_status(typval_T *argvars, typval_T *rettv)
     rettv->v_type = VAR_STRING;
     rettv->vval.v_string = NULL;
 
-    if (in_vim9script()
+    if (in_mnv9script()
 	    && (check_for_chan_or_job_arg(argvars, 0) == FAIL
 		|| check_for_opt_dict_arg(argvars, 1) == FAIL))
 	return;
@@ -5937,7 +5937,7 @@ f_ch_status(typval_T *argvars, typval_T *rettv)
 	    part = opt.jo_part;
     }
 
-    rettv->vval.v_string = vim_strsave((char_u *)channel_status(channel, part));
+    rettv->vval.v_string = mnv_strsave((char_u *)channel_status(channel, part));
 }
 
 /*
@@ -5951,9 +5951,9 @@ channel_to_string_buf(typval_T *varp, char_u *buf)
     char      *status = channel_status(channel, -1);
 
     if (channel == NULL)
-	vim_snprintf((char *)buf, NUMBUFLEN, "channel %s", status);
+	mnv_snprintf((char *)buf, NUMBUFLEN, "channel %s", status);
     else
-	vim_snprintf((char *)buf, NUMBUFLEN,
+	mnv_snprintf((char *)buf, NUMBUFLEN,
 				      "channel %d %s", channel->ch_id, status);
     return buf;
 }

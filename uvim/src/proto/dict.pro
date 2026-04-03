@@ -51,4 +51,4 @@ void f_keys(typval_T *argvars, typval_T *rettv);
 void f_values(typval_T *argvars, typval_T *rettv);
 void dict_set_items_ro(dict_T *di);
 void f_has_key(typval_T *argvars, typval_T *rettv);
-/* vim: set ft=c : */
+/* mnv: set ft=c : */

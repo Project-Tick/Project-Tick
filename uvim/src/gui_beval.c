@@ -1,14 +1,14 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *			Visual Workshop integration by Gordon Prieur
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_BEVAL_GUI)
 
@@ -33,7 +33,7 @@
 # endif
 
 # ifndef FEAT_GUI_GTK
-extern Widget vimShell;
+extern Widget mnvShell;
 
 /*
  * Currently, we assume that there can be only one BalloonEval showing
@@ -107,8 +107,8 @@ gui_mch_create_beval_area(
 	beval->appContext = XtWidgetToApplicationContext((Widget)target);
 # endif
 	beval->showState = ShS_NEUTRAL;
-	vim_free(beval->msg);
-	beval->msg = mesg == NULL ? NULL : vim_strsave(mesg);
+	mnv_free(beval->msg);
+	beval->msg = mesg == NULL ? NULL : mnv_strsave(mesg);
 	beval->msgCB = mesgCB;
 	beval->clientData = clientData;
 
@@ -155,9 +155,9 @@ gui_mch_destroy_beval_area(BalloonEval *beval)
 #  endif
 #  ifdef FEAT_VARTABS
     if (beval->vts)
-	vim_free(beval->vts);
+	mnv_free(beval->vts);
 #  endif
-    vim_free(beval);
+    mnv_free(beval);
 }
 # endif
 
@@ -199,8 +199,8 @@ gui_mch_currently_showing_beval(void)
     void
 gui_mch_post_balloon(BalloonEval *beval, char_u *mesg)
 {
-    vim_free(beval->msg);
-    beval->msg = mesg == NULL ? NULL : vim_strsave(mesg);
+    mnv_free(beval->msg);
+    beval->msg = mesg == NULL ? NULL : mnv_strsave(mesg);
     if (beval->msg != NULL)
 	drawBalloon(beval);
     else
@@ -217,7 +217,7 @@ gui_mch_post_balloon(BalloonEval *beval, char_u *mesg)
     void
 gui_mch_unpost_balloon(BalloonEval *beval)
 {
-    VIM_CLEAR(beval->msg);
+    MNV_CLEAR(beval->msg);
     undrawBalloon(beval);
 }
 # endif
@@ -884,10 +884,10 @@ set_printable_label_text(GtkLabel *label, char_u *text)
 	*pdest = NUL;
     }
 
-    vim_free(convbuf);
+    mnv_free(convbuf);
 
     gtk_label_set_text(label, (const char *)buf);
-    vim_free(buf);
+    mnv_free(buf);
 
     gtk_label_set_attributes(label, attr_list);
     pango_attr_list_unref(attr_list);
@@ -1042,7 +1042,7 @@ createBalloonEvalWindow(BalloonEval *beval)
 #  else
     gtk_misc_set_alignment(GTK_MISC(beval->balloonLabel), 0.5f, 0.5f);
 #  endif
-    gtk_widget_set_name(beval->balloonLabel, "vim-balloon-label");
+    gtk_widget_set_name(beval->balloonLabel, "mnv-balloon-label");
     gtk_widget_show(beval->balloonLabel);
 
     gtk_container_add(GTK_CONTAINER(beval->balloonShell), beval->balloonLabel);

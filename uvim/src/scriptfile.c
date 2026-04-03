@@ -1,17 +1,17 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved	by Bram Moolenaar
+ * MNV - MNV is not Vim	by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
  * scriptfile.c: functions for dealing with the runtime directories/files
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #if defined(FEAT_EVAL)
 // The names of packages that once were loaded are remembered.
@@ -23,7 +23,7 @@ static garray_T		ga_loaded = {0, 0, sizeof(char_u *), 4, NULL};
 static int		last_current_SID_seq = 0;
 #endif
 
-static int do_source_ext(char_u *fname, int check_other, int is_vimrc, int *ret_sid, exarg_T *eap, int clearvars);
+static int do_source_ext(char_u *fname, int check_other, int is_mnvrc, int *ret_sid, exarg_T *eap, int clearvars);
 
 /*
  * Initialize the execution stack.
@@ -138,19 +138,19 @@ estack_sfile(estack_arg_T which UNUSED)
     {
 	if (entry->es_name == NULL)
 	    return NULL;
-	return vim_strsave(entry->es_name);
+	return mnv_strsave(entry->es_name);
     }
 #ifdef FEAT_EVAL
     // expand('<sfile>') works in a function for backwards compatibility, but
-    // may give an unexpected result.  Disallow it in Vim 9 script.
-    if (which == ESTACK_SFILE && in_vim9script())
+    // may give an unexpected result.  Disallow it in MNV 9 script.
+    if (which == ESTACK_SFILE && in_mnv9script())
     {
 	int  save_emsg_off = emsg_off;
 
 	if (emsg_off == 1)
 	    // f_expand() silences errors but we do want this one
 	    emsg_off = 0;
-	emsg(_(e_cannot_expand_sfile_in_vim9_function));
+	emsg(_(e_cannot_expand_sfile_in_mnv9_function));
 	emsg_off = save_emsg_off;
 	return NULL;
     }
@@ -170,11 +170,11 @@ estack_sfile(estack_arg_T which UNUSED)
 				      : acp_script_ctx(entry->es_info.aucmd);
 
 		return def_ctx->sc_sid > 0
-			   ? vim_strsave(SCRIPT_ITEM(def_ctx->sc_sid)->sn_name)
+			   ? mnv_strsave(SCRIPT_ITEM(def_ctx->sc_sid)->sn_name)
 			   : NULL;
 	    }
 	    else if (entry->es_type == ETYPE_SCRIPT)
-		return vim_strsave(entry->es_name);
+		return mnv_strsave(entry->es_name);
 	}
 	return NULL;
     }
@@ -228,7 +228,7 @@ estack_sfile(estack_arg_T which UNUSED)
 	    // For class methods prepend "<class name>." to the function name.
 	    if (*class_name.string != NUL)
 	    {
-		added = vim_snprintf_safelen(
+		added = mnv_snprintf_safelen(
 		    (char *)ga.ga_data + ga.ga_len,
 		    ga.ga_maxlen - ga.ga_len,
 		    "<SNR>%d_%s.",
@@ -242,7 +242,7 @@ estack_sfile(estack_arg_T which UNUSED)
 	    // <slnum>.  Also leave it out when the number is not set.
 	    if (lnum != 0)
 	    {
-		added = vim_snprintf_safelen(
+		added = mnv_snprintf_safelen(
 		    (char *)ga.ga_data + ga.ga_len,
 		    ga.ga_maxlen - ga.ga_len,
 		    "[%ld]",
@@ -507,7 +507,7 @@ get_new_scriptitem_for_fname(int *error, char_u *fname)
     {
 	scriptitem_T *si = SCRIPT_ITEM(sid);
 
-	si->sn_name = vim_strsave(fname);
+	si->sn_name = mnv_strsave(fname);
 	si->sn_state = SN_STATE_NOT_LOADED;
     }
     return sid;
@@ -548,11 +548,11 @@ check_script_symlink(int sid)
 						    = si->sn_import_autoload;
 		if (si->sn_autoload_prefix != NULL)
 		    SCRIPT_ITEM(real_sid)->sn_autoload_prefix =
-					vim_strsave(si->sn_autoload_prefix);
+					mnv_strsave(si->sn_autoload_prefix);
 	    }
 	}
     }
-    vim_free(real_fname);
+    mnv_free(real_fname);
 }
 
     static void
@@ -606,7 +606,7 @@ do_in_path(
 
     // Make a copy of 'runtimepath'.  Invoking the callback may change the
     // value.
-    rtp_copy = vim_strsave(path);
+    rtp_copy = mnv_strsave(path);
     buf.string = alloc(MAXPATHL);
     if (buf.string != NULL && rtp_copy != NULL)
     {
@@ -702,8 +702,8 @@ do_in_path(
 	    }
 	}
     }
-    vim_free(buf.string);
-    vim_free(rtp_copy);
+    mnv_free(buf.string);
+    mnv_free(rtp_copy);
     if (!did_one && name != NULL)
     {
 	char *basepath = path == p_rtp ? "runtimepath" : "packpath";
@@ -858,7 +858,7 @@ add_pack_dir_to_rtp(char_u *fname)
 
     p4 = p3 = p2 = p1 = get_past_head(fname);
     for (p = p1; *p; MB_PTR_ADV(p))
-	if (vim_ispathsep_nocolon(*p))
+	if (mnv_ispathsep_nocolon(*p))
 	{
 	    p4 = p3; p3 = p2; p2 = p1; p1 = p;
 	}
@@ -889,8 +889,8 @@ add_pack_dir_to_rtp(char_u *fname)
 
 	if ((p = (char_u *)strstr((char *)buf.string, "after")) != NULL
 		&& p > buf.string
-		&& vim_ispathsep(p[-1])
-		&& (vim_ispathsep(p[5]) || p[5] == NUL || p[5] == ','))
+		&& mnv_ispathsep(p[-1])
+		&& (mnv_ispathsep(p[5]) || p[5] == NUL || p[5] == ','))
 	{
 	    if (insp == NULL)
 		// Did not find "ffname" before the first "after" directory,
@@ -907,8 +907,8 @@ add_pack_dir_to_rtp(char_u *fname)
 	    rtp_ffname = fix_fname(buf.string);
 	    if (rtp_ffname == NULL)
 		goto theend;
-	    match = vim_fnamencmp(rtp_ffname, ffname, fname_len) == 0;
-	    vim_free(rtp_ffname);
+	    match = mnv_fnamencmp(rtp_ffname, ffname, fname_len) == 0;
+	    mnv_free(rtp_ffname);
 	    if (match)
 		// Insert "ffname" after this entry (and comma).
 		insp = entry;
@@ -971,13 +971,13 @@ add_pack_dir_to_rtp(char_u *fname)
     }
 
     set_option_value_give_err((char_u *)"rtp", 0L, new_rtp, 0);
-    vim_free(new_rtp);
+    mnv_free(new_rtp);
     retval = OK;
 
 theend:
-    vim_free(buf.string);
-    vim_free(ffname);
-    vim_free(afterdir);
+    mnv_free(buf.string);
+    mnv_free(ffname);
+    mnv_free(afterdir);
     return retval;
 }
 
@@ -987,8 +987,8 @@ theend:
     static int
 load_pack_plugin(char_u *fname)
 {
-    static char *plugpat = "%s/plugin/**/*.vim";
-    static char *ftpat = "%s/ftdetect/*.vim";
+    static char *plugpat = "%s/plugin/**/*.mnv";
+    static char *ftpat = "%s/ftdetect/*.mnv";
     int		len;
     char_u	*ffname = fix_fname(fname);
     char_u	*pat = NULL;
@@ -1000,28 +1000,28 @@ load_pack_plugin(char_u *fname)
     pat = alloc(len);
     if (pat == NULL)
 	goto theend;
-    vim_snprintf((char *)pat, len, plugpat, ffname);
+    mnv_snprintf((char *)pat, len, plugpat, ffname);
     source_all_matches(pat);
 
     {
-	char_u *cmd = vim_strsave((char_u *)"g:did_load_filetypes");
+	char_u *cmd = mnv_strsave((char_u *)"g:did_load_filetypes");
 
-	// If runtime/filetype.vim wasn't loaded yet, the scripts will be
+	// If runtime/filetype.mnv wasn't loaded yet, the scripts will be
 	// found when it loads.
 	if (cmd != NULL && eval_to_number(cmd, FALSE) > 0)
 	{
 	    do_cmdline_cmd((char_u *)"augroup filetypedetect");
-	    vim_snprintf((char *)pat, len, ftpat, ffname);
+	    mnv_snprintf((char *)pat, len, ftpat, ffname);
 	    source_all_matches(pat);
 	    do_cmdline_cmd((char_u *)"augroup END");
 	}
-	vim_free(cmd);
+	mnv_free(cmd);
     }
-    vim_free(pat);
+    mnv_free(pat);
     retval = OK;
 
 theend:
-    vim_free(ffname);
+    mnv_free(ffname);
     return retval;
 }
 
@@ -1051,7 +1051,7 @@ add_pack_plugin(char_u *fname, void *cookie)
 		break;
 	    }
 	}
-	vim_free(buf);
+	mnv_free(buf);
 	if (!found)
 	    // directory is not yet in 'runtimepath', add it
 	    if (add_pack_dir_to_rtp(fname) == FAIL)
@@ -1123,13 +1123,13 @@ ex_packadd(exarg_T *eap)
 	pat = alloc(len);
 	if (pat == NULL)
 	    return;
-	vim_snprintf(pat, len, plugpat, round == 1 ? "start" : "opt", eap->arg);
+	mnv_snprintf(pat, len, plugpat, round == 1 ? "start" : "opt", eap->arg);
 	// The first round don't give a "not found" error, in the second round
 	// only when nothing was found in the first round.
 	res = do_in_path(p_pp, "", (char_u *)pat,
 		DIP_ALL + DIP_DIR + (round == 2 && res == FAIL ? DIP_ERR : 0),
 		add_pack_plugin, eap->forceit ? &APP_ADD_DIR : &APP_BOTH);
-	vim_free(pat);
+	mnv_free(pat);
     }
 }
 #endif
@@ -1149,7 +1149,7 @@ remove_duplicates(garray_T *gap)
     for (i = gap->ga_len - 1; i > 0; --i)
 	if (fnamecmp(fnames[i - 1], fnames[i]) == 0)
 	{
-	    vim_free(fnames[i]);
+	    mnv_free(fnames[i]);
 	    for (j = i + 1; j < gap->ga_len; ++j)
 		fnames[j - 1] = fnames[j];
 	    --gap->ga_len;
@@ -1178,9 +1178,9 @@ ExpandRTDir_int(
 	int		expand_dirs = FALSE;
 
 	// Build base pattern
-	vim_snprintf(buf, buf_len, "%s%s%s%s",
+	mnv_snprintf(buf, buf_len, "%s%s%s%s",
 		     *dirnames[i] ? dirnames[i] : "", *dirnames[i] ? "/" : "",
-		     pat, "*.vim");
+		     pat, "*.mnv");
 
 expand:
 	if ((flags & DIP_NORTP) == 0)
@@ -1188,22 +1188,22 @@ expand:
 
 	if (flags & DIP_START)
 	{
-	    // Build complete search path: pack/*/start/*/dirnames[i]/pat*.vim
-	    vim_snprintf(buf, buf_len, "pack/*/start/*/%s%s%s%s",
+	    // Build complete search path: pack/*/start/*/dirnames[i]/pat*.mnv
+	    mnv_snprintf(buf, buf_len, "pack/*/start/*/%s%s%s%s",
 			 *dirnames[i] ? dirnames[i] : "",
 			 *dirnames[i] ? "/" : "",
 			 pat,
-			 expand_dirs ? "*" : "*.vim");
+			 expand_dirs ? "*" : "*.mnv");
 	    globpath(p_pp, (char_u *)buf, gap, glob_flags, expand_dirs);
 	}
 
 	if (flags & DIP_OPT)
 	{
-	    // Build complete search path: pack/*/opt/*/dirnames[i]/pat*.vim
-	    vim_snprintf(buf, buf_len, "pack/*/opt/*/%s%s%s%s",
+	    // Build complete search path: pack/*/opt/*/dirnames[i]/pat*.mnv
+	    mnv_snprintf(buf, buf_len, "pack/*/opt/*/%s%s%s%s",
 			 *dirnames[i] ? dirnames[i] : "",
 			 *dirnames[i] ? "/" : "", pat,
-			 expand_dirs ? "*" : "*.vim");
+			 expand_dirs ? "*" : "*.mnv");
 	    globpath(p_pp, (char_u *)buf, gap, glob_flags, expand_dirs);
 	}
 
@@ -1211,19 +1211,19 @@ expand:
 	if (*dirnames[i] == NUL && !expand_dirs)
 	{
 	    // expand dir names in another round
-	    vim_snprintf(buf, buf_len, "%s*", pat);
+	    mnv_snprintf(buf, buf_len, "%s*", pat);
 	    glob_flags = WILD_ADD_SLASH;
 	    expand_dirs = TRUE;
 	    goto expand;
 	}
 
-	vim_free(buf);
+	mnv_free(buf);
     }
 
     int pat_pathsep_cnt = 0;
     for (size_t i = 0; i < pat_len; ++i)
     {
-	if (vim_ispathsep(pat[i]))
+	if (mnv_ispathsep(pat[i]))
 	    ++pat_pathsep_cnt;
     }
 
@@ -1232,7 +1232,7 @@ expand:
 	char_u *match = ((char_u **)gap->ga_data)[i];
 	char_u *s = match;
 	char_u *e = s + STRLEN(s);
-	if (e - 4 > s && !keep_ext && STRNICMP(e - 4, ".vim", 4) == 0)
+	if (e - 4 > s && !keep_ext && STRNICMP(e - 4, ".mnv", 4) == 0)
 	{
 	    e -= 4;
 	    *e = NUL;
@@ -1241,7 +1241,7 @@ expand:
 	int match_pathsep_cnt = (e > s && e[-1] == '/') ? -1 : 0;
 	for (s = e; s > match; MB_PTR_BACK(match, s))
 	{
-	    if (s < match || (vim_ispathsep(*s)
+	    if (s < match || (mnv_ispathsep(*s)
 				     && ++match_pathsep_cnt > pat_pathsep_cnt))
 		break;
 	}
@@ -1261,11 +1261,11 @@ expand:
 /*
  * Expand runtime file names.
  * Search from 'runtimepath':
- *   'runtimepath'/{dirnames}/{pat}.vim
+ *   'runtimepath'/{dirnames}/{pat}.mnv
  * When "flags" has DIP_START: search also from "start" of 'packpath':
- *   'packpath'/pack/ * /start/ * /{dirnames}/{pat}.vim
+ *   'packpath'/pack/ * /start/ * /{dirnames}/{pat}.mnv
  * When "flags" has DIP_OPT: search also from "opt" of 'packpath':
- *   'packpath'/pack/ * /opt/ * /{dirnames}/{pat}.vim
+ *   'packpath'/pack/ * /opt/ * /{dirnames}/{pat}.mnv
  * "dirnames" is an array with one or more directory names.
  */
     int
@@ -1315,9 +1315,9 @@ expand_runtime_cmd(char_u *pat, int *numMatches, char_u ***matches)
 	for (size_t i = 0; i < ARRAY_LENGTH(where_values); ++i)
 	    if (STRNCMP(pat, where_values[i], pat_len) == 0)
 	    {
-		char_u *p = vim_strsave((char_u *)where_values[i]);
+		char_u *p = mnv_strsave((char_u *)where_values[i]);
 		if (p != NULL && ga_add_string(&ga, p) == FAIL)
-		    vim_free(p);
+		    mnv_free(p);
 	    }
     }
 
@@ -1359,7 +1359,7 @@ ExpandPackAddDir(
     }
     sprintf((char *)s, "pack/*/opt/%s*", pat);
     globpath(p_pp, s, &ga, 0, TRUE);
-    vim_free(s);
+    mnv_free(s);
 
     for (i = 0; i < ga.ga_len; ++i)
     {
@@ -1444,13 +1444,13 @@ ex_source(exarg_T *eap)
     {
 	char_u *fname = NULL;
 
-	fname = do_browse(0, (char_u *)_("Source Vim script"), eap->arg,
+	fname = do_browse(0, (char_u *)_("Source MNV script"), eap->arg,
 				      NULL, NULL,
 				      (char_u *)_(BROWSE_FILTER_MACROS), NULL);
 	if (fname != NULL)
 	{
 	    cmd_source(fname, eap);
-	    vim_free(fname);
+	    mnv_free(fname);
 	}
     }
     else
@@ -1472,7 +1472,7 @@ ex_options(
     buf[0] = NUL;
     (void)add_win_cmd_modifiers(buf, &cmdmod, &multi_mods);
 
-    vim_setenv((char_u *)"OPTWIN_CMD", buf);
+    mnv_setenv((char_u *)"OPTWIN_CMD", buf);
     cmd_source((char_u *)SYS_OPTWIN_FILE, NULL);
 }
 #endif
@@ -1568,11 +1568,11 @@ do_source_buffer_init(source_cookie_T *sp, exarg_T *eap)
 
     // Use ":source buffer=<num>" as the script name
     if (curbuf->b_ffname != NULL)
-	fname = vim_strsave(curbuf->b_ffname);
+	fname = mnv_strsave(curbuf->b_ffname);
     else
     {
-	vim_snprintf((char *)IObuff, IOSIZE, ":source buffer=%d", curbuf->b_fnum);
-	fname = vim_strsave(IObuff);
+	mnv_snprintf((char *)IObuff, IOSIZE, ":source buffer=%d", curbuf->b_fnum);
+	fname = mnv_strsave(IObuff);
     }
     if (fname == NULL)
 	return NULL;
@@ -1582,7 +1582,7 @@ do_source_buffer_init(source_cookie_T *sp, exarg_T *eap)
     // Copy the lines from the buffer into a grow array
     for (curr_lnum = eap->line1; curr_lnum <= eap->line2; curr_lnum++)
     {
-	line = vim_strsave(ml_get(curr_lnum));
+	line = mnv_strsave(ml_get(curr_lnum));
 	if (line == NULL)
 	    goto errret;
 	if (ga_add_string(&sp->buflines, line) == FAIL)
@@ -1596,8 +1596,8 @@ do_source_buffer_init(source_cookie_T *sp, exarg_T *eap)
     return fname;
 
 errret:
-    vim_free(fname);
-    vim_free(line);
+    mnv_free(fname);
+    mnv_free(line);
     ga_clear_strings(&sp->buflines);
     return NULL;
 }
@@ -1622,8 +1622,8 @@ errret:
     static int
 do_source_ext(
     char_u	*fname,
-    int		check_other,	    // check for .vimrc and _vimrc
-    int		is_vimrc,	    // DOSO_ value
+    int		check_other,	    // check for .mnvrc and _mnvrc
+    int		is_mnvrc,	    // DOSO_ value
     int		*ret_sid UNUSED,
     exarg_T	*eap,
     int		clearvars UNUSED)
@@ -1720,12 +1720,12 @@ do_source_ext(
     }
     if (cookie.fp == NULL && check_other)
     {
-	// Try again, replacing file name ".vimrc" by "_vimrc" or vice versa,
+	// Try again, replacing file name ".mnvrc" by "_mnvrc" or vice versa,
 	// and ".exrc" by "_exrc" or vice versa.
 	p = gettail(fname_exp);
 	if ((*p == '.' || *p == '_')
-		&& (STRICMP(p + 1, "vimrc") == 0
-		    || STRICMP(p + 1, "gvimrc") == 0
+		&& (STRICMP(p + 1, "mnvrc") == 0
+		    || STRICMP(p + 1, "gmnvrc") == 0
 		    || STRICMP(p + 1, "exrc") == 0))
 	{
 	    if (*p == '_')
@@ -1757,7 +1757,7 @@ do_source_ext(
 
     // The file exists.
     // - In verbose mode, give a message.
-    // - For a vimrc file, may want to set 'compatible', call vimrc_found().
+    // - For a mnvrc file, may want to set 'compatible', call mnvrc_found().
     if (p_verbose > 1)
     {
 	verbose_enter();
@@ -1767,10 +1767,10 @@ do_source_ext(
 	    smsg(_("line %ld: sourcing \"%s\""), SOURCING_LNUM, fname);
 	verbose_leave();
     }
-    if (is_vimrc == DOSO_VIMRC)
-	vimrc_found(fname_exp, (char_u *)"MYVIMRC");
-    else if (is_vimrc == DOSO_GVIMRC)
-	vimrc_found(fname_exp, (char_u *)"MYGVIMRC");
+    if (is_mnvrc == DOSO_MNVRC)
+	mnvrc_found(fname_exp, (char_u *)"MYMNVRC");
+    else if (is_mnvrc == DOSO_GMNVRC)
+	mnvrc_found(fname_exp, (char_u *)"MYGMNVRC");
 
 #ifdef USE_CRNL
     // If no automatic file format: Set default to CR-NL.
@@ -1798,10 +1798,10 @@ do_source_ext(
     sticky_cmdmod_flags = 0;
 
     save_current_sctx = current_sctx;
-    if (cmdmod.cmod_flags & CMOD_VIM9CMD)
-	// When the ":vim9cmd" command modifier is used, source the script as a
-	// Vim9 script.
-	current_sctx.sc_version = SCRIPT_VERSION_VIM9;
+    if (cmdmod.cmod_flags & CMOD_MNV9CMD)
+	// When the ":mnv9cmd" command modifier is used, source the script as a
+	// MNV9 script.
+	current_sctx.sc_version = SCRIPT_VERSION_MNV9;
     else
 	current_sctx.sc_version = 1;  // default script version
 
@@ -1847,7 +1847,7 @@ do_source_ext(
 	    if (!clearvars)
 	    {
 		// Script-local variables remain but "const" can be set again.
-		// In Vim9 script variables will be cleared when "vim9script"
+		// In MNV9 script variables will be cleared when "mnv9script"
 		// is encountered without the "noclear" argument.
 		ht = &SCRIPT_VARS(sid);
 		todo = (int)ht->ht_used;
@@ -1862,9 +1862,9 @@ do_source_ext(
 		mark_imports_for_reload(sid);
 	    }
 	    else
-		clear_vim9_scriptlocal_vars(sid);
+		clear_mnv9_scriptlocal_vars(sid);
 
-	    // reset version, "vim9script" may have been added or removed.
+	    // reset version, "mnv9script" may have been added or removed.
 	    si->sn_version = 1;
 	}
 	if (ret_sid != NULL)
@@ -1881,12 +1881,12 @@ do_source_ext(
 	    goto almosttheend;
 	si = SCRIPT_ITEM(sid);
 	si->sn_name = fname_exp;
-	fname_exp = vim_strsave(si->sn_name);  // used for autocmd
+	fname_exp = mnv_strsave(si->sn_name);  // used for autocmd
 	if (ret_sid != NULL)
 	    *ret_sid = sid;
 
-	// Remember the "is_vimrc" flag for when the file is sourced again.
-	si->sn_is_vimrc = is_vimrc;
+	// Remember the "is_mnvrc" flag for when the file is sourced again.
+	si->sn_is_mnvrc = is_mnvrc;
     }
 
     // Keep the sourcing name/lnum, for recursive calls.
@@ -1928,10 +1928,10 @@ do_source_ext(
 	convert_setup(&cookie.conv, (char_u *)"utf-8", p_enc);
 	p = string_convert(&cookie.conv, firstline + 3, NULL);
 	if (p == NULL)
-	    p = vim_strsave(firstline + 3);
+	    p = mnv_strsave(firstline + 3);
 	if (p != NULL)
 	{
-	    vim_free(firstline);
+	    mnv_free(firstline);
 	    firstline = p;
 	}
     }
@@ -1974,7 +1974,7 @@ do_source_ext(
 #ifdef STARTUPTIME
     if (time_fd != NULL)
     {
-	vim_snprintf((char *)IObuff, IOSIZE, "sourcing %s", fname);
+	mnv_snprintf((char *)IObuff, IOSIZE, "sourcing %s", fname);
 	time_msg((char *)IObuff, &tv_start);
 	time_pop(&tv_rel);
     }
@@ -1993,27 +1993,27 @@ do_source_ext(
 
 #ifdef FEAT_EVAL
 almosttheend:
-    // If "sn_save_cpo" is set that means we encountered "vim9script": restore
-    // 'cpoptions', unless in the main .vimrc file.
+    // If "sn_save_cpo" is set that means we encountered "mnv9script": restore
+    // 'cpoptions', unless in the main .mnvrc file.
     // Get "si" again, "script_items" may have been reallocated.
     si = SCRIPT_ITEM(sid);
-    if (si->sn_save_cpo != NULL && si->sn_is_vimrc == DOSO_NONE)
+    if (si->sn_save_cpo != NULL && si->sn_is_mnvrc == DOSO_NONE)
     {
-	if (STRCMP(p_cpo, CPO_VIM) != 0)
+	if (STRCMP(p_cpo, CPO_MNV) != 0)
 	{
 	    char_u *f;
 	    char_u *t;
 
 	    // 'cpo' was changed in the script.  Apply the same change to the
 	    // saved value, if possible.
-	    for (f = (char_u *)CPO_VIM; *f != NUL; ++f)
-		if (vim_strchr(p_cpo, *f) == NULL
-			&& (t = vim_strchr(si->sn_save_cpo, *f)) != NULL)
+	    for (f = (char_u *)CPO_MNV; *f != NUL; ++f)
+		if (mnv_strchr(p_cpo, *f) == NULL
+			&& (t = mnv_strchr(si->sn_save_cpo, *f)) != NULL)
 		    // flag was removed, also remove it from the saved 'cpo'
 		    mch_memmove(t, t + 1, STRLEN(t));
 	    for (f = p_cpo; *f != NUL; ++f)
-		if (vim_strchr((char_u *)CPO_VIM, *f) == NULL
-			&& vim_strchr(si->sn_save_cpo, *f) == NULL)
+		if (mnv_strchr((char_u *)CPO_MNV, *f) == NULL
+			&& mnv_strchr(si->sn_save_cpo, *f) == NULL)
 		{
 		    // flag was added, also add it to the saved 'cpo'
 		    t = alloc(STRLEN(si->sn_save_cpo) + 2);
@@ -2021,7 +2021,7 @@ almosttheend:
 		    {
 			*t = *f;
 			STRCPY(t + 1, si->sn_save_cpo);
-			vim_free(si->sn_save_cpo);
+			mnv_free(si->sn_save_cpo);
 			si->sn_save_cpo = t;
 		    }
 		}
@@ -2029,7 +2029,7 @@ almosttheend:
 	set_option_value_give_err((char_u *)"cpo",
 					   0L, si->sn_save_cpo, OPT_NO_REDRAW);
     }
-    VIM_CLEAR(si->sn_save_cpo);
+    MNV_CLEAR(si->sn_save_cpo);
 
     restore_funccal();
 # ifdef FEAT_PROFILE
@@ -2045,8 +2045,8 @@ almosttheend:
 	fclose(cookie.fp);
     if (cookie.source_from_buf)
 	ga_clear_strings(&cookie.buflines);
-    vim_free(cookie.nextline);
-    vim_free(firstline);
+    mnv_free(cookie.nextline);
+    mnv_free(firstline);
     convert_setup(&cookie.conv, NULL, NULL);
 
     if (trigger_source_post)
@@ -2067,8 +2067,8 @@ theend:
     }
 #endif
 
-    vim_free(fname_not_fixed);
-    vim_free(fname_exp);
+    mnv_free(fname_not_fixed);
+    mnv_free(fname_exp);
     sticky_cmdmod_flags = save_sticky_cmdmod_flags;
 #ifdef FEAT_EVAL
     estack_compiling = save_estack_compiling;
@@ -2079,11 +2079,11 @@ theend:
     int
 do_source(
     char_u	*fname,
-    int		check_other,	    // check for .vimrc and _vimrc
-    int		is_vimrc,	    // DOSO_ value
+    int		check_other,	    // check for .mnvrc and _mnvrc
+    int		is_mnvrc,	    // DOSO_ value
     int		*ret_sid)
 {
-    return do_source_ext(fname, check_other, is_vimrc, ret_sid, NULL, FALSE);
+    return do_source_ext(fname, check_other, is_mnvrc, ret_sid, NULL, FALSE);
 }
 
 
@@ -2126,10 +2126,10 @@ ex_scriptnames(exarg_T *eap)
 
 	    home_replace(NULL, si->sn_name, NameBuff, MAXPATHL, TRUE);
 	    if (si->sn_sourced_sid > 0)
-		vim_snprintf(sourced_buf, 20, "->%d", si->sn_sourced_sid);
+		mnv_snprintf(sourced_buf, 20, "->%d", si->sn_sourced_sid);
 	    else
 		sourced_buf[0] = NUL;
-	    vim_snprintf((char *)IObuff, IOSIZE, "%3d%s%s: %s",
+	    mnv_snprintf((char *)IObuff, IOSIZE, "%3d%s%s: %s",
 		    i,
 		    sourced_buf,
 		    si->sn_state == SN_STATE_NOT_LOADED ? " A" : "",
@@ -2193,16 +2193,16 @@ free_scriptnames(void)
 	scriptitem_T *si = SCRIPT_ITEM(i);
 
 	// the variables themselves are cleared in evalvars_clear()
-	vim_free(si->sn_vars);
+	mnv_free(si->sn_vars);
 
-	vim_free(si->sn_name);
+	mnv_free(si->sn_name);
 	free_imports_and_script_vars(i);
 	free_string_option(si->sn_save_cpo);
 #  ifdef FEAT_PROFILE
 	ga_clear(&si->sn_prl_ga);
 #  endif
-	vim_free(si->sn_autoload_prefix);
-	vim_free(si);
+	mnv_free(si->sn_autoload_prefix);
+	mnv_free(si);
     }
     ga_clear(&script_items);
 }
@@ -2315,7 +2315,7 @@ f_getscriptinfo(typval_T *argvars, typval_T *rettv)
 	{
 	    pat = dict_get_string(argvars[0].vval.v_dict, "name", TRUE);
 	    if (pat != NULL)
-		regmatch.regprog = vim_regcomp(pat, RE_MAGIC + RE_STRING);
+		regmatch.regprog = mnv_regcomp(pat, RE_MAGIC + RE_STRING);
 	    if (regmatch.regprog != NULL)
 		filterpat = TRUE;
 	}
@@ -2330,7 +2330,7 @@ f_getscriptinfo(typval_T *argvars, typval_T *rettv)
 	if (si->sn_name == NULL)
 	    continue;
 
-	if (filterpat && !vim_regexec(&regmatch, si->sn_name, (colnr_T)0))
+	if (filterpat && !mnv_regexec(&regmatch, si->sn_name, (colnr_T)0))
 	    continue;
 
 	if ((d = dict_alloc()) == NULL
@@ -2359,8 +2359,8 @@ f_getscriptinfo(typval_T *argvars, typval_T *rettv)
 	}
     }
 
-    vim_regfree(regmatch.regprog);
-    vim_free(pat);
+    mnv_regfree(regmatch.regprog);
+    mnv_free(pat);
 }
 
 #endif
@@ -2480,7 +2480,7 @@ get_one_sourceline(source_cookie_T *sp)
     if (have_read)
 	return (char_u *)ga.ga_data;
 
-    vim_free(ga.ga_data);
+    mnv_free(ga.ga_data);
     return NULL;
 }
 
@@ -2501,9 +2501,9 @@ getsourceline(
     source_cookie_T	*sp = (source_cookie_T *)cookie;
     char_u		*line;
     char_u		*p;
-    int			do_vim9_all = in_vim9script()
+    int			do_mnv9_all = in_mnv9script()
 					      && options == GETLINE_CONCAT_ALL;
-    int			do_bar_cont = do_vim9_all
+    int			do_bar_cont = do_mnv9_all
 					 || options == GETLINE_CONCAT_CONTBAR;
 
 #ifdef FEAT_EVAL
@@ -2542,9 +2542,9 @@ getsourceline(
     // Only concatenate lines starting with a \ when 'cpoptions' doesn't
     // contain the 'C' flag.
     if (line != NULL && options != GETLINE_NONE
-				      && vim_strchr(p_cpo, CPO_CONCAT) == NULL)
+				      && mnv_strchr(p_cpo, CPO_CONCAT) == NULL)
     {
-	int comment_char = in_vim9script() ? '#' : '"';
+	int comment_char = in_mnv9script() ? '#' : '"';
 
 	// compensate for the one line read-ahead
 	--sp->sourcing_lnum;
@@ -2553,15 +2553,15 @@ getsourceline(
 	// backslash. We always need to read the next line, keep it in
 	// sp->nextline.
 	/* Also check for a comment in between continuation lines: "\ */
-	// Also check for a Vim9 comment, empty line, line starting with '|',
+	// Also check for a MNV9 comment, empty line, line starting with '|',
 	// but not "||".
 	sp->nextline = get_one_sourceline(sp);
 	if (sp->nextline != NULL
 		&& (*(p = skipwhite(sp->nextline)) == '\\'
 			      || (p[0] == comment_char
 						&& p[1] == '\\' && p[2] == ' ')
-			      || (do_vim9_all && (*p == NUL
-						     || vim9_comment_start(p)))
+			      || (do_mnv9_all && (*p == NUL
+						     || mnv9_comment_start(p)))
 			      || (do_bar_cont && p[0] == '|' && p[1] != '|')))
 	{
 	    garray_T    ga;
@@ -2577,7 +2577,7 @@ getsourceline(
 	    }
 	    for (;;)
 	    {
-		vim_free(sp->nextline);
+		mnv_free(sp->nextline);
 		sp->nextline = get_one_sourceline(sp);
 		if (sp->nextline == NULL)
 		    break;
@@ -2603,12 +2603,12 @@ getsourceline(
 		}
 		else if (!(p[0] == (comment_char)
 						&& p[1] == '\\' && p[2] == ' ')
-		     && !(do_vim9_all && (*p == NUL || vim9_comment_start(p))))
+		     && !(do_mnv9_all && (*p == NUL || mnv9_comment_start(p))))
 		    break;
 		/* drop a # comment or "\ comment line */
 	    }
 	    ga_append(&ga, NUL);
-	    vim_free(line);
+	    mnv_free(line);
 	    line = ga.ga_data;
 	}
     }
@@ -2621,7 +2621,7 @@ getsourceline(
 	s = string_convert(&sp->conv, line, NULL);
 	if (s != NULL)
 	{
-	    vim_free(line);
+	    mnv_free(line);
 	    line = s;
 	}
     }
@@ -2680,11 +2680,11 @@ ex_scriptencoding(exarg_T *eap)
     convert_setup(&sp->conv, name, p_enc);
 
     if (name != eap->arg)
-	vim_free(name);
+	mnv_free(name);
 }
 
 /*
- * ":scriptversion": Set Vim script version for a sourced script.
+ * ":scriptversion": Set MNV script version for a sourced script.
  */
     void
 ex_scriptversion(exarg_T *eap UNUSED)
@@ -2696,9 +2696,9 @@ ex_scriptversion(exarg_T *eap UNUSED)
 	emsg(_(e_scriptversion_used_outside_of_sourced_file));
 	return;
     }
-    if (in_vim9script())
+    if (in_mnv9script())
     {
-	emsg(_(e_cannot_use_scriptversion_after_vim9script));
+	emsg(_(e_cannot_use_scriptversion_after_mnv9script));
 	return;
     }
 
@@ -2790,7 +2790,7 @@ script_name_after_autoload(scriptitem_T *si)
 
 	if (n == NULL)
 	    break;
-	if (n > p && vim_ispathsep(n[-1]) && vim_ispathsep(n[8]))
+	if (n > p && mnv_ispathsep(n[-1]) && mnv_ispathsep(n[8]))
 	    res = n + 9;
 	p = n + 8;
     }
@@ -2798,7 +2798,7 @@ script_name_after_autoload(scriptitem_T *si)
 }
 
 /*
- * For an autoload script "autoload/dir/script.vim" return the prefix
+ * For an autoload script "autoload/dir/script.mnv" return the prefix
  * "dir#script#" in allocated memory.
  * Returns NULL if anything is wrong.
  */
@@ -2810,16 +2810,16 @@ get_autoload_prefix(scriptitem_T *si)
 
     if (p == NULL)
 	return NULL;
-    prefix = vim_strsave(p);
+    prefix = mnv_strsave(p);
     if (prefix == NULL)
 	return NULL;
 
-    // replace all '/' with '#' and locate ".vim" at the end
+    // replace all '/' with '#' and locate ".mnv" at the end
     for (p = prefix; *p != NUL; p += mb_ptr2len(p))
     {
-	if (vim_ispathsep(*p))
+	if (mnv_ispathsep(*p))
 	    *p = '#';
-	else if (STRCMP(p, ".vim") == 0)
+	else if (STRCMP(p, ".mnv") == 0)
 	{
 	    p[0] = '#';
 	    p[1] = NUL;
@@ -2827,13 +2827,13 @@ get_autoload_prefix(scriptitem_T *si)
 	}
     }
 
-    // did not find ".vim" at the end
-    vim_free(prefix);
+    // did not find ".mnv" at the end
+    mnv_free(prefix);
     return NULL;
 }
 
 /*
- * If in a Vim9 autoload script return "name" with the autoload prefix for the
+ * If in a MNV9 autoload script return "name" with the autoload prefix for the
  * script.  If successful the returned name is allocated.
  * Otherwise it returns "name" unmodified.
  */
@@ -2854,7 +2854,7 @@ may_prefix_autoload(char_u *name)
 
     if (*name == K_SPECIAL)
     {
-	char_u *p = vim_strchr(name, '_');
+	char_u *p = mnv_strchr(name, '_');
 
 	// skip over "<SNR>99_"
 	if (p != NULL)
@@ -2866,7 +2866,7 @@ may_prefix_autoload(char_u *name)
     if (res == NULL)
 	return NULL;
 
-    vim_snprintf((char *)res, len, "%s%s", si->sn_autoload_prefix, basename);
+    mnv_snprintf((char *)res, len, "%s%s", si->sn_autoload_prefix, basename);
     return res;
 }
 
@@ -2881,16 +2881,16 @@ autoload_name(char_u *name)
     char_u	*p, *q = NULL;
     char_u	*scriptname;
 
-    // Get the script file name: replace '#' with '/', append ".vim".
+    // Get the script file name: replace '#' with '/', append ".mnv".
     scriptname = alloc(STRLEN(name) + 14);
     if (scriptname == NULL)
 	return NULL;
     STRCPY(scriptname, "autoload/");
     STRCAT(scriptname, name[0] == 'g' && name[1] == ':' ? name + 2: name);
-    for (p = scriptname + 9; (p = vim_strchr(p, AUTOLOAD_CHAR)) != NULL;
+    for (p = scriptname + 9; (p = mnv_strchr(p, AUTOLOAD_CHAR)) != NULL;
 								    q = p, ++p)
 	*p = '/';
-    STRCPY(q, ".vim");
+    STRCPY(q, ".mnv");
     return scriptname;
 }
 
@@ -2922,7 +2922,7 @@ script_autoload(
     }
 
     // If there is no '#' after name[0] there is no package name.
-    p = vim_strchr(name, AUTOLOAD_CHAR);
+    p = mnv_strchr(name, AUTOLOAD_CHAR);
     if (p == NULL || p == name)
 	return FALSE;
 
@@ -2946,13 +2946,13 @@ script_autoload(
 	    tofree = NULL;
 	}
 
-	// Try loading the package from $VIMRUNTIME/autoload/<name>.vim
+	// Try loading the package from $MNVRUNTIME/autoload/<name>.mnv
 	// Use "ret_sid" to avoid loading the same script again.
 	if (source_in_path(p_rtp, scriptname, DIP_START, &ret_sid) == OK)
 	    ret = TRUE;
     }
 
-    vim_free(tofree);
+    mnv_free(tofree);
     return ret;
 }
 #endif

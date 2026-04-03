@@ -1,10 +1,10 @@
 /* vi:set ts=8 sts=4 sw=4 noet:
  *
- * VIM - Vi IMproved		by Bram Moolenaar
+ * MNV - MNV is not Vim		by Bram Moolenaar
  *
- * Do ":help uganda"  in Vim to read copying and usage conditions.
- * Do ":help credits" in Vim to see a list of people who contributed.
- * See README.txt for an overview of the Vim source code.
+ * Do ":help uganda"  in MNV to read copying and usage conditions.
+ * Do ":help credits" in MNV to see a list of people who contributed.
+ * See README.txt for an overview of the MNV source code.
  */
 
 /*
@@ -16,7 +16,7 @@
  * when using a dynamic scrollbar policy.
  */
 
-#include "vim.h"
+#include "mnv.h"
 
 #include <Xm/Form.h>
 #include <Xm/PushBG.h>
@@ -38,7 +38,7 @@
 #include <X11/StringDefs.h>
 #include <X11/Intrinsic.h>
 
-extern Widget vimShell;
+extern Widget mnvShell;
 
 #ifdef FEAT_MENU
 # define apply_fontlist(w) gui_motif_menu_fontlist(w)
@@ -168,9 +168,9 @@ name_part(char *font, char *buf)
     get_part(font, 1, buf3);
 
     if (*buf3 != NUL)
-	vim_snprintf(buf, TEMP_BUF_SIZE, "%s (%s)", buf2, buf3);
+	mnv_snprintf(buf, TEMP_BUF_SIZE, "%s (%s)", buf2, buf3);
     else
-	vim_snprintf(buf, TEMP_BUF_SIZE, "%s", buf2);
+	mnv_snprintf(buf, TEMP_BUF_SIZE, "%s", buf2);
 }
 
 /*
@@ -187,23 +187,23 @@ style_part(char *font, char *buf)
 
     if (!strcmp(buf2, "normal") && !strcmp(buf2, "Normal")
 						   && !strcmp(buf2, "NORMAL"))
-	vim_snprintf(buf, TEMP_BUF_SIZE, "%s %s", buf3, buf2);
+	mnv_snprintf(buf, TEMP_BUF_SIZE, "%s %s", buf3, buf2);
     else
 	strcpy(buf, buf3);
 
     get_part(font, 6, buf2);
 
     if (buf2[0] != '\0')
-	vim_snprintf(buf3, TEMP_BUF_SIZE, "%s %s", buf, buf2);
+	mnv_snprintf(buf3, TEMP_BUF_SIZE, "%s %s", buf, buf2);
     else
 	strcpy(buf3, buf);
 
     get_part(font, 4, buf2);
 
     if (!strcmp(buf2, "o") || !strcmp(buf2, "O"))
-	vim_snprintf(buf, TEMP_BUF_SIZE, "%s oblique", buf3);
+	mnv_snprintf(buf, TEMP_BUF_SIZE, "%s oblique", buf3);
     else if (!strcmp(buf2, "i") || !strcmp(buf2, "I"))
-	vim_snprintf(buf, TEMP_BUF_SIZE, "%s italic", buf3);
+	mnv_snprintf(buf, TEMP_BUF_SIZE, "%s italic", buf3);
 
     if (!strcmp(buf, " "))
 	strcpy(buf, "-");
@@ -261,7 +261,7 @@ encoding_part(char *font, char *buf)
     get_part(font, 14, buf2);
 
     if (*buf1 != NUL && *buf2 != NUL)
-	vim_snprintf(buf, TEMP_BUF_SIZE, "%s-%s", buf1, buf2);
+	mnv_snprintf(buf, TEMP_BUF_SIZE, "%s-%s", buf1, buf2);
     if (!strcmp(buf, " "))
 	strcpy(buf, "-");
 }
@@ -681,7 +681,7 @@ do_choice(Widget w,
 	    display_sample(data);
 	}
 	else
-	    do_dialog(VIM_ERROR,
+	    do_dialog(MNV_ERROR,
 		    (char_u *)_("Error"),
 		    (char_u *)_("Invalid font specification"),
 		    (char_u *)_("&Dismiss"), 1, NULL, FALSE);
@@ -800,7 +800,7 @@ ok_callback(Widget w UNUSED,
 
     if (i != 1)
     {
-	do_dialog(VIM_ERROR,
+	do_dialog(MNV_ERROR,
 		(char_u *)_("Error"),
 		(char_u *)_("Invalid font specification"),
 		(char_u *)_("&Dismiss"), 1, NULL, FALSE);
@@ -868,7 +868,7 @@ gui_xm_select_font(char_u *current)
 
     data = &_data;
 
-    parent = vimShell;
+    parent = mnvShell;
     data->names = XListFonts(XtDisplay(parent), "-*-*-*-*-*-*-*-*-*-*-*-*-*-*",
 						       MAX_FONTS, &data->num);
 
@@ -902,7 +902,7 @@ gui_xm_select_font(char_u *current)
 
     // Set the title of the Dialog window.
     data->dialog = XmCreateDialogShell(parent, "fontSelector", NULL, 0);
-    str = XmStringCreateLocalized(_("Vim - Font Selector"));
+    str = XmStringCreateLocalized(_("MNV - Font Selector"));
 
     // Create form popup dialog widget.
     form = XtVaCreateWidget("form",

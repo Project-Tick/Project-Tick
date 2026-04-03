@@ -1,5 +1,5 @@
 #!/bin/dash
-# Test file for vim the check () subshells
+# Test file for mnv the check () subshells
 ( cd ; $pwd ) | wc -c
 ( cd $1 ; $pwd ) | wc -c
 ( cd ${1} ; $pwd ) | wc -c
