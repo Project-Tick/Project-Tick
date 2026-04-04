@@ -50,7 +50,7 @@
 # include <sys/ioctl.h>
 #endif
 
-#if HAVE_STROPTS_H
+#ifdef HAVE_STROPTS_H
 # include <sys/types.h>
 # ifdef sinix
 #  define buf_T __system_buf_t__
@@ -71,7 +71,7 @@
 # include <unistd.h>
 #endif
 
-#if HAVE_TERMIO_H
+#ifdef HAVE_TERMIO_H
 # include <termio.h>
 #else
 # ifdef HAVE_TERMIOS_H
@@ -79,11 +79,11 @@
 # endif
 #endif
 
-#if HAVE_SYS_STREAM_H
+#ifdef HAVE_SYS_STREAM_H
 # include <sys/stream.h>
 #endif
 
-#if HAVE_SYS_PTEM_H
+#ifdef HAVE_SYS_PTEM_H
 # include <sys/ptem.h>
 #endif
 
