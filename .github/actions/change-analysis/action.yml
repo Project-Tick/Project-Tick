@@ -217,7 +217,8 @@ runs:
 
         # Parse Conventional Commits: type(scope): subject
         # Also handles: type: subject, type!: subject, type(scope)!: subject
-        if [[ "$FULL_MSG" =~ ^([a-zA-Z]+)(\(([^)]*)\))?(!)?\:\ (.+)$ ]]; then
+        COMMIT_RE='^([a-zA-Z]+)(\(([^)]*)\))?(!)?\:\ (.+)$'
+        if [[ "$FULL_MSG" =~ $COMMIT_RE ]]; then
           TYPE="${BASH_REMATCH[1]}"
           SCOPE="${BASH_REMATCH[3]:-}"
           BREAKING="${BASH_REMATCH[4]:-}"
