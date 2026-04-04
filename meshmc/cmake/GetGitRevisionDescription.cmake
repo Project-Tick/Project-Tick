@@ -64,7 +64,7 @@ get_filename_component(_gitdescmoddir ${CMAKE_CURRENT_LIST_FILE} PATH)
 #
 function(_git_find_closest_git_dir _start_dir _git_dir_var)
     set(cur_dir "${_start_dir}")
-    set(git_dir "${_start_dir}/.git")
+    set(git_dir "${_start_dir}/../.git")
     while(NOT EXISTS "${git_dir}")
         # .git dir not found, search parent directories
         set(git_previous_parent "${cur_dir}")
@@ -76,7 +76,7 @@ function(_git_find_closest_git_dir _start_dir _git_dir_var)
                 PARENT_SCOPE)
             return()
         endif()
-        set(git_dir "${cur_dir}/.git")
+        set(git_dir "${cur_dir}/../.git")
     endwhile()
     set(${_git_dir_var}
         "${git_dir}"
@@ -84,7 +84,7 @@ function(_git_find_closest_git_dir _start_dir _git_dir_var)
 endfunction()
 
 function(get_git_head_revision _refspecvar _hashvar)
-    _git_find_closest_git_dir("${CMAKE_CURRENT_SOURCE_DIR}" GIT_DIR)
+    _git_find_closest_git_dir("${CMAKE_CURRENT_SOURCE_DIR}/../" GIT_DIR)
 
     if("${ARGN}" STREQUAL "ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR")
         set(ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR TRUE)
@@ -176,7 +176,7 @@ function(git_describe _var)
     if(NOT GIT_FOUND)
         find_package(Git QUIET)
     endif()
-    get_git_head_revision(refspec hash)
+    get_git_head_revision(refspec hash ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
     if(NOT GIT_FOUND)
         set(${_var}
             "GIT-NOTFOUND"
@@ -252,7 +252,7 @@ function(git_local_changes _var)
     if(NOT GIT_FOUND)
         find_package(Git QUIET)
     endif()
-    get_git_head_revision(refspec hash)
+    get_git_head_revision(refspec hash ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
     if(NOT GIT_FOUND)
         set(${_var}
             "GIT-NOTFOUND"

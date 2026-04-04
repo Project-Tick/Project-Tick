@@ -258,7 +258,7 @@ set(MeshMC_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
 
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
-get_git_head_revision(MeshMC_GIT_REFSPEC MeshMC_GIT_COMMIT)
+get_git_head_revision(MeshMC_GIT_REFSPEC MeshMC_GIT_COMMIT ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
 git_get_exact_tag(MeshMC_GIT_TAG)
 
 message(STATUS "Git commit: ${MeshMC_GIT_COMMIT}")
