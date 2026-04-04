@@ -505,7 +505,7 @@ mch_is_gui_executable(void)
 }
 #endif
 
-#if defined(DYNAMIC_ICONV) || defined(DYNAMIC_GETTEXT) \
+#if defined(DYNAMIC_ICONV) \
     || defined(FEAT_PYTHON3)
 /*
  * Get related information about 'funcname' which is imported by 'hInst'.
@@ -671,166 +671,6 @@ get_forwarded_dll(HINSTANCE hInst)
     return GetModuleHandleA(buf);
 }
 #endif
-
-#if defined(DYNAMIC_GETTEXT)
-# ifndef GETTEXT_DLL
-#  define GETTEXT_DLL "libintl.dll"
-#  define GETTEXT_DLL_ALT1 "libintl-8.dll"
-#  define GETTEXT_DLL_ALT2 "intl.dll"
-# endif
-// Dummy functions
-static char *null_libintl_gettext(const char *);
-static char *null_libintl_ngettext(const char *, const char *, unsigned long n);
-static char *null_libintl_textdomain(const char *);
-static char *null_libintl_bindtextdomain(const char *, const char *);
-static char *null_libintl_bind_textdomain_codeset(const char *, const char *);
-static int null_libintl_wputenv(const wchar_t *);
-
-static HINSTANCE hLibintlDLL = NULL;
-char *(*dyn_libintl_gettext)(const char *) = null_libintl_gettext;
-char *(*dyn_libintl_ngettext)(const char *, const char *, unsigned long n)
-						= null_libintl_ngettext;
-char *(*dyn_libintl_textdomain)(const char *) = null_libintl_textdomain;
-char *(*dyn_libintl_bindtextdomain)(const char *, const char *)
-						= null_libintl_bindtextdomain;
-char *(*dyn_libintl_bind_textdomain_codeset)(const char *, const char *)
-				       = null_libintl_bind_textdomain_codeset;
-int (*dyn_libintl_wputenv)(const wchar_t *) = null_libintl_wputenv;
-
-    int
-dyn_libintl_init(void)
-{
-    int i;
-    static struct
-    {
-	char	    *name;
-	FARPROC	    *ptr;
-    } libintl_entry[] =
-    {
-	{"gettext", (FARPROC*)&dyn_libintl_gettext},
-	{"ngettext", (FARPROC*)&dyn_libintl_ngettext},
-	{"textdomain", (FARPROC*)&dyn_libintl_textdomain},
-	{"bindtextdomain", (FARPROC*)&dyn_libintl_bindtextdomain},
-	{NULL, NULL}
-    };
-    HINSTANCE hmsvcrt;
-
-    // No need to initialize twice.
-    if (hLibintlDLL != NULL)
-	return 1;
-    // Load gettext library (libintl.dll and other names).
-    hLibintlDLL = mnvLoadLib(GETTEXT_DLL);
-# ifdef GETTEXT_DLL_ALT1
-    if (!hLibintlDLL)
-	hLibintlDLL = mnvLoadLib(GETTEXT_DLL_ALT1);
-# endif
-# ifdef GETTEXT_DLL_ALT2
-    if (!hLibintlDLL)
-	hLibintlDLL = mnvLoadLib(GETTEXT_DLL_ALT2);
-# endif
-    if (!hLibintlDLL)
-    {
-	if (p_verbose > 0)
-	{
-	    verbose_enter();
-	    semsg(_(e_could_not_load_library_str_str), GETTEXT_DLL, GetWin32Error());
-	    verbose_leave();
-	}
-	return 0;
-    }
-    for (i = 0; libintl_entry[i].name != NULL
-					 && libintl_entry[i].ptr != NULL; ++i)
-    {
-	if ((*libintl_entry[i].ptr = GetProcAddress(hLibintlDLL,
-					      libintl_entry[i].name)) == NULL)
-	{
-	    dyn_libintl_end();
-	    if (p_verbose > 0)
-	    {
-		verbose_enter();
-		semsg(_(e_could_not_load_library_function_str), libintl_entry[i].name);
-		verbose_leave();
-	    }
-	    return 0;
-	}
-    }
-
-    // The bind_textdomain_codeset() function is optional.
-    dyn_libintl_bind_textdomain_codeset = (char *(*)(const char *, const char *))
-			GetProcAddress(hLibintlDLL, "bind_textdomain_codeset");
-    if (dyn_libintl_bind_textdomain_codeset == NULL)
-	dyn_libintl_bind_textdomain_codeset =
-					 null_libintl_bind_textdomain_codeset;
-
-    // _wputenv() function for the libintl.dll is optional.
-    hmsvcrt = find_imported_module_by_funcname(hLibintlDLL, "getenv");
-    if (hmsvcrt != NULL)
-	dyn_libintl_wputenv = (int (*)(const wchar_t *))
-					GetProcAddress(hmsvcrt, "_wputenv");
-    if (dyn_libintl_wputenv == NULL || dyn_libintl_wputenv == _wputenv)
-	dyn_libintl_wputenv = null_libintl_wputenv;
-
-    return 1;
-}
-
-    void
-dyn_libintl_end(void)
-{
-    if (hLibintlDLL)
-	FreeLibrary(hLibintlDLL);
-    hLibintlDLL			= NULL;
-    dyn_libintl_gettext		= null_libintl_gettext;
-    dyn_libintl_ngettext	= null_libintl_ngettext;
-    dyn_libintl_textdomain	= null_libintl_textdomain;
-    dyn_libintl_bindtextdomain	= null_libintl_bindtextdomain;
-    dyn_libintl_bind_textdomain_codeset = null_libintl_bind_textdomain_codeset;
-    dyn_libintl_wputenv		= null_libintl_wputenv;
-}
-
-    static char *
-null_libintl_gettext(const char *msgid)
-{
-    return (char*)msgid;
-}
-
-    static char *
-null_libintl_ngettext(
-	const char *msgid,
-	const char *msgid_plural,
-	unsigned long n)
-{
-    return (char *)(n == 1 ? msgid : msgid_plural);
-}
-
-    static char *
-null_libintl_bindtextdomain(
-	const char *domainname UNUSED,
-	const char *dirname UNUSED)
-{
-    return NULL;
-}
-
-    static char *
-null_libintl_bind_textdomain_codeset(
-	const char *domainname UNUSED,
-	const char *codeset UNUSED)
-{
-    return NULL;
-}
-
-    static char *
-null_libintl_textdomain(const char *domainname UNUSED)
-{
-    return NULL;
-}
-
-    static int
-null_libintl_wputenv(const wchar_t *envstring UNUSED)
-{
-    return 0;
-}
-
-#endif // DYNAMIC_GETTEXT
 
 // This symbol is not defined in older versions of the SDK or Visual C++
 
@@ -3595,10 +3435,6 @@ mch_exit_c(int r)
     SetConsoleCursorInfo(g_hConOut, &g_cci);
     SetConsoleMode(g_hConIn,  g_cmodein | ENABLE_EXTENDED_FLAGS);
     SetConsoleMode(g_hConOut, g_cmodeout);
-
-# ifdef DYNAMIC_GETTEXT
-    dyn_libintl_end();
-# endif
 
     exit(r);
 }

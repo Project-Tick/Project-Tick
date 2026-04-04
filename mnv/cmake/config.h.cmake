@@ -231,13 +231,17 @@
 #cmakedefine HAVE_CANBERRA
 #cmakedefine FEAT_CSCOPE
 #cmakedefine FEAT_EVAL
-#cmakedefine FEAT_MULTI_LANG
 #cmakedefine FEAT_BEVAL
 #cmakedefine FEAT_XIM
 #cmakedefine FEAT_XSMP
 #cmakedefine FEAT_CLIENTSERVER
 #cmakedefine FEAT_CLIPBOARD
 #cmakedefine FEAT_MOUSE_GPM
+#cmakedefine FEAT_GUI
+#cmakedefine FEAT_GUI_GTK
+#cmakedefine USE_GTK3
+#cmakedefine FEAT_GUI_MOTIF
+#cmakedefine FEAT_GUI_X11
 #cmakedefine FEAT_WAYLAND
 #cmakedefine FEAT_WAYLAND_CLIPBOARD
 #cmakedefine FEAT_IPV6
@@ -259,11 +263,6 @@
 
 /* Encryption */
 #cmakedefine HAVE_SODIUM
-
-/* Gettext / NLS */
-#cmakedefine HAVE_GETTEXT
-#cmakedefine HAVE_DGETTEXT
-#cmakedefine HAVE_NGETTEXT
 
 /* select() argument types */
 #ifndef SELECT_TYPE_ARG1

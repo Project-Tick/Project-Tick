@@ -3895,6 +3895,7 @@ get_buf_arg(typval_T *arg)
 
 /*
  * "bindtextdomain(package, path)" function
+ * Gettext support removed — this is a no-op.
  */
     static void
 f_bindtextdomain(typval_T *argvars, typval_T *rettv)
@@ -3905,19 +3906,6 @@ f_bindtextdomain(typval_T *argvars, typval_T *rettv)
     if (check_for_nonempty_string_arg(argvars, 0) == FAIL
 	    || check_for_nonempty_string_arg(argvars, 1) == FAIL)
 	return;
-
-    if (strcmp((const char *)argvars[0].vval.v_string, MNVPACKAGE) == 0)
-	semsg(_(e_invalid_argument_str), tv_get_string(&argvars[0]));
-    else
-    {
-	if (bindtextdomain((const char *)argvars[0].vval.v_string, (const char *)argvars[1].vval.v_string) == NULL)
-	{
-	    do_outofmem_msg((long)0);
-	    rettv->vval.v_number = VVAL_FALSE;
-	}
-    }
-
-    return;
 }
 
 /*
@@ -6619,39 +6607,12 @@ f_gettagstack(typval_T *argvars, typval_T *rettv)
     static void
 f_gettext(typval_T *argvars, typval_T *rettv)
 {
-#if defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-    char *prev = NULL;
-#endif
-
     if (check_for_nonempty_string_arg(argvars, 0) == FAIL
 	|| check_for_opt_string_arg(argvars, 1) == FAIL)
 	return;
 
     rettv->v_type = VAR_STRING;
-
-    if (argvars[1].v_type == VAR_STRING &&
-	    argvars[1].vval.v_string != NULL &&
-	    *(argvars[1].vval.v_string) != NUL)
-    {
-#if defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-	prev = bind_textdomain_codeset((const char *)argvars[1].vval.v_string, (char *)p_enc);
-#endif
-
-#if defined(HAVE_DGETTEXT)
-	rettv->vval.v_string = mnv_strsave((char_u *)dgettext((const char *)argvars[1].vval.v_string, (const char *)argvars[0].vval.v_string));
-#else
-	textdomain((const char *)argvars[1].vval.v_string);
-	rettv->vval.v_string = mnv_strsave((char_u *)_(argvars[0].vval.v_string));
-	textdomain(MNVPACKAGE);
-#endif
-
-#if defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-	if (prev != NULL)
-	    bind_textdomain_codeset((const char *)argvars[1].vval.v_string, prev);
-#endif
-    }
-    else
-	rettv->vval.v_string = mnv_strsave((char_u *)_(argvars[0].vval.v_string));
+    rettv->vval.v_string = mnv_strsave((char_u *)_(argvars[0].vval.v_string));
 }
 
 // for MNV_VERSION_ defines
@@ -7083,11 +7044,7 @@ f_has(typval_T *argvars, typval_T *rettv)
 #endif
 		},
 	{"gettext",
-#ifdef FEAT_GETTEXT
-		1
-#else
 		0
-#endif
 		},
 	{"gui",
 #ifdef FEAT_GUI
@@ -9817,10 +9774,6 @@ f_nextnonblank(typval_T *argvars, typval_T *rettv)
     static void
 f_ngettext(typval_T *argvars, typval_T *rettv)
 {
-#if defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-    char *prev = NULL;
-#endif
-
     if (check_for_nonempty_string_arg(argvars, 0) == FAIL
 	|| check_for_nonempty_string_arg(argvars, 1) == FAIL
 	|| check_for_number_arg(argvars, 2) == FAIL
@@ -9828,30 +9781,7 @@ f_ngettext(typval_T *argvars, typval_T *rettv)
 	return;
 
     rettv->v_type = VAR_STRING;
-
-    if (argvars[3].v_type == VAR_STRING &&
-	    argvars[3].vval.v_string != NULL &&
-	    *(argvars[3].vval.v_string) != NUL)
-    {
-#if defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-	prev = bind_textdomain_codeset((const char *)argvars[3].vval.v_string, (char *)p_enc);
-#endif
-
-#if defined(HAVE_DNGETTEXT)
-	rettv->vval.v_string = mnv_strsave((char_u *)dngettext((const char *)argvars[3].vval.v_string, (const char *)argvars[0].vval.v_string, (const char *)argvars[1].vval.v_string, (int)argvars[2].vval.v_number));
-#else
-	textdomain((const char *)argvars[3].vval.v_string);
-	rettv->vval.v_string = mnv_strsave((char_u *)NGETTEXT((const char *)argvars[0].vval.v_string, (const char *)argvars[1].vval.v_string, argvars[2].vval.v_number));
-	textdomain(MNVPACKAGE);
-#endif
-
-#if defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-	if (prev != NULL)
-	    bind_textdomain_codeset((const char *)argvars[3].vval.v_string, prev);
-#endif
-    }
-    else
-	rettv->vval.v_string = mnv_strsave((char_u *)NGETTEXT((const char *)argvars[0].vval.v_string, (const char *)argvars[1].vval.v_string, argvars[2].vval.v_number));
+    rettv->vval.v_string = mnv_strsave((char_u *)NGETTEXT((const char *)argvars[0].vval.v_string, (const char *)argvars[1].vval.v_string, argvars[2].vval.v_number));
 }
 
 

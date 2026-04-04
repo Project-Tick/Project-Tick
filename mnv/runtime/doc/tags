@@ -482,7 +482,7 @@ $quote	eval.txt	/*$quote*
 'lcs'	options.txt	/*'lcs'*
 'lhi'	options.txt	/*'lhi'*
 'lhistory'	options.txt	/*'lhistory'*
-'license'   license.txt /*'license'*
+'license'	license.txt	/*'license'*
 'linebreak'	options.txt	/*'linebreak'*
 'lines'	options.txt	/*'lines'*
 'linespace'	options.txt	/*'linespace'*
@@ -890,7 +890,6 @@ $quote	eval.txt	/*$quote*
 'printmbfont'	options.txt	/*'printmbfont'*
 'printoptions'	options.txt	/*'printoptions'*
 'prompt'	options.txt	/*'prompt'*
-'projecttick'  projecttick.txt /*'projecttick'*
 'pt'	options.txt	/*'pt'*
 'pumborder'	options.txt	/*'pumborder'*
 'pumheight'	options.txt	/*'pumheight'*
@@ -10014,6 +10013,8 @@ profiling-variable	eval.txt	/*profiling-variable*
 progname-variable	eval.txt	/*progname-variable*
 progpath-variable	eval.txt	/*progpath-variable*
 progress.mnv	syntax.txt	/*progress.mnv*
+projecttick	projecttick.txt	/*projecttick*
+projecttick.txt	projecttick.txt	/*projecttick.txt*
 prompt-buffer	channel.txt	/*prompt-buffer*
 prompt_getprompt()	builtin.txt	/*prompt_getprompt()*
 prompt_setcallback()	builtin.txt	/*prompt_setcallback()*

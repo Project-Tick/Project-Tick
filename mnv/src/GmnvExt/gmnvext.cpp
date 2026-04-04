@@ -176,199 +176,13 @@ IconToBitmap(HICON hIcon, HBRUSH hBackground, int width, int height)
 }
 
 //
-// GETTEXT: translated messages and menu entries
+// GETTEXT: removed — no translation support
 //
-#ifndef FEAT_GETTEXT
-# define _(x)	    x
-# define W_impl(x) _wcsdup(L##x)
-# define W(x)	    W_impl(x)
-# define set_gettext_codeset()	    NULL
-# define restore_gettext_codeset(x)
-#else
-# define _(x)	    (*dyn_libintl_gettext)(x)
-# define W(x)	    utf8_to_utf16(x)
-# define MNVPACKAGE "mnv"
-# ifndef GETTEXT_DLL
-#  define GETTEXT_DLL "libintl.dll"
-#  define GETTEXT_DLL_ALT "libintl-8.dll"
-# endif
-
-// Dummy functions
-static char *null_libintl_gettext(const char *);
-static char *null_libintl_textdomain(const char *);
-static char *null_libintl_bindtextdomain(const char *, const char *);
-static char *null_libintl_bind_textdomain_codeset(const char *, const char *);
-static int dyn_libintl_init(char *dir);
-static void dyn_libintl_end(void);
-
-static HINSTANCE hLibintlDLL = 0;
-static char *(*dyn_libintl_gettext)(const char *) = null_libintl_gettext;
-static char *(*dyn_libintl_textdomain)(const char *) = null_libintl_textdomain;
-static char *(*dyn_libintl_bindtextdomain)(const char *, const char *)
-						= null_libintl_bindtextdomain;
-static char *(*dyn_libintl_bind_textdomain_codeset)(const char *, const char *)
-				       = null_libintl_bind_textdomain_codeset;
-
-//
-// Attempt to load libintl.dll.  If it doesn't work, use dummy functions.
-// "dir" is the directory where the libintl.dll might be.
-// Return 1 for success, 0 for failure.
-//
-    static int
-dyn_libintl_init(char *dir)
-{
-    int		i;
-    static struct
-    {
-	char	    *name;
-	FARPROC	    *ptr;
-    } libintl_entry[] =
-    {
-	{(char *)"gettext",		(FARPROC*)&dyn_libintl_gettext},
-	{(char *)"textdomain",		(FARPROC*)&dyn_libintl_textdomain},
-	{(char *)"bindtextdomain",	(FARPROC*)&dyn_libintl_bindtextdomain},
-	{(char *)"bind_textdomain_codeset", (FARPROC*)&dyn_libintl_bind_textdomain_codeset},
-	{NULL, NULL}
-    };
-    DWORD	len, len2;
-    LPWSTR	buf = NULL;
-    LPWSTR	buf2 = NULL;
-
-    // No need to initialize twice.
-    if (hLibintlDLL)
-	return 1;
-
-    // Load gettext library from $MNVRUNTIME\GmnvExt{64,32} directory.
-    // Add the directory to $PATH temporarily.
-    len = GetEnvironmentVariableW(L"PATH", NULL, 0);
-    len2 = MAX_PATH + 1 + len;
-    buf = (LPWSTR)malloc(len * sizeof(WCHAR));
-    buf2 = (LPWSTR)malloc(len2 * sizeof(WCHAR));
-    if (buf != NULL && buf2 != NULL)
-    {
-	GetEnvironmentVariableW(L"PATH", buf, len);
-# ifdef _WIN64
-	_snwprintf(buf2, len2, L"%S\\GmnvExt64;%s", dir, buf);
-# else
-	_snwprintf(buf2, len2, L"%S\\GmnvExt32;%s", dir, buf);
-# endif
-	SetEnvironmentVariableW(L"PATH", buf2);
-	hLibintlDLL = LoadLibrary(GETTEXT_DLL);
-# ifdef GETTEXT_DLL_ALT
-	if (!hLibintlDLL)
-	    hLibintlDLL = LoadLibrary(GETTEXT_DLL_ALT);
-# endif
-	SetEnvironmentVariableW(L"PATH", buf);
-    }
-    free(buf);
-    free(buf2);
-    if (!hLibintlDLL)
-	return 0;
-
-    // Get the addresses of the functions we need.
-    for (i = 0; libintl_entry[i].name != NULL
-					 && libintl_entry[i].ptr != NULL; ++i)
-    {
-	if ((*libintl_entry[i].ptr = GetProcAddress(hLibintlDLL,
-					      libintl_entry[i].name)) == NULL)
-	{
-	    dyn_libintl_end();
-	    return 0;
-	}
-    }
-    return 1;
-}
-
-    static void
-dyn_libintl_end(void)
-{
-    if (hLibintlDLL)
-	FreeLibrary(hLibintlDLL);
-    hLibintlDLL			= NULL;
-    dyn_libintl_gettext		= null_libintl_gettext;
-    dyn_libintl_textdomain	= null_libintl_textdomain;
-    dyn_libintl_bindtextdomain	= null_libintl_bindtextdomain;
-    dyn_libintl_bind_textdomain_codeset	= null_libintl_bind_textdomain_codeset;
-}
-
-    static char *
-null_libintl_gettext(const char *msgid)
-{
-    return (char *)msgid;
-}
-
-    static char *
-null_libintl_textdomain(const char * /* domainname */)
-{
-    return NULL;
-}
-
-    static char *
-null_libintl_bindtextdomain(const char * /* domainname */, const char * /* dirname */)
-{
-    return NULL;
-}
-
-    static char *
-null_libintl_bind_textdomain_codeset(const char * /* domainname */, const char * /* codeset */)
-{
-    return NULL;
-}
-
-//
-// Setup for translating strings.
-//
-    static void
-dyn_gettext_load(void)
-{
-    char    szBuff[BUFSIZE];
-    DWORD   len;
-
-    // Try to locate the runtime files.  The path is used to find libintl.dll
-    // and the mnv.mo files.
-    getRuntimeDir(szBuff);
-    if (szBuff[0] != 0)
-    {
-	len = (DWORD)strlen(szBuff);
-	if (dyn_libintl_init(szBuff))
-	{
-	    strcpy(szBuff + len, "lang");
-
-	    (*dyn_libintl_bindtextdomain)(MNVPACKAGE, szBuff);
-	    (*dyn_libintl_textdomain)(MNVPACKAGE);
-	}
-    }
-}
-
-    static void
-dyn_gettext_free(void)
-{
-    dyn_libintl_end();
-}
-
-//
-// Use UTF-8 for gettext. Returns previous codeset.
-//
-    static char *
-set_gettext_codeset(void)
-{
-    char *prev = dyn_libintl_bind_textdomain_codeset(MNVPACKAGE, NULL);
-    prev = _strdup((prev != NULL) ? prev : "char");
-    dyn_libintl_bind_textdomain_codeset(MNVPACKAGE, "utf-8");
-
-    return prev;
-}
-
-//
-// Restore previous codeset for gettext.
-//
-    static void
-restore_gettext_codeset(char *prev)
-{
-    dyn_libintl_bind_textdomain_codeset(MNVPACKAGE, prev);
-    free(prev);
-}
-#endif // FEAT_GETTEXT
+#define _(x)	    x
+#define W_impl(x) _wcsdup(L##x)
+#define W(x)	    W_impl(x)
+#define set_gettext_codeset()	    NULL
+#define restore_gettext_codeset(x)
 
 //
 // Global variables
@@ -400,22 +214,13 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID  /* lpReserved */)
     static void
 inc_cRefThisDLL()
 {
-#ifdef FEAT_GETTEXT
-    if (g_cRefThisDll == 0)
-	dyn_gettext_load();
-#endif
     InterlockedIncrement((LPLONG)&g_cRefThisDll);
 }
 
     static void
 dec_cRefThisDLL()
 {
-#ifdef FEAT_GETTEXT
-    if (InterlockedDecrement((LPLONG)&g_cRefThisDll) == 0)
-	dyn_gettext_free();
-#else
     InterlockedDecrement((LPLONG)&g_cRefThisDll);
-#endif
 }
 
 //---------------------------------------------------------------------------

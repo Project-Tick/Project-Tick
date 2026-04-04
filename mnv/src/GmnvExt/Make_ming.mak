@@ -87,7 +87,7 @@ $(DLL): $(OBJ) $(RES) $(DEFFILE)
 		-Wl,-Bstatic $(STATIC_LIBS) -Wl,-Bdynamic
 
 gmnvext.o: gmnvext.cpp
-	$(CXX) $(CXXFLAGS) -DFEAT_GETTEXT -DWINVER=$(WINVER) -D_WIN32_WINNT=$(WINVER) -c $? -o $@
+	$(CXX) $(CXXFLAGS) -DWINVER=$(WINVER) -D_WIN32_WINNT=$(WINVER) -c $? -o $@
 
 $(RES): gmnvext_ming.rc
 	$(WINDRES) $(WINDRES_FLAGS) --input-format=rc --output-format=coff -DMING $? -o $@

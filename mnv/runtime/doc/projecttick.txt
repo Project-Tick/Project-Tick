@@ -1,4 +1,4 @@
-*projecttick.txt*	For MNV version 10.0.  Last change: 2026 Apr 3
+*projecttick.txt*	*projecttick*	For MNV version 10.0.  Last change: 2026 Apr 3
 
 
 		  MNV REFERENCE MANUAL	  by Mehmet Samet Duman

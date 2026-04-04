@@ -2084,22 +2084,7 @@ mnv_setenv(char_u *name, char_u *val)
 	putenv((char *)envbuf);
     }
 #endif
-#ifdef FEAT_GETTEXT
-    /*
-     * When setting $MNVRUNTIME adjust the directory to find message
-     * translations to $MNVRUNTIME/lang.
-     */
-    if (*val != NUL && STRICMP(name, "MNVRUNTIME") == 0)
-    {
-	char_u	*buf = concat_str(val, (char_u *)"/lang");
 
-	if (buf != NULL)
-	{
-	    bindtextdomain(MNVPACKAGE, (char *)buf);
-	    mnv_free(buf);
-	}
-    }
-#endif
 }
 
 /*

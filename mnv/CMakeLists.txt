@@ -19,7 +19,6 @@
 cmake_minimum_required(VERSION 3.15)
 
 project(MNV
-    VERSION 10.0
     DESCRIPTION "MNV - MNV is not Vim"
     LANGUAGES C
 )
@@ -55,7 +54,6 @@ option(MNV_CSCOPE      "Enable cscope interface"               ON)
 option(MNV_SOUND       "Enable sound support (canberra)"       ON)
 option(MNV_ACL         "Enable ACL support"                    ON)
 option(MNV_GPM         "Enable GPM mouse support"              ON)
-option(MNV_NLS         "Enable National Language Support"      ON)
 option(MNV_SODIUM      "Enable libsodium encryption"           ON)
 option(MNV_MULTIBYTE   "Enable multibyte support"              ON)
 option(MNV_XIM         "Enable X Input Method support"         ON)
@@ -86,8 +84,8 @@ set(MNV_COMPILED_BY "" CACHE STRING "Name of the person compiling MNV")
 # Version info
 ###############################################################################
 
-set(MNV_MAJOR ${PROJECT_VERSION_MAJOR})
-set(MNV_MINOR ${PROJECT_VERSION_MINOR})
+set(MNV_MAJOR 10)
+set(MNV_MINOR 0)
 set(MNV_NAME "mnv")
 set(MNV_EX_NAME "ex")
 set(MNV_VIEW_NAME "view")
@@ -462,6 +460,7 @@ if(MNV_GUI STREQUAL "auto" OR MNV_GUI STREQUAL "gtk3")
             set(_gui_found TRUE)
             set(FEAT_GUI 1)
             set(FEAT_GUI_GTK 1)
+            set(USE_GTK3 1)
             set(GUI_SRC
                 gui.c
                 gui_gtk.c
@@ -536,24 +535,6 @@ if(MNV_SOUND AND PKG_CONFIG_FOUND)
     if(CANBERRA_FOUND)
         set(FEAT_SOUND 1)
         set(HAVE_CANBERRA 1)
-    endif()
-endif()
-
-###############################################################################
-# NLS / gettext
-###############################################################################
-
-if(MNV_NLS)
-    find_package(Intl QUIET)
-    find_package(Gettext QUIET)
-    if(Intl_FOUND)
-        set(FEAT_MULTI_LANG 1)
-        # Check for gettext functions
-        set(CMAKE_REQUIRED_LIBRARIES ${Intl_LIBRARIES})
-        check_function_exists(gettext    HAVE_GETTEXT)
-        check_function_exists(dgettext   HAVE_DGETTEXT)
-        check_function_exists(ngettext   HAVE_NGETTEXT)
-        unset(CMAKE_REQUIRED_LIBRARIES)
     endif()
 endif()
 
@@ -822,6 +803,13 @@ target_compile_definitions(xdiff PRIVATE
     UNIX
 )
 
+if(FEAT_GUI)
+    target_include_directories(xdiff PRIVATE ${GUI_INCLUDE_DIRS})
+    if(GUI_CFLAGS)
+        target_compile_options(xdiff PRIVATE ${GUI_CFLAGS})
+    endif()
+endif()
+
 ###############################################################################
 # MNV core source files
 ###############################################################################
@@ -1078,7 +1066,6 @@ if(HAVE_WAYLAND)
     target_include_directories(mnv PRIVATE ${WAYLAND_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/auto/wayland
     )
-    target_compile_definitions(mnv PRIVATE FEAT_WAYLAND FEAT_WAYLAND_CLIPBOARD)
     if(TARGET wayland_protocols)
         add_dependencies(mnv wayland_protocols)
     endif()
@@ -1097,12 +1084,6 @@ endif()
 if(FEAT_SOUND AND CANBERRA_FOUND)
     target_link_libraries(mnv PRIVATE ${CANBERRA_LIBRARIES})
     target_include_directories(mnv PRIVATE ${CANBERRA_INCLUDE_DIRS})
-endif()
-
-# NLS
-if(FEAT_MULTI_LANG AND Intl_FOUND)
-    target_link_libraries(mnv PRIVATE ${Intl_LIBRARIES})
-    target_include_directories(mnv PRIVATE ${Intl_INCLUDE_DIRS})
 endif()
 
 # ACL
@@ -1204,6 +1185,12 @@ if(MNV_BUILD_TESTS)
         if(HAVE_X11)
             target_link_libraries(${TEST_NAME} PRIVATE ${X11_LIBRARIES})
             target_include_directories(${TEST_NAME} PRIVATE ${X11_INCLUDE_DIR})
+            if(X11_Xt_FOUND)
+                target_link_libraries(${TEST_NAME} PRIVATE ${X11_Xt_LIB})
+            endif()
+            if(X11_SM_FOUND AND FEAT_XSMP)
+                target_link_libraries(${TEST_NAME} PRIVATE ${X11_SM_LIB} ${X11_ICE_LIB})
+            endif()
         endif()
         if(TERM_INCLUDE_DIRS)
             target_include_directories(${TEST_NAME} PRIVATE ${TERM_INCLUDE_DIRS})
@@ -1228,11 +1215,15 @@ if(MNV_BUILD_TESTS)
         if(FEAT_SOUND AND CANBERRA_FOUND)
             target_link_libraries(${TEST_NAME} PRIVATE ${CANBERRA_LIBRARIES})
         endif()
-        if(FEAT_MULTI_LANG AND Intl_FOUND)
-            target_link_libraries(${TEST_NAME} PRIVATE ${Intl_LIBRARIES})
-        endif()
         if(FEAT_MOUSE_GPM AND GPM_LIB)
             target_link_libraries(${TEST_NAME} PRIVATE ${GPM_LIB})
+        endif()
+        if(FEAT_GUI)
+            target_link_libraries(${TEST_NAME} PRIVATE ${GUI_LIBS})
+            target_include_directories(${TEST_NAME} PRIVATE ${GUI_INCLUDE_DIRS})
+            if(GUI_CFLAGS)
+                target_compile_options(${TEST_NAME} PRIVATE ${GUI_CFLAGS})
+            endif()
         endif()
 
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
@@ -1423,12 +1414,28 @@ if(FEAT_GUI)
             DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
         )
     endif()
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/runtime/gmnv.desktop")
+        install(FILES runtime/gmnv.desktop
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
+        )
+    endif()
     if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/pixmaps")
-        set(_icon_48 "${CMAKE_CURRENT_SOURCE_DIR}/pixmaps/mnv48x48.png")
-        if(EXISTS "${_icon_48}")
-            install(FILES "${_icon_48}"
-                DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/48x48/apps
-                RENAME mnv.png
+        # Install hicolor icons at standard sizes
+        foreach(_size 16 32 48 128)
+            set(_icon "${CMAKE_CURRENT_SOURCE_DIR}/pixmaps/mnv${_size}x${_size}.png")
+            if(EXISTS "${_icon}")
+                install(FILES "${_icon}"
+                    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/${_size}x${_size}/apps
+                    RENAME gmnv.png
+                )
+            endif()
+        endforeach()
+        # Install scalable SVG icon
+        set(_icon_svg "${CMAKE_CURRENT_SOURCE_DIR}/pixmaps/mnvlogo.svg")
+        if(EXISTS "${_icon_svg}")
+            install(FILES "${_icon_svg}"
+                DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
+                RENAME gmnv.svg
             )
         endif()
     endif()

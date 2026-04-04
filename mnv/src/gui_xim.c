@@ -1230,11 +1230,13 @@ im_set_active(int active_arg)
     // If 'imdisable' is set, XIM is never active.
     if (p_imdisable)
 	active = FALSE;
+#  ifdef FEAT_GUI_X11
     else if (input_style & XIMPreeditPosition)
 	// There is a problem in switching XIM off when preediting is used,
 	// and it is not clear how this can be solved.  For now, keep XIM on
 	// all the time, like it was done in MNV 5.8.
 	active = TRUE;
+#  endif
 
 #  if defined(FEAT_EVAL)
     if (USE_IMACTIVATEFUNC)
@@ -1322,6 +1324,7 @@ xim_set_preedit(void)
 	return;
     }
 
+#  ifdef FEAT_GUI_X11
     if (input_style & XIMPreeditPosition)
     {
 	if (xim_fg_color == INVALCOLOR)
@@ -1347,6 +1350,7 @@ xim_set_preedit(void)
 	    emsg(_(e_cannot_set_ic_values));
 	XFree(attr_list);
     }
+#  endif
 }
 
 #  if defined(FEAT_GUI_X11)
@@ -1669,7 +1673,7 @@ im_get_status(void)
 
 # endif // !FEAT_GUI_GTK
 
-# if !defined(FEAT_GUI_GTK)
+# if !defined(FEAT_GUI_GTK) && defined(FEAT_GUI_X11)
 /*
  * Set up the status area.
  *

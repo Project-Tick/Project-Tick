@@ -427,21 +427,6 @@
 /* Define if we have dlfcn.h. */
 #undef HAVE_DLFCN_H
 
-/* Define if there is a working gettext(). */
-#undef HAVE_GETTEXT
-
-/* Define if there is a working bind_textdomain_codeset(). */
-#undef HAVE_BIND_TEXTDOMAIN_CODESET
-
-/* Define if there is a working dgettext(). */
-#undef HAVE_DGETTEXT
-
-/* Define if there is a working dngettext(). */
-#undef HAVE_DNGETTEXT
-
-/* Define if _nl_msg_cat_cntr is present. */
-#undef HAVE_NL_MSG_CAT_CNTR
-
 /* Define if we have dlopen() */
 #undef HAVE_DLOPEN
 

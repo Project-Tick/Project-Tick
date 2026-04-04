@@ -334,15 +334,6 @@ unixall: dist prepare
 	touch dist/$(MNVRTDIR)/src/auto/config.h
 # Make sure configure is newer than config.mk to force it to be generated
 	touch dist/$(MNVRTDIR)/src/configure
-# Make sure ja.sjis.po is newer than ja.po to avoid it being regenerated.
-# Same for cs.cp1250.po, pl.cp1250.po and sk.cp1250.po.
-	touch dist/$(MNVRTDIR)/src/po/ja.sjis.po
-	touch dist/$(MNVRTDIR)/src/po/cs.cp1250.po
-	touch dist/$(MNVRTDIR)/src/po/pl.cp1250.po
-	touch dist/$(MNVRTDIR)/src/po/sk.cp1250.po
-	touch dist/$(MNVRTDIR)/src/po/zh_CN.cp936.po
-	touch dist/$(MNVRTDIR)/src/po/ru.cp1251.po
-	touch dist/$(MNVRTDIR)/src/po/uk.cp1251.po
 # Create the archive.
 	cd dist && tar cf $(MNVVER).tar $(MNVRTDIR)
 	bzip2 dist/$(MNVVER).tar

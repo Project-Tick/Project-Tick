@@ -84,7 +84,6 @@ CROSS=no
 # Use "yes" when the path does not need to be define.
 #ICONV="."
 ICONV=yes
-GETTEXT=yes
 
 # Set to yes to include IME support.
 IME=yes
@@ -153,39 +152,6 @@ HAS_GCC_EH=yes
 ifndef USE_GC_SECTIONS
 USE_GC_SECTIONS=yes
 endif
-
-# If the user doesn't want gettext, undefine it.
-ifeq (no, $(GETTEXT))
-GETTEXT=
-endif
-# Added by E.F. Amatria <eferna1@platea.ptic.mec.es> 2001 Feb 23
-# Uncomment the first line and one of the following three if you want Native Language
-# Support.  You'll need gnu_gettext.win32, a MINGW32 Windows PORT of gettext by
-# Franco Bez <franco.bez@gmx.de>.  It may be found at
-# http://home.a-city.de/franco.bez/gettext/gettext_win32_en.html
-# Tested with mingw32 with GCC-2.95.2 on Win98
-# Updated 2001 Jun 9
-#GETTEXT=c:/gettext.win32.msvcrt
-#STATIC_GETTEXT=USE_STATIC_GETTEXT
-#DYNAMIC_GETTEXT=USE_GETTEXT_DLL
-#DYNAMIC_GETTEXT=USE_SAFE_GETTEXT_DLL
-SAFE_GETTEXT_DLL_OBJ = $(GETTEXT)/src/safe_gettext_dll/safe_gettext_dll.o
-# Alternatively, if you uncomment the two following lines, you get a "safe" version
-# without linking the safe_gettext_dll.o object file.
-#DYNAMIC_GETTEXT=DYNAMIC_GETTEXT
-#GETTEXT_DYNAMIC=gnu_gettext.dll
-INTLPATH=$(GETTEXT)/lib/mingw32
-INTLLIB=gnu_gettext
-
-# If you are using gettext-0.10.35 from http://sourceforge.net/projects/gettext
-# or gettext-0.10.37 from http://sourceforge.net/projects/mingwrep/
-# uncomment the following, but I can't build a static version with them, ?-(|
-#GETTEXT=c:/gettext-0.10.37-20010430
-#STATIC_GETTEXT=USE_STATIC_GETTEXT
-#DYNAMIC_GETTEXT=DYNAMIC_GETTEXT
-#INTLPATH=$(GETTEXT)/lib
-#INTLLIB=intl
-
 
 # Command definitions (depends on cross-compiling and shell)
 ifeq ($(CROSS),yes)
@@ -556,20 +522,6 @@ CXXFLAGS = -std=gnu++11
 # This used to have --preprocessor, but it's no longer supported
 WINDRES_FLAGS =
 EXTRA_LIBS =
-
-ifdef GETTEXT
-DEFINES += -DHAVE_GETTEXT -DHAVE_LOCALE_H
-GETTEXTINCLUDE = $(GETTEXT)/include
-GETTEXTLIB = $(INTLPATH)
- ifeq (yes, $(GETTEXT))
-DEFINES += -DDYNAMIC_GETTEXT
- else ifdef DYNAMIC_GETTEXT
-DEFINES += -D$(DYNAMIC_GETTEXT)
-  ifdef GETTEXT_DYNAMIC
-DEFINES += -DGETTEXT_DYNAMIC -DGETTEXT_DLL=\"$(GETTEXT_DYNAMIC)\"
-  endif
- endif
-endif
 
 ifdef PERL
 CFLAGS += -I$(PERLLIBS) -DFEAT_PERL -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS
@@ -1059,20 +1011,6 @@ OBJ += $(CUIOBJ)
 TARGET := mnv$(DEBUG_SUFFIX).exe
 OUTDIR = obj$(DEBUG_SUFFIX)$(MZSCHEME_SUFFIX)$(ARCH)
 MAIN_TARGET = $(TARGET)
-endif
-
-ifdef GETTEXT
- ifneq (yes, $(GETTEXT))
-CFLAGS += -I$(GETTEXTINCLUDE)
-  ifndef STATIC_GETTEXT
-LIB += -L$(GETTEXTLIB) -l$(INTLLIB)
-   ifeq (USE_SAFE_GETTEXT_DLL, $(DYNAMIC_GETTEXT))
-OBJ+=$(SAFE_GETTEXT_DLL_OBJ)
-   endif
-  else
-LIB += -L$(GETTEXTLIB) -lintl
-  endif
- endif
 endif
 
 ifdef PERL

@@ -381,16 +381,8 @@
 
 /*
  * +multi_lang		Multi language support. ":menutrans", ":language", etc.
- * +gettext		Message translations (requires +multi_lang)
- *			(only when "lang" archive unpacked)
+ *			Removed: MNV does not support multi-language help.
  */
-#ifdef FEAT_NORMAL
-# define FEAT_MULTI_LANG
-#endif
-#if defined(HAVE_GETTEXT) && defined(FEAT_MULTI_LANG) \
-	&& (defined(HAVE_LOCALE_H) || defined(X_LOCALE))
-# define FEAT_GETTEXT
-#endif
 
 /*
  * +multi_byte_ime	Win32 IME input method.  Only for far-east Windows, so
@@ -1200,7 +1192,6 @@
 	|| defined(DYNAMIC_RUBY) \
 	|| defined(DYNAMIC_TCL) \
 	|| defined(DYNAMIC_ICONV) \
-	|| defined(DYNAMIC_GETTEXT) \
 	|| defined(DYNAMIC_MZSCHEME) \
 	|| defined(DYNAMIC_LUA) \
 	|| defined(FEAT_TERMINAL)

@@ -87,7 +87,7 @@ gmnvext.dll: gmnvext.obj gmnvext.res
 gmnvext.obj: gmnvext.h
 
 .cpp.obj:
-	$(cc) $(cflags) -DFEAT_GETTEXT $(cvarsmt) $*.cpp
+	$(cc) $(cflags) $(cvarsmt) $*.cpp
 
 gmnvext.res: gmnvext.rc
 	$(rc) /nologo $(rcflags) $(rcvars) gmnvext.rc

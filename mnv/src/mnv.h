@@ -561,69 +561,27 @@ typedef long long mnvlong_T;
 #endif
 
 /*
- * For dynamically loaded gettext library.  Currently, only for Win32.
- */
-#ifdef DYNAMIC_GETTEXT
-# ifndef FEAT_GETTEXT
-#  define FEAT_GETTEXT
-# endif
-// These are in os_win32.c
-extern char *(*dyn_libintl_gettext)(const char *msgid);
-extern char *(*dyn_libintl_ngettext)(const char *msgid, const char *msgid_plural, unsigned long n);
-extern char *(*dyn_libintl_bindtextdomain)(const char *domainname, const char *dirname);
-extern char *(*dyn_libintl_bind_textdomain_codeset)(const char *domainname, const char *codeset);
-extern char *(*dyn_libintl_textdomain)(const char *domainname);
-extern int (*dyn_libintl_wputenv)(const wchar_t *envstring);
-#endif
-
-
-/*
- * The _() stuff is for using gettext().  It is a no-op when libintl.h is not
- * found or the +multilang feature is disabled.
+ * The _() stuff is a no-op — gettext support has been removed.
  * Use NGETTEXT(single, multi, number) to get plural behavior:
  * - single - message for singular form
  * - multi  - message for plural form
  * - number - the count
  */
-#ifdef FEAT_GETTEXT
-# ifdef DYNAMIC_GETTEXT
-#  define _(x) (*dyn_libintl_gettext)((char *)(x))
-#  define NGETTEXT(x, xs, n) (*dyn_libintl_ngettext)((char *)(x), (char *)(xs), (n))
-#  define N_(x) x
-#  define bindtextdomain(domain, dir) (*dyn_libintl_bindtextdomain)((domain), (dir))
-#  define bind_textdomain_codeset(domain, codeset) (*dyn_libintl_bind_textdomain_codeset)((domain), (codeset))
-#  if !defined(HAVE_BIND_TEXTDOMAIN_CODESET)
-#   define HAVE_BIND_TEXTDOMAIN_CODESET 1
-#  endif
-#  define textdomain(domain) (*dyn_libintl_textdomain)(domain)
-#  define libintl_wputenv(envstring) (*dyn_libintl_wputenv)(envstring)
-# else
-#  include <libintl.h>
-#  define _(x) gettext((char *)(x))
-#  define NGETTEXT(x, xs, n) ngettext((x), (xs), (n))
-#  ifdef gettext_noop
-#   define N_(x) gettext_noop(x)
-#  else
-#   define N_(x) x
-#  endif
-# endif
-#else
-# define _(x) ((char *)(x))
-# define NGETTEXT(x, xs, n) (((n) == 1) ? (char *)(x) : (char *)(xs))
-# define N_(x) x
-# ifdef bindtextdomain
-#  undef bindtextdomain
-# endif
-# define bindtextdomain(x, y) ""
-# ifdef bind_textdomain_codeset
-#  undef bind_textdomain_codeset
-# endif
-# define bind_textdomain_codeset(x, y) // empty
-# ifdef textdomain
-#  undef textdomain
-# endif
-# define textdomain(x) // empty
+#define _(x) ((char *)(x))
+#define NGETTEXT(x, xs, n) (((n) == 1) ? (char *)(x) : (char *)(xs))
+#define N_(x) x
+#ifdef bindtextdomain
+# undef bindtextdomain
 #endif
+#define bindtextdomain(x, y) ""
+#ifdef bind_textdomain_codeset
+# undef bind_textdomain_codeset
+#endif
+#define bind_textdomain_codeset(x, y) // empty
+#ifdef textdomain
+# undef textdomain
+#endif
+#define textdomain(x) // empty
 
 /*
  * Flags for update_screen().

@@ -237,28 +237,7 @@ init_locale(void)
     setlocale(LC_CTYPE, "C");
 # endif
 
-# ifdef FEAT_GETTEXT
-    {
-	int	mustfree = FALSE;
-	char_u	*p;
 
-#  ifdef DYNAMIC_GETTEXT
-	// Initialize the gettext library
-	dyn_libintl_init();
-#  endif
-	// expand_env() doesn't work yet, because g_chartab[] is not
-	// initialized yet, call mnv_getenv() directly
-	p = mnv_getenv((char_u *)"MNVRUNTIME", &mustfree);
-	if (p != NULL && *p != NUL)
-	{
-	    mnv_snprintf((char *)NameBuff, MAXPATHL, "%s/lang", p);
-	    bindtextdomain(MNVPACKAGE, (char *)NameBuff);
-	}
-	if (mustfree)
-	    mnv_free(p);
-	textdomain(MNVPACKAGE);
-    }
-# endif
 }
 
 /*
@@ -342,27 +321,17 @@ ex_language(exarg_T *eap)
 	    semsg(_(e_cannot_set_language_to_str), name);
 	else
 	{
-# ifdef HAVE_NL_MSG_CAT_CNTR
-	    // Need to do this for GNU gettext, otherwise cached translations
-	    // will be used again.
-	    extern int _nl_msg_cat_cntr;
 
-	    ++_nl_msg_cat_cntr;
-# endif
 	    // Reset $LC_ALL, otherwise it would overrule everything.
 	    mnv_setenv((char_u *)"LC_ALL", (char_u *)"");
 
 	    if (what != LC_TIME && what != LC_COLLATE)
 	    {
-		// Tell gettext() what to translate to.  It apparently doesn't
-		// use the currently effective locale.  Also do this when
-		// FEAT_GETTEXT isn't defined, so that shell commands use this
-		// value.
+		// Set $LANG so that shell commands use this value.
 		if (what == LC_ALL)
 		{
 		    mnv_setenv((char_u *)"LANG", name);
 
-		    // Clear $LANGUAGE because GNU gettext uses it.
 		    mnv_setenv((char_u *)"LANGUAGE", (char_u *)"");
 # ifdef MSWIN
 		    // Apparently MS-Windows printf() may cause a crash when

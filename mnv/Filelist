@@ -1161,30 +1161,11 @@ LANG_GEN_BIN = \
 		runtime/spell/en.latin1.sug \
 		runtime/spell/en.utf-8.sug \
 
-# All files for lang archive.
+# All files for lang archive (src/po removed).
 LANG_SRC = \
-		src/po/README.txt \
-		src/po/README_mingw.txt \
-		src/po/README_mvc.txt \
-		src/po/check.mnv \
-		src/po/cleanup.mnv \
-		src/po/tojavascript.mnv \
-		src/po/fixfilenames.mnv \
-		src/po/Makefile \
-		src/po/Make_all.mak \
-		src/po/Make_cyg.mak \
-		src/po/Make_ming.mak \
-		src/po/Make_mvc.mak \
-		src/po/mnv.desktop.in \
-		src/po/gmnv.desktop.in \
-		src/po/sjiscorr.c \
-		src/po/big5corr.c \
-		src/po/*.po \
-		src/po/mnv.pot \
 
-# The language files for the Win32 lang archive.
+# The language files for the Win32 lang archive (src/po removed).
 LANG_DOS = \
-		src/po/*.mo \
 
 # Files in the repository that are deliberately not listed above, and will thus
 # be excluded from distribution tarballs and the like.

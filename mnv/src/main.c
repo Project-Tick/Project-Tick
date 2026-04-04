@@ -2907,21 +2907,7 @@ check_tty(mparm_T *parmp)
 #  endif
 	    is_cygpty_used())
 	{
-#  if defined(HAVE_BIND_TEXTDOMAIN_CODESET) \
-	&& defined(FEAT_GETTEXT)
-	    char    *s, *tofree = NULL;
 
-	    // Set the encoding of the error message based on $LC_ALL or
-	    // other environment variables instead of 'encoding'.
-	    // Note that the message is shown on a Cygwin terminal (e.g.
-	    // mintty) which encoding is based on $LC_ALL or etc., not the
-	    // current codepage used by normal Win32 console programs.
-	    tofree = s = (char *)enc_locale_env(NULL);
-	    if (s == NULL)
-		s = "utf-8";	// Use "utf-8" by default.
-	    (void)bind_textdomain_codeset(MNVPACKAGE, s);
-	    mnv_free(tofree);
-#  endif
 	    mch_errmsg(_("MNV: Error: This version of MNV does not run in a Cygwin terminal\n"));
 	    exit(1);
 	}

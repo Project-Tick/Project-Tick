@@ -47,9 +47,6 @@
 # ifdef bind_textdomain_codeset
 #  undef bind_textdomain_codeset
 # endif
-# if defined(FEAT_GETTEXT) && !defined(ENABLE_NLS)
-#  define ENABLE_NLS	// so the texts in the dialog boxes are translated
-# endif
 # include <gnome.h>
 # include "version.h"
 // missing prototype in bonobo-dock-item.h

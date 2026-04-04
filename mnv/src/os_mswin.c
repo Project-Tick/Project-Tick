@@ -87,9 +87,6 @@ mch_exit_g(int r)
 	WSACleanup();
     }
 # endif
-# ifdef DYNAMIC_GETTEXT
-    dyn_libintl_end();
-# endif
 
     if (gui.in_use)
 	gui_exit(r);
@@ -1115,39 +1112,9 @@ PrintDlgProc(
 	WPARAM wParam UNUSED,
 	LPARAM lParam UNUSED)
 {
-# ifdef FEAT_GETTEXT
-    NONCLIENTMETRICS nm;
-    static HFONT hfont;
-# endif
-
     switch (message)
     {
 	case WM_INITDIALOG:
-# ifdef FEAT_GETTEXT
-	    nm.cbSize = sizeof(NONCLIENTMETRICS);
-	    if (SystemParametersInfo(
-			SPI_GETNONCLIENTMETRICS,
-			sizeof(NONCLIENTMETRICS),
-			&nm,
-			0))
-	    {
-		char buff[MAX_PATH];
-		int i;
-
-		// Translate the dialog texts
-		hfont = CreateFontIndirect(&nm.lfMessageFont);
-		for (i = IDC_PRINTTEXT1; i <= IDC_PROGRESS; i++)
-		{
-		    SendDlgItemMessage(hDlg, i, WM_SETFONT, (WPARAM)hfont, 1);
-		    if (GetDlgItemText(hDlg,i, buff, sizeof(buff)))
-			mnvSetDlgItemText(hDlg,i, (char_u *)_(buff));
-		}
-		SendDlgItemMessage(hDlg, IDCANCEL,
-						WM_SETFONT, (WPARAM)hfont, 1);
-		if (GetDlgItemText(hDlg,IDCANCEL, buff, sizeof(buff)))
-		    mnvSetDlgItemText(hDlg,IDCANCEL, (char_u *)_(buff));
-	    }
-# endif
 	    SetWindowText(hDlg, (LPCSTR)szAppName);
 	    if (prt_name != NULL)
 	    {
@@ -1168,9 +1135,6 @@ PrintDlgProc(
 	    EnableWindow(GetParent(hDlg), TRUE);
 	    DestroyWindow(hDlg);
 	    hDlgPrint = NULL;
-# ifdef FEAT_GETTEXT
-	    DeleteObject(hfont);
-# endif
 	    return TRUE;
     }
     return FALSE;

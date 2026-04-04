@@ -256,15 +256,7 @@ static char *(features[]) =
 #if !defined(USE_SYSTEM) && defined(UNIX)
 	"+fork()",
 #endif
-#ifdef FEAT_GETTEXT
-# ifdef DYNAMIC_GETTEXT
-	"+gettext/dyn",
-# else
-	"+gettext",
-# endif
-#else
 	"-gettext",
-#endif
 	"-hangul_input",
 #if (defined(HAVE_ICONV_H) && defined(USE_ICONV)) || defined(DYNAMIC_ICONV)
 # ifdef DYNAMIC_ICONV
@@ -734,6 +726,10 @@ static char *(features[]) =
 
 static int included_patches[] =
 {   /* Add new patch number below this line */
+/**/
+	2,
+/**/
+	1,
 /**/
     0
 };
@@ -1358,15 +1354,24 @@ do_intro_line(
 	STRCPY(vers, mediumVersion);
 	if (highest_patch())
 	{
-	    // Check for 9.9x or 9.9xx, alpha/beta version
-	    if (SAFE_isalpha((int)vers[3]))
+	    // Find the position after the minor version number (after '.')
+	    char_u *dot = mnv_strchr(vers, '.');
+	    int off = (dot != NULL) ? (int)(dot - vers) + 1 : (int)STRLEN(vers);
+	    // Skip past the minor version digits
+	    while (SAFE_isdigit((int)vers[off]))
+		off++;
+	    // Check for alpha/beta suffix (e.g., "9.9a")
+	    if (SAFE_isalpha((int)vers[off]))
 	    {
-		int len = (SAFE_isalpha((int)vers[4])) ? 5 : 4;
-		sprintf((char *)vers + len, ".%d%s", highest_patch(),
-							 mediumVersion + len);
+		int len = off + 1;
+		if (SAFE_isalpha((int)vers[len]))
+		    len++;
+		sprintf((char *)vers + len, ".%d%s",
+						highest_patch(),
+						mediumVersion + len);
 	    }
 	    else
-		sprintf((char *)vers + 3, ".%d", highest_patch());
+		sprintf((char *)vers + off, ".%d", highest_patch());
 	}
 	col += (int)STRLEN(vers);
     }

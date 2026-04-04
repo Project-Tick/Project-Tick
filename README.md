@@ -1,6 +1,6 @@
 # Project Tick
 
-[![CI](https://github.com/Project-Tick/Project-Tick/actions/workflows/ci-launcher.yml/badge.svg)](https://github.com/Project-Tick/Project-Tick/actions)
+[![CI](https://github.com/Project-Tick/Project-Tick/actions/workflows/meshmc-build.yml/badge.svg)](https://github.com/Project-Tick/Project-Tick/actions)
 [![License](https://img.shields.io/badge/license-mixed-blue)](LICENSES/)
 [![CLA assistant](https://cla-assistant.io/readme/badge/Project-Tick/Project-Tick)](https://cla-assistant.io/Project-Tick/Project-Tick)
 
