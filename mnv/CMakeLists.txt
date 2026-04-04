@@ -1302,6 +1302,8 @@ install(CODE "
     execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/rmnv)
     execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/rview)
     execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/mnvdiff)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/vi)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/vim)
 ")
 
 if(FEAT_GUI)
@@ -1314,6 +1316,8 @@ if(FEAT_GUI)
         execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/rgview)
         execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/emnv)
         execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/eview)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/gvi)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink mnv \${_bindir}/gvim)
     ")
 endif()
 

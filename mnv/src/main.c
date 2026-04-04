@@ -2057,6 +2057,13 @@ parse_command_name(mparm_T *parmp)
 	p_uc = 10000;			// don't update very often
 	initstr += 4;
     }
+    else if (STRNICMP(initstr, "vim", 3) == 0)
+	initstr += 3;
+    else if (STRNICMP(initstr, "vi", 2) == 0)
+    {
+	change_compatible(TRUE);	// Vi compatible mode
+	initstr += 2;
+    }
     else if (STRNICMP(initstr, "mnv", 3) == 0)
 	initstr += 3;
 
