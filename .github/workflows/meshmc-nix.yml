@@ -5,48 +5,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - "master"
-      - "release-*"
-    tags:
-      - "*"
-    paths:
-      - "meshmc/**.cpp"
-      - "meshmc/**.h"
-      - "meshmc/**.java"
-      - "meshmc/**.ui"
-      - "meshmc/**.md"
-      - "meshmc/**.nix"
-      - "meshmc/nix/**"
-      - "meshmc/flake.lock"
-      - "meshmc/buildconfig/**"
-      - "meshmc/cmake/**"
-      - "meshmc/launcher/**"
-      - "meshmc/libraries/**"
-      - "meshmc/branding/**"
-      - "meshmc/tests/**"
-      - "meshmc/CMakeLists.txt"
-      - ".github/workflows/meshmc-nix.yml"
-  pull_request:
-    paths:
-      - "meshmc/**.cpp"
-      - "meshmc/**.h"
-      - "meshmc/**.java"
-      - "meshmc/**.ui"
-      - "meshmc/**.md"
-      - "meshmc/**.nix"
-      - "meshmc/nix/**"
-      - "meshmc/flake.lock"
-      - "meshmc/buildconfig/**"
-      - "meshmc/cmake/**"
-      - "meshmc/launcher/**"
-      - "meshmc/libraries/**"
-      - "meshmc/branding/**"
-      - "meshmc/tests/**"
-      - "meshmc/CMakeLists.txt"
-      - ".github/workflows/meshmc-nix.yml"
   workflow_dispatch:
+  workflow_call:
 
 permissions: {}
 

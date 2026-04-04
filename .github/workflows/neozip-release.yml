@@ -1,9 +1,8 @@
 name: "neozip: Release"
 
 on:
-  push:
-    tags:
-      - 'neozip-*'
+  workflow_dispatch:
+  workflow_call:
 
 defaults:
   run:

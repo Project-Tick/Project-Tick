@@ -1,16 +1,8 @@
 name: "mnv: CodeQL"
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'mnv/**'
-  pull_request:
-    branches: [master]
-    paths:
-      - 'mnv/**'
-  schedule:
-    - cron: '0 18 * * 1'
+  workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}

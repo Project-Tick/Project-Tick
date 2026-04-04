@@ -1,15 +1,8 @@
 name: "libnbtplusplus: CI"
 
 on:
-  push:
-    paths:
-      - 'libnbtplusplus/**'
-      - '.github/workflows/libnbtplusplus-ci.yml'
-  pull_request:
-    paths:
-      - 'libnbtplusplus/**'
-      - '.github/workflows/libnbtplusplus-ci.yml'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

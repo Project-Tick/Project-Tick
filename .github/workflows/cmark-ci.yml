@@ -1,17 +1,8 @@
 name: "cmark: CI"
 
 on:
-  push:
-    branches-ignore:
-      - 'dependabot/**'
-    paths:
-      - 'cmark/**'
-      - '.github/workflows/cmark-ci.yml'
-  pull_request:
-    paths:
-      - 'cmark/**'
-      - '.github/workflows/cmark-ci.yml'
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   linter:

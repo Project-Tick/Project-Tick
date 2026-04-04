@@ -1,0 +1,65 @@
+#!/usr/bin/env -S node --import ./run
+import { execSync } from 'node:child_process'
+import { closeSync, openSync } from 'node:fs'
+import { program } from 'commander'
+import * as core from '@actions/core'
+import { getOctokit } from '@actions/github'
+
+async function run(action, owner, repo, pull_number, options = {}) {
+  const token = execSync('gh auth token', { encoding: 'utf-8' }).trim()
+
+  const github = getOctokit(token)
+
+  const payload = !pull_number
+    ? {}
+    : {
+        pull_request: (
+          await github.rest.pulls.get({
+            owner,
+            repo,
+            pull_number,
+          })
+        ).data,
+      }
+
+  process.env['INPUT_GITHUB-TOKEN'] = token
+
+  closeSync(openSync('step-summary.md', 'w'))
+  process.env.GITHUB_STEP_SUMMARY = 'step-summary.md'
+
+  await action({
+    github,
+    context: {
+      payload,
+      repo: { owner, repo },
+    },
+    core,
+    dry: true,
+    ...options,
+  })
+}
+
+program
+  .command('prepare')
+  .description('Validate PR mergeability and branch targeting.')
+  .argument('<owner>', 'Repository owner (e.g. YongDo-Hyun)')
+  .argument('<repo>', 'Repository name (e.g. Project-Tick)')
+  .argument('<pr>', 'Pull Request number')
+  .option('--no-dry', 'Make actual modifications')
+  .action(async (owner, repo, pr, options) => {
+    const prepare = (await import('./prepare.js')).default
+    await run(prepare, owner, repo, pr, options)
+  })
+
+program
+  .command('lint-commits')
+  .description('Lint commit messages for Conventional Commits compliance.')
+  .argument('<owner>', 'Repository owner (e.g. YongDo-Hyun)')
+  .argument('<repo>', 'Repository name (e.g. Project-Tick)')
+  .argument('<pr>', 'Pull Request number')
+  .action(async (owner, repo, pr) => {
+    const lint = (await import('./lint-commits.js')).default
+    await run(lint, owner, repo, pr)
+  })
+
+program.parse()

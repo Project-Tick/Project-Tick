@@ -1,16 +1,8 @@
 name: "json4cpp: Semgrep"
 
 on:
-  push:
-    branches: ["develop"]
-    paths:
-      - 'json4cpp/**'
-  pull_request:
-    branches: ["develop"]
-    paths:
-      - 'json4cpp/**'
-  schedule:
-    - cron: '23 2 * * 4'
+  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -31,10 +23,9 @@ jobs:
 
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
+      - uses: semgrep/semgrep@caad1d53f48a40fa55cec9e41bf4820f115889b3
         with:
           publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
-          publishDeployment: ${{ secrets.SEMGREP_DEPLOYMENT_ID }}
           generateSarif: "1"
 
       - name: Upload SARIF file

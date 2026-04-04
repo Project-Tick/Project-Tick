@@ -1,16 +1,8 @@
 name: "neozip: Fuzz"
 
 on:
-  push:
-    branches: [master, develop]
-    paths:
-      - 'neozip/**'
-      - '.github/workflows/neozip-fuzz.yml'
-  pull_request:
-    paths:
-      - 'neozip/**'
-      - '.github/workflows/neozip-fuzz.yml'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: neozip-fuzz-${{ github.ref }}

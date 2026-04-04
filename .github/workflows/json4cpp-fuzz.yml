@@ -1,16 +1,8 @@
 name: "json4cpp: Fuzz"
 
 on:
-  push:
-    branches: [master, develop]
-    paths:
-      - 'json4cpp/**'
-      - '.github/workflows/json4cpp-fuzz.yml'
-  pull_request:
-    paths:
-      - 'json4cpp/**'
-      - '.github/workflows/json4cpp-fuzz.yml'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: json4cpp-fuzz-${{ github.ref }}

@@ -1,16 +1,8 @@
 name: "cmark: Fuzz"
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'cmark/**'
-      - '.github/workflows/cmark-fuzz.yml'
-  pull_request:
-    paths:
-      - 'cmark/**'
-      - '.github/workflows/cmark-fuzz.yml'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: cmark-fuzz-${{ github.ref }}

@@ -1,19 +1,8 @@
 name: "json4cpp: CI"
 
 on:
-  push:
-    branches:
-      - develop
-      - master
-      - release/*
-    paths:
-      - 'json4cpp/**'
-      - '.github/workflows/json4cpp-ci.yml'
-  pull_request:
-    paths:
-      - 'json4cpp/**'
-      - '.github/workflows/json4cpp-ci.yml'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

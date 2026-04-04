@@ -1,8 +1,8 @@
 name: "Stale: Comment and close stale issues and PRs"
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

@@ -1,9 +1,8 @@
 name: "json4cpp: Check amalgamation"
 
 on:
-  pull_request:
-    paths:
-      - 'json4cpp/**'
+  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

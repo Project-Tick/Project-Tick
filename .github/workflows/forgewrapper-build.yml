@@ -1,16 +1,8 @@
 name: "ForgeWrapper: Build"
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'forgewrapper/**'
-      - '.github/workflows/forgewrapper-build.yml'
-  pull_request:
-    branches: [master]
-    paths:
-      - 'forgewrapper/**'
-      - '.github/workflows/forgewrapper-build.yml'
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   build:

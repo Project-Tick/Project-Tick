@@ -1,14 +1,8 @@
 name: "genqrcode: CI"
 
 on:
-  push:
-    paths:
-      - 'genqrcode/**'
-      - '.github/workflows/genqrcode-ci.yml'
-  pull_request:
-    paths:
-      - 'genqrcode/**'
-      - '.github/workflows/genqrcode-ci.yml'
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   cmake:

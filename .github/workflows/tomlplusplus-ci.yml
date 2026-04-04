@@ -1,25 +1,8 @@
 name: "tomlplusplus: CI"
 
 on:
-  push:
-    paths:
-      - "tomlplusplus/**.h"
-      - "tomlplusplus/**.hpp"
-      - "tomlplusplus/**.cpp"
-      - "tomlplusplus/**.inl"
-      - "tomlplusplus/**.py"
-      - "tomlplusplus/**/meson.build"
-      - ".github/workflows/tomlplusplus-ci.yml"
-  pull_request:
-    paths:
-      - "tomlplusplus/**.h"
-      - "tomlplusplus/**.hpp"
-      - "tomlplusplus/**.cpp"
-      - "tomlplusplus/**.inl"
-      - "tomlplusplus/**.py"
-      - "tomlplusplus/**/meson.build"
-      - ".github/workflows/tomlplusplus-ci.yml"
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: tomlplusplus-${{ github.workflow }}-${{ github.ref }}

@@ -1,15 +1,8 @@
 name: "corebinutils: CI"
 
 on:
-  push:
-    paths:
-      - 'corebinutils/**'
-      - '.github/workflows/corebinutils-ci.yml'
-  pull_request:
-    paths:
-      - 'corebinutils/**'
-      - '.github/workflows/corebinutils-ci.yml'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

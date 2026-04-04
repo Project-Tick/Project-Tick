@@ -5,19 +5,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - 'master'
-    paths:
-      - 'meshmc/Containerfile'
-      - '.github/workflows/meshmc-container.yml'
-  merge_group:
-    types: [checks_requested]
-  pull_request:
-    paths:
-      - 'meshmc/Containerfile'
-      - '.github/workflows/meshmc-container.yml'
   workflow_dispatch:
+  workflow_call:
 
 permissions: {}
 

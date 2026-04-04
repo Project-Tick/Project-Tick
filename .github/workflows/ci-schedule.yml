@@ -1,0 +1,233 @@
+# Copyright (C) Project Tick Contributors
+# SPDX-License-Identifier: MIT
+#
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Project Tick — Scheduled Maintenance Orchestrator               ║
+# ║                                                                  ║
+# ║  Consolidates ALL scheduled jobs into one workflow with a        ║
+# ║  matrix dispatch. Each cron entry triggers its own subset.       ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+name: "Scheduled CI"
+
+on:
+  schedule:
+    # ── Daily (03:00 UTC) ─────────────────────────────────────────
+    - cron: "0 3 * * *"      # [0] daily: stale, coverity, docker
+    # ── Weekly Sunday (04:00 UTC) ─────────────────────────────────
+    - cron: "0 4 * * 0"      # [1] weekly-sun: link-check, scorecard, flake-update, codeql
+    # ── Weekly Wednesday (14:00 UTC) ──────────────────────────────
+    - cron: "0 14 * * 3"     # [2] weekly-wed: flawfinder
+    # ── Weekly Thursday (02:00 UTC) ───────────────────────────────
+    - cron: "0 2 * * 4"      # [3] weekly-thu: semgrep
+  workflow_dispatch:
+    inputs:
+      schedule-group:
+        description: "Which schedule group to run"
+        type: choice
+        options: [daily, weekly-sun, weekly-wed, weekly-thu, all]
+        default: all
+
+permissions:
+  contents: read
+
+env:
+  # Map cron index → group name
+  SCHEDULE_GROUP: >-
+    ${{
+      github.event.inputs.schedule-group == 'all' && 'all' ||
+      github.event.inputs.schedule-group ||
+      (github.event.schedule == '0 3 * * *' && 'daily') ||
+      (github.event.schedule == '0 4 * * 0' && 'weekly-sun') ||
+      (github.event.schedule == '0 14 * * 3' && 'weekly-wed') ||
+      (github.event.schedule == '0 2 * * 4' && 'weekly-thu') ||
+      'all'
+    }}
+
+jobs:
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Daily Jobs                                                    ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  stale:
+    name: "Stale Issues & PRs"
+    if: contains(fromJSON('["daily","all"]'), env.SCHEDULE_GROUP)
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Mark stale
+        uses: actions/stale@v10
+        with:
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has not had
+            activity in 90 days. It will be closed in 10 days if no further activity occurs.
+          stale-pr-message: >
+            This PR has been automatically marked as stale because it has not had
+            activity in 30 days. Please rebase or update to keep it alive.
+          days-before-stale: 90
+          days-before-pr-stale: 30
+          days-before-close: 10
+          days-before-pr-close: -1
+          exempt-issue-labels: "pinned,security"
+          exempt-pr-labels: "pinned,security,status: blocking"
+          stale-issue-label: "state: stale"
+          stale-pr-label: "state: stale"
+
+  docker-images:
+    name: "Docker Image Rebuild"
+    if: contains(fromJSON('["daily","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/images4docker-build.yml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+
+  mnv-coverity:
+    name: "MNV Coverity Scan"
+    if: contains(fromJSON('["daily","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/mnv-coverity.yml
+    secrets: inherit
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Weekly Sunday Jobs                                            ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  mnv-link-check:
+    name: "MNV Link Check"
+    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/mnv-link-check.yml
+    secrets: inherit
+
+  scorecard:
+    name: "OpenSSF Scorecard"
+    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/repo-scorecards.yml
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+      actions: read
+      issues: read
+      pull-requests: read
+      checks: read
+    secrets: inherit
+
+  meshmc-flake-update:
+    name: "MeshMC Nix Flake Update"
+    if: >-
+      contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP) &&
+      github.repository_owner == 'Project-Tick'
+    uses: ./.github/workflows/meshmc-flake-update.yml
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit
+
+  mnv-codeql:
+    name: "MNV CodeQL"
+    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/mnv-codeql.yml
+    permissions:
+      contents: read
+      security-events: write
+    secrets: inherit
+
+  neozip-codeql:
+    name: "NeoZip CodeQL"
+    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/neozip-codeql.yml
+    permissions:
+      contents: read
+      security-events: write
+    secrets: inherit
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Weekly Wednesday Jobs                                         ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  json4cpp-flawfinder:
+    name: "JSON4CPP Flawfinder"
+    if: contains(fromJSON('["weekly-wed","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/json4cpp-flawfinder.yml
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    secrets: inherit
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Weekly Thursday Jobs                                          ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  json4cpp-semgrep:
+    name: "JSON4CPP Semgrep"
+    if: contains(fromJSON('["weekly-thu","all"]'), env.SCHEDULE_GROUP)
+    uses: ./.github/workflows/json4cpp-semgrep.yml
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    secrets: inherit
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Schedule Verdict                                              ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  verdict:
+    name: "Schedule Verdict"
+    if: always()
+    needs:
+      - stale
+      - docker-images
+      - mnv-coverity
+      - mnv-link-check
+      - scorecard
+      - meshmc-flake-update
+      - mnv-codeql
+      - neozip-codeql
+      - json4cpp-flawfinder
+      - json4cpp-semgrep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report
+        run: |
+          set -euo pipefail
+
+          echo "## Scheduled CI Report — ${{ env.SCHEDULE_GROUP }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Job | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          FAILED=false
+          report() {
+            local name="$1" result="$2" icon="⬜"
+            case "$result" in
+              success) icon="✅" ;; failure) icon="❌"; FAILED=true ;;
+              cancelled) icon="⏹️" ;; skipped) icon="⏭️" ;;
+            esac
+            echo "| $name | $icon $result |" >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          report "Stale"            "${{ needs.stale.result }}"
+          report "Docker Images"    "${{ needs.docker-images.result }}"
+          report "MNV Coverity"     "${{ needs.mnv-coverity.result }}"
+          report "MNV Link Check"   "${{ needs.mnv-link-check.result }}"
+          report "Scorecard"        "${{ needs.scorecard.result }}"
+          report "Flake Update"     "${{ needs.meshmc-flake-update.result }}"
+          report "MNV CodeQL"       "${{ needs.mnv-codeql.result }}"
+          report "NeoZip CodeQL"    "${{ needs.neozip-codeql.result }}"
+          report "Flawfinder"       "${{ needs.json4cpp-flawfinder.result }}"
+          report "Semgrep"          "${{ needs.json4cpp-semgrep.result }}"
+
+          if [[ "$FAILED" == "true" ]]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**FAILED** — check individual jobs above." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi

@@ -1,15 +1,8 @@
 name: "neozip: CI"
 
 on:
-  push:
-    paths:
-      - 'neozip/**'
-      - '.github/workflows/neozip-*.yml'
-  pull_request:
-    paths:
-      - 'neozip/**'
-      - '.github/workflows/neozip-*.yml'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: neozip-${{ github.workflow }}-${{ github.ref }}

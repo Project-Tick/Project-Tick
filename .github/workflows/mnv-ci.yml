@@ -1,17 +1,8 @@
 name: "mnv: CI"
 
 on:
-  push:
-    branches: ['**']
-    paths:
-      - 'mnv/**'
-      - '.github/workflows/mnv-ci.yml'
-      - '.github/actions/mnv/**'
-  pull_request:
-    paths:
-      - 'mnv/**'
-      - '.github/workflows/mnv-ci.yml'
-      - '.github/actions/mnv/**'
+  workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: mnv-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}

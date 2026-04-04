@@ -19,7 +19,8 @@ path = [
   ".clang-format",
   ".clang-tidy",
   "CODEOWNERS",
-  "hooks/**"
+  "hooks/**",
+  "ci/**"
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "NONE"
@@ -75,8 +76,8 @@ SPDX-License-Identifier = "GPL-3.0-or-later"
 SPDX-FileCopyrightText = "2026 Project Tick"
 
 [[annotations]]
-path = ["uvim/**"]
-SPDX-License-Identifier = "Vim"
+path = ["mnv/**"]
+SPDX-License-Identifier = "Vim AND GPL-3.0-or-later"
 SPDX-FileCopyrightText = "Bram Moolenaar & Vim Contributors & Project Tick"
 
 [[annotations]]

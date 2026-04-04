@@ -2,8 +2,7 @@ name: "mnv: Check Links"
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 3 * * 0'
+  workflow_call:
 
 jobs:
   lychee:

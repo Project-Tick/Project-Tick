@@ -1,0 +1,289 @@
+# Copyright (C) Project Tick Contributors
+# SPDX-License-Identifier: MIT
+#
+# Composite action — analyzes changed directories and parses commit messages.
+# Exposes per-project boolean outputs + parsed commit info for the caller.
+
+name: "Change Analysis"
+description: >
+  Detects which project directories changed in this commit/PR and parses the
+  commit message (Conventional Commits). Outputs per-project flags and a
+  summary report.
+
+# ── Inputs ──────────────────────────────────────────────────────
+inputs:
+  event-name:
+    description: "github.event_name (push, pull_request, workflow_dispatch)"
+    required: true
+  base-sha:
+    description: "Base SHA for diff (PR base or push before)"
+    required: false
+    default: ""
+  head-sha:
+    description: "Head SHA for diff"
+    required: false
+    default: ""
+  before-sha:
+    description: "Push event before SHA"
+    required: false
+    default: ""
+  current-sha:
+    description: "Current commit SHA (github.sha)"
+    required: true
+  pr-title:
+    description: "Pull request title (for commit message parsing on PRs)"
+    required: false
+    default: ""
+
+# ── Outputs ─────────────────────────────────────────────────────
+outputs:
+  # Per-project change flags
+  archived_changed:
+    description: "true if archived/ was modified"
+    value: ${{ steps.detect.outputs.archived_changed }}
+  cgit_changed:
+    description: "true if cgit/ was modified"
+    value: ${{ steps.detect.outputs.cgit_changed }}
+  cmark_changed:
+    description: "true if cmark/ was modified"
+    value: ${{ steps.detect.outputs.cmark_changed }}
+  corebinutils_changed:
+    description: "true if corebinutils/ was modified"
+    value: ${{ steps.detect.outputs.corebinutils_changed }}
+  forgewrapper_changed:
+    description: "true if forgewrapper/ was modified"
+    value: ${{ steps.detect.outputs.forgewrapper_changed }}
+  genqrcode_changed:
+    description: "true if genqrcode/ was modified"
+    value: ${{ steps.detect.outputs.genqrcode_changed }}
+  hooks_changed:
+    description: "true if hooks/ was modified"
+    value: ${{ steps.detect.outputs.hooks_changed }}
+  images4docker_changed:
+    description: "true if images4docker/ was modified"
+    value: ${{ steps.detect.outputs.images4docker_changed }}
+  json4cpp_changed:
+    description: "true if json4cpp/ was modified"
+    value: ${{ steps.detect.outputs.json4cpp_changed }}
+  libnbtplusplus_changed:
+    description: "true if libnbtplusplus/ was modified"
+    value: ${{ steps.detect.outputs.libnbtplusplus_changed }}
+  meshmc_changed:
+    description: "true if meshmc/ was modified"
+    value: ${{ steps.detect.outputs.meshmc_changed }}
+  meta_changed:
+    description: "true if meta/ was modified"
+    value: ${{ steps.detect.outputs.meta_changed }}
+  mnv_changed:
+    description: "true if mnv/ was modified"
+    value: ${{ steps.detect.outputs.mnv_changed }}
+  neozip_changed:
+    description: "true if neozip/ was modified"
+    value: ${{ steps.detect.outputs.neozip_changed }}
+  tomlplusplus_changed:
+    description: "true if tomlplusplus/ was modified"
+    value: ${{ steps.detect.outputs.tomlplusplus_changed }}
+  ci_changed:
+    description: "true if ci/ was modified"
+    value: ${{ steps.detect.outputs.ci_changed }}
+  github_changed:
+    description: "true if .github/ was modified"
+    value: ${{ steps.detect.outputs.github_changed }}
+  root_changed:
+    description: "true if root-level files were modified"
+    value: ${{ steps.detect.outputs.root_changed }}
+  # Aggregate
+  changed_projects:
+    description: "Comma-separated list of changed project names"
+    value: ${{ steps.detect.outputs.changed_projects }}
+  changed_count:
+    description: "Number of changed projects"
+    value: ${{ steps.detect.outputs.changed_count }}
+  # Parsed commit
+  commit_type:
+    description: "Conventional commit type (feat, fix, chore, …)"
+    value: ${{ steps.parse-commit.outputs.type }}
+  commit_scope:
+    description: "Conventional commit scope"
+    value: ${{ steps.parse-commit.outputs.scope }}
+  commit_subject:
+    description: "Commit subject line"
+    value: ${{ steps.parse-commit.outputs.subject }}
+  commit_breaking:
+    description: "true if this is a breaking change"
+    value: ${{ steps.parse-commit.outputs.breaking }}
+  commit_message:
+    description: "Full commit message / PR title"
+    value: ${{ steps.parse-commit.outputs.full_message }}
+
+# ── Steps ───────────────────────────────────────────────────────
+runs:
+  using: "composite"
+  steps:
+    - name: Detect changed directories
+      id: detect
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        EVENT_NAME="${{ inputs.event-name }}"
+        BASE_SHA="${{ inputs.base-sha }}"
+        HEAD_SHA="${{ inputs.head-sha }}"
+        BEFORE_SHA="${{ inputs.before-sha }}"
+        CURRENT_SHA="${{ inputs.current-sha }}"
+
+        # Determine the list of changed files
+        if [[ "$EVENT_NAME" == "pull_request" ]]; then
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" --)
+        elif [[ "$EVENT_NAME" == "push" ]]; then
+          if [[ "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+            CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD)
+          else
+            CHANGED_FILES=$(git diff --name-only "$BEFORE_SHA" "$CURRENT_SHA" --)
+          fi
+        else
+          # workflow_dispatch / other: compare with parent
+          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD)
+        fi
+
+        echo "::group::Changed files"
+        echo "$CHANGED_FILES"
+        echo "::endgroup::"
+
+        # All projects to detect
+        PROJECTS=(
+          archived cgit ci cmark corebinutils forgewrapper genqrcode
+          hooks images4docker json4cpp libnbtplusplus meshmc meta
+          mnv neozip tomlplusplus
+        )
+
+        CHANGED_PROJECTS=()
+
+        for proj in "${PROJECTS[@]}"; do
+          if echo "$CHANGED_FILES" | grep -q "^${proj}/"; then
+            echo "${proj}_changed=true" >> "$GITHUB_OUTPUT"
+            CHANGED_PROJECTS+=("$proj")
+          else
+            echo "${proj}_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+        done
+
+        # .github/ changes
+        if echo "$CHANGED_FILES" | grep -q "^\.github/"; then
+          echo "github_changed=true" >> "$GITHUB_OUTPUT"
+          CHANGED_PROJECTS+=(".github")
+        else
+          echo "github_changed=false" >> "$GITHUB_OUTPUT"
+        fi
+
+        # Root-level files (CODEOWNERS, README, SECURITY, etc.)
+        ROOT_MATCHES=$(echo "$CHANGED_FILES" | grep -vE "^(archived|cgit|ci|cmark|corebinutils|forgewrapper|genqrcode|hooks|images4docker|json4cpp|libnbtplusplus|meshmc|meta|mnv|neozip|tomlplusplus|LICENSES|\.github)/" || true)
+        if [[ -n "$ROOT_MATCHES" ]]; then
+          echo "root_changed=true" >> "$GITHUB_OUTPUT"
+          CHANGED_PROJECTS+=("root")
+        else
+          echo "root_changed=false" >> "$GITHUB_OUTPUT"
+        fi
+
+        # Build comma-separated list
+        if [[ ${#CHANGED_PROJECTS[@]} -gt 0 ]]; then
+          PROJECTS_CSV=$(IFS=','; echo "${CHANGED_PROJECTS[*]}")
+        else
+          PROJECTS_CSV=""
+        fi
+        echo "changed_projects=${PROJECTS_CSV}" >> "$GITHUB_OUTPUT"
+        echo "changed_count=${#CHANGED_PROJECTS[@]}" >> "$GITHUB_OUTPUT"
+
+        echo "::notice::Changed projects (${#CHANGED_PROJECTS[@]}): ${PROJECTS_CSV}"
+
+    - name: Parse commit message
+      id: parse-commit
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        EVENT_NAME="${{ inputs.event-name }}"
+        PR_TITLE="${{ inputs.pr-title }}"
+
+        if [[ "$EVENT_NAME" == "pull_request" && -n "$PR_TITLE" ]]; then
+          FULL_MSG="$PR_TITLE"
+        else
+          FULL_MSG=$(git log -1 --format='%s' HEAD)
+        fi
+
+        echo "full_message<<COMMIT_MSG_EOF" >> "$GITHUB_OUTPUT"
+        echo "$FULL_MSG" >> "$GITHUB_OUTPUT"
+        echo "COMMIT_MSG_EOF" >> "$GITHUB_OUTPUT"
+
+        # Parse Conventional Commits: type(scope): subject
+        # Also handles: type: subject, type!: subject, type(scope)!: subject
+        if [[ "$FULL_MSG" =~ ^([a-zA-Z]+)(\(([^)]*)\))?(!)?\:\ (.+)$ ]]; then
+          TYPE="${BASH_REMATCH[1]}"
+          SCOPE="${BASH_REMATCH[3]:-}"
+          BREAKING="${BASH_REMATCH[4]:-}"
+          SUBJECT="${BASH_REMATCH[5]}"
+
+          echo "type=${TYPE}" >> "$GITHUB_OUTPUT"
+          echo "scope=${SCOPE}" >> "$GITHUB_OUTPUT"
+          echo "subject=${SUBJECT}" >> "$GITHUB_OUTPUT"
+
+          if [[ "$BREAKING" == "!" ]]; then
+            echo "breaking=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "breaking=false" >> "$GITHUB_OUTPUT"
+          fi
+        else
+          echo "type=" >> "$GITHUB_OUTPUT"
+          echo "scope=" >> "$GITHUB_OUTPUT"
+          echo "subject=${FULL_MSG}" >> "$GITHUB_OUTPUT"
+          echo "breaking=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Generate summary report
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        cat >> "$GITHUB_STEP_SUMMARY" <<'HEADER'
+        # Change Analysis Report
+
+        HEADER
+
+        cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+        ## Commit Information
+
+        | Field | Value |
+        |-------|-------|
+        | **SHA** | \`${{ inputs.current-sha }}\` |
+        | **Event** | \`${{ inputs.event-name }}\` |
+        | **Type** | \`${{ steps.parse-commit.outputs.type || 'N/A' }}\` |
+        | **Scope** | \`${{ steps.parse-commit.outputs.scope || 'N/A' }}\` |
+        | **Subject** | ${{ steps.parse-commit.outputs.subject }} |
+        | **Breaking** | ${{ steps.parse-commit.outputs.breaking }} |
+
+        ## Changed Projects (${{ steps.detect.outputs.changed_count }})
+
+        | Project | Changed |
+        |---------|---------|
+        | archived | ${{ steps.detect.outputs.archived_changed == 'true' && '✅' || '—' }} |
+        | cgit | ${{ steps.detect.outputs.cgit_changed == 'true' && '✅' || '—' }} |
+        | cmark | ${{ steps.detect.outputs.cmark_changed == 'true' && '✅' || '—' }} |
+        | corebinutils | ${{ steps.detect.outputs.corebinutils_changed == 'true' && '✅' || '—' }} |
+        | forgewrapper | ${{ steps.detect.outputs.forgewrapper_changed == 'true' && '✅' || '—' }} |
+        | genqrcode | ${{ steps.detect.outputs.genqrcode_changed == 'true' && '✅' || '—' }} |
+        | hooks | ${{ steps.detect.outputs.hooks_changed == 'true' && '✅' || '—' }} |
+        | images4docker | ${{ steps.detect.outputs.images4docker_changed == 'true' && '✅' || '—' }} |
+        | json4cpp | ${{ steps.detect.outputs.json4cpp_changed == 'true' && '✅' || '—' }} |
+        | libnbtplusplus | ${{ steps.detect.outputs.libnbtplusplus_changed == 'true' && '✅' || '—' }} |
+        | meshmc | ${{ steps.detect.outputs.meshmc_changed == 'true' && '✅' || '—' }} |
+        | meta | ${{ steps.detect.outputs.meta_changed == 'true' && '✅' || '—' }} |
+        | mnv | ${{ steps.detect.outputs.mnv_changed == 'true' && '✅' || '—' }} |
+        | neozip | ${{ steps.detect.outputs.neozip_changed == 'true' && '✅' || '—' }} |
+        | tomlplusplus | ${{ steps.detect.outputs.tomlplusplus_changed == 'true' && '✅' || '—' }} |
+        | ci | ${{ steps.detect.outputs.ci_changed == 'true' && '✅' || '—' }} |
+        | .github | ${{ steps.detect.outputs.github_changed == 'true' && '✅' || '—' }} |
+        | root files | ${{ steps.detect.outputs.root_changed == 'true' && '✅' || '—' }} |
+
+        ---
+        > **Changed:** \`${{ steps.detect.outputs.changed_projects }}\`
+        EOF

@@ -5,13 +5,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  merge_group:
-    types: [checks_requested]
-  pull_request:
-    paths:
-      - 'meshmc/**'
-      - '.github/workflows/meshmc-codeql.yml'
   workflow_dispatch:
+  workflow_call:
 
 permissions: {}
 

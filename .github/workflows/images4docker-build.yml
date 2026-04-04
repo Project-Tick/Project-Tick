@@ -1,14 +1,8 @@
 name: "images4docker: Build"
 
 on:
-  push:
-    branches: ["trunk", "master"]
-    paths:
-      - "images4docker/dockerfiles/**"
-      - ".github/workflows/images4docker-build.yml"
-  schedule:
-    - cron: "17 3 * * *"
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

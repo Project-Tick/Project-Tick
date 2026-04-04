@@ -1,15 +1,8 @@
 name: "cgit: CI"
 
 on:
-  push:
-    paths:
-      - 'cgit/**'
-      - '.github/workflows/cgit-ci.yml'
-  pull_request:
-    paths:
-      - 'cgit/**'
-      - '.github/workflows/cgit-ci.yml'
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read

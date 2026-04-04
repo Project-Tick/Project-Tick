@@ -1,13 +1,8 @@
 name: "json4cpp: Publish documentation"
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - 'json4cpp/docs/mkdocs/**'
-      - 'json4cpp/docs/examples/**'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: json4cpp-documentation

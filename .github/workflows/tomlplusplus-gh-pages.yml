@@ -1,17 +1,8 @@
 name: "tomlplusplus: gh-pages"
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'tomlplusplus/**.h'
-      - 'tomlplusplus/**.hpp'
-      - 'tomlplusplus/**.dox'
-      - 'tomlplusplus/**.md'
-      - 'tomlplusplus/docs/**'
-      - '.github/workflows/tomlplusplus-gh-pages.yml'
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   gh-pages:

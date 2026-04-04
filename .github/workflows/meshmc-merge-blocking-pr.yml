@@ -10,6 +10,7 @@ on:
         description: Local Pull Request number to work on
         required: true
         type: number
+  workflow_call:
 
 permissions: {}
 

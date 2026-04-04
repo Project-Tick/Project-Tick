@@ -4,16 +4,8 @@ permissions:
   contents: read
 
 on:
-  push:
-    branches: ["develop"]
-    paths:
-      - 'json4cpp/**'
-  pull_request:
-    branches: ["develop"]
-    paths:
-      - 'json4cpp/**'
-  schedule:
-    - cron: '41 14 * * 3'
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   flawfinder:

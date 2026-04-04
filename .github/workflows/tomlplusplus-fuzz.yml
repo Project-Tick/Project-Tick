@@ -1,16 +1,8 @@
 name: "tomlplusplus: Fuzz"
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'tomlplusplus/**'
-      - '.github/workflows/tomlplusplus-fuzz.yml'
-  pull_request:
-    paths:
-      - 'tomlplusplus/**'
-      - '.github/workflows/tomlplusplus-fuzz.yml'
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: tomlplusplus-fuzz-${{ github.ref }}
