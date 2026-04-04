@@ -31,27 +31,41 @@ on:
 permissions:
   contents: read
 
-env:
-  # Map cron index → group name
-  SCHEDULE_GROUP: >-
-    ${{
-      github.event.inputs.schedule-group == 'all' && 'all' ||
-      github.event.inputs.schedule-group ||
-      (github.event.schedule == '0 3 * * *' && 'daily') ||
-      (github.event.schedule == '0 4 * * 0' && 'weekly-sun') ||
-      (github.event.schedule == '0 14 * * 3' && 'weekly-wed') ||
-      (github.event.schedule == '0 2 * * 4' && 'weekly-thu') ||
-      'all'
-    }}
-
 jobs:
+  # ── Gate: resolve which schedule group to run ───────────────────
+  gate:
+    name: "Resolve Schedule Group"
+    runs-on: ubuntu-latest
+    outputs:
+      group: ${{ steps.resolve.outputs.group }}
+    steps:
+      - name: Resolve schedule group
+        id: resolve
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            GROUP="${{ github.event.inputs.schedule-group }}"
+          elif [[ "${{ github.event.schedule }}" == "0 3 * * *" ]]; then
+            GROUP="daily"
+          elif [[ "${{ github.event.schedule }}" == "0 4 * * 0" ]]; then
+            GROUP="weekly-sun"
+          elif [[ "${{ github.event.schedule }}" == "0 14 * * 3" ]]; then
+            GROUP="weekly-wed"
+          elif [[ "${{ github.event.schedule }}" == "0 2 * * 4" ]]; then
+            GROUP="weekly-thu"
+          else
+            GROUP="all"
+          fi
+          echo "group=$GROUP" >> "$GITHUB_OUTPUT"
+          echo "### Schedule Group: \`$GROUP\`" >> "$GITHUB_STEP_SUMMARY"
+
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  Daily Jobs                                                    ║
   # ╚════════════════════════════════════════════════════════════════╝
 
   stale:
     name: "Stale Issues & PRs"
-    if: contains(fromJSON('["daily","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["daily","all"]'), needs.gate.outputs.group)
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -82,7 +96,8 @@ jobs:
 
   docker-images:
     name: "Docker Image Rebuild"
-    if: contains(fromJSON('["daily","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["daily","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/images4docker-build.yml
     permissions:
       contents: read
@@ -91,7 +106,8 @@ jobs:
 
   mnv-coverity:
     name: "MNV Coverity Scan"
-    if: contains(fromJSON('["daily","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["daily","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/mnv-coverity.yml
     secrets: inherit
 
@@ -101,13 +117,15 @@ jobs:
 
   mnv-link-check:
     name: "MNV Link Check"
-    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["weekly-sun","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/mnv-link-check.yml
     secrets: inherit
 
   scorecard:
     name: "OpenSSF Scorecard"
-    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["weekly-sun","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/repo-scorecards.yml
     permissions:
       contents: read
@@ -121,8 +139,9 @@ jobs:
 
   meshmc-flake-update:
     name: "MeshMC Nix Flake Update"
+    needs: gate
     if: >-
-      contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP) &&
+      contains(fromJSON('["weekly-sun","all"]'), needs.gate.outputs.group) &&
       github.repository_owner == 'Project-Tick'
     uses: ./.github/workflows/meshmc-flake-update.yml
     permissions:
@@ -132,7 +151,8 @@ jobs:
 
   mnv-codeql:
     name: "MNV CodeQL"
-    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["weekly-sun","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/mnv-codeql.yml
     permissions:
       contents: read
@@ -141,7 +161,8 @@ jobs:
 
   neozip-codeql:
     name: "NeoZip CodeQL"
-    if: contains(fromJSON('["weekly-sun","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["weekly-sun","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/neozip-codeql.yml
     permissions:
       contents: read
@@ -154,7 +175,8 @@ jobs:
 
   json4cpp-flawfinder:
     name: "JSON4CPP Flawfinder"
-    if: contains(fromJSON('["weekly-wed","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["weekly-wed","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/json4cpp-flawfinder.yml
     permissions:
       contents: read
@@ -168,7 +190,8 @@ jobs:
 
   json4cpp-semgrep:
     name: "JSON4CPP Semgrep"
-    if: contains(fromJSON('["weekly-thu","all"]'), env.SCHEDULE_GROUP)
+    needs: gate
+    if: contains(fromJSON('["weekly-thu","all"]'), needs.gate.outputs.group)
     uses: ./.github/workflows/json4cpp-semgrep.yml
     permissions:
       contents: read
@@ -184,6 +207,7 @@ jobs:
     name: "Schedule Verdict"
     if: always()
     needs:
+      - gate
       - stale
       - docker-images
       - mnv-coverity
@@ -200,7 +224,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "## Scheduled CI Report — ${{ env.SCHEDULE_GROUP }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Scheduled CI Report — ${{ needs.gate.outputs.group }}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Job | Result |" >> "$GITHUB_STEP_SUMMARY"
           echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"

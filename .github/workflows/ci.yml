@@ -282,6 +282,8 @@ jobs:
     uses: ./.github/workflows/neozip-ci.yml
     permissions:
       contents: read
+      actions: read
+      security-events: write
     secrets: inherit
 
   # ── C++ / Library Projects ──────────────────────────────────────
