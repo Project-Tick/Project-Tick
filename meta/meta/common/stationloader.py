@@ -1,5 +1,7 @@
+from os.path import join
+
 BASE_DIR = "station-loader"
 
-STATIONLOADER_COMPONENT = "station-loader"
+STATIONLOADER_COMPONENT = "net.modificationstation.stationloader"
 
-VERSIONS_FILE = "station-loader/versions.json"
+VERSIONS_FILE = join(BASE_DIR, "versions.json")
