@@ -13,6 +13,8 @@ impl Acl {
             }
         }
 
+        let repos = repos.into_iter().map(|r| r.to_lowercase()).collect();
+
         Acl {
             trusted_users,
             repos,
