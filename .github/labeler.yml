@@ -1,0 +1,192 @@
+"6.topic: archived":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - archived/**/*
+
+"6.topic: cgit":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - cgit/**/*
+
+"6.topic: ci":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - .github/**/*
+              - hooks/**/*
+              - images4docker/**/*
+              - */ci/**/*
+              - */.github/**/*
+
+"6.topic: cmark":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - cmark/**/*
+
+"6.topic: corebinutils":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - corebinutils/**/*
+
+"6.topic: documentation":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - '**/README*'
+              - '**/docs/**/*'
+              - '**/doc/**/*'
+              - '**/man/**/*'
+              - '**/LICENSE*'
+              - LICENSES/**/*
+              - '**/COPYING*'
+              - '**/SECURITY*'
+              - '**/CONTRIBUTING*'
+              - '**/TRADEMARK*'
+
+"6.topic: forgewrapper":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - forgewrapper/**/*
+
+"6.topic: genqrcode":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - genqrcode/**/*
+
+"6.topic: json4cpp":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - json4cpp/**/*
+
+"6.topic: libnbtplusplus":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - libnbtplusplus/**/*
+
+"6.topic: licensing":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - LICENSES/**/*
+              - '**/LICENSE*'
+              - '**/COPYING*'
+              - '**/TRADEMARK*'
+              - '**/REUSE.toml'
+              - '**/.reuse/**/*'
+
+"6.topic: meshmc":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - meshmc/**/*
+
+"6.topic: meta":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - meta/**/*
+
+"6.topic: mnv":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - mnv/**/*
+
+"6.topic: neozip":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - neozip/**/*
+
+"6.topic: nix":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - '**/flake.nix'
+              - '**/default.nix'
+              - '**/*.nix'
+              - '**/nix/**/*'
+
+"6.topic: qt/kde":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - meshmc/**/*.{ui,qrc,ts}
+              - meshmc/cmake/**/*
+              - meshmc/launcher/**/*.{cpp,h,hpp,ui,qrc,ts}
+              - meshmc/launcher/resources/**/*
+              - meshmc/launcher/translations/**/*
+              - meshmc/launcher/ui/**/*
+              - meshmc/updater/**/*
+              - genqrcode/cmake/**/*
+              - tomlplusplus/cmake/**/*
+              - json4cpp/cmake/**/*
+              - cmark/cmake/**/*
+
+"6.topic: resources":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - '**/branding/**/*'
+              - '**/icons/**/*'
+              - '**/pixmaps/**/*'
+              - '**/runtime/icons/**/*'
+              - '**/resources/**/*'
+              - '**/screenshots/**/*'
+              - '**/backgrounds/**/*'
+              - '**/*.png'
+              - '**/*.svg'
+              - '**/*.ico'
+              - '**/*.icns'
+              - '**/*.bmp'
+              - '**/*.xpm'
+
+"6.topic: testing":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - '**/test/**/*'
+              - '**/tests/**/*'
+              - '**/testdata/**/*'
+              - '**/api_test/**/*'
+              - '**/fuzz/**/*'
+              - meta/fuzz/**/*
+
+"6.topic: tomlplusplus":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - tomlplusplus/**/*
+
+"6.topic: tooling":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - '**/tools/**/*'
+              - '**/scripts/**/*'
+              - buildconfig/**/*
+              - meshmc/buildconfig/**/*
+
+"8.has: changelog":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - CHANGELOG*
+              - '**/CHANGELOG*'
+              - doc/release-notes/**/*
+              - docs/release-notes/**/*
+
+"8.has: github-actions":
+  - any:
+      - changed-files:
+          - any-glob-to-any-file:
+              - .github/workflows/**/*
+              - .github/actions/**/*
