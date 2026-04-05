@@ -4,8 +4,8 @@ set encoding=latin1
 scriptencoding latin1
 
 func s:equivalence_test()
-  let str = 'Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ B C D Eï¿½ï¿½ï¿½ï¿½ F G H Iï¿½ï¿½ï¿½ï¿½ J K L M Nï¿½ Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ P Q R S T Uï¿½ï¿½ï¿½ï¿½ V W X Yï¿½ Z '
-  \      .. 'aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ b c d eï¿½ï¿½ï¿½ï¿½ f g h iï¿½ï¿½ï¿½ï¿½ j k l m nï¿½ oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ p q r s t uï¿½ï¿½ï¿½ï¿½ v w x yï¿½ï¿½ z '
+  let str = 'AÀÁÂÃÄÅ B CÇ D EÈÉÊË F G H IÌÍÎÏ J K L M NÑ OÒÓÔÕÖØ P Q R S T UÙÚÛÜ V W X Yİ Z '
+  \      .. 'aàáâãäå b cç d eèéêë f g h iìíîï j k l m nñ oòóôõöø p q r s t uùúûü v w x yıÿ z '
   \      .. "0 1 2 3 4 5 6 7 8 9 "
   \      .. "` ~ ! ? ; : . , / \\ ' \" | < > [ ] { } ( ) @ # $ % ^ & * _ - + \b \e \f \n \r \t"
   let groups = split(str)
@@ -404,7 +404,7 @@ func Test_regexp_single_line_pat()
   call add(tl, [2, '\v((ab)|c*)+', 'abcccaba', 'abcccab', '', 'ab'])
   call add(tl, [2, '\v(a(c*)+b)+', 'acbababaaa', 'acbabab', 'ab', ''])
   call add(tl, [2, '\v(a|b*)+', 'aaaa', 'aaaa', ''])
-  call add(tl, [2, '\p*', 'aï¿½ 	', 'aï¿½ '])
+  call add(tl, [2, '\p*', 'aà 	', 'aà '])
 
   " Test greedy-ness and lazy-ness
   call add(tl, [2, 'a\{-2,7}','aaaaaaaaaaaaa', 'aa'])
@@ -993,12 +993,12 @@ endfunc
 " Check patterns matching cursor position.
 func s:curpos_test2()
   new
-  call setline(1, ['1', '2 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '3 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '4 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '5	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '6	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '7	foobar eins zwei drei vier fï¿½nf sechse'])
+  call setline(1, ['1', '2 foobar eins zwei drei vier fünf sechse',
+        \ '3 foobar eins zwei drei vier fünf sechse',
+        \ '4 foobar eins zwei drei vier fünf sechse',
+        \ '5	foobar eins zwei drei vier fünf sechse',
+        \ '6	foobar eins zwei drei vier fünf sechse',
+        \ '7	foobar eins zwei drei vier fünf sechse'])
   call setpos('.', [0, 2, 10, 0])
   s/\%.c.*//g
   call setpos('.', [0, 3, 15, 0])
@@ -1008,10 +1008,10 @@ func s:curpos_test2()
   call assert_equal(['1',
         \ '2 foobar ',
         \ '',
-        \ '4 foobar eins zwei drei vier fï¿½nf sechse',
+        \ '4 foobar eins zwei drei vier fünf sechse',
         \ '5	_',
-        \ '6	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '7	foobar eins zwei drei vier fï¿½nf sechse'],
+        \ '6	foobar eins zwei drei vier fünf sechse',
+        \ '7	foobar eins zwei drei vier fünf sechse'],
         \ getline(1, '$'))
   call assert_fails('call search("\\%.1l")', 'E1204:')
   call assert_fails('call search("\\%.1c")', 'E1204:')
@@ -1022,12 +1022,12 @@ endfunc
 " Check patterns matching before or after cursor position.
 func s:curpos_test3()
   new
-  call setline(1, ['1', '2 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '3 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '4 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '5	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '6	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '7	foobar eins zwei drei vier fï¿½nf sechse'])
+  call setline(1, ['1', '2 foobar eins zwei drei vier fünf sechse',
+        \ '3 foobar eins zwei drei vier fünf sechse',
+        \ '4 foobar eins zwei drei vier fünf sechse',
+        \ '5	foobar eins zwei drei vier fünf sechse',
+        \ '6	foobar eins zwei drei vier fünf sechse',
+        \ '7	foobar eins zwei drei vier fünf sechse'])
   call setpos('.', [0, 2, 10, 0])
   " Note: This removes all columns, except for the column directly in front of
   " the cursor. Bug????
@@ -1041,27 +1041,27 @@ func s:curpos_test3()
   call setpos('.', [0, 6, 4, 0])
   :s/\%>.v.*$/_/
   call assert_equal(['1',
-        \ ' eins zwei drei vier fï¿½nf sechse',
+        \ ' eins zwei drei vier fünf sechse',
         \ '3 foobar e',
-        \ '4 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '_foobar eins zwei drei vier fï¿½nf sechse',
+        \ '4 foobar eins zwei drei vier fünf sechse',
+        \ '_foobar eins zwei drei vier fünf sechse',
         \ '6	fo_',
-        \ '7	foobar eins zwei drei vier fï¿½nf sechse'],
+        \ '7	foobar eins zwei drei vier fünf sechse'],
         \ getline(1, '$'))
   sil %d
-  call setline(1, ['1', '2 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '3 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '4 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '5	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '6	foobar eins zwei drei vier fï¿½nf sechse',
-        \ '7	foobar eins zwei drei vier fï¿½nf sechse'])
+  call setline(1, ['1', '2 foobar eins zwei drei vier fünf sechse',
+        \ '3 foobar eins zwei drei vier fünf sechse',
+        \ '4 foobar eins zwei drei vier fünf sechse',
+        \ '5	foobar eins zwei drei vier fünf sechse',
+        \ '6	foobar eins zwei drei vier fünf sechse',
+        \ '7	foobar eins zwei drei vier fünf sechse'])
   call setpos('.', [0, 4, 4, 0])
   %s/\%<.l.*//
   call setpos('.', [0, 5, 4, 0])
   %s/\%>.l.*//
   call assert_equal(['', '', '',
-        \ '4 foobar eins zwei drei vier fï¿½nf sechse',
-        \ '5	foobar eins zwei drei vier fï¿½nf sechse',
+        \ '4 foobar eins zwei drei vier fünf sechse',
+        \ '5	foobar eins zwei drei vier fünf sechse',
         \ '', ''],
         \ getline(1, '$'))
   bwipe!

@@ -243,21 +243,35 @@
 #cmakedefine FEAT_GUI_MOTIF
 #cmakedefine FEAT_GUI_X11
 #cmakedefine FEAT_WAYLAND
-#cmakedefine FEAT_WAYLAND_CLIPBOARD
 #cmakedefine FEAT_IPV6
 #cmakedefine WANT_SOCKETSERVER
 
 /* Interpreter support */
 #cmakedefine FEAT_LUA
 #cmakedefine DYNAMIC_LUA
+#ifdef DYNAMIC_LUA
+# define DYNAMIC_LUA_DLL "@DYNAMIC_LUA_DLL@"
+#endif
 #cmakedefine FEAT_PERL
 #cmakedefine DYNAMIC_PERL
+#ifdef DYNAMIC_PERL
+# define DYNAMIC_PERL_DLL "@DYNAMIC_PERL_DLL@"
+#endif
 #cmakedefine FEAT_PYTHON3
 #cmakedefine DYNAMIC_PYTHON3
+#ifdef DYNAMIC_PYTHON3
+# define DYNAMIC_PYTHON3_DLL "@DYNAMIC_PYTHON3_DLL@"
+#endif
 #cmakedefine FEAT_RUBY
 #cmakedefine DYNAMIC_RUBY
+#ifdef DYNAMIC_RUBY
+# define DYNAMIC_RUBY_DLL "@DYNAMIC_RUBY_DLL@"
+#endif
 #cmakedefine FEAT_TCL
 #cmakedefine DYNAMIC_TCL
+#ifdef DYNAMIC_TCL
+# define DYNAMIC_TCL_DLL "@DYNAMIC_TCL_DLL@"
+#endif
 #cmakedefine FEAT_MZSCHEME
 #cmakedefine DYNAMIC_MZSCHEME
 

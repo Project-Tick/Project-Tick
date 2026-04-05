@@ -35,6 +35,21 @@
 #undef isgraph
 #define isgraph(x) (isprint((x)) && !isspace((x)))
 
+/* memrchr is a GNU extension, not available on macOS/BSD */
+#ifndef HAVE_MEMRCHR
+#if !defined(__GLIBC__) && !defined(__linux__)
+static inline void *memrchr(const void *s, int c, size_t n)
+{
+	const unsigned char *p = (const unsigned char *)s + n;
+	while (n--) {
+		if (*--p == (unsigned char)c)
+			return (void *)p;
+	}
+	return NULL;
+}
+#endif
+#endif
+
 
 /*
  * Limits used for relative dates

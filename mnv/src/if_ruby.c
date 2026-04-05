@@ -103,6 +103,10 @@
 #  define rb_unexpected_type		rb_unexpected_type_stub
 # endif
 
+# if RUBY_VERSION >= 34
+#  define rb_data_object_wrap		rb_data_object_wrap_stub
+# endif
+
 #endif  // ifdef DYNAMIC_RUBY
 
 // On macOS pre-installed Ruby defines "SIZEOF_TIME_T" as "SIZEOF_LONG" so it
@@ -500,6 +504,10 @@ NORETURN(static void (*dll_ruby_malloc_size_overflow)(size_t, size_t));
 #  endif
 # endif
 
+# if RUBY_VERSION >= 34
+static VALUE (*dll_rb_data_object_wrap)(VALUE, void*, RUBY_DATA_FUNC, RUBY_DATA_FUNC);
+# endif
+
 # if RUBY_VERSION >= 26 && RUBY_VERSION <= 32
 void rb_ary_detransient_stub(VALUE x);
 # endif
@@ -606,6 +614,13 @@ rb_unexpected_type_stub(VALUE self, int t)
     dll_rb_unexpected_type(self, t);
 }
 #  endif
+#  if RUBY_VERSION >= 34
+    VALUE
+rb_data_object_wrap_stub(VALUE klass, void *datap, RUBY_DATA_FUNC dmark, RUBY_DATA_FUNC dfree)
+{
+    return dll_rb_data_object_wrap(klass, datap, dmark, dfree);
+}
+#  endif
 #  ifdef USE_TYPEDDATA
 void *rb_check_typeddata_stub(VALUE obj, const rb_data_type_t *data_type)
 {
@@ -657,6 +672,9 @@ static struct
 # endif
 # if RUBY_VERSION >= 31
     {"rb_debug_rstring_null_ptr", (RUBY_PROC*)&dll_rb_debug_rstring_null_ptr},
+# endif
+# if RUBY_VERSION >= 34
+    {"rb_data_object_wrap", (RUBY_PROC*)&dll_rb_data_object_wrap},
 # endif
     {"rb_define_class_under", (RUBY_PROC*)&dll_rb_define_class_under},
     {"rb_define_const", (RUBY_PROC*)&dll_rb_define_const},

@@ -26,7 +26,8 @@ jobs:
             build-essential \
             bmake \
             libbsd-dev \
-            libmd-dev
+            libmd-dev \
+            musl-tools
 
       - name: Configure
         run: |

@@ -23,22 +23,32 @@ jobs:
 
       - name: Install zlib (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y zlib1g-dev
+        run: sudo apt-get update && sudo apt-get install -y zlib1g-dev cxxtest
 
       - name: Install zlib (macOS)
         if: runner.os == 'macOS'
-        run: brew install zlib
+        run: brew install zlib cxxtest
 
       - uses: ilammy/msvc-dev-cmd@v1
         if: runner.os == 'Windows'
 
       - name: Configure
+        if: runner.os != 'Windows'
         run: |
           cmake -S libnbtplusplus -B build \
             -DCMAKE_BUILD_TYPE=Release \
             -DNBT_BUILD_SHARED=${{ matrix.shared }} \
             -DNBT_USE_ZLIB=ON \
             -DNBT_BUILD_TESTS=ON
+
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cmake -S libnbtplusplus -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DNBT_BUILD_SHARED=${{ matrix.shared }} \
+            -DNBT_USE_ZLIB=OFF \
+            -DNBT_BUILD_TESTS=OFF
 
       - name: Build
         run: cmake --build build --config Release -j2

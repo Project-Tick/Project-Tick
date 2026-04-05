@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4
+        uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -35,7 +35,7 @@ jobs:
       - name: Install Valgrind
         run: sudo apt-get update ; sudo apt-get install -y valgrind
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4
+        uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -53,7 +53,7 @@ jobs:
         run: apt-get update ; apt-get install -y git clang-tools iwyu unzip
       - uses: actions/checkout@v6
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4
+        uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -69,7 +69,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4
+        uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -85,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4
+        uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -95,6 +95,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Initialize json4cpp as git repo
+        run: cd json4cpp && git init && git add . && git commit -m 'init' --allow-empty
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -119,6 +121,8 @@ jobs:
         os: [macos-13, macos-14, macos-15]
     steps:
       - uses: actions/checkout@v6
+      - name: Initialize json4cpp as git repo
+        run: cd json4cpp && git init && git add . && git commit -m 'init' --allow-empty
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -132,6 +136,8 @@ jobs:
         os: [windows-2022, windows-2025]
     steps:
       - uses: actions/checkout@v6
+      - name: Initialize json4cpp as git repo
+        run: cd json4cpp && git init && git add . && git commit -m 'init' --allow-empty
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On -G "Visual Studio 17 2022"
       - name: Build

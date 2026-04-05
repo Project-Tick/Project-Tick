@@ -392,8 +392,6 @@ if(PKG_CONFIG_FOUND)
     pkg_check_modules(WAYLAND QUIET wayland-client)
     if(WAYLAND_FOUND)
         set(HAVE_WAYLAND 1)
-        set(FEAT_WAYLAND 1)
-        set(FEAT_WAYLAND_CLIPBOARD 1)
 
         # Generate wayland protocol files using wayland-scanner
         find_program(WAYLAND_SCANNER wayland-scanner)
@@ -585,6 +583,17 @@ if(MNV_LUA)
         set(FEAT_LUA 1)
         if(MNV_LUA_DYNAMIC)
             set(DYNAMIC_LUA 1)
+            # Determine the shared library filename for dynamic loading
+            foreach(_lua_lib ${LUA_LIBRARIES})
+                if(_lua_lib MATCHES "\\.(so|dylib)")
+                    get_filename_component(_lua_realpath "${_lua_lib}" REALPATH)
+                    get_filename_component(DYNAMIC_LUA_DLL "${_lua_realpath}" NAME)
+                    break()
+                endif()
+            endforeach()
+            if(NOT DYNAMIC_LUA_DLL)
+                set(DYNAMIC_LUA_DLL "liblua.so")
+            endif()
         endif()
         message(STATUS "Lua: ${LUA_VERSION_STRING}")
     else()
@@ -600,6 +609,22 @@ if(MNV_PERL)
         set(FEAT_PERL 1)
         if(MNV_PERL_DYNAMIC)
             set(DYNAMIC_PERL 1)
+            # Determine the shared library filename for dynamic loading
+            if(PERL_LIBRARY)
+                get_filename_component(_perl_realpath "${PERL_LIBRARY}" REALPATH)
+                get_filename_component(DYNAMIC_PERL_DLL "${_perl_realpath}" NAME)
+            else()
+                foreach(_perl_lib ${PERLLIBS_LIBRARIES})
+                    if(_perl_lib MATCHES "\\.(so|dylib)")
+                        get_filename_component(_perl_realpath "${_perl_lib}" REALPATH)
+                        get_filename_component(DYNAMIC_PERL_DLL "${_perl_realpath}" NAME)
+                        break()
+                    endif()
+                endforeach()
+            endif()
+            if(NOT DYNAMIC_PERL_DLL)
+                set(DYNAMIC_PERL_DLL "libperl.so")
+            endif()
         endif()
         message(STATUS "Perl: ${PERL_VERSION_STRING}")
     else()
@@ -614,6 +639,19 @@ if(MNV_PYTHON3)
         set(FEAT_PYTHON3 1)
         if(MNV_PYTHON3_DYNAMIC)
             set(DYNAMIC_PYTHON3 1)
+            # Determine the shared library filename for dynamic loading
+            if(Python3_LIBRARIES)
+                foreach(_py3_lib ${Python3_LIBRARIES})
+                    if(_py3_lib MATCHES "\\.(so|dylib)")
+                        get_filename_component(_py3_realpath "${_py3_lib}" REALPATH)
+                        get_filename_component(DYNAMIC_PYTHON3_DLL "${_py3_realpath}" NAME)
+                        break()
+                    endif()
+                endforeach()
+            endif()
+            if(NOT DYNAMIC_PYTHON3_DLL)
+                set(DYNAMIC_PYTHON3_DLL "libpython${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}.so")
+            endif()
         endif()
         message(STATUS "Python3: ${Python3_VERSION}")
     else()
@@ -628,6 +666,14 @@ if(MNV_RUBY)
         set(FEAT_RUBY 1)
         if(MNV_RUBY_DYNAMIC)
             set(DYNAMIC_RUBY 1)
+            # Determine the shared library filename for dynamic loading
+            if(RUBY_LIBRARY)
+                get_filename_component(_ruby_realpath "${RUBY_LIBRARY}" REALPATH)
+                get_filename_component(DYNAMIC_RUBY_DLL "${_ruby_realpath}" NAME)
+            endif()
+            if(NOT DYNAMIC_RUBY_DLL)
+                set(DYNAMIC_RUBY_DLL "libruby.so")
+            endif()
         endif()
         message(STATUS "Ruby: ${RUBY_VERSION}")
     else()
@@ -642,6 +688,14 @@ if(MNV_TCL)
         set(FEAT_TCL 1)
         if(MNV_TCL_DYNAMIC)
             set(DYNAMIC_TCL 1)
+            # Determine the shared library filename for dynamic loading
+            if(TCL_LIBRARY)
+                get_filename_component(_tcl_realpath "${TCL_LIBRARY}" REALPATH)
+                get_filename_component(DYNAMIC_TCL_DLL "${_tcl_realpath}" NAME)
+            endif()
+            if(NOT DYNAMIC_TCL_DLL)
+                set(DYNAMIC_TCL_DLL "libtcl.so")
+            endif()
         endif()
         message(STATUS "Tcl: found")
     else()
@@ -672,6 +726,9 @@ if(MNV_FEATURE STREQUAL "huge")
         # Socket-based clientserver on Unix
         set(FEAT_CLIENTSERVER 1)
     endif()
+    if(HAVE_WAYLAND)
+        set(FEAT_WAYLAND 1)
+    endif()
 elseif(MNV_FEATURE STREQUAL "normal")
     set(FEAT_NORMAL 1)
     set(FEAT_EVAL 1)
@@ -681,6 +738,9 @@ elseif(MNV_FEATURE STREQUAL "normal")
     endif()
     if(MNV_CHANNEL)
         set(FEAT_JOB_CHANNEL 1)
+    endif()
+    if(HAVE_WAYLAND)
+        set(FEAT_WAYLAND 1)
     endif()
 elseif(MNV_FEATURE STREQUAL "tiny")
     set(FEAT_TINY 1)
@@ -975,8 +1035,55 @@ if(FEAT_LUA)
 endif()
 
 if(FEAT_PERL)
-    # Perl requires special preprocessing of .xs files, handle separately
-    list(APPEND MNV_CORE_SRC src/if_perl.xs)
+    # Perl .xs files need preprocessing with xsubpp to generate C code
+    find_program(PERL_EXECUTABLE perl)
+    if(PERL_EXECUTABLE)
+        # Find xsubpp
+        execute_process(
+            COMMAND ${PERL_EXECUTABLE} -MConfig -e "print \$Config{privlibexp}"
+            OUTPUT_VARIABLE PERL_PRIVLIB
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        find_program(XSUBPP xsubpp HINTS ${PERL_PRIVLIB}/ExtUtils /usr/bin/core_perl)
+
+        if(XSUBPP)
+            set(_perl_generated "${CMAKE_CURRENT_BINARY_DIR}/auto/if_perl.c")
+            file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/auto")
+            add_custom_command(
+                OUTPUT "${_perl_generated}"
+                COMMAND ${PERL_EXECUTABLE} ${XSUBPP} -prototypes -typemap
+                    "${PERL_PRIVLIB}/ExtUtils/typemap"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/src/if_perl.xs"
+                    > "${_perl_generated}"
+                DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/if_perl.xs"
+                COMMENT "Generating if_perl.c from if_perl.xs"
+            )
+            list(APPEND MNV_CORE_SRC "${_perl_generated}")
+
+            # Get Perl compile flags
+            execute_process(
+                COMMAND ${PERL_EXECUTABLE} -MExtUtils::Embed -e ccopts
+                OUTPUT_VARIABLE PERL_CFLAGS
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+            )
+            # Extract include dirs from Perl ccopts
+            string(REGEX MATCHALL "-I[^ ]+" PERL_INCLUDE_FLAGS "${PERL_CFLAGS}")
+            foreach(_flag ${PERL_INCLUDE_FLAGS})
+                string(REGEX REPLACE "^-I" "" _dir "${_flag}")
+                list(APPEND PERL_INCLUDE_DIRS "${_dir}")
+            endforeach()
+            # Extract compile definitions from Perl ccopts (-D flags)
+            string(REGEX MATCHALL "-D[^ ]+" PERL_DEFINE_FLAGS "${PERL_CFLAGS}")
+            # Extract other compile options (-f flags etc.)
+            string(REGEX MATCHALL "-f[^ ]+" PERL_COMPILE_OPTIONS "${PERL_CFLAGS}")
+        else()
+            message(WARNING "xsubpp not found, Perl support disabled")
+            set(FEAT_PERL 0)
+        endif()
+    else()
+        message(WARNING "perl not found, Perl support disabled")
+        set(FEAT_PERL 0)
+    endif()
 endif()
 
 if(FEAT_PYTHON3)
@@ -985,6 +1092,10 @@ endif()
 
 if(FEAT_RUBY)
     list(APPEND MNV_CORE_SRC src/if_ruby.c)
+
+    # Compute numeric Ruby version (e.g. 34 for Ruby 3.4.x)
+    string(REGEX REPLACE "\\." "" _ruby_ver_nodots "${RUBY_VERSION}")
+    string(SUBSTRING "${_ruby_ver_nodots}" 0 2 RUBY_VERSION_NUM)
 endif()
 
 if(FEAT_TCL)
@@ -1110,6 +1221,25 @@ if(FEAT_LUA)
     target_include_directories(mnv PRIVATE ${LUA_INCLUDE_DIR})
 endif()
 
+# Perl
+if(FEAT_PERL)
+    if(NOT DYNAMIC_PERL AND PERLLIBS_LIBRARIES)
+        target_link_libraries(mnv PRIVATE ${PERLLIBS_LIBRARIES})
+    endif()
+    if(PERL_INCLUDE_DIRS)
+        target_include_directories(mnv PRIVATE ${PERL_INCLUDE_DIRS})
+    endif()
+    if(PERL_INCLUDE_PATH)
+        target_include_directories(mnv PRIVATE ${PERL_INCLUDE_PATH})
+    endif()
+    # Apply Perl-specific compile definitions to the generated if_perl.c
+    if(_perl_generated AND PERL_DEFINE_FLAGS)
+        set_source_files_properties("${_perl_generated}" PROPERTIES
+            COMPILE_OPTIONS "${PERL_DEFINE_FLAGS}"
+        )
+    endif()
+endif()
+
 # Python 3
 if(FEAT_PYTHON3)
     if(NOT DYNAMIC_PYTHON3)
@@ -1124,12 +1254,23 @@ if(FEAT_RUBY)
         target_link_libraries(mnv PRIVATE ${RUBY_LIBRARY})
     endif()
     target_include_directories(mnv PRIVATE ${RUBY_INCLUDE_DIRS})
+    target_compile_definitions(mnv PRIVATE RUBY_VERSION=${RUBY_VERSION_NUM})
 endif()
 
 # Tcl
 if(FEAT_TCL)
     if(NOT DYNAMIC_TCL)
         target_link_libraries(mnv PRIVATE ${TCL_LIBRARY})
+    else()
+        # Dynamic Tcl still requires the stubs library for Tcl_InitStubs
+        find_library(TCL_STUB_LIBRARY NAMES tclstub tclstub8.6 tclstub8.5
+            HINTS "${TCL_LIBRARY_DIR}" "${TCL_PREFIX}/lib"
+        )
+        if(TCL_STUB_LIBRARY)
+            target_link_libraries(mnv PRIVATE ${TCL_STUB_LIBRARY})
+        else()
+            message(WARNING "Tcl stubs library not found, dynamic Tcl may fail")
+        endif()
     endif()
     target_include_directories(mnv PRIVATE ${TCL_INCLUDE_PATH})
 endif()
@@ -1226,7 +1367,53 @@ if(MNV_BUILD_TESTS)
             endif()
         endif()
 
+        # Language interpreter support for tests
+        if(FEAT_LUA)
+            if(NOT DYNAMIC_LUA)
+                target_link_libraries(${TEST_NAME} PRIVATE ${LUA_LIBRARIES})
+            endif()
+            target_include_directories(${TEST_NAME} PRIVATE ${LUA_INCLUDE_DIR})
+        endif()
+        if(FEAT_PERL)
+            if(NOT DYNAMIC_PERL AND PERLLIBS_LIBRARIES)
+                target_link_libraries(${TEST_NAME} PRIVATE ${PERLLIBS_LIBRARIES})
+            endif()
+            if(PERL_INCLUDE_DIRS)
+                target_include_directories(${TEST_NAME} PRIVATE ${PERL_INCLUDE_DIRS})
+            endif()
+            if(PERL_INCLUDE_PATH)
+                target_include_directories(${TEST_NAME} PRIVATE ${PERL_INCLUDE_PATH})
+            endif()
+        endif()
+        if(FEAT_PYTHON3)
+            if(NOT DYNAMIC_PYTHON3)
+                target_link_libraries(${TEST_NAME} PRIVATE Python3::Python)
+            endif()
+            target_include_directories(${TEST_NAME} PRIVATE ${Python3_INCLUDE_DIRS})
+        endif()
+        if(FEAT_RUBY)
+            if(NOT DYNAMIC_RUBY)
+                target_link_libraries(${TEST_NAME} PRIVATE ${RUBY_LIBRARY})
+            endif()
+            target_include_directories(${TEST_NAME} PRIVATE ${RUBY_INCLUDE_DIRS})
+            target_compile_definitions(${TEST_NAME} PRIVATE RUBY_VERSION=${RUBY_VERSION_NUM})
+        endif()
+        if(FEAT_TCL)
+            if(NOT DYNAMIC_TCL)
+                target_link_libraries(${TEST_NAME} PRIVATE ${TCL_LIBRARY})
+            else()
+                if(TCL_STUB_LIBRARY)
+                    target_link_libraries(${TEST_NAME} PRIVATE ${TCL_STUB_LIBRARY})
+                endif()
+            endif()
+            target_include_directories(${TEST_NAME} PRIVATE ${TCL_INCLUDE_PATH})
+        endif()
+
         add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+        set_tests_properties(${TEST_NAME} PROPERTIES
+            TIMEOUT 120
+            ENVIRONMENT "DISPLAY=;WAYLAND_DISPLAY="
+        )
     endfunction()
 
     # Create unit test executables
@@ -1242,6 +1429,8 @@ if(MNV_BUILD_TESTS)
         COMMAND ${CMAKE_COMMAND} -E env
             "MNVPROG=$<TARGET_FILE:mnv>"
             "MNVRUNTIME=${CMAKE_CURRENT_SOURCE_DIR}/runtime"
+            "LINES=24"
+            "COLUMNS=80"
             ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_CURRENT_SOURCE_DIR}/src/testdir
                 -f Makefile nongui
                 MNVPROG=$<TARGET_FILE:mnv>
@@ -1257,8 +1446,12 @@ if(MNV_BUILD_TESTS)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/runtime/indent/Makefile")
         add_test(
             NAME indent_tests
-            COMMAND ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_CURRENT_SOURCE_DIR}/runtime/indent
-                test MNVPROG=$<TARGET_FILE:mnv>
+            COMMAND ${CMAKE_COMMAND} -E env
+                "MNVRUNTIME=${CMAKE_CURRENT_SOURCE_DIR}/runtime"
+                "LINES=24"
+                "COLUMNS=80"
+                ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_CURRENT_SOURCE_DIR}/runtime/indent
+                    test MNVPROG=$<TARGET_FILE:mnv>
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/runtime/indent
         )
         set_tests_properties(indent_tests PROPERTIES
@@ -1271,8 +1464,12 @@ if(MNV_BUILD_TESTS)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/runtime/syntax/Makefile")
         add_test(
             NAME syntax_tests
-            COMMAND ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_CURRENT_SOURCE_DIR}/runtime/syntax
-                test MNVPROG=$<TARGET_FILE:mnv>
+            COMMAND ${CMAKE_COMMAND} -E env
+                "MNVRUNTIME=${CMAKE_CURRENT_SOURCE_DIR}/runtime"
+                "LINES=24"
+                "COLUMNS=80"
+                ${CMAKE_MAKE_PROGRAM} -C ${CMAKE_CURRENT_SOURCE_DIR}/runtime/syntax
+                    test MNVPROG=$<TARGET_FILE:mnv>
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/runtime/syntax
         )
         set_tests_properties(syntax_tests PROPERTIES

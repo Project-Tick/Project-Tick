@@ -60,3 +60,4 @@ node_modules/
 .github/instructions/codacy.instructions.md
 
 tree.txt
+build-tiny

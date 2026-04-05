@@ -18,7 +18,7 @@ jobs:
             compiler: gcc
             cxx-compiler: g++
             build-dir: ../build
-            build-src-dir: ../neozip
+            build-src-dir: neozip
             cmake-args: -DWITH_BENCHMARKS=ON
 
           - name: Ubuntu GCC OSB add_subdirectory
@@ -26,7 +26,7 @@ jobs:
             compiler: gcc
             cxx-compiler: g++
             build-dir: ../build
-            build-src-dir: ../neozip/test/add-subdirectory-project
+            build-src-dir: neozip/test/add-subdirectory-project
             cmake-args: -DWITH_BENCHMARKS=ON
 
     steps:

@@ -1,0 +1,318 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "MNV_BUILD_TESTS": "ON"
+            }
+        },
+        {
+            "name": "dev-base",
+            "hidden": true,
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_DEBUG": "ON",
+                "MNV_LEAK_CHECK": "ON"
+            }
+        },
+        {
+            "name": "default",
+            "displayName": "Default (huge, no interpreters)",
+            "description": "Default build with huge feature set, no language interpreters",
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "auto"
+            }
+        },
+        {
+            "name": "minimal",
+            "displayName": "Minimal (tiny, no extras)",
+            "description": "Minimal build with tiny feature set",
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_FEATURE": "tiny",
+                "MNV_GUI": "none",
+                "MNV_TERMINAL": "OFF",
+                "MNV_CHANNEL": "OFF",
+                "MNV_SOUND": "OFF",
+                "MNV_GPM": "OFF",
+                "MNV_SODIUM": "OFF"
+            }
+        },
+        {
+            "name": "normal",
+            "displayName": "Normal feature set",
+            "description": "Normal feature set, no GUI, no interpreters",
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_FEATURE": "normal",
+                "MNV_GUI": "none"
+            }
+        },
+        {
+            "name": "all-interp",
+            "displayName": "All interpreters (dynamic)",
+            "description": "Huge feature set with all language interpreters loaded dynamically",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "auto",
+                "MNV_LUA": "ON",
+                "MNV_LUA_DYNAMIC": "ON",
+                "MNV_PERL": "ON",
+                "MNV_PERL_DYNAMIC": "ON",
+                "MNV_PYTHON3": "ON",
+                "MNV_PYTHON3_DYNAMIC": "ON",
+                "MNV_RUBY": "ON",
+                "MNV_RUBY_DYNAMIC": "ON",
+                "MNV_TCL": "ON",
+                "MNV_TCL_DYNAMIC": "ON"
+            }
+        },
+        {
+            "name": "all-interp-static",
+            "displayName": "All interpreters (static link)",
+            "description": "Huge feature set with all interpreters linked statically",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "auto",
+                "MNV_LUA": "ON",
+                "MNV_LUA_DYNAMIC": "OFF",
+                "MNV_PERL": "ON",
+                "MNV_PERL_DYNAMIC": "OFF",
+                "MNV_PYTHON3": "ON",
+                "MNV_PYTHON3_DYNAMIC": "OFF",
+                "MNV_RUBY": "ON",
+                "MNV_RUBY_DYNAMIC": "OFF",
+                "MNV_TCL": "ON",
+                "MNV_TCL_DYNAMIC": "OFF"
+            }
+        },
+        {
+            "name": "lua-only",
+            "displayName": "Lua only (dynamic)",
+            "description": "Huge feature set with only Lua interpreter",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_LUA": "ON",
+                "MNV_LUA_DYNAMIC": "ON"
+            }
+        },
+        {
+            "name": "python3-only",
+            "displayName": "Python3 only (dynamic)",
+            "description": "Huge feature set with only Python3 interpreter",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_PYTHON3": "ON",
+                "MNV_PYTHON3_DYNAMIC": "ON"
+            }
+        },
+        {
+            "name": "ruby-only",
+            "displayName": "Ruby only (dynamic)",
+            "description": "Huge feature set with only Ruby interpreter",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_RUBY": "ON",
+                "MNV_RUBY_DYNAMIC": "ON"
+            }
+        },
+        {
+            "name": "perl-only",
+            "displayName": "Perl only (dynamic)",
+            "description": "Huge feature set with only Perl interpreter",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_PERL": "ON",
+                "MNV_PERL_DYNAMIC": "ON"
+            }
+        },
+        {
+            "name": "tcl-only",
+            "displayName": "Tcl only (dynamic)",
+            "description": "Huge feature set with only Tcl interpreter",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_TCL": "ON",
+                "MNV_TCL_DYNAMIC": "ON"
+            }
+        },
+        {
+            "name": "nogui",
+            "displayName": "No GUI (huge)",
+            "description": "Huge feature set without any GUI",
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none"
+            }
+        },
+        {
+            "name": "gtk3",
+            "displayName": "GTK3 GUI",
+            "description": "Huge feature set with GTK3 GUI",
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "gtk3"
+            }
+        },
+        {
+            "name": "sanitize",
+            "displayName": "Sanitizers (ASan + UBSan)",
+            "description": "Debug build with address and undefined behavior sanitizers",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_SANITIZE": "ON"
+            }
+        },
+        {
+            "name": "profile",
+            "displayName": "Profile build",
+            "description": "Profiling build with gprof instrumentation",
+            "inherits": "base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "none",
+                "MNV_PROFILE": "ON"
+            }
+        },
+        {
+            "name": "full-debug",
+            "displayName": "Full debug (all interpreters + debug + leak check + profile)",
+            "description": "Maximum debug build matching: -DMNV_LUA=ON -DMNV_PERL=ON -DMNV_PYTHON3=ON -DMNV_RUBY=ON -DMNV_TCL=ON -DMNV_DEBUG=ON -DMNV_PROFILE=ON -DMNV_LEAK_CHECK=ON",
+            "inherits": "dev-base",
+            "cacheVariables": {
+                "MNV_FEATURE": "huge",
+                "MNV_GUI": "auto",
+                "MNV_LUA": "ON",
+                "MNV_PERL": "ON",
+                "MNV_PYTHON3": "ON",
+                "MNV_RUBY": "ON",
+                "MNV_TCL": "ON",
+                "MNV_PROFILE": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default"
+        },
+        {
+            "name": "minimal",
+            "configurePreset": "minimal"
+        },
+        {
+            "name": "normal",
+            "configurePreset": "normal"
+        },
+        {
+            "name": "all-interp",
+            "configurePreset": "all-interp"
+        },
+        {
+            "name": "all-interp-static",
+            "configurePreset": "all-interp-static"
+        },
+        {
+            "name": "lua-only",
+            "configurePreset": "lua-only"
+        },
+        {
+            "name": "python3-only",
+            "configurePreset": "python3-only"
+        },
+        {
+            "name": "ruby-only",
+            "configurePreset": "ruby-only"
+        },
+        {
+            "name": "perl-only",
+            "configurePreset": "perl-only"
+        },
+        {
+            "name": "tcl-only",
+            "configurePreset": "tcl-only"
+        },
+        {
+            "name": "nogui",
+            "configurePreset": "nogui"
+        },
+        {
+            "name": "gtk3",
+            "configurePreset": "gtk3"
+        },
+        {
+            "name": "sanitize",
+            "configurePreset": "sanitize"
+        },
+        {
+            "name": "profile",
+            "configurePreset": "profile"
+        },
+        {
+            "name": "full-debug",
+            "configurePreset": "full-debug"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "unit-only",
+            "configurePreset": "default",
+            "filter": {
+                "exclude": {
+                    "name": "script_tests|indent_tests|syntax_tests"
+                }
+            },
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "all-interp",
+            "configurePreset": "all-interp",
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "full-debug",
+            "configurePreset": "full-debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}
