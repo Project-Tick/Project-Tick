@@ -262,14 +262,10 @@ void ThemeManager::initIconThemes()
 		 QObject::tr("Simple (Colored Icons)"), QString()},
 		{"OSX", QStringLiteral("OSX"), QStringLiteral("OSX"), QString()},
 		{"iOS", QStringLiteral("iOS"), QStringLiteral("iOS"), QString()},
-		{"flat", QStringLiteral("Flat Light"), QStringLiteral("Flat"),
-		 QObject::tr("Light")},
-		{"flat_white", QStringLiteral("Flat Dark"), QStringLiteral("Flat"),
-		 QObject::tr("Dark")},
-		{"breeze_dark", QStringLiteral("Breeze Dark"), QStringLiteral("Breeze"),
-		 QObject::tr("Dark")},
-		{"breeze_light", QStringLiteral("Breeze Light"),
-		 QStringLiteral("Breeze"), QObject::tr("Light")},
+		{"flat", QObject::tr("Flat (Light)"), QStringLiteral("Flat"), QObject::tr("Light")},
+		{"flat_white", QObject::tr("Flat (Dark)"), QStringLiteral("Flat"), QObject::tr("Dark")},
+		{"breeze_dark", QObject::tr("Breeze (Dark)"), QStringLiteral("Breeze"), QObject::tr("Dark")},
+		{"breeze_light", QObject::tr("Breeze (Light)"), QStringLiteral("Breeze"), QObject::tr("Light")},
 		{"custom", QObject::tr("Custom"), QObject::tr("Custom"), QString()},
 	};
 }

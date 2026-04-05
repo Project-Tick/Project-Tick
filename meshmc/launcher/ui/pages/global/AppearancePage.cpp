@@ -75,9 +75,17 @@ void AppearancePage::applyWidgetTheme(int index)
 
 		// Sync icon combo to the auto-resolved icon theme
 		auto resolvedIcon = settings->get("IconTheme").toString();
+		auto iconThemes = APPLICATION->themeManager()->iconThemes();
+		QString resolvedFamily;
+		for (const auto& entry : iconThemes) {
+			if (entry.id == resolvedIcon) {
+				resolvedFamily = entry.family;
+				break;
+			}
+		}
 		ui->iconsComboBox->blockSignals(true);
 		for (int i = 0; i < ui->iconsComboBox->count(); i++) {
-			if (ui->iconsComboBox->itemData(i).toString() == resolvedIcon) {
+			if (ui->iconsComboBox->itemData(i).toString() == resolvedFamily) {
 				ui->iconsComboBox->setCurrentIndex(i);
 				break;
 			}
@@ -90,11 +98,15 @@ void AppearancePage::applyWidgetTheme(int index)
 void AppearancePage::applyIconTheme(int index)
 {
 	auto settings = APPLICATION->settings();
+	auto tm = APPLICATION->themeManager();
+	auto family = ui->iconsComboBox->itemData(index).toString();
+	auto resolved = tm->resolveIconTheme(family);
+	if (resolved.isEmpty())
+		return;
 	auto originalIconTheme = settings->get("IconTheme").toString();
-	auto newIconTheme = ui->iconsComboBox->itemData(index).toString();
-	if (originalIconTheme != newIconTheme) {
-		settings->set("IconTheme", newIconTheme);
-		APPLICATION->themeManager()->applyCurrentlySelectedTheme();
+	if (originalIconTheme != resolved) {
+		settings->set("IconTheme", resolved);
+		tm->applyCurrentlySelectedTheme();
 	}
 	updateIconPreview();
 }
@@ -136,18 +148,37 @@ void AppearancePage::loadSettings()
 
 	ui->widgetStyleComboBox->setCurrentIndex(themeIdx);
 
-	// --- Icon themes (flat list) ---
+	// --- Icon themes (one entry per family, auto-resolves dark/light) ---
 	ui->iconsComboBox->clear();
 	auto currentIconTheme = settings->get("IconTheme").toString();
 	auto iconThemeList = tm->iconThemes();
 	int iconIdx = 0;
 
-	for (int i = 0; i < iconThemeList.size(); i++) {
-		const auto& entry = iconThemeList[i];
-		ui->iconsComboBox->addItem(entry.name, entry.id);
+	// Find the family of the currently active icon theme
+	QString currentFamily;
+	for (const auto& entry : iconThemeList) {
 		if (entry.id == currentIconTheme) {
-			iconIdx = i;
+			currentFamily = entry.family;
+			break;
 		}
+	}
+
+	// Populate combo with one entry per family
+	QSet<QString> seenFamilies;
+	int comboIdx = 0;
+	for (const auto& entry : iconThemeList) {
+		if (seenFamilies.contains(entry.family))
+			continue;
+		seenFamilies.insert(entry.family);
+
+		QString displayName =
+			entry.variant.isEmpty() ? entry.name : entry.family;
+		ui->iconsComboBox->addItem(displayName, entry.family);
+
+		if (entry.family == currentFamily) {
+			iconIdx = comboIdx;
+		}
+		comboIdx++;
 	}
 
 	ui->iconsComboBox->setCurrentIndex(iconIdx);
