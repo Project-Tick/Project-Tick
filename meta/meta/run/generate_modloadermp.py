@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime, timezone
 
 from meta.common import ensure_component_dir, launcher_path, upstream_path
 from meta.common.modloadermp import MODLOADERMP_COMPONENT, VERSIONS_FILE
@@ -46,6 +47,16 @@ def main():
             type="release",
             order=11,
         )
+
+        # Release date fallback to epoch so index.py doesn't reject None
+        date = data.get("date")
+        if date:
+            try:
+                v.release_time = datetime.fromisoformat(date.replace("Z", "+00:00"))
+            except Exception:
+                v.release_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
+        else:
+            v.release_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
         # Dependencies: Minecraft + Risugami ModLoader
         deps = []

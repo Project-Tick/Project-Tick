@@ -105,12 +105,13 @@ def main():
         if label:
             v.name = label
 
-        # Parse release date
+        # Parse release date, fallback to epoch so index.py doesn't reject None
         date = data.get("date")
         if date:
             dt = _parse_date(date)
-            if dt:
-                v.release_time = dt
+            v.release_time = dt if dt else datetime(1970, 1, 1)
+        else:
+            v.release_time = datetime(1970, 1, 1)
 
         # Build jar mod artifact — use stable download?f= URL
         filename = data.get("filename")

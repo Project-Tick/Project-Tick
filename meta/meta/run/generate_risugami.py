@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime, timezone
 
 from meta.common import ensure_component_dir, launcher_path, upstream_path
 from meta.common.risugami import RISUGAMI_COMPONENT, VERSIONS_FILE
@@ -47,6 +48,16 @@ def main():
 
         if mc_version:
             v.requires = [Dependency(uid=MINECRAFT_COMPONENT, equals=mc_version)]
+
+        # Parse release date, fallback to epoch so index.py doesn't reject None
+        date = data.get("date")
+        if date:
+            try:
+                v.release_time = datetime.fromisoformat(date.replace("Z", "+00:00"))
+            except Exception:
+                v.release_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
+        else:
+            v.release_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
         # Attach download artifact if available
         url = data.get("url") or data.get("download_url")

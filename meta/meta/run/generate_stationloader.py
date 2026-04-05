@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 from meta.common import ensure_component_dir, launcher_path, upstream_path
 from meta.common.stationloader import STATIONLOADER_COMPONENT, VERSIONS_FILE
@@ -49,13 +49,15 @@ def main():
 
         v.requires = [Dependency(uid=MINECRAFT_COMPONENT, equals=mc_version)]
 
-        # Parse release date (ISO 8601 from GitHub)
+        # Parse release date (ISO 8601 from GitHub), fallback to epoch
         date = data.get("date")
         if date:
             try:
                 v.release_time = datetime.fromisoformat(date.replace("Z", "+00:00"))
             except Exception:
-                pass
+                v.release_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
+        else:
+            v.release_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
         # Attach download artifact if available
         url = data.get("url")
