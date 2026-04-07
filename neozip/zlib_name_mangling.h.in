@@ -161,7 +161,7 @@
 /* all zlib structs in zutil.h */
 #define z_errmsg              @ZLIB_SYMBOL_PREFIX@z_errmsg
 #define z_vstring             @ZLIB_SYMBOL_PREFIX@z_vstring
-#define zlibng_version        @ZLIB_SYMBOL_PREFIX@zlibng_version
+#define neozip_version        @ZLIB_SYMBOL_PREFIX@neozip_version
 
 /* neozip specific symbols */
 #define zng_alloc_aligned     @ZLIB_SYMBOL_PREFIX@zng_alloc_aligned

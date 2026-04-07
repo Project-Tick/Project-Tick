@@ -16,7 +16,7 @@ Neozip tracks upstream neozip closely. At the time of writing, the embedded
 version strings are:
 
 ```c
-#define ZLIBNG_VERSION "2.3.90"
+#define NEOZIP_VERSION "2.3.90"
 #define ZLIB_VERSION   "1.3.1.neozip"
 ```
 
@@ -105,7 +105,7 @@ parameters (when the `ZLIB_COMPAT` build option is enabled).
 | CMake (≥ 3.14) | Primary build system with extensive option detection |
 | C11 standard | Default; C99, C17, C23 also supported |
 | zlib-compat mode | `ZLIB_COMPAT=ON` produces a drop-in `libz` replacement |
-| Native mode | `ZLIB_COMPAT=OFF` produces `libz-ng` with `zng_` prefixed API |
+| Native mode | `ZLIB_COMPAT=OFF` produces `libneozip` with `zng_` prefixed API |
 | Static and shared libraries | Both targets generated |
 | Google Test suite | Comprehensive C++ test suite under `test/` |
 | Fuzz targets | Under `test/fuzz/` for OSS-Fuzz integration |
@@ -257,7 +257,7 @@ for system zlib.
 
 When built with `-DZLIB_COMPAT=OFF` (the default):
 
-- The library is named `libz-ng`.
+- The library is named `libneozip`.
 - All public symbols use `zng_` prefixed names: `zng_deflateInit`, `zng_inflate`, etc.
 - The `zng_stream` structure uses fixed-width types (`uint32_t`).
 - Header file is `neozip.h`.
@@ -381,11 +381,11 @@ The library provides several ways to query version information:
 
 ```c
 const char *zlibVersion(void);         // Returns "1.3.1.neozip" in compat mode
-const char *zlibng_version(void);      // Returns "2.3.90"
+const char *neozip_version(void);      // Returns "2.3.90"
 
 // Compile-time constants
-#define ZLIBNG_VERSION  "2.3.90"
-#define ZLIBNG_VERNUM   0x02039000L
+#define NEOZIP_VERSION  "2.3.90"
+#define NEOZIP_VERNUM   0x02039000L
 #define ZLIB_VERSION    "1.3.1.neozip"
 #define ZLIB_VERNUM     0x131f
 ```

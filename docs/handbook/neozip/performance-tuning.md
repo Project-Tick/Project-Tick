@@ -293,7 +293,7 @@ Check which implementations are selected:
 
 ```bash
 # Check for SIMD symbols in the binary
-nm -D libz-ng.so | grep -E 'avx2|neon|sse|pclmul'
+nm -D libneozip.so | grep -E 'avx2|neon|sse|pclmul'
 ```
 
 Or set a breakpoint in `init_functable()` during debugging.

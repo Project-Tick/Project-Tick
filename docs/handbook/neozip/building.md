@@ -20,7 +20,7 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j$(nproc)
 ```
 
-This produces `libz-ng.so` (or `.dylib` / `.dll`) and `libz-ng.a` with the
+This produces `libneozip.so` (or `.dylib` / `.dll`) and `libneozip.a` with the
 `zng_` prefixed API.
 
 ### zlib-Compatible Build
@@ -47,7 +47,7 @@ cmake --install build --prefix /usr/local
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `ZLIB_COMPAT` | BOOL | `OFF` | Build with zlib-compatible API. Produces `libz` instead of `libz-ng`. All public symbols use standard zlib names. Forces `WITH_GZFILEOP=ON`. |
+| `ZLIB_COMPAT` | BOOL | `OFF` | Build with zlib-compatible API. Produces `libz` instead of `libneozip`. All public symbols use standard zlib names. Forces `WITH_GZFILEOP=ON`. |
 | `ZLIB_ALIASES` | BOOL | `ON` | Provide zlib-compatible CMake targets regardless of `ZLIB_COMPAT`. |
 | `WITH_GZFILEOP` | BOOL | `ON` | Compile gzip file I/O functions (`gzopen`, `gzread`, `gzwrite`, etc.). Forced `ON` in compat mode. |
 | `WITH_OPTIM` | BOOL | `ON` | Enable architecture-specific optimisations. Set `OFF` to use only generic C code. |
@@ -232,7 +232,7 @@ cmake -B build-mingw \
 
 | Aspect | `ZLIB_COMPAT=ON` | `ZLIB_COMPAT=OFF` (default) |
 |---|---|---|
-| Library name | `libz.so` / `libz.a` | `libz-ng.so` / `libz-ng.a` |
+| Library name | `libz.so` / `libz.a` | `libneozip.so` / `libneozip.a` |
 | Header | `zlib.h` | `neozip.h` |
 | Symbol prefix | `z_` (via mangling) | `zng_` |
 | Stream type | `z_stream` (with `unsigned long`) | `zng_stream` (with `uint32_t`) |
@@ -363,7 +363,7 @@ After a successful build, the following artifacts are produced:
 
 | Target | Static | Shared |
 |---|---|---|
-| Native mode | `libz-ng.a` | `libz-ng.so.2.3.90` (Linux) |
+| Native mode | `libneozip.a` | `libneozip.so.2.3.90` (Linux) |
 | Compat mode | `libz.a` | `libz.so.1.3.1.neozip` (Linux) |
 
 ### Utilities (optional)

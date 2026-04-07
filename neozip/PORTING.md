@@ -99,8 +99,8 @@ in its API, intended to make life easier for application developers.
 **Build Considerations:**
 - Compile against *neozip.h*
 - Configuration header is named *zconf-ng.h*
-- Static library is *libz-ng.a* on Unix and macOS, or *neozip.lib* on Windows
-- Shared library is *libz-ng.so* on Unix, *libz-ng.dylib* on macOS, or
+- Static library is *libneozip.a* on Unix and macOS, or *neozip.lib* on Windows
+- Shared library is *libneozip.so* on Unix, *libneozip.dylib* on macOS, or
   *neozip2.dll* on Windows
 - Type `z_size_t` is *size_t*
 
@@ -108,4 +108,4 @@ neozip compile-time detection
 ------------------------------
 
 To distinguish neozip from other zlib implementations at compile-time check for the
-existence of `ZLIBNG_VERSION` defined in the zlib header.
+existence of `NEOZIP_VERSION` defined in the zlib header.

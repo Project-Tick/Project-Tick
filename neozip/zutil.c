@@ -28,8 +28,8 @@ const char * Z_EXPORT zlibVersion(void) {
     return ZLIB_VERSION;
 }
 #else
-const char * Z_EXPORT zlibng_version(void) {
-    return ZLIBNG_VERSION;
+const char * Z_EXPORT neozip_version(void) {
+    return NEOZIP_VERSION;
 }
 #endif
 

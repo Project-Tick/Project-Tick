@@ -19,7 +19,7 @@
 /examplesh
 /gtest_zlib
 /libz.so*
-/libz-ng.so*
+/libneozip.so*
 /makefixed
 /minigzip
 /minigzip64

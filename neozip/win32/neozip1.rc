@@ -2,8 +2,8 @@
 #include "neozip.h"
 
 VS_VERSION_INFO		VERSIONINFO
-  FILEVERSION		ZLIBNG_VER_MAJOR,ZLIBNG_VER_MINOR,ZLIBNG_VER_REVISION,0
-  PRODUCTVERSION	ZLIBNG_VER_MAJOR,ZLIBNG_VER_MINOR,ZLIBNG_VER_REVISION,0
+  FILEVERSION		NEOZIP_VER_MAJOR,NEOZIP_VER_MINOR,NEOZIP_VER_REVISION,0
+  PRODUCTVERSION	NEOZIP_VER_MAJOR,NEOZIP_VER_MINOR,NEOZIP_VER_REVISION,0
   FILEFLAGSMASK		VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
   FILEFLAGS		1
@@ -20,12 +20,12 @@ BEGIN
     //language ID = U.S. English, char set = Windows, Multilingual
     BEGIN
       VALUE "FileDescription",	"zlib data compression library\0"
-      VALUE "FileVersion",	ZLIBNG_VERSION "\0"
+      VALUE "FileVersion",	NEOZIP_VERSION "\0"
       VALUE "InternalName",	"neozip1.dll\0"
       VALUE "LegalCopyright",	"(C) 1995-2024 Jean-loup Gailly & Mark Adler\0"
       VALUE "OriginalFilename",	"neozip1.dll\0"
       VALUE "ProductName",	"zlib\0"
-      VALUE "ProductVersion",	ZLIBNG_VERSION "\0"
+      VALUE "ProductVersion",	NEOZIP_VERSION "\0"
       VALUE "Comments",		"For more information visit https://www.zlib.net/\0"
     END
   END

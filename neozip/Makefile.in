@@ -22,7 +22,7 @@ CFLAGS=-O
 
 SFLAGS=-O
 LDFLAGS=-L.
-LIBNAME1=libz-ng
+LIBNAME1=libneozip
 LIBNAME2=neozip
 SUFFIX=-ng
 TEST_LIBS=$(LIBNAME1).a
@@ -185,7 +185,7 @@ arch/generic/%.lo: $(SRCDIR)/arch/generic/%.c
 test: all
 	$(MAKE) -C test
 
-infcover.o: $(SRCDIR)/test/infcover.c zlib$(SUFFIX).h zconf$(SUFFIX).h zlib_name_mangling$(SUFFIX).h
+infcover.o: $(SRCDIR)/test/infcover.c $(LIBNAME2).h zconf$(SUFFIX).h zlib_name_mangling$(SUFFIX).h
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/test/infcover.c
 
 infcover$(EXE): infcover.o $(STATICLIB)
@@ -218,8 +218,8 @@ maketrees.o:
 makecrct.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $(SRCDIR)/tools/makecrct.c
 
-zlibrc.o: $(SRCDIR)/win32/zlib$(SUFFIX)1.rc
-	$(RC) $(RCFLAGS) -o $@ $(SRCDIR)/win32/zlib$(SUFFIX)1.rc
+zlibrc.o: $(SRCDIR)/win32/$(LIBNAME2)1.rc
+	$(RC) $(RCFLAGS) -o $@ $(SRCDIR)/win32/$(LIBNAME2)1.rc
 
 .SUFFIXES: .lo
 
@@ -339,11 +339,11 @@ install-libs: install-shared install-static
 
 install: install-libs
 	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
-	rm -f $(DESTDIR)$(includedir)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
-	cp zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zlib$(SUFFIX).h
+	rm -f $(DESTDIR)$(includedir)/$(LIBNAME2).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
+	cp $(LIBNAME2).h $(DESTDIR)$(includedir)/$(LIBNAME2).h
 	cp zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h
 	cp zlib_name_mangling$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
-	chmod 644 $(DESTDIR)$(includedir)/zlib$(SUFFIX).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
+	chmod 644 $(DESTDIR)$(includedir)/$(LIBNAME2).h $(DESTDIR)$(includedir)/zconf$(SUFFIX).h $(DESTDIR)$(includedir)/zlib_name_mangling$(SUFFIX).h
 
 uninstall-static:
 	cd $(DESTDIR)$(libdir) && rm -f $(STATICLIB)
@@ -357,7 +357,7 @@ ifneq ($(IMPORTLIB),)
 endif
 
 uninstall: uninstall-static uninstall-shared
-	cd $(DESTDIR)$(includedir) && rm -f zlib$(SUFFIX).h zconf$(SUFFIX).h zlib_name_mangling$(SUFFIX).h
+	cd $(DESTDIR)$(includedir) && rm -f $(LIBNAME2).h zconf$(SUFFIX).h zlib_name_mangling$(SUFFIX).h
 	cd $(DESTDIR)$(pkgconfigdir) && rm -f $(PKGFILE)
 
 mostlyclean: clean
@@ -381,7 +381,7 @@ maintainer-clean: distclean
 distclean: clean
 	@if [ -f $(ARCHDIR)/Makefile ]; then $(MAKE) -C $(ARCHDIR) distclean; fi
 	@if [ -f test/Makefile ]; then $(MAKE) -C test distclean; fi
-	rm -f $(PKGFILE) configure.log zconf.h zconf.h.cmakein zlib$(SUFFIX).h zlib_name_mangling$(SUFFIX).h *.pc gzread_mangle.h zlib${SUFFIX}.map
+	rm -f $(PKGFILE) configure.log zconf.h zconf.h.cmakein $(LIBNAME2).h zlib_name_mangling$(SUFFIX).h *.pc gzread_mangle.h $(LIBNAME2).map
 	-@rm -f .DS_Store
 # Reset Makefile if building inside source tree
 	@if [ -f Makefile.in ]; then \

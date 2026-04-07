@@ -48,14 +48,14 @@
 extern "C" {
 #endif
 
-#define ZLIBNG_VERSION "2.3.90"
-#define ZLIBNG_VERNUM 0x02039000L   /* MMNNRRSM: major minor revision status modified */
-#define ZLIBNG_VER_MAJOR 2
-#define ZLIBNG_VER_MINOR 3
-#define ZLIBNG_VER_REVISION 90
-#define ZLIBNG_VER_STATUS 0         /* 0=devel, 1-E=beta, F=Release (DEPRECATED) */
-#define ZLIBNG_VER_STATUSH 0x0      /* Hex values: 0=devel, 1-9=beta, A-E=Release Candidate, F=Release */
-#define ZLIBNG_VER_MODIFIED 0       /* non-zero if modified externally from neozip */
+#define NEOZIP_VERSION "10.0.3"
+#define NEOZIP_VERNUM 0x0A000300L   /* MMNNRRSM: major minor revision status modified */
+#define NEOZIP_VER_MAJOR 10
+#define NEOZIP_VER_MINOR 0
+#define NEOZIP_VER_REVISION 3
+#define NEOZIP_VER_STATUS 0         /* 0=devel, 1-E=beta, F=Release (DEPRECATED) */
+#define NEOZIP_VER_STATUSH 0x0      /* Hex values: 0=devel, 1-9=beta, A-E=Release Candidate, F=Release */
+#define NEOZIP_VER_MODIFIED 0       /* non-zero if modified externally from neozip */
 
 /*
     The 'zlib' compression library provides in-memory compression and
@@ -218,8 +218,8 @@ typedef zng_gz_header *zng_gz_headerp;
                         /* basic functions */
 
 Z_EXTERN Z_EXPORT
-const char *zlibng_version(void);
-/* The application can compare zlibng_version and ZLIBNG_VERSION for consistency.
+const char *neozip_version(void);
+/* The application can compare neozip_version and NEOZIP_VERSION for consistency.
    If the first character differs, the library code actually used is not
    compatible with the neozip.h header file used by the application.
  */

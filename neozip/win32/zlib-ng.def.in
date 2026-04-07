@@ -1,7 +1,7 @@
 ; neozip data compression library
 EXPORTS
 ; basic functions
-    @ZLIB_SYMBOL_PREFIX@zlibng_version
+    @ZLIB_SYMBOL_PREFIX@neozip_version
     @ZLIB_SYMBOL_PREFIX@zng_deflate
     @ZLIB_SYMBOL_PREFIX@zng_deflateEnd
     @ZLIB_SYMBOL_PREFIX@zng_deflateInit

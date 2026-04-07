@@ -112,10 +112,10 @@
 #  define zVersion zlibVersion
 #else
 #  define PREFIX(x) zng_ ## x
-#  define PREFIX2(x) ZLIBNG_ ## x
+#  define PREFIX2(x) NEOZIP_ ## x
 #  define PREFIX3(x) zng_ ## x
 #  define PREFIX4(x) zng_ ## x
-#  define zVersion zlibng_version
+#  define zVersion neozip_version
 #  define z_size_t size_t
 #endif
 

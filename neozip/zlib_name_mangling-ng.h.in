@@ -158,7 +158,7 @@
 #define zng_deflateSetParams      @ZLIB_SYMBOL_PREFIX@zng_deflateSetParams
 #define zng_deflateGetParams      @ZLIB_SYMBOL_PREFIX@zng_deflateGetParams
 
-#define zlibng_version         @ZLIB_SYMBOL_PREFIX@zlibng_version
+#define neozip_version         @ZLIB_SYMBOL_PREFIX@neozip_version
 #define zng_vstring            @ZLIB_SYMBOL_PREFIX@zng_vstring
 #define zng_zError             @ZLIB_SYMBOL_PREFIX@zng_zError
 

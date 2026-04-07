@@ -25,10 +25,10 @@ endif()
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/zlib.h.in _zlib_h_contents)
 string(REGEX REPLACE ".*#define[ \t]+ZLIB_VERSION[ \t]+\"([0-9]+.[0-9]+.[0-9]+).*\".*"
         "\\1" ZLIB_HEADER_VERSION ${_zlib_h_contents})
-string(REGEX REPLACE ".*#define[ \t]+ZLIBNG_VERSION[ \t]+\"([-0-9A-Za-z.]+)\".*"
-        "\\1" ZLIBNG_HEADER_VERSION ${_zlib_h_contents})
+string(REGEX REPLACE ".*#define[ \t]+NEOZIP_VERSION[ \t]+\"([-0-9A-Za-z.]+)\".*"
+        "\\1" NEOZIP_HEADER_VERSION ${_zlib_h_contents})
 message(STATUS "ZLIB_HEADER_VERSION: ${ZLIB_HEADER_VERSION}")
-message(STATUS "ZLIBNG_HEADER_VERSION: ${ZLIBNG_HEADER_VERSION}")
+message(STATUS "NEOZIP_HEADER_VERSION: ${NEOZIP_HEADER_VERSION}")
 
 project(zlib VERSION ${ZLIB_HEADER_VERSION} LANGUAGES C)
 
@@ -207,11 +207,15 @@ if(ZLIB_COMPAT)
     add_definitions(-DZLIB_COMPAT)
     set(WITH_GZFILEOP ON)
     set(SUFFIX "")
+    set(ZLIB_NAMESUFFIX "zlib")
+    set(ZLIB_UNIXLIBNAME "z")
     set(ZLIB_FULL_VERSION ${ZLIB_HEADER_VERSION}.neozip)
     set(EXPORT_NAME ZLIB)
 else()
     set(SUFFIX "-ng")
-    set(ZLIB_FULL_VERSION ${ZLIBNG_HEADER_VERSION})
+    set(ZLIB_NAMESUFFIX "neozip")
+    set(ZLIB_UNIXLIBNAME "neozip")
+    set(ZLIB_FULL_VERSION ${NEOZIP_HEADER_VERSION})
     set(EXPORT_NAME neozip)
 endif()
 
@@ -1226,7 +1230,7 @@ endif()
 set(ZLIB_PUBLIC_HDRS
     ${CMAKE_CURRENT_BINARY_DIR}/zconf${SUFFIX}.h
     ${CMAKE_CURRENT_BINARY_DIR}/zlib_name_mangling${SUFFIX}.h
-    ${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.h
+    ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.h
 )
 set(ZLIB_PRIVATE_HDRS
     arch/generic/chunk_permute_table.h
@@ -1329,7 +1333,7 @@ if(WITH_GZFILEOP)
 endif()
 
 if(NOT DEFINED BUILD_SHARED_LIBS OR BUILD_SHARED_LIBS)
-    set(ZLIB_DLL_SRCS win32/zlib${SUFFIX}1.rc)
+    set(ZLIB_DLL_SRCS win32/${ZLIB_NAMESUFFIX}1.rc)
 endif()
 
 if(NOT DEFINED BUILD_SHARED_LIBS)
@@ -1379,7 +1383,7 @@ endif()
 
 foreach(ZLIB_INSTALL_LIBRARY ${ZLIB_INSTALL_LIBRARIES})
     if(NOT ZLIB_COMPAT)
-        target_compile_definitions(${ZLIB_INSTALL_LIBRARY} PUBLIC ZLIBNG_NATIVE_API)
+        target_compile_definitions(${ZLIB_INSTALL_LIBRARY} PUBLIC NEOZIP_NATIVE_API)
     endif()
     target_include_directories(${ZLIB_INSTALL_LIBRARY} PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}$<SEMICOLON>${CMAKE_CURRENT_SOURCE_DIR}>"
@@ -1389,25 +1393,25 @@ endforeach()
 if(WIN32)
     # Shared library
     if(NOT DEFINED BUILD_SHARED_LIBS OR BUILD_SHARED_LIBS)
-        set_target_properties(neozip PROPERTIES OUTPUT_NAME zlib${SUFFIX})
+        set_target_properties(neozip PROPERTIES OUTPUT_NAME ${ZLIB_NAMESUFFIX})
     endif()
     # Static library
     if(NOT DEFINED BUILD_SHARED_LIBS)
         if(MSVC)
-            set_target_properties(neozip-static PROPERTIES OUTPUT_NAME zlibstatic${SUFFIX})
+            set_target_properties(neozip-static PROPERTIES OUTPUT_NAME ${ZLIB_NAMESUFFIX}static)
         else()
-            set_target_properties(neozip-static PROPERTIES OUTPUT_NAME z${SUFFIX})
+            set_target_properties(neozip-static PROPERTIES OUTPUT_NAME ${ZLIB_UNIXLIBNAME})
         endif()
     elseif(NOT BUILD_SHARED_LIBS)
         if(MSVC)
-            set_target_properties(neozip PROPERTIES OUTPUT_NAME zlibstatic${SUFFIX})
+            set_target_properties(neozip PROPERTIES OUTPUT_NAME ${ZLIB_NAMESUFFIX}static)
         else()
-            set_target_properties(neozip PROPERTIES OUTPUT_NAME z${SUFFIX})
+            set_target_properties(neozip PROPERTIES OUTPUT_NAME ${ZLIB_UNIXLIBNAME})
         endif()
     endif()
 else()
     # On unix-like platforms the library is almost always called libz
-    set_target_properties(${ZLIB_INSTALL_LIBRARIES} PROPERTIES OUTPUT_NAME z${SUFFIX})
+    set_target_properties(${ZLIB_INSTALL_LIBRARIES} PROPERTIES OUTPUT_NAME ${ZLIB_UNIXLIBNAME})
 endif()
 
 if(NOT DEFINED BUILD_SHARED_LIBS OR BUILD_SHARED_LIBS)
@@ -1438,10 +1442,10 @@ if(NOT DEFINED BUILD_SHARED_LIBS OR BUILD_SHARED_LIBS)
             if(NOT ZLIB_COMPAT)
                 add_definitions(-DHAVE_SYMVER)
             endif()
-            configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib${SUFFIX}.map.in
-                ${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.map @ONLY)
+            configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${ZLIB_NAMESUFFIX}.map.in
+                ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.map @ONLY)
             set_target_properties(neozip PROPERTIES LINK_FLAGS
-                "-Wl,--version-script,\"${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.map\"")
+                "-Wl,--version-script,\"${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.map\"")
         endif()
     endif()
     if(MSYS)
@@ -1468,7 +1472,7 @@ else()
     SET(ZCONF_PTRDIFF_LINE "#ifdef NEED_PTRDIFF_T    /* may be set to #if 1 by configure/cmake/etc */")
 endif()
 
-set(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.pc)
+set(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.pc)
 if(WITH_GZFILEOP)
     set(PKG_CONFIG_CFLAGS "-DWITH_GZFILEOP")
 endif()
@@ -1476,8 +1480,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
     ${ZLIB_PC} @ONLY)
 configure_file(${CMAKE_CURRENT_BINARY_DIR}/zconf${SUFFIX}.h.cmakein
     ${CMAKE_CURRENT_BINARY_DIR}/zconf${SUFFIX}.h @ONLY)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib${SUFFIX}.h.in
-    ${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${ZLIB_NAMESUFFIX}.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.h @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gzread_mangle.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/gzread_mangle.h @ONLY)
 
@@ -1501,8 +1505,8 @@ if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 endif()
 if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.h
-        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" RENAME zlib${SUFFIX}.h)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.h
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" RENAME ${ZLIB_NAMESUFFIX}.h)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/zlib_name_mangling${SUFFIX}.h
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" RENAME zlib_name_mangling${SUFFIX}.h)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/zconf${SUFFIX}.h
@@ -1521,7 +1525,7 @@ if(NOT SKIP_INSTALL_FILES AND NOT SKIP_INSTALL_ALL)
        set(PACKAGE_VERSION ${ZLIB_HEADER_VERSION})
     else()
        set(PACKAGE_CONFIGNAME neozip)
-       set(PACKAGE_VERSION ${ZLIBNG_HEADER_VERSION})
+       set(PACKAGE_VERSION ${NEOZIP_HEADER_VERSION})
     endif()
     configure_package_config_file(${PACKAGE_CONFIGNAME}-config.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_CONFIGNAME}-config.cmake
@@ -1632,7 +1636,7 @@ set(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 set(CPACK_SOURCE_IGNORE_FILES .git/ _CPack_Packages/ "${PROJECT_BINARY_DIR}/")
 
-set(CPACK_PACKAGE_NAME "zlib${SUFFIX}")
+set(CPACK_PACKAGE_NAME "${ZLIB_NAMESUFFIX}")
 set(CPACK_PACKAGE_VERSION ${ZLIB_FULL_VERSION})
 set(CPACK_PACKAGE_DIRECTORY "${PROJECT_BINARY_DIR}/package")
 

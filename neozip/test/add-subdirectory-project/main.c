@@ -2,6 +2,6 @@
 #include "neozip.h"
 
 int main(void) {
-    printf("neozip: %s\n", ZLIBNG_VERSION);
+    printf("neozip: %s\n", NEOZIP_VERSION);
     return 0;
 }

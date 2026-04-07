@@ -6,10 +6,10 @@ libdir=@PC_LIB_INSTALL_DIR@
 sharedlibdir=${libdir}
 includedir=@PC_INC_INSTALL_DIR@
 
-Name: zlib@SUFFIX@
+Name: @ZLIB_NAMESUFFIX@
 Description: neozip compression library
 Version: @ZLIB_FULL_VERSION@
 
 Requires:
-Libs: -L${libdir} -L${sharedlibdir} -lz@SUFFIX@
+Libs: -L${libdir} -L${sharedlibdir} -l@ZLIB_UNIXLIBNAME@
 Cflags: -I${includedir} @PKG_CONFIG_CFLAGS@

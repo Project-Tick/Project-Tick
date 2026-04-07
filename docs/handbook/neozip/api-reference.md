@@ -339,7 +339,7 @@ void        PREFIX(gzclearerr)(gzFile file);
 
 ```c
 const char *PREFIX(zlibVersion)(void);
-const char *PREFIX(zlibng_version)(void);  // neozip-specific
+const char *PREFIX(neozip_version)(void);  // neozip-specific
 unsigned long PREFIX(zlibCompileFlags)(void);
 const char *PREFIX(zError)(int err);
 ```
@@ -366,11 +366,11 @@ Returns a bitmask indicating compilation options:
 ## Version Constants
 
 ```c
-#define ZLIBNG_VERSION      "2.3.90"
-#define ZLIBNG_VER_MAJOR    2
-#define ZLIBNG_VER_MINOR    3
-#define ZLIBNG_VER_REVISION 90
-#define ZLIBNG_VER_STATUS   0    // 0=devel, 1=alpha, 2=beta, ...9=release
+#define NEOZIP_VERSION      "2.3.90"
+#define NEOZIP_VER_MAJOR    2
+#define NEOZIP_VER_MINOR    3
+#define NEOZIP_VER_REVISION 90
+#define NEOZIP_VER_STATUS   0    // 0=devel, 1=alpha, 2=beta, ...9=release
 
 #define ZLIB_VERSION        "1.3.1.neozip"   // Compat version
 #define ZLIB_VERNUM         0x1310

@@ -952,7 +952,7 @@ int main(int argc, char *argv[]) {
     }
 
     printf("neozip version %s = 0x%08lx, compile flags = 0x%lx\n",
-            ZLIBNG_VERSION, ZLIBNG_VERNUM, PREFIX(zlibCompileFlags)());
+            NEOZIP_VERSION, NEOZIP_VERNUM, PREFIX(zlibCompileFlags)());
 
     compr    = (unsigned char*)calloc((unsigned int)comprLen, 1);
     uncompr  = (unsigned char*)calloc((unsigned int)uncomprLen, 1);

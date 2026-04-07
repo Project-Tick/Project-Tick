@@ -17,6 +17,9 @@ find_package(benchmark QUIET)
 if(NOT benchmark_FOUND)
     # Fetch google benchmark source code from official repository
     set(BENCHMARK_ENABLE_TESTING OFF)
+    # Disable -Werror in benchmark to avoid GCC 15 false-positives in
+    # <bits/regex_automaton.h> (-Wmaybe-uninitialized).
+    set(BENCHMARK_ENABLE_WERROR OFF)
 
     # Allow specifying alternative Google benchmark repository
     if(NOT DEFINED GBENCHMARK_REPOSITORY)
@@ -101,10 +104,10 @@ if(WITH_BENCHMARK_APPS)
 
     add_executable(benchmark_zlib_apps ${BENCH_APP_SRCS})
 
-    if(DEFINED BUILD_ALT_BENCH)
+    if(BUILD_ALT_BENCH)
         set(ZLIB_ALT_LIB "libz.a" CACHE FILEPATH "Optional alternative zlib implementation (defaults to stock zlib)")
         add_executable(benchmark_zlib_apps_alt ${BENCH_APP_SRCS})
-        target_link_libraries(benchmark_zlib_apps_alt libpng.a ${ZLIB_ALT_LIB} benchmark::benchmark)
+        target_link_libraries(benchmark_zlib_apps_alt PNG::PNG ${ZLIB_ALT_LIB} benchmark::benchmark)
         target_compile_definitions(benchmark_zlib_apps_alt PRIVATE BUILD_ALT=1)
         target_include_directories(benchmark_zlib_apps_alt PRIVATE
             ${PROJECT_SOURCE_DIR}
@@ -122,5 +125,5 @@ if(WITH_BENCHMARK_APPS)
     # We need the static png library if we're statically linking to zlib,
     # otherwise it will resolve these things in the system provided dynamic
     # libraries (likely linked to stock zlib)
-    target_link_libraries(benchmark_zlib_apps libpng.a neozip-static benchmark::benchmark)
+    target_link_libraries(benchmark_zlib_apps PNG::PNG neozip-static benchmark::benchmark)
 endif()

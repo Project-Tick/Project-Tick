@@ -23,5 +23,5 @@ TEST(version, basic) {
     EXPECT_STREQ(zVersion(), PREFIX2(VERSION));
 
     printf("neozip version %s = 0x%08lx, compile flags = 0x%lx\n",
-            ZLIBNG_VERSION, ZLIBNG_VERNUM, PREFIX(zlibCompileFlags)());
+            NEOZIP_VERSION, NEOZIP_VERNUM, PREFIX(zlibCompileFlags)());
 }
