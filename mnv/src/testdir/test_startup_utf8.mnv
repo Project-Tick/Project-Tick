@@ -73,7 +73,8 @@ func Test_detect_fifo()
   let linesin = ['one', 'two']
   call writefile(linesin, 'Xtestin_fifo', 'D')
   let after = [
-	\ 'call writefile(split(execute(":mess"), "\\n"), "Xtestout")',
+	\ 'let m = filter(split(execute(":mess"), "\\n"), {_, v -> v !~ "Messages maintainer:"})',
+	\ 'call writefile(m, "Xtestout")',
 	\ 'quit!',
 	\ ]
   if RunMNV([], after, '<(cat Xtestin_fifo)')

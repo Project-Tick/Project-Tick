@@ -31,33 +31,12 @@ jobs:
 
       - name: Configure
         run: |
-          if [ -x ./configure ]; then
-            ./configure
-          fi
+          ./configure
 
       - name: Build
         run: |
-          if [ -f GNUmakefile ]; then
-            make -f GNUmakefile -j"$(nproc)" || true
-          else
-            make -j"$(nproc)" || true
-          fi
+          make -j"$(nproc)"
 
-  build-freebsd:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Build on FreeBSD
-        uses: vmactions/freebsd-vm@v1
-        with:
-          usesh: true
-          prepare: |
-            pkg install -y gmake
-          run: |
-            cd corebinutils
-            if [ -x ./configure ]; then
-              ./configure
-            fi
-            make -j$(sysctl -n hw.ncpu) || true
+      - name: Build
+        run: |
+          make test -j"$(nproc)"

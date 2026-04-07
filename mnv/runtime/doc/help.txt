@@ -49,6 +49,7 @@ BASIC:
 |tutor|		30-minute interactive course for beginners
 |copying|	About copyrights
 |sponsor|	Sponsor MNV development, become a registered MNV user
+|Kuwasha|	Kuwasha helps AIDS victims in Uganda
 |www|		MNV on the World Wide Web
 |bugs|		Where to send bug reports
 
@@ -245,6 +246,12 @@ Standard plugins ~
 |pi_zip.txt|       Zip archive explorer
 
 LOCAL ADDITIONS:				*local-additions*
+
+------------------------------------------------------------------------------
+*Kuwasha*	Kuwasha
+
+Kuwasha is a charitable organization that helps AIDS victims in Uganda.
+For more information, see https://kuwasha.org/
 
 ------------------------------------------------------------------------------
 *bars*		Bars example

@@ -123,6 +123,72 @@ jobs:
         if: failure()
         uses: ./.github/actions/mnv/test_artifacts
 
+  cmake-linux:
+    runs-on: ubuntu-24.04
+
+    env:
+      CC: ${{ matrix.compiler }}
+      CXX: ${{ matrix.compiler == 'clang' && 'clang++' || 'g++' }}
+      DEBIAN_FRONTEND: noninteractive
+
+    strategy:
+      fail-fast: false
+      matrix:
+        preset:
+          - default
+          - minimal
+          - normal
+          - all-interp
+          - all-interp-static
+          - lua-only
+          - python3-only
+          - ruby-only
+          - perl-only
+          - tcl-only
+          - nogui
+          - gtk3
+          - sanitize
+          - profile
+          - full-debug
+        compiler: [gcc, clang]
+
+    defaults:
+      run:
+        working-directory: mnv
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            cmake \
+            clang \
+            gettext \
+            libcanberra-dev \
+            libperl-dev \
+            python3-dev \
+            liblua5.4-dev \
+            lua5.4 \
+            ruby-dev \
+            tcl-dev \
+            libsodium-dev \
+            libgtk-3-dev \
+            desktop-file-utils \
+            libtool-bin
+
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }}
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }} -- -j"$(nproc)"
+
+      - name: Test
+        if: contains(fromJSON('["default", "all-interp", "full-debug"]'), matrix.preset)
+        timeout-minutes: 25
+        run: ctest --preset ${{ matrix.preset }} --output-on-failure
+
   macos:
     runs-on: ${{ matrix.runner }}
 

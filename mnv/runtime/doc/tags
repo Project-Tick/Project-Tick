@@ -5757,6 +5757,7 @@ KDE	gui_x11.txt	/*KDE*
 KMNV	gui_x11.txt	/*KMNV*
 KeyInputPre	autocmd.txt	/*KeyInputPre*
 Korean	mbyte.txt	/*Korean*
+Kuwasha	help.txt	/*Kuwasha*
 L	motion.txt	/*L*
 Linux-backspace	options.txt	/*Linux-backspace*
 List	eval.txt	/*List*

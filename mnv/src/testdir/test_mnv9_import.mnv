@@ -789,13 +789,13 @@ def Test_use_import_in_command_completion()
         return ['abcd']
       enddef
   END
-  writefile(lines, 'Xscript.mnv', 'D')
+  writefile(lines, 'Xcompl_import.mnv', 'D')
 
   lines =<< trim END
       mnv9script
-      import './Xscript.mnv'
+      import './Xcompl_import.mnv'
 
-      command -nargs=1 -complete=customlist,Xscript.Complete Cmd echo 'ok'
+      command -nargs=1 -complete=customlist,Xcompl_import.Complete Cmd echo 'ok'
       feedkeys(":Cmd ab\<Tab>\<C-B>#\<CR>", 'xnt')
       assert_equal('#Cmd abcd', @:)
   END
@@ -811,13 +811,13 @@ def Test_use_import_with_funcref_in_command_completion()
         return ['abcd']
       enddef
   END
-  writefile(lines, 'Xscript.mnv', 'D')
+  writefile(lines, 'Xcompl_funcref.mnv', 'D')
 
   lines =<< trim END
       mnv9script
-      import './Xscript.mnv'
+      import './Xcompl_funcref.mnv'
 
-      var Ref = Xscript.Complete
+      var Ref = Xcompl_funcref.Complete
       exe "command -nargs=1 -complete=customlist," .. expand('<SID>') .. "Ref  Cmd echo 'ok'"
       feedkeys(":Cmd ab\<Tab>\<C-B>#\<CR>", 'xnt')
       assert_equal('#Cmd abcd', @:)

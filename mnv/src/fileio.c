@@ -2570,8 +2570,12 @@ failed:
 # ifdef OPEN_CHR_FILES
 	    if (S_ISCHR(perm))			    // or character special
 	    {
-		buflen += mnv_snprintf((char *)IObuff + buflen, IOSIZE - buflen,
-			_("[character special]"));
+		if (is_dev_fd_file(curbuf->b_ffname))
+		    buflen += mnv_snprintf((char *)IObuff + buflen,
+			    IOSIZE - buflen, _("[fifo]"));
+		else
+		    buflen += mnv_snprintf((char *)IObuff + buflen,
+			    IOSIZE - buflen, _("[character special]"));
 		c = TRUE;
 	    }
 # endif

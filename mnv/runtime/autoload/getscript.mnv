@@ -93,11 +93,11 @@ endif
 
 " set up default scriptaddr address
 if !exists("g:GetLatestMNVScripts_scriptaddr")
- let g:GetLatestMNVScripts_scriptaddr = 'https://www.mnv.org/scripts/script.php?script_id='
+ let g:GetLatestMNVScripts_scriptaddr = 'https://www.vim.org/scripts/script.php?script_id='
 endif
 
 if !exists("g:GetLatestMNVScripts_downloadaddr")
-  let g:GetLatestMNVScripts_downloadaddr = 'https://www.mnv.org/scripts/download_script.php?src_id='
+  let g:GetLatestMNVScripts_downloadaddr = 'https://www.vim.org/scripts/download_script.php?src_id='
 endif
 
 " define decompression tools (on windows this allows redirection to wsl or git tools).

@@ -97,6 +97,11 @@ func Test_help_local_additions()
   call delete('Xruntime/doc/mydoc-ext.txt')
   close
 
+  if !has('multi_lang')
+    let &rtp = rtp_save
+    return
+  endif
+
   call mkdir('Xruntime-ja/doc', 'pR')
   call writefile(["local-additions\thelp.jax\t/*local-additions*"], 'Xruntime-ja/doc/tags-ja')
   call writefile(['*help.txt* This is jax file', '',

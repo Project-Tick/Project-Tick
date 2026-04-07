@@ -3639,14 +3639,16 @@ def Test_mnv9_comment()
       'match none# comment',
       ], 'E475:')
 
-  v9.CheckScriptSuccess([
-      'mnv9script',
-      'menutrans clear # comment',
-      ])
-  v9.CheckScriptFailure([
-      'mnv9script',
-      'menutrans clear# comment text',
-      ], 'E474:')
+  if has('multi_lang')
+    v9.CheckScriptSuccess([
+        'mnv9script',
+        'menutrans clear # comment',
+        ])
+    v9.CheckScriptFailure([
+        'mnv9script',
+        'menutrans clear# comment text',
+        ], 'E474:')
+  endif
 
   v9.CheckScriptSuccess([
       'mnv9script',

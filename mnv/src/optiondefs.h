@@ -1776,6 +1776,32 @@ static struct mnvoption options[] =
 			    {(char_u *)0L, (char_u *)0L}
 #endif
 			    SCTX_INIT},
+    {"mnvinfo",	    "vi",   P_STRING|P_ONECOMMA|P_NODUP|P_SECURE,
+#ifdef FEAT_MNVINFO
+			    (char_u *)&p_mnvinfo, PV_NONE, did_set_mnvinfo, NULL,
+# if defined(MSWIN)
+			    {(char_u *)"", (char_u *)"'100,<50,s10,h,rA:,rB:"}
+# elif defined(AMIGA)
+			    {(char_u *)"",
+				 (char_u *)"'100,<50,s10,h,rdf0:,rdf1:,rdf2:"}
+# else
+			    {(char_u *)"", (char_u *)"'100,<50,s10,h"}
+# endif
+#else
+			    (char_u *)NULL, PV_NONE, NULL, NULL,
+			    {(char_u *)0L, (char_u *)0L}
+#endif
+			    SCTX_INIT},
+    {"mnvinfofile", "vif",  P_STRING|P_EXPAND|P_ONECOMMA|P_NODUP
+							    |P_SECURE|P_VI_DEF,
+#ifdef FEAT_MNVINFO
+			    (char_u *)&p_mnvinfofile, PV_NONE, NULL, NULL,
+			    {(char_u *)"", (char_u *)0L}
+#else
+			    (char_u *)NULL, PV_NONE, NULL, NULL,
+			    {(char_u *)0L, (char_u *)0L}
+#endif
+			    SCTX_INIT},
     {"modeline",    "ml",   P_BOOL|P_MNV,
 			    (char_u *)&p_ml, PV_ML, NULL, NULL,
 			    {(char_u *)FALSE, (char_u *)TRUE} SCTX_INIT},
@@ -1873,32 +1899,6 @@ static struct mnvoption options[] =
 #else
 			    (char_u *)NULL, PV_NONE, NULL, NULL,
 			    {(char_u *)"", (char_u *)0L}
-#endif
-			    SCTX_INIT},
-    {"mnvinfo",	    "vi",   P_STRING|P_ONECOMMA|P_NODUP|P_SECURE,
-#ifdef FEAT_MNVINFO
-			    (char_u *)&p_mnvinfo, PV_NONE, did_set_mnvinfo, NULL,
-# if defined(MSWIN)
-			    {(char_u *)"", (char_u *)"'100,<50,s10,h,rA:,rB:"}
-# elif defined(AMIGA)
-			    {(char_u *)"",
-				 (char_u *)"'100,<50,s10,h,rdf0:,rdf1:,rdf2:"}
-# else
-			    {(char_u *)"", (char_u *)"'100,<50,s10,h"}
-# endif
-#else
-			    (char_u *)NULL, PV_NONE, NULL, NULL,
-			    {(char_u *)0L, (char_u *)0L}
-#endif
-			    SCTX_INIT},
-    {"mnvinfofile", "vif",  P_STRING|P_EXPAND|P_ONECOMMA|P_NODUP
-							    |P_SECURE|P_VI_DEF,
-#ifdef FEAT_MNVINFO
-			    (char_u *)&p_mnvinfofile, PV_NONE, NULL, NULL,
-			    {(char_u *)"", (char_u *)0L}
-#else
-			    (char_u *)NULL, PV_NONE, NULL, NULL,
-			    {(char_u *)0L, (char_u *)0L}
 #endif
 			    SCTX_INIT},
     {"novice",	    NULL,   P_BOOL|P_VI_DEF,

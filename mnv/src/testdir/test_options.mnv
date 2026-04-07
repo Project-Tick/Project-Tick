@@ -437,9 +437,9 @@ func Test_set_completion()
   call assert_equal("\"set invtabstop=", @:)
 
   " Expand options for 'spellsuggest'
-  call feedkeys(":set spellsuggest=file:test_options.v\<Tab>\<C-B>\"\<CR>", 'xt')
+  call feedkeys(":set spellsuggest=file:test_options.mn\<Tab>\<C-B>\"\<CR>", 'xt')
   call assert_equal("\"set spellsuggest=file:test_options.mnv", @:)
-  call feedkeys(":set spellsuggest=best,file:test_options.v\<Tab>\<C-B>\"\<CR>", 'xt')
+  call feedkeys(":set spellsuggest=best,file:test_options.mn\<Tab>\<C-B>\"\<CR>", 'xt')
   call assert_equal("\"set spellsuggest=best,file:test_options.mnv", @:)
 
   " Expanding value for 'key' is disallowed
@@ -2573,7 +2573,11 @@ func Test_string_option_revert_on_failure()
         \ ['foldopen', 'percent', 'a123'],
         \ ['formatoptions', 'an', '*'],
         \ ['guicursor', 'n-v-c:block-Cursor/lCursor', 'n-v-c'],
-        \ ['helplang', 'en', 'a'],
+        \ ]
+  if has('multi_lang')
+    call add(optlist, ['helplang', 'en', 'a'])
+  endif
+  let optlist += [
         \ ['highlight', '!:CursorColumn', '8:'],
         \ ['keymodel', 'stopsel', 'a123'],
         \ ['keyprotocol', 'kitty:kitty', 'kitty:'],

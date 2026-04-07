@@ -17,13 +17,6 @@ pre-commit:
           reuse lint
         fi
 
-    - name: checkpatch
-      run: |
-        git diff --cached -- '*.cpp' '*.h' '*.hpp' 'CMakeLists.txt' '*.cmake' | perl scripts/checkpatch.pl --diff --summary
-      skip:
-        - merge
-        - rebase
-
 pre-push:
   jobs:
     - name: reuse-lint
