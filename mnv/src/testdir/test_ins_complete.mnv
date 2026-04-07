@@ -343,19 +343,19 @@ func Test_CompleteDone_vevent_keys()
   call assert_equal('bar', g:complete_word)
   call assert_equal('omni', g:complete_type)
 
-  call feedkeys("Shello mnv visual v\<C-X>\<C-N>\<ESC>", 'tx')
+  call feedkeys("Shello motor mnv m\<C-X>\<C-N>\<ESC>", 'tx')
   call assert_equal('', g:complete_word)
   call assert_equal('keyword', g:complete_type)
 
-  call feedkeys("Shello mnv visual v\<C-X>\<C-N>\<C-Y>", 'tx')
+  call feedkeys("Shello motor mnv m\<C-X>\<C-N>\<C-Y>", 'tx')
   call assert_equal('mnv', g:complete_word)
   call assert_equal('keyword', g:complete_type)
 
-  call feedkeys("Shello mnv visual v\<C-N>\<ESC>", 'tx')
+  call feedkeys("Shello motor mnv m\<C-N>\<ESC>", 'tx')
   call assert_equal('', g:complete_word)
   call assert_equal('keyword', g:complete_type)
 
-  call feedkeys("Shello mnv visual v\<C-N>\<C-Y>", 'tx')
+  call feedkeys("Shello motor mnv m\<C-N>\<C-Y>", 'tx')
   call assert_equal('mnv', g:complete_word)
   call assert_equal('keyword', g:complete_type)
 

@@ -1371,7 +1371,7 @@ func Test_incsearch_mnvgrep_dump()
   call VerifyScreenDump(buf, 'Test_incsearch_mnvgrep_03', {})
   call term_sendkeys(buf, "\<Esc>")
 
-  call term_sendkeys(buf, ':lv "tha')
+  call term_sendkeys(buf, ':lmnvgrep "tha')
   call VerifyScreenDump(buf, 'Test_incsearch_mnvgrep_04', {})
   call term_sendkeys(buf, "\<Esc>")
 

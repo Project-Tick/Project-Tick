@@ -101,6 +101,21 @@ add_custom_target(ci_test_clang
     COMMENT "Compile and test with Clang using maximal warning flags"
 )
 
+if(MSVC)
+    include(msvc_flags)
+    string(REPLACE ";" " " MSVC_CXXFLAGS_STR "${MSVC_CXXFLAGS}")
+
+    add_custom_target(ci_test_msvc
+        COMMAND ${CMAKE_COMMAND}
+            -DCMAKE_CXX_FLAGS="${MSVC_CXXFLAGS_STR}"
+            -DJSON_BuildTests=ON
+            -S${PROJECT_SOURCE_DIR} -B${PROJECT_BINARY_DIR}/build_msvc
+        COMMAND ${CMAKE_COMMAND} --build ${PROJECT_BINARY_DIR}/build_msvc --config Debug
+        COMMAND cd ${PROJECT_BINARY_DIR}/build_msvc && ${CMAKE_CTEST_COMMAND} -C Debug --parallel ${N} --output-on-failure
+        COMMENT "Compile and test with MSVC using maximal warning flags"
+    )
+endif()
+
 ###############################################################################
 # Different C++ Standards.
 ###############################################################################

@@ -2632,11 +2632,11 @@ func Test_recalling_cmdline()
   \  #{older: "\<kPageUp>", newer: "\<kPageDown>", prefixmatch: v:false},
   \  #{older: "\<C-p>",    newer: "\<C-n>",      prefixmatch: v:false},
   \]
-  let prefix = 'vi'
+  let prefix = 'mn'
   for h in histories
     call histadd(h.name, 'mnv')
-    call histadd(h.name, 'virtue')
-    call histadd(h.name, 'Virgo')
+    call histadd(h.name, 'mnemonic')
+    call histadd(h.name, 'Mnesia')
     call histadd(h.name, 'vogue')
     call histadd(h.name, 'emacs')
     for k in keypairs
@@ -2649,7 +2649,7 @@ func Test_recalling_cmdline()
       call feedkeys(keyseqs, 'xt')
       call histdel(h.name, -1) " delete the history added by feedkeys above
       let expect = k.prefixmatch
-      \          ? ['virtue', 'mnv',   'virtue', prefix]
+      \          ? ['mnemonic', 'mnv',   'mnemonic', prefix]
       \          : ['emacs',  'vogue', 'emacs',  prefix]
       call assert_equal(expect, g:cmdlines)
     endfor

@@ -414,6 +414,7 @@ endfunc
 " Test 'spellsuggest' option with value file:{filename}
 func Test_spellsuggest_option_file()
   set spell spellsuggest=file:Xspellsuggest
+  silent! spellgood! mnv
   call writefile(['emacs/mnv',
         \         'theribal/terrible',
         \         'teribal/terrrible',

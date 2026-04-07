@@ -335,11 +335,15 @@ fi
 if test $compat -eq 0; then
   LIBNAME=libneozip
   LIBNAME2=neozip
+  UNIXLIBNAME=neozip
   SUFFIX=-ng
+  SOVERSION=2
 else
   LIBNAME=libz
   LIBNAME2=zlib
+  UNIXLIBNAME=z
   SUFFIX=""
+  SOVERSION=1
 fi
 
 STATICLIB=${LIBNAME}.a
@@ -457,10 +461,10 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
   case "$uname" in
   Linux* | linux* | GNU | GNU/* | solaris* | Haiku)
         LDSHARED=${LDSHARED-"$cc"}
-        LDSHAREDFLAGS="-shared -Wl,-soname,${LIBNAME}.so.${VER1}" ;;
+        LDSHAREDFLAGS="-shared -Wl,-soname,${LIBNAME}.so.${SOVERSION}" ;;
   *BSD | *bsd* | DragonFly)
         LDSHARED=${LDSHARED-"$cc"}
-        LDSHAREDFLAGS="-shared -Wl,-soname,${LIBNAME}.so.${VER1}"
+        LDSHAREDFLAGS="-shared -Wl,-soname,${LIBNAME}.so.${SOVERSION}"
         LDCONFIG="ldconfig -m" ;;
   CYGWIN* | Cygwin* | cygwin*)
         visibility=0
@@ -521,7 +525,7 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
         SFLAGS="${CFLAGS}"
         shared_ext='.dll'
         sharedlibdir='${bindir}'
-        SHAREDLIB=${LIBNAME}-$VER1$shared_ext
+        SHAREDLIB=${LIBNAME}-$SOVERSION$shared_ext
         SHAREDLIBM=''
         SHAREDLIBV=''
         SHAREDTARGET=$SHAREDLIB
@@ -545,7 +549,7 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
   QNX*)  # This is for QNX6. I suppose that the QNX rule below is for QNX2,QNX4
          # (alain.bonnefoy@icbt.com)
                  LDSHARED=${LDSHARED-"$cc"}
-                 LDSHAREDFLAGS="-shared -Wl,-h${LIBNAME}.so.${VER1}" ;;
+                 LDSHAREDFLAGS="-shared -Wl,-h${LIBNAME}.so.${SOVERSION}" ;;
   HP-UX*)
          LDSHARED=${LDSHARED-"$cc"}
          LDSHAREDFLAGS="-shared"
@@ -561,10 +565,10 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
              shared_ext='.dylib'
              SHAREDLIB=${LIBNAME}$shared_ext
              SHAREDLIBV=${LIBNAME}.$VER$shared_ext
-             SHAREDLIBM=${LIBNAME}.$VER1$shared_ext
+             SHAREDLIBM=${LIBNAME}.$SOVERSION$shared_ext
              SHAREDTARGET=$SHAREDLIBV
              LDSHARED=${LDSHARED-"$cc"}
-             LDSHAREDFLAGS="-dynamiclib -install_name ${installnamedir}/${SHAREDLIBM} -compatibility_version ${VER1} -current_version ${VER3}"
+             LDSHAREDFLAGS="-dynamiclib -install_name ${installnamedir}/${SHAREDLIBM} -compatibility_version ${SOVERSION} -current_version ${VER3}"
              if "${CROSS_PREFIX}libtool" -V 2>&1 | grep Apple > /dev/null; then
                  AR="${CROSS_PREFIX}libtool"
              elif libtool -V 2>&1 | grep Apple > /dev/null; then
@@ -575,7 +579,7 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
              ARFLAGS="-o" ;;
   aarch64)
              LDSHARED=${LDSHARED-"$cc"}
-             LDSHAREDFLAGS="-shared -Wl,-soname,${LIBNAME}.so.${VER1}"
+             LDSHAREDFLAGS="-shared -Wl,-soname,${LIBNAME}.so.${SOVERSION}"
              LDSHAREDLIBC="-Wl,--start-group -lc -lrdimon -Wl,--end-group" ;;
   *)
              LDSHARED=${LDSHARED-"$cc"}
@@ -648,7 +652,7 @@ esac
 # destination names for shared library if not defined above
 SHAREDLIB=${SHAREDLIB-"${LIBNAME}$shared_ext"}
 SHAREDLIBV=${SHAREDLIBV-"${LIBNAME}$shared_ext.$VER"}
-SHAREDLIBM=${SHAREDLIBM-"${LIBNAME}$shared_ext.$VER1"}
+SHAREDLIBM=${SHAREDLIBM-"${LIBNAME}$shared_ext.$SOVERSION"}
 SHAREDTARGET=${SHAREDTARGET-"${LIBNAME}$shared_ext.$VER"}
 
 echo >> configure.log
@@ -2428,7 +2432,7 @@ sed < $SRCDIR/Makefile.in "
 /^SHAREDTARGET *=/s#=.*#=$SHAREDTARGET#
 /^IMPORTLIB *=/s#=.*#=$IMPORTLIB#
 /^VER *=/s#=.*#=$VER#
-/^VER1 *=/s#=.*#=$VER1#
+/^VER1 *=/s#=.*#=$SOVERSION#
 /^AR *=/s#=.*#=$AR#
 /^ARFLAGS *=/s#=.*#=$ARFLAGS#
 /^RANLIB *=/s#=.*#=$RANLIB#
@@ -2660,6 +2664,8 @@ sed < $SRCDIR/zlib.pc.in "
 " | sed -e "
 s/\@VERSION\@/$VER/g;
 s/\@SUFFIX\@/$SUFFIX/g;
+s/\@LIBNAME2\@/$LIBNAME2/g;
+s/\@UNIXLIBNAME\@/$UNIXLIBNAME/g;
 s/\@PKG_CONFIG_CFLAGS\@/$PC_CFLAGS/g;
 " > ${LIBNAME2}.pc
 

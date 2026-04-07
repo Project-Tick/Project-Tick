@@ -4097,7 +4097,7 @@ def Test_nested_lambda_in_closure()
       defcompile
       # not reached
   END
-  if !g:RunVim([], lines, '--clean -c WriteDone -c quit')
+  if !g:RunMNV([], lines, '--clean -c WriteDone -c quit')
     return
   endif
   assert_equal(['Done'], readfile('XnestedDone'))
@@ -4492,14 +4492,14 @@ def Test_numbered_function_call()
       let g:legacyscript = deepcopy(s:legacyscript)
 
       let g:legacy_result = eval("g:legacyscript.Helper()")
-      vim9cmd g:vim9_result = eval("g:legacyscript.Helper()")
+      mnv9cmd g:mnv9_result = eval("g:legacyscript.Helper()")
   END
   v9.CheckScriptSuccess(lines)
   assert_equal('Success', g:legacy_result)
-  assert_equal('Success', g:vim9_result)
+  assert_equal('Success', g:mnv9_result)
 
   unlet g:legacy_result
-  unlet g:vim9_result
+  unlet g:mnv9_result
 enddef
 
 def Test_go_beyond_end_of_cmd()

@@ -43,6 +43,7 @@ jobs:
 
       - name: Configure (Windows)
         if: runner.os == 'Windows'
+        shell: bash
         run: |
           cmake -S libnbtplusplus -B build \
             -DCMAKE_BUILD_TYPE=Release \

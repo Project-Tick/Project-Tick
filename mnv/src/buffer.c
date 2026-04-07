@@ -6006,7 +6006,7 @@ chk_modeline(
 		    || STRNCMP(s, "vi:", (size_t)3) == 0)
 		break;
 	    // Accept both "mnv" and "MNV".
-	    if ((s[0] == 'v' || s[0] == 'V') && s[1] == 'i' && s[2] == 'm')
+	    if ((s[0] == 'm' || s[0] == 'M') && s[1] == 'n' && s[2] == 'v')
 	    {
 		int vers;
 
@@ -6016,7 +6016,7 @@ chk_modeline(
 		    e = s + 3;
 		vers = getdigits(&e);
 		if (*e == ':'
-			&& (s[0] != 'V'
+			&& (s[0] != 'M'
 				  || STRNCMP(skipwhite(e + 1), "set", 3) == 0)
 			&& (s[3] == ':'
 			    || (MNV_VERSION_100 >= vers && SAFE_isdigit(s[3]))

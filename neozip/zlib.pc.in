@@ -6,10 +6,10 @@ libdir=@libdir@
 sharedlibdir=@sharedlibdir@
 includedir=@includedir@
 
-Name: zlib@SUFFIX@
+Name: @LIBNAME2@
 Description: neozip compression library
 Version: @VERSION@
 
 Requires:
-Libs: -L${libdir} -L${sharedlibdir} -lz@SUFFIX@
+Libs: -L${libdir} -L${sharedlibdir} -l@UNIXLIBNAME@
 Cflags: -I${includedir} @PKG_CONFIG_CFLAGS@

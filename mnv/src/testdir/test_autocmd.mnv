@@ -3990,7 +3990,7 @@ func Test_autocmd_mnvgrep()
     au QuickfixCmdPre,BufNew,BufReadCmd * sb
     au QuickfixCmdPre,BufNew,BufReadCmd * q9
   augroup END
-  call assert_fails('lv ?a? foo', 'E926:')
+  call assert_fails('lmnvgrep ?a? foo', 'E926:')
 
   augroup aucmd_mnvgrep
     au!
