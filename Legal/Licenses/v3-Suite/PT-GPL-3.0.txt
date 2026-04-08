@@ -1,0 +1,466 @@
+                PROJECT TICK GENERAL PUBLIC LICENSE
+                     Version 3, 7 April 2026
+
+Copyright (C) 2026 Project Tick <https://projecttick.org/>
+
+Everyone is permitted to copy and distribute verbatim copies of this license
+document, but changing it is not allowed.
+
+                            Preamble
+
+ The Project Tick General Public License is a copyright-based reciprocal
+software license built on a copyleft model, designed to ensure that
+modifications and distributed improvements remain equally shareable by
+all recipients. It is intended to ensure that all recipients of a covered Work
+have the freedom to access, study, modify, and redistribute that Work under
+uniform and non-discriminatory terms. This License is designed to preserve
+equal source availability, reciprocal sharing of improvements, and long-term
+preservation of user freedoms for all recipients. Where a covered Work is
+conveyed in source or object form, the Corresponding Source must be made
+available in accordance with the terms of this License. Each contributor grants
+a non-exclusive, worldwide, royalty-free patent license covering those patent
+claims necessarily infringed by the exercise of the rights granted under this
+License with respect to that contributor’s contributions.
+
+The binding terms governing use, modification, operation, and conveyance of
+covered Works are set forth below.
+
+                PROJECT TICK GENERAL PUBLIC LICENSE
+                      TERMS AND CONDITIONS
+
+ 0. Definitions.
+
+"This License" refers to the Project Tick General Public License, Version 3.
+
+"Work" means any copyrightable software program or portion thereof licensed
+under this License.
+
+"You" means any natural or legal person exercising permissions under this
+License.
+
+"Operate" means to run, execute, or make the Work available for use, including
+to provide its functionality to users through a computer network.
+
+"Recipient" means any person or entity who receives a copy of the Work.
+
+"Modify" means to copy from or adapt all or part of the Work in a manner
+requiring copyright permission, other than the making of an exact copy. The
+resulting work is called a "Modified Version" or a work "based on" the Work.
+
+"Main Component" means a major essential component (such as a kernel, operating
+system, compiler, runtime, or object code interpreter) of the specific
+execution environment in which the Work operates.
+
+"Convey" means any propagation of the Work that enables a Recipient to
+make or receive copies of it.
+
+"Library Work" means a Work designed primarily to be used by independent works
+through linking, importing, or comparable technical means.
+
+"Combined Work" means a work produced by linking, importing, or otherwise
+combining a Library Work with an independent work, whether statically or
+dynamically.
+
+"Appropriate Legal Notices" means a prominent and reasonably accessible notice
+that
+
+ (1) displays an appropriate copyright notice,
+ (2) states that the Work is provided without warranty, and
+ (3) informs Recipients that the Work is licensed under this License
+
+and how to obtain a copy of it.
+
+ 1. Source Code and Corresponding Source.
+
+"Source Code" means the preferred form of the Work for making modifications to
+it. It includes all files, interface definitions, scripts, build instructions,
+and other materials necessary to understand, modify, build, install, and run
+the Work in a form reasonably suitable for editing.
+
+"Object Code" means any non-source form of the Work.
+
+Source Code does not include deliberately obfuscated, minified, generated,
+encrypted, or otherwise transformed forms that materially impair readability,
+auditability, or modifiability unless the corresponding human-readable form is
+also provided.
+
+"Standard Interface" means an interface defined by a recognized standards body
+or one that is widely used and publicly documented within the relevant software
+ecosystem.
+
+"System Libraries" means components that:
+
+(1) are included in the normal distribution of a Main Component such as a
+  kernel, operating system, compiler, runtime, or object code interpreter;
+  and
+
+(2) serve only to enable use of the Work with that Main Component or with an
+  implementation of a Standard Interface.
+
+"Corresponding Source" means all Source Code needed to generate, install, run,
+and modify the Work, including build scripts, control files, interface
+definitions, and configuration files that are specifically required for those
+purposes.
+
+Corresponding Source includes scripts and configuration files specifically
+required to build, install, and run the Work itself. It does not include
+general-purpose system administration materials, hardware provisioning
+materials, or external service management materials that are not part of the
+Work.
+
+Corresponding Source does not include System Libraries, general-purpose
+development tools, or independent third-party components that are not derived
+from the Work and are not required to exercise the rights granted under this
+License.
+
+If the Work is conveyed in Source Code form, the Source Code itself constitutes
+the Corresponding Source. This License does not require relicensing of
+independent works merely aggregated with the Work.
+
+ 2. Conveying Modified Source Versions.
+
+ You may Convey a Modified Version of the Work in Source Code form under the
+terms of this License, provided that you comply with all of the following
+conditions:
+
+ a)  The Modified Version must carry prominent notices stating that you have
+     modified the Work and the date of each modification.
+
+ b)  The Modified Version must carry clear notices stating that it is
+     licensed under this License. Such notices may update existing notices to
+     reflect the modified status of the Work.
+
+ c)  You must license the Modified Version, as a whole, under this License.
+     This License is reciprocal and requires that no additional restrictions
+     be imposed on the rights granted herein.
+
+ d)  You may not impose any contractual, technical, or legal measures that
+     restrict, condition, or limit the ability of Recipients to exercise the
+     rights granted under this License.
+
+ e)  If the Modified Version includes interactive user interfaces, such
+     interfaces must display Appropriate Legal Notices, unless the original
+     Work did not include such notices and the nature of the interface makes
+     their display impractical.
+
+ The mere aggregation of the Work with separate and independent works that
+are not derived from the Work does not cause this License to apply to those
+independent works, provided that the aggregation does not impose additional
+restrictions on the Work.
+
+ 3. Conveying Non-Source Forms.
+
+ You may Convey the Work, including any Modified Version licensed under this
+License, in Object Code form, provided that the Corresponding Source is made
+available under this License in a manner that is at least as accessible,
+timely, and usable as the Object Code itself.
+
+The Corresponding Source must be provided in one of the following ways:
+
+ a)  Accompanying the Object Code with the Corresponding Source on a durable
+     physical medium customarily used for software exchange;
+
+ b)  Accompanying the Object Code with a written offer, valid for at least
+     three (3) years, to provide the Corresponding Source on a durable
+     physical medium for no more than the reasonable cost of physical
+     transfer;
+
+ c)  Providing equivalent access to download the Corresponding Source from
+     the same network location, or through clearly documented means
+     accessible to the relevant Recipients, without additional conditions or
+     barriers;
+
+ d)  Providing peer-to-peer conveying, provided that clear instructions are
+     given indicating how the Corresponding Source may be obtained in a
+     manner consistent with this License.
+
+ Any technical, contractual, or policy-based measure that materially
+restricts, delays, or conditions access to the Corresponding Source beyond the
+terms of this License constitutes non-compliance. Separable portions of the
+Object Code whose source is excluded as System Libraries need not be included
+in the Corresponding Source.
+
+ 3.1 User Products.
+
+ If you Convey the Work in Object Code form as part of a User Product,
+and the transfer of the User Product conveys possession or control to the
+Recipient, you must provide the Corresponding Source and the Installation
+Information necessary to install and execute modified versions of the Work
+on that User Product.
+
+ Installation Information is not required if neither you nor any third party
+retains the ability to install modified Object Code on the User Product.
+
+ 3.2 Network Interaction.
+
+ If you modify the Work and use that modified version to provide its
+functionality to users interacting with it remotely through a computer
+network, you must offer the Corresponding Source of that modified version to
+those users under this License and without further restrictions.
+
+ The offer must be made through a prominent and reasonably accessible notice
+in the relevant user interface, service documentation, or other customary place
+through which such users interact with or receive information about the
+service.
+
+ 3.3 Technological Protection Measures.
+
+ No covered Work shall be considered part of an effective technological
+measure to the extent that such measure is used to restrict the exercise of
+rights granted under this License. By Conveying or applying this License to
+a Work, you agree not to assert any legal right to prohibit or restrict
+circumvention of technological measures where such circumvention is necessary
+to exercise the rights granted under this License.
+
+ Technical mechanisms designed solely to ensure system integrity,
+authenticity, or security are permitted, provided that they do not prevent
+Recipients from accessing, modifying, or Conveying the Corresponding Source
+under this License.
+
+ 4. Termination.
+
+ You may not Modify or Convey the Work except as expressly permitted under
+this License. Any attempt otherwise is void and automatically terminates your
+rights under this License. However, if you cease all violations of this
+License, your rights under this License are reinstated provisionally with
+respect to the relevant copyright holder, unless and until that copyright
+holder explicitly and finally terminates your rights. Your rights are
+reinstated permanently if the copyright holder fails to notify you of the
+violation by reasonable means within sixty (60) days after you cease the
+violation. Additionally, if this is the first time you have received notice of
+a violation from that copyright holder, and you cure the violation within
+thirty (30) days after receiving such notice, your rights are reinstated
+permanently. Termination of your rights under this Section does not terminate
+the licenses of any parties who have received copies of the Work from you in
+compliance with this License.
+
+ 5. Acceptance Not Required for Possession or Use.
+
+ You are not required to accept this License in order to receive, possess, or
+run a copy of the Work. The mere act of downloading, receiving, storing, or
+executing the Work does not constitute acceptance of this License. Propagation
+or Conveyance of the Work that occurs solely as an automatic, incidental, or
+passive consequence of receiving a copy through a network or distribution
+system does not require acceptance of this License. However, nothing other than
+this License grants you permission to Modify or Convey the Work. Any such
+action without authorization under this License constitutes copyright
+infringement. By Modifying or Conveying the Work, you indicate your acceptance
+of this License and all of its terms and conditions with respect to those
+actions.
+
+ 6. Automatic Licensing of Downstream Recipients.
+
+ The license granted to Recipients arises solely by operation of this License
+and not by virtue of any separate agreement, contract, or policy. Each time you
+Convey the Work, the Recipient automatically receives a license directly from
+the original licensors to use, Operate, Modify, and Convey the Work, subject to
+the terms and conditions of this License. You are not responsible for enforcing
+compliance with this License by third parties. An "Entity Transaction" means a
+transaction that transfers control of an organization, transfers substantially
+all of its assets, merges organizations, or subdivides them. If Conveyance of
+the Work results from an Entity Transaction, each party receiving a copy of the
+Work also receives the licenses that the predecessor in interest had or could
+grant under this License, together with the right to receive the Corresponding
+Source, if it is possessed or can be obtained with reasonable effort. You may
+not impose any additional legal, contractual, technical, or policy-based
+restrictions on the exercise of the rights granted under this License. Any
+attempt to do so is void and does not affect the rights of Recipients. Access
+to Corresponding Source must not be conditioned on acceptance of terms that
+restrict the rights granted under this License.
+
+ 7. Patents.
+
+ A "Contributor" means any copyright holder who licenses the Work under this
+License. Each Contributor grants to every Recipient a perpetual, worldwide,
+non-exclusive, royalty-free, irrevocable patent license under any patent claims
+owned or controlled by that Contributor, to the extent that such claims are
+necessarily infringed by exercising the rights granted under this License with
+respect to the Contributor’s contributions. This patent license applies only to
+patent claims that are necessarily infringed by the Contributor’s
+contributions. It does not extend to claims that would be infringed solely
+as a result of further modification or combination beyond those contributions.
+If you initiate patent litigation against any party alleging that the Work or a
+contribution incorporated within the Work constitutes direct or contributory
+patent infringement, then any patent licenses granted to you under this License
+for that Work shall terminate as of the date such litigation is filed.
+You may not enter into any patent agreement, covenant, or arrangement that
+imposes discriminatory restrictions on the exercise of rights granted under
+this License. Any patent license granted in connection with the Work must
+extend equally and non-discriminatorily to all Recipients. Nothing in this
+License shall be construed as limiting any defenses to patent infringement that
+may otherwise be available under applicable law.
+
+ 8. Linking and Combined Works.
+
+ A Library Work licensed under this License may be conveyed as part of a
+Combined Work without causing this License to apply to the independent work as
+a whole, provided that the conditions of this Section are satisfied.
+
+ The Library Work itself, and any modifications to it, must remain licensed
+under this License. If you Convey a Combined Work that includes a Library
+Work, you must:
+
+(a) Provide the Corresponding Source of the Library Work and any modifications
+  to it under this License;
+
+(b) Provide the information and materials necessary to enable Recipients to
+  modify the Library Work and relink or replace it within the Combined Work
+  using commonly available tools;
+
+(c) Not impose technical or contractual measures that forbid or materially
+  interfere with such relinking or replacement.
+
+ The independent portions of a Combined Work are not required to be licensed
+under this License, provided that they are not derived from the Library Work.
+
+ Mere aggregation, inter-process communication, network protocols,
+command-line invocation, or use of standard interfaces does not by itself
+create a Combined Work.
+
+ 9. Form of Corresponding Source.
+
+Where Corresponding Source is required under this License, it must be provided
+in a form that is complete and reasonably usable for modification,
+generation, installation, and operation of the Work using commonly available
+tools.
+
+Access to Corresponding Source may not be conditioned on terms inconsistent
+with this License.
+
+ 10. Protection of Contributor Rights.
+
+ You may not impose further restrictions on the exercise of the rights
+granted under this License. If conditions are imposed on you, whether by court
+order, agreement, or otherwise, that contradict the terms of this License, such
+conditions do not excuse you from compliance. If you cannot comply
+simultaneously with this License and any other obligation, you may not Convey
+the Work at all. No agreement or arrangement may retroactively restrict or
+revoke the rights granted under this License with respect to any Contributor’s
+contributions.
+
+ 11. Uniform Exercise of Rights.
+
+ The rights granted under this License apply equally to all Recipients and
+to all fields of endeavor. No further restriction or condition may limit the
+exercise of such rights in a manner inconsistent with this License.
+
+ For avoidance of doubt, where the Work is used as part of a larger system or
+service, this License requires disclosure only of the Work, Modified Versions
+of the Work, and Corresponding Source otherwise required by this License. It
+does not require disclosure of independent or unrelated components merely
+because they are used alongside the Work.
+
+ 12. Disclaimer of Warranty.
+
+ TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE WORK IS PROVIDED
+"AS IS" AND WITHOUT WARRANTY OF ANY KIND. EXCEPT WHERE OTHERWISE EXPRESSLY
+STATED IN WRITING, THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE WORK
+WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE,
+OR NON-INFRINGEMENT. THE ENTIRE RISK AS TO THE QUALITY, PERFORMANCE, AND
+FUNCTIONALITY OF THE WORK IS WITH YOU. SHOULD THE WORK PROVE DEFECTIVE OR FAIL
+TO OPERATE AS EXPECTED, YOU ASSUME ALL COSTS OF NECESSARY SERVICING, REPAIR,
+CORRECTION, OR REMEDIATION.
+
+ 13. Limitation of Liability.
+
+ TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL ANY
+COPYRIGHT HOLDER, CONTRIBUTOR, OR ANY OTHER PARTY WHO MODIFIES, CONVEYS, OR
+OTHERWISE MAKES THE WORK AVAILABLE BE LIABLE TO YOU FOR ANY DAMAGES OF ANY
+KIND, INCLUDING, WITHOUT LIMITATION, DIRECT, INDIRECT, GENERAL, SPECIAL,
+INCIDENTAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OF, OR INABILITY TO USE, THE WORK, EVEN IF SUCH
+PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+ 14. Interpretation of Sections 12 and 13.
+
+ If the disclaimer of warranty or limitation of liability set forth in
+Sections 12 and 13 of this License cannot be given full legal effect under
+applicable local law, such provisions shall be enforced to the maximum extent
+permitted by that law.
+
+ In such cases, courts shall apply the local law in a manner that most
+closely approximates an absolute exclusion or limitation of civil liability in
+connection with the Work, consistent with the intent of Sections 12 and 13,
+unless a warranty or assumption of liability accompanies a copy of the Work in
+return for a fee.
+
+ 15. Additional Permissions.
+
+ Additional permissions are terms that supplement the terms of this License
+by making exceptions from one or more of its conditions.
+
+ When you Convey a copy of a covered Work, you may at your option remove any
+additional permissions from that copy, or from any part of it.
+
+ Additional permissions that are applicable to the entire Work shall be
+treated as though they were included in this License, to the extent that they
+are valid under applicable law. If additional permissions apply only to part
+of the Work, that part may be used separately under those permissions, but the
+entire Work remains governed by this License without regard to the additional
+permissions.
+
+ You may place additional permissions on material added by you to a covered
+Work, provided that such additional permissions do not impose further
+restrictions on the exercise of the rights granted under this License.
+
+ 16. Conveying Verbatim Copies.
+
+ You may convey exact, unmodified copies of the Work, as received, in any
+medium, provided that you:
+
+ (a) conspicuously and appropriately publish an appropriate copyright notice;
+
+ (b) keep intact all notices stating that this License applies to the Work
+     and that no warranty is provided; and
+
+ (c) provide all recipients with a copy of this License.
+
+ Nothing in this License prohibits charging a fee for the physical act of
+transferring a copy, or for providing support, maintenance, or warranty
+services, provided that such fees do not impose additional restrictions on the
+rights granted under this License.
+
+                PROJECT TICK GENERAL PUBLIC LICENSE
+                   END OF TERMS AND CONDITIONS
+
+If you develop a new program and wish to grant the public the freedoms to
+use, study, modify, and convey it under the terms of this License, you may
+apply this License to the program by attaching the notices described below.
+
+It is recommended to place these notices at the beginning of each source
+file, in order to clearly indicate the applicable license terms and the
+exclusion of warranty. Each file should include at least a copyright notice and
+a reference to where the full text of this License can be found.
+
+  <one line to give the program's name and a brief idea of what it does.>
+  Copyright (C) <year>  <name of author>
+
+  This program is free software: you can redistribute it and/or modify it
+  under the terms of the Project Tick General Public License, version 3.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the Project Tick General Public
+  License for more details.
+
+  You should have received a copy of the Project Tick General Public License
+  along with this program.  If not, see <https://projecttick.org/>.
+
+You are encouraged to include information on how to contact the author or
+maintainer of the program by electronic means.
+
+If the program provides an interactive user interface, whether through a
+terminal, graphical interface, or network-based system, it should display
+Appropriate Legal Notices in a reasonable and prominent manner. Such notices
+should include a copyright notice, a statement that the program is provided
+without warranty, and information on how to view a copy of this License.
+
+If you develop the program as part of your employment, education, or under
+contract, you should ensure that no conflicting claims exist with respect to
+the copyright of the program, or that any required permissions or disclaimers
+have been obtained.
+
+This License is a copyleft license. If you intend to permit use, linking, or
+incorporation on terms materially broader than those provided here, you should
+carefully evaluate whether a different license better suits your goals.
