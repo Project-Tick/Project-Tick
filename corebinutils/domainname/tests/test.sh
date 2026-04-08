@@ -107,6 +107,7 @@ run_namespace_mutation_test() {
 
 	case $output in
 		*"cannot open /proc/self/uid_map: Permission denied"*|\
+		*"write failed /proc/self/uid_map: Operation not permitted"*|\
 		*"unshare: invalid option -- 'r'"*|\
 		*"unshare: unrecognized option '--map-root-user'"*)
 			set +e

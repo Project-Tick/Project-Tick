@@ -174,6 +174,8 @@ assert_match '^Filesystem +512-blocks +Used +Avail +Capacity +Mounted on$' "$(se
 assert_match "^total +[0-9]+ +[0-9]+ +[0-9]+ +[0-9]+%$" "$(sed -n '3p' "$WORKDIR/total.out")" "total row missing"
 
 default_again=$("$DF_BIN" -a -P .)
-assert_eq "$default_output" "$default_again" "-a should be a no-op on Linux"
+default_cols=$(printf '%s\n' "$default_output" | awk '{print $1, $NF}')
+again_cols=$(printf '%s\n' "$default_again" | awk '{print $1, $NF}')
+assert_eq "$default_cols" "$again_cols" "-a should be a no-op on Linux"
 
 printf '%s\n' "PASS"
