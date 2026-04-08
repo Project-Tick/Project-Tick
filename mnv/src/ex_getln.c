@@ -245,7 +245,7 @@ parse_pattern_and_range(
     // Skip over the range to find the command.
     cmd = skip_range(ea.cmd, TRUE, NULL);
 
-    if (mnv_strchr((char_u *)"sgvlu", *cmd) == NULL)
+    if (mnv_strchr((char_u *)"glmsuv", *cmd) == NULL)
 	return FALSE;
 
     // Skip over command name to find pattern separator
