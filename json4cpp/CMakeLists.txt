@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.5...4.0)
 ## PROJECT
 ## name and version
 ##
-project(nlohmann_json VERSION 3.12.0 LANGUAGES CXX)
+project(nlohmann_json VERSION 10.0.3 LANGUAGES CXX)
 
 ##
 ## MAIN_PROJECT CHECK

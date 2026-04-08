@@ -1,9 +1,10 @@
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 /****************************************************************************\
@@ -32,12 +33,13 @@
 #include <vector> // vector
 
 // #include <nlohmann/adl_serializer.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -45,12 +47,13 @@
 #include <utility>
 
 // #include <nlohmann/detail/abi_macros.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -158,12 +161,13 @@
 #endif
 
 // #include <nlohmann/detail/conversions/from_json.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -181,12 +185,13 @@
 #include <valarray> // valarray
 
 // #include <nlohmann/detail/exceptions.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -201,12 +206,13 @@
 #include <vector> // vector
 
 // #include <nlohmann/detail/value_t.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -217,24 +223,26 @@
 #include <string> // string
 
 // #include <nlohmann/detail/macro_scope.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
 
 #include <utility> // declval, pair
 // #include <nlohmann/detail/meta/detected.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -242,12 +250,13 @@
 #include <type_traits>
 
 // #include <nlohmann/detail/meta/void_t.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -329,13 +338,14 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/thirdparty/hedley/hedley.hpp>
 
 
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
 // SPDX-FileCopyrightText: 2016-2021 Evan Nemerson <evan@nemerson.com>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 /* Hedley - https://nemequ.github.io/hedley
@@ -3068,12 +3078,13 @@ inline bool operator<(const value_t lhs, const value_t rhs) noexcept
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/string_escape.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3143,12 +3154,13 @@ inline void unescape(StringType& s)
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/input/position_t.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3185,13 +3197,14 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/macro_scope.hpp>
 
 // #include <nlohmann/detail/meta/cpp_future.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
 // SPDX-FileCopyrightText: 2018 The Abseil Authors
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3359,12 +3372,13 @@ constexpr std::array<T, sizeof...(Args)> make_array(Args&& ... args)
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/meta/type_traits.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3378,12 +3392,13 @@ NLOHMANN_JSON_NAMESPACE_END
     #include <cstddef> // byte
 #endif
 // #include <nlohmann/detail/iterators/iterator_traits.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3446,12 +3461,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/macro_scope.hpp>
 
 // #include <nlohmann/detail/meta/call_std/begin.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3466,12 +3482,13 @@ NLOHMANN_CAN_CALL_STD_FUNC_IMPL(begin);
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/meta/call_std/end.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -3490,80 +3507,81 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/meta/detected.hpp>
 
 // #include <nlohmann/json_fwd.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 #ifndef INCLUDE_NLOHMANN_JSON_FWD_HPP_
-    #define INCLUDE_NLOHMANN_JSON_FWD_HPP_
+#define INCLUDE_NLOHMANN_JSON_FWD_HPP_
 
-    #include <cstdint> // int64_t, uint64_t
-    #include <map> // map
-    #include <memory> // allocator
-    #include <string> // string
-    #include <vector> // vector
+#include <cstdint> // int64_t, uint64_t
+#include <map> // map
+#include <memory> // allocator
+#include <string> // string
+#include <vector> // vector
 
-    // #include <nlohmann/detail/abi_macros.hpp>
+// #include <nlohmann/detail/abi_macros.hpp>
 
 
-    /*!
-    @brief namespace for Niels Lohmann
-    @see https://github.com/nlohmann
-    @since version 1.0.0
-    */
-    NLOHMANN_JSON_NAMESPACE_BEGIN
+/*!
+@brief namespace for Niels Lohmann
+@see https://github.com/nlohmann
+@since version 1.0.0
+*/
+NLOHMANN_JSON_NAMESPACE_BEGIN
 
-    /*!
-    @brief default JSONSerializer template argument
+/*!
+@brief default JSONSerializer template argument
 
-    This serializer ignores the template arguments and uses ADL
-    ([argument-dependent lookup](https://en.cppreference.com/w/cpp/language/adl))
-    for serialization.
-    */
-    template<typename T = void, typename SFINAE = void>
-    struct adl_serializer;
+This serializer ignores the template arguments and uses ADL
+([argument-dependent lookup](https://en.cppreference.com/w/cpp/language/adl))
+for serialization.
+*/
+template<typename T = void, typename SFINAE = void>
+struct adl_serializer;
 
-    /// a class to store JSON values
-    /// @sa https://json.nlohmann.me/api/basic_json/
-    template<template<typename U, typename V, typename... Args> class ObjectType =
-    std::map,
-    template<typename U, typename... Args> class ArrayType = std::vector,
-    class StringType = std::string, class BooleanType = bool,
-    class NumberIntegerType = std::int64_t,
-    class NumberUnsignedType = std::uint64_t,
-    class NumberFloatType = double,
-    template<typename U> class AllocatorType = std::allocator,
-    template<typename T, typename SFINAE = void> class JSONSerializer =
-    adl_serializer,
-    class BinaryType = std::vector<std::uint8_t>, // cppcheck-suppress syntaxError
-    class CustomBaseClass = void>
-    class basic_json;
+/// a class to store JSON values
+/// @sa https://json.nlohmann.me/api/basic_json/
+template<template<typename U, typename V, typename... Args> class ObjectType =
+         std::map,
+         template<typename U, typename... Args> class ArrayType = std::vector,
+         class StringType = std::string, class BooleanType = bool,
+         class NumberIntegerType = std::int64_t,
+         class NumberUnsignedType = std::uint64_t,
+         class NumberFloatType = double,
+         template<typename U> class AllocatorType = std::allocator,
+         template<typename T, typename SFINAE = void> class JSONSerializer =
+         adl_serializer,
+         class BinaryType = std::vector<std::uint8_t>, // cppcheck-suppress syntaxError
+         class CustomBaseClass = void>
+class basic_json;
 
-    /// @brief JSON Pointer defines a string syntax for identifying a specific value within a JSON document
-    /// @sa https://json.nlohmann.me/api/json_pointer/
-    template<typename RefStringType>
-    class json_pointer;
+/// @brief JSON Pointer defines a string syntax for identifying a specific value within a JSON document
+/// @sa https://json.nlohmann.me/api/json_pointer/
+template<typename RefStringType>
+class json_pointer;
 
-    /*!
-    @brief default specialization
-    @sa https://json.nlohmann.me/api/json/
-    */
-    using json = basic_json<>;
+/*!
+@brief default specialization
+@sa https://json.nlohmann.me/api/json/
+*/
+using json = basic_json<>;
 
-    /// @brief a minimal map-like container that preserves insertion order
-    /// @sa https://json.nlohmann.me/api/ordered_map/
-    template<class Key, class T, class IgnoredLess, class Allocator>
-    struct ordered_map;
+/// @brief a minimal map-like container that preserves insertion order
+/// @sa https://json.nlohmann.me/api/ordered_map/
+template<class Key, class T, class IgnoredLess, class Allocator>
+struct ordered_map;
 
-    /// @brief specialization that maintains the insertion order of object keys
-    /// @sa https://json.nlohmann.me/api/ordered_json/
-    using ordered_json = basic_json<nlohmann::ordered_map>;
+/// @brief specialization that maintains the insertion order of object keys
+/// @sa https://json.nlohmann.me/api/ordered_json/
+using ordered_json = basic_json<nlohmann::ordered_map>;
 
-    NLOHMANN_JSON_NAMESPACE_END
+NLOHMANN_JSON_NAMESPACE_END
 
 #endif  // INCLUDE_NLOHMANN_JSON_FWD_HPP_
 
@@ -4405,12 +4423,13 @@ struct is_transparent : bool_constant<impl::is_transparent<T>()> {};
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/string_concat.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -4825,12 +4844,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/meta/cpp_future.hpp>
 
 // #include <nlohmann/detail/meta/identity_tag.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -4849,12 +4869,13 @@ template <class T> struct identity_tag {};
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/meta/std_fs.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -4883,6 +4904,15 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/meta/type_traits.hpp>
 
 // #include <nlohmann/detail/meta/logic.hpp>
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
+//
+// SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
+// SPDX-License-Identifier: MIT
+
 
 
 // #include <nlohmann/detail/macro_scope.hpp>
@@ -5524,18 +5554,19 @@ JSON_INLINE_VARIABLE constexpr const auto& from_json = // NOLINT(misc-definition
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/conversions/to_json.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
 
 // #include <nlohmann/detail/macro_scope.hpp>
-// JSON_HAS_CPP_17
+ // JSON_HAS_CPP_17
 #ifdef JSON_HAS_CPP_17
     #include <optional> // optional
 #endif
@@ -5551,12 +5582,13 @@ NLOHMANN_JSON_NAMESPACE_END
 #include <vector> // vector
 
 // #include <nlohmann/detail/iterators/iteration_proxy.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -5575,12 +5607,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/meta/type_traits.hpp>
 
 // #include <nlohmann/detail/string_utils.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -6337,12 +6370,13 @@ struct adl_serializer
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/byte_container_with_subtype.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -6449,12 +6483,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/exceptions.hpp>
 
 // #include <nlohmann/detail/hash.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -6582,12 +6617,13 @@ std::size_t hash(const BasicJsonType& j)
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/input/binary_reader.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -6611,12 +6647,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/exceptions.hpp>
 
 // #include <nlohmann/detail/input/input_adapters.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -7167,12 +7204,13 @@ class span_input_adapter
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/input/json_sax.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -7186,12 +7224,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/exceptions.hpp>
 
 // #include <nlohmann/detail/input/lexer.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -9814,12 +9853,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/macro_scope.hpp>
 
 // #include <nlohmann/detail/meta/is_sax.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -13041,12 +13081,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/input/lexer.hpp>
 
 // #include <nlohmann/detail/input/parser.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -13587,12 +13628,13 @@ class parser
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/iterators/internal_iterator.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -13600,12 +13642,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/abi_macros.hpp>
 
 // #include <nlohmann/detail/iterators/primitive_iterator.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -13759,12 +13802,13 @@ template<typename BasicJsonType> struct internal_iterator
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/iterators/iter_impl.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -14530,12 +14574,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/iterators/iteration_proxy.hpp>
 
 // #include <nlohmann/detail/iterators/json_reverse_iterator.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -14665,12 +14710,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/iterators/primitive_iterator.hpp>
 
 // #include <nlohmann/detail/json_custom_base_class.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -14707,12 +14753,13 @@ using json_base_class = typename std::conditional <
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/json_pointer.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -15702,12 +15749,13 @@ inline bool operator<(const json_pointer<RefStringTypeLhs>& lhs,
 NLOHMANN_JSON_NAMESPACE_END
 
 // #include <nlohmann/detail/json_ref.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -15796,12 +15844,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/meta/type_traits.hpp>
 
 // #include <nlohmann/detail/output/binary_writer.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -15822,12 +15871,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/macro_scope.hpp>
 
 // #include <nlohmann/detail/output/output_adapters.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -17815,13 +17865,14 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/detail/output/output_adapters.hpp>
 
 // #include <nlohmann/detail/output/serializer.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2008, 2009 Björn Hoehrmann <bjoern@hoehrmann.de>
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -17840,13 +17891,14 @@ NLOHMANN_JSON_NAMESPACE_END
 #include <utility> // move
 
 // #include <nlohmann/detail/conversions/to_chars.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2009 Florian Loitsch <https://florian.loitsch.com/>
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -19936,12 +19988,13 @@ NLOHMANN_JSON_NAMESPACE_END
 // #include <nlohmann/json_fwd.hpp>
 
 // #include <nlohmann/ordered_map.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -20373,10 +20426,10 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         const bool allow_exceptions = true,
         const bool ignore_comments = false,
         const bool ignore_trailing_commas = false
-                                 )
+    )
     {
         return ::nlohmann::detail::parser<basic_json, InputAdapterType>(std::move(adapter),
-            std::move(cb), allow_exceptions, ignore_comments, ignore_trailing_commas);
+               std::move(cb), allow_exceptions, ignore_comments, ignore_trailing_commas);
     }
 
   private:
@@ -21074,8 +21127,8 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                detail::enable_if_t <
                    !detail::is_basic_json<U>::value && detail::is_compatible_type<basic_json_t, U>::value, int > = 0 >
     basic_json(CompatibleType && val) noexcept(noexcept( // NOLINT(bugprone-forwarding-reference-overload,bugprone-exception-escape)
-            JSONSerializer<U>::to_json(std::declval<basic_json_t&>(),
-                                       std::forward<CompatibleType>(val))))
+                JSONSerializer<U>::to_json(std::declval<basic_json_t&>(),
+                                           std::forward<CompatibleType>(val))))
     {
         JSONSerializer<U>::to_json(*this, std::forward<CompatibleType>(val));
         set_parents();
@@ -21869,7 +21922,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                    detail::has_from_json<basic_json_t, ValueType>::value,
                    int > = 0 >
     ValueType get_impl(detail::priority_tag<0> /*unused*/) const noexcept(noexcept(
-            JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>(), std::declval<ValueType&>())))
+                JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>(), std::declval<ValueType&>())))
     {
         auto ret = ValueType();
         JSONSerializer<ValueType>::from_json(*this, ret);
@@ -21911,7 +21964,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                    detail::has_non_default_from_json<basic_json_t, ValueType>::value,
                    int > = 0 >
     ValueType get_impl(detail::priority_tag<1> /*unused*/) const noexcept(noexcept(
-            JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>())))
+                JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>())))
     {
         return JSONSerializer<ValueType>::from_json(*this);
     }
@@ -22061,7 +22114,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                    detail::has_from_json<basic_json_t, ValueType>::value,
                    int > = 0 >
     ValueType & get_to(ValueType& v) const noexcept(noexcept(
-            JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>(), v)))
+                JSONSerializer<ValueType>::from_json(std::declval<const basic_json_t&>(), v)))
     {
         JSONSerializer<ValueType>::from_json(*this, v);
         return v;
@@ -25619,12 +25672,13 @@ inline void swap(nlohmann::NLOHMANN_BASIC_JSON_TPL& j1, nlohmann::NLOHMANN_BASIC
 #endif
 
 // #include <nlohmann/detail/macro_unscope.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
@@ -25666,12 +25720,13 @@ inline void swap(nlohmann::NLOHMANN_BASIC_JSON_TPL& j1, nlohmann::NLOHMANN_BASIC
 #endif
 
 // #include <nlohmann/thirdparty/hedley/hedley_undef.hpp>
-//     __ _____ _____ _____
-//  __|  |   __|     |   | |  JSON for Modern C++
-// |  |  |__   |  |  | | | |  version 3.12.0
-// |_____|_____|_____|_|___|  https://github.com/nlohmann/json
+//     __ _____ _____ _____   _     _   
+//  __|  |   __|     |   | |_| |_ _| |_   JSON for Modern C++
+// |  |  |__   |  |  | | | |_   _|_   _|  version 10.0.3
+// |_____|_____|_____|_|___| |_|   |_|    https://github.com/Project-Tick/Project-Tick
 //
 // SPDX-FileCopyrightText: 2013-2026 Niels Lohmann <https://nlohmann.me>
+// SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
 
