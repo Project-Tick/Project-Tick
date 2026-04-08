@@ -566,7 +566,7 @@ fun! s:GetOneScript(...)
       endif
       let g:mnvball_home= s:autoinstall
       exe "silent e ".fnameescape(sname)
-      silent so %
+      call mnvball#MNVball(1)
       silent q
       if exists("oldmnvballhome")
        let g:mnvball_home= oldmnvballhome
@@ -589,7 +589,9 @@ fun! s:GetOneScript(...)
 
      " helptags step
      let docdir= substitute(&rtp,',.*','','e')."/doc"
-     exe "helptags ".fnameescape(docdir)
+     if !empty(glob(docdir . '/**/*.txt'))
+      exe "helptags ".fnameescape(docdir)
+     endif
      exe "cd ".fnameescape(curdir)
     endif
     if fname !~ ':AutoInstall:'

@@ -2021,9 +2021,10 @@ parse_command_name(mparm_T *parmp)
 	++initstr;
     }
 
-    // Use emnv mode for "emnv" and "egmnv", not for "editor".
+    // Use emnv mode for "emnv", "eview" and "egmnv", not for "editor".
     if (TOLOWER_ASC(initstr[0]) == 'e'
-	    && (TOLOWER_ASC(initstr[1]) == 'm'
+	    && (TOLOWER_ASC(initstr[1]) == 'v'
+		|| TOLOWER_ASC(initstr[1]) == 'm'
 		|| TOLOWER_ASC(initstr[1]) == 'g'))
     {
 # ifdef FEAT_GUI
