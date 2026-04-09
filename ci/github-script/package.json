@@ -5,8 +5,8 @@
     "https://github.com/actions/github-script/blob/main/package.json."
   ],
   "dependencies": {
-    "@actions/core": "1.11.1",
-    "@actions/github": "6.0.1",
+    "@actions/core": "3.0.0",
+    "@actions/github": "9.1.0",
     "bottleneck": "2.19.5",
     "commander": "14.0.3"
   }
