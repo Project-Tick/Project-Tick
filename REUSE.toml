@@ -164,3 +164,8 @@ SPDX-FileCopyrightText = "NixOS Contributors & Project Tick"
 path = ["Legal/**"]
 SPDX-License-Identifier = "LicenseRef-Project-Tick-Legal"
 SPDX-FileCopyrightText = "2025-2026 Project Tick"
+
+[[annotations]]
+path = ["website/**"]
+SPDX-License-Identifier = "MIT"
+SPDX-FileCopyrightText = "2021-2026 Project Tick"
