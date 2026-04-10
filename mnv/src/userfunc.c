@@ -2476,21 +2476,21 @@ cat_func_name(char_u *buf, size_t bufsize, ufunc_T *fp)
 }
 
 /*
- * Add a number variable "name" to dict "dp" with value "nr".
+ * Add a number variable stored in funccall_T::fc_fixvar[].
  */
-    static void
-add_nr_var(
-    dict_T	*dp,
-    dictitem_T	*v,
-    char	*name,
-    varnumber_T nr)
+	static void
+add_nr_var_fix(
+	dict_T	*dp,
+	dictitemvar_T *v,
+	char	*name,
+	varnumber_T nr)
 {
-    STRCPY(v->di_key, name);
-    v->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
-    hash_add(&dp->dv_hashtab, DI2HIKEY(v), "add variable");
-    v->di_tv.v_type = VAR_NUMBER;
-    v->di_tv.v_lock = VAR_FIXED;
-    v->di_tv.vval.v_number = nr;
+	STRCPY(v->di_key, name);
+	v->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
+	hash_add(&dp->dv_hashtab, v->di_key, "add variable");
+	v->di_tv.v_type = VAR_NUMBER;
+	v->di_tv.v_lock = VAR_FIXED;
+	v->di_tv.vval.v_number = nr;
 }
 
 /*
@@ -2998,6 +2998,7 @@ call_user_func(
     funcerror_T retval = FCERR_NONE;
     int		default_arg_err = FALSE;
     dictitem_T	*v;
+	dictitemvar_T *fixv;
     int		fixvar_idx = 0;	// index in fc_fixvar[]
     int		i;
     int		ai;
@@ -3074,13 +3075,12 @@ call_user_func(
     init_var_dict(&fc->fc_l_vars, &fc->fc_l_vars_var, VAR_DEF_SCOPE);
     if (selfdict != NULL)
     {
-	// Set l:self to "selfdict".  Use "name" to avoid a warning from
-	// some compiler that checks the destination size.
-	v = &fc->fc_fixvar[fixvar_idx++].var;
-	name = v->di_key;
-	STRCPY(name, "self");
-	v->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
-	hash_add(&fc->fc_l_vars.dv_hashtab, DI2HIKEY(v), "set self dictionary");
+	// Set l:self to "selfdict".
+	fixv = &fc->fc_fixvar[fixvar_idx++];
+	v = (dictitem_T *)fixv;
+	STRCPY(fixv->di_key, "self");
+	fixv->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
+	hash_add(&fc->fc_l_vars.dv_hashtab, fixv->di_key, "set self dictionary");
 	v->di_tv.v_type = VAR_DICT;
 	v->di_tv.v_lock = 0;
 	v->di_tv.vval.v_dict = selfdict;
@@ -3094,19 +3094,17 @@ call_user_func(
      */
     init_var_dict(&fc->fc_l_avars, &fc->fc_l_avars_var, VAR_SCOPE);
     if ((fp->uf_flags & FC_NOARGS) == 0)
-	add_nr_var(&fc->fc_l_avars, &fc->fc_fixvar[fixvar_idx++].var, "0",
+	add_nr_var_fix(&fc->fc_l_avars, &fc->fc_fixvar[fixvar_idx++], "0",
 				(varnumber_T)(argcount >= fp->uf_args.ga_len
 				    ? argcount - fp->uf_args.ga_len : 0));
     fc->fc_l_avars.dv_lock = VAR_FIXED;
     if ((fp->uf_flags & FC_NOARGS) == 0)
     {
-	// Use "name" to avoid a warning from some compiler that checks the
-	// destination size.
-	v = &fc->fc_fixvar[fixvar_idx++].var;
-	name = v->di_key;
-	STRCPY(name, "000");
-	v->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
-	hash_add(&fc->fc_l_avars.dv_hashtab, DI2HIKEY(v), "function argument");
+	fixv = &fc->fc_fixvar[fixvar_idx++];
+	v = (dictitem_T *)fixv;
+	STRCPY(fixv->di_key, "000");
+	fixv->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
+	hash_add(&fc->fc_l_avars.dv_hashtab, fixv->di_key, "function argument");
 	v->di_tv.v_type = VAR_LIST;
 	v->di_tv.v_lock = VAR_FIXED;
 	v->di_tv.vval.v_list = &fc->fc_l_varlist;
@@ -3123,9 +3121,9 @@ call_user_func(
      */
     if ((fp->uf_flags & FC_NOARGS) == 0)
     {
-	add_nr_var(&fc->fc_l_avars, &fc->fc_fixvar[fixvar_idx++].var,
+	add_nr_var_fix(&fc->fc_l_avars, &fc->fc_fixvar[fixvar_idx++],
 			      "firstline", (varnumber_T)funcexe->fe_firstline);
-	add_nr_var(&fc->fc_l_avars, &fc->fc_fixvar[fixvar_idx++].var,
+	add_nr_var_fix(&fc->fc_l_avars, &fc->fc_fixvar[fixvar_idx++],
 				"lastline", (varnumber_T)funcexe->fe_lastline);
     }
     for (i = 0; i < argcount || i < fp->uf_args.ga_len; ++i)
@@ -3176,9 +3174,10 @@ call_user_func(
 	}
 	if (fixvar_idx < FIXVAR_CNT && namelen <= VAR_SHORT_LEN)
 	{
-	    v = &fc->fc_fixvar[fixvar_idx++].var;
-	    v->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
-	    STRCPY(v->di_key, name);
+	    fixv = &fc->fc_fixvar[fixvar_idx++];
+	    v = (dictitem_T *)fixv;
+	    fixv->di_flags = DI_FLAGS_RO | DI_FLAGS_FIX;
+	    STRCPY(fixv->di_key, name);
 	}
 	else
 	{

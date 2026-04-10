@@ -47,7 +47,7 @@ index 7583e77738..f9bf07171a 100644
 +SPDX-License-Identifier = "LGPL-3.0-or-later"
 +SPDX-FileCopyrightText = "libnbtplusplus Contributors & ljfa-ag & Project Tick"
 diff --git a/meshmc/bootstrap.cmd b/meshmc/bootstrap.cmd
-index 9da8b46195..12c08ccc52 100644
+index 9da8b46195..4f7551bafa 100644
 --- a/meshmc/bootstrap.cmd
 +++ b/meshmc/bootstrap.cmd
 @@ -3,7 +3,7 @@ rem SPDX-License-Identifier: GPL-3.0-or-later
@@ -59,7 +59,29 @@ index 9da8b46195..12c08ccc52 100644
  
  setlocal EnableDelayedExpansion
  
-@@ -68,8 +68,6 @@ set "MISSING="
+@@ -14,21 +14,6 @@ echo [INFO]  MeshMC Bootstrap
+ echo ---------------------------------------------
+ echo.
+ 
+-rem ── Submodules ──────────────────────────────────────────────────────────────
+-if not exist ".git" (
+-    echo [ERR]  Not a git repository. Please run this script from the project root. 1>&2
+-    exit /b 1
+-)
+-
+-echo [INFO]  Setting up submodules...
+-git submodule update --init --recursive
+-if errorlevel 1 (
+-    echo [ERR]  Submodule initialization failed. 1>&2
+-    exit /b 1
+-)
+-echo [ OK ]  Submodules initialized
+-echo.
+-
+ rem ── Check for scoop ─────────────────────────────────────────────────────────
+ set "HAS_SCOOP=0"
+ where scoop >nul 2>&1 && set "HAS_SCOOP=1"
+@@ -68,8 +53,6 @@ set "MISSING="
  
  call :check_cmd npm npm
  call :check_cmd Go go
@@ -68,7 +90,7 @@ index 9da8b46195..12c08ccc52 100644
  call :check_cmd CMake cmake
  call :check_cmd Git git
  
-@@ -104,22 +102,6 @@ echo !MISSING! | findstr /i "CMake" >nul && (
+@@ -104,22 +87,6 @@ echo !MISSING! | findstr /i "CMake" >nul && (
      scoop install cmake
  )
  
@@ -91,7 +113,7 @@ index 9da8b46195..12c08ccc52 100644
  echo.
  echo [ OK ]  Package installation complete
  echo.
-@@ -130,7 +112,6 @@ where vcpkg >nul 2>&1
+@@ -130,7 +97,6 @@ where vcpkg >nul 2>&1
  if errorlevel 1 (
      echo [WARN]  vcpkg not found. Skipping C/C++ library installation.
      echo [WARN]  You will need to manually install: qt6, quazip, zlib, extra-cmake-modules
@@ -99,7 +121,7 @@ index 9da8b46195..12c08ccc52 100644
  )
  
  echo [INFO]  Installing C/C++ libraries via vcpkg...
-@@ -155,23 +136,6 @@ echo.
+@@ -155,23 +121,6 @@ echo.
  echo [ OK ]  vcpkg libraries installed
  echo.
  
@@ -124,7 +146,7 @@ index 9da8b46195..12c08ccc52 100644
  echo [ OK ]  Bootstrap successful! You're all set.
  echo.
 diff --git a/meshmc/bootstrap.sh b/meshmc/bootstrap.sh
-index 3762deaa2e..748f3110e9 100755
+index 3762deaa2e..929351fdf5 100755
 --- a/meshmc/bootstrap.sh
 +++ b/meshmc/bootstrap.sh
 @@ -3,7 +3,7 @@
@@ -223,7 +245,7 @@ index 3762deaa2e..748f3110e9 100755
  }
  
  install_missing() {
-@@ -227,23 +201,10 @@ install_missing() {
+@@ -227,43 +201,16 @@ install_missing() {
          macos)         install_macos          ;;
      esac
  
@@ -244,10 +266,30 @@ index 3762deaa2e..748f3110e9 100755
 -    ok "Lefthook hooks installed into .git/hooks"
 -}
 -
- init_submodules() {
-     if [ ! -d ".git" ]; then
-         err "Not a git repository. Please run this script from the project root."
-@@ -272,9 +233,6 @@ main() {
+-init_submodules() {
+-    if [ ! -d ".git" ]; then
+-        err "Not a git repository. Please run this script from the project root."
+-        exit 1
+-    fi
+-
+-    info "Setting up submodules..."
+-    git submodule update --init --recursive
+-    ok "Submodules initialized"
+-}
+-
+ main() {
+     echo
+     info "MeshMC Bootstrap"
+     echo "─────────────────────────────────────────────"
+     echo
+ 
+-    init_submodules
+-    echo
+-
+     detect_distro
+     echo
+ 
+@@ -272,9 +219,6 @@ main() {
      install_missing
      echo
  

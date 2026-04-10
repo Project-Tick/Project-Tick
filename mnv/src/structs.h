@@ -2054,6 +2054,17 @@ struct ufunc_S
 # define FIXVAR_CNT	12	// number of fixed variables
 
 /*
+ * Fixed-size dict item used for funccall_T variables with short names.
+ * Using a real key array avoids fortified libc false positives on di_key.
+ */
+typedef struct dictitemvar_S
+{
+    typval_T	di_tv;
+    char_u	di_flags;
+    char_u	di_key[VAR_SHORT_LEN + 1];
+} dictitemvar_T;
+
+/*
  * Structure to hold info for a function that is currently being executed.
  */
 struct funccall_S
@@ -2061,11 +2072,7 @@ struct funccall_S
     ufunc_T	*fc_func;	// function being called
     int		fc_linenr;	// next line to be executed
     int		fc_returned;	// ":return" used
-    struct			// fixed variables for arguments
-    {
-	dictitem_T	var;		// variable (without room for name)
-	char_u	room[VAR_SHORT_LEN];	// room for the name
-    } fc_fixvar[FIXVAR_CNT];
+    dictitemvar_T	fc_fixvar[FIXVAR_CNT];	// fixed variables for arguments
     dict_T	fc_l_vars;	// l: local function variables
     dictitem_T	fc_l_vars_var;	// variable for l: scope
     dict_T	fc_l_avars;	// a: argument variables
