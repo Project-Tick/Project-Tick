@@ -47,7 +47,7 @@ Example:
 Assisted-by: Claude:claude-3-opus coccinelle sparse
 ```
 
-## Contributor License Agreement (CLA)
+<!-- ## Contributor License Agreement (CLA) // FIXME: CLA cannot be used until a CLA signing model is agreed upon.
 
 By submitting a contribution to this repository, you agree that your
 contribution is made under the terms of the **Project Tick Contributor
@@ -71,7 +71,7 @@ The full text of the current CLA is available at:
 - <https://projecttick.org/licenses/PT-CLA-2.0.txt>
 
 If you do not agree to the CLA, please do not submit contributions.
-
+ -->
 ---
 
 ## Quick Start
