@@ -133,13 +133,11 @@
                     {% endif %}
                     
                     <div class="vcard-detail" style="margin-top: 16px; flex-wrap: wrap; gap: 8px;">
-                        {% if user.githubId %}
-                            <a href="https://github.com/{{ user.githubUsername }}" target="_blank" style="text-decoration: none; color: inherit;">
-                                <div class="connection-badge" title="Verified GitHub Connection">
-                                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="14" height="14">
-                                    GitHub
-                                </div>
-                            </a>
+                        {% if user.keycloakId %}
+                            <div class="connection-badge" title="Verified Project Tick SSO">
+                                <i class="fa-solid fa-key" style="font-size: 14px;"></i>
+                                Project Tick SSO
+                            </div>
                         {% endif %}
                     </div>
 
@@ -166,28 +164,9 @@
                     <h2 style="font-size: 16px; margin: 0; color: var(--text-primary);">Public Activity</h2>
                 </div>
 
-                {% if user.githubUsername %}
                 <div class="contribution-graph">
-                    <h4 style="margin-bottom: 16px; text-align: left;">GitHub Contributions</h4>
-                    <img src="https://ghchart.rshah.org/{{ user.githubUsername }}" alt="{{ user.githubUsername }}'s Github Chart" style="width: 100%; height: auto;" />
+                    <p>No public activity to display.</p>
                 </div>
-                {% endif %}
-
-                {% if user.gitlabUsername %}
-                <div class="contribution-graph">
-                    <h4 style="margin-bottom: 16px; text-align: left;">GitLab Contributions</h4>
-                    <p style="font-size: 0.9rem; color: #666;">
-                        (GitLab public activity graph API is restricted. Visit <a href="https://gitlab.com/{{ user.gitlabUsername }}" target="_blank">GitLab Profile</a>)
-                    </p>
-                    <!-- GitLab does not offer an easy public embeddable graph without complex API calls or third party tools like gitlab-profile-summary which are harder to integrate as image src. -->
-                </div>
-                {% endif %}
-                
-                {% if not user.githubUsername and not user.gitlabUsername %}
-                     <div class="contribution-graph">
-                        <p>No public activity found.</p>
-                     </div>
-                {% endif %}
             </div>
         </div>
     </div>

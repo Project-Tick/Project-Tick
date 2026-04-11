@@ -495,7 +495,6 @@ final class MainController extends AbstractController
         }
 
         $feedback->setHelpful($helpful);
-        $feedback->setCreatedAt(new \DateTimeImmutable()); // Update timestamp to show when they last voted
         
         $em->flush();
         

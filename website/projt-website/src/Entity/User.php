@@ -141,6 +141,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return Collection<int, DiscussionThread>
+     */
+    public function getThreads(): Collection
+    {
+        return $this->threads;
+    }
+
+    /**
      * @return Collection<int, DiscussionComment>
      */
     public function getComments(): Collection

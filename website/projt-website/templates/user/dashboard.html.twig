@@ -286,7 +286,7 @@
                             <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">Logged in as <strong>{{ user.minecraftUsername }}</strong>. Active session token:</p>
                             <button onclick="copyToClipboard('{{ user.minecraftAccessToken }}', this)" class="btn btn-secondary btn-block" style="font-size: 12px; padding: 6px; background: #2E7D32; color: white; border: none; border-radius: 6px;">Copy Minecraft Token</button>
                             <div style="text-align: center; margin-top: 8px;">
-                                <a href="{{ path('connect_microsoft_start') }}" style="font-size: 10px; color: var(--pt-gray-600); text-decoration: none;">Refresh Session</a>
+                                <span style="font-size: 10px; color: var(--pt-gray-600);">Manage sessions via Project Tick SSO</span>
                             </div>
                         </div>
                     {% else %}
@@ -295,8 +295,8 @@
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Minecraft_logo.svg" width="16" height="16">
                                 <strong style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-primary);">Minecraft</strong>
                             </div>
-                            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">Link your account to see your session tokens here.</p>
-                            <a href="{{ path('connect_microsoft_start') }}" class="btn btn-secondary btn-block" style="font-size: 12px; padding: 6px; background: var(--pt-black-900); color: white; border: none; text-decoration: none; border-radius: 6px;">Link Minecraft</a>
+                            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px;">Link your Minecraft account via Project Tick SSO.</p>
+                            <span class="btn btn-secondary btn-block" style="font-size: 12px; padding: 6px; background: var(--pt-gray-400); color: white; border: none; border-radius: 6px; text-align: center;">Minecraft linking managed via SSO</span>
                         </div>
                     {% endif %}
                 </div>

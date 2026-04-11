@@ -90,6 +90,21 @@
                             </div>
                         </details>
                     </div>
+
+                    {# Mobile-only: Search + Auth (hidden on desktop via CSS) #}
+                    <div class="mobile-nav-extras">
+                        <form action="{{ path('app_global_search') }}" method="GET" style="margin: 0; width: 100%; position: relative;">
+                            <input type="text" name="q" placeholder="Search..." style="width: 100%; padding: 12px 16px; border-radius: 4px; border: 1px solid #333; background: #111; color: white; font-size: 1rem;">
+                        </form>
+                        <div style="display: flex; gap: 12px; width: 100%;">
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                <a href="{{ is_granted('ROLE_ADMIN') ? path('app_admin_dashboard') : path('app_user_dashboard') }}" style="flex: 1; text-align: center; background: var(--pt-red); color: white; padding: 12px 16px; font-weight: bold; border-radius: 4px; font-size: 0.9rem; text-decoration: none;">{{ site_setting('nav_panel_badge', 'PANEL') }}</a>
+                                <a href="{{ path('app_logout') }}" style="flex: 1; text-align: center; color: #D2D2D2; padding: 12px 16px; font-weight: 600; font-size: 0.9rem; text-decoration: none; border: 1px solid #333; border-radius: 4px;">Logout</a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" style="flex: 1; text-align: center; background: white; color: black; padding: 12px 16px; font-weight: bold; text-decoration: none; border-radius: 4px; font-size: 0.9rem;">{{ site_setting('nav_login_btn', 'LOGIN') }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -124,6 +139,9 @@
         <style>
             .hidden { display: none !important; }
             
+            /* Mobile nav extras: hidden on desktop */
+            .mobile-nav-extras { display: none; }
+
             /* Header Text Fixes for Dark/Light Mode */
             .site-nav .brand, 
             .site-nav summary,
@@ -136,9 +154,21 @@
                 color: #FFFFFF !important;
             }
 
+            /* Global overflow fix */
+            html, body { overflow-x: hidden; }
+
             @media (max-width: 1200px) {
                 #mobile-nav-toggle { display: block !important; }
                 .desktop-extra { display: none !important; }
+
+                /* Prevent horizontal overflow on mobile */
+                .container, .site-nav, section, .card, .auth-card,
+                table, pre, code, img, iframe, video {
+                    max-width: 100% !important;
+                    overflow-x: auto;
+                }
+                img { height: auto; }
+                .site-nav { padding: 0 16px !important; }
                 
                 .site-nav-links {
                     position: fixed !important;
@@ -154,6 +184,7 @@
                     z-index: 999999 !important;
                     width: 100% !important;
                     align-items: flex-start !important;
+                    overflow-y: auto !important;
                 }
 
                 .site-nav-links.show {
@@ -203,6 +234,16 @@
                 .dropdown-menu a span, 
                 .dropdown-menu a div:last-child {
                     color: #A0A0A0 !important;
+                }
+
+                .mobile-nav-extras {
+                    display: flex !important;
+                    flex-direction: column;
+                    gap: 16px;
+                    width: 100%;
+                    margin-top: 24px;
+                    padding-top: 24px;
+                    border-top: 1px solid #333;
                 }
             }
 

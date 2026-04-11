@@ -84,40 +84,16 @@
             <div class="card" style="margin-bottom: 32px;">
                 <h3>Connected Accounts</h3>
                 <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                    {% if user.githubUsername %}
-                         <div style="padding: 16px; background: var(--pt-gray-100); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; border-radius: 4px;">
-                            <svg height="24" viewBox="0 0 16 16" width="24"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                    {% if user.keycloakId %}
+                        <div style="padding: 16px; background: var(--pt-gray-100); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; border-radius: 4px;">
+                            <i class="fa-solid fa-key" style="font-size: 24px;"></i>
                             <div>
-                                <strong style="color: var(--text-primary);">GitHub</strong><br>
-                                <span style="font-size: 0.9rem; color: var(--text-secondary);">Connected as {{ user.githubUsername }}</span>
+                                <strong style="color: var(--text-primary);">Project Tick SSO</strong><br>
+                                <span style="font-size: 0.9rem; color: var(--text-secondary);">Account linked</span>
                             </div>
                         </div>
                     {% else %}
-                        <a href="{{ path('connect_github_start') }}" class="btn btn-secondary" style="background: var(--pt-gray-200); border: none; color: var(--text-primary);">Connect GitHub</a>
-                    {% endif %}
-
-                    {% if user.gitlabUsername %}
-                         <div style="padding: 16px; background: var(--pt-gray-100); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; border-radius: 4px;">
-                            <svg height="24" viewBox="0 0 512 512" width="24"><path fill="#fc6d26" d="M26.21 202.9l19.8 60.97h136.6l-57.7-177.5c-4.14-12.75-22.18-12.75-26.32 0L26.21 202.9zM429.4 60.99c-4.14-12.75-22.18-12.75-26.32 0l-57.7 177.5h136.6l19.8-60.97-72.38-222.8z"></path><path fill="#e24329" d="M26.21 202.9h372.9L228.6 476.3 26.21 202.9z"></path></svg>
-                            <div>
-                                <strong style="color: var(--text-primary);">GitLab</strong><br>
-                                <span style="font-size: 0.9rem; color: var(--text-secondary);">Connected as {{ user.gitlabUsername }}</span>
-                            </div>
-                        </div>
-                    {% else %}
-                        <a href="{{ path('connect_gitlab_start') }}" class="btn btn-secondary" style="background: var(--pt-gray-200); border: none; color: var(--text-primary);">Connect GitLab</a>
-                    {% endif %}
-
-                    {% if user.microsoftId %}
-                         <div style="padding: 16px; background: var(--pt-gray-100); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; border-radius: 4px;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg" width="24" height="24" alt="Xbox">
-                            <div>
-                                <strong style="color: var(--text-primary);">Microsoft / Xbox</strong><br>
-                                <span style="font-size: 0.9rem; color: var(--text-secondary);">Account Linked ({{ user.minecraftUuid ? 'Minecraft Enabled' : 'No Minecraft' }})</span>
-                            </div>
-                        </div>
-                    {% else %}
-                        <a href="{{ path('connect_microsoft_start') }}" class="btn btn-secondary" style="background: var(--pt-gray-200); border: none; color: var(--text-primary);">Connect Microsoft/Xbox</a>
+                        <a href="{{ path('connect_keycloak_start') }}" class="btn btn-secondary" style="background: var(--pt-gray-200); border: none; color: var(--text-primary);">Link Project Tick SSO</a>
                     {% endif %}
                 </div>
             </div>
