@@ -16,8 +16,8 @@
  * file docs/README.md.                                                     *
 \****************************************************************************/
 
-#ifndef INCLUDE_NLOHMANN_JSON_HPP_
-#define INCLUDE_NLOHMANN_JSON_HPP_
+#ifndef JSON4CPP_INCLUDE_NLOHMANN_JSON_HPP_
+#define JSON4CPP_INCLUDE_NLOHMANN_JSON_HPP_
 
 #include <algorithm> // all_of, find, for_each
 #include <cstddef> // nullptr_t, ptrdiff_t, size_t
@@ -5384,4 +5384,4 @@ inline void swap(nlohmann::NLOHMANN_BASIC_JSON_TPL& j1, nlohmann::NLOHMANN_BASIC
 
 #include <nlohmann/detail/macro_unscope.hpp>
 
-#endif  // INCLUDE_NLOHMANN_JSON_HPP_
+#endif  // JSON4CPP_INCLUDE_NLOHMANN_JSON_HPP_

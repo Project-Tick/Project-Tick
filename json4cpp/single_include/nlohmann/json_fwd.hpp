@@ -7,8 +7,8 @@
 // SPDX-FileCopyrightText: 2026 Project Tick
 // SPDX-License-Identifier: MIT
 
-#ifndef INCLUDE_NLOHMANN_JSON_FWD_HPP_
-#define INCLUDE_NLOHMANN_JSON_FWD_HPP_
+#ifndef JSON4CPP_INCLUDE_NLOHMANN_JSON_FWD_HPP_
+#define JSON4CPP_INCLUDE_NLOHMANN_JSON_FWD_HPP_
 
 #include <cstdint> // int64_t, uint64_t
 #include <map> // map
@@ -186,4 +186,4 @@ using ordered_json = basic_json<nlohmann::ordered_map>;
 
 NLOHMANN_JSON_NAMESPACE_END
 
-#endif  // INCLUDE_NLOHMANN_JSON_FWD_HPP_
+#endif  // JSON4CPP_INCLUDE_NLOHMANN_JSON_FWD_HPP_

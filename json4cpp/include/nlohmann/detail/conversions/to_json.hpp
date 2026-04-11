@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <nlohmann/detail/macro_scope.hpp> // JSON_HAS_CPP_17
+#include <nlohmann/detail/macro_scope.hpp>
 #ifdef JSON_HAS_CPP_17
     #include <optional> // optional
 #endif
