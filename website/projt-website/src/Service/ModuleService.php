@@ -123,7 +123,7 @@ class ModuleService
             $localIp = $_SERVER['SERVER_ADDR'] ?? '';
             
             // In some environments, SERVER_ADDR might not be set. Alternatively, we strictly rely on the Domain Check that happens earlier.
-            if ($localIp === $masterIp || file_exists('/var/www/projt-website/config/jwt/projt_private.pem')) {
+            if ($localIp === $masterIp || file_exists('/var/www/Project-Tick/website/projt-website/config/jwt/projt_private.pem')) {
                 // We securely assume it's official infra ONLY if the local IP matches or the private key is physically present.
                 $info['status'] = 'OFFICIAL_INFRA';
                 $info['type'] = 'ENTERPRISE';
