@@ -32,7 +32,8 @@ class LicenseType extends AbstractType
                 'attr' => ['class' => 'form-control', 'rows' => 5, 'placeholder' => 'Enter suggested usage guidelines here...'],
             ])
             ->add('content', TextareaType::class, [
-                'attr' => ['class' => 'form-control', 'rows' => 20],
+                'trim' => false,
+                'attr' => ['class' => 'form-control', 'rows' => 20, 'style' => 'white-space: pre; font-family: monospace;'],
             ])
         ;
     }

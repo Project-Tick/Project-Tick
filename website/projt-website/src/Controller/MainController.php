@@ -526,10 +526,14 @@ final class MainController extends AbstractController
 
         $allEntries = $repo->findAll();
         $tree = $this->buildHandbookTree($allEntries);
+
+        // Fetch the handbook license entry for the footer notice
+        $licenseEntry = $repo->findOneBy(['slug' => 'license']);
         
         return $this->render('main/handbook_show.html.twig', [
             'entry' => $entry,
-            'tree' => $tree
+            'tree' => $tree,
+            'licenseEntry' => $licenseEntry,
         ]);
     }
 
