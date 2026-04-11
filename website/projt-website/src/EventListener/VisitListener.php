@@ -33,16 +33,15 @@ namespace App\EventListener;
 use App\Entity\Visit;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[AsEventListener(event: 'kernel.terminate')]
 class VisitListener
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private Security $security
+        private TokenStorageInterface $tokenStorage
     ) {}
 
     public function onKernelTerminate(\Symfony\Component\HttpKernel\Event\TerminateEvent $event): void
@@ -65,10 +64,14 @@ class VisitListener
         $visit->setOs($this->parseOs($userAgent));
 
         // Safely check for user only if authentication already happened
-        // We avoid calling getUser() directly as it can trigger session start/lazy-auth
-        $token = $this->security->getToken();
-        if ($token && $token->getUser() instanceof User) {
-            $visit->setUser($token->getUser());
+        // Avoid triggering lazy-auth/session init during terminate (headers already sent)
+        try {
+            $token = $this->tokenStorage->getToken();
+            if ($token && $token->getUser() instanceof User) {
+                $visit->setUser($token->getUser());
+            }
+        } catch (\Throwable $e) {
+            // Session/auth not available (e.g. headers already sent for static responses)
         }
 
         $this->entityManager->persist($visit);
