@@ -268,7 +268,7 @@ pass "pgrep excludes self"
 stop_helper "$HELPER_PID"
 
 # No match → status 1
-run_capture "$PGREP_BIN" "nonexistent_process_name_$$$RANDOM"
+run_capture "$PGREP_BIN" "nonexistent_process_name_$$"
 assert_status "pgrep no match: status" 1 "$LAST_STATUS"
 assert_empty "pgrep no match: stdout" "$LAST_STDOUT"
 pass "pgrep no match → status 1"
