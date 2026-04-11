@@ -84,7 +84,7 @@ final class MainController extends AbstractController
     }
 
     #[Route('/p/meshmc', name: 'app_meshmc_launcher')]
-    public function launcher(EntityManagerInterface $em): Response
+    public function meshmc(EntityManagerInterface $em): Response
     {
         $product = $em->getRepository(\App\Entity\Product::class)->findOneBy(['slug' => 'meshmc']);
         
