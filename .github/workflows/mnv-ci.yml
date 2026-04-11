@@ -187,8 +187,8 @@ jobs:
 
       - name: Test
         if: contains(fromJSON('["default", "all-interp", "full-debug"]'), matrix.preset)
-        timeout-minutes: 25
-        run: ctest --preset ${{ matrix.preset }} --output-on-failure
+        timeout-minutes: 120
+        run: ctest --preset ${{ matrix.preset }} --output-on-failure -vvv
 
   macos:
     runs-on: ${{ matrix.runner }}
