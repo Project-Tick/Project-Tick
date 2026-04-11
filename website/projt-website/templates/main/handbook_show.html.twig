@@ -75,10 +75,10 @@
             </div>
             
             <!-- License Notice -->
-            {% if licenseEntry and entry.slug != 'license' %}
+            {% if licenseEntry and entry.slug != 'license' and entry.slug != 'license-text' %}
             <div style="margin-top: 40px; padding: 16px 20px; background: var(--pt-gray-10); border: 1px solid var(--pt-gray-200); border-radius: 6px; font-size: 0.82rem; color: var(--pt-gray-600); line-height: 1.6;">
                 This page is part of the <strong>Project Tick Handbook</strong>, which is licensed under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" style="color: var(--pt-red); text-decoration: underline;">Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</a> license.
-                <a href="{{ path('app_handbook_show', {'slug': 'license'}) }}" style="color: var(--pt-red); text-decoration: underline;">View full license details</a>.
+                <a href="{{ path('app_handbook_show', {'slug': 'license-text'}) }}" style="color: var(--pt-red); text-decoration: underline;">View full license details</a>.
             </div>
             {% endif %}
 
