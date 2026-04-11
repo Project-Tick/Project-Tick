@@ -83,6 +83,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $microsoftId = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    private ?string $keycloakId = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $minecraftUuid = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -428,6 +431,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setMicrosoftId(?string $microsoftId): static
     {
         $this->microsoftId = $microsoftId;
+        return $this;
+    }
+
+    public function getKeycloakId(): ?string
+    {
+        return $this->keycloakId;
+    }
+
+    public function setKeycloakId(?string $keycloakId): static
+    {
+        $this->keycloakId = $keycloakId;
         return $this;
     }
 

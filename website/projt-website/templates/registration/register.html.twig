@@ -13,92 +13,10 @@
             </div>
 
             <div style="margin-bottom: 24px;">
-                <a href="{{ path('connect_github_start') }}" class="btn btn-secondary" style="width: 100%; justify-content: center; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="20" height="20">
-                    Sign up with GitHub
-                </a>
-                <a href="{{ path('connect_gitlab_start') }}" class="btn btn-secondary" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px;">
-                    <img src="https://about.gitlab.com/images/press/press-kit-icon.svg" alt="GitLab" width="20" height="20">
-                    Sign up with GitLab
+                <a href="{{ path('connect_keycloak_start') }}" class="btn btn-primary" style="width: 100%; justify-content: center; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-key"></i> Project Tick SSO ile Kayıt Ol
                 </a>
             </div>
-
-            <div style="display: flex; align-items: center; margin-bottom: 24px;">
-                <div style="flex: 1; height: 1px; background: #e0e0e0;"></div>
-                <span style="padding: 0 12px; color: #666; font-size: 0.9rem;">or</span>
-                <div style="flex: 1; height: 1px; background: #e0e0e0;"></div>
-            </div>
-
-            {{ form_start(registrationForm, {'attr': {'style': 'text-align: left;', 'id': 'registration-form'}}) }}
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label class="form-label">Email Address</label>
-                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'name@company.com'}}) }}
-                    {{ form_errors(registrationForm.email) }}
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label class="form-label">Password</label>
-                    {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control', 'placeholder': '••••••••'}}) }}
-                    {{ form_errors(registrationForm.plainPassword.first) }}
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label class="form-label">Confirm Password</label>
-                    {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control', 'placeholder': '••••••••'}}) }}
-                    {{ form_errors(registrationForm.plainPassword.second) }}
-                </div>
-
-                <!-- Legal Agreements -->
-                <div style="margin-bottom: 24px;">
-                    <label class="form-label">Terms of Service</label>
-                    <div style="height: 120px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ddd; padding: 12px; font-size: 0.85rem; margin-bottom: 8px; border-radius: 4px;">
-                        <p style="margin-top: 0;">Please review the Terms of Service. By accessing or using our services, you agree to be bound by these terms.</p>
-                        <p>Read full terms here: <a href="{{ site_setting('legal_tos_url', '#') }}" target="_blank">{{ site_setting('legal_tos_url', 'Terms of Service') }}</a></p>
-                    </div>
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500;">
-                        <input type="checkbox" id="check_tos" onchange="updateSubmitButton()">
-                        I have read and agree to the Terms of Service
-                    </label>
-                </div>
-
-                <div style="margin-bottom: 32px;">
-                    <label class="form-label">Privacy Policy</label>
-                    <div style="height: 120px; overflow-y: auto; background: #f9f9f9; border: 1px solid #ddd; padding: 12px; font-size: 0.85rem; margin-bottom: 8px; border-radius: 4px;">
-                         <p style="margin-top: 0;">We value your privacy. This policy describes how we collect, use, and process your personal data.</p>
-                         <p>Read full policy here: <a href="{{ site_setting('legal_privacy_url', '#') }}" target="_blank">{{ site_setting('legal_privacy_url', 'Privacy Policy') }}</a></p>
-                    </div>
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500;">
-                        <input type="checkbox" id="check_pp" onchange="updateSubmitButton()">
-                        I have read and agree to the Privacy Policy
-                    </label>
-                </div>
-
-                {# Hidden actual form field #}
-                <div style="display: none;">
-                    {{ form_widget(registrationForm.agreeTerms) }}
-                </div>
-
-                <button type="submit" id="btn-submit" class="btn btn-primary" style="width: 100%; justify-content: center;" disabled>
-                    Agree & Create Account
-                </button>
-            {{ form_end(registrationForm) }}
-            
-            <script>
-                function updateSubmitButton() {
-                    const tos = document.getElementById('check_tos').checked;
-                    const pp = document.getElementById('check_pp').checked;
-                    const btn = document.getElementById('btn-submit');
-                    const realCheck = document.getElementById('registration_form_agreeTerms');
-                    
-                    if (tos && pp) {
-                        btn.disabled = false;
-                        realCheck.checked = true;
-                    } else {
-                        btn.disabled = true;
-                        realCheck.checked = false;
-                    }
-                }
-            </script>
 
             <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--pt-gray-200);">
                 <p style="font-size: 0.9rem; color: var(--pt-gray-600);">

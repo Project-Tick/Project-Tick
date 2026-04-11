@@ -1,30 +1,14 @@
 knpu_oauth2_client:
     clients:
-        github:
-            type: github
-            client_id: '%env(OAUTH_GITHUB_ID)%'
-            client_secret: '%env(OAUTH_GITHUB_SECRET)%'
-            redirect_route: connect_github_check
+        keycloak:
+            type: generic
+            provider_class: League\OAuth2\Client\Provider\GenericProvider
+            client_id: '%env(OAUTH_KEYCLOAK_ID)%'
+            client_secret: '%env(OAUTH_KEYCLOAK_SECRET)%'
+            redirect_route: connect_keycloak_check
             redirect_params: {}
-
-        gitlab:
-            type: generic
-            provider_class: League\OAuth2\Client\Provider\GenericProvider
-            client_id: '%env(OAUTH_GITLAB_ID)%'
-            client_secret: '%env(OAUTH_GITLAB_SECRET)%'
-            redirect_route: connect_gitlab_check
             provider_options:
-                urlAuthorize: 'https://gitlab.com/oauth/authorize'
-                urlAccessToken: 'https://gitlab.com/oauth/token'
-                urlResourceOwnerDetails: 'https://gitlab.com/api/v4/user'
-
-        microsoft:
-            type: generic
-            provider_class: League\OAuth2\Client\Provider\GenericProvider
-            client_id: '%env(OAUTH_MICROSOFT_ID)%'
-            client_secret: '%env(OAUTH_MICROSOFT_SECRET)%'
-            redirect_route: connect_microsoft_check
-            provider_options:
-                urlAuthorize: 'https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize'
-                urlAccessToken: 'https://login.microsoftonline.com/consumers/oauth2/v2.0/token'
-                urlResourceOwnerDetails: 'https://graph.microsoft.com/v1.0/me'
+                urlAuthorize: 'https://id.projecttick.net/realms/projecttick/protocol/openid-connect/auth'
+                urlAccessToken: 'https://id.projecttick.net/realms/projecttick/protocol/openid-connect/token'
+                urlResourceOwnerDetails: 'https://id.projecttick.net/realms/projecttick/protocol/openid-connect/userinfo'
+                scopes: ['openid', 'email', 'profile']

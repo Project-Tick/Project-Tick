@@ -17,8 +17,8 @@
               - .github/**/*
               - hooks/**/*
               - images4docker/**/*
-              - */ci/**/*
-              - */.github/**/*
+              - '*/ci/**/*'
+              - '*/.github/**/*'
 
 "6.topic: cmark":
   - any:

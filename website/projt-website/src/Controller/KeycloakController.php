@@ -30,20 +30,23 @@ SOFTWARE.
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-class RegistrationController extends AbstractController
+class KeycloakController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
-    public function register(): Response
+    #[Route('/connect/keycloak', name: 'connect_keycloak_start')]
+    public function connectAction(ClientRegistry $clientRegistry): RedirectResponse
     {
-        return $this->render('registration/register.html.twig');
+        return $clientRegistry->getClient('keycloak')->redirect(['openid', 'email', 'profile']);
+    }
+
+    #[Route('/connect/keycloak/check', name: 'connect_keycloak_check')]
+    public function connectCheckAction(Request $request): void
+    {
+        // This method is intentionally empty; the authenticator will intercept it!
     }
 }

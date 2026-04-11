@@ -83,6 +83,34 @@ final class MainController extends AbstractController
         ]);
     }
 
+    #[Route('/p/meshmc', name: 'app_meshmc_launcher')]
+    public function launcher(EntityManagerInterface $em): Response
+    {
+        $product = $em->getRepository(\App\Entity\Product::class)->findOneBy(['slug' => 'meshmc']);
+        
+        $user = $this->getUser();
+        $isLicensed = false;
+        
+        if ($product) {
+            if ($product->isRequiresLicense()) {
+                if ($user) {
+                    $licenseCount = $em->getRepository(\App\Entity\UserLicense::class)->count([
+                        'user' => $user,
+                        'assignedProduct' => $product
+                    ]);
+                    $isLicensed = ($licenseCount > 0);
+                }
+            } else {
+                $isLicensed = true;
+            }
+        }
+
+        return $this->render('main/launcher.html.twig', [
+            'product' => $product,
+            'is_licensed' => $isLicensed
+        ]);
+    }
+
     #[Route('/p/{slug}', name: 'app_product_show')]
     public function productShow(string $slug, EntityManagerInterface $em): Response
     {

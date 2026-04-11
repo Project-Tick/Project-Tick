@@ -14,17 +14,17 @@ directory and significant file.
 ```
 Project-Tick/
 │
-├── .envrc                   # direnv configuration (loads Nix shell)
-├── .gitattributes           # Git attribute rules (LFS, diff, merge)
+├── .envrc                   # direnv configuration
+├── .gitattributes           # Git attribute rules
 ├── .gitignore               # Root-level ignore patterns
 ├── .gitmodules              # Git submodule definitions
-├── bootstrap.cmd            # Windows bootstrap script (Scoop + vcpkg)
+├── bootstrap.cmd            # Windows bootstrap script
 ├── bootstrap.sh             # Linux/macOS bootstrap script
-├── CODE_OF_CONDUCT.md       # Code of Conduct v2 (15 Feb 2026)
+├── CODE_OF_CONDUCT.md       # Code of Conduct v2
 ├── CONTRIBUTING.md          # Contribution guidelines, CLA, DCO, AI policy
-├── flake.lock               # Nix flake lock file (pinned inputs)
-├── flake.nix                # Top-level Nix flake (LLVM 22 dev shell)
-├── lefthook.yml             # Git hooks config (REUSE lint, checkpatch)
+├── flake.lock               # Nix flake lock file
+├── flake.nix                # Top-level Nix flake
+├── lefthook.yml             # Git hooks config
 ├── README.md                # Root README with project overview
 ├── REUSE.toml               # REUSE 3.0 license annotations
 ├── SECURITY.md              # Security vulnerability reporting
@@ -42,13 +42,13 @@ Project-Tick/
 ├── genqrcode/               # QR code encoding library
 ├── hooks/                   # Git hook scripts
 ├── images4docker/           # Docker build environments
-├── json4cpp/                # JSON library (nlohmann/json fork)
+├── json4cpp/                # JSON library
 ├── libnbtplusplus/          # NBT library
 ├── LICENSES/                # SPDX license texts
 ├── meshmc/                  # MeshMC Minecraft launcher
 ├── meta/                    # Metadata generator
-├── mnv/                     # MNV text editor (Vim fork)
-├── neozip/                  # Compression library (zlib-ng fork)
+├── mnv/                     # MNV text editor
+├── neozip/                  # Compression library
 ├── ofborg/                  # tickborg CI bot
 └── tomlplusplus/            # TOML library
 ```
@@ -59,14 +59,14 @@ Project-Tick/
 
 ```
 .github/
-├── CODEOWNERS                    # Review routing (all paths → @YongDo-Hyun)
-├── dco.yml                       # DCO bot config (no remediation commits)
-├── pull_request_template.md      # PR template (sign-off & CLA reminder)
+├── CODEOWNERS                    # Review routing
+├── dco.yml                       # DCO bot config
+├── pull_request_template.md      # PR template
 │
 ├── ISSUE_TEMPLATE/
 │   ├── bug_report.yml            # Structured bug report form
 │   ├── config.yml                # Issue template configuration
-│   ├── rfc.yml                   # RFC (Request for Comments) template
+│   ├── rfc.yml                   # RFC template
 │   └── suggestion.yml            # Feature suggestion template
 │
 ├── actions/                      # Reusable composite actions
@@ -83,19 +83,19 @@ Project-Tick/
     ├── ci.yml                    # Monolithic CI orchestrator
     ├── ci-lint.yml               # Commit/format linting
     ├── ci-schedule.yml           # Scheduled CI jobs
-    ├── meshmc-*.yml              # MeshMC workflows (8 files)
-    ├── neozip-*.yml              # NeoZip workflows (12 files)
-    ├── json4cpp-*.yml            # json4cpp workflows (7 files)
-    ├── cmark-*.yml               # cmark workflows (2 files)
-    ├── tomlplusplus-*.yml        # toml++ workflows (3 files)
-    ├── mnv-*.yml                 # MNV workflows (4 files)
+    ├── meshmc-*.yml              # MeshMC workflows
+    ├── neozip-*.yml              # NeoZip workflows
+    ├── json4cpp-*.yml            # json4cpp workflows
+    ├── cmark-*.yml               # cmark workflows
+    ├── tomlplusplus-*.yml        # toml++ workflows
+    ├── mnv-*.yml                 # MNV workflows
     ├── cgit-ci.yml               # cgit CI
     ├── corebinutils-ci.yml       # CoreBinUtils CI
     ├── forgewrapper-build.yml    # ForgeWrapper CI
     ├── libnbtplusplus-ci.yml     # libnbt++ CI
     ├── genqrcode-ci.yml          # GenQRCode CI
     ├── images4docker-build.yml   # Docker image builds
-    └── repo-*.yml                # Repository maintenance (4 files)
+    └── repo-*.yml                # Repository maintenance
 ```
 
 ---
@@ -160,8 +160,8 @@ meshmc/
 │   ├── tasks/                 # Async task framework
 │   ├── testdata/              # Test fixtures
 │   ├── tools/                 # Tool integrations
-│   ├── translations/          # i18n (Crowdin)
-│   ├── ui/                    # Qt UI (widgets, dialogs, themes)
+│   ├── translations/          # i18n
+│   ├── ui/                    # Qt UI
 │   └── updater/               # In-app updater
 │
 └── libraries/                 # Bundled library integrations
@@ -184,7 +184,7 @@ Vim fork with modern enhancements.
 
 ```
 mnv/
-├── CMakeLists.txt          # CMake build (alternative)
+├── CMakeLists.txt          # CMake build
 ├── CMakePresets.json        # CMake presets
 ├── configure               # Autotools configure script
 ├── CONTRIBUTING.md          # Contribution guide
@@ -197,9 +197,9 @@ mnv/
 ├── ci/                     # MNV-specific CI scripts
 ├── cmake/                  # CMake modules
 ├── lang/                   # Language support files
-├── nsis/                   # Windows installer (NSIS)
+├── nsis/                   # Windows installer
 ├── pixmaps/                # Icons and graphics
-├── runtime/                # Runtime files (docs, syntax, plugins, etc.)
+├── runtime/                # Runtime files
 ├── src/                    # C source code
 ├── tools/                  # Development tools
 └── build/                  # Build output
@@ -216,7 +216,7 @@ cgit/
 ├── cgit.h                  # Core data structures
 ├── cgit.css                # Default stylesheet
 ├── cgit.js                 # Client-side JavaScript
-├── cgit.mk                # Build configuration
+├── cgit.mk                 # Build configuration
 ├── cgitrc.5.txt            # Man page source
 ├── COPYING                 # GPL-2.0 license
 ├── README                  # Build instructions
@@ -225,13 +225,13 @@ cgit/
 ├── cache.c/.h              # Response caching
 ├── cmd.c/.h                # Command dispatching
 ├── configfile.c/.h         # Configuration parsing
-├── filter.c                # Content filtering (Lua)
+├── filter.c                # Content filtering
 ├── html.c/.h               # HTML output generation
 ├── parsing.c               # Git object parsing
 ├── scan-tree.c/.h          # Repository scanning
 ├── shared.c                # Shared utilities
 │
-├── ui-*.c/.h               # UI modules:
+├── ui-*.c/.h                # UI modules:
 │   ├── ui-atom              # Atom feed
 │   ├── ui-blame             # File blame view
 │   ├── ui-blob              # File content view
@@ -244,7 +244,7 @@ cgit/
 │   ├── ui-refs              # Reference listing
 │   ├── ui-repolist          # Repository listing
 │   ├── ui-shared            # Shared UI utilities
-│   ├── ui-snapshot           # Tarball/zip snapshots
+│   ├── ui-snapshot          # Tarball/zip snapshots
 │   ├── ui-ssdiff            # Side-by-side diff
 │   ├── ui-stats             # Statistics
 │   ├── ui-summary           # Repository summary
@@ -253,7 +253,7 @@ cgit/
 │
 ├── contrib/                # Third-party contributions
 ├── filters/                # Content filter scripts
-├── git/                    # Bundled Git source (submodule)
+├── git/                    # Bundled or Submodule Git source
 └── tests/                  # Test suite
 ```
 
@@ -317,8 +317,8 @@ neozip/
 ```
 json4cpp/
 ├── CMakeLists.txt          # CMake build
-├── meson.build             # Meson build (alternative)
-├── BUILD.bazel             # Bazel build (alternative)
+├── meson.build             # Meson build
+├── BUILD.bazel             # Bazel build
 ├── MODULE.bazel            # Bazel module
 ├── Package.swift           # Swift Package Manager
 ├── Makefile                # Convenience Makefile
@@ -327,7 +327,7 @@ json4cpp/
 │
 ├── include/nlohmann/       # Public headers
 ├── single_include/         # Amalgamated single header
-├── src/                    # Implementation (for split build)
+├── src/                    # Implementation
 ├── docs/                   # MkDocs documentation
 ├── tests/                  # Catch2 test suite
 ├── cmake/                  # CMake modules
@@ -338,10 +338,10 @@ json4cpp/
 
 ```
 tomlplusplus/
-├── meson.build             # Primary build (Meson)
+├── meson.build             # Primary build
 ├── meson_options.txt       # Meson options
-├── CMakeLists.txt          # CMake build (alternative)
-├── LICENSE                 # MIT license
+├── CMakeLists.txt          # CMake build
+├── LICENSE                 # License text
 ├── README.md               # Overview and usage
 ├── toml.hpp                # Single header include
 │
@@ -364,7 +364,7 @@ libnbtplusplus/
 ├── COPYING.LESSER          # LGPL-3.0 lesser clause
 ├── README.md               # Build guide
 │
-├── include/                # Public headers (nbt::tag_* types)
+├── include/                # Public headers
 ├── src/                    # Implementation
 └── test/                   # Test suite
 ```
@@ -426,7 +426,7 @@ forgewrapper/
 meta/
 ├── pyproject.toml          # Poetry project configuration
 ├── poetry.lock             # Locked Python dependencies
-├── requirements.txt        # pip requirements (alternative)
+├── requirements.txt        # pip requirements
 ├── README.md               # Deployment guide
 ├── COPYING / LICENSE        # MS-PL license
 ├── config.sh / config.example.sh  # Shell configuration
@@ -474,16 +474,14 @@ ofborg/
 ├── config.public.json      # Public config
 ├── example.config.json     # Example config
 │
-├── tickborg/               # Main CI bot (Rust crate)
+├── tickborg/               # Main CI bot
 │   ├── Cargo.toml
 │   └── src/
 │
-├── tickborg-simple-build/  # Simplified builder (Rust crate)
+├── tickborg-simple-build/  # Simplified builder
 │   ├── Cargo.toml
 │   └── src/
 │
-├── ofborg/                 # Upstream ofborg (reference)
-├── ofborg-simple-build/    # Upstream simple-build
 ├── ofborg-viewer/          # Build status viewer
 │
 ├── deploy/                 # Deployment scripts
@@ -503,7 +501,7 @@ images4docker/
 │   ├── ubuntu-24.04.Dockerfile
 │   ├── fedora-41.Dockerfile
 │   ├── alpine-3.20.Dockerfile
-│   └── ... (36 more)
+│   └── ...
 │
 └── LICENSES/               # License copies
 ```
@@ -514,7 +512,7 @@ images4docker/
 ci/
 ├── OWNERS                  # CI code ownership
 ├── README.md               # CI documentation
-├── default.nix             # Nix CI entry (treefmt, validator)
+├── default.nix             # Nix CI entry
 ├── pinned.json             # Pinned Nixpkgs revision + hash
 ├── supportedBranches.js    # Branch classification logic
 ├── update-pinned.sh        # Update pinned.json
@@ -537,62 +535,55 @@ ci/
 
 ---
 
-## LICENSES/ — License Texts
-
-```
-LICENSES/
-├── Apache-2.0.txt
-├── BSD-1-Clause.txt
-├── BSD-2-Clause.txt
-├── BSD-3-Clause.txt
-├── BSD-4-Clause.txt
-├── BSL-1.0.txt
-├── CC-BY-SA-4.0.txt
-├── CC0-1.0.txt
-├── GPL-2.0-only.txt
-├── GPL-3.0-only.txt
-├── GPL-3.0-or-later.txt
-├── LGPL-2.0-or-later.txt
-├── LGPL-2.1-or-later.txt
-├── LGPL-3.0-or-later.txt
-├── LicenseRef-Qt-Commercial.txt
-├── MIT.txt
-├── MS-PL.txt
-├── Unlicense.txt
-├── Vim.txt
-└── Zlib.txt
-```
-
-20 SPDX-compliant license texts covering all sub-projects and their
-dependencies.
-
----
-
 ## corebinutils/ — BSD Utilities
 
 ```
 corebinutils/
-├── config.mk               # Toolchain configuration
+├── config.mk                # Toolchain configuration
 ├── configure                # Toolchain detection script
 ├── GNUmakefile              # Top-level orchestrator
 ├── README.md                # Build instructions
-│
 ├── build/                   # Shared build infrastructure
 ├── contrib/                 # Contributed utilities
-│
-├── cat/          ├── chmod/        ├── cp/
-├── chflags/      ├── cpuset/       ├── csh/
-├── date/         ├── dd/           ├── df/
-├── domainname/   ├── echo/         ├── ed/
-├── expr/         ├── freebsd-version/ ├── getfacl/
-├── hostname/     ├── kill/         ├── ln/
-├── ls/           ├── mkdir/        ├── mv/
-├── nproc/        ├── pax/          ├── pkill/
-├── ps/           ├── pwait/        ├── pwd/
-├── realpath/     ├── rm/           ├── rmail/
-├── rmdir/        ├── setfacl/      ├── sh/
-├── sleep/        ├── stty/         ├── sync/
-├── test/         ├── timeout/      └── uuidgen/
+├── cat/          
+├── chmod/        
+├── cp/
+├── chflags/      
+├── cpuset/       
+├── csh/
+├── date/         
+├── dd/           
+├── df/
+├── domainname/   
+├── echo/         
+├── ed/
+├── expr/         
+├── freebsd-version/ 
+├── getfacl/
+├── hostname/     
+├── kill/         
+├── ln/
+├── ls/           
+├── mkdir/        
+├── mv/
+├── nproc/        
+├── pax/          
+├── pkill/
+├── ps/           
+├── pwait/        
+├── pwd/
+├── realpath/     
+├── rm/           
+├── rmail/
+├── rmdir/        
+├── setfacl/      
+├── sh/
+├── sleep/        
+├── stty/         
+├── sync/
+├── test/         
+├── timeout/      
+└── uuidgen/
 ```
 
 Each utility subdirectory contains its own `GNUmakefile` and source files.
@@ -604,7 +595,7 @@ Each utility subdirectory contains its own `GNUmakefile` and source files.
 ```
 docs/
 └── handbook/               # Developer handbook
-    ├── Project-Tick/       # Organization-level docs (this directory)
+    ├── Project-Tick/       # Organization-level docs
     └── [per-project]/      # Per-sub-project documentation
 ```
 

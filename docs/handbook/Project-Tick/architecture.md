@@ -89,7 +89,7 @@ meshmc
 │    └── (header-only, no transitive deps)
 │
 ├─── libnbtplusplus    # Minecraft world/data NBT parsing
-│    └── zlib          # Compressed NBT support (optional)
+│    └── zlib          # Compressed NBT support
 │
 ├─── neozip            # General compression (zlib-compatible API)
 │    └── (CPU intrinsics, no library deps)
@@ -151,7 +151,7 @@ ci.yml (orchestrator)
 ├─── images4docker/          # Docker build environments (40 distros)
 │
 └─── ofborg/tickborg/        # Distributed CI bot
-     ├── RabbitMQ (AMQP)     # Message queue
+     ├── RabbitMQ            # Message queue
      └── GitHub API          # Check runs, PR comments
 ```
 
@@ -177,20 +177,20 @@ External consumers can also use them independently.
 Each sub-project uses the build system best suited to its upstream lineage:
 
 ```
-                    ┌────────────────────────┐
-                    │   Nix Flake (top-level) │
-                    │   Development Shells    │
-                    └──────────┬─────────────┘
+                  ┌─────────────────────────┐
+                  │   Nix Flake (top-level) │
+                  │   Development Shells    │
+                  └────────────┬────────────┘
                                │
           ┌────────────────────┼────────────────────┐
-          │                    │                     │
-    ┌─────▼─────┐       ┌─────▼─────┐        ┌─────▼─────┐
-    │   CMake    │       │   Other   │        │  Package  │
-    │  Projects  │       │  Systems  │        │  Managers │
-    └─────┬─────┘       └─────┬─────┘        └─────┬─────┘
-          │                    │                     │
-  ┌───────┼────────┐   ┌──────┼──────┐        ┌─────┼─────┐
-  │       │        │   │      │      │        │     │     │
+          │                    │                    │
+    ┌─────▼─────┐        ┌─────▼─────┐        ┌─────▼─────┐
+    │   CMake   │        │   Other   │        │  Package  │
+    │  Projects │        │  Systems  │        │  Managers │
+    └─────┬─────┘        └─────┬─────┘        └─────┬─────┘
+          │                    │                    │
+  ┌───────┼────────┐    ┌──────┼──────┐             ├─────┐
+  │       │        │    │      │      │             │     │
 meshmc  neozip  cmark  toml++ cgit  corebinutils  meta  tickborg
 json4  genqr   libnbt  (Meson)(Make) (Make)      (Poetry)(Cargo)
 (CMake)(CMake) (CMake)  mnv   forgewrapper

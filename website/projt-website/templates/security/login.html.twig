@@ -18,48 +18,17 @@
                 </div>
             {% endif %}
 
+            {% for message in app.flashes('error') %}
+                <div class="flash flash-error">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
             <div class="auth-social-buttons stagger-reveal">
-                <a href="{{ path('connect_github_start') }}" class="btn btn-secondary w-full">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" width="20">
-                    Continue with GitHub
-                </a>
-                <a href="{{ path('connect_gitlab_start') }}" class="btn btn-secondary w-full">
-                    <img src="https://about.gitlab.com/images/press/press-kit-icon.svg" alt="GitLab" width="20">
-                    Continue with GitLab
-                </a>
-                <a href="{{ path('connect_microsoft_start') }}" class="btn btn-secondary w-full">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg" alt="Microsoft" width="20">
-                    Continue with Microsoft
+                <a href="{{ path('connect_keycloak_start') }}" class="btn btn-primary w-full">
+                    <i class="fa-solid fa-key"></i> Project Tick SSO ile Giriş
                 </a>
             </div>
-
-            <div class="auth-divider">
-                <span>or</span>
-            </div>
-
-            <form method="post" class="auth-form stagger-reveal">
-                <div class="form-group">
-                    <label for="inputEmail" class="form-label">Email address</label>
-                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus placeholder="name@company.com">
-                </div>
-                <div class="form-group">
-                    <div class="form-label-row">
-                        <label for="inputPassword" class="form-label">Password</label>
-                        <a href="{{ path('app_forgot_password_request') }}" class="small-link">Forgot password?</a>
-                    </div>
-                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required placeholder="••••••••">
-                </div>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <button class="btn btn-primary w-full" type="submit">
-                    Sign in
-                </button>
-
-                <div class="auth-footer-links">
-                    <a href="{{ path('app_register') }}" class="pt-red-link">Create a new account</a>
-                </div>
-            </form>
 
             <p class="auth-legal">
                 By logging in, you agree to our <a href="#">terms</a> and <a href="#">privacy policy</a>.

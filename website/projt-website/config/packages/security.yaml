@@ -41,16 +41,8 @@ security:
             lazy: true
             provider: app_user_provider
             custom_authenticator: 
-                - App\Security\GithubAuthenticator
-                - App\Security\GitlabAuthenticator
-                - App\Security\MicrosoftAuthenticator
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                enable_csrf: true
-                default_target_path: app_successful_login
-                username_parameter: email
-                password_parameter: password
+                - App\Security\KeycloakAuthenticator
+            entry_point: App\Security\KeycloakAuthenticator
             login_throttling:
                 max_attempts: 5
                 interval: '1 minute'
