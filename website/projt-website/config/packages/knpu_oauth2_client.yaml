@@ -11,4 +11,4 @@ knpu_oauth2_client:
                 urlAuthorize: 'https://id.projecttick.net/realms/projecttick/protocol/openid-connect/auth'
                 urlAccessToken: 'https://id.projecttick.net/realms/projecttick/protocol/openid-connect/token'
                 urlResourceOwnerDetails: 'https://id.projecttick.net/realms/projecttick/protocol/openid-connect/userinfo'
-                scopes: ['openid', 'email', 'profile']
+                scopeSeparator: ' '
