@@ -149,8 +149,7 @@ void UpdateChecker::checkForUpdate(bool notifyNoUpdate)
 QString UpdateChecker::findComponentsUrl()
 {
 	QJsonParseError jsonError;
-	const QJsonDocument doc =
-		QJsonDocument::fromJson(m_githubData, &jsonError);
+	const QJsonDocument doc = QJsonDocument::fromJson(m_githubData, &jsonError);
 	m_githubData.clear();
 
 	if (jsonError.error != QJsonParseError::NoError || !doc.isObject()) {
@@ -279,10 +278,9 @@ void UpdateChecker::onPhase1Finished(bool notifyNoUpdate)
 		m_checkJob->addNetAction(Net::Download::makeByteArray(
 			QUrl(componentsUrl), &m_componentsData));
 
-		connect(m_checkJob.get(), &NetJob::succeeded,
-				[this, notifyNoUpdate]() {
-					onComponentsDownloaded(notifyNoUpdate);
-				});
+		connect(m_checkJob.get(), &NetJob::succeeded, [this, notifyNoUpdate]() {
+			onComponentsDownloaded(notifyNoUpdate);
+		});
 		connect(m_checkJob.get(), &NetJob::failed, this,
 				&UpdateChecker::onDownloadsFailed);
 
@@ -325,21 +323,19 @@ void UpdateChecker::onComponentsDownloaded(bool notifyNoUpdate)
 	}
 
 	// Extract canonical version: components.meshmc.version
-	const QJsonObject components =
-		doc.object().value("components").toObject();
+	const QJsonObject components = doc.object().value("components").toObject();
 	const QJsonObject meshmc = components.value("meshmc").toObject();
-	const QString componentVersion = meshmc.value("version").toString().trimmed();
+	const QString componentVersion =
+		meshmc.value("version").toString().trimmed();
 
 	if (componentVersion.isEmpty()) {
-		qWarning()
-			<< "UpdateChecker: components.json has no meshmc version,"
-			<< "falling back to tag_name";
+		qWarning() << "UpdateChecker: components.json has no meshmc version,"
+				   << "falling back to tag_name";
 		if (!m_githubTagVersion.isEmpty()) {
 			finalizeCheck(notifyNoUpdate, m_githubTagVersion);
 		} else {
 			m_checking = false;
-			emit checkFailed(
-				tr("components.json contains no MeshMC version."));
+			emit checkFailed(tr("components.json contains no MeshMC version."));
 		}
 		return;
 	}

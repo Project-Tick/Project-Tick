@@ -87,7 +87,8 @@ class UpdateCheckerTest : public QObject
 		QTest::newRow("v1 newer hotfix") << "7.0.1" << "7.0.0" << 1;
 		QTest::newRow("different lengths") << "7.0" << "7.0.0" << 0;
 		QTest::newRow("four parts") << "7.0.0.1" << "7.0.0.0" << 1;
-		QTest::newRow("snapshot-like numbers") << "202604102316" << "7.0.0" << 1;
+		QTest::newRow("snapshot-like numbers")
+			<< "202604102316" << "7.0.0" << 1;
 	}
 
 	void tst_CompareVersions()
@@ -98,11 +99,13 @@ class UpdateCheckerTest : public QObject
 
 		const int result = testCompareVersions(v1, v2);
 		if (sign > 0)
-			QVERIFY2(result > 0, qPrintable(
-				QString("%1 should be > %2, got %3").arg(v1, v2).arg(result)));
+			QVERIFY2(result > 0, qPrintable(QString("%1 should be > %2, got %3")
+												.arg(v1, v2)
+												.arg(result)));
 		else if (sign < 0)
-			QVERIFY2(result < 0, qPrintable(
-				QString("%1 should be < %2, got %3").arg(v1, v2).arg(result)));
+			QVERIFY2(result < 0, qPrintable(QString("%1 should be < %2, got %3")
+												.arg(v1, v2)
+												.arg(result)));
 		else
 			QCOMPARE(result, 0);
 	}
