@@ -15,7 +15,7 @@ on:
 permissions: {}
 
 jobs:
-  # ── 1. MeshMC binary build ─────────────────────────────────────────
+
   meshmc_build:
     name: MeshMC Build
     uses: ./.github/workflows/meshmc-release.yml
@@ -25,7 +25,7 @@ jobs:
       packages: write
     secrets: inherit
 
-  # ── 2. neozip Windows binary builds ──────────────────────────────
+
   neozip_build:
     name: neozip Build (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
@@ -138,7 +138,7 @@ jobs:
           path: neozip/neozip-${{ matrix.deploy-name }}.zip
           if-no-files-found: error
 
-  # ── 3a. MeshMC source tree preparation (paralel, build'e bağımlı değil) ──
+
   meshmc_prepare_source:
     name: MeshMC Source Archives
     runs-on: ubuntu-latest
@@ -184,7 +184,7 @@ jobs:
           path: release-artifacts/
           if-no-files-found: error
 
-  # ── 3b. neozip source tree preparation (paralel, build'e bağımlı değil) ──
+
   neozip_prepare_source:
     name: neozip Source Archives
     runs-on: ubuntu-latest
@@ -220,7 +220,7 @@ jobs:
           path: release-artifacts/
           if-no-files-found: error
 
-  # ── 3c. Diğer tüm projelerin kaynak arşivleri (paralel) ─────────────
+
   package_sources:
     name: Source Archives (${{ matrix.project }})
     runs-on: ubuntu-latest
@@ -272,7 +272,7 @@ jobs:
           path: release-artifacts/
           if-no-files-found: error
 
-  # ── 4. Tüm artifact'ları topla, release draft oluştur ─────────────
+
   create_release:
     name: Create Release Draft
     needs: [meshmc_build, neozip_build, meshmc_prepare_source, neozip_prepare_source, package_sources]
@@ -433,3 +433,108 @@ jobs:
             source-libnbtplusplus/*
             source-mnv/*
             source-tomlplusplus/*
+
+      # ── Stage deployment bundle ──────────────────────────────────
+      - name: Stage deployment bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p deploy-bundle
+
+          # MeshMC — packaged binaries (files only, not artifact dirs) + source archives
+          mkdir -p deploy-bundle/meshmc
+          find . -maxdepth 1 -type f -name 'MeshMC-*' -exec cp {} deploy-bundle/meshmc/ \;
+          cp -a meshmc-source-archives/. deploy-bundle/meshmc/
+
+          # NeoZip — binary artifacts + source archives
+          mkdir -p deploy-bundle/neozip
+          for d in neozip-win-*; do
+            [[ -d "$d" ]] || continue
+            cp -a "$d"/. deploy-bundle/neozip/
+          done
+          cp -a neozip-source-archives/. deploy-bundle/neozip/
+
+          # Source-only projects (from package_sources matrix)
+          for project in cgit cmark corebinutils forgewrapper genqrcode images4docker json4cpp libnbtplusplus mnv tomlplusplus; do
+            if [[ -d "source-${project}" ]]; then
+              mkdir -p "deploy-bundle/${project}"
+              cp -a "source-${project}"/. "deploy-bundle/${project}/"
+            fi
+          done
+
+          # Include components.json at root level
+          cp components.json deploy-bundle/
+
+          echo "=== Deployment bundle ==="
+          find deploy-bundle -type f | sort
+
+      - name: Upload deployment bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-bundle
+          path: deploy-bundle/
+          if-no-files-found: error
+
+
+  deploy_to_server:
+    name: Deploy to FTP Server
+    needs: [create_release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Set version
+        run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> "$GITHUB_ENV"
+
+      - name: Download deployment bundle
+        uses: actions/download-artifact@v8
+        with:
+          name: deploy-bundle
+          path: deploy-bundle
+
+      - name: Prepare SSH credentials
+        shell: bash
+        env:
+          FTP_SSH_KEY: ${{ secrets.FTP_SSH_PRIVATE_KEY }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_PORT: ${{ secrets.FTP_SSH_PORT || '22' }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$FTP_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$FTP_PORT" -H "$FTP_HOST" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy artifacts to server
+        shell: bash
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PORT: ${{ secrets.FTP_SSH_PORT || '22' }}
+          REMOTE_BASE: /var/www/ftp/Project-Tick
+        run: |
+          set -euo pipefail
+
+          # Deploy components.json to release base directory
+          if [[ -f deploy-bundle/components.json ]]; then
+            ssh -p "$FTP_PORT" "$FTP_USER@$FTP_HOST" "mkdir -p '${REMOTE_BASE}'"
+            rsync -av --chmod=F644 \
+              -e "ssh -p ${FTP_PORT} -o StrictHostKeyChecking=yes" \
+              deploy-bundle/components.json \
+              "${FTP_USER}@${FTP_HOST}:${REMOTE_BASE}/components-${VERSION}.json"
+          fi
+
+          # Deploy per-product artifacts
+          for product_dir in deploy-bundle/*/; do
+            [[ -d "$product_dir" ]] || continue
+            product="$(basename "$product_dir")"
+            remote="${REMOTE_BASE}/${product}/releases/download/${VERSION}"
+
+            echo "::group::Deploying ${product} → ${remote}"
+            ssh -p "$FTP_PORT" "$FTP_USER@$FTP_HOST" "mkdir -p '${remote}'"
+            rsync -av --chmod=D755,F644 \
+              -e "ssh -p ${FTP_PORT} -o StrictHostKeyChecking=yes" \
+              "${product_dir}" \
+              "${FTP_USER}@${FTP_HOST}:${remote}/"
+            echo "::endgroup::"
+          done
