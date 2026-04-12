@@ -130,6 +130,8 @@ jobs:
       CC: ${{ matrix.compiler }}
       CXX: ${{ matrix.compiler == 'clang' && 'clang++' || 'g++' }}
       DEBIAN_FRONTEND: noninteractive
+      TERM: xterm
+      DISPLAY: ':99'
 
     strategy:
       fail-fast: false
@@ -184,6 +186,10 @@ jobs:
 
       - name: Build
         run: cmake --build --preset ${{ matrix.preset }} -- -j"$(nproc)"
+
+      - name: Start virtual display
+        if: contains(fromJSON('["default", "all-interp", "full-debug"]'), matrix.preset)
+        run: Xvfb :99 -screen 0 1024x768x24 &
 
       - name: Test
         if: contains(fromJSON('["default", "all-interp", "full-debug"]'), matrix.preset)
