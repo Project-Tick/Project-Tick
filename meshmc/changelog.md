@@ -1,6 +1,6 @@
-# MeshMC 10.0.3
+# MeshMC 7.0.0
 
-Today, we aren't just talking about ~~MultiMC~~. This is not true. ~~PrismLauncher~~? Again no. Okay, ~~ProjTLauncher~~? Again and again, no. This is **MeshMC** 10.0.3. This release ports the project from Qt5 to Qt6, migrates from the old CurseForge API to the new one, adds Modrinth support, and more!
+Today, we aren't just talking about ~~MultiMC~~. This is not true. ~~PrismLauncher~~? Again no. Okay, ~~ProjTLauncher~~? Again and again, no. This is **MeshMC** 7.0.0. This release ports the project from Qt5 to Qt6, migrates from the old CurseForge API to the new one, adds Modrinth support, and more!
 
 ### Welcome to customizable Catpacks
 
@@ -12,7 +12,7 @@ Now you'll be able to install Modrinth packages, and I hope this will make every
 
 ### Say hello to a launcher that includes Qt6
 
-MeshMC 10.0.3 has completed the Qt6 migration by default, which is especially important for our future-proofing and for you to use the launcher more comfortably. If you encounter a bug or problem, please start an issue using <https://github.com/Project-Tick/MeshMC/issues>. Because this migration can cause tons of problems.
+MeshMC 7.0.0 has completed the Qt6 migration by default, which is especially important for our future-proofing and for you to use the launcher more comfortably. If you encounter a bug or problem, please start an issue using <https://github.com/Project-Tick/MeshMC/issues>. Because this migration can cause tons of problems.
 
 ### Other Changes
 
