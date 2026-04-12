@@ -132,7 +132,7 @@ jobs:
         run: 7z a -tzip ../neozip-${{ matrix.deploy-name }}.zip bin include lib ../LICENSE.md ../PORTING.md ../README.md
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: neozip-${{ matrix.deploy-name }}
           path: neozip/neozip-${{ matrix.deploy-name }}.zip
@@ -178,7 +178,7 @@ jobs:
           gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
 
       - name: Upload source artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: meshmc-source-archives
           path: release-artifacts/
@@ -214,7 +214,7 @@ jobs:
           gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
 
       - name: Upload source artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: neozip-source-archives
           path: release-artifacts/
@@ -266,7 +266,7 @@ jobs:
           gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
 
       - name: Upload source artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: source-${{ matrix.project }}
           path: release-artifacts/
@@ -390,7 +390,7 @@ jobs:
 
       # ── Release draft ────────────────────────────────────────────
       - name: Create release draft
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref }}
@@ -469,7 +469,7 @@ jobs:
           find deploy-bundle -type f | sort
 
       - name: Upload deployment bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deploy-bundle
           path: deploy-bundle/
