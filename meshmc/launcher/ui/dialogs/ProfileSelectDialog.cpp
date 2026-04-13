@@ -95,8 +95,8 @@ ProfileSelectDialog::ProfileSelectDialog(const QString& message, int flags,
 	// Select the first entry in the list.
 	ui->listView->setCurrentIndex(ui->listView->model()->index(0, 0));
 
-	connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)),
-			SLOT(on_buttonBox_accepted()));
+	connect(ui->listView, &QTreeWidget::doubleClicked, this,
+			&ProfileSelectDialog::on_buttonBox_accepted);
 }
 
 ProfileSelectDialog::~ProfileSelectDialog()

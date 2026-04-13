@@ -91,15 +91,15 @@ IconPickerDialog::IconPickerDialog(QWidget* parent)
 	auto buttonRemove = ui->buttonBox->addButton(tr("Remove Icon"),
 												 QDialogButtonBox::ResetRole);
 
-	connect(buttonAdd, SIGNAL(clicked(bool)), SLOT(addNewIcon()));
-	connect(buttonRemove, SIGNAL(clicked(bool)), SLOT(removeSelectedIcon()));
+	connect(buttonAdd, &QPushButton::clicked, this, &IconPickerDialog::addNewIcon);
+	connect(buttonRemove, &QPushButton::clicked, this, &IconPickerDialog::removeSelectedIcon);
 
-	connect(contentsWidget, SIGNAL(doubleClicked(QModelIndex)),
-			SLOT(activated(QModelIndex)));
+	connect(contentsWidget, &QListView::doubleClicked, this,
+			&IconPickerDialog::activated);
 
 	connect(contentsWidget->selectionModel(),
-			SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
-			SLOT(selectionChanged(QItemSelection, QItemSelection)));
+			&QItemSelectionModel::selectionChanged, this,
+			&IconPickerDialog::selectionChanged);
 
 	auto buttonFolder = ui->buttonBox->addButton(tr("Open Folder"),
 												 QDialogButtonBox::ResetRole);
