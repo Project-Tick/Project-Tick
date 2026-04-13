@@ -57,8 +57,8 @@ ModFolderModel::ModFolderModel(const QString& dir)
 					QDir::Dirs);
 	m_dir.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
 	m_watcher = new QFileSystemWatcher(this);
-	connect(m_watcher, SIGNAL(directoryChanged(QString)), this,
-			SLOT(directoryChanged(QString)));
+	connect(m_watcher, &QFileSystemWatcher::directoryChanged, this,
+			&ModFolderModel::directoryChanged);
 }
 
 void ModFolderModel::startWatching()
