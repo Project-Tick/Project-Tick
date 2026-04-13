@@ -1,5 +1,7 @@
 # Project Tick YYYYMMDDHHMM Snapshot <!-- FIXME: change for snapshot Year, Month, Day, Hour and Minute for YYYYMMDDHHMM format and write all sections -->
 
+Project Tick is a modular ecosystem of tools including MeshMC (Minecraft launcher), MNV (editor), and supporting infrastructure. This snapshot marks the first unified release of the platform.
+
 ## Product versions
 
 - Actions           =
