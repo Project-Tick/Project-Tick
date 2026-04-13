@@ -100,8 +100,8 @@ void JavaCommon::TestCheck::run()
 		return;
 	}
 	checker.reset(new JavaChecker());
-	connect(checker.get(), SIGNAL(checkFinished(JavaCheckResult)), this,
-			SLOT(checkFinished(JavaCheckResult)));
+	connect(checker.get(), &JavaChecker::checkFinished, this,
+			&TestCheck::checkFinished);
 	checker->m_path = m_path;
 	checker->performCheck();
 }
@@ -114,8 +114,8 @@ void JavaCommon::TestCheck::checkFinished(JavaCheckResult result)
 		return;
 	}
 	checker.reset(new JavaChecker());
-	connect(checker.get(), SIGNAL(checkFinished(JavaCheckResult)), this,
-			SLOT(checkFinishedWithArgs(JavaCheckResult)));
+	connect(checker.get(), &JavaChecker::checkFinished, this,
+			&TestCheck::checkFinishedWithArgs);
 	checker->m_path = m_path;
 	checker->m_args = m_args;
 	checker->m_minMem = m_minMem;
