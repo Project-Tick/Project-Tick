@@ -40,9 +40,9 @@ void AuthRequest::get(const QNetworkRequest& req, int timeout /* = 60*1000*/)
 	reply_ = APPLICATION->network()->get(request_);
 	status_ = Requesting;
 	timedReplies_.add(new Katabasis::Reply(reply_, timeout));
-	connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
-			SLOT(onRequestError(QNetworkReply::NetworkError)));
-	connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()));
+	connect(reply_, &QNetworkReply::errorOccurred, this,
+			&AuthRequest::onRequestError);
+	connect(reply_, &QNetworkReply::finished, this, &AuthRequest::onRequestFinished);
 	connect(reply_, &QNetworkReply::sslErrors, this, &AuthRequest::onSslErrors);
 }
 
@@ -54,12 +54,12 @@ void AuthRequest::post(const QNetworkRequest& req, const QByteArray& data,
 	status_ = Requesting;
 	reply_ = APPLICATION->network()->post(request_, data_);
 	timedReplies_.add(new Katabasis::Reply(reply_, timeout));
-	connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
-			SLOT(onRequestError(QNetworkReply::NetworkError)));
-	connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()));
+	connect(reply_, &QNetworkReply::errorOccurred, this,
+			&AuthRequest::onRequestError);
+	connect(reply_, &QNetworkReply::finished, this, &AuthRequest::onRequestFinished);
 	connect(reply_, &QNetworkReply::sslErrors, this, &AuthRequest::onSslErrors);
-	connect(reply_, SIGNAL(uploadProgress(qint64, qint64)), this,
-			SLOT(onUploadProgress(qint64, qint64)));
+	connect(reply_, &QNetworkReply::uploadProgress, this,
+			&AuthRequest::onUploadProgress);
 }
 
 void AuthRequest::onRequestFinished()
@@ -93,7 +93,7 @@ void AuthRequest::onRequestError(QNetworkReply::NetworkError error)
 			   << reply_->attribute(QNetworkRequest::HttpReasonPhraseAttribute)
 					  .toString();
 
-	// QTimer::singleShot(10, this, SLOT(finish()));
+	// QTimer::singleShot(10, this, &AuthRequest::finish);
 }
 
 void AuthRequest::onSslErrors(QList<QSslError> errors)

@@ -101,9 +101,9 @@ shared_qobject_ptr<AccountTask> MinecraftAccount::loginMSA()
 	Q_ASSERT(m_currentTask.get() == nullptr);
 
 	m_currentTask.reset(new MSAInteractive(&data));
-	connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
-	connect(m_currentTask.get(), SIGNAL(failed(QString)),
-			SLOT(authFailed(QString)));
+	connect(m_currentTask.get(), &AccountTask::succeeded, this, &MinecraftAccount::authSucceeded);
+	connect(m_currentTask.get(), &AccountTask::failed, this,
+			&MinecraftAccount::authFailed);
 	emit activityChanged(true);
 	return m_currentTask;
 }
@@ -116,9 +116,9 @@ shared_qobject_ptr<AccountTask> MinecraftAccount::refresh()
 
 	m_currentTask.reset(new MSASilent(&data));
 
-	connect(m_currentTask.get(), SIGNAL(succeeded()), SLOT(authSucceeded()));
-	connect(m_currentTask.get(), SIGNAL(failed(QString)),
-			SLOT(authFailed(QString)));
+	connect(m_currentTask.get(), &AccountTask::succeeded, this, &MinecraftAccount::authSucceeded);
+	connect(m_currentTask.get(), &AccountTask::failed, this,
+			&MinecraftAccount::authFailed);
 	emit activityChanged(true);
 	return m_currentTask;
 }
