@@ -56,18 +56,18 @@ class MetaEntry
 	{
 		return stale;
 	}
-	void setStale(bool stale)
+	void setStale(bool isStale)
 	{
-		this->stale = stale;
+		stale = isStale;
 	}
 	QString getFullPath();
 	QString getRemoteChangedTimestamp()
 	{
 		return remote_changed_timestamp;
 	}
-	void setRemoteChangedTimestamp(QString remote_changed_timestamp)
+	void setRemoteChangedTimestamp(QString remoteChangedTimestamp)
 	{
-		this->remote_changed_timestamp = remote_changed_timestamp;
+		remote_changed_timestamp = remoteChangedTimestamp;
 	}
 	void setLocalChangedTimestamp(qint64 timestamp)
 	{
@@ -77,17 +77,17 @@ class MetaEntry
 	{
 		return etag;
 	}
-	void setETag(QString etag)
+	void setETag(QString eTag)
 	{
-		this->etag = etag;
+		etag = eTag;
 	}
 	QString getMD5Sum()
 	{
 		return md5sum;
 	}
-	void setMD5Sum(QString md5sum)
+	void setMD5Sum(QString md5Sum)
 	{
-		this->md5sum = md5sum;
+		md5sum = md5Sum;
 	}
 
   protected:
