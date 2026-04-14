@@ -165,8 +165,10 @@ public class OneSixLauncher implements MeshMC
             Utils.log("Launching with applet wrapper...");
             try
             {
-                Class<?> MCAppletClass = cl.loadClass(appletClass);
-                Applet mcappl = (Applet) MCAppletClass.newInstance();
+                Class<?> mcAppletClass = cl.loadClass(appletClass);
+                Applet mcappl = Applet.class.cast(
+                    mcAppletClass.getDeclaredConstructor().newInstance()
+                );
                 LegacyFrame mcWindow = new LegacyFrame(windowTitle);
                 mcWindow.start(mcappl, userName, sessionId, winSizeW, winSizeH, maximize, serverAddress, serverPort);
                 return 0;

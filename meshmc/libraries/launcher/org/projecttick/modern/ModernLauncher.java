@@ -90,6 +90,19 @@ import java.util.List;
  */
 public class ModernLauncher implements MeshMC
 {
+    private static boolean isProcessAlive(Process process)
+    {
+        try
+        {
+            process.exitValue();
+            return false;
+        }
+        catch (IllegalThreadStateException ignored)
+        {
+            return true;
+        }
+    }
+
     @Override
     public int launch(ParamBucket params)
     {
@@ -201,9 +214,9 @@ public class ModernLauncher implements MeshMC
             @Override
             public void run()
             {
-                if (process.isAlive())
+                if (isProcessAlive(process))
                 {
-                    process.destroyForcibly();
+                    process.destroy();
                 }
             }
         }, "ModernLauncher-ShutdownHook"));
