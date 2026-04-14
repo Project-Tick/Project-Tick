@@ -47,16 +47,13 @@ stdenv.mkDerivation {
       ../branding
       ../buildconfig
       ../BUILD.md
-      ../changelog.md
       ../cmake
       ../CMakeLists.txt
       ../CMakePresets.json
       ../../CODE_OF_CONDUCT.md
       ../Containerfile
-      ../CONTRIBUTING.md
       ../COPYING.md
       ../default.nix
-      ../doc
       ../.envrc
       ../flake.nix
       ../.gitattributes
