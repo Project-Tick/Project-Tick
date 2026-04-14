@@ -30,9 +30,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.google.code.gson:gson:2.13.2"
-    compileOnly "cpw.mods:modlauncher:10.0.9"
-    compileOnly "net.minecraftforge:installer:2.2.15"
+    compileOnly "com.google.code.gson:gson:2.8.7"
+    compileOnly "cpw.mods:modlauncher:8.0.9"
+    compileOnly "net.minecraftforge:installer:2.2.7"
     compileOnly "net.sf.jopt-simple:jopt-simple:5.0.4"
 
     multirelase project(":jigsaw")
