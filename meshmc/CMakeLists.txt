@@ -61,12 +61,11 @@ endif()
 
 include(GenerateExportHeader)
 if(MSVC)
-    # FIXME: readd /WX flag
-    set(CMAKE_CXX_FLAGS " /W4 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS " /W4 /WX ${CMAKE_CXX_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DQT_NO_DEPRECATED_WARNINGS=Y")
 else()
     # FIXME: readd -Werror flag
-    set(CMAKE_CXX_FLAGS " -Wall -pedantic -Wno-deprecated-declarations -fstack-protector-strong --param=ssp-buffer-size=4 -O3 -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS " -Wall -Werror -pedantic -Wno-deprecated-declarations -fstack-protector-strong --param=ssp-buffer-size=4 -O3 -D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS}")
     if(UNIX AND APPLE)
         set(CMAKE_CXX_FLAGS " -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
     endif()
