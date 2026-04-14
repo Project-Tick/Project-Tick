@@ -388,6 +388,13 @@ jobs:
             cd ..
           done
 
+          # Generate SHA-256 sums for all MeshMC artifacts
+          # shellcheck disable=SC2035
+          for f in MeshMC-*; do
+            [[ -f "$f" ]] || continue
+            sha256sum "$f" > "${f}.sha256"
+          done
+
       # ── Release draft ────────────────────────────────────────────
       - name: Create release draft
         uses: softprops/action-gh-release@v3
@@ -420,6 +427,7 @@ jobs:
             MeshMC-Windows-MSVC-Setup-${{ env.VERSION }}.exe
             MeshMC-macOS-${{ env.VERSION }}.zip
             MeshMC-macOS-${{ env.VERSION }}.dmg
+            MeshMC-*.sha256
             neozip-*/neozip-*.zip
             meshmc-source-archives/*
             neozip-source-archives/*
