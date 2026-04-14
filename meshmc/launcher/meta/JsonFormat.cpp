@@ -62,7 +62,7 @@ namespace Meta
 		const QVector<QJsonObject> objects =
 			requireIsArrayOf<QJsonObject>(obj, "packages");
 		QVector<VersionListPtr> lists;
-		lists.reserve(objects.size());
+		lists.reserve(static_cast<int>(objects.size()));
 		std::transform(objects.begin(), objects.end(),
 					   std::back_inserter(lists), [](const QJsonObject& obj) {
 						   VersionListPtr list = std::make_shared<VersionList>(
@@ -114,7 +114,7 @@ namespace Meta
 		const QVector<QJsonObject> versionsRaw =
 			requireIsArrayOf<QJsonObject>(obj, "versions");
 		QVector<VersionPtr> versions;
-		versions.reserve(versionsRaw.size());
+		versions.reserve(static_cast<int>(versionsRaw.size()));
 		std::transform(versionsRaw.begin(), versionsRaw.end(),
 					   std::back_inserter(versions),
 					   [uid](const QJsonObject& vObj) {
