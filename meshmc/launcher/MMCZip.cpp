@@ -95,22 +95,6 @@ static ArchiveWritePtr createZipForWriting(const QString& path)
 	return a;
 }
 
-static bool
-copyArchiveData(struct archive* ar,
-				struct archive* aw) // NOLINT(readability-identifier-naming)
-{
-	const void* buff;
-	size_t size;
-	la_int64_t offset;
-	int r;
-	while ((r = archive_read_data_block(ar, &buff, &size, &offset)) ==
-		   ARCHIVE_OK) {
-		if (archive_write_data_block(aw, buff, size, offset) != ARCHIVE_OK)
-			return false;
-	}
-	return r == ARCHIVE_EOF;
-}
-
 static bool writeFileToArchive(
 	struct archive* aw,
 	const QString& entryName, // NOLINT(readability-identifier-naming)
