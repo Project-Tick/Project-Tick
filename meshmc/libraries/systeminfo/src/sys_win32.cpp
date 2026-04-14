@@ -35,9 +35,9 @@ Sys::KernelInfo Sys::getKernelInfo()
 	out.kernelMinor = osVersion.minorVersion();
 	out.kernelPatch = osVersion.microVersion();
 	out.kernelVersion = QString("%1.%2.%3")
-						.arg(out.kernelMajor)
-						.arg(out.kernelMinor)
-						.arg(out.kernelPatch);
+							.arg(out.kernelMajor)
+							.arg(out.kernelMinor)
+							.arg(out.kernelPatch);
 	return out;
 }
 

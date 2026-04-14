@@ -145,7 +145,8 @@ namespace Parsers
 				continue;
 			}
 			// consume all 'display claims' ... whatever that means
-			for (auto iter = claimObject.begin(); iter != claimObject.end(); iter++) {
+			for (auto iter = claimObject.begin(); iter != claimObject.end();
+				 iter++) {
 				QString claim;
 				if (!getString(claimObject.value(iter.key()), claim)) {
 					qWarning() << "display claim " << iter.key()

@@ -98,9 +98,8 @@ Qt::DropActions InstanceList::supportedDropActions() const
 	return Qt::MoveAction;
 }
 
-bool InstanceList::canDropMimeData(const QMimeData* data, Qt::DropAction,
-							   	   int, int,
-							       const QModelIndex&) const
+bool InstanceList::canDropMimeData(const QMimeData* data, Qt::DropAction, int,
+								   int, const QModelIndex&) const
 {
 	if (data && data->hasFormat("application/x-instanceid")) {
 		return true;
@@ -108,8 +107,8 @@ bool InstanceList::canDropMimeData(const QMimeData* data, Qt::DropAction,
 	return false;
 }
 
-bool InstanceList::dropMimeData(const QMimeData* data, Qt::DropAction,
-								int, int, const QModelIndex&)
+bool InstanceList::dropMimeData(const QMimeData* data, Qt::DropAction, int, int,
+								const QModelIndex&)
 {
 	if (data && data->hasFormat("application/x-instanceid")) {
 		return true;

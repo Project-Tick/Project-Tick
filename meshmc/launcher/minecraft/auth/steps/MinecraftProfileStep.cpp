@@ -57,9 +57,9 @@ void MinecraftProfileStep::rehydrate()
 	// NOOP, for now. We only save bools and there's nothing to check.
 }
 
-void MinecraftProfileStep::onRequestDone(
-	QNetworkReply::NetworkError error, QByteArray data,
-	QList<QNetworkReply::RawHeaderPair>)
+void MinecraftProfileStep::onRequestDone(QNetworkReply::NetworkError error,
+										 QByteArray data,
+										 QList<QNetworkReply::RawHeaderPair>)
 {
 	auto requestor = qobject_cast<AuthRequest*>(QObject::sender());
 	requestor->deleteLater();

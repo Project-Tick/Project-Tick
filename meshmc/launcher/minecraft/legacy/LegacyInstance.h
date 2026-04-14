@@ -138,8 +138,7 @@ class LegacyInstance : public BaseInstance
 		return false;
 	}
 	shared_qobject_ptr<LaunchTask>
-	createLaunchTask(AuthSessionPtr,
-					 MinecraftServerTargetPtr) override
+	createLaunchTask(AuthSessionPtr, MinecraftServerTargetPtr) override
 	{
 		return nullptr;
 	}

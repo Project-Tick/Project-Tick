@@ -122,9 +122,9 @@ void XboxAuthorizationStep::onRequestDone(
 				  tr("Got authorization to access %1").arg(m_relyingParty));
 }
 
-bool XboxAuthorizationStep::processSTSError(
-	QNetworkReply::NetworkError error, QByteArray data,
-	QList<QNetworkReply::RawHeaderPair>)
+bool XboxAuthorizationStep::processSTSError(QNetworkReply::NetworkError error,
+											QByteArray data,
+											QList<QNetworkReply::RawHeaderPair>)
 {
 	if (error == QNetworkReply::AuthenticationRequiredError) {
 		QJsonParseError jsonError;

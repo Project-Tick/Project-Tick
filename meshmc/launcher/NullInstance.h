@@ -88,9 +88,8 @@ class NullInstance : public BaseInstance
 	{
 		return false;
 	}
-	QStringList
-	verboseDescription(AuthSessionPtr,
-					   MinecraftServerTargetPtr) override
+	QStringList verboseDescription(AuthSessionPtr,
+								   MinecraftServerTargetPtr) override
 	{
 		QStringList out;
 		out << "Null instance - placeholder.";
