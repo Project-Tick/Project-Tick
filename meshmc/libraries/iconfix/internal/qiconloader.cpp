@@ -622,8 +622,8 @@ Bug: https://bugreports.qt.nokia.com/browse/QTBUG-12874
 		return QLatin1String("QIconLoaderEngineFixed");
 	}
 
-	QList<QSize> QIconLoaderEngineFixed::availableSizes(QIcon::Mode mode,
-														QIcon::State state)
+	QList<QSize> QIconLoaderEngineFixed::availableSizes(QIcon::Mode,
+														QIcon::State)
 	{
 		ensureLoaded();
 
