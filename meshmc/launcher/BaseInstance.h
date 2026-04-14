@@ -145,7 +145,7 @@ class BaseInstance : public QObject,
 	QString getWrapperCommand();
 
 	/// guess log level from a line of game log
-	virtual MessageLevel::Enum guessLevel(const QString& line,
+	virtual MessageLevel::Enum guessLevel(const QString&,
 										  MessageLevel::Enum level)
 	{
 		return level;

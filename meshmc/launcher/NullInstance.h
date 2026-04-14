@@ -52,7 +52,7 @@ class NullInstance : public BaseInstance
 	{
 		return nullptr;
 	}
-	shared_qobject_ptr<Task> createUpdateTask(Net::Mode mode) override
+	shared_qobject_ptr<Task> createUpdateTask(Net::Mode) override
 	{
 		return nullptr;
 	}
@@ -89,8 +89,8 @@ class NullInstance : public BaseInstance
 		return false;
 	}
 	QStringList
-	verboseDescription(AuthSessionPtr session,
-					   MinecraftServerTargetPtr serverToJoin) override
+	verboseDescription(AuthSessionPtr,
+					   MinecraftServerTargetPtr) override
 	{
 		QStringList out;
 		out << "Null instance - placeholder.";
