@@ -23,8 +23,8 @@
         <link>{{ url('app_product_news_show', {'slug': product.slug|default('projt-launcher'), 'newsSlug': post.slug}) }}</link>
         <guid isPermaLink="true">{{ url('app_product_news_show', {'slug': product.slug|default('projt-launcher'), 'newsSlug': post.slug}) }}</guid>
         <pubDate>{{ post.date|date('r') }}</pubDate>
-{% if version %}
-        <projt:version>{{ version }}</projt:version>
+{% if release_tag %}
+        <projt:version>{{ version|default(release_tag) }}</projt:version>
         <projt:channel>{{ meta.channel|default('stable') }}</projt:channel>
         <projt:notes_format>html</projt:notes_format>
         <projt:release_page>{{ url('app_product_news_show', {'slug': product.slug|default('projt-launcher'), 'newsSlug': post.slug}) }}</projt:release_page>
