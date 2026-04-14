@@ -38,9 +38,11 @@
 
 bool UpdateChecker::isPortableMode()
 {
-	// portable.txt lives next to the application binary.
-	return QFile::exists(FS::PathCombine(QCoreApplication::applicationDirPath(),
-										 "portable.txt"));
+	// On Linux/BSD the binary lives in <prefix>/bin/, so portable.txt is one
+	// level up (at the install prefix root) — matching Application.cpp's check.
+	QDir dir(QCoreApplication::applicationDirPath());
+	dir.cdUp();
+	return QFile::exists(FS::PathCombine(dir.absolutePath(), "portable.txt"));
 }
 
 bool UpdateChecker::isAppImage()

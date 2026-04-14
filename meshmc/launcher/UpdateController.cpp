@@ -38,12 +38,13 @@ UpdateController::UpdateController(QWidget* parent, const QString& root,
 
 bool UpdateController::startUpdate()
 {
-	// Locate the updater binary next to ourselves.
+	// Locate the updater binary next to the running executable.
 	QString updaterName = BuildConfig.MESHMC_NAME + "-updater";
 #ifdef Q_OS_WIN
 	updaterName += ".exe";
 #endif
-	const QString updaterPath = FS::PathCombine(m_root, updaterName);
+	const QString updaterPath =
+		FS::PathCombine(QApplication::applicationDirPath(), updaterName);
 
 	if (!QFile::exists(updaterPath)) {
 		qCritical() << "UpdateController: updater binary not found at"

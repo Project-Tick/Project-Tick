@@ -29,9 +29,10 @@ class QWidget;
  * UpdateController launches the separate meshmc-updater binary and then
  * requests the main application to quit so the updater can proceed.
  *
- * The updater binary receives:
+ * The updater binary is located next to the running executable
+ * (QApplication::applicationDirPath()).  It receives:
  *   --url  <download_url>   - artifact to download and install
- *   --root <root_path>      - installation root (directory of the binary)
+ *   --root <root_path>      - installation root (prefix directory)
  *   --exec <app_binary>     - path to re-launch after the update completes
  */
 class UpdateController

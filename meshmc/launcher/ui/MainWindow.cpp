@@ -424,7 +424,7 @@ class MainWindow::Ui
 		helpButtonAction->setDefaultWidget(helpMenuButton);
 		mainToolBar->addAction(helpButtonAction);
 
-		if (BuildConfig.UPDATER_ENABLED) {
+		if (BuildConfig.UPDATER_ENABLED && UpdateChecker::isUpdaterSupported()) {
 			actionCheckUpdate = TranslatedAction(MainWindow);
 			actionCheckUpdate->setObjectName(
 				QStringLiteral("actionCheckUpdate"));
