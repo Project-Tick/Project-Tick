@@ -3,6 +3,8 @@
     <qresource prefix="/icons/multimc">
         <file>index.theme</file>
 
+        <file>scalable/backup.svg</file>
+
         <!-- REDDIT logo icon, needs reddit license! -->
         <file>scalable/reddit-alien.svg</file>
 

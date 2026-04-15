@@ -50,5 +50,6 @@
         <file>scalable/launch.svg</file>
         <file>scalable/server.svg</file>
         <file>scalable/appearance.svg</file>
+        <file>scalable/backup.svg</file>
     </qresource>
 </RCC>
