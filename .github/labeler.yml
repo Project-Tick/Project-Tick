@@ -106,15 +106,6 @@
           - any-glob-to-any-file:
               - neozip/**/*
 
-"6.topic: nix":
-  - any:
-      - changed-files:
-          - any-glob-to-any-file:
-              - '**/flake.nix'
-              - '**/default.nix'
-              - '**/*.nix'
-              - '**/nix/**/*'
-
 "6.topic: qt/kde":
   - any:
       - changed-files:

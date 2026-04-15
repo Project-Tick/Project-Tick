@@ -15,7 +15,7 @@ on:
     # ── Daily (03:00 UTC) ─────────────────────────────────────────
     - cron: "0 3 * * *"      # [0] daily: stale, coverity, docker
     # ── Weekly Sunday (04:00 UTC) ─────────────────────────────────
-    - cron: "0 4 * * 0"      # [1] weekly-sun: link-check, scorecard, flake-update, codeql
+    - cron: "0 4 * * 0"      # [1] weekly-sun: link-check, scorecard, codeql
     # ── Weekly Wednesday (14:00 UTC) ──────────────────────────────
     - cron: "0 14 * * 3"     # [2] weekly-wed: flawfinder
     # ── Weekly Thursday (02:00 UTC) ───────────────────────────────
@@ -137,18 +137,6 @@ jobs:
       checks: read
     secrets: inherit
 
-  meshmc-flake-update:
-    name: "MeshMC Nix Flake Update"
-    needs: gate
-    if: >-
-      contains(fromJSON('["weekly-sun","all"]'), needs.gate.outputs.group) &&
-      github.repository_owner == 'Project-Tick'
-    uses: ./.github/workflows/meshmc-flake-update.yml
-    permissions:
-      contents: write
-      pull-requests: write
-    secrets: inherit
-
   mnv-codeql:
     name: "MNV CodeQL"
     needs: gate
@@ -213,7 +201,6 @@ jobs:
       - mnv-coverity
       - mnv-link-check
       - scorecard
-      - meshmc-flake-update
       - mnv-codeql
       - neozip-codeql
       - json4cpp-flawfinder
@@ -246,7 +233,6 @@ jobs:
           report "MNV Coverity"     "${{ needs.mnv-coverity.result }}"
           report "MNV Link Check"   "${{ needs.mnv-link-check.result }}"
           report "Scorecard"        "${{ needs.scorecard.result }}"
-          report "Flake Update"     "${{ needs.meshmc-flake-update.result }}"
           report "MNV CodeQL"       "${{ needs.mnv-codeql.result }}"
           report "NeoZip CodeQL"    "${{ needs.neozip-codeql.result }}"
           report "Flawfinder"       "${{ needs.json4cpp-flawfinder.result }}"

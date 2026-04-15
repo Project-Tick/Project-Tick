@@ -92,6 +92,22 @@ check_lib() {
     fi
 }
 
+check_llvm() {
+    local found=0
+    for bin in clang-22 clang++-22 llvm-config-22; do
+        if command -v "$bin" &>/dev/null; then
+            found=1
+            break
+        fi
+    done
+    if [ $found -eq 1 ]; then
+        ok "LLVM 22 is installed"
+    else
+        warn "LLVM 22 is NOT installed"
+        MISSING_DEPS+=("LLVM 22")
+    fi
+}
+
 check_dependencies() {
     info "Checking dependencies..."
     echo
@@ -104,7 +120,21 @@ check_dependencies() {
     check_lib "QuaZip"    "quazip1-qt6"
     check_lib "zlib"      "zlib"
     check_lib "ECM"       "ECM"
+    check_llvm
     echo
+}
+
+install_llvm_debian_ubuntu() {
+    info "Installing LLVM 22 via llvm.sh installer..."
+    if ! command -v curl &>/dev/null && ! command -v wget &>/dev/null; then
+        sudo apt-get install -y curl
+    fi
+    local tmp
+    tmp=$(mktemp)
+    curl -fsSL https://apt.llvm.org/llvm.sh -o "$tmp"
+    chmod +x "$tmp"
+    sudo bash "$tmp" 22
+    rm -f "$tmp"
 }
 
 install_debian_ubuntu() {
@@ -119,6 +149,9 @@ install_debian_ubuntu() {
         extra-cmake-modules \
         pkg-config \
         reuse
+    if [[ " ${MISSING_DEPS[*]} " == *" LLVM 22 "* ]]; then
+        install_llvm_debian_ubuntu
+    fi
 }
 
 install_fedora() {
@@ -132,6 +165,10 @@ install_fedora() {
         extra-cmake-modules \
         pkgconf \
         reuse
+    if [[ " ${MISSING_DEPS[*]} " == *" LLVM 22 "* ]]; then
+        info "Installing LLVM 22 via dnf..."
+        sudo dnf install -y clang22 llvm22
+    fi
 }
 
 install_rhel() {
@@ -146,6 +183,10 @@ install_rhel() {
         extra-cmake-modules \
         pkgconf \
         reuse
+    if [[ " ${MISSING_DEPS[*]} " == *" LLVM 22 "* ]]; then
+        info "Installing LLVM 22 via dnf..."
+        sudo dnf install -y clang22 llvm22 || install_llvm_debian_ubuntu
+    fi
 }
 
 install_suse() {
@@ -159,6 +200,10 @@ install_suse() {
         extra-cmake-modules \
         pkg-config \
         python3-reuse
+    if [[ " ${MISSING_DEPS[*]} " == *" LLVM 22 "* ]]; then
+        info "Installing LLVM 22 via zypper..."
+        sudo zypper install -y clang22 llvm22
+    fi
 }
 
 install_arch() {
@@ -172,6 +217,10 @@ install_arch() {
         extra-cmake-modules \
         pkgconf \
         reuse
+    if [[ " ${MISSING_DEPS[*]} " == *" LLVM 22 "* ]]; then
+        info "Installing LLVM 22 via pacman..."
+        sudo pacman -Sy --needed --noconfirm llvm clang
+    fi
 }
 
 install_macos() {
@@ -190,6 +239,10 @@ install_macos() {
         extra-cmake-modules \
         reuse \
         lefthook
+    if [[ " ${MISSING_DEPS[*]} " == *" LLVM 22 "* ]]; then
+        info "Installing LLVM 22 via Homebrew..."
+        brew install llvm@22
+    fi
 }
 
 install_lefthook() {

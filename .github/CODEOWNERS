@@ -244,7 +244,6 @@
 /meshmc/libraries/systeminfo/                           @YongDo-Hyun
 /meshmc/libraries/tomlc99                               @YongDo-Hyun
 /meshmc/libraries/xz-embedded                           @YongDo-Hyun
-/meshmc/nix/                                            @YongDo-Hyun
 /meshmc/scripts/                                        @YongDo-Hyun
 /meshmc/updater/                                        @YongDo-Hyun
 
@@ -254,7 +253,6 @@
 /meta/meta/common/                                      @YongDo-Hyun
 /meta/meta/model/                                       @YongDo-Hyun
 /meta/meta/run/                                         @YongDo-Hyun
-/meta/nix/                                              @YongDo-Hyun
 
 /mnv/*                                                  @YongDo-Hyun
 /mnv/ci/                                                @YongDo-Hyun

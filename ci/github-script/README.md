@@ -6,7 +6,7 @@ JavaScript-based CI scripts using [`actions/github-script`](https://github.com/a
 
 ```bash
 cd ci/github-script
-nix-shell     # sets up Node.js + dependencies
+npm ci        # install dependencies
 gh auth login # ensure GitHub CLI is authenticated
 ```
 
