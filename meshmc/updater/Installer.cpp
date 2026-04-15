@@ -55,9 +55,11 @@ void Installer::start()
 	emit progressMessage(tr("Downloading update from %1 …").arg(m_url));
 	qDebug() << "Installer: downloading" << m_url;
 
-	// Determine a temp file name from the URL.
+	// Store the downloaded archive inside the install root so everything
+	// stays on the same filesystem (avoids cross-device copy issues and
+	// /tmp permission problems).
 	const QFileInfo urlInfo(QUrl(m_url).path());
-	m_tempFile = QDir::tempPath() + "/meshmc-update-" + urlInfo.fileName();
+	m_tempFile = m_root + "/.meshmc-update-" + urlInfo.fileName();
 
 	QNetworkRequest req{QUrl{m_url}};
 	req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
@@ -137,8 +139,9 @@ bool Installer::installArchive(const QString& filePath)
 
 	if (lower.endsWith(".zip") || lower.endsWith(".tar.gz") ||
 		lower.endsWith(".tgz")) {
-		// Extract into a temp directory, then copy over root.
-		QTemporaryDir tempDir;
+		// Extract into a temp directory inside the install root so
+		// everything stays on the same filesystem.
+		QTemporaryDir tempDir(m_root + "/.meshmc-extract-XXXXXX");
 		if (!tempDir.isValid()) {
 			emit finished(
 				false, tr("Cannot create temporary directory for extraction."));
@@ -158,16 +161,16 @@ bool Installer::installArchive(const QString& filePath)
 			return false; // finished() already emitted
 		}
 
-		// Copy all extracted files into the root, skipping the updater binary
-		// itself.
+		// Copy all extracted files into the root, skipping the updater
+		// binary itself while it is running.
 		emit progressMessage(tr("Installing files …"));
 
-		const QString updaterName =
-#ifdef Q_OS_WIN
-			"meshmc-updater.exe";
-#else
-			"meshmc-updater";
-#endif
+		// Identify the exact binary that is running right now.  We skip the
+		// destination file whose absolute path matches /proc/self/exe so we
+		// never try to overwrite ourselves mid-update.  This works correctly
+		// whether the updater was launched directly or via a wrapper script.
+		const QString selfPath =
+			QFileInfo(QCoreApplication::applicationFilePath()).absoluteFilePath();
 
 		QDir src(tempDir.path());
 		// If the archive has a single top-level directory, descend into it.
@@ -179,26 +182,43 @@ bool Installer::installArchive(const QString& filePath)
 		}
 
 		const QDir dest(m_root);
-		QDirIterator it(src.absolutePath(), QDir::Files | QDir::NoDotAndDotDot,
+		// QDir::System includes symlinks on Unix; we handle them explicitly.
+		QDirIterator it(src.absolutePath(),
+						QDir::Files | QDir::System | QDir::NoDotAndDotDot,
 						QDirIterator::Subdirectories);
 		while (it.hasNext()) {
 			it.next();
 			const QFileInfo& fi = it.fileInfo();
 
 			const QString relPath = src.relativeFilePath(fi.absoluteFilePath());
-			// Don't replace ourselves while running.
-			if (relPath == updaterName)
+			const QString destPath = dest.filePath(relPath);
+
+			// Never overwrite the binary that is currently executing.
+			if (QFileInfo(destPath).absoluteFilePath() == selfPath)
 				continue;
 
-			const QString destPath = dest.filePath(relPath);
-			QFileInfo destInfo(destPath);
-			if (!QDir().mkpath(destInfo.absolutePath())) {
+			if (!QDir().mkpath(QFileInfo(destPath).absolutePath())) {
 				emit finished(false, tr("Cannot create directory: %1")
-										 .arg(destInfo.absolutePath()));
+										 .arg(QFileInfo(destPath).absolutePath()));
 				return false;
 			}
-			if (destInfo.exists())
+
+			// Remove whatever is already at the destination (file or symlink).
+			if (QFileInfo(destPath).exists() || fi.isSymLink())
 				QFile::remove(destPath);
+
+			if (fi.isSymLink()) {
+				// Recreate the symlink with a path relative to its own
+				// directory so it stays portable after installation.
+				const QString absTarget = fi.symLinkTarget();
+				const QString relTarget =
+					QDir(fi.absolutePath()).relativeFilePath(absTarget);
+				if (!QFile::link(relTarget, destPath)) {
+					qWarning() << "Installer: cannot create symlink"
+							   << destPath << "->" << relTarget;
+				}
+				continue;
+			}
 
 			if (!QFile::copy(fi.absoluteFilePath(), destPath)) {
 				emit finished(
@@ -270,23 +290,46 @@ bool Installer::extractZip(const QString& zipPath, const QString& destDir)
 
 	archive_entry* entry = nullptr;
 	bool ok = true;
+	QString extractError;
 	while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
 		const QString entryPath =
 			destDir + "/" +
 			QString::fromLocal8Bit(archive_entry_pathname(entry));
 		archive_entry_set_pathname(entry, entryPath.toLocal8Bit().constData());
 
-		if (archive_write_header(ext, entry) != ARCHIVE_OK) {
+		// Ensure parent directory exists — archive_write_disk does not
+		// always create missing parent directories on all platforms.
+		const QString parentDir = QFileInfo(entryPath).absolutePath();
+		if (!QDir().mkpath(parentDir)) {
+			extractError = tr("Cannot create directory: %1").arg(parentDir);
 			ok = false;
 			break;
+		}
+
+		const int wh = archive_write_header(ext, entry);
+		if (wh < ARCHIVE_WARN) {
+			extractError = QString::fromLocal8Bit(archive_error_string(ext));
+			qWarning() << "extractZip: archive_write_header failed:" << extractError;
+			ok = false;
+			break;
+		} else if (wh != ARCHIVE_OK) {
+			qWarning() << "extractZip: archive_write_header warning:"
+					   << QString::fromLocal8Bit(archive_error_string(ext));
 		}
 		if (archive_entry_size(entry) > 0) {
 			const void* buf;
 			size_t size;
 			la_int64_t offset;
-			while (archive_read_data_block(a, &buf, &size, &offset) ==
+			int rb;
+			while ((rb = archive_read_data_block(a, &buf, &size, &offset)) ==
 				   ARCHIVE_OK) {
 				archive_write_data_block(ext, buf, size, offset);
+			}
+			if (rb != ARCHIVE_EOF && rb < ARCHIVE_WARN) {
+				extractError = QString::fromLocal8Bit(archive_error_string(a));
+				qWarning() << "extractZip: read data block failed:" << extractError;
+				ok = false;
+				break;
 			}
 		}
 		archive_write_finish_entry(ext);
@@ -298,7 +341,7 @@ bool Installer::extractZip(const QString& zipPath, const QString& destDir)
 	archive_write_free(ext);
 
 	if (!ok) {
-		emit finished(false, tr("Failed to extract zip archive."));
+		emit finished(false, tr("Failed to extract zip archive: %1").arg(extractError));
 		return false;
 	}
 	return true;
@@ -329,23 +372,46 @@ bool Installer::extractTarGz(const QString& tarPath, const QString& destDir)
 
 	archive_entry* entry = nullptr;
 	bool ok = true;
+	QString extractError;
 	while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
 		const QString entryPath =
 			destDir + "/" +
 			QString::fromLocal8Bit(archive_entry_pathname(entry));
 		archive_entry_set_pathname(entry, entryPath.toLocal8Bit().constData());
 
-		if (archive_write_header(ext, entry) != ARCHIVE_OK) {
+		// Ensure parent directory exists — archive_write_disk does not
+		// always create missing parent directories on all platforms.
+		const QString parentDir = QFileInfo(entryPath).absolutePath();
+		if (!QDir().mkpath(parentDir)) {
+			extractError = tr("Cannot create directory: %1").arg(parentDir);
 			ok = false;
 			break;
+		}
+
+		const int wh = archive_write_header(ext, entry);
+		if (wh < ARCHIVE_WARN) {
+			extractError = QString::fromLocal8Bit(archive_error_string(ext));
+			qWarning() << "extractTarGz: archive_write_header failed:" << extractError;
+			ok = false;
+			break;
+		} else if (wh != ARCHIVE_OK) {
+			qWarning() << "extractTarGz: archive_write_header warning:"
+					   << QString::fromLocal8Bit(archive_error_string(ext));
 		}
 		if (archive_entry_size(entry) > 0) {
 			const void* buf;
 			size_t size;
 			la_int64_t offset;
-			while (archive_read_data_block(a, &buf, &size, &offset) ==
+			int rb;
+			while ((rb = archive_read_data_block(a, &buf, &size, &offset)) ==
 				   ARCHIVE_OK) {
 				archive_write_data_block(ext, buf, size, offset);
+			}
+			if (rb != ARCHIVE_EOF && rb < ARCHIVE_WARN) {
+				extractError = QString::fromLocal8Bit(archive_error_string(a));
+				qWarning() << "extractTarGz: read data block failed:" << extractError;
+				ok = false;
+				break;
 			}
 		}
 		archive_write_finish_entry(ext);
@@ -357,7 +423,7 @@ bool Installer::extractTarGz(const QString& tarPath, const QString& destDir)
 	archive_write_free(ext);
 
 	if (!ok) {
-		emit finished(false, tr("Failed to extract tar archive."));
+		emit finished(false, tr("Failed to extract tar archive: %1").arg(extractError));
 		return false;
 	}
 	return true;
