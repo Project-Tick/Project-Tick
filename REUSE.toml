@@ -17,7 +17,8 @@ path = [
   ".clang-tidy",
   "CODEOWNERS",
   "hooks/**",
-  "ci/**"
+  "ci/**",
+  "Packaging/**"
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "NONE"
