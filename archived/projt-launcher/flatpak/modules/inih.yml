@@ -1,6 +1,0 @@
-name: inih
-buildsystem: meson
-sources:
-    - type: git
-      url: https://github.com/benhoyt/inih
-      tag: r62   # r62: INIReader::ParseErrorMessage Changelog: https://github.com/benhoyt/inih/compare/r61...r62
