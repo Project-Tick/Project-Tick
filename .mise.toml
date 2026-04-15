@@ -1,0 +1,14 @@
+# Project Tick — Development Environment
+# https://mise.jdx.dev/
+#
+# Usage:
+#   mise install   # install all tools
+#   mise activate  # activate in current shell (or add to ~/.bashrc / ~/.zshrc)
+
+[tools]
+node = "22"
+go = "latest"
+
+[env]
+CI = ""
+PROJECT_ROOT = "{{config_root}}"
