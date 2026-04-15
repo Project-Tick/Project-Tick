@@ -72,10 +72,10 @@ int UpdateChecker::compareVersions(const QString& v1, const QString& v2)
 	const QStringList parts2 = v2.split('.');
 	const int len = std::max(parts1.size(), parts2.size());
 	for (int i = 0; i < len; ++i) {
-		const int a = (i < parts1.size()) ? parts1.at(i).toInt() : 0;
-		const int b = (i < parts2.size()) ? parts2.at(i).toInt() : 0;
+		const qint64 a = (i < parts1.size()) ? parts1.at(i).toLongLong() : 0;
+		const qint64 b = (i < parts2.size()) ? parts2.at(i).toLongLong() : 0;
 		if (a != b)
-			return a - b;
+			return (a > b) ? 1 : -1;
 	}
 	return 0;
 }
