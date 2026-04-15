@@ -470,3 +470,9 @@ add_subdirectory(crashreporter)
 
 # NOTE: this must always be last to appease the CMake deity of quirky install command evaluation order.
 add_subdirectory(launcher)
+
+# Plugin SDK (INTERFACE library — headers only, must come before plugins)
+add_subdirectory(launcher/plugin/sdk)
+
+# In-tree .mmco plugins (after launcher so MeshMC_logic target is available)
+add_subdirectory(plugins)
