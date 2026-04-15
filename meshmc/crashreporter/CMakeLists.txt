@@ -16,7 +16,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network)
 # Optional: libqrencode for QR code generation
 find_package(PkgConfig QUIET)
 if(PkgConfig_FOUND)
-    pkg_check_modules(QRENCODE QUIET libqrencode)
+    pkg_check_modules(QRENCODE IMPORTED_TARGET QUIET libqrencode)
 endif()
 
 # On Windows: use Win32 subsystem so no console window appears.
@@ -41,8 +41,7 @@ target_link_libraries(meshmc-crashreporter
 
 if(QRENCODE_FOUND)
     target_compile_definitions(meshmc-crashreporter PRIVATE MESHMC_HAS_QRENCODE)
-    target_include_directories(meshmc-crashreporter PRIVATE ${QRENCODE_INCLUDE_DIRS})
-    target_link_libraries(meshmc-crashreporter PRIVATE ${QRENCODE_LIBRARIES})
+    target_link_libraries(meshmc-crashreporter PRIVATE PkgConfig::QRENCODE)
 endif()
 
 # Install alongside the main binary.
