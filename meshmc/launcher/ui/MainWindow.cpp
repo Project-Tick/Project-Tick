@@ -1680,6 +1680,14 @@ void MainWindow::checkForUpdates()
 {
 	if (BuildConfig.UPDATER_ENABLED && UpdateChecker::isUpdaterSupported()) {
 		auto updater = APPLICATION->updateChecker();
+		connect(updater.get(), &UpdateChecker::checkFailed, this,
+				[this](QString reason) {
+					CustomMessageBox::selectable(this,
+						tr("Update Check Failed"), reason,
+						QMessageBox::Critical)
+						->show();
+				},
+				Qt::SingleShotConnection);
 		updater->checkForUpdate(true);
 	} else {
 		qWarning() << "Updater not set up or not supported on this platform. "
