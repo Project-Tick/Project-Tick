@@ -189,6 +189,9 @@ jobs:
     needs: gate
     if: needs.gate.outputs.is_pr == 'true'
     uses: ./.github/workflows/ci-lint.yml
+    permissions:
+      contents: read
+      security-events: write
     with:
       run-level: ${{ needs.gate.outputs.run_level }}
       changed-projects: ${{ needs.gate.outputs.changed_projects }}
