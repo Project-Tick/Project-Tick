@@ -31,6 +31,7 @@ class Config
   public:
 	Config();
 	QString MESHMC_NAME;
+	QString MESHMC_BINARY;
 	QString MESHMC_DISPLAYNAME;
 	QString MESHMC_COPYRIGHT;
 	QString MESHMC_DOMAIN;
