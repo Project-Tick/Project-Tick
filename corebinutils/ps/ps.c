@@ -268,7 +268,7 @@ main(int argc, char *argv[])
 
 	if (nkept == 0) {
 		printheader();
-		exit(0);
+		exit(nselectors > 0 ? 1 : 0);
 	}
 
 	qsort(kept, nkept, sizeof(KINFO), pscomp);
