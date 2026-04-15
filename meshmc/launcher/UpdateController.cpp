@@ -39,7 +39,7 @@ UpdateController::UpdateController(QWidget* parent, const QString& root,
 bool UpdateController::startUpdate()
 {
 	// Locate the updater binary next to the running executable.
-	QString updaterName = BuildConfig.MESHMC_NAME + "-updater";
+	QString updaterName = BuildConfig.MESHMC_BINARY + "-updater";
 #ifdef Q_OS_WIN
 	updaterName += ".exe";
 #endif
