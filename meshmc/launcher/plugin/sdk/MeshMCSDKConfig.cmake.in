@@ -1,0 +1,16 @@
+@PACKAGE_INIT@
+
+# MeshMC Plugin SDK — CMake package config
+#
+# Usage in out-of-tree plugin CMakeLists.txt:
+#
+#   cmake_minimum_required(VERSION 3.21)
+#   project(MyPlugin)
+#   find_package(Qt6 REQUIRED COMPONENTS Core Widgets Gui)
+#   find_package(MeshMC_SDK REQUIRED)
+#   add_library(MyPlugin MODULE src/MyPlugin.cpp)
+#   target_link_libraries(MyPlugin PRIVATE MeshMC::SDK)
+#   set_target_properties(MyPlugin PROPERTIES PREFIX "" SUFFIX ".mmco")
+
+include("${CMAKE_CURRENT_LIST_DIR}/MeshMCSDKTargets.cmake")
+check_required_components(MeshMC_SDK)
