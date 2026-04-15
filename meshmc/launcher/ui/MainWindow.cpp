@@ -96,6 +96,8 @@
 #include "ui/dialogs/NewInstanceDialog.h"
 #include "ui/dialogs/ProgressDialog.h"
 #include "ui/dialogs/AboutDialog.h"
+#include "ui/dialogs/MeshMCLogsDialog.h"
+#include "ui/dialogs/UpdateProgressDialog.h"
 #include "ui/dialogs/VersionSelectDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
 #include "ui/dialogs/IconPickerDialog.h"
@@ -254,6 +256,7 @@ class MainWindow::Ui
 	TranslatedAction actionReportBug;
 	TranslatedAction actionDISCORD;
 	TranslatedAction actionREDDIT;
+	TranslatedAction actionMeshMCLogs;
 	TranslatedAction actionAbout;
 
 	QVector<TranslatedToolButton*> all_toolbuttons;
@@ -409,6 +412,18 @@ class MainWindow::Ui
 			QT_TRANSLATE_NOOP("MainWindow", "View information about %1."));
 		all_actions.append(&actionAbout);
 		helpMenu->addAction(actionAbout);
+
+		helpMenu->addSeparator();
+
+		actionMeshMCLogs = TranslatedAction(MainWindow);
+		actionMeshMCLogs->setObjectName(QStringLiteral("actionMeshMCLogs"));
+		actionMeshMCLogs->setIcon(APPLICATION->getThemedIcon("log"));
+		actionMeshMCLogs.setTextId(
+			QT_TRANSLATE_NOOP("MainWindow", "MeshMC Logs"));
+		actionMeshMCLogs.setTooltipId(QT_TRANSLATE_NOOP(
+			"MainWindow", "View and manage MeshMC application logs."));
+		all_actions.append(&actionMeshMCLogs);
+		helpMenu->addAction(actionMeshMCLogs);
 
 		helpMenuButton = TranslatedToolButton(MainWindow);
 		helpMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Help"));
@@ -1321,13 +1336,32 @@ void MainWindow::updateAvailable(UpdateAvailableStatus status)
 			break;
 		case UPDATE_NOW:
 			if (!status.downloadUrl.isEmpty()) {
+				// Show progress dialog while launching the updater
+				auto* progressDlg = new UpdateProgressDialog(this);
+				progressDlg->setStatus(tr("Preparing update to version %1...")
+										   .arg(status.version));
+				progressDlg->appendLog(
+					tr("Download URL: %1").arg(status.downloadUrl));
+				progressDlg->show();
+				QApplication::processEvents();
+
 				APPLICATION->updateIsRunning(true);
+				progressDlg->setStatus(
+					tr("Launching updater..."));
+				QApplication::processEvents();
+
 				UpdateController controller(this, APPLICATION->root(),
 											status.downloadUrl);
 				if (controller.startUpdate()) {
+					progressDlg->setFinished(true,
+						tr("Updater launched. MeshMC will now close."));
+					QApplication::processEvents();
 					// The updater binary has been launched; quit the main app
 					// so the updater can overwrite its files.
 					QCoreApplication::quit();
+				} else {
+					progressDlg->setFinished(false,
+						tr("Failed to launch the updater."));
 				}
 				APPLICATION->updateIsRunning(false);
 			} else {
@@ -1680,14 +1714,35 @@ void MainWindow::checkForUpdates()
 {
 	if (BuildConfig.UPDATER_ENABLED && UpdateChecker::isUpdaterSupported()) {
 		auto updater = APPLICATION->updateChecker();
-		connect(updater.get(), &UpdateChecker::checkFailed, this,
-				[this](QString reason) {
-					CustomMessageBox::selectable(this,
-						tr("Update Check Failed"), reason,
-						QMessageBox::Critical)
-						->show();
+
+		// Show the update progress dialog
+		auto* progressDlg = new UpdateProgressDialog(this);
+		progressDlg->setStatus(tr("Checking for updates..."));
+		progressDlg->setAttribute(Qt::WA_DeleteOnClose);
+
+		connect(updater.get(), &UpdateChecker::checkFailed, progressDlg,
+				[progressDlg](QString reason) {
+					progressDlg->setFinished(
+						false, QObject::tr("Update check failed: %1").arg(reason));
 				},
 				Qt::SingleShotConnection);
+
+		connect(updater.get(), &UpdateChecker::updateAvailable, progressDlg,
+				[progressDlg](UpdateAvailableStatus status) {
+					progressDlg->setFinished(
+						true,
+						QObject::tr("Update available: version %1").arg(status.version));
+				},
+				Qt::SingleShotConnection);
+
+		connect(updater.get(), &UpdateChecker::noUpdateFound, progressDlg,
+				[progressDlg]() {
+					progressDlg->setFinished(
+						true, QObject::tr("You are running the latest version."));
+				},
+				Qt::SingleShotConnection);
+
+		progressDlg->show();
 		updater->checkForUpdate(true);
 	} else {
 		qWarning() << "Updater not set up or not supported on this platform. "
@@ -1771,6 +1826,12 @@ void MainWindow::newsButtonClicked()
 void MainWindow::on_actionAbout_triggered()
 {
 	AboutDialog dialog(this);
+	dialog.exec();
+}
+
+void MainWindow::on_actionMeshMCLogs_triggered()
+{
+	MeshMCLogsDialog dialog(this);
 	dialog.exec();
 }
 

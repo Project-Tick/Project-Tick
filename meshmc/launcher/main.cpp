@@ -20,6 +20,13 @@
  */
 
 #include "Application.h"
+#include "BuildConfig.h"
+#include "FileSystem.h"
+
+#include <QDir>
+#include <QProcess>
+
+#include <csignal>
 
 // #define BREAK_INFINITE_LOOP
 // #define BREAK_EXCEPTION
@@ -29,6 +36,55 @@
 #include <thread>
 #include <chrono>
 #endif
+
+static void launchCrashReporter()
+{
+	// Locate the crash reporter binary next to the running executable.
+	QString crashReporterName = "meshmc-crashreporter";
+#ifdef Q_OS_WIN
+	crashReporterName += ".exe";
+#endif
+	QString crashReporterPath =
+		FS::PathCombine(QApplication::applicationDirPath(), crashReporterName);
+
+	if (!QFile::exists(crashReporterPath)) {
+		return;
+	}
+
+	QStringList args;
+	args << "--logdir" << QDir::currentPath();
+	args << "--name" << BuildConfig.MESHMC_NAME;
+
+	QString apiKey = "public";
+	if (APPLICATION && APPLICATION->settings()) {
+		QString key =
+			APPLICATION->settings()->get("PasteEEAPIKey").toString();
+		if (key != "meshmc" && !key.isEmpty()) {
+			apiKey = key;
+		} else {
+			apiKey = BuildConfig.PASTE_EE_KEY;
+		}
+	}
+	args << "--apikey" << apiKey;
+
+	// Flush the log file before launching the crash reporter
+	if (APPLICATION && APPLICATION->logFile) {
+		APPLICATION->logFile->flush();
+	}
+
+	QProcess::startDetached(crashReporterPath, args);
+}
+
+static void crashSignalHandler(int sig)
+{
+	// Re-set default handler to avoid infinite loops
+	signal(sig, SIG_DFL);
+
+	launchCrashReporter();
+
+	// Re-raise the signal so the default handler produces a core dump etc.
+	raise(sig);
+}
 
 int main(int argc, char* argv[])
 {
@@ -51,6 +107,13 @@ int main(int argc, char* argv[])
 
 	// initialize Qt
 	Application app(argc, argv);
+
+	// Install crash signal handlers to launch meshmc-crashreporter
+	signal(SIGSEGV, crashSignalHandler);
+	signal(SIGABRT, crashSignalHandler);
+#ifndef Q_OS_WIN
+	signal(SIGBUS, crashSignalHandler);
+#endif
 
 	switch (app.status()) {
 		case Application::StartingUp:

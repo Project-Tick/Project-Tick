@@ -814,6 +814,10 @@ SET(MESHMC_SOURCES
     ui/dialogs/DownloadContentDialog.h
     ui/dialogs/DownloadSummaryDialog.cpp
     ui/dialogs/DownloadSummaryDialog.h
+    ui/dialogs/MeshMCLogsDialog.cpp
+    ui/dialogs/MeshMCLogsDialog.h
+    ui/dialogs/UpdateProgressDialog.cpp
+    ui/dialogs/UpdateProgressDialog.h
 
 
     # GUI - widgets
@@ -905,6 +909,7 @@ qt6_wrap_ui(MESHMC_UI
     ui/dialogs/NewInstanceDialog.ui
     ui/dialogs/NotificationDialog.ui
     ui/dialogs/UpdateDialog.ui
+    ui/dialogs/MeshMCLogsDialog.ui
     ui/dialogs/NewComponentDialog.ui
     ui/dialogs/ProfileSelectDialog.ui
     ui/dialogs/SkinUploadDialog.ui

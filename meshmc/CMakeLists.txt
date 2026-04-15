@@ -179,7 +179,7 @@ add_custom_target(tcversion echo "\\#\\#teamcity[setParameter name=\\'env.MESHMC
 
 ######## Secondly, please set version numbers ########
 set(MeshMC_VERSION_MAJOR    7)
-set(MeshMC_VERSION_MINOR    1)
+set(MeshMC_VERSION_MINOR    2)
 set(MeshMC_VERSION_HOTFIX   0)
 
 set(MeshMC_RELEASE_VERSION_NAME "${MeshMC_VERSION_MAJOR}.${MeshMC_VERSION_MINOR}.${MeshMC_VERSION_HOTFIX}")
@@ -465,6 +465,8 @@ add_subdirectory(buildconfig)
 if(NOT MeshMC_BUILD_ARTIFACT STREQUAL "" AND NOT MeshMC_UPDATER_FEED_URL STREQUAL "" AND NOT MeshMC_UPDATER_GITHUB_API_URL STREQUAL "")
     add_subdirectory(updater)
 endif()
+
+add_subdirectory(crashreporter)
 
 # NOTE: this must always be last to appease the CMake deity of quirky install command evaluation order.
 add_subdirectory(launcher)
