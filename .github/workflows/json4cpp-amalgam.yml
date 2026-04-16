@@ -31,7 +31,7 @@ jobs:
     env:
       MAIN_DIR: ${{ github.workspace }}/json4cpp
       INCLUDE_DIR: ${{ github.workspace }}/json4cpp/single_include/nlohmann
-      TOOL_DIR: ${{ github.workspace }}/json4cpp/tools/tools/amalgamate
+      TOOL_DIR: ${{ github.workspace }}/json4cpp/tools/amalgamate
 
     steps:
       - name: Harden Runner

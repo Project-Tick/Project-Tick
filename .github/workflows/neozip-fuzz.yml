@@ -21,16 +21,16 @@ jobs:
         id: build
         uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
         with:
-          oss-fuzz-project-name: 'neozip'
           dry-run: false
+          language: c
           project-src-path: neozip
 
       - name: Run Fuzzers
         uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
         with:
-          oss-fuzz-project-name: 'neozip'
           fuzz-seconds: 600
           dry-run: false
+          language: c
 
       - name: Upload Crash
         uses: actions/upload-artifact@v7

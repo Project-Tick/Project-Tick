@@ -23,13 +23,11 @@ jobs:
       id: build
       uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
       with:
-        oss-fuzz-project-name: 'tomlplusplus'
         language: c++
         project-src-path: tomlplusplus
     - name: Run Fuzzers
       uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
       with:
-        oss-fuzz-project-name: 'tomlplusplus'
         language: c++
         fuzz-seconds: 800
         output-sarif: true

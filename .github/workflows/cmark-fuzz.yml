@@ -21,15 +21,15 @@ jobs:
         id: build
         uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
         with:
-          oss-fuzz-project-name: 'cmark'
           dry-run: false
+          language: c
           project-src-path: cmark
       - name: Run Fuzzers
         uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
         with:
-          oss-fuzz-project-name: 'cmark'
           fuzz-seconds: 600
           dry-run: false
+          language: c
       - name: Upload Crash
         uses: actions/upload-artifact@v7
         if: failure() && steps.build.outcome == 'success'
