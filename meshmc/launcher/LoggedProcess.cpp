@@ -27,6 +27,11 @@
 #include "MessageLevel.h"
 #include <QDebug>
 
+#ifdef Q_OS_UNIX
+#include <signal.h>
+#include <unistd.h>
+#endif
+
 LoggedProcess::LoggedProcess(QObject* parent) : QProcess(parent)
 {
 	// QProcess has a strange interface... let's map a lot of those into a few.
@@ -38,6 +43,11 @@ LoggedProcess::LoggedProcess(QObject* parent) : QProcess(parent)
 	connect(this, &QProcess::errorOccurred, this, &LoggedProcess::on_error);
 	connect(this, &QProcess::stateChanged, this,
 			&LoggedProcess::on_stateChange);
+
+#ifdef Q_OS_UNIX
+	// Create a new process group so we can kill the entire tree
+	setChildProcessModifier([]() { setsid(); });
+#endif
 }
 
 LoggedProcess::~LoggedProcess()
@@ -129,7 +139,16 @@ void LoggedProcess::on_error(QProcess::ProcessError error)
 void LoggedProcess::kill()
 {
 	m_is_aborting = true;
+#ifdef Q_OS_UNIX
+	// Kill the entire process group to ensure all child processes
+	// (e.g. Java launched through a wrapper) are terminated
+	auto pid = processId();
+	if (pid > 0) {
+		::kill(-pid, SIGKILL);
+	}
+#else
 	QProcess::kill();
+#endif
 }
 
 int LoggedProcess::exitCode() const

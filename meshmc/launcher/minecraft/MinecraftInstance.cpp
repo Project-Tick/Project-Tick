@@ -1046,10 +1046,7 @@ std::shared_ptr<ModFolderModel> MinecraftInstance::resourcePackList() const
 	if (!m_resource_pack_list) {
 		m_resource_pack_list.reset(
 			new ResourcePackFolderModel(resourcePacksDir()));
-		m_resource_pack_list->disableInteraction(isRunning());
-		connect(this, &BaseInstance::runningStatusChanged,
-				m_resource_pack_list.get(),
-				&ModFolderModel::disableInteraction);
+		// Resource packs can be safely added while Minecraft is running
 	}
 	return m_resource_pack_list;
 }
@@ -1070,9 +1067,7 @@ std::shared_ptr<ModFolderModel> MinecraftInstance::shaderPackList() const
 {
 	if (!m_shader_pack_list) {
 		m_shader_pack_list.reset(new ResourcePackFolderModel(shaderPacksDir()));
-		m_shader_pack_list->disableInteraction(isRunning());
-		connect(this, &BaseInstance::runningStatusChanged,
-				m_shader_pack_list.get(), &ModFolderModel::disableInteraction);
+		// Shader packs can be safely added while Minecraft is running
 	}
 	return m_shader_pack_list;
 }

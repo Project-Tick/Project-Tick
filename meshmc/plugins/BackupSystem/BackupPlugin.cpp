@@ -55,7 +55,7 @@ static void injectCheckboxIntoMeshMCPage()
 	if (!layout)
 		return;
 
-	auto* groupBox = new QGroupBox(QObject::tr("Plugin Features"));
+	auto* groupBox = new QGroupBox(QObject::tr("Backup System"));
 	groupBox->setObjectName(QStringLiteral("backupFeaturesGroupBox"));
 	auto* groupLayout = new QVBoxLayout(groupBox);
 

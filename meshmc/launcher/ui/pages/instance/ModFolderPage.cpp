@@ -286,7 +286,14 @@ void ModFolderPage::on_RunningState_changed(bool running)
 	ui->actionDisable->setEnabled(m_controlsEnabled);
 	ui->actionEnable->setEnabled(m_controlsEnabled);
 	ui->actionRemove->setEnabled(m_controlsEnabled);
-	ui->actionDownload->setEnabled(m_controlsEnabled);
+
+	// Resource packs and shader packs can be safely added while
+	// Minecraft is running (reloaded via F3+T or settings menu)
+	bool canDownload = m_controlsEnabled ||
+					   m_contentType == ModPlatform::ContentType::ResourcePack ||
+					   m_contentType == ModPlatform::ContentType::ShaderPack;
+	ui->actionDownload->setEnabled(canDownload);
+	ui->actionAdd->setEnabled(m_controlsEnabled || canDownload);
 }
 
 bool ModFolderPage::shouldDisplay() const
@@ -345,7 +352,9 @@ bool ModFolderPage::eventFilter(QObject* obj, QEvent* ev)
 
 void ModFolderPage::on_actionAdd_triggered()
 {
-	if (!m_controlsEnabled) {
+	if (!m_controlsEnabled &&
+		m_contentType != ModPlatform::ContentType::ResourcePack &&
+		m_contentType != ModPlatform::ContentType::ShaderPack) {
 		return;
 	}
 	auto list = GuiUtil::BrowseForFiles(
@@ -418,7 +427,9 @@ void ModFolderPage::modCurrent(const QModelIndex& current,
 
 void ModFolderPage::on_actionDownload_triggered()
 {
-	if (!m_controlsEnabled) {
+	if (!m_controlsEnabled &&
+		m_contentType != ModPlatform::ContentType::ResourcePack &&
+		m_contentType != ModPlatform::ContentType::ShaderPack) {
 		return;
 	}
 

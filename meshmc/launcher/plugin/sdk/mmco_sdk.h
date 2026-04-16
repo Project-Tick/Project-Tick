@@ -404,10 +404,11 @@ struct MMCOContext {
 		mod_author, mod_desc,		  mod_license, MMCO_FLAG_NONE,             \
 		nullptr}
 
+#define MMCO_EXPAND(x) x
 #define MMCO_GET_MACRO(_1, _2, _3, _4, _5, _6, NAME, ...) NAME
 #define MMCO_DEFINE_MODULE(...)                                                \
-	MMCO_GET_MACRO(__VA_ARGS__, MMCO_DEFINE_MODULE_6, MMCO_DEFINE_MODULE_5)    \
-	(__VA_ARGS__)
+	MMCO_EXPAND(MMCO_GET_MACRO(__VA_ARGS__, MMCO_DEFINE_MODULE_6,              \
+							   MMCO_DEFINE_MODULE_5)(__VA_ARGS__))
 
 #define MMCO_LOG(ctx, msg) (ctx)->log_info((ctx)->module_handle, (msg))
 #define MMCO_WARN(ctx, msg) (ctx)->log_warn((ctx)->module_handle, (msg))
