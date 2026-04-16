@@ -15,12 +15,14 @@ add_library(MeshMC_sdk INTERFACE)
 add_library(MeshMC::SDK ALIAS MeshMC_sdk)
 set_target_properties(MeshMC_sdk PROPERTIES EXPORT_NAME SDK)
 
+# Resolve include directories from imported targets (these are installed externally)
+get_target_property(_OPTIONAL_BARE_INCLUDE_DIRS optional-bare::optional-bare INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(_KATABASIS_INCLUDE_DIRS Katabasis::Katabasis INTERFACE_INCLUDE_DIRECTORIES)
+
 target_include_directories(MeshMC_sdk INTERFACE
     # Build-tree consumers (in-tree plugins)
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/launcher>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/launcher/plugin/sdk>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libraries/optional-bare/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libraries/katabasis/include>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/buildconfig>
     # Install-tree consumers (out-of-tree plugins)
     $<INSTALL_INTERFACE:include/meshmc-sdk>
@@ -32,6 +34,8 @@ target_link_libraries(MeshMC_sdk INTERFACE
     Qt6::Widgets
     Qt6::Gui
     Qt6::Network
+    optional-bare::optional-bare
+    Katabasis::Katabasis
 )
 
 # ---------------------------------------------------------------------------
@@ -96,8 +100,6 @@ set(SDK_MISC_HEADERS
 )
 
 set(SDK_LIBRARY_HEADERS
-    ${CMAKE_SOURCE_DIR}/libraries/optional-bare/include/nonstd/optional
-    ${CMAKE_SOURCE_DIR}/libraries/katabasis/include/katabasis/Bits.h
 )
 
 # ---------------------------------------------------------------------------
@@ -184,15 +186,19 @@ install(FILES
     DESTINATION "${SDK_INSTALL_DIR}/updater"
 )
 
-# Library headers
-install(FILES
-    ${CMAKE_SOURCE_DIR}/libraries/optional-bare/include/nonstd/optional
-    DESTINATION "${SDK_INSTALL_DIR}/nonstd"
-)
-install(FILES
-    ${CMAKE_SOURCE_DIR}/libraries/katabasis/include/katabasis/Bits.h
-    DESTINATION "${SDK_INSTALL_DIR}/katabasis"
-)
+# Library headers — resolve from installed package include directories
+foreach(_dir ${_OPTIONAL_BARE_INCLUDE_DIRS})
+    if(EXISTS "${_dir}/nonstd/optional")
+        install(FILES "${_dir}/nonstd/optional" DESTINATION "${SDK_INSTALL_DIR}/nonstd")
+        break()
+    endif()
+endforeach()
+foreach(_dir ${_KATABASIS_INCLUDE_DIRS})
+    if(EXISTS "${_dir}/katabasis/Bits.h")
+        install(FILES "${_dir}/katabasis/Bits.h" DESTINATION "${SDK_INSTALL_DIR}/katabasis")
+        break()
+    endif()
+endforeach()
 
 # ---------------------------------------------------------------------------
 # CMake package config for out-of-tree plugins (find_package support)
