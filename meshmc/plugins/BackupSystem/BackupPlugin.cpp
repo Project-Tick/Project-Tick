@@ -10,6 +10,11 @@
 #include "plugin/sdk/mmco_sdk.h"
 #include "BackupPage.h"
 
+MMCO_DEFINE_MODULE(
+	"BackupSystem", "1.0.0", "Project Tick",
+	"Instance backup snapshots — create, restore, export, import",
+	"GPL-3.0-or-later");
+
 static MMCOContext* g_ctx = nullptr;
 
 static int on_instance_pages(void* /*mh*/, uint32_t /*hook_id*/, void* payload,
@@ -30,18 +35,13 @@ static int on_instance_pages(void* /*mh*/, uint32_t /*hook_id*/, void* payload,
 	return 0;
 }
 
-MMCO_DEFINE_MODULE(
-	"BackupSystem", "1.0.0", "Project Tick",
-	"Instance backup snapshots — create, restore, export, import",
-	"GPL-3.0-or-later");
-
 extern "C" {
 
 MMCO_EXPORT int mmco_init(MMCOContext* ctx)
 {
 	g_ctx = ctx;
 
-	MMCO_LOG(ctx, "BackupSystem v1.0.0 initializing...");
+	MMCO_LOG(ctx, "BackupSystem initializing...");
 
 	int rc = ctx->hook_register(ctx->module_handle, MMCO_HOOK_UI_INSTANCE_PAGES,
 								on_instance_pages, nullptr);

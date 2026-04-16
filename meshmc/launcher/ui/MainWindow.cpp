@@ -409,18 +409,6 @@ class MainWindow::Ui
 			helpMenu->addAction(actionREDDIT);
 		}
 
-		actionAbout = TranslatedAction(MainWindow);
-		actionAbout->setObjectName(QStringLiteral("actionAbout"));
-		actionAbout->setIcon(APPLICATION->getThemedIcon("about"));
-		actionAbout->setMenuRole(QAction::AboutRole);
-		actionAbout.setTextId(QT_TRANSLATE_NOOP("MainWindow", "About %1"));
-		actionAbout.setTooltipId(
-			QT_TRANSLATE_NOOP("MainWindow", "View information about %1."));
-		all_actions.append(&actionAbout);
-		helpMenu->addAction(actionAbout);
-
-		helpMenu->addSeparator();
-
 		actionMeshMCLogs = TranslatedAction(MainWindow);
 		actionMeshMCLogs->setObjectName(QStringLiteral("actionMeshMCLogs"));
 		actionMeshMCLogs->setIcon(APPLICATION->getThemedIcon("log"));
@@ -430,6 +418,16 @@ class MainWindow::Ui
 			"MainWindow", "View and manage MeshMC application logs."));
 		all_actions.append(&actionMeshMCLogs);
 		helpMenu->addAction(actionMeshMCLogs);
+
+		actionAbout = TranslatedAction(MainWindow);
+		actionAbout->setObjectName(QStringLiteral("actionAbout"));
+		actionAbout->setIcon(APPLICATION->getThemedIcon("about"));
+		actionAbout->setMenuRole(QAction::AboutRole);
+		actionAbout.setTextId(QT_TRANSLATE_NOOP("MainWindow", "About %1"));
+		actionAbout.setTooltipId(
+			QT_TRANSLATE_NOOP("MainWindow", "View information about %1."));
+		all_actions.append(&actionAbout);
+		helpMenu->addAction(actionAbout);
 
 		helpMenuButton = TranslatedToolButton(MainWindow);
 		helpMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Help"));
