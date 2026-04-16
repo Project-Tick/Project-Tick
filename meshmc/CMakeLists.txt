@@ -156,6 +156,19 @@ QUERY_QMAKE(QT_INSTALL_LIBS QT_LIBS_DIR)
 QUERY_QMAKE(QT_INSTALL_LIBEXECS QT_LIBEXECS_DIR)
 
 find_package(LibArchive REQUIRED)
+find_package(neozip REQUIRED)
+find_package(cmark REQUIRED)
+find_package(tomlplusplus REQUIRED)
+find_package(nbt++ REQUIRED)
+find_package(systeminfo REQUIRED)
+find_package(ganalytics REQUIRED)
+find_package(rainbow REQUIRED)
+find_package(iconfix REQUIRED)
+find_package(LocalPeer REQUIRED)
+find_package(classparser REQUIRED)
+find_package(optional-bare REQUIRED)
+find_package(xz-embedded REQUIRED)
+find_package(Katabasis REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ####################################### Branding #######################################
@@ -439,26 +452,10 @@ endif()
 include(ExternalProject)
 set_directory_properties(PROPERTIES EP_BASE External)
 
-option(NBT_BUILD_SHARED "Build NBT shared library" ON)
-option(NBT_USE_ZLIB "Build NBT library with zlib support" OFF)
-option(NBT_BUILD_TESTS "Build NBT library tests" OFF) #FIXME: fix unit tests.
-set(NBT_NAME MeshMC_nbt++)
-set(NBT_DEST_DIR ${LIBRARY_DEST_DIR})
-add_subdirectory(${CMAKE_SOURCE_DIR}/../libnbtplusplus libnbtplusplus)
-
-add_subdirectory(libraries/ganalytics) # google analytics library
-add_subdirectory(libraries/systeminfo) # system information library
-add_subdirectory(libraries/hoedown) # markdown parser
-add_subdirectory(libraries/launcher) # java based launcher part for Minecraft
-add_subdirectory(libraries/javacheck) # java compatibility checker
-add_subdirectory(libraries/xz-embedded) # xz compression
-add_subdirectory(libraries/rainbow) # Qt extension for colors
-add_subdirectory(libraries/iconfix) # fork of Qt's QIcon loader
-add_subdirectory(libraries/LocalPeer) # fork of a library from Qt solutions
-add_subdirectory(libraries/classparser) # google analytics library
-add_subdirectory(libraries/optional-bare)
-add_subdirectory(libraries/tomlc99) # toml parser
-add_subdirectory(libraries/katabasis) # An OAuth2 library that tried to do too much
+find_package(JavaCheck REQUIRED)
+find_package(NewLaunch REQUIRED)
+install(FILES "${JAVACHECK_JAR}" DESTINATION "${JARS_DEST_DIR}" RENAME "JavaCheck.jar")
+install(FILES "${NEWLAUNCH_JAR}" DESTINATION "${JARS_DEST_DIR}" RENAME "NewLaunch.jar")
 
 ############################### Built Artifacts ###############################
 

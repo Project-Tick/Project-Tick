@@ -239,6 +239,18 @@ jobs:
           - libnbtplusplus
           - mnv
           - tomlplusplus
+          - LocalPeer
+          - classparser
+          - ganalytics
+          - iconfix
+          - javacheck
+          - javalauncher
+          - katabasis
+          - optional-bare
+          - rainbow
+          - systeminfo
+          - xz-embedded
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -440,6 +452,17 @@ jobs:
             source-libnbtplusplus/*
             source-mnv/*
             source-tomlplusplus/*
+            source-LocalPeer/*
+            source-classparser/*
+            source-ganalytics/*
+            source-iconfix/*
+            source-javacheck/*
+            source-javalauncher/*
+            source-katabasis/*
+            source-optional-bare/*
+            source-rainbow/*
+            source-systeminfo/*
+            source-xz-embedded/*
 
       # ── Stage deployment bundle ──────────────────────────────────
       - name: Stage deployment bundle
@@ -462,7 +485,7 @@ jobs:
           cp -a neozip-source-archives/. deploy-bundle/neozip/
 
           # Source-only projects (from package_sources matrix)
-          for project in cgit cmark corebinutils forgewrapper genqrcode images4docker json4cpp libnbtplusplus mnv tomlplusplus; do
+          for project in cgit cmark corebinutils forgewrapper genqrcode images4docker json4cpp libnbtplusplus mnv tomlplusplus LocalPeer classparser ganalytics iconfix javacheck javalauncher katabasis optional-bare rainbow systeminfo xz-embedded; do
             if [[ -d "source-${project}" ]]; then
               mkdir -p "deploy-bundle/${project}"
               cp -a "source-${project}"/. "deploy-bundle/${project}/"

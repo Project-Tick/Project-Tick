@@ -29,7 +29,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
-#include <toml.h>
+#include <toml++/toml.hpp>
 
 #include "MMCZip.h"
 
@@ -118,17 +118,15 @@ namespace
 	{
 		std::shared_ptr<ModDetails> details = std::make_shared<ModDetails>();
 
-		char errbuf[200];
-		// top-level table
-		toml_table_t* tomlData =
-			toml_parse(contents.data(), errbuf, sizeof(errbuf));
-
-		if (!tomlData) {
+		toml::table tomlData;
+		try {
+			tomlData = toml::parse(std::string_view(contents.constData(), contents.size()));
+		} catch (const toml::parse_error&) {
 			return nullptr;
 		}
 
 		// array defined by [[mods]]
-		toml_array_t* tomlModsArr = toml_array_in(tomlData, "mods");
+		auto* tomlModsArr = tomlData["mods"].as_array();
 		if (!tomlModsArr) {
 			qWarning() << "Corrupted mods.toml? Couldn't find [[mods]] array!";
 			return nullptr;
@@ -136,7 +134,7 @@ namespace
 
 		// we only really care about the first element, since multiple mods in
 		// one file is not supported by us at the moment
-		toml_table_t* tomlModsTable0 = toml_table_at(tomlModsArr, 0);
+		auto* tomlModsTable0 = tomlModsArr->get_as<toml::table>(0);
 		if (!tomlModsTable0) {
 			qWarning() << "Corrupted mods.toml? [[mods]] didn't have an "
 						  "element at index 0!";
@@ -144,42 +142,25 @@ namespace
 		}
 
 		// mandatory properties - always in [[mods]]
-		toml_datum_t modIdDatum = toml_string_in(tomlModsTable0, "modId");
-		if (modIdDatum.ok) {
-			details->mod_id = modIdDatum.u.s;
-			// library says this is required for strings
-			free(modIdDatum.u.s);
+		if (auto val = (*tomlModsTable0)["modId"].value<std::string>()) {
+			details->mod_id = QString::fromStdString(*val);
 		}
-		toml_datum_t versionDatum = toml_string_in(tomlModsTable0, "version");
-		if (versionDatum.ok) {
-			details->version = versionDatum.u.s;
-			free(versionDatum.u.s);
+		if (auto val = (*tomlModsTable0)["version"].value<std::string>()) {
+			details->version = QString::fromStdString(*val);
 		}
-		toml_datum_t displayNameDatum =
-			toml_string_in(tomlModsTable0, "displayName");
-		if (displayNameDatum.ok) {
-			details->name = displayNameDatum.u.s;
-			free(displayNameDatum.u.s);
+		if (auto val = (*tomlModsTable0)["displayName"].value<std::string>()) {
+			details->name = QString::fromStdString(*val);
 		}
-		toml_datum_t descriptionDatum =
-			toml_string_in(tomlModsTable0, "description");
-		if (descriptionDatum.ok) {
-			details->description = descriptionDatum.u.s;
-			free(descriptionDatum.u.s);
+		if (auto val = (*tomlModsTable0)["description"].value<std::string>()) {
+			details->description = QString::fromStdString(*val);
 		}
 
 		// optional properties - can be in the root table or [[mods]]
-		toml_datum_t authorsDatum = toml_string_in(tomlData, "authors");
-		QString authors = "";
-		if (authorsDatum.ok) {
-			authors = authorsDatum.u.s;
-			free(authorsDatum.u.s);
-		} else {
-			authorsDatum = toml_string_in(tomlModsTable0, "authors");
-			if (authorsDatum.ok) {
-				authors = authorsDatum.u.s;
-				free(authorsDatum.u.s);
-			}
+		QString authors;
+		if (auto val = tomlData["authors"].value<std::string>()) {
+			authors = QString::fromStdString(*val);
+		} else if (auto val = (*tomlModsTable0)["authors"].value<std::string>()) {
+			authors = QString::fromStdString(*val);
 		}
 		if (!authors.isEmpty()) {
 			// author information is stored as a string now, not a list
@@ -187,30 +168,18 @@ namespace
 		}
 		// is credits even used anywhere? including this for completion/parity
 		// with old data version
-		toml_datum_t creditsDatum = toml_string_in(tomlData, "credits");
-		QString credits = "";
-		if (creditsDatum.ok) {
-			authors = creditsDatum.u.s;
-			free(creditsDatum.u.s);
-		} else {
-			creditsDatum = toml_string_in(tomlModsTable0, "credits");
-			if (creditsDatum.ok) {
-				credits = creditsDatum.u.s;
-				free(creditsDatum.u.s);
-			}
+		QString credits;
+		if (auto val = tomlData["credits"].value<std::string>()) {
+			credits = QString::fromStdString(*val);
+		} else if (auto val = (*tomlModsTable0)["credits"].value<std::string>()) {
+			credits = QString::fromStdString(*val);
 		}
 		details->credits = credits;
-		toml_datum_t homeurlDatum = toml_string_in(tomlData, "displayURL");
-		QString homeurl = "";
-		if (homeurlDatum.ok) {
-			homeurl = homeurlDatum.u.s;
-			free(homeurlDatum.u.s);
-		} else {
-			homeurlDatum = toml_string_in(tomlModsTable0, "displayURL");
-			if (homeurlDatum.ok) {
-				homeurl = homeurlDatum.u.s;
-				free(homeurlDatum.u.s);
-			}
+		QString homeurl;
+		if (auto val = tomlData["displayURL"].value<std::string>()) {
+			homeurl = QString::fromStdString(*val);
+		} else if (auto val = (*tomlModsTable0)["displayURL"].value<std::string>()) {
+			homeurl = QString::fromStdString(*val);
 		}
 		if (!homeurl.isEmpty()) {
 			// fix up url.
@@ -221,9 +190,6 @@ namespace
 			}
 		}
 		details->homeurl = homeurl;
-
-		// this seems to be recursive, so it should free everything
-		toml_free(tomlData);
 
 		return details;
 	}

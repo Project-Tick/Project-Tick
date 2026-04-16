@@ -24,7 +24,7 @@
  */
 
 #include "GZip.h"
-#include <zlib.h>
+#include <neozip.h>
 #include <QByteArray>
 
 bool GZip::unzip(const QByteArray& compressedBytes,
@@ -39,14 +39,14 @@ bool GZip::unzip(const QByteArray& compressedBytes,
 	uncompressedBytes.clear();
 	uncompressedBytes.resize(uncompLength);
 
-	z_stream strm;
+	zng_stream strm;
 	memset(&strm, 0, sizeof(strm));
-	strm.next_in = (Bytef*)compressedBytes.data();
+	strm.next_in = (const uint8_t*)compressedBytes.data();
 	strm.avail_in = compressedBytes.size();
 
 	bool done = false;
 
-	if (inflateInit2(&strm, (16 + MAX_WBITS)) != Z_OK) {
+	if (zng_inflateInit2(&strm, (16 + MAX_WBITS)) != Z_OK) {
 		return false;
 	}
 
@@ -59,11 +59,11 @@ bool GZip::unzip(const QByteArray& compressedBytes,
 			uncompLength *= 2;
 		}
 
-		strm.next_out = (Bytef*)(uncompressedBytes.data() + strm.total_out);
+		strm.next_out = (uint8_t*)(uncompressedBytes.data() + strm.total_out);
 		strm.avail_out = uncompLength - strm.total_out;
 
 		// Inflate another chunk.
-		err = inflate(&strm, Z_SYNC_FLUSH);
+		err = zng_inflate(&strm, Z_SYNC_FLUSH);
 		if (err == Z_STREAM_END)
 			done = true;
 		else if (err != Z_OK) {
@@ -71,7 +71,7 @@ bool GZip::unzip(const QByteArray& compressedBytes,
 		}
 	}
 
-	if (inflateEnd(&strm) != Z_OK || !done) {
+	if (zng_inflateEnd(&strm) != Z_OK || !done) {
 		return false;
 	}
 
@@ -91,15 +91,15 @@ bool GZip::zip(const QByteArray& uncompressedBytes, QByteArray& compressedBytes)
 	compressedBytes.clear();
 	compressedBytes.resize(compLength);
 
-	z_stream zs;
+	zng_stream zs;
 	memset(&zs, 0, sizeof(zs));
 
-	if (deflateInit2(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED, (16 + MAX_WBITS),
+	if (zng_deflateInit2(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED, (16 + MAX_WBITS),
 					 8, Z_DEFAULT_STRATEGY) != Z_OK) {
 		return false;
 	}
 
-	zs.next_in = (Bytef*)uncompressedBytes.data();
+	zs.next_in = (const uint8_t*)uncompressedBytes.data();
 	zs.avail_in = uncompressedBytes.size();
 
 	int ret;
@@ -112,15 +112,15 @@ bool GZip::zip(const QByteArray& uncompressedBytes, QByteArray& compressedBytes)
 		if (remaining < 1) {
 			compressedBytes.resize(compressedBytes.size() * 2);
 		}
-		zs.next_out = (Bytef*)(compressedBytes.data() + offset);
+		zs.next_out = (uint8_t*)(compressedBytes.data() + offset);
 		temp = zs.avail_out = compressedBytes.size() - offset;
-		ret = deflate(&zs, Z_FINISH);
+		ret = zng_deflate(&zs, Z_FINISH);
 		offset += temp - zs.avail_out;
 	} while (ret == Z_OK);
 
 	compressedBytes.resize(offset);
 
-	if (deflateEnd(&zs) != Z_OK) {
+	if (zng_deflateEnd(&zs) != Z_OK) {
 		return false;
 	}
 

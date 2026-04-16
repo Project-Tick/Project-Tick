@@ -4,23 +4,19 @@
 
 cmake_minimum_required(VERSION 3.15)
 project(libnbt++
-    VERSION 3.1)
+    VERSION 3.1
+    LANGUAGES CXX)
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+include(GenerateExportHeader)
 
 # supported configure options
-option(NBT_BUILD_SHARED "Build shared libraries" OFF)
+option(NBT_BUILD_SHARED "Build shared libraries" ON)
 option(NBT_USE_ZLIB "Build additional zlib stream functionality" ON)
-option(NBT_BUILD_TESTS "Build the unit tests. Requires CxxTest." ON)
+option(NBT_BUILD_TESTS "Build the unit tests. Requires CxxTest." OFF)
 
-if(NBT_NAME)
-    message("Using override nbt++ name: ${NBT_NAME}")
-else()
-    set(NBT_NAME nbt++)
-endif()
-
-# hide this from includers.
 set(BUILD_SHARED_LIBS ${NBT_BUILD_SHARED})
-
-include(GenerateExportHeader)
 
 set(NBT_SOURCES
     src/endian_str.cpp
@@ -46,32 +42,60 @@ if(NBT_USE_ZLIB)
     add_definitions("-DNBT_HAVE_ZLIB")
 endif()
 
-add_library(${NBT_NAME} ${NBT_SOURCES})
-target_include_directories(${NBT_NAME} PUBLIC include ${CMAKE_CURRENT_BINARY_DIR})
+add_library(nbt++ ${NBT_SOURCES})
+add_library(nbt++::nbt++ ALIAS nbt++)
 
-# Local developer tests are built in the test subdirectory now
-
-# Install it
-if(DEFINED NBT_DEST_DIR)
-    install(
-        TARGETS ${NBT_NAME}
-        ARCHIVE DESTINATION ${LIBRARY_DEST_DIR}
-        RUNTIME DESTINATION ${LIBRARY_DEST_DIR}
-        LIBRARY DESTINATION ${LIBRARY_DEST_DIR}
-    )
-endif()
+target_include_directories(nbt++
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/nbt++>)
 
 if(NBT_USE_ZLIB)
-    target_link_libraries(${NBT_NAME} ZLIB::ZLIB)
+    target_link_libraries(nbt++ PUBLIC ZLIB::ZLIB)
 endif()
-set_property(TARGET ${NBT_NAME} PROPERTY CXX_STANDARD 11)
-generate_export_header(${NBT_NAME} BASE_NAME nbt)
+set_property(TARGET nbt++ PROPERTY CXX_STANDARD 11)
+generate_export_header(nbt++ BASE_NAME nbt)
 
 if(${BUILD_SHARED_LIBS})
-    set_target_properties(${NBT_NAME} PROPERTIES
+    set_target_properties(nbt++ PROPERTIES
         CXX_VISIBILITY_PRESET hidden
-        VISIBILITY_INLINES_HIDDEN 1)
+        VISIBILITY_INLINES_HIDDEN 1
+        VERSION ${PROJECT_VERSION}
+        SOVERSION ${PROJECT_VERSION_MAJOR})
 endif()
+
+# Install
+install(TARGETS nbt++
+    EXPORT nbt++-targets
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+install(DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/nbt++)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/nbt_export.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/nbt++)
+
+install(EXPORT nbt++-targets
+    NAMESPACE nbt++::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/nbt++)
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/nbt++Config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/nbt++-config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/nbt++)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/nbt++-config-version.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/nbt++-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/nbt++-config-version.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/nbt++)
 
 if(NBT_BUILD_TESTS)
     enable_testing()

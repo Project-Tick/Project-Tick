@@ -42,6 +42,44 @@ jobs:
           build-type: Debug
           qt-version: 6.9.3
 
+      - name: Build and install monorepo libraries (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          MONOREPO_ROOT="${GITHUB_WORKSPACE}"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=/usr/local"
+
+          install_lib() {
+            local dir="$1"; shift
+            echo "::group::Building $dir"
+            cmake -S "$MONOREPO_ROOT/$dir" -B "$MONOREPO_ROOT/$dir/build" \
+              $CMAKE_COMMON "$@" -G Ninja
+            cmake --build "$MONOREPO_ROOT/$dir/build"
+            sudo cmake --install "$MONOREPO_ROOT/$dir/build"
+            echo "::endgroup::"
+          }
+
+          # External dependencies from monorepo
+          install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
+          install_lib cmark
+          # tomlplusplus is header-only, installed via system package
+          install_lib libnbtplusplus
+
+          # Internal libraries
+          install_lib optional-bare
+          install_lib xz-embedded
+          install_lib systeminfo
+          install_lib ganalytics
+          install_lib rainbow
+          install_lib iconfix
+          install_lib LocalPeer
+          install_lib classparser
+          install_lib katabasis
+
+          # Java jars
+          install_lib javacheck
+          install_lib javalauncher
+
       - name: Configure and Build
         run: |
           cmake --preset linux -DLauncher_USE_PCH=OFF

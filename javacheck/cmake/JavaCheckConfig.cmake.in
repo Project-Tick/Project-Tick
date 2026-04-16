@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+set(JAVACHECK_JAR "${PACKAGE_PREFIX_DIR}/share/JavaCheck/JavaCheck.jar")
+if(NOT EXISTS "${JAVACHECK_JAR}")
+    message(FATAL_ERROR "JavaCheck.jar not found at ${JAVACHECK_JAR}")
+endif()
+check_required_components(JavaCheck)

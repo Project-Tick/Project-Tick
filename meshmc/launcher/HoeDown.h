@@ -41,64 +41,24 @@
  */
 
 #pragma once
-#include <hoedown/html.h>
-#include <hoedown/document.h>
+#include <cmark.h>
 #include <QString>
 #include <QByteArray>
 
 /**
- * hoedown wrapper, because dealing with resource lifetime in C is stupid
+ * Markdown-to-HTML wrapper using cmark (CommonMark)
+ *
+ * Drop-in replacement for the old hoedown-based HoeDown class.
+ * Kept the class name for source compatibility.
  */
 class HoeDown
 {
   public:
-	class buffer
-	{
-	  public:
-		buffer(size_t unit = 4096)
-		{
-			buf = hoedown_buffer_new(unit);
-		}
-		~buffer()
-		{
-			hoedown_buffer_free(buf);
-		}
-		const char* cstr()
-		{
-			return hoedown_buffer_cstr(buf);
-		}
-		void put(QByteArray input)
-		{
-			hoedown_buffer_put(buf, (uint8_t*)input.data(), input.size());
-		}
-		const uint8_t* data() const
-		{
-			return buf->data;
-		}
-		size_t size() const
-		{
-			return buf->size;
-		}
-		hoedown_buffer* buf;
-	} ib, ob;
-	HoeDown()
-	{
-		renderer = hoedown_html_renderer_new((hoedown_html_flags)0, 0);
-		document = hoedown_document_new(renderer, (hoedown_extensions)0, 8);
-	}
-	~HoeDown()
-	{
-		hoedown_document_free(document);
-		hoedown_html_renderer_free(renderer);
-	}
 	QString process(QByteArray input)
 	{
-		ib.put(input);
-		hoedown_document_render(document, ob.buf, ib.data(), ib.size());
-		return ob.cstr();
+		char* html = cmark_markdown_to_html(input.constData(), input.size(), CMARK_OPT_DEFAULT);
+		QString result = QString::fromUtf8(html);
+		free(html);
+		return result;
 	}
-
-  private:
-	hoedown_document* document;
-	hoedown_renderer* renderer;
 };

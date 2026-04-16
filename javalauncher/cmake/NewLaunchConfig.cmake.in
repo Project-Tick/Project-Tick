@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+set(NEWLAUNCH_JAR "${PACKAGE_PREFIX_DIR}/share/NewLaunch/NewLaunch.jar")
+if(NOT EXISTS "${NEWLAUNCH_JAR}")
+    message(FATAL_ERROR "NewLaunch.jar not found at ${NEWLAUNCH_JAR}")
+endif()
+check_required_components(NewLaunch)

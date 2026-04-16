@@ -563,8 +563,7 @@ add_unit_test(Index
 
 ################################ COMPILE ################################
 
-# we need zlib
-find_package(ZLIB REQUIRED)
+# neozip, cmark, toml++, and nbt++ are found at the top-level CMakeLists.txt via find_package
 
 set(LOGIC_SOURCES
     ${CORE_SOURCES}
@@ -965,14 +964,14 @@ endif()
 # Add executable
 add_library(MeshMC_logic STATIC ${LOGIC_SOURCES} ${MESHMC_SOURCES} ${MESHMC_UI} ${MESHMC_RESOURCES})
 target_link_libraries(MeshMC_logic
-    systeminfo
-    MeshMC_classparser
-    ${NBT_NAME}
-    ${ZLIB_LIBRARIES}
-    optional-bare
-    tomlc99
+    systeminfo::systeminfo
+    classparser
+    nbt++::nbt++
+    neozip::zlib
+    optional-bare::optional-bare
+    tomlplusplus::tomlplusplus
     BuildConfig
-    Katabasis
+    Katabasis::Katabasis
 )
 
 if(MeshMC_DISABLE_JAVA_DOWNLOADER)
@@ -988,11 +987,11 @@ target_link_libraries(MeshMC_logic
     LibArchive::LibArchive
 )
 target_link_libraries(MeshMC_logic
-    MeshMC_iconfix
-    hoedown
-    MeshMC_rainbow
-    LocalPeer
-    ganalytics
+    iconfix
+    cmark::cmark
+    rainbow
+    LocalPeer::LocalPeer
+    ganalytics::ganalytics
 )
 
 # Plugin system needs dlopen/dlsym on Unix
@@ -1075,7 +1074,7 @@ if(WIN32 OR (UNIX AND APPLE))
 
     # Bundle our linked dependencies
     # For vcpkg builds, include both release and debug bin directories so
-    # RUNTIME_DEPENDENCY_SET can find DLLs like zlibd.dll in debug/bin/.
+    # RUNTIME_DEPENDENCY_SET can find DLLs like neozip.dll in debug/bin/.
     if(VCPKG_INSTALLED_DIR AND VCPKG_TARGET_TRIPLET)
         set(_vcpkg_bin "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
         set(_vcpkg_debug_bin "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/bin")
