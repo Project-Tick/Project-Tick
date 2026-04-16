@@ -16,3 +16,4 @@ add_subdirectory(staging)
 #################################### Register plugins here ####################################
 
 add_subdirectory(BackupSystem)
+add_subdirectory(NVIDIAPrime)
