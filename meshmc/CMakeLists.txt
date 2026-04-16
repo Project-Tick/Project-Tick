@@ -155,6 +155,12 @@ QUERY_QMAKE(QT_INSTALL_PLUGINS QT_PLUGINS_DIR)
 QUERY_QMAKE(QT_INSTALL_LIBS QT_LIBS_DIR)
 QUERY_QMAKE(QT_INSTALL_LIBEXECS QT_LIBEXECS_DIR)
 
+# Map missing multi-config configurations to available ones.
+# Monorepo libraries are built with single-config (Ninja), but MeshMC uses
+# Ninja Multi-Config which validates all configurations at configure time.
+set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO RelWithDebInfo Release Debug "")
+set(CMAKE_MAP_IMPORTED_CONFIG_MINSIZEREL MinSizeRel Release Debug "")
+
 find_package(LibArchive REQUIRED)
 find_package(neozip REQUIRED)
 find_package(cmark REQUIRED)
