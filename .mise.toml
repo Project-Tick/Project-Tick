@@ -8,6 +8,7 @@
 [tools]
 node = "22"
 go = "latest"
+"conda:clang-format" = "22"
 
 [env]
 CI = ""
