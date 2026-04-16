@@ -156,6 +156,7 @@
 /meshmc/cmake/UnitTest/                                 @YongDo-Hyun
 /meshmc/cmake/vcpkg-ports/                              @YongDo-Hyun
 /meshmc/cmake/vcpkg-triplets/                           @YongDo-Hyun
+/meshmc/crashreporter/                                  @YongDo-Hyun
 /meshmc/doc/                                            @YongDo-Hyun
 /meshmc/launcher/*                                      @YongDo-Hyun
 /meshmc/launcher/icons/                                 @YongDo-Hyun
@@ -188,6 +189,8 @@
 /meshmc/launcher/news/                                  @YongDo-Hyun
 /meshmc/launcher/notifications/                         @YongDo-Hyun
 /meshmc/launcher/pathmatcher/                           @YongDo-Hyun
+/meshmc/launcher/plugin/*                               @YongDo-Hyun
+/meshmc/launcher/plugin/sdk/                            @YongDo-Hyun
 /meshmc/launcher/resources/*                            @YongDo-Hyun
 /meshmc/launcher/resources/assets/                      @YongDo-Hyun
 /meshmc/launcher/resources/backgrounds/                 @YongDo-Hyun
@@ -244,6 +247,10 @@
 /meshmc/libraries/systeminfo/                           @YongDo-Hyun
 /meshmc/libraries/tomlc99                               @YongDo-Hyun
 /meshmc/libraries/xz-embedded                           @YongDo-Hyun
+
+/meshmc/plugins/*                                       @YongDo-Hyun
+/meshmc/plugins/BackupSystem/                           @YongDo-Hyun
+
 /meshmc/scripts/                                        @YongDo-Hyun
 /meshmc/updater/                                        @YongDo-Hyun
 
