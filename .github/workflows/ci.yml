@@ -42,7 +42,7 @@ concurrency:
       (github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && format('pr-{0}', github.event.pull_request.number) ||
       github.ref
     }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 # ╔════════════════════════════════════════════════════════════════╗
 # ║ Environment — shared across all jobs                           ║
