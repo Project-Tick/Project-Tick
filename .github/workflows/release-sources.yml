@@ -329,8 +329,8 @@ jobs:
       - name: Package MeshMC binary artifacts
         run: |
           # shellcheck disable=SC2086,SC2035
-          mv MeshMC-Linux-Qt6-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-Qt6-Portable-${{ env.VERSION }}.tar.gz
-          mv MeshMC-Linux-aarch64-Qt6-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-aarch64-Qt6-Portable-${{ env.VERSION }}.tar.gz
+          mv MeshMC-Linux-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-Portable-${{ env.VERSION }}.tar.gz
+          mv MeshMC-Linux-aarch64-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-aarch64-Portable-${{ env.VERSION }}.tar.gz
           mv MeshMC-*.AppImage/MeshMC-*-x86_64.AppImage MeshMC-Linux-x86_64.AppImage
           mv MeshMC-*.AppImage.zsync/MeshMC-*-x86_64.AppImage.zsync MeshMC-Linux-x86_64.AppImage.zsync
           mv MeshMC-*.AppImage/MeshMC-*-aarch64.AppImage MeshMC-Linux-aarch64.AppImage
@@ -398,8 +398,8 @@ jobs:
             MeshMC-Linux-x86_64.AppImage.zsync
             MeshMC-Linux-aarch64.AppImage
             MeshMC-Linux-aarch64.AppImage.zsync
-            MeshMC-Linux-Qt6-Portable-${{ env.VERSION }}.tar.gz
-            MeshMC-Linux-aarch64-Qt6-Portable-${{ env.VERSION }}.tar.gz
+            MeshMC-Linux-Portable-${{ env.VERSION }}.tar.gz
+            MeshMC-Linux-aarch64-Portable-${{ env.VERSION }}.tar.gz
             MeshMC-Windows-MinGW-w64-${{ env.VERSION }}.zip
             MeshMC-Windows-MinGW-w64-Portable-${{ env.VERSION }}.zip
             MeshMC-Windows-MinGW-w64-Setup-${{ env.VERSION }}.exe
