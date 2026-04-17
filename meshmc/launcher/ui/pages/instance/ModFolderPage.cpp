@@ -289,9 +289,10 @@ void ModFolderPage::on_RunningState_changed(bool running)
 
 	// Resource packs and shader packs can be safely added while
 	// Minecraft is running (reloaded via F3+T or settings menu)
-	bool canDownload = m_controlsEnabled ||
-					   m_contentType == ModPlatform::ContentType::ResourcePack ||
-					   m_contentType == ModPlatform::ContentType::ShaderPack;
+	bool canDownload =
+		m_controlsEnabled ||
+		m_contentType == ModPlatform::ContentType::ResourcePack ||
+		m_contentType == ModPlatform::ContentType::ShaderPack;
 	ui->actionDownload->setEnabled(canDownload);
 	ui->actionAdd->setEnabled(m_controlsEnabled || canDownload);
 }

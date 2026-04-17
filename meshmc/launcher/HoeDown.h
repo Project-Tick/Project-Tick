@@ -56,7 +56,8 @@ class HoeDown
   public:
 	QString process(QByteArray input)
 	{
-		char* html = cmark_markdown_to_html(input.constData(), input.size(), CMARK_OPT_DEFAULT);
+		char* html = cmark_markdown_to_html(input.constData(), input.size(),
+											CMARK_OPT_DEFAULT);
 		QString result = QString::fromUtf8(html);
 		free(html);
 		return result;

@@ -94,8 +94,8 @@ bool GZip::zip(const QByteArray& uncompressedBytes, QByteArray& compressedBytes)
 	zng_stream zs;
 	memset(&zs, 0, sizeof(zs));
 
-	if (zng_deflateInit2(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED, (16 + MAX_WBITS),
-					 8, Z_DEFAULT_STRATEGY) != Z_OK) {
+	if (zng_deflateInit2(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+						 (16 + MAX_WBITS), 8, Z_DEFAULT_STRATEGY) != Z_OK) {
 		return false;
 	}
 

@@ -18,7 +18,8 @@ MMCO_DEFINE_MODULE(
 	"GPL-3.0-or-later");
 
 static MMCOContext* g_ctx = nullptr;
-static constexpr const char SETTING_KEY[] = "plugin.backup_system.BackupBeforeLaunch";
+static constexpr const char SETTING_KEY[] =
+	"plugin.backup_system.BackupBeforeLaunch";
 static QCheckBox* g_backupCheckbox = nullptr;
 static QObject* g_guard = nullptr;
 
@@ -60,8 +61,7 @@ static void injectCheckboxIntoMeshMCPage()
 	auto* groupLayout = new QVBoxLayout(groupBox);
 
 	g_backupCheckbox = new QCheckBox(
-		QObject::tr("Automatically backup instances before launch"),
-		groupBox);
+		QObject::tr("Automatically backup instances before launch"), groupBox);
 	g_backupCheckbox->setObjectName(QStringLiteral("backupBeforeLaunchCheck"));
 	g_backupCheckbox->setToolTip(
 		QObject::tr("Creates a snapshot of each instance before launching.\n"

@@ -120,7 +120,8 @@ namespace
 
 		toml::table tomlData;
 		try {
-			tomlData = toml::parse(std::string_view(contents.constData(), contents.size()));
+			tomlData = toml::parse(
+				std::string_view(contents.constData(), contents.size()));
 		} catch (const toml::parse_error&) {
 			return nullptr;
 		}
@@ -159,7 +160,8 @@ namespace
 		QString authors;
 		if (auto val = tomlData["authors"].value<std::string>()) {
 			authors = QString::fromStdString(*val);
-		} else if (auto val = (*tomlModsTable0)["authors"].value<std::string>()) {
+		} else if (auto val =
+					   (*tomlModsTable0)["authors"].value<std::string>()) {
 			authors = QString::fromStdString(*val);
 		}
 		if (!authors.isEmpty()) {
@@ -171,14 +173,16 @@ namespace
 		QString credits;
 		if (auto val = tomlData["credits"].value<std::string>()) {
 			credits = QString::fromStdString(*val);
-		} else if (auto val = (*tomlModsTable0)["credits"].value<std::string>()) {
+		} else if (auto val =
+					   (*tomlModsTable0)["credits"].value<std::string>()) {
 			credits = QString::fromStdString(*val);
 		}
 		details->credits = credits;
 		QString homeurl;
 		if (auto val = tomlData["displayURL"].value<std::string>()) {
 			homeurl = QString::fromStdString(*val);
-		} else if (auto val = (*tomlModsTable0)["displayURL"].value<std::string>()) {
+		} else if (auto val =
+					   (*tomlModsTable0)["displayURL"].value<std::string>()) {
 			homeurl = QString::fromStdString(*val);
 		}
 		if (!homeurl.isEmpty()) {
