@@ -154,6 +154,10 @@ jobs:
           install_lib javacheck
           install_lib javalauncher
 
+          # Refresh the dynamic linker cache so test binaries can find
+          # shared libraries (e.g. libneozip.so.2) installed into /usr/local/lib.
+          sudo ldconfig
+
       - name: Build and install monorepo libraries (macOS)
         if: ${{ runner.os == 'macOS' }}
         shell: bash
