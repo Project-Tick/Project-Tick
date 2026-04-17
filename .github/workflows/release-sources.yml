@@ -417,7 +417,6 @@ jobs:
             MeshMC-*.sha256
             neozip-*/neozip-*.zip
             meshmc-source-archives/*
-            meshmc-without-libraries-source-archives/*
             source-neozip/*
             source-cgit/*
             source-cmark/*
