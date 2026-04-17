@@ -1,4 +1,7 @@
-#!/usr/bin/env node
+#!/usr/bin/env nix-shell
+/*
+#!nix-shell -i node -p nodejs
+*/
 
 // Branch classification for the Project Tick monorepo.
 // Used by CI scripts to determine branch types and skip/run certain jobs.

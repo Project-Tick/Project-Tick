@@ -1,0 +1,13 @@
+vendor
+*.log
+config.json
+.bash_hist
+config.private.json
+config.prod.json
+config.local.json
+config.*irc*.json
+result
+target
+*.nix.orig
+*.nix.rej
+/.direnv

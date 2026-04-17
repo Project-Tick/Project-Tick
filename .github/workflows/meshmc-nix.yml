@@ -1,0 +1,82 @@
+name: "MeshMC: Nix"
+
+concurrency:
+  group: meshmc-nix-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions: {}
+
+env:
+  DEBUG: ${{ github.ref_type != 'tag' }}
+
+jobs:
+  build:
+    name: Build (${{ matrix.system }})
+
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            system: x86_64-linux
+
+          - os: ubuntu-22.04-arm
+            system: aarch64-linux
+
+          - os: macos-14
+            system: aarch64-darwin
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        working-directory: meshmc
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Setup Nix Magic Cache
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: DeterminateSystems/magic-nix-cache-action@v13
+        with:
+          diagnostic-endpoint: ""
+          use-flakehub: false
+
+      - name: Setup Cachix
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+        uses: cachix/cachix-action@v17
+        with:
+          name: meshmc
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Run Flake checks
+        run: |
+          nix flake check --print-build-logs --show-trace
+
+      - name: Build debug package
+        if: ${{ env.DEBUG == 'true' }}
+        run: |
+          nix build \
+            --no-link --print-build-logs --print-out-paths \
+            .#meshmc-debug >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build release package
+        if: ${{ env.DEBUG == 'false' }}
+        env:
+          TAG: ${{ github.ref_name }}
+          SYSTEM: ${{ matrix.system }}
+        run: |
+          nix build --no-link --print-out-paths .#meshmc \
+            | tee -a "$GITHUB_STEP_SUMMARY" \
+            | xargs cachix pin meshmc "$TAG"-"$SYSTEM"

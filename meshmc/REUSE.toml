@@ -10,7 +10,10 @@ path = [
   ".markdownlint.yaml",
   ".markdownlintignore",
   "Containerfile",
+  "default.nix",
   "flake.lock",
+  "flake.nix",
+  "shell.nix",
   "vcpkg-configuration.json",
   "vcpkg.json",
   ".clang-format",
@@ -62,4 +65,9 @@ SPDX-FileCopyrightText = "2026 Project Tick"
 [[annotations]]
 path = ["launcher/plugin/sdk/**.in"]
 SPDX-License-Identifier = "GPL-3.0-or-later WITH LicenseRef-MeshMC-MMCO-Module-Exception-1.0"
+SPDX-FileCopyrightText = "2026 Project Tick"
+
+[[annotations]]
+path = ["nix/**"]
+SPDX-License-Identifier = "GPL-3.0-or-later"
 SPDX-FileCopyrightText = "2026 Project Tick"

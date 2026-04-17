@@ -1,0 +1,101 @@
+{
+    "runner": {
+        "identity": "mail-tickborg-1",
+        "repos": ["project-tick/Project-Tick"],
+        "trusted_users": ["AhmetSamet06"]
+    },
+    "checkout": {
+        "root": "/var/lib/tickborg/checkout"
+    },
+    "build": {
+        "system": "x86_64-linux",
+        "build_timeout_seconds": 1800
+    },
+    "github_app": {
+        "app_id": 0,
+        "private_key": "/etc/tickborg/github-private-key.pem",
+        "oauth_client_id": "GITHUB_APP_CLIENT_ID",
+        "oauth_client_secret_file": "/etc/tickborg/github-oauth-secret"
+    },
+    "github_webhook_receiver": {
+        "listen": "0.0.0.0:9899",
+        "webhook_secret_file": "/etc/tickborg/webhook-secret",
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        }
+    },
+    "evaluation_filter": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        }
+    },
+    "github_comment_filter": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        }
+    },
+    "github_comment_poster": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        }
+    },
+    "builder": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        }
+    },
+    "push_filter": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        },
+        "default_attrs": []
+    },
+    "log_message_collector": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        },
+        "logs_path": "/var/log/tickborg"
+    },
+    "log_api_config": {
+        "listen": "127.0.0.1:9898",
+        "logs_path": "/var/log/tickborg",
+        "serve_root": "https://logs.tickborg.projecttick.net/logfile"
+    },
+    "stats": {
+        "rabbitmq": {
+            "ssl": false,
+            "host": "localhost",
+            "virtualhost": "/",
+            "username": "tickborg",
+            "password_file": "/etc/tickborg/rabbitmq-password"
+        }
+    }
+}

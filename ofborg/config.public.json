@@ -1,0 +1,33 @@
+{
+    "github_webhook_receiver": {
+        "listen": "[::1]:9899",
+        "webhook_secret_file": "/run/secrets/tickborg/github-webhook-secret",
+        "rabbitmq": {
+            "host": "localhost",
+            "ssl": false,
+            "username": "tickborg-github-webhook",
+            "password_file": "/run/secrets/tickborg/github-webhook-amqp-password",
+            "virtualhost": "tickborg"
+        }
+    },
+    "feedback": {
+        "full_logs": true
+    },
+    "log_storage": {
+        "path": "/var/lib/nginx/tickborg/logs/"
+    },
+    "runner": {
+        "repos": [
+            "project-tick/Project-Tick"
+        ],
+        "disable_trusted_users": false,
+        "trusted_users": []
+    },
+    "checkout": {
+        "root": "/var/lib/tickborg/.build-test"
+    },
+    "build": {
+        "system": "x86_64-linux",
+        "build_timeout_seconds": 3600
+    }
+}

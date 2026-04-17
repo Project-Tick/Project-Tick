@@ -504,7 +504,7 @@ jobs:
     secrets: inherit
 
   # ╔════════════════════════════════════════════════════════════════╗
-  # ║  STAGE 4 — Containers (only on full + meshmc changes)    ║
+  # ║  STAGE 4 — Containers & Nix (only on full + meshmc changes)    ║
   # ╚════════════════════════════════════════════════════════════════╝
 
   meshmc-container:
@@ -520,6 +520,20 @@ jobs:
     permissions:
       contents: read
       packages: write
+    secrets: inherit
+
+  meshmc-nix:
+    name: "MeshMC Nix"
+    needs: [gate, meshmc]
+    if: >-
+      always() &&
+      !cancelled() &&
+      needs.meshmc.result == 'success' &&
+      needs.gate.outputs.run_level == 'full' &&
+      (needs.gate.outputs.meshmc_changed == 'true' || needs.gate.outputs.run_level == 'full')
+    uses: ./.github/workflows/meshmc-nix.yml
+    permissions:
+      contents: read
     secrets: inherit
 
   # ╔════════════════════════════════════════════════════════════════╗
@@ -633,6 +647,7 @@ jobs:
       - mnv-codeql
       - neozip-codeql
       - meshmc-container
+      - meshmc-nix
     runs-on: ubuntu-latest
     steps:
       - name: Evaluate results
@@ -685,6 +700,7 @@ jobs:
           check_job "MNV CodeQL"     "${{ needs.mnv-codeql.result }}"
           check_job "NeoZip CodeQL"  "${{ needs.neozip-codeql.result }}"
           check_job "MeshMC Docker"  "${{ needs.meshmc-container.result }}"
+          check_job "MeshMC Nix"     "${{ needs.meshmc-nix.result }}"
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
 

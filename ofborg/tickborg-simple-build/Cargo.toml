@@ -1,0 +1,10 @@
+[package]
+name = "tickborg-simple-build"
+version = "0.1.0"
+authors = ["Project Tick"]
+edition = "2024"
+
+[dependencies]
+tickborg = { path = "../tickborg" }
+
+log = "0.4.25"

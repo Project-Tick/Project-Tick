@@ -1,0 +1,38 @@
+name: "MeshMC: Update Flake"
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  update-flake:
+    if: github.repository_owner == 'Project-Tick'
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: meshmc
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+
+      - uses: DeterminateSystems/update-flake-lock@v28
+        with:
+          path-to-flake-dir: meshmc
+          commit-msg: "chore(nix): update lockfile"
+          pr-title: "chore(nix): update lockfile"
+          pr-labels: |
+            platform: Linux
+            area: packaging
+            complexity: low
+            priority: low
+            type: robot
+            changelog:omit

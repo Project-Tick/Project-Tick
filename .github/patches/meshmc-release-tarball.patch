@@ -15,8 +15,8 @@ diff --git a/meshmc/REUSE.toml b/meshmc/REUSE.toml
 index 7583e77738..f9bf07171a 100644
 --- a/meshmc/REUSE.toml
 +++ b/meshmc/REUSE.toml
-@@ -66,3 +66,8 @@ SPDX-FileCopyrightText = "NONE"
- path = ["CMakePresets.json"]
+@@ -71,3 +71,8 @@ SPDX-FileCopyrightText = "2026 Project Tick"
+ path = ["nix/**"]
  SPDX-License-Identifier = "GPL-3.0-or-later"
  SPDX-FileCopyrightText = "2026 Project Tick"
 +
@@ -24,3 +24,279 @@ index 7583e77738..f9bf07171a 100644
 +path = ["libraries/libnbtplusplus/**"]
 +SPDX-License-Identifier = "LGPL-3.0-or-later"
 +SPDX-FileCopyrightText = "libnbtplusplus Contributors & ljfa-ag & Project Tick"
+diff --git a/meshmc/bootstrap.cmd b/meshmc/bootstrap.cmd
+index 9da8b46195..4f7551bafa 100644
+--- a/meshmc/bootstrap.cmd
++++ b/meshmc/bootstrap.cmd
+@@ -3,7 +3,7 @@ rem SPDX-License-Identifier: GPL-3.0-or-later
+ rem SPDX-FileCopyrightText: 2026 Project Tick
+ rem
+ rem MeshMC Bootstrap Script (Windows)
+-rem Checks dependencies, installs via vcpkg/scoop, and sets up lefthook.
++rem Checks dependencies, installs via vcpkg/scoop.
+ 
+ setlocal EnableDelayedExpansion
+ 
+@@ -14,21 +14,6 @@ echo [INFO]  MeshMC Bootstrap
+ echo ---------------------------------------------
+ echo.
+ 
+-rem ── Submodules ──────────────────────────────────────────────────────────────
+-if not exist ".git" (
+-    echo [ERR]  Not a git repository. Please run this script from the project root. 1>&2
+-    exit /b 1
+-)
+-
+-echo [INFO]  Setting up submodules...
+-git submodule update --init --recursive
+-if errorlevel 1 (
+-    echo [ERR]  Submodule initialization failed. 1>&2
+-    exit /b 1
+-)
+-echo [ OK ]  Submodules initialized
+-echo.
+-
+ rem ── Check for scoop ─────────────────────────────────────────────────────────
+ set "HAS_SCOOP=0"
+ where scoop >nul 2>&1 && set "HAS_SCOOP=1"
+@@ -68,8 +53,6 @@ set "MISSING="
+ 
+ call :check_cmd npm npm
+ call :check_cmd Go go
+-call :check_cmd lefthook lefthook
+-call :check_cmd reuse reuse
+ call :check_cmd CMake cmake
+ call :check_cmd Git git
+ 
+@@ -104,22 +87,6 @@ echo !MISSING! | findstr /i "CMake" >nul && (
+     scoop install cmake
+ )
+ 
+-echo !MISSING! | findstr /i "reuse" >nul && (
+-    echo [INFO]  Installing reuse via pip...
+-    where pip >nul 2>&1 || scoop install python
+-    pip install reuse
+-)
+-
+-echo !MISSING! | findstr /i "lefthook" >nul && (
+-    echo [INFO]  Installing lefthook...
+-    where go >nul 2>&1 && (
+-        go install github.com/evilmartians/lefthook@latest
+-        set "PATH=%GOPATH%\bin;%USERPROFILE%\go\bin;%PATH%"
+-    ) || (
+-        scoop install lefthook
+-    )
+-)
+-
+ echo.
+ echo [ OK ]  Package installation complete
+ echo.
+@@ -130,7 +97,6 @@ where vcpkg >nul 2>&1
+ if errorlevel 1 (
+     echo [WARN]  vcpkg not found. Skipping C/C++ library installation.
+     echo [WARN]  You will need to manually install: qt6, quazip, zlib, extra-cmake-modules
+-    goto :setup_lefthook
+ )
+ 
+ echo [INFO]  Installing C/C++ libraries via vcpkg...
+@@ -155,23 +121,6 @@ echo.
+ echo [ OK ]  vcpkg libraries installed
+ echo.
+ 
+-rem ── Lefthook Setup ─────────────────────────────────────────────────────────
+-:setup_lefthook
+-where lefthook >nul 2>&1
+-if errorlevel 1 (
+-    echo [ERR]  lefthook is not available. Cannot set up git hooks. 1>&2
+-    exit /b 1
+-)
+-
+-echo [INFO]  Setting up lefthook...
+-lefthook install
+-if errorlevel 1 (
+-    echo [ERR]  lefthook install failed. 1>&2
+-    exit /b 1
+-)
+-echo [ OK ]  Lefthook hooks installed into .git\hooks
+-echo.
+-
+ echo ---------------------------------------------
+ echo [ OK ]  Bootstrap successful! You're all set.
+ echo.
+diff --git a/meshmc/bootstrap.sh b/meshmc/bootstrap.sh
+index 3762deaa2e..929351fdf5 100755
+--- a/meshmc/bootstrap.sh
++++ b/meshmc/bootstrap.sh
+@@ -3,7 +3,7 @@
+ # SPDX-FileCopyrightText: 2026 Project Tick
+ #
+ # MeshMC Bootstrap Script
+-# Detects distro, installs dependencies, and sets up lefthook.
++# Detects distro, installs dependencies.
+ 
+ set -euo pipefail
+ 
+@@ -98,8 +98,6 @@ check_dependencies() {
+ 
+     check_cmd "npm"       "npm"
+     check_cmd "Go"        "go"
+-    check_cmd "lefthook"  "lefthook"
+-    check_cmd "reuse"     "reuse"
+     check_lib "Qt6"       "Qt6Core"
+     check_lib "QuaZip"    "quazip1-qt6"
+     check_lib "zlib"      "zlib"
+@@ -117,8 +115,7 @@ install_debian_ubuntu() {
+         libquazip1-qt6-dev \
+         zlib1g-dev \
+         extra-cmake-modules \
+-        pkg-config \
+-        reuse
++        pkg-config
+ }
+ 
+ install_fedora() {
+@@ -130,8 +127,7 @@ install_fedora() {
+         quazip-qt6-devel \
+         zlib-devel \
+         extra-cmake-modules \
+-        pkgconf \
+-        reuse
++        pkgconf
+ }
+ 
+ install_rhel() {
+@@ -144,8 +140,7 @@ install_rhel() {
+         quazip-qt6-devel \
+         zlib-devel \
+         extra-cmake-modules \
+-        pkgconf \
+-        reuse
++        pkgconf
+ }
+ 
+ install_suse() {
+@@ -157,8 +152,7 @@ install_suse() {
+         quazip-qt6-devel \
+         zlib-devel \
+         extra-cmake-modules \
+-        pkg-config \
+-        python3-reuse
++        pkg-config
+ }
+ 
+ install_arch() {
+@@ -170,8 +164,7 @@ install_arch() {
+         quazip-qt6 \
+         zlib \
+         extra-cmake-modules \
+-        pkgconf \
+-        reuse
++        pkgconf
+ }
+ 
+ install_macos() {
+@@ -187,26 +180,7 @@ install_macos() {
+         qt@6 \
+         quazip \
+         zlib \
+-        extra-cmake-modules \
+-        reuse \
+-        lefthook
+-}
+-
+-install_lefthook() {
+-    if command -v lefthook &>/dev/null; then
+-        return
+-    fi
+-
+-    info "Installing lefthook via Go..."
+-    go install github.com/evilmartians/lefthook@latest
+-
+-    export PATH="${GOPATH:-$HOME/go}/bin:$PATH"
+-
+-    if ! command -v lefthook &>/dev/null; then
+-        err "lefthook installation failed. Please install it manually."
+-        exit 1
+-    fi
+-    ok "lefthook installed successfully"
++        extra-cmake-modules
+ }
+ 
+ install_missing() {
+@@ -227,43 +201,16 @@ install_missing() {
+         macos)         install_macos          ;;
+     esac
+ 
+-    install_lefthook
+-
+     echo
+     ok "Package installation complete"
+ }
+ 
+-setup_lefthook() {
+-    if [ ! -d ".git" ]; then
+-        err "Not a git repository. Please run this script from the project root."
+-        exit 1
+-    fi
+-
+-    info "Setting up lefthook..."
+-    lefthook install
+-    ok "Lefthook hooks installed into .git/hooks"
+-}
+-
+-init_submodules() {
+-    if [ ! -d ".git" ]; then
+-        err "Not a git repository. Please run this script from the project root."
+-        exit 1
+-    fi
+-
+-    info "Setting up submodules..."
+-    git submodule update --init --recursive
+-    ok "Submodules initialized"
+-}
+-
+ main() {
+     echo
+     info "MeshMC Bootstrap"
+     echo "─────────────────────────────────────────────"
+     echo
+ 
+-    init_submodules
+-    echo
+-
+     detect_distro
+     echo
+ 
+@@ -272,9 +219,6 @@ main() {
+     install_missing
+     echo
+ 
+-    setup_lefthook
+-    echo
+-
+     echo "─────────────────────────────────────────────"
+     ok "Bootstrap successful! You're all set."
+     echo
+diff --git a/meshmc/nix/unwrapped.nix b/meshmc/nix/unwrapped.nix
+index 2fb7be247f..15ee0bdf7b 100644
+--- a/meshmc/nix/unwrapped.nix
++++ b/meshmc/nix/unwrapped.nix
+@@ -42,9 +42,9 @@ stdenv.mkDerivation {
+   version = "7.0-unstable-${date}";
+ 
+   src = lib.fileset.toSource {
+-    root = ../../.;
++    root = ../.;
+     fileset = lib.fileset.unions [
+-      ../../bootstrap.sh
++      ../bootstrap.sh
+       ../branding
+       ../buildconfig
+       ../BUILD.md
+@@ -64,7 +64,6 @@ stdenv.mkDerivation {
+       ../launcher
+       ../lefthook.yml
+-      ../../libnbtplusplus
+       ../LICENSES
+       ../.markdownlintignore
+       ../.markdownlint.yaml

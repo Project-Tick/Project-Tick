@@ -1,0 +1,7 @@
+[Unit]
+Description=Tickborg CI Bot Services
+After=network-online.target rabbitmq-server.service
+Wants=network-online.target
+
+[Install]
+WantedBy=multi-user.target

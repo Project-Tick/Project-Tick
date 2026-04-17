@@ -7,10 +7,13 @@ path = [
   ".gitmodules",
   ".github/**",
   ".envrc",
-  ".mise.toml",
   ".markdownlint.yaml",
   ".markdownlintignore",
   "Containerfile",
+  "default.nix",
+  "flake.lock",
+  "flake.nix",
+  "shell.nix",
   "vcpkg-configuration.json",
   "vcpkg.json",
   ".clang-format",
@@ -66,6 +69,11 @@ SPDX-FileCopyrightText = "NONE"
 
 [[annotations]]
 path = ["CMakePresets.json"]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+SPDX-FileCopyrightText = "2026 Project Tick"
+
+[[annotations]]
+path = ["nix/**"]
 SPDX-License-Identifier = "GPL-3.0-or-later"
 SPDX-FileCopyrightText = "2026 Project Tick"
 
@@ -144,6 +152,10 @@ path = ["images4docker/**"]
 SPDX-License-Identifier = "GPL-3.0-or-later"
 SPDX-FileCopyrightText = "Project Tick"
 
+[[annotations]]
+path = ["ofborg/**"]
+SPDX-License-Identifier = "MIT"
+SPDX-FileCopyrightText = "NixOS Contributors & Project Tick"
 
 [[annotations]]
 path = ["GOVERNANCE.md",

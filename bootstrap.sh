@@ -92,49 +92,6 @@ check_lib() {
     fi
 }
 
-LLVM_MIN_VER=22
-LLVM_CLANG=""
-
-check_llvm() {
-    # 1. Try versioned binary (Debian/Ubuntu: clang-22)
-    if command -v "clang-${LLVM_MIN_VER}" &>/dev/null; then
-        LLVM_CLANG="clang-${LLVM_MIN_VER}"
-        ok "LLVM ${LLVM_MIN_VER} found: $LLVM_CLANG ($(command -v "$LLVM_CLANG"))"
-        return
-    fi
-
-    # 2. Try Homebrew keg-only path (macOS)
-    if [[ "${DISTRO:-}" == "macos" ]]; then
-        local brew_llvm
-        brew_llvm="$(brew --prefix llvm 2>/dev/null || true)"
-        if [[ -n "$brew_llvm" && -x "${brew_llvm}/bin/clang" ]]; then
-            local ver
-            ver=$("${brew_llvm}/bin/clang" --version 2>/dev/null | head -1 | grep -oP '\d+' | head -1)
-            if [[ -n "$ver" && "$ver" -ge "$LLVM_MIN_VER" ]]; then
-                LLVM_CLANG="${brew_llvm}/bin/clang"
-                ok "LLVM ${ver} found via Homebrew: $LLVM_CLANG"
-                return
-            fi
-        fi
-    fi
-
-    # 3. Try unversioned binary and check version (Fedora/Arch/SUSE)
-    if command -v clang &>/dev/null; then
-        local ver
-        ver=$(clang --version 2>/dev/null | head -1 | grep -oP '\d+' | head -1)
-        if [[ -n "$ver" && "$ver" -ge "$LLVM_MIN_VER" ]]; then
-            LLVM_CLANG="clang"
-            ok "LLVM ${ver} found: clang ($(command -v clang))"
-            return
-        else
-            warn "clang found but version ${ver:-unknown} < ${LLVM_MIN_VER}"
-        fi
-    fi
-
-    warn "LLVM ${LLVM_MIN_VER}+ is NOT installed"
-    MISSING_DEPS+=("LLVM ${LLVM_MIN_VER}")
-}
-
 check_dependencies() {
     info "Checking dependencies..."
     echo
@@ -147,21 +104,7 @@ check_dependencies() {
     check_lib "QuaZip"    "quazip1-qt6"
     check_lib "zlib"      "zlib"
     check_lib "ECM"       "ECM"
-    check_llvm
     echo
-}
-
-install_llvm_debian_ubuntu() {
-    info "Installing LLVM 22 via llvm.sh installer..."
-    if ! command -v curl &>/dev/null && ! command -v wget &>/dev/null; then
-        sudo apt-get install -y curl
-    fi
-    local tmp
-    tmp=$(mktemp)
-    curl -fsSL https://apt.llvm.org/llvm.sh -o "$tmp"
-    chmod +x "$tmp"
-    sudo bash "$tmp" 22
-    rm -f "$tmp"
 }
 
 install_debian_ubuntu() {
@@ -176,9 +119,6 @@ install_debian_ubuntu() {
         extra-cmake-modules \
         pkg-config \
         reuse
-    if [[ " ${MISSING_DEPS[*]} " == *" LLVM ${LLVM_MIN_VER} "* ]]; then
-        install_llvm_debian_ubuntu
-    fi
 }
 
 install_fedora() {
@@ -192,10 +132,6 @@ install_fedora() {
         extra-cmake-modules \
         pkgconf \
         reuse
-    if [[ " ${MISSING_DEPS[*]} " == *" LLVM ${LLVM_MIN_VER} "* ]]; then
-        info "Installing LLVM via dnf..."
-        sudo dnf install -y clang llvm lld || install_llvm_debian_ubuntu
-    fi
 }
 
 install_rhel() {
@@ -210,10 +146,6 @@ install_rhel() {
         extra-cmake-modules \
         pkgconf \
         reuse
-    if [[ " ${MISSING_DEPS[*]} " == *" LLVM ${LLVM_MIN_VER} "* ]]; then
-        info "Installing LLVM via dnf..."
-        sudo dnf install -y clang llvm lld || install_llvm_debian_ubuntu
-    fi
 }
 
 install_suse() {
@@ -227,10 +159,6 @@ install_suse() {
         extra-cmake-modules \
         pkg-config \
         python3-reuse
-    if [[ " ${MISSING_DEPS[*]} " == *" LLVM ${LLVM_MIN_VER} "* ]]; then
-        info "Installing LLVM via zypper..."
-        sudo zypper install -y clang llvm lld
-    fi
 }
 
 install_arch() {
@@ -244,10 +172,6 @@ install_arch() {
         extra-cmake-modules \
         pkgconf \
         reuse
-    if [[ " ${MISSING_DEPS[*]} " == *" LLVM ${LLVM_MIN_VER} "* ]]; then
-        info "Installing LLVM via pacman..."
-        sudo pacman -Sy --needed --noconfirm llvm clang lld
-    fi
 }
 
 install_macos() {
@@ -266,13 +190,6 @@ install_macos() {
         extra-cmake-modules \
         reuse \
         lefthook
-    if [[ " ${MISSING_DEPS[*]} " == *" LLVM ${LLVM_MIN_VER} "* ]]; then
-        info "Installing LLVM via Homebrew..."
-        brew install llvm
-        local brew_llvm
-        brew_llvm="$(brew --prefix llvm)"
-        info "LLVM is keg-only. Add to PATH: export PATH=\"${brew_llvm}/bin:\$PATH\""
-    fi
 }
 
 install_lefthook() {
