@@ -13,9 +13,6 @@ inputs:
     description: Visual Studio architecture to use
     required: true
     default: amd64
-  github-token:
-    description: GitHub token for package feed authentication
-    required: true
 
 runs:
   using: composite
@@ -37,33 +34,13 @@ runs:
         distribution: zulu
         java-version: 17
 
-    - name: Setup vcpkg cache (MSVC)
-      if: ${{ inputs.msystem == '' && inputs.build-type == 'Debug' }}
-      shell: pwsh
-      env:
-        USERNAME: ${{ github.repository_owner }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-        NUGET_RW: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-      run: |
-        .$(vcpkg fetch nuget) `
-          sources add `
-          -Source "$env:FEED_URL" `
-          -StorePasswordInClearText `
-          -Name GitHubPackages `
-          -UserName "$env:USERNAME" `
-          -Password "$env:GITHUB_TOKEN"
-        .$(vcpkg fetch nuget) `
-          setapikey "$env:GITHUB_TOKEN" `
-          -Source "$env:FEED_URL"
-        $mode = if ($env:NUGET_RW -eq 'true') { 'readwrite' } else { 'read' }
-        "VCPKG_BINARY_SOURCES=clear;nuget,$env:FEED_URL,$mode" | Out-File -Append $env:GITHUB_ENV
-
-    - name: Setup vcpkg environment (MSVC)
+    - name: Install system dependencies (MSVC)
       if: ${{ inputs.msystem == '' }}
-      shell: bash
+      shell: pwsh
       run: |
-        echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"
+        choco install pkgconfiglite -y
+        choco install libarchive -y
+        choco install extra-cmake-modules -y
 
     - name: Setup MSYS2 (MinGW)
       if: ${{ inputs.msystem != '' }}

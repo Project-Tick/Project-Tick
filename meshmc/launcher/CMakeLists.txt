@@ -1042,7 +1042,7 @@ install(TARGETS ${MeshMC_Name}
 if(WIN32 OR (UNIX AND APPLE))
     if(WIN32)
         # Find windeployqt directly — Qt's qt_generate_deploy_script tries to find
-        # windeployqt.debug.bat for Debug builds, which vcpkg doesn't ship.
+        # windeployqt.debug.bat for Debug builds, which may not be available.
         get_target_property(_qt_qmake_loc Qt6::qmake IMPORTED_LOCATION)
         get_filename_component(_qt_bin_dir "${_qt_qmake_loc}" DIRECTORY)
         find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
@@ -1073,12 +1073,6 @@ if(WIN32 OR (UNIX AND APPLE))
     endif()
 
     # Bundle our linked dependencies
-    # For vcpkg builds, include both release and debug bin directories so
-    # RUNTIME_DEPENDENCY_SET can find DLLs like neozip.dll in debug/bin/.
-    if(VCPKG_INSTALLED_DIR AND VCPKG_TARGET_TRIPLET)
-        set(_vcpkg_bin "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin")
-        set(_vcpkg_debug_bin "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/debug/bin")
-    endif()
     # Collect bin/ directories from CMAKE_PREFIX_PATH (both CMake variable and
     # environment variable) so RUNTIME_DEPENDENCY_SET can locate monorepo DLLs
     # such as rainbow.dll, iconfix.dll, nbt++.dll, etc.
@@ -1099,8 +1093,6 @@ if(WIN32 OR (UNIX AND APPLE))
             ${CMAKE_SYSTEM_LIBRARY_PATH}
             ${QT_LIBS_DIR}
             ${QT_LIBEXECS_DIR}
-            ${_vcpkg_bin}
-            ${_vcpkg_debug_bin}
             ${_prefix_path_bins}
         PRE_EXCLUDE_REGEXES
             "^(api-ms-win|ext-ms)-.*\\.dll$"

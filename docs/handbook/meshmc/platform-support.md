@@ -15,7 +15,6 @@ MeshMC targets Linux, macOS, and Windows with platform-specific build configurat
 
 Each preset is defined in `CMakePresets.json` and configures:
 - Compiler toolchain
-- vcpkg integration
 - Platform-specific CMake variables
 - Build/install directories
 
@@ -100,7 +99,7 @@ Qt6 handles Wayland and X11 transparently. MeshMC does not have platform-specifi
 
 - CMake 3.28+
 - Xcode / AppleClang (C++23 support)
-- Qt6 via Homebrew or vcpkg
+- Qt6 via Homebrew
 - Same library dependencies as Linux
 
 ### App Bundle
@@ -174,8 +173,8 @@ set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 #### MSVC
 - Visual Studio 2022 17.10+ (MSVC v143, C++23)
 - CMake 3.28+
-- Qt6 via vcpkg or installer
-- vcpkg for other dependencies
+- Qt6 via installer or Scoop/Chocolatey
+- System packages for other dependencies (Scoop, Chocolatey, or winget)
 
 #### MinGW
 - MinGW-w64 13+ (GCC 14+ for C++23)

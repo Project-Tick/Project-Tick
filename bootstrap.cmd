@@ -3,7 +3,7 @@ rem SPDX-License-Identifier: GPL-3.0-or-later
 rem SPDX-FileCopyrightText: 2026 Project Tick
 rem
 rem Project Tick Bootstrap Script (Windows)
-rem Checks dependencies, installs via vcpkg/scoop, and sets up lefthook.
+rem Checks dependencies, installs via scoop, and sets up lefthook.
 
 setlocal EnableDelayedExpansion
 
@@ -49,17 +49,6 @@ if "%HAS_SCOOP%"=="0" (
 )
 echo.
 
-rem ── Check for vcpkg ─────────────────────────────────────────────────────────
-set "HAS_VCPKG=0"
-where vcpkg >nul 2>&1 && set "HAS_VCPKG=1"
-
-if "%HAS_VCPKG%"=="0" (
-    echo [WARN]  vcpkg is not installed.
-    echo [INFO]  You can install vcpkg via: scoop install vcpkg
-    echo [INFO]  Or clone from https://github.com/microsoft/vcpkg
-)
-echo.
-
 rem ── Dependency Checks ──────────────────────────────────────────────────────
 echo [INFO]  Checking dependencies...
 echo.
@@ -78,7 +67,7 @@ echo.
 rem ── Install Missing Dependencies via Scoop ─────────────────────────────────
 if not defined MISSING (
     echo [ OK ]  All command-line dependencies are already installed!
-    goto :vcpkg_libs
+    goto :install_libs
 )
 
 echo [INFO]  Missing dependencies: %MISSING%
@@ -124,35 +113,24 @@ echo.
 echo [ OK ]  Package installation complete
 echo.
 
-rem ── vcpkg Libraries ─────────────────────────────────────────────────────────
-:vcpkg_libs
-where vcpkg >nul 2>&1
-if errorlevel 1 (
-    echo [WARN]  vcpkg not found. Skipping C/C++ library installation.
-    echo [WARN]  You will need to manually install: qt6, quazip, zlib, extra-cmake-modules
-    goto :setup_lefthook
-)
+rem ── C/C++ Libraries via Scoop ────────────────────────────────────────────────
+:install_libs
+echo [INFO]  Installing C/C++ libraries via Scoop...
 
-echo [INFO]  Installing C/C++ libraries via vcpkg...
-
-set "VCPKG_TRIPLET=x64-windows"
-
-vcpkg install qt5-base:%VCPKG_TRIPLET% >nul 2>&1 || (
-    echo [INFO]  Installing Qt6...
-    vcpkg install qtbase:%VCPKG_TRIPLET%
-)
-
-echo [INFO]  Installing quazip...
-vcpkg install quazip:%VCPKG_TRIPLET%
-
-echo [INFO]  Installing zlib...
-vcpkg install zlib:%VCPKG_TRIPLET%
+scoop bucket add extras >nul 2>&1
 
 echo [INFO]  Installing extra-cmake-modules...
-vcpkg install ecm:%VCPKG_TRIPLET%
+scoop install extras/extra-cmake-modules 2>nul || echo [WARN]  extra-cmake-modules not available via scoop, install manually.
+
+echo [INFO]  Installing libarchive...
+scoop install main/libarchive 2>nul || echo [WARN]  libarchive not available via scoop, install manually.
+
+echo [INFO]  Installing pkg-config...
+scoop install main/pkg-config 2>nul || echo [WARN]  pkg-config not available via scoop, install manually.
 
 echo.
-echo [ OK ]  vcpkg libraries installed
+echo [ OK ]  System libraries installed
+echo [INFO]  Monorepo libraries (tomlplusplus, cmark, etc.) will be built by build-deps.ps1
 echo.
 
 rem ── Lefthook Setup ─────────────────────────────────────────────────────────

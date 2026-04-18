@@ -154,8 +154,6 @@
 /meshmc/buildconfig/                                    @YongDo-Hyun
 /meshmc/cmake/*                                         @YongDo-Hyun
 /meshmc/cmake/UnitTest/                                 @YongDo-Hyun
-/meshmc/cmake/vcpkg-ports/                              @YongDo-Hyun
-/meshmc/cmake/vcpkg-triplets/                           @YongDo-Hyun
 /meshmc/crashreporter/                                  @YongDo-Hyun
 /meshmc/doc/                                            @YongDo-Hyun
 /meshmc/launcher/*                                      @YongDo-Hyun

@@ -2,7 +2,7 @@
 
 ## Overview
 
-MeshMC depends on a mix of bundled libraries (shipped in the source tree under `libraries/`) and external libraries resolved at build time via the system package manager or vcpkg.
+MeshMC depends on a mix of bundled libraries (shipped in the source tree under `libraries/`) and external libraries resolved at build time via the system package manager.
 
 ## Bundled Libraries
 
@@ -73,7 +73,7 @@ Parses and writes Minecraft NBT (Named Binary Tag) format:
 
 ## External Dependencies
 
-These are resolved at build time and must be installed on the system or via vcpkg:
+These are resolved at build time and must be installed on the system:
 
 | Library | CMake Target | Purpose | Required |
 |---|---|---|---|
@@ -147,39 +147,6 @@ Qt wrapper around zlib/minizip for ZIP I/O:
 - Instance export (creating `.zip` files)
 - Instance import (reading `.zip` modpacks)
 - Mod file inspection
-
-## vcpkg Integration
-
-The build system supports vcpkg for dependency management:
-
-```cmake
-# CMakePresets.json
-{
-    "configurePresets": [
-        {
-            "name": "windows_msvc",
-            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-            "cacheVariables": {
-                "VCPKG_TARGET_TRIPLET": "x64-windows"
-            }
-        }
-    ]
-}
-```
-
-### vcpkg.json
-
-```json
-{
-    "dependencies": [
-        "libarchive",
-        "zlib",
-        "quazip",
-        "cmark",
-        "tomlplusplus"
-    ]
-}
-```
 
 ## Build vs Runtime Dependencies
 

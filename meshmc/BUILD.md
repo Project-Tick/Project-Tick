@@ -47,7 +47,7 @@ Supported distributions: Debian, Ubuntu, Fedora, RHEL/CentOS, openSUSE, Arch Lin
 ..\bootstrap.cmd
 ```
 
-Uses [Scoop](https://scoop.sh) for CLI tools and [vcpkg](https://github.com/microsoft/vcpkg) for C/C++ libraries.
+Uses [Scoop](https://scoop.sh) for CLI tools and system libraries.
 
 ## Dependencies
 
@@ -192,10 +192,10 @@ directory with install prefix `install/`.
 | Preset             | Platform                  | Notes                                      |
 |--------------------|---------------------------|--------------------------------------------|
 | `linux`            | Linux                     | Available only on Linux hosts               |
-| `macos`            | macOS                     | Uses vcpkg toolchain (`$VCPKG_ROOT`)        |
+| `macos`            | macOS                     | Available only on macOS hosts               |
 | `macos_universal`  | macOS (Universal Binary)  | Builds for both x86_64 and arm64            |
 | `windows_mingw`    | Windows (MinGW)           | Available only on Windows hosts             |
-| `windows_msvc`     | Windows (MSVC)            | Uses vcpkg toolchain (`$VCPKG_ROOT`)        |
+| `windows_msvc`     | Windows (MSVC)            | Available only on Windows hosts             |
 
 All presets inherit from a hidden `base` preset which sets:
 
@@ -227,7 +227,6 @@ Some presets reference environment variables:
 
 | Variable          | Used By                        | Purpose                           |
 |-------------------|--------------------------------|-----------------------------------|
-| `VCPKG_ROOT`      | `macos`, `macos_universal`, `windows_msvc` | Path to vcpkg installation  |
 | `ARTIFACT_NAME`   | All (via `base`)               | Updater artifact identifier       |
 | `BUILD_PLATFORM`  | All (via `base`)               | Platform identifier string        |
 
@@ -270,10 +269,10 @@ cmake --preset linux && cmake --build --preset linux --config Release
 
 ### Prerequisites
 
-Make sure `VCPKG_ROOT` is set:
+Install dependencies via Homebrew:
 
 ```bash
-export VCPKG_ROOT="$HOME/vcpkg"
+brew install cmake ninja extra-cmake-modules qt@6 libarchive qrencode pkg-config
 ```
 
 ### Standard Build (Native Architecture)
@@ -302,10 +301,23 @@ cmake --install build --config Release
 
 ### Using MSVC
 
-Requires Visual Studio with C++ workload and vcpkg:
+Requires Visual Studio with C++ workload.
+
+Install dependencies via Scoop:
 
 ```cmd
-set VCPKG_ROOT=C:\path\to\vcpkg
+scoop install extras/extra-cmake-modules main/libarchive main/pkg-config
+```
+
+Or via Chocolatey:
+
+```cmd
+choco install extra-cmake-modules libarchive pkgconfiglite
+```
+
+Then configure and build:
+
+```cmd
 cmake --preset windows_msvc
 cmake --build --preset windows_msvc --config Release
 ```

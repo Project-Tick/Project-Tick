@@ -64,7 +64,7 @@ cd meshmc\
 ..\bootstrap.cmd
 ```
 
-Uses Scoop for CLI tools and vcpkg for C/C++ libraries.
+Uses Scoop for CLI tools and system libraries.
 
 ## Cloning the Repository
 
@@ -141,14 +141,20 @@ brew install \
 
 ### Windows
 
-On Windows, use vcpkg for C/C++ dependencies and ensure `VCPKG_ROOT` is set:
+On Windows, install C/C++ dependencies via Scoop:
 
 ```cmd
-set VCPKG_ROOT=C:\path\to\vcpkg
-vcpkg install qt6 quazip libarchive zlib cmark
+scoop install extras/extra-cmake-modules main/libarchive main/pkg-config
 ```
 
-Or install Qt via the Qt Online Installer for full module support.
+Or via Chocolatey:
+
+```cmd
+choco install extra-cmake-modules libarchive pkgconfiglite
+```
+
+Monorepo libraries (cmark, tomlplusplus, etc.) are built by `build-deps.ps1`.
+Qt can be installed via the Qt Online Installer for full module support.
 
 ## CMake Presets
 
@@ -159,10 +165,10 @@ MeshMC ships `CMakePresets.json` with pre-configured presets for each platform. 
 | Preset | Platform | Notes |
 |---|---|---|
 | `linux` | Linux | Available only on Linux hosts |
-| `macos` | macOS | Uses vcpkg toolchain (`$VCPKG_ROOT`) |
+| `macos` | macOS | Available only on macOS hosts |
 | `macos_universal` | macOS (Universal Binary) | Builds for x86_64 + arm64 |
 | `windows_mingw` | Windows (MinGW) | Available only on Windows hosts |
-| `windows_msvc` | Windows (MSVC) | Uses vcpkg toolchain (`$VCPKG_ROOT`) |
+| `windows_msvc` | Windows (MSVC) | Available only on Windows hosts |
 
 All presets inherit from a hidden `base` preset which sets:
 - **Generator:** `Ninja Multi-Config`
@@ -174,7 +180,6 @@ All presets inherit from a hidden `base` preset which sets:
 
 | Variable | Used By | Purpose |
 |---|---|---|
-| `VCPKG_ROOT` | `macos`, `macos_universal`, `windows_msvc` | Path to vcpkg installation |
 | `ARTIFACT_NAME` | All (via `base`) | Updater artifact identifier |
 | `BUILD_PLATFORM` | All (via `base`) | Platform identifier string |
 
@@ -225,10 +230,10 @@ cmake --preset linux && cmake --build --preset linux --config Release
 
 ### Prerequisites
 
-Ensure `VCPKG_ROOT` is set:
+Install dependencies via Homebrew:
 
 ```bash
-export VCPKG_ROOT="$HOME/vcpkg"
+brew install cmake ninja extra-cmake-modules qt@6 libarchive qrencode pkg-config
 ```
 
 ### Standard Build (Native Architecture)
@@ -270,10 +275,11 @@ The macOS install layout creates an application bundle:
 
 ### Using MSVC
 
-Requires Visual Studio with C++ workload and vcpkg:
+Requires Visual Studio with C++ workload.
+
+Install dependencies via Scoop or Chocolatey (see [Distro-Specific Package Installation](#distro-specific-package-installation)).
 
 ```cmd
-set VCPKG_ROOT=C:\path\to\vcpkg
 cmake --preset windows_msvc
 cmake --build --preset windows_msvc --config Release
 ```

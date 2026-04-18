@@ -126,8 +126,6 @@ meshmc/
 ├── flake.lock                 # Nix flake lock
 ├── flake.nix                  # Nix flake
 ├── shell.nix                  # Nix development shell
-├── vcpkg-configuration.json   # vcpkg configuration
-├── vcpkg.json                 # vcpkg dependencies
 │
 ├── branding/                  # Icons, logos, splash screens
 ├── build/                     # Build output directory

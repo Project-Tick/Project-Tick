@@ -227,21 +227,12 @@ jobs:
         if: ${{ runner.os == 'Windows' && matrix.msystem == '' }}
         shell: bash
         env:
-          VCPKG_ROOT: ${{ env.VCPKG_ROOT }}
           CMAKE_C_COMPILER_LAUNCHER: ""
           CMAKE_CXX_COMPILER_LAUNCHER: ""
         run: |
           MONOREPO_ROOT="${GITHUB_WORKSPACE}"
           INSTALL_PREFIX="${GITHUB_WORKSPACE}/meshmc-deps"
-          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
-
-          # Install vcpkg packages needed by monorepo libraries
-          if [[ "${{ matrix.vcvars-arch }}" == "arm64" ]]; then
-            VCPKG_TRIPLET="arm64-windows"
-          else
-            VCPKG_TRIPLET="x64-windows"
-          fi
-          "$VCPKG_ROOT/vcpkg" install --classic libarchive --triplet "$VCPKG_TRIPLET"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=$BUILD_TYPE"
 
           install_lib() {
             local dir="$1"; shift

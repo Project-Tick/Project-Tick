@@ -10,8 +10,6 @@ path = [
   ".markdownlint.yaml",
   ".markdownlintignore",
   "Containerfile",
-  "vcpkg-configuration.json",
-  "vcpkg.json",
   ".clang-format",
   ".clang-tidy"
 ]

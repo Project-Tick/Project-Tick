@@ -14,8 +14,6 @@ path = [
   "flake.lock",
   "flake.nix",
   "shell.nix",
-  "vcpkg-configuration.json",
-  "vcpkg.json",
   ".clang-format",
   ".clang-tidy",
   "CODEOWNERS",

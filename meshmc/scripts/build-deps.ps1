@@ -17,7 +17,6 @@
 #   MONOREPO_ROOT     Override monorepo root (default: auto-detected)
 #   INSTALL_PREFIX    Override install prefix
 #   BUILD_TYPE        Override build type (default: Release)
-#   VCPKG_ROOT        Path to vcpkg (required for MSVC builds)
 #   CMAKE_GENERATOR   Override generator (default: Ninja)
 
 [CmdletBinding()]
@@ -79,11 +78,6 @@ Write-Log "Platform: $Platform"
 # CMake flags
 ##############################################################################
 
-$VcpkgRoot = $env:VCPKG_ROOT
-if (-not $VcpkgRoot) {
-    Write-Err 'VCPKG_ROOT is not set. Please install vcpkg and set VCPKG_ROOT.'
-}
-
 $InstallPrefix = if ($env:INSTALL_PREFIX) {
     $env:INSTALL_PREFIX
 } else {
@@ -93,14 +87,12 @@ $InstallPrefix = if ($env:INSTALL_PREFIX) {
 $CMakeCommon = @(
     "-DCMAKE_INSTALL_PREFIX=$InstallPrefix"
     "-DCMAKE_BUILD_TYPE=$BuildType"
-    "-DCMAKE_TOOLCHAIN_FILE=$VcpkgRoot\scripts\buildsystems\vcpkg.cmake"
 )
 
 Write-Log "Install prefix: $InstallPrefix"
 Write-Log "Build type:     $BuildType"
 Write-Log "Generator:      $Generator"
 Write-Log "Jobs:           $Jobs"
-Write-Log "vcpkg:          $VcpkgRoot"
 
 ##############################################################################
 # Build a single library

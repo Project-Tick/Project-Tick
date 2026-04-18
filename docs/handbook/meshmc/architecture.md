@@ -50,8 +50,6 @@ meshmc/
 ├── flake.lock                 # Nix flake lock
 ├── shell.nix                  # Nix development shell
 ├── Containerfile              # Container build (Podman/Docker)
-├── vcpkg.json                 # vcpkg dependency manifest
-└── vcpkg-configuration.json   # vcpkg configuration
 ```
 
 ### Launcher Source Tree (`launcher/`)
