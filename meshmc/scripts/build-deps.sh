@@ -203,6 +203,7 @@ build_deps() {
             -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
             -DENABLE_TEST=OFF \
+            -DENABLE_OPENSSL=OFF \
             -G "$GENERATOR"
         cmake --build "$libarchive_src/build" --parallel "$JOBS"
         if [[ "$NEED_SUDO" == true ]]; then

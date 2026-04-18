@@ -157,6 +157,7 @@ function Build-Deps {
         "-DCMAKE_INSTALL_PREFIX=$InstallPrefix" `
         "-DCMAKE_BUILD_TYPE=$BuildType" `
         '-DENABLE_TEST=OFF' `
+        '-DENABLE_OPENSSL=OFF' `
         -G $Generator
     Invoke-Cmd cmake --build "$LibarchiveDir\build" --parallel $Jobs
     Invoke-Cmd cmake --install "$LibarchiveDir\build"
