@@ -14,15 +14,9 @@ runs:
       shell: bash
       run: |
         brew update
-        brew install ninja extra-cmake-modules temurin@17 autoconf libarchive qrencode pkg-config
+        brew install ninja extra-cmake-modules temurin@17 autoconf qrencode pkg-config
 
     - name: Set JAVA_HOME
       shell: bash
       run: |
         echo "JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> "$GITHUB_ENV"
-
-    - name: Set keg-only library paths
-      shell: bash
-      run: |
-        LIBARCHIVE_PREFIX="$(brew --prefix libarchive)"
-        echo "CMAKE_PREFIX_PATH=$LIBARCHIVE_PREFIX" >> "$GITHUB_ENV"

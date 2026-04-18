@@ -123,16 +123,11 @@ setup_cmake_flags() {
             ;;
         macos)
             INSTALL_PREFIX="${INSTALL_PREFIX:-/usr/local}"
-            local libarchive_prefix
-            libarchive_prefix="$(brew --prefix libarchive 2>/dev/null || echo "")"
             CMAKE_COMMON=(
                 "-DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX"
                 "-DCMAKE_BUILD_TYPE=$BUILD_TYPE"
                 "-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64"
             )
-            if [[ -n "$libarchive_prefix" ]]; then
-                CMAKE_COMMON+=("-DCMAKE_PREFIX_PATH=$libarchive_prefix")
-            fi
             NEED_SUDO=true
             ;;
         windows-mingw)
@@ -243,16 +238,6 @@ configure_meshmc() {
         macos)           preset="macos_universal" ;;
         windows-mingw)   preset="windows_mingw" ;;
     esac
-
-    # Ensure CMAKE_PREFIX_PATH includes keg-only Homebrew packages on macOS
-    if [[ "$PLATFORM" == "macos" ]]; then
-        local libarchive_prefix
-        libarchive_prefix="$(brew --prefix libarchive 2>/dev/null || echo "")"
-        if [[ -n "$libarchive_prefix" ]]; then
-            export CMAKE_PREFIX_PATH="${libarchive_prefix}${CMAKE_PREFIX_PATH:+;$CMAKE_PREFIX_PATH}"
-            log "CMAKE_PREFIX_PATH=${BLUE}$CMAKE_PREFIX_PATH${NC}"
-        fi
-    fi
 
     cmake --preset "$preset" -S "$MESHMC_DIR"
 

@@ -163,7 +163,7 @@ jobs:
         shell: bash
         run: |
           MONOREPO_ROOT="${GITHUB_WORKSPACE}"
-          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64 -DCMAKE_PREFIX_PATH=$(brew --prefix libarchive)"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64"
 
           install_lib() {
             local dir="$1"; shift
