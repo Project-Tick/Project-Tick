@@ -204,6 +204,8 @@ build_deps() {
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
             -DENABLE_TEST=OFF \
             -DENABLE_OPENSSL=OFF \
+            -DENABLE_LZ4=OFF \
+            -DENABLE_ZSTD=OFF \
             -G "$GENERATOR"
         cmake --build "$libarchive_src/build" --parallel "$JOBS"
         if [[ "$NEED_SUDO" == true ]]; then

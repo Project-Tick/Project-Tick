@@ -184,6 +184,8 @@ jobs:
             -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
             -DENABLE_TEST=OFF \
             -DENABLE_OPENSSL=OFF \
+            -DENABLE_LZ4=OFF \
+            -DENABLE_ZSTD=OFF \
             -G Ninja
           cmake --build "$RUNNER_TEMP/libarchive/build" --parallel
           sudo cmake --install "$RUNNER_TEMP/libarchive/build"
