@@ -244,6 +244,16 @@ configure_meshmc() {
         windows-mingw)   preset="windows_mingw" ;;
     esac
 
+    # Ensure CMAKE_PREFIX_PATH includes keg-only Homebrew packages on macOS
+    if [[ "$PLATFORM" == "macos" ]]; then
+        local libarchive_prefix
+        libarchive_prefix="$(brew --prefix libarchive 2>/dev/null || echo "")"
+        if [[ -n "$libarchive_prefix" ]]; then
+            export CMAKE_PREFIX_PATH="${libarchive_prefix}${CMAKE_PREFIX_PATH:+;$CMAKE_PREFIX_PATH}"
+            log "CMAKE_PREFIX_PATH=${BLUE}$CMAKE_PREFIX_PATH${NC}"
+        fi
+    fi
+
     cmake --preset "$preset" -S "$MESHMC_DIR"
 
     log "MeshMC configured with preset: ${BLUE}$preset${NC}"

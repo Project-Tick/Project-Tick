@@ -39,8 +39,6 @@ runs:
       shell: pwsh
       run: |
         choco install pkgconfiglite -y
-        choco install libarchive -y
-        choco install extra-cmake-modules -y
 
     - name: Setup MSYS2 (MinGW)
       if: ${{ inputs.msystem != '' }}

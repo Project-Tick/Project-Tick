@@ -275,6 +275,14 @@ Install dependencies via Homebrew:
 brew install cmake ninja extra-cmake-modules qt@6 libarchive qrencode pkg-config
 ```
 
+Homebrew's `libarchive` is keg-only, so set `CMAKE_PREFIX_PATH` before configuring:
+
+```bash
+export CMAKE_PREFIX_PATH="$(brew --prefix libarchive)"
+```
+
+Alternatively, `build-deps.sh --configure` handles this automatically.
+
 ### Standard Build (Native Architecture)
 
 ```bash
@@ -303,16 +311,14 @@ cmake --install build --config Release
 
 Requires Visual Studio with C++ workload.
 
-Install dependencies via Scoop:
+The `build-deps.ps1` script automatically fetches and builds `extra-cmake-modules`
+and `libarchive` alongside the monorepo libraries. No separate package manager
+installation is required for these.
+
+Optionally install `pkg-config` via Chocolatey:
 
 ```cmd
-scoop install extras/extra-cmake-modules main/libarchive main/pkg-config
-```
-
-Or via Chocolatey:
-
-```cmd
-choco install extra-cmake-modules libarchive pkgconfiglite
+choco install pkgconfiglite -y
 ```
 
 Then configure and build:

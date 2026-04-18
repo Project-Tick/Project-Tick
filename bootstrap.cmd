@@ -113,24 +113,17 @@ echo.
 echo [ OK ]  Package installation complete
 echo.
 
-rem ── C/C++ Libraries via Scoop ────────────────────────────────────────────────
+rem ── System Libraries ─────────────────────────────────────────────────────────
 :install_libs
-echo [INFO]  Installing C/C++ libraries via Scoop...
 
-scoop bucket add extras >nul 2>&1
-
-echo [INFO]  Installing extra-cmake-modules...
-scoop install extras/extra-cmake-modules 2>nul || echo [WARN]  extra-cmake-modules not available via scoop, install manually.
-
-echo [INFO]  Installing libarchive...
-scoop install main/libarchive 2>nul || echo [WARN]  libarchive not available via scoop, install manually.
-
-echo [INFO]  Installing pkg-config...
+echo [INFO]  Installing pkg-config via Scoop...
+scoop bucket add main >nul 2>&1
 scoop install main/pkg-config 2>nul || echo [WARN]  pkg-config not available via scoop, install manually.
 
 echo.
 echo [ OK ]  System libraries installed
-echo [INFO]  Monorepo libraries (tomlplusplus, cmark, etc.) will be built by build-deps.ps1
+echo [INFO]  extra-cmake-modules and libarchive will be built by build-deps.ps1
+echo [INFO]  Monorepo libraries (tomlplusplus, cmark, etc.) will also be built by build-deps.ps1
 echo.
 
 rem ── Lefthook Setup ─────────────────────────────────────────────────────────

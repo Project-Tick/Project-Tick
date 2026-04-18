@@ -139,6 +139,30 @@ function Build-Deps {
     Write-Log 'Building all MeshMC dependencies...'
     Write-Host ''
 
+    # External dependencies (not in monorepo)
+    Write-Log 'Installing extra-cmake-modules...'
+    $EcmDir = Join-Path $env:TEMP 'ecm'
+    if (-not (Test-Path $EcmDir)) {
+        Invoke-Cmd git clone --depth 1 --branch v6.13.0 https://invent.kde.org/frameworks/extra-cmake-modules.git $EcmDir
+    }
+    Invoke-Cmd cmake -S $EcmDir -B "$EcmDir\build" "-DCMAKE_INSTALL_PREFIX=$InstallPrefix" -G $Generator
+    Invoke-Cmd cmake --install "$EcmDir\build"
+
+    Write-Log 'Building libarchive...'
+    $LibarchiveDir = Join-Path $env:TEMP 'libarchive'
+    if (-not (Test-Path $LibarchiveDir)) {
+        Invoke-Cmd git clone --depth 1 --branch v3.7.9 https://github.com/libarchive/libarchive.git $LibarchiveDir
+    }
+    Invoke-Cmd cmake -S $LibarchiveDir -B "$LibarchiveDir\build" `
+        "-DCMAKE_INSTALL_PREFIX=$InstallPrefix" `
+        "-DCMAKE_BUILD_TYPE=$BuildType" `
+        '-DENABLE_TEST=OFF' `
+        -G $Generator
+    Invoke-Cmd cmake --build "$LibarchiveDir\build" --parallel $Jobs
+    Invoke-Cmd cmake --install "$LibarchiveDir\build"
+
+    Write-Host ''
+
     # Level 1: No monorepo dependencies
     Install-Lib neozip        '-DZLIB_COMPAT=OFF' '-DWITH_GTEST=OFF'
     Install-Lib cmark

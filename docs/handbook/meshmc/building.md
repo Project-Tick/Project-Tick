@@ -141,20 +141,7 @@ brew install \
 
 ### Windows
 
-On Windows, install C/C++ dependencies via Scoop:
-
-```cmd
-scoop install extras/extra-cmake-modules main/libarchive main/pkg-config
-```
-
-Or via Chocolatey:
-
-```cmd
-choco install extra-cmake-modules libarchive pkgconfiglite
-```
-
-Monorepo libraries (cmark, tomlplusplus, etc.) are built by `build-deps.ps1`.
-Qt can be installed via the Qt Online Installer for full module support.
+On Windows, `build-deps.ps1` automatically fetches and builds `extra-cmake-modules` and `libarchive` alongside the monorepo libraries. No separate package manager installation is required for these.\n\nOptionally install `pkg-config` via Chocolatey:\n\n```cmd\nchoco install pkgconfiglite -y\n```\n\nQt can be installed via the Qt Online Installer for full module support.
 
 ## CMake Presets
 
@@ -275,9 +262,7 @@ The macOS install layout creates an application bundle:
 
 ### Using MSVC
 
-Requires Visual Studio with C++ workload.
-
-Install dependencies via Scoop or Chocolatey (see [Distro-Specific Package Installation](#distro-specific-package-installation)).
+Requires Visual Studio with C++ workload. Run `build-deps.ps1` first to fetch\nexternal dependencies (ECM, libarchive) and build all monorepo libraries.
 
 ```cmd
 cmake --preset windows_msvc

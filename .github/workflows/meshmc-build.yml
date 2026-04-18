@@ -244,6 +244,26 @@ jobs:
             echo "::endgroup::"
           }
 
+          # External dependencies not in monorepo
+          echo "::group::Installing extra-cmake-modules"
+          git clone --depth 1 --branch v6.13.0 https://invent.kde.org/frameworks/extra-cmake-modules.git "$RUNNER_TEMP/ecm"
+          cmake -S "$RUNNER_TEMP/ecm" -B "$RUNNER_TEMP/ecm/build" \
+            -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -G Ninja
+          cmake --install "$RUNNER_TEMP/ecm/build"
+          echo "::endgroup::"
+
+          echo "::group::Building libarchive"
+          git clone --depth 1 --branch v3.7.9 https://github.com/libarchive/libarchive.git "$RUNNER_TEMP/libarchive"
+          cmake -S "$RUNNER_TEMP/libarchive" -B "$RUNNER_TEMP/libarchive/build" \
+            -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+            -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
+            -DENABLE_TEST=OFF \
+            -G Ninja
+          cmake --build "$RUNNER_TEMP/libarchive/build" --parallel
+          cmake --install "$RUNNER_TEMP/libarchive/build"
+          echo "::endgroup::"
+
+          # Monorepo libraries
           install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
           install_lib cmark
           install_lib libnbtplusplus
