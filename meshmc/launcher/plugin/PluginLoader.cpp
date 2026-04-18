@@ -51,7 +51,7 @@ QStringList PluginLoader::defaultSearchPaths()
 	// User-local
 #ifdef Q_OS_WIN
 	QString localData =
-		QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+		QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 	if (!localData.isEmpty())
 		paths << QDir(localData).filePath("mmcmodules");
 #else

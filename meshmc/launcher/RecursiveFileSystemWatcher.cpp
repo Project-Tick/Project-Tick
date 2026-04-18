@@ -72,8 +72,12 @@ void RecursiveFileSystemWatcher::disable()
 		return;
 	}
 	m_isEnabled = false;
-	m_watcher->removePaths(m_watcher->files());
-	m_watcher->removePaths(m_watcher->directories());
+	auto files = m_watcher->files();
+	if (!files.isEmpty())
+		m_watcher->removePaths(files);
+	auto dirs = m_watcher->directories();
+	if (!dirs.isEmpty())
+		m_watcher->removePaths(dirs);
 }
 
 void RecursiveFileSystemWatcher::setFiles(const QStringList& files)

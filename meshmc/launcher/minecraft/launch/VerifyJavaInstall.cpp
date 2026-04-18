@@ -184,6 +184,13 @@ void VerifyJavaInstall::executeTask()
 	}
 
 #ifndef MeshMC_DISABLE_JAVA_DOWNLOADER
+	// Check runtime setting for auto-download
+	if (!m_inst->settings()->get("JavaAutoDownload").toBool()) {
+		emitFailed(
+			tr("Java %1 is required but not installed. Automatic Java download is disabled.")
+				.arg(requiredMajor));
+		return;
+	}
 	// Not found — auto-download
 	emit logLine(
 		tr("No installed Java %1 found. Downloading...").arg(requiredMajor),

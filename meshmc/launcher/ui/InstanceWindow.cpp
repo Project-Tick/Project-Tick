@@ -135,7 +135,7 @@ InstanceWindow::InstanceWindow(InstancePtr instance, QWidget* parent)
 		connect(m_instance.get(), &BaseInstance::launchTaskChanged, this,
 				&InstanceWindow::on_InstanceLaunchTask_changed);
 		connect(m_instance.get(), &BaseInstance::runningStatusChanged, this,
-				&InstanceWindow::on_RunningState_changed);
+				&InstanceWindow::runningStateChanged);
 	}
 
 	// set up instance destruction detection
@@ -190,7 +190,7 @@ void InstanceWindow::on_InstanceLaunchTask_changed(
 	m_proc = proc;
 }
 
-void InstanceWindow::on_RunningState_changed(bool running)
+void InstanceWindow::runningStateChanged(bool running)
 {
 	updateLaunchButtons();
 	m_container->refreshContainer();

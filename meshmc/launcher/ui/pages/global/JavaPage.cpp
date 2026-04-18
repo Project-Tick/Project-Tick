@@ -84,7 +84,8 @@ JavaPage::JavaPage(QWidget* parent) : QWidget(parent), ui(new Ui::JavaPage)
 	int idx = ui->tabWidget->indexOf(ui->tabInstallations);
 	if (idx != -1)
 		ui->tabWidget->removeTab(idx);
-	// Hide vendor selector when downloader is disabled
+	// Hide vendor selector and auto-download toggle when downloader is disabled
+	ui->javaAutoDownloadCheck->setVisible(false);
 	ui->labelAutoDownloadVendor->setVisible(false);
 	ui->javaAutoDownloadVendorBox->setVisible(false);
 #else
@@ -122,6 +123,7 @@ void JavaPage::applySettings()
 	// Java Settings
 	s->set("JavaPath", ui->javaPathTextBox->text());
 	s->set("JvmArgs", ui->jvmArgsTextBox->text());
+	s->set("JavaAutoDownload", ui->javaAutoDownloadCheck->isChecked());
 	s->set("JavaAutoDownloadVendor",
 		   ui->javaAutoDownloadVendorBox->currentData().toString());
 	JavaCommon::checkJVMArgs(s->get("JvmArgs").toString(),
@@ -145,6 +147,9 @@ void JavaPage::loadSettings()
 	// Java Settings
 	ui->javaPathTextBox->setText(s->get("JavaPath").toString());
 	ui->jvmArgsTextBox->setText(s->get("JvmArgs").toString());
+
+	// Auto-download
+	ui->javaAutoDownloadCheck->setChecked(s->get("JavaAutoDownload").toBool());
 
 	// Auto-download vendor
 	auto currentVendor = s->get("JavaAutoDownloadVendor").toString();

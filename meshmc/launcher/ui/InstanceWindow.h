@@ -82,7 +82,7 @@ class InstanceWindow : public QMainWindow, public BasePageContainer
 	void on_btnLaunchMinecraftOffline_clicked();
 
 	void on_InstanceLaunchTask_changed(shared_qobject_ptr<LaunchTask> proc);
-	void on_RunningState_changed(bool running);
+	void runningStateChanged(bool running);
 	void on_instanceStatusChanged(BaseInstance::Status,
 								  BaseInstance::Status newStatus);
 

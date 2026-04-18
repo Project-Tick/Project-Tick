@@ -560,7 +560,7 @@ ServersPage::ServersPage(InstancePtr inst, QWidget* parent)
 	connect(selectionModel, &QItemSelectionModel::currentChanged, this,
 			&ServersPage::currentChanged);
 	connect(m_inst.get(), &MinecraftInstance::runningStatusChanged, this,
-			&ServersPage::on_RunningState_changed);
+			&ServersPage::runningStateChanged);
 	connect(ui->nameLine, &QLineEdit::textEdited, this,
 			&ServersPage::nameEdited);
 	connect(ui->addressLine, &QLineEdit::textEdited, this,
@@ -598,7 +598,7 @@ QMenu* ServersPage::createPopupMenu()
 	return filteredMenu;
 }
 
-void ServersPage::on_RunningState_changed(bool running)
+void ServersPage::runningStateChanged(bool running)
 {
 	if (m_locked == running) {
 		return;

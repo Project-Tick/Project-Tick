@@ -555,7 +555,7 @@ bool Application::resolveDataPath(const QHash<QString, QVariant>& args,
 				dataPath;
 		} else {
 			QString appDataPath = QStandardPaths::writableLocation(
-				QStandardPaths::AppLocalDataLocation);
+				QStandardPaths::AppDataLocation);
 			dataPath = appDataPath;
 			adjustedBy +=
 				"Non-portable mode, using AppData location " + dataPath;
@@ -872,6 +872,9 @@ void Application::initSettings()
 	m_settings->registerSetting("JavaVendor", "");
 	m_settings->registerSetting("LastHostname", "");
 	m_settings->registerSetting("JvmArgs", "");
+
+	// Java auto-download
+	m_settings->registerSetting("JavaAutoDownload", true);
 	m_settings->registerSetting("JavaAutoDownloadVendor", "net.minecraft.java");
 
 	// Native library workarounds

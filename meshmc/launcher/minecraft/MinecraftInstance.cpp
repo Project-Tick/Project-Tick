@@ -131,10 +131,15 @@ MinecraftInstance::MinecraftInstance(SettingsObjectPtr globalSettings,
 									javaOrLocation);
 	m_settings->registerPassthrough(
 		globalSettings->getSetting("JavaArchitecture"), javaOrLocation);
+	m_settings->registerPassthrough(globalSettings->getSetting("JavaVendor"),
+									javaOrLocation);
 
 	// Java auto-download vendor preference
 	auto javaVendorOverride =
 		m_settings->registerSetting("OverrideJavaAutoDownloadVendor", false);
+	m_settings->registerOverride(
+		globalSettings->getSetting("JavaAutoDownload"),
+		javaVendorOverride);
 	m_settings->registerOverride(
 		globalSettings->getSetting("JavaAutoDownloadVendor"),
 		javaVendorOverride);

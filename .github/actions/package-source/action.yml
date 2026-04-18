@@ -3,7 +3,7 @@
 name: Package Source Tarball
 description: >
   Create source archives in multiple formats (.tar, .tar.xz, .tar.gz, .tar.zst, .zip, .7z),
-  generate SHA-256 checksums, and optionally GPG-sign each artifact.
+  and optionally GPG-sign each artifact.
 
 inputs:
   project:
@@ -72,18 +72,6 @@ runs:
 
         echo "### 📦 Archives created for ${BASE}" >> "$GITHUB_STEP_SUMMARY"
         ls -lh "$OUT_DIR"/ >> "$GITHUB_STEP_SUMMARY"
-
-    - name: Generate SHA-256 checksums
-      shell: bash
-      env:
-        OUT_DIR: ${{ inputs.output-dir }}
-      run: |
-        set -euo pipefail
-        cd "$OUT_DIR"
-        for f in *.tar *.tar.gz *.tar.xz *.tar.zst *.zip *.7z; do
-          [ -f "$f" ] || continue
-          sha256sum "$f" > "${f}.sha256"
-        done
 
     - name: Import GPG key
       if: inputs.gpg-private-key != '' && inputs.gpg-private-key-id != ''

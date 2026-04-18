@@ -67,4 +67,6 @@ class ScanModFolders : public LaunchStep
   private: // DATA
 	bool m_modsDone = false;
 	bool m_coreModsDone = false;
+	QMetaObject::Connection m_modsConnection;
+	QMetaObject::Connection m_coreModsConnection;
 };

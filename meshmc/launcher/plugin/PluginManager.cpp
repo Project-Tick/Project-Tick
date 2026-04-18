@@ -349,7 +349,7 @@ void PluginManager::ensurePluginDataDir(PluginMetadata& meta)
 	QString baseDir;
 #ifdef Q_OS_WIN
 	baseDir =
-		QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
+		QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 #else
 	baseDir = QDir::homePath() + "/.local/share/meshmc";
 #endif

@@ -125,7 +125,7 @@ class ModFolderPage : public QMainWindow, public BasePage
   private slots:
 	void modItemActivated(const QModelIndex& index);
 	void on_filterTextChanged(const QString& newContents);
-	void on_RunningState_changed(bool running);
+	void runningStateChanged(bool running);
 	void on_actionAdd_triggered();
 	void on_actionRemove_triggered();
 	void on_actionEnable_triggered();
