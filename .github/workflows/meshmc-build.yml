@@ -177,6 +177,7 @@ jobs:
 
           install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
           install_lib cmark
+          install_lib tomlplusplus
           install_lib libnbtplusplus
 
           install_lib optional-bare
@@ -266,6 +267,7 @@ jobs:
           # Monorepo libraries
           install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
           install_lib cmark
+          install_lib tomlplusplus
           install_lib libnbtplusplus
 
           install_lib optional-bare
