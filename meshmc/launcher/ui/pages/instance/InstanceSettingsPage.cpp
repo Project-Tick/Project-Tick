@@ -39,6 +39,7 @@
 #include "Application.h"
 
 #include "java/JavaInstallList.h"
+#include "java/download/JavaRuntime.h"
 #include "FileSystem.h"
 
 InstanceSettingsPage::InstanceSettingsPage(BaseInstance* inst, QWidget* parent)
@@ -48,6 +49,13 @@ InstanceSettingsPage::InstanceSettingsPage(BaseInstance* inst, QWidget* parent)
 	ui->setupUi(this);
 	auto sysMB = Sys::getSystemRam() / Sys::mebibyte;
 	ui->maxMemSpinBox->setMaximum(sysMB);
+
+	// Populate vendor combobox
+	auto providers = JavaDownload::JavaProviderInfo::availableProviders();
+	for (const auto& provider : providers) {
+		ui->javaAutoDownloadVendorBox->addItem(provider.name, provider.uid);
+	}
+
 	connect(ui->openGlobalJavaSettingsButton, &QCommandLinkButton::clicked,
 			this, &InstanceSettingsPage::globalSettingsButtonClicked);
 	connect(APPLICATION, &Application::globalSettingsAboutToOpen, this,
@@ -164,6 +172,16 @@ void InstanceSettingsPage::applySettings()
 	// old generic 'override both' is removed.
 	m_settings->reset("OverrideJava");
 
+	// Java auto-download vendor
+	bool vendorOverride = ui->javaVendorGroupBox->isChecked();
+	m_settings->set("OverrideJavaAutoDownloadVendor", vendorOverride);
+	if (vendorOverride) {
+		m_settings->set("JavaAutoDownloadVendor",
+						ui->javaAutoDownloadVendorBox->currentData().toString());
+	} else {
+		m_settings->reset("JavaAutoDownloadVendor");
+	}
+
 	// Custom Commands
 	bool custcmd = ui->customCommands->checked();
 	m_settings->set("OverrideCommands", custcmd);
@@ -263,6 +281,16 @@ void InstanceSettingsPage::loadSettings()
 
 	ui->javaArgumentsGroupBox->setChecked(overrideArgs);
 	ui->jvmArgsTextBox->setPlainText(m_settings->get("JvmArgs").toString());
+
+	// Java auto-download vendor
+	ui->javaVendorGroupBox->setChecked(
+		m_settings->get("OverrideJavaAutoDownloadVendor").toBool());
+	auto currentVendor =
+		m_settings->get("JavaAutoDownloadVendor").toString();
+	int vendorIdx = ui->javaAutoDownloadVendorBox->findData(currentVendor);
+	if (vendorIdx >= 0) {
+		ui->javaAutoDownloadVendorBox->setCurrentIndex(vendorIdx);
+	}
 
 	// Custom commands
 	ui->customCommands->initialize(

@@ -28,6 +28,8 @@
 #include "BaseWizardPage.h"
 
 class JavaSettingsWidget;
+class QComboBox;
+class QLabel;
 
 class JavaWizardPage : public BaseWizardPage
 {
@@ -48,4 +50,6 @@ class JavaWizardPage : public BaseWizardPage
 
   private: /* data */
 	JavaSettingsWidget* m_java_widget = nullptr;
+	QComboBox* m_vendorComboBox = nullptr;
+	QLabel* m_vendorLabel = nullptr;
 };

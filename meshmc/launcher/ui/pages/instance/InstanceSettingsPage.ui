@@ -221,6 +221,34 @@
          </layout>
         </widget>
        </item>
+       <item>
+        <widget class="QGroupBox" name="javaVendorGroupBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="title">
+          <string>Java auto-download &amp;vendor</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="vendorLayout">
+          <item>
+           <widget class="QLabel" name="labelAutoDownloadVendor">
+            <property name="text">
+             <string>Download Java from:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="javaAutoDownloadVendorBox"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="javaTab">

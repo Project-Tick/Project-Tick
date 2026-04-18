@@ -132,6 +132,13 @@ MinecraftInstance::MinecraftInstance(SettingsObjectPtr globalSettings,
 	m_settings->registerPassthrough(
 		globalSettings->getSetting("JavaArchitecture"), javaOrLocation);
 
+	// Java auto-download vendor preference
+	auto javaVendorOverride =
+		m_settings->registerSetting("OverrideJavaAutoDownloadVendor", false);
+	m_settings->registerOverride(
+		globalSettings->getSetting("JavaAutoDownloadVendor"),
+		javaVendorOverride);
+
 	// Window Size
 	auto windowSetting = m_settings->registerSetting("OverrideWindow", false);
 	m_settings->registerOverride(globalSettings->getSetting("LaunchMaximized"),

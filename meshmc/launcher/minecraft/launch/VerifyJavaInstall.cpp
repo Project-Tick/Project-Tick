@@ -199,14 +199,24 @@ void VerifyJavaInstall::executeTask()
 #ifndef MeshMC_DISABLE_JAVA_DOWNLOADER
 void VerifyJavaInstall::autoDownloadJava(int requiredMajor)
 {
-	// Fetch version list from net.minecraft.java (Mojang)
+	// Get vendor from instance settings (falls through to global if not overridden)
+	auto m_inst =
+		std::dynamic_pointer_cast<MinecraftInstance>(m_parent->instance());
+	m_preferredVendor =
+		m_inst->settings()->get("JavaAutoDownloadVendor").toString();
+	if (m_preferredVendor.isEmpty()) {
+		m_preferredVendor = "net.minecraft.java";
+	}
+	emit logLine(
+		tr("Using Java vendor: %1").arg(m_preferredVendor),
+		MessageLevel::MeshMC);
 	fetchVersionList(requiredMajor);
 }
 
 void VerifyJavaInstall::fetchVersionList(int requiredMajor)
 {
 	m_fetchData.clear();
-	QString uid = "net.minecraft.java";
+	QString uid = m_preferredVendor;
 	QString url = QString("%1%2/index.json").arg(BuildConfig.META_URL, uid);
 
 	m_fetchJob = new NetJob(tr("Fetch Java versions"), APPLICATION->network());
@@ -247,8 +257,9 @@ void VerifyJavaInstall::fetchVersionList(int requiredMajor)
 			}
 
 			if (!found) {
-				emitFailed(tr("Java %1 is not available for download from "
-							  "Mojang. Please install it manually.")
+				emitFailed(tr("Java %1 is not available for download from the "
+							  "selected vendor. Please install it manually or "
+							  "try a different vendor in settings.")
 							   .arg(requiredMajor));
 			}
 		});
@@ -269,7 +280,7 @@ void VerifyJavaInstall::fetchRuntimes(const QString& versionId,
 									  int requiredMajor)
 {
 	m_fetchData.clear();
-	QString uid = "net.minecraft.java";
+	QString uid = m_preferredVendor;
 	QString url =
 		QString("%1%2/%3.json").arg(BuildConfig.META_URL, uid, versionId);
 

@@ -58,6 +58,7 @@ class VerifyJavaInstall : public LaunchStep
 					   int requiredMajor);
 	void setJavaPathAndSucceed(const QString& javaPath);
 
+	QString m_preferredVendor;
 	NetJob::Ptr m_fetchJob;
 	QByteArray m_fetchData;
 	std::unique_ptr<JavaDownloadTask> m_downloadTask;

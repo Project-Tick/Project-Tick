@@ -872,6 +872,7 @@ void Application::initSettings()
 	m_settings->registerSetting("JavaVendor", "");
 	m_settings->registerSetting("LastHostname", "");
 	m_settings->registerSetting("JvmArgs", "");
+	m_settings->registerSetting("JavaAutoDownloadVendor", "net.minecraft.java");
 
 	// Native library workarounds
 	m_settings->registerSetting("UseNativeOpenAL", false);

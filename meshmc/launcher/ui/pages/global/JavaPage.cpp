@@ -58,6 +58,7 @@
 
 #include "java/JavaUtils.h"
 #include "java/JavaInstallList.h"
+#include "java/download/JavaRuntime.h"
 
 #include "settings/SettingsObject.h"
 #include <FileSystem.h>
@@ -70,12 +71,22 @@ JavaPage::JavaPage(QWidget* parent) : QWidget(parent), ui(new Ui::JavaPage)
 
 	auto sysMiB = Sys::getSystemRam() / Sys::mebibyte;
 	ui->maxMemSpinBox->setMaximum(sysMiB);
+
+	// Populate vendor combobox
+	auto providers = JavaDownload::JavaProviderInfo::availableProviders();
+	for (const auto& provider : providers) {
+		ui->javaAutoDownloadVendorBox->addItem(provider.name, provider.uid);
+	}
+
 	loadSettings();
 #ifdef MeshMC_DISABLE_JAVA_DOWNLOADER
 	// Hide the entire Installations tab when Java downloader is disabled
 	int idx = ui->tabWidget->indexOf(ui->tabInstallations);
 	if (idx != -1)
 		ui->tabWidget->removeTab(idx);
+	// Hide vendor selector when downloader is disabled
+	ui->labelAutoDownloadVendor->setVisible(false);
+	ui->javaAutoDownloadVendorBox->setVisible(false);
 #else
 	refreshInstalledJavas();
 #endif
@@ -111,6 +122,8 @@ void JavaPage::applySettings()
 	// Java Settings
 	s->set("JavaPath", ui->javaPathTextBox->text());
 	s->set("JvmArgs", ui->jvmArgsTextBox->text());
+	s->set("JavaAutoDownloadVendor",
+		   ui->javaAutoDownloadVendorBox->currentData().toString());
 	JavaCommon::checkJVMArgs(s->get("JvmArgs").toString(),
 							 this->parentWidget());
 }
@@ -132,6 +145,13 @@ void JavaPage::loadSettings()
 	// Java Settings
 	ui->javaPathTextBox->setText(s->get("JavaPath").toString());
 	ui->jvmArgsTextBox->setText(s->get("JvmArgs").toString());
+
+	// Auto-download vendor
+	auto currentVendor = s->get("JavaAutoDownloadVendor").toString();
+	int idx = ui->javaAutoDownloadVendorBox->findData(currentVendor);
+	if (idx >= 0) {
+		ui->javaAutoDownloadVendorBox->setCurrentIndex(idx);
+	}
 }
 
 void JavaPage::on_javaDetectBtn_clicked()
