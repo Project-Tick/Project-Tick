@@ -191,6 +191,28 @@ build_deps() {
     log "Building all MeshMC dependencies..."
     echo
 
+    # Build libarchive from source on macOS (universal binary, SDK lacks headers)
+    if [[ "$PLATFORM" == "macos" ]]; then
+        local libarchive_src="$MONOREPO_ROOT/.deps-src/libarchive"
+        log "Building ${BLUE}libarchive${NC} from source (universal)..."
+        if [[ ! -d "$libarchive_src" ]]; then
+            git clone --depth 1 --branch v3.7.9 https://github.com/libarchive/libarchive.git "$libarchive_src"
+        fi
+        cmake -S "$libarchive_src" -B "$libarchive_src/build" \
+            -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+            -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+            -DENABLE_TEST=OFF \
+            -G "$GENERATOR"
+        cmake --build "$libarchive_src/build" --parallel "$JOBS"
+        if [[ "$NEED_SUDO" == true ]]; then
+            sudo cmake --install "$libarchive_src/build"
+        else
+            cmake --install "$libarchive_src/build"
+        fi
+        echo
+    fi
+
     # Level 1: No monorepo dependencies
     install_lib neozip        -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
     install_lib cmark

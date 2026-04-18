@@ -175,6 +175,19 @@ jobs:
             echo "::endgroup::"
           }
 
+          # External dependency: libarchive (universal build)
+          echo "::group::Building libarchive"
+          git clone --depth 1 --branch v3.7.9 https://github.com/libarchive/libarchive.git "$RUNNER_TEMP/libarchive"
+          cmake -S "$RUNNER_TEMP/libarchive" -B "$RUNNER_TEMP/libarchive/build" \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+            -DENABLE_TEST=OFF \
+            -G Ninja
+          cmake --build "$RUNNER_TEMP/libarchive/build" --parallel
+          sudo cmake --install "$RUNNER_TEMP/libarchive/build"
+          echo "::endgroup::"
+
           install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
           install_lib cmark
           install_lib tomlplusplus
