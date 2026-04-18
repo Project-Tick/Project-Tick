@@ -128,17 +128,19 @@ public:
 #endif
 
 // Base test
+#ifdef CRC32_BRAID_FALLBACK
 BENCHMARK_CRC32_COPY(braid, crc32_braid, crc32_copy_braid, 1);
+#endif
+#ifdef CRC32_CHORBA_FALLBACK
+BENCHMARK_CRC32_COPY(chorba, crc32_chorba, crc32_copy_chorba, 1)
+#endif
 
 #ifdef DISABLE_RUNTIME_CPU_DETECTION
     // Native
     BENCHMARK_CRC32_COPY(native, native_crc32, native_crc32_copy, 1)
 #else
     // Optimized functions
-#  ifndef WITHOUT_CHORBA
-    BENCHMARK_CRC32_COPY(chorba, crc32_chorba, crc32_copy_chorba, 1)
-#  endif
-#  ifndef WITHOUT_CHORBA_SSE
+#  if defined(CRC32_CHORBA_FALLBACK) && !defined(WITHOUT_CHORBA_SSE)
 #    ifdef X86_SSE2
     BENCHMARK_CRC32_COPY(chorba_sse2, crc32_chorba_sse2, crc32_copy_chorba_sse2, test_cpu_features.x86.has_sse2);
 #    endif
@@ -153,7 +155,7 @@ BENCHMARK_CRC32_COPY(braid, crc32_braid, crc32_copy_braid, 1);
     BENCHMARK_CRC32_COPY(armv8_pmull_eor3, crc32_armv8_pmull_eor3, crc32_copy_armv8_pmull_eor3, test_cpu_features.arm.has_crc32 && test_cpu_features.arm.has_pmull && test_cpu_features.arm.has_eor3)
 #  endif
 #  ifdef LOONGARCH_CRC
-    BENCHMARK_CRC32_COPY(loongarch, crc32_loongarch64, crc32_copy_loongarch64, test_cpu_features.loongarch.has_crc)
+    BENCHMARK_CRC32_COPY(loongarch64, crc32_loongarch64, crc32_copy_loongarch64, test_cpu_features.loongarch.has_crc)
 #  endif
 #  ifdef POWER8_VSX_CRC32
     BENCHMARK_CRC32_COPY(power8, crc32_power8, crc32_copy_power8, test_cpu_features.power.has_arch_2_07)
@@ -161,7 +163,7 @@ BENCHMARK_CRC32_COPY(braid, crc32_braid, crc32_copy_braid, 1);
 #  ifdef RISCV_CRC32_ZBC
     BENCHMARK_CRC32_COPY(riscv, crc32_riscv, crc32_copy_riscv64_zbc, test_cpu_features.riscv.has_zbc)
 #  endif
-#  ifdef S390_CRC32_VX
+#  ifdef S390_VX
     BENCHMARK_CRC32_COPY(vx, crc32_s390_vx, crc32_copy_s390_vx, test_cpu_features.s390.has_vx)
 #  endif
 #  ifdef X86_PCLMULQDQ_CRC

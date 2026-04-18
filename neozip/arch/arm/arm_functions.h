@@ -14,17 +14,31 @@ uint8_t* chunkmemset_safe_neon(uint8_t *out, uint8_t *from, size_t len, size_t l
 uint32_t compare256_neon(const uint8_t *src0, const uint8_t *src1);
 void inflate_fast_neon(PREFIX3(stream) *strm, uint32_t start);
 uint32_t longest_match_neon(deflate_state *const s, uint32_t cur_match);
-uint32_t longest_match_slow_neon(deflate_state *const s, uint32_t cur_match);
+uint32_t longest_match_roll_neon(deflate_state *const s, uint32_t cur_match);
 void slide_hash_neon(deflate_state *s);
+#endif
+
+#ifndef ARM_NEON_NATIVE
+#  define ADLER32_FALLBACK
+#  define CHUNKSET_FALLBACK
+#  define COMPARE256_FALLBACK
+#  ifndef ARM_SIMD_NATIVE
+#    define SLIDE_HASH_FALLBACK
+#  endif
 #endif
 
 #ifdef ARM_CRC32
 uint32_t crc32_armv8(uint32_t crc, const uint8_t *buf, size_t len);
 uint32_t crc32_copy_armv8(uint32_t crc, uint8_t *dst, const uint8_t *src, size_t len);
 #endif
+
 #ifdef ARM_PMULL_EOR3
 uint32_t crc32_armv8_pmull_eor3(uint32_t crc, const uint8_t *buf, size_t len);
 uint32_t crc32_copy_armv8_pmull_eor3(uint32_t crc, uint8_t *dst, const uint8_t *src, size_t len);
+#endif
+
+#if !defined(ARM_CRC32_NATIVE) && !defined(ARM_PMULL_EOR3_NATIVE)
+#  define CRC32_BRAID_FALLBACK
 #endif
 
 #ifdef ARM_SIMD
@@ -51,8 +65,8 @@ void slide_hash_armv6(deflate_state *s);
 #    define native_inflate_fast inflate_fast_neon
 #    undef native_longest_match
 #    define native_longest_match longest_match_neon
-#    undef native_longest_match_slow
-#    define native_longest_match_slow longest_match_slow_neon
+#    undef native_longest_match_roll
+#    define native_longest_match_roll longest_match_roll_neon
 #    undef native_slide_hash
 #    define native_slide_hash slide_hash_neon
 #  endif

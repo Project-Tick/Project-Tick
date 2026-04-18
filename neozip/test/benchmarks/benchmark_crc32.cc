@@ -77,16 +77,18 @@ public:
     BENCHMARK_CRC32_MISALIGNED(name, hashfunc, support_flag); \
     BENCHMARK_CRC32_ALIGNED(name, hashfunc, support_flag);
 
+#ifdef CRC32_BRAID_FALLBACK
 BENCHMARK_CRC32(braid, crc32_braid, 1);
+#endif
+#ifdef CRC32_CHORBA_FALLBACK
+BENCHMARK_CRC32(chorba_c, crc32_chorba, 1);
+#endif
 
 #ifdef DISABLE_RUNTIME_CPU_DETECTION
 BENCHMARK_CRC32(native, native_crc32, 1);
 #else
 
-#ifndef WITHOUT_CHORBA
-BENCHMARK_CRC32(chorba_c, crc32_chorba, 1);
-#endif
-#ifndef WITHOUT_CHORBA_SSE
+#if defined(CRC32_CHORBA_FALLBACK) && !defined(WITHOUT_CHORBA_SSE)
 #   ifdef X86_SSE2
     BENCHMARK_CRC32(chorba_sse2, crc32_chorba_sse2, test_cpu_features.x86.has_sse2);
 #   endif
@@ -106,7 +108,7 @@ BENCHMARK_CRC32(riscv, crc32_riscv64_zbc, test_cpu_features.riscv.has_zbc);
 #ifdef POWER8_VSX_CRC32
 BENCHMARK_CRC32(power8, crc32_power8, test_cpu_features.power.has_arch_2_07);
 #endif
-#ifdef S390_CRC32_VX
+#ifdef S390_VX
 BENCHMARK_CRC32(vx, crc32_s390_vx, test_cpu_features.s390.has_vx);
 #endif
 #ifdef X86_PCLMULQDQ_CRC

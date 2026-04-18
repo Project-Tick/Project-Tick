@@ -25,11 +25,11 @@ static inline uint32_t compare256_neon_static(const uint8_t *src0, const uint8_t
 
         lane = vgetq_lane_u64(vreinterpretq_u64_u8(cmp), 0);
         if (lane)
-            return len + zng_ctz64(lane) / 8;
+            return len + zng_first_diff_byte64(lane);
         len += 8;
         lane = vgetq_lane_u64(vreinterpretq_u64_u8(cmp), 1);
         if (lane)
-            return len + zng_ctz64(lane) / 8;
+            return len + zng_first_diff_byte64(lane);
         len += 8;
 
         src0 += 16, src1 += 16;
@@ -47,8 +47,8 @@ Z_INTERNAL uint32_t compare256_neon(const uint8_t *src0, const uint8_t *src1) {
 
 #include "match_tpl.h"
 
-#define LONGEST_MATCH_SLOW
-#define LONGEST_MATCH       longest_match_slow_neon
+#define LONGEST_MATCH_ROLL
+#define LONGEST_MATCH       longest_match_roll_neon
 #define COMPARE256          compare256_neon_static
 
 #include "match_tpl.h"

@@ -12,16 +12,12 @@
  * relicensed under the zlib license.
  */
 
-#ifdef S390_CRC32_VX
+#ifdef S390_VX
 
 #include "zbuild.h"
 #include "arch_functions.h"
 
-#include <vecintrin.h>
-
-typedef unsigned char uv16qi __attribute__((vector_size(16)));
-typedef unsigned int uv4si __attribute__((vector_size(16)));
-typedef unsigned long long uv2di __attribute__((vector_size(16)));
+#include "vx_intrins.h"
 
 static uint32_t crc32_le_vgfm_16(uint32_t crc, const uint8_t *buf, size_t len) {
     /*
@@ -197,7 +193,7 @@ static uint32_t crc32_le_vgfm_16(uint32_t crc, const uint8_t *buf, size_t len) {
 }
 
 #define VX_MIN_LEN 64
-#define VX_ALIGNMENT 16L
+#define VX_ALIGNMENT 16UL
 #define VX_ALIGN_MASK (VX_ALIGNMENT - 1)
 
 uint32_t Z_INTERNAL crc32_s390_vx(uint32_t crc, const unsigned char *buf, size_t len) {

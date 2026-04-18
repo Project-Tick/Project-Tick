@@ -133,7 +133,12 @@ elseif(BASEARCH_RISCV_FOUND)
 elseif(BASEARCH_S360_FOUND)
     option(WITH_DFLTCC_DEFLATE "Build with DFLTCC intrinsics for compression on IBM Z" OFF)
     option(WITH_DFLTCC_INFLATE "Build with DFLTCC intrinsics for decompression on IBM Z" OFF)
-    option(WITH_CRC32_VX "Build with vectorized CRC32 on IBM Z" ON)
+    option(WITH_S390_VX "Build with S390 VX intrinsics on IBM Z" ON)
+
+    # Provided for backward compatibility
+    if(DEFINED WITH_CRC32_VX)
+        set(WITH_S390_VX ${WITH_CRC32_VX})
+    endif()
 elseif(BASEARCH_LOONGARCH_FOUND)
     option(WITH_CRC32_LA "Build with vectorized CRC32 on LoongArch" ON)
     option(WITH_LSX "Build with vectorized LSX on LoongArch" ON)
@@ -186,7 +191,7 @@ mark_as_advanced(FORCE
     WITH_ARMV6
     WITH_DFLTCC_DEFLATE
     WITH_DFLTCC_INFLATE
-    WITH_CRC32_VX
+    WITH_S390_VX
     WITH_AVX2 WITH_SSE2
     WITH_SSSE3 WITH_SSE41 WITH_SSE42
     WITH_PCLMULQDQ
@@ -950,15 +955,24 @@ if(WITH_OPTIM)
             add_definitions(-DS390_DFLTCC_INFLATE)
             list(APPEND ZLIB_ARCH_SRCS ${ARCHDIR}/dfltcc_inflate.c)
         endif()
-        if(WITH_CRC32_VX)
-            check_vgfma_intrinsics()
-            if(HAVE_VGFMA_INTRIN)
-                add_definitions(-DS390_CRC32_VX)
-                set(CRC32_VX_SRCS ${ARCHDIR}/crc32-vx.c)
-                list(APPEND ZLIB_ARCH_SRCS ${CRC32_VX_SRCS})
-                set_property(SOURCE ${CRC32_VX_SRCS} PROPERTY COMPILE_FLAGS "${VGFMAFLAG} ${NOLTOFLAG}")
+        if(WITH_S390_VX)
+            check_s390_vx_intrinsics()
+            if(HAVE_S390_VX_INTRIN)
+                add_definitions(-DS390_VX)
+                if(NOT HAVE_S390_INTRIN)
+                    add_definitions(-DS390_FEATURES)
+                    list(APPEND ZLIB_ARCH_HDRS ${ARCHDIR}/s390_functions.h)
+                    if(WITH_RUNTIME_CPU_DETECTION)
+                        list(APPEND ZLIB_ARCH_HDRS ${ARCHDIR}/s390_features.h)
+                        list(APPEND ZLIB_ARCH_SRCS ${ARCHDIR}/s390_features.c)
+                    endif()
+                endif()
+                set(S390_VX_SRCS ${ARCHDIR}/crc32_vx.c ${ARCHDIR}/slide_hash_vx.c)
+                list(APPEND ZLIB_ARCH_SRCS ${S390_VX_SRCS})
+                set_property(SOURCE ${S390_VX_SRCS} PROPERTY COMPILE_FLAGS "${S390VXFLAG} ${NOLTOFLAG}")
+                add_feature_info(S390_VX 1 "S390 Vector Extension optimizations using \"${S390VXFLAG}\"")
             else()
-                set(WITH_CRC32_VX OFF)
+                set(WITH_S390_VX OFF)
             endif()
         endif()
     elseif(BASEARCH_LOONGARCH_FOUND)
@@ -1233,7 +1247,7 @@ set(ZLIB_PUBLIC_HDRS
     ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_NAMESUFFIX}.h
 )
 set(ZLIB_PRIVATE_HDRS
-    arch/generic/chunk_permute_table.h
+    arch/shared/chunk_permute_table.h
     arch/generic/generic_functions.h
     adler32_p.h
     arch_functions.h
@@ -1287,7 +1301,7 @@ set(ZLIB_SRCS
     zutil.c
 )
 
-set(ZLIB_ALL_FALLBACK_SRCS
+set(ZLIB_GENERIC_SRCS
     arch/generic/adler32_c.c
     arch/generic/chunkset_c.c
     arch/generic/compare256_c.c
@@ -1296,16 +1310,6 @@ set(ZLIB_ALL_FALLBACK_SRCS
 )
 
 if(WITH_ALL_FALLBACKS)
-    list(APPEND ZLIB_GENERIC_SRCS ${ZLIB_ALL_FALLBACK_SRCS})
-    add_definitions(-DWITH_ALL_FALLBACKS)
-elseif(BASEARCH_X86_FOUND AND ARCH_64BIT AND WITH_SSE2)
-    # x86_64 always has SSE2, so let the SSE2 functions act as fallbacks.
-    list(APPEND ZLIB_GENERIC_SRCS
-        arch/generic/adler32_c.c
-        arch/generic/crc32_braid_c.c
-    )
-else()
-    list(APPEND ZLIB_GENERIC_SRCS ${ZLIB_ALL_FALLBACK_SRCS})
     add_definitions(-DWITH_ALL_FALLBACKS)
 endif()
 
@@ -1606,9 +1610,9 @@ elseif(BASEARCH_RISCV_FOUND)
     add_feature_info(WITH_RVV WITH_RVV "Build with RVV intrinsics")
     add_feature_info(WITH_RISCV_ZBC WITH_RISCV_ZBC "Build with RISCV ZBC")
 elseif(BASEARCH_S360_FOUND)
-    add_feature_info(WITH_CRC32_VX WITH_CRC32_VX "Build with vectorized CRC32 on IBM Z")
     add_feature_info(WITH_DFLTCC_DEFLATE WITH_DFLTCC_DEFLATE "Build with DFLTCC intrinsics for compression on IBM Z")
     add_feature_info(WITH_DFLTCC_INFLATE WITH_DFLTCC_INFLATE "Build with DFLTCC intrinsics for decompression on IBM Z")
+    add_feature_info(WITH_S390_VX WITH_S390_VX "Build with S390 VX intrinsics on IBM Z")
 elseif(BASEARCH_LOONGARCH_FOUND)
     add_feature_info(WITH_CRC32_LA WITH_CRC32_LA "Build with vectorized CRC32 on LoongArch")
     add_feature_info(WITH_LSX WITH_LSX "Build with vectorized LSX on LoongArch")

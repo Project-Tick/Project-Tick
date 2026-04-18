@@ -4,6 +4,10 @@
  */
 
 #include "zbuild.h"
+#include "arch_functions.h"
+
+#ifdef COMPARE256_FALLBACK
+
 #include "zendian.h"
 #include "deflate.h"
 #include "fallback_builtins.h"
@@ -44,14 +48,14 @@ static inline uint32_t compare256_64_static(const uint8_t *src0, const uint8_t *
         uint64_t mv = zng_memread_8(src1);
         uint64_t diff = sv ^ mv;
         if (diff)
-            return len + zng_ctz64(Z_U64_TO_LE(diff)) / 8;
+            return len + zng_first_diff_byte64(diff);
         src0 += 8, src1 += 8, len += 8;
 
         sv = zng_memread_8(src0);
         mv = zng_memread_8(src1);
         diff = sv ^ mv;
         if (diff)
-            return len + zng_ctz64(Z_U64_TO_LE(diff)) / 8;
+            return len + zng_first_diff_byte64(diff);
         src0 += 8, src1 += 8, len += 8;
     } while (len < 256);
 
@@ -64,7 +68,6 @@ static inline uint32_t compare256_64_static(const uint8_t *src0, const uint8_t *
 #  define COMPARE256 compare256_64_static
 #endif
 
-#ifdef WITH_ALL_FALLBACKS
 Z_INTERNAL uint32_t compare256_8(const uint8_t *src0, const uint8_t *src1) {
     return compare256_8_static(src0, src1);
 }
@@ -72,7 +75,6 @@ Z_INTERNAL uint32_t compare256_8(const uint8_t *src0, const uint8_t *src1) {
 Z_INTERNAL uint32_t compare256_64(const uint8_t *src0, const uint8_t *src1) {
     return compare256_64_static(src0, src1);
 }
-#endif
 
 Z_INTERNAL uint32_t compare256_c(const uint8_t *src0, const uint8_t *src1) {
     return COMPARE256(src0, src1);
@@ -82,7 +84,9 @@ Z_INTERNAL uint32_t compare256_c(const uint8_t *src0, const uint8_t *src1) {
 #define LONGEST_MATCH       longest_match_c
 #include "match_tpl.h"
 
-// Generate longest_match_slow_c
-#define LONGEST_MATCH_SLOW
-#define LONGEST_MATCH       longest_match_slow_c
+// Generate longest_match_roll_c
+#define LONGEST_MATCH_ROLL
+#define LONGEST_MATCH       longest_match_roll_c
 #include "match_tpl.h"
+
+#endif /* COMPARE256_FALLBACK */

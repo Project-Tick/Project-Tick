@@ -48,11 +48,11 @@
 extern "C" {
 #endif
 
-#define NEOZIP_VERSION "10.0.3"
-#define NEOZIP_VERNUM 0x0A000300L   /* MMNNRRSM: major minor revision status modified */
+#define NEOZIP_VERSION "10.1.0"
+#define NEOZIP_VERNUM 0x0A010000L   /* MMNNRRSM: major minor revision status modified */
 #define NEOZIP_VER_MAJOR 10
-#define NEOZIP_VER_MINOR 0
-#define NEOZIP_VER_REVISION 3
+#define NEOZIP_VER_MINOR 1
+#define NEOZIP_VER_REVISION 0
 #define NEOZIP_VER_STATUS 0         /* 0=devel, 1-E=beta, F=Release (DEPRECATED) */
 #define NEOZIP_VER_STATUSH 0x0      /* Hex values: 0=devel, 1-9=beta, A-E=Release Candidate, F=Release */
 #define NEOZIP_VER_MODIFIED 0       /* non-zero if modified externally from neozip */
