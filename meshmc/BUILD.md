@@ -161,6 +161,26 @@ If you already cloned without `--recursive`, initialize submodules manually:
 git submodule update --init --recursive
 ```
 
+## Building Dependencies
+
+You can use to build MeshMC dependencies for git repository, please use build-deps script.
+
+Linux / macOS / Windows MinGW
+
+```bash
+
+./scripts/build-deps.sh
+
+```
+
+Windows MSVC
+
+```pwsh
+
+.\scripts\build-deps.ps1
+
+```
+
 ## CMake Presets
 
 MeshMC ships a `CMakePresets.json` with pre-configured presets for each platform.

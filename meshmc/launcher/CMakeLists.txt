@@ -1188,6 +1188,34 @@ if(WIN32 OR (UNIX AND APPLE))
         FILES "qtlogging.ini"
         DESTINATION ${CMAKE_INSTALL_PREFIX}/${RESOURCES_DEST_DIR}
     )
+elseif(UNIX AND NOT APPLE)
+    # Bundle monorepo shared libraries (libnbt++, neozip, rainbow, iconfix, etc.)
+    # so the installed binary can find them via its RPATH ($ORIGIN/../lib).
+    set(_prefix_path_libs "")
+    foreach(_prefix IN LISTS CMAKE_PREFIX_PATH)
+        list(APPEND _prefix_path_libs "${_prefix}/lib" "${_prefix}/lib64")
+    endforeach()
+    if(DEFINED ENV{CMAKE_PREFIX_PATH})
+        file(TO_CMAKE_PATH "$ENV{CMAKE_PREFIX_PATH}" _env_prefixes)
+        foreach(_prefix IN LISTS _env_prefixes)
+            list(APPEND _prefix_path_libs "${_prefix}/lib" "${_prefix}/lib64")
+        endforeach()
+    endif()
+    list(REMOVE_DUPLICATES _prefix_path_libs)
+    install(
+        RUNTIME_DEPENDENCY_SET LAUNCHER_DEPENDENCY_SET
+        DIRECTORIES
+            ${_prefix_path_libs}
+        PRE_EXCLUDE_REGEXES
+            "^ld-linux"
+        POST_EXCLUDE_REGEXES
+            "^/lib/"
+            "^/lib64/"
+            "^/usr/lib/"
+            "^/usr/lib64/"
+        LIBRARY DESTINATION ${LIBRARY_DEST_DIR}
+        RUNTIME DESTINATION ${BINARY_DEST_DIR}
+    )
 endif()
 
 find_program(CLANG_FORMAT clang-format OPTIONAL)
