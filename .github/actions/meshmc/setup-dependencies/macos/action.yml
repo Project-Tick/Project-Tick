@@ -14,7 +14,7 @@ runs:
       shell: bash
       run: |
         brew update
-        brew install ninja extra-cmake-modules temurin@17 autoconf qrencode pkg-config
+        brew install ninja extra-cmake-modules temurin@17 autoconf pkg-config
 
     - name: Set JAVA_HOME
       shell: bash
