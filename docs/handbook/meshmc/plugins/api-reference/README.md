@@ -2,7 +2,7 @@
 
 > Complete reference for every function pointer in the `MMCOContext` struct.
 
-The MeshMC Plugin API is organized into **14 sections**, each covering a
+The MeshMC Plugin API is organized into **16 sections**, each covering a
 distinct area of launcher functionality. Every API function is accessed
 through the `MMCOContext*` pointer passed to `mmco_init()`.
 
@@ -39,8 +39,8 @@ Each section page documents:
 | S12 | [UI Dialogs](s12-ui-dialogs/) | `s12-ui-dialogs/` | `ui_show_message()`, `ui_add_menu_item()`, `ui_file_open_dialog()`, `ui_file_save_dialog()`, `ui_input_dialog()`, `ui_confirm_dialog()` |
 | S13 | [UI Page Builder](s13-ui-page-builder/) | `s13-ui-page-builder/` | `ui_page_create()`, `ui_page_add_to_list()`, `ui_layout_create()`, `ui_layout_add_widget()`, `ui_layout_add_layout()`, `ui_layout_add_spacer()`, `ui_page_set_layout()` |
 | S14 | [Utility](s14-utility/) | `s14-utility/` | `get_app_version()`, `get_app_dir()`, `get_data_dir()`, `get_timestamp()` |
-<!-- TODO: Document S15 -->
-<!-- TODO: Document S16 -->
+| S15 | [Launch Modifiers](s15-launch-modifiers/) | `s15-launch-modifiers/` | `launch_set_env()`, `launch_prepend_wrapper()` |
+| S16 | [Application Settings](s16-app-settings/) | `s16-app-settings/` | `app_setting_get()` |
 
 ## Related Documentation
 
