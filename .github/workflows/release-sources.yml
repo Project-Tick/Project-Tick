@@ -378,6 +378,7 @@ jobs:
       # ── Release draft ────────────────────────────────────────────
       - name: Create release draft
         uses: softprops/action-gh-release@v3
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref }}
