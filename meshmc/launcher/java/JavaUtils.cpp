@@ -580,9 +580,9 @@ QList<QString> JavaUtils::FindJavaPaths()
 	// manually installed JDKs in /opt
 	scanJavaDir("/opt/jdk");
 	scanJavaDir("/opt/jdks");
-	// Flatpak
-    scanJavaDir("/app/jdk");
-	scanJavaDir("/app/jre");
+	// Flatpak — /app/jdk and /app/jre are JDK roots, not parent directories
+	appendJavaHome(javas, "/app/jdk");
+	appendJavaHome(javas, "/app/jre");
 	return javas;
 }
 #else
