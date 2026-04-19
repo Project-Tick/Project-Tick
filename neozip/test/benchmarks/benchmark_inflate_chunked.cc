@@ -13,7 +13,7 @@ extern "C" {
 #  if defined(ZLIB_COMPAT)
 #    include "zlib.h"
 #  else
-#    include "zlib-ng.h"
+#    include "neozip.h"
 #  endif
 #  include "test/compressible_data_p.h"
 }
