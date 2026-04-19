@@ -168,7 +168,7 @@ install_arch() {
         go \
         qt6-base \
         quazip-qt6 \
-        zlib \
+        zlib-ng \
         extra-cmake-modules \
         pkgconf \
         reuse
