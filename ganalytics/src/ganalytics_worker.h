@@ -25,14 +25,14 @@
 
 #pragma once
 
-#include <QUrlQuery>
+#include <QJsonObject>
 #include <QDateTime>
 #include <QTimer>
 #include <QNetworkRequest>
 #include <QQueue>
 
 struct QueryBuffer {
-	QUrlQuery postQuery;
+	QJsonObject payload;
 	QDateTime time;
 };
 
@@ -61,6 +61,11 @@ class GAnalyticsWorker : public QObject
 	QString m_screenResolution;
 	QString m_viewportSize;
 
+	QString m_measurementId;
+	QString m_apiSecret;
+	QString m_sessionId;
+
+	bool m_debugMode = false;
 	bool m_anonymizeIPs = false;
 	bool m_isEnabled = false;
 	int m_timerInterval = 30000;
@@ -72,13 +77,14 @@ class GAnalyticsWorker : public QObject
   public:
 	void logMessage(GAnalytics::LogLevel level, const QString& message);
 
-	QUrlQuery buildStandardPostQuery(const QString& type);
+	QJsonObject buildBasePayload();
+	QUrl buildRequestUrl();
 	QString getScreenResolution();
 	QString getUserAgent();
 	QList<QString> persistMessageQueue();
 	void readMessagesFromFile(const QList<QString>& dataList);
 
-	void enqueQueryWithCurrentTime(const QUrlQuery& query);
+	void enqueuePayload(const QJsonObject& payload);
 	void setIsSending(bool doSend);
 	void enable(bool state);
 

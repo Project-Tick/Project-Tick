@@ -29,6 +29,9 @@
 
 #include <QDataStream>
 #include <QDebug>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
 #include <QLocale>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -36,7 +39,6 @@
 #include <QQueue>
 #include <QSettings>
 #include <QTimer>
-#include <QUrlQuery>
 #include <QUuid>
 
 GAnalytics::GAnalytics(const QString& trackingID, const QString& clientID,
@@ -123,6 +125,46 @@ int GAnalytics::version()
 	return d->m_version;
 }
 
+void GAnalytics::setMeasurementId(const QString& measurementId)
+{
+	d->m_measurementId = measurementId;
+}
+
+QString GAnalytics::measurementId() const
+{
+	return d->m_measurementId;
+}
+
+void GAnalytics::setApiSecret(const QString& apiSecret)
+{
+	d->m_apiSecret = apiSecret;
+}
+
+QString GAnalytics::apiSecret() const
+{
+	return d->m_apiSecret;
+}
+
+void GAnalytics::setDebugMode(bool debugMode)
+{
+	d->m_debugMode = debugMode;
+}
+
+bool GAnalytics::debugMode() const
+{
+	return d->m_debugMode;
+}
+
+void GAnalytics::setSessionId(const QString& sessionId)
+{
+	d->m_sessionId = sessionId;
+}
+
+QString GAnalytics::sessionId() const
+{
+	return d->m_sessionId;
+}
+
 void GAnalytics::setNetworkAccessManager(
 	QNetworkAccessManager* networkAccessManager)
 {
@@ -141,33 +183,43 @@ QNetworkAccessManager* GAnalytics::networkAccessManager() const
 	return d->networkManager;
 }
 
-static void appendCustomValues(QUrlQuery& query,
+static void appendCustomValues(QJsonObject& params,
 							   const QVariantMap& customValues)
 {
 	for (QVariantMap::const_iterator iter = customValues.begin();
 		 iter != customValues.end(); ++iter) {
-		query.addQueryItem(iter.key(), iter.value().toString());
+		params[iter.key()] = QJsonValue::fromVariant(iter.value());
 	}
 }
 
-/**
- * Sent screen view is called when the user changed the applications view.
- * These action of the user should be noticed and reported. Therefore
- * a QUrlQuery is build in this method. It holts all the parameter for
- * a http POST. The UrlQuery will be stored in a message Queue.
- */
 void GAnalytics::sendScreenView(const QString& screenName,
 								const QVariantMap& customValues)
 {
 	d->logMessage(Info, QString("ScreenView: %1").arg(screenName));
 
-	QUrlQuery query = d->buildStandardPostQuery("screenview");
-	query.addQueryItem("cd", screenName);
-	query.addQueryItem("an", d->m_appName);
-	query.addQueryItem("av", d->m_appVersion);
-	appendCustomValues(query, customValues);
+	QJsonObject payload = d->buildBasePayload();
 
-	d->enqueQueryWithCurrentTime(query);
+	QJsonObject params;
+	params["screen_name"] = screenName;
+	params["app_name"] = d->m_appName;
+	params["app_version"] = d->m_appVersion;
+	params["language"] = d->m_language;
+	params["screen_resolution"] = d->m_screenResolution;
+	params["engagement_time_msec"] = QStringLiteral("100");
+	if (!d->m_sessionId.isEmpty()) {
+		params["session_id"] = d->m_sessionId;
+	}
+	appendCustomValues(params, customValues);
+
+	QJsonObject event;
+	event["name"] = QStringLiteral("screen_view");
+	event["params"] = params;
+
+	QJsonArray events;
+	events.append(event);
+	payload["events"] = events;
+
+	d->enqueuePayload(payload);
 }
 
 /**
@@ -179,19 +231,35 @@ void GAnalytics::sendEvent(const QString& category, const QString& action,
 						   const QString& label, const QVariant& value,
 						   const QVariantMap& customValues)
 {
-	QUrlQuery query = d->buildStandardPostQuery("event");
-	query.addQueryItem("an", d->m_appName);
-	query.addQueryItem("av", d->m_appVersion);
-	query.addQueryItem("ec", category);
-	query.addQueryItem("ea", action);
+	QJsonObject payload = d->buildBasePayload();
+
+	QJsonObject params;
+	params["event_category"] = category;
+	params["event_action"] = action;
 	if (!label.isEmpty())
-		query.addQueryItem("el", label);
+		params["event_label"] = label;
 	if (value.isValid())
-		query.addQueryItem("ev", value.toString());
+		params["value"] = QJsonValue::fromVariant(value);
+	params["app_name"] = d->m_appName;
+	params["app_version"] = d->m_appVersion;
+	params["language"] = d->m_language;
+	params["screen_resolution"] = d->m_screenResolution;
+	params["engagement_time_msec"] = QStringLiteral("100");
+	if (!d->m_sessionId.isEmpty()) {
+		params["session_id"] = d->m_sessionId;
+	}
+	appendCustomValues(params, customValues);
 
-	appendCustomValues(query, customValues);
+	QString eventName = category.toLower().replace(" ", "_");
+	QJsonObject event;
+	event["name"] = eventName;
+	event["params"] = params;
 
-	d->enqueQueryWithCurrentTime(query);
+	QJsonArray events;
+	events.append(event);
+	payload["events"] = events;
+
+	d->enqueuePayload(payload);
 }
 
 /**
@@ -203,20 +271,29 @@ void GAnalytics::sendException(const QString& exceptionDescription,
 							   bool exceptionFatal,
 							   const QVariantMap& customValues)
 {
-	QUrlQuery query = d->buildStandardPostQuery("exception");
-	query.addQueryItem("an", d->m_appName);
-	query.addQueryItem("av", d->m_appVersion);
+	QJsonObject payload = d->buildBasePayload();
 
-	query.addQueryItem("exd", exceptionDescription);
-
-	if (exceptionFatal) {
-		query.addQueryItem("exf", "1");
-	} else {
-		query.addQueryItem("exf", "0");
+	QJsonObject params;
+	params["description"] = exceptionDescription;
+	params["fatal"] = exceptionFatal;
+	params["app_name"] = d->m_appName;
+	params["app_version"] = d->m_appVersion;
+	params["language"] = d->m_language;
+	params["engagement_time_msec"] = QStringLiteral("100");
+	if (!d->m_sessionId.isEmpty()) {
+		params["session_id"] = d->m_sessionId;
 	}
-	appendCustomValues(query, customValues);
+	appendCustomValues(params, customValues);
 
-	d->enqueQueryWithCurrentTime(query);
+	QJsonObject event;
+	event["name"] = QStringLiteral("app_exception");
+	event["params"] = params;
+
+	QJsonArray events;
+	events.append(event);
+	payload["events"] = events;
+
+	d->enqueuePayload(payload);
 }
 
 /**
@@ -226,21 +303,48 @@ void GAnalytics::sendException(const QString& exceptionDescription,
  */
 void GAnalytics::startSession()
 {
-	QVariantMap customValues;
-	customValues.insert("sc", "start");
-	sendEvent("Session", "Start", QString(), QVariant(), customValues);
+	QJsonObject payload = d->buildBasePayload();
+
+	QJsonObject params;
+	params["app_name"] = d->m_appName;
+	params["app_version"] = d->m_appVersion;
+	params["engagement_time_msec"] = QStringLiteral("100");
+	if (!d->m_sessionId.isEmpty()) {
+		params["session_id"] = d->m_sessionId;
+	}
+
+	QJsonObject event;
+	event["name"] = QStringLiteral("session_start");
+	event["params"] = params;
+
+	QJsonArray events;
+	events.append(event);
+	payload["events"] = events;
+
+	d->enqueuePayload(payload);
 }
 
-/**
- * Session ends. This event will be sent by a POST message.
- * Query is setup in this method and stored in the message
- * queue.
- */
 void GAnalytics::endSession()
 {
-	QVariantMap customValues;
-	customValues.insert("sc", "end");
-	sendEvent("Session", "End", QString(), QVariant(), customValues);
+	QJsonObject payload = d->buildBasePayload();
+
+	QJsonObject params;
+	params["app_name"] = d->m_appName;
+	params["app_version"] = d->m_appVersion;
+	params["engagement_time_msec"] = QStringLiteral("100");
+	if (!d->m_sessionId.isEmpty()) {
+		params["session_id"] = d->m_sessionId;
+	}
+
+	QJsonObject event;
+	event["name"] = QStringLiteral("session_end");
+	event["params"] = params;
+
+	QJsonArray events;
+	events.append(event);
+	payload["events"] = events;
+
+	d->enqueuePayload(payload);
 }
 
 /**

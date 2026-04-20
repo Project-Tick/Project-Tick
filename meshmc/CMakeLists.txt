@@ -249,6 +249,7 @@ set(MeshMC_CURSEFORGE_API_KEY "$2a$10$S7KcKijbCj8mCHUQcn0tgOmtHg0kA8q9FI0niNJJ7k
 
 # Google analytics ID
 set(MeshMC_ANALYTICS_ID "G-91XWT2Q4LY" CACHE STRING "ID you can get from Google analytics")
+set(MeshMC_ANALYTICS_SECRET "_EG4lDmVT-S1oGiOIwvzPA" CACHE STRING "API secret for Google Analytics 4 Measurement Protocol")
 
 # Bug tracker URL
 set(MeshMC_BUG_TRACKER_URL "https://bugs.projecttick.org/enter_bug.cgi?product=MeshMC" CACHE STRING "URL for the bug tracker.")

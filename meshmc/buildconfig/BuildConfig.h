@@ -104,6 +104,9 @@ class Config
 	/// Google analytics ID
 	QString ANALYTICS_ID;
 
+	/// Google Analytics 4 API secret
+	QString ANALYTICS_SECRET;
+
 	/// URL for notifications
 	QString NOTIFICATION_URL;
 

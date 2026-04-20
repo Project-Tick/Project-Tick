@@ -70,6 +70,18 @@ class GAnalytics : public QObject
 	void setNetworkAccessManager(QNetworkAccessManager* networkAccessManager);
 	QNetworkAccessManager* networkAccessManager() const;
 
+	void setMeasurementId(const QString& measurementId);
+	QString measurementId() const;
+
+	void setApiSecret(const QString& apiSecret);
+	QString apiSecret() const;
+
+	void setDebugMode(bool debugMode);
+	bool debugMode() const;
+
+	void setSessionId(const QString& sessionId);
+	QString sessionId() const;
+
   public slots:
 	void sendScreenView(const QString& screenName,
 						const QVariantMap& customValues = QVariantMap());

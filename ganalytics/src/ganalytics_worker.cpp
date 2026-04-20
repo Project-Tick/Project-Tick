@@ -28,8 +28,11 @@
 #include "sys.h"
 
 #include <QCoreApplication>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QUrlQuery>
 
 #include <QGuiApplication>
 #include <QScreen>
@@ -42,9 +45,8 @@ GAnalyticsWorker::GAnalyticsWorker(GAnalytics* parent)
 {
 	m_appName = QCoreApplication::instance()->applicationName();
 	m_appVersion = QCoreApplication::instance()->applicationVersion();
-	m_request.setUrl(QUrl("https://www.google-analytics.com/collect"));
 	m_request.setHeader(QNetworkRequest::ContentTypeHeader,
-						"application/x-www-form-urlencoded");
+						"application/json");
 	m_request.setHeader(QNetworkRequest::UserAgentHeader, getUserAgent());
 
 	m_language = QLocale::system().name().toLower().replace("_", "-");
@@ -82,28 +84,38 @@ void GAnalyticsWorker::logMessage(GAnalytics::LogLevel level,
 }
 
 /**
- * Build the POST query. Adds all parameter to the query
- * which are used in every POST.
- * @param type      Type of POST message. The event which is to post.
- * @return query    Most used parameter in a query for a POST.
+ * Build the base GA4 JSON payload with client_id and optional user_id.
+ * @return payload  Base QJsonObject for a GA4 Measurement Protocol request.
  */
-QUrlQuery GAnalyticsWorker::buildStandardPostQuery(const QString& type)
+QJsonObject GAnalyticsWorker::buildBasePayload()
 {
-	QUrlQuery query;
-	query.addQueryItem("v", "1");
-	query.addQueryItem("tid", m_trackingID);
-	query.addQueryItem("cid", m_clientID);
+	QJsonObject payload;
+	payload["client_id"] = m_clientID;
 	if (!m_userID.isEmpty()) {
-		query.addQueryItem("uid", m_userID);
+		payload["user_id"] = m_userID;
 	}
-	query.addQueryItem("t", type);
-	query.addQueryItem("ul", m_language);
-	query.addQueryItem("vp", m_viewportSize);
-	query.addQueryItem("sr", m_screenResolution);
-	if (m_anonymizeIPs) {
-		query.addQueryItem("aip", "1");
+	return payload;
+}
+
+/**
+ * Build the GA4 Measurement Protocol endpoint URL.
+ * Includes measurement_id and api_secret as query parameters.
+ * Uses debug endpoint when debug mode is enabled.
+ * @return url  The fully constructed request URL.
+ */
+QUrl GAnalyticsWorker::buildRequestUrl()
+{
+	QUrl url;
+	if (m_debugMode) {
+		url.setUrl("https://www.google-analytics.com/debug/mp/collect");
+	} else {
+		url.setUrl("https://www.google-analytics.com/mp/collect");
 	}
-	return query;
+	QUrlQuery urlQuery;
+	urlQuery.addQueryItem("measurement_id", m_measurementId);
+	urlQuery.addQueryItem("api_secret", m_apiSecret);
+	url.setQuery(urlQuery);
+	return url;
 }
 
 /**
@@ -142,7 +154,8 @@ QList<QString> GAnalyticsWorker::persistMessageQueue()
 {
 	QList<QString> dataList;
 	foreach (QueryBuffer buffer, m_messageQueue) {
-		dataList << buffer.postQuery.toString();
+		QJsonDocument doc(buffer.payload);
+		dataList << QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
 		dataList << buffer.time.toString(dateTimeFormat);
 	}
 	return dataList;
@@ -157,13 +170,12 @@ void GAnalyticsWorker::readMessagesFromFile(const QList<QString>& dataList)
 {
 	QListIterator<QString> iter(dataList);
 	while (iter.hasNext()) {
-		QString queryString = iter.next();
+		QString jsonString = iter.next();
 		QString dateString = iter.next();
-		QUrlQuery query;
-		query.setQuery(queryString);
+		QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
 		QDateTime dateTime = QDateTime::fromString(dateString, dateTimeFormat);
 		QueryBuffer buffer;
-		buffer.postQuery = query;
+		buffer.payload = doc.object();
 		buffer.time = dateTime;
 		m_messageQueue.enqueue(buffer);
 	}
@@ -174,10 +186,10 @@ void GAnalyticsWorker::readMessagesFromFile(const QList<QString>& dataList)
  * a QTime object into a QueryBuffer struct. These struct
  * will be stored in the message queue.
  */
-void GAnalyticsWorker::enqueQueryWithCurrentTime(const QUrlQuery& query)
+void GAnalyticsWorker::enqueuePayload(const QJsonObject& payload)
 {
 	QueryBuffer buffer;
-	buffer.postQuery = query;
+	buffer.payload = payload;
 	buffer.time = QDateTime::currentDateTime();
 
 	m_messageQueue.enqueue(buffer);
@@ -196,11 +208,9 @@ void GAnalyticsWorker::enqueQueryWithCurrentTime(const QUrlQuery& query)
 void GAnalyticsWorker::postMessage()
 {
 	if (m_messageQueue.isEmpty()) {
-		// queue empty -> try sending later
 		m_timer.start();
 		return;
 	} else {
-		// queue has messages -> stop timer and start sending
 		m_timer.stop();
 	}
 
@@ -214,27 +224,29 @@ void GAnalyticsWorker::postMessage()
 	qint64 timeDiff = buffer.time.msecsTo(sendTime);
 
 	if (timeDiff > fourHours) {
-		// too old.
 		m_messageQueue.dequeue();
 		emit postMessage();
 		return;
 	}
 
-	buffer.postQuery.addQueryItem("qt", QString::number(timeDiff));
+	QJsonObject payload = buffer.payload;
+	qint64 timestampMicros = buffer.time.toMSecsSinceEpoch() * 1000;
+	payload["timestamp_micros"] = QString::number(timestampMicros);
+
+	QJsonDocument doc(payload);
+	QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+
+	m_request.setUrl(buildRequestUrl());
 	m_request.setRawHeader("Connection", connection.toUtf8());
-	m_request.setHeader(QNetworkRequest::ContentLengthHeader,
-						buffer.postQuery.toString().length());
+	m_request.setHeader(QNetworkRequest::ContentLengthHeader, jsonData.length());
 
-	logMessage(GAnalytics::Debug,
-			   "Query string = " + buffer.postQuery.toString());
+	logMessage(GAnalytics::Debug, "GA4 payload = " + QString::fromUtf8(jsonData));
 
-	// Create a new network access manager if we don't have one yet
 	if (networkManager == NULL) {
 		networkManager = new QNetworkAccessManager(this);
 	}
 
-	QNetworkReply* reply = networkManager->post(
-		m_request, buffer.postQuery.query(QUrl::EncodeUnicode).toUtf8());
+	QNetworkReply* reply = networkManager->post(m_request, jsonData);
 	connect(reply, &QNetworkReply::finished, this,
 			&GAnalyticsWorker::postMessageFinished);
 }
