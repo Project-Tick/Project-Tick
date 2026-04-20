@@ -29,6 +29,7 @@
 
 #include <QDir>
 #include <QProcess>
+#include <QProcessEnvironment>
 
 #include <csignal>
 #include <cstdlib>
@@ -113,6 +114,28 @@ int main(int argc, char* argv[])
 #endif
 
 	// initialize Qt
+#ifdef Q_OS_LINUX
+	{
+		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+		// Prefer Wayland backend when running under a Wayland session
+		if (!env.contains("QT_QPA_PLATFORM") &&
+			env.value("XDG_SESSION_TYPE") == "wayland") {
+			qputenv("QT_QPA_PLATFORM", "wayland");
+		}
+
+		// Use xdgdesktopportal for file dialogs and theming on all
+		// Linux DEs.  The old "gtk3" theme forced Qt to use GTK3's
+		// native file-dialog integration, which deadlocks/freezes
+		// on GNOME/Mutter (and other GTK-based compositors) with
+		// Qt 6.  xdgdesktopportal delegates to the DE's own portal
+		// implementation and works everywhere.
+		if (!env.contains("QT_QPA_PLATFORMTHEME")) {
+			qputenv("QT_QPA_PLATFORMTHEME", "xdgdesktopportal");
+		}
+	}
+#endif
+
 	Application app(argc, argv);
 
 	// Install crash signal handlers to launch meshmc-crashreporter

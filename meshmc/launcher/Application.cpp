@@ -1812,6 +1812,20 @@ InstanceWindow* Application::showInstanceWindow(InstancePtr instance,
 		window->activateWindow();
 	} else {
 		window = new InstanceWindow(instance);
+		// On Wayland, set the transient parent so the compositor
+		// (Mutter/GNOME) knows this window belongs to the main
+		// window and can manage stacking/focus correctly.
+		// This must happen before show() so the compositor sees
+		// the relationship when the surface is first mapped.
+		if (m_mainWindow) {
+			// Ensure both windows have native handles
+			window->winId();
+			if (window->windowHandle() && m_mainWindow->windowHandle()) {
+				window->windowHandle()->setTransientParent(
+					m_mainWindow->windowHandle());
+			}
+		}
+		window->show();
 		m_openWindows++;
 		connect(window, &InstanceWindow::isClosing, this,
 				&Application::on_windowClose);
