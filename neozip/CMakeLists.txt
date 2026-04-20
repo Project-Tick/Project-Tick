@@ -614,17 +614,9 @@ endif()
 
 #
 # Check if we can hide zlib internal symbols that are linked between separate source files using internal
+# Note: visibility("internal") is intentionally not used because it is incompatible with LTO
+# when linking test executables against the static library. visibility("hidden") is sufficient.
 #
-check_c_source_compiles(
-    "#define Z_INTERNAL __attribute__((visibility (\"internal\")))
-    int Z_INTERNAL foo;
-    int main() {
-        return 0;
-    }"
-    HAVE_ATTRIBUTE_VISIBILITY_INTERNAL FAIL_REGEX "visibility")
-if(HAVE_ATTRIBUTE_VISIBILITY_INTERNAL)
-    add_definitions(-DHAVE_VISIBILITY_INTERNAL)
-endif()
 
 #
 # Check for __attribute__((aligned(x))) support in the compiler
