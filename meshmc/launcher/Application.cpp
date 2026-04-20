@@ -30,6 +30,8 @@
 #include "ui/MainWindow.h"
 #include "ui/InstanceWindow.h"
 
+#include <QWindow>
+
 #include "ui/instanceview/AccessibleInstanceView.h"
 
 #include "ui/pages/BasePageProvider.h"
@@ -98,6 +100,11 @@
 #include <FileSystem.h>
 #include <DesktopServices.h>
 #include <LocalPeer.h>
+#include "MMCZip.h"
+
+#include "minecraft/MinecraftInstance.h"
+#include "minecraft/PackProfile.h"
+#include "minecraft/Component.h"
 
 #include <ganalytics.h>
 #include <sys.h>
@@ -306,6 +313,27 @@ Application::Application(int& argc, char** argv) : QApplication(argc, argv)
 		return;
 	}
 
+	// CLI fast path
+	// When running a CLI-only command we need almost nothing from the
+	// full application stack.  Load only settings (for InstanceDir) and
+	// the instance list, execute the command, then bail out.  This
+	// avoids starting the network, translations, themes, plugins,
+	// analytics, logging, and the GUI — which also prevents the
+	// "corrupted double-linked list" crash that occurs when static
+	// destructors in plugin modules run after Qt is torn down.
+	if (m_cliListInstances || !m_cliInstanceInfoId.isEmpty() ||
+		!m_cliExportId.isEmpty()) {
+		initSettings();
+
+		// Load instance list
+		QString instDir = m_settings->get("InstanceDir").toString();
+		m_instances.reset(new InstanceList(m_settings, instDir, this));
+		m_instances->loadList();
+
+		performCLIAction();
+		return;
+	}
+
 	if (!initPeerInstance())
 		return;
 	if (!initLogging(dataPath))
@@ -356,6 +384,8 @@ void Application::initAnalytics()
 	}
 	m_analytics = new GAnalytics(BuildConfig.ANALYTICS_ID, clientID,
 								 analyticsVersion, this);
+	m_analytics->setMeasurementId(BuildConfig.ANALYTICS_ID);
+	m_analytics->setApiSecret(BuildConfig.ANALYTICS_SECRET);
 	m_analytics->setLogLevel(GAnalytics::Debug);
 	m_analytics->setAnonymizeIPs(true);
 	// FIXME: the ganalytics library has no idea about our fancy shared
@@ -474,6 +504,27 @@ QHash<QString, QVariant> Application::parseCommandLine(int& argc, char** argv)
 	parser.addDocumentation(
 		"import", "Import instance from specified zip (local path or URL)");
 
+	// --list-instances  (CLI)
+	parser.addSwitch("list-instances");
+	parser.addShortOpt("list-instances", 'L');
+	parser.addDocumentation("list-instances", "List all instances and exit.");
+	// --instance-info  (CLI)
+	parser.addOption("instance-info");
+	parser.addShortOpt("instance-info", 'i');
+	parser.addDocumentation("instance-info",
+							"Show detailed information about the specified "
+							"instance (by ID) and exit.");
+	// --export  (CLI)
+	parser.addOption("export");
+	parser.addShortOpt("export", 'E');
+	parser.addDocumentation("export",
+							"Export the specified instance to a zip file. "
+							"Requires --output to set the destination path.");
+	// --output  (CLI, used with --export)
+	parser.addOption("output");
+	parser.addShortOpt("output", 'o');
+	parser.addDocumentation("output", "Output file path (used with --export).");
+
 	// parse the arguments
 	try {
 		args = parser.parse(arguments());
@@ -507,6 +558,17 @@ QHash<QString, QVariant> Application::parseCommandLine(int& argc, char** argv)
 	m_profileToUse = args["profile"].toString();
 	m_liveCheck = args["alive"].toBool();
 	m_zipToImport = args["import"].toUrl();
+
+	m_cliListInstances = args["list-instances"].toBool();
+	m_cliInstanceInfoId = args["instance-info"].toString();
+	m_cliExportId = args["export"].toString();
+	m_cliOutputPath = args["output"].toString();
+
+	if (!m_cliExportId.isEmpty() && m_cliOutputPath.isEmpty()) {
+		qCritical() << "--export requires --output <path>.";
+		m_status = Application::Failed;
+		return args;
+	}
 
 	return args;
 }
@@ -1175,6 +1237,123 @@ void Application::setupWizardFinished(int status)
 {
 	qDebug() << "Wizard result =" << status;
 	performMainStartupAction();
+}
+
+void Application::performCLIAction()
+{
+	if (m_cliListInstances) {
+		auto instList = instances();
+		int count = instList->count();
+		if (count == 0) {
+			fprintf(stdout, "No instances found.\n");
+		} else {
+			fprintf(stdout, "%-24s %-30s %-12s %s\n", "ID", "Name",
+					"MC Version", "Group");
+			for (int i = 0; i < 80; i++)
+				fputc('-', stdout);
+			fputc('\n', stdout);
+			for (int i = 0; i < count; i++) {
+				auto inst = instList->at(i);
+				if (!inst)
+					continue;
+				QString group = instList->getInstanceGroup(inst->id());
+				QString mcVer = "?";
+				auto* mcInst = dynamic_cast<MinecraftInstance*>(inst.get());
+				if (mcInst) {
+					auto profile = mcInst->getPackProfile();
+					if (profile)
+						mcVer = profile->getComponentVersion("net.minecraft");
+				}
+				fprintf(
+					stdout, "%-24s %-30s %-12s %s\n", qPrintable(inst->id()),
+					qPrintable(inst->name()), qPrintable(mcVer),
+					qPrintable(group.isEmpty() ? QStringLiteral("-") : group));
+			}
+		}
+		fprintf(stdout, "\nTotal: %d instance(s)\n", count);
+		m_status = Application::Succeeded;
+		return;
+	}
+
+	if (!m_cliInstanceInfoId.isEmpty()) {
+		auto inst = instances()->getInstanceById(m_cliInstanceInfoId);
+		if (!inst) {
+			fprintf(stderr, "Error: Instance '%s' not found.\n",
+					qPrintable(m_cliInstanceInfoId));
+			m_status = Application::Failed;
+			return;
+		}
+		fprintf(stdout, "Instance: %s\n", qPrintable(inst->name()));
+		fprintf(stdout, "ID:       %s\n", qPrintable(inst->id()));
+		fprintf(stdout, "Path:     %s\n", qPrintable(inst->instanceRoot()));
+		fprintf(stdout, "Type:     %s\n", qPrintable(inst->typeName()));
+		fprintf(stdout, "Group:    %s\n",
+				qPrintable(instances()->getInstanceGroup(inst->id())));
+
+		auto* mcInst = dynamic_cast<MinecraftInstance*>(inst.get());
+		if (mcInst) {
+			auto profile = mcInst->getPackProfile();
+			if (profile) {
+				fprintf(
+					stdout, "MC Ver:   %s\n",
+					qPrintable(profile->getComponentVersion("net.minecraft")));
+				fprintf(stdout, "\nComponents:\n");
+				for (int i = 0; i < profile->rowCount(); i++) {
+					auto comp = profile->getComponent(i);
+					if (comp) {
+						fprintf(stdout, "  %s %s\n",
+								qPrintable(comp->getName()),
+								qPrintable(comp->getVersion()));
+					}
+				}
+			}
+		}
+
+		auto totalTime = inst->totalTimePlayed();
+		if (totalTime > 0) {
+			int hours = totalTime / 3600;
+			int mins = (totalTime % 3600) / 60;
+			fprintf(stdout, "\nPlay time: %dh %dm\n", hours, mins);
+		}
+
+		auto lastLaunch = inst->lastLaunch();
+		if (lastLaunch > 0) {
+			fprintf(stdout, "Last launched: %s\n",
+					qPrintable(QDateTime::fromSecsSinceEpoch(lastLaunch)
+								   .toString(Qt::ISODate)));
+		}
+
+		m_status = Application::Succeeded;
+		return;
+	}
+
+	if (!m_cliExportId.isEmpty()) {
+		auto inst = instances()->getInstanceById(m_cliExportId);
+		if (!inst) {
+			fprintf(stderr, "Error: Instance '%s' not found.\n",
+					qPrintable(m_cliExportId));
+			m_status = Application::Failed;
+			return;
+		}
+
+		fprintf(stdout, "Exporting '%s' to %s ...\n", qPrintable(inst->name()),
+				qPrintable(m_cliOutputPath));
+		fflush(stdout);
+
+		QString srcPath = inst->instanceRoot();
+		auto noFilter = [](const QString&) { return false; };
+		if (!MMCZip::compressDir(m_cliOutputPath, srcPath, noFilter)) {
+			fprintf(stderr, "Error: Failed to export instance.\n");
+			m_status = Application::Failed;
+			return;
+		}
+
+		fprintf(stdout, "Export complete.\n");
+		m_status = Application::Succeeded;
+		return;
+	}
+
+	m_status = Application::Failed;
 }
 
 void Application::performMainStartupAction()

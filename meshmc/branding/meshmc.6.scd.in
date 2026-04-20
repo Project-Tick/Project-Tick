@@ -41,6 +41,18 @@ Here are the current features of MeshMC.
 *-a, --profile*=PROFILE
 	Use the account specified by PROFILE (only valid in combination with --launch).
 
+*-L, --list-instances*
+	List all available instances and exit.
+
+*-i, --instance-info*=INSTANCE_ID
+	Show detailed information about INSTANCE_ID and exit.
+
+*-E, --export*=INSTANCE_ID
+	Export the instance specified by INSTANCE_ID as a zip archive and exit.
+
+*-o, --output*=PATH
+	Set the output path for --export (default: current directory).
+
 # ENVIRONMENT
 
 The behavior of the launcher can be customized by the following environment

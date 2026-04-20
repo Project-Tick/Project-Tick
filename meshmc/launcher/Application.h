@@ -213,6 +213,7 @@ class Application : public QApplication
 
   private:
 	bool createSetupWizard();
+	void performCLIAction();
 	void performMainStartupAction();
 
 	// sets the fatal error message and m_status to Failed.
@@ -298,5 +299,11 @@ class Application : public QApplication
 	QString m_profileToUse;
 	bool m_liveCheck = false;
 	QUrl m_zipToImport;
+
+	// CLI-only flags (headless, exit after action)
+	bool m_cliListInstances = false;
+	QString m_cliInstanceInfoId;
+	QString m_cliExportId;
+	QString m_cliOutputPath;
 	std::unique_ptr<QFile> logFile;
 };
