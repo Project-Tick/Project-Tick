@@ -84,7 +84,8 @@ void ProgressDialog::updateSize()
 {
 	QSize qSize = QSize(480, minimumSizeHint().height());
 	resize(qSize);
-	setFixedSize(qSize);
+	setMinimumSize(qSize);
+	setMaximumSize(qSize);
 }
 
 int ProgressDialog::execWithTask(Task* task)

@@ -60,7 +60,7 @@ CopyInstanceDialog::CopyInstanceDialog(InstancePtr original, QWidget* parent)
 {
 	ui->setupUi(this);
 	resize(minimumSizeHint());
-	layout()->setSizeConstraint(QLayout::SetFixedSize);
+	setMinimumSize(minimumSizeHint());
 
 	InstIconKey = original->iconKey();
 	ui->iconButton->setIcon(APPLICATION->icons()->getIcon(InstIconKey));

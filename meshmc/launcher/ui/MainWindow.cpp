@@ -1408,21 +1408,19 @@ void MainWindow::updateAvailable(UpdateAvailableStatus status)
 				progressDlg->appendLog(
 					tr("Download URL: %1").arg(status.downloadUrl));
 				progressDlg->show();
-				QApplication::processEvents();
 
 				APPLICATION->updateIsRunning(true);
 				progressDlg->setStatus(tr("Launching updater..."));
-				QApplication::processEvents();
 
 				UpdateController controller(this, APPLICATION->root(),
 											status.downloadUrl);
 				if (controller.startUpdate()) {
 					progressDlg->setFinished(
 						true, tr("Updater launched. MeshMC will now close."));
-					QApplication::processEvents();
 					// The updater binary has been launched; quit the main app
 					// so the updater can overwrite its files.
-					QCoreApplication::quit();
+					QMetaObject::invokeMethod(qApp, &QCoreApplication::quit,
+											  Qt::QueuedConnection);
 				} else {
 					progressDlg->setFinished(
 						false, tr("Failed to launch the updater."));

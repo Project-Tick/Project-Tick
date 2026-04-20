@@ -57,6 +57,7 @@ PageDialog::PageDialog(BasePageProvider* pageProvider, QString defaultId,
 					   QWidget* parent)
 	: QDialog(parent)
 {
+	setWindowModality(Qt::WindowModal);
 	setWindowTitle(pageProvider->dialogTitle());
 	m_container = new PageContainer(pageProvider, defaultId, this);
 

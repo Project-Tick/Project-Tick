@@ -31,8 +31,8 @@
 
 NotificationDialog::NotificationDialog(
 	const NotificationChecker::NotificationEntry& entry, QWidget* parent)
-	: QDialog(parent, Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint |
-						  Qt::CustomizeWindowHint),
+	: QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+						  Qt::WindowCloseButtonHint),
 	  ui(new Ui::NotificationDialog)
 {
 	ui->setupUi(this);

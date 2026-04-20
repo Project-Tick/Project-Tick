@@ -144,7 +144,8 @@ void JavaWizardPage::retranslate()
 	setSubTitle(tr(
 		"You do not have a working Java set up yet or it went missing.\n"
 		"Please select one of the following or browse for a java executable.\n"
-		"You can also choose which vendor to use for automatic Java downloads."));
+		"You can also choose which vendor to use for automatic Java "
+		"downloads."));
 	m_vendorLabel->setText(tr("Auto-download Java from:"));
 	m_java_widget->retranslate();
 }

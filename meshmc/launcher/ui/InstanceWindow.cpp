@@ -143,7 +143,6 @@ InstanceWindow::InstanceWindow(InstancePtr instance, QWidget* parent)
 		connect(m_instance.get(), &BaseInstance::statusChanged, this,
 				&InstanceWindow::on_instanceStatusChanged);
 	}
-	show();
 }
 
 void InstanceWindow::on_instanceStatusChanged(BaseInstance::Status,

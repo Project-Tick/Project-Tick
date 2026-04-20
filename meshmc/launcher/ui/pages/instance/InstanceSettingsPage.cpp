@@ -176,8 +176,9 @@ void InstanceSettingsPage::applySettings()
 	bool vendorOverride = ui->javaVendorGroupBox->isChecked();
 	m_settings->set("OverrideJavaAutoDownloadVendor", vendorOverride);
 	if (vendorOverride) {
-		m_settings->set("JavaAutoDownloadVendor",
-						ui->javaAutoDownloadVendorBox->currentData().toString());
+		m_settings->set(
+			"JavaAutoDownloadVendor",
+			ui->javaAutoDownloadVendorBox->currentData().toString());
 	} else {
 		m_settings->reset("JavaAutoDownloadVendor");
 	}
@@ -285,8 +286,7 @@ void InstanceSettingsPage::loadSettings()
 	// Java auto-download vendor
 	ui->javaVendorGroupBox->setChecked(
 		m_settings->get("OverrideJavaAutoDownloadVendor").toBool());
-	auto currentVendor =
-		m_settings->get("JavaAutoDownloadVendor").toString();
+	auto currentVendor = m_settings->get("JavaAutoDownloadVendor").toString();
 	int vendorIdx = ui->javaAutoDownloadVendorBox->findData(currentVendor);
 	if (vendorIdx >= 0) {
 		ui->javaAutoDownloadVendorBox->setCurrentIndex(vendorIdx);
