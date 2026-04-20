@@ -1,38 +1,344 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>@MeshMC_AppID@</id>
+  <id>org.projecttick.MeshMC</id>
   <name>MeshMC</name>
   <summary>Custom Minecraft Launcher to easily manage multiple Minecraft installations at once</summary>
   <developer id="org.projecttick">
     <name>Project Tick</name>
   </developer>
+  <icon type="stock">org.projecttick.MeshMC</icon>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0-only</project_license>
+  <project_license>GPL-3.0-or-later</project_license>
   <description>
     <p>MeshMC is a custom launcher for Minecraft that focuses on predictability, long term stability and simplicity.</p>
     <p>Features:</p>
     <ul>
-      <li>Easily install game modifications, such as Fabric, Forge and Quilt</li>
+      <li>Easily install game modifications, such as Fabric, Forge, NeoForge and Quilt</li>
       <li>Easily install and update modpacks from the MeshMC</li>
-      <li>Control your Java settings, and enable Mangohud or Gamemode with a toggle</li>
+      <li>Control your Java settings</li>
       <li>Manage worlds and resource packs from the launcher</li>
       <li>See logs and other details easily through a dashboard</li>
       <li>Kill Minecraft in case of a crash/freeze</li>
       <li>Isolate Minecraft instances to keep everything clean</li>
       <li>Install and update mods directly from the launcher</li>
       <li>Customize the launcher with themes, and more</li>
-      <li>And cat :3</li>
+      <li>And cats :3</li>
     </ul>
   </description>
   <screenshots>
     <screenshot type="default">
       <caption>The main MeshMC window</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC.png</image>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-MainPage.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>The main MeshMC window with Cat</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-MainPage-WithCatPack.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Instance Settings</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-InstanceSettings-Version.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>New Instance</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-NewInstance-Vanilla.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Icon picker</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-Pick-Icon.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Language selection</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-Settings-Language.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Java installation</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-Settings-Java-Installations-DownloadJava.png</image>
     </screenshot>
   </screenshots>
+  <recommends>
+    <memory>2048</memory>
+  </recommends>
   <releases>
-    <release version="@MeshMC_RELEASE_VERSION_NAME@" date="@MeshMC_BUILD_TIMESTAMP@"></release>
+    <release version="7.7.0" date="2026-04-19">
+      <description>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Updated _256 logo</li>
+          <li>Fixed Java search dirs</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.6.0" date="2026-04-19">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Major cleanup of build system dependencies across macOS and cross-platform targets</li>
+          <li>Reduced optional compression and crypto surface (LZ4, ZSTD, OpenSSL disabled)</li>
+          <li>Improved licensing compliance coverage via REUSE updates</li>
+          <li>Continued stabilization of cross-platform build pipeline (macOS, Windows, MinGW)</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>macOS support for building libarchive from source</li>
+          <li>tomlplusplus integration into the build process</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Refactored macOS dependency setup and streamlined CMake flags</li>
+          <li>Adjusted dependency management for macOS and Windows builds</li>
+          <li>Updated REUSE configuration to expand license annotation coverage</li>
+          <li>Simplified build configuration by disabling optional components (LZ4, ZSTD, OpenSSL)</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Build issues in dependency handling across macOS and Windows environments</li>
+          <li>Inconsistencies in CMake configuration related to optional libraries</li>
+        </ul>
+        <p><em>Removed</em></p>
+        <ul>
+          <li>qrencode from macOS dependency installation</li>
+          <li>vcpkg meson tool port and related patches</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.5.0" date="2026-04-18">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Improved Java management with auto-download vendor selection and refined settings handling</li>
+          <li>Added cross-platform dependency build scripts (Linux, macOS and Windows)</li>
+          <li>Internal improvements to file watcher lifecycle and cleanup stability</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>Java auto-download vendor selection support</li>
+          <li>Java-related settings management system</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Refactored Java auto-download configuration logic</li>
+          <li>Improved internal handling of Java settings</li>
+          <li>Enhanced file watcher lifecycle management and cleanup behavior</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Potential issues related to file watcher cleanup and resource handling</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.4.0" date="2026-04-17">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Major build system stabilization across CMake, CI, and monorepo library handling</li>
+          <li>Full Nix integration with derivations for all Project Tick components</li>
+          <li>Transition toward system-provided dependencies and cleaner packaging model</li>
+          <li>Improved library bundling strategy and source archive consistency</li>
+          <li>Compression backend migrated from zlib to neozip</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>CMake support for collecting binary directories from CMAKE_PREFIX_PATH</li>
+          <li>README documentation for bundled libraries</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Refactored artifact naming in MeshMC workflow (removed Qt6 suffix)</li>
+          <li>Library integration model updated to allow independent compilation of subprojects</li>
+          <li>Replaced zlib with neozip for compression</li>
+          <li>MeshMC source tree reformatted for consistency</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Issues with missing binary paths for monorepo libraries during build/link stages</li>
+          <li>CI inconsistencies related to dependency installation and build configuration</li>
+          <li>General CMake configuration inconsistencies affecting multi-platform builds</li>
+        </ul>
+        <p><em>Removed</em></p>
+        <ul>
+          <li>Legacy assumptions around bundled dependencies in favor of system-based linkage</li>
+          <li>Redundant or conflicting commits (cleanup via targeted revert)</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.3.0" date="2026-04-16">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Introduction of the MMCO plugin system, establishing a formal extension architecture with a defined SDK and lifecycle.</li>
+          <li>Addition of the MMCO Module Exception 1.0, enabling non-GPL compatible plugins under controlled conditions.</li>
+          <li>First-party plugins introduced, including BackupSystem and NVIDIAPrime, demonstrating real-world MMCO usage.</li>
+          <li>Significant improvements to plugin management, UI integration, and runtime behavior.</li>
+          <li>Initial fuzzing infrastructure added for multiple core libraries (cmark, json4cpp, neozip, tomlplusplus). </li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>MMCO plugin system (SDK, loader, lifecycle management, metadata, hooks)</li>
+          <li>MeshMC MMCO Module Exception 1.0 and updated licensing across the codebase</li>
+          <li>Plugin SDK CMake integration and example plugin</li>
+          <li>BackupSystem plugin for instance backup management (initial implementation)</li>
+          <li>Pre-launch backup support and settings integration for BackupSystem</li>
+          <li>NVIDIAPrime plugin for NVIDIA GPU offloading support</li>
+          <li>Plugin launch modifiers and improved plugin management system</li>
+          <li>Plugin metadata enhancements (code links, About dialog integration)</li>
+          <li>Plugin build and staging configuration options</li>
+          <li>Backup-related UI assets (icons across themes)</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Core architecture transitioned to a plugin-first model with MMCO as a first-class subsystem</li>
+          <li>Licensing model updated from plain GPL-3.0-or-later to GPL-3.0-or-later WITH MMCO exception</li>
+          <li>Plugin tab location updated in the UI</li>
+          <li>Backup plugin UI labels and messaging improved</li>
+          <li>Help menu actions refactored in MainWindow</li>
+          <li>LoggedProcess and ModFolderPage enhanced to support runtime resource/shader pack addition</li>
+          <li>CMake configuration updated for SDK and plugin staging</li>
+          <li>Platform compatibility improvements (conditional unistd.h)</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Fixed launcher icon issues</li>
+          <li>Improved macOS icon rendering (Tahoe compatibility)</li>
+          <li>REUSE compliance issues resolved</li>
+          <li>General formatting and minor internal fixes</li>
+        </ul>
+        <p><em>Removed</em></p>
+        <ul>
+          <li>Removed parallel execution in CI test commands for stability</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.2.0" date="2026-04-15">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Added a full crash reporting and log management system</li>
+          <li>Improved the update pipeline, including feed parsing, version comparison, and updater integration</li>
+          <li>Strengthened error handling during update checks and archive extraction</li>
+          <li>Cleaned up launcher internals, compiler flags, and several code paths for clarity and stability</li>
+          <li>Added initial Pacman packaging</li>
+          <li>Introduced AUR automation through GitHub Actions</li>
+          <li>Improved packaging directory structure and release patching workflow</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>Added a new crash reporter application and dialog flow for handling launcher crashes</li>
+          <li>Added CrashReportDialog with QR code support for full logs and paste.ee links</li>
+          <li>Added MeshMCLogsDialog for viewing and managing MeshMC logs</li>
+          <li>Added support for log uploading to paste.ee</li>
+          <li>Added UpdateProgressDialog to show updater progress and logs</li>
+          <li>Added MESHMC_BINARY to BuildConfig for application binary naming</li>
+          <li>Added a shell wrapper for the meshmc binary in portable tarball installations</li>
+          <li>Added unit tests for UpdateChecker</li>
+          <li>Added Pacman package support</li>
+          <li>Added packaging directory placeholders with .gitkeep</li>
+          <li>Added .gitignore for Pacman packaging outputs</li>
+          <li>Added a GitHub Actions workflow for automatic AUR package updates for MeshMC</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Refactored version comparison in UpdateChecker to use qint64 for better accuracy</li>
+          <li>Refactored installer behavior to store downloaded archives in the install root</li>
+          <li>Refactored stable feed item parsing in the update system</li>
+          <li>Refactored process management in ModernLauncher</li>
+          <li>Improved applet instantiation in OneSixLauncher</li>
+          <li>Refactored getKernelInfo to use QOperatingSystemVersion</li>
+          <li>Updated Java-related compile flags to use --release</li>
+          <li>Adjusted CMake CXX flags by removing redundant warning flags for MSVC and refining non-MSVC flags</li>
+          <li>Enhanced compiler flags for both MSVC and Unix builds to improve warning coverage and stricter handling</li>
+          <li>Refactored multiple methods, parameters, and internal declarations for improved clarity and maintainability</li>
+          <li>Reformatted MeshMC source code</li>
+          <li>Updated the release workflow patching process by removing an unnecessary copy step</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Fixed updater binary name references in UpdateController</li>
+          <li>Added error handling for update check failures in MainWindow</li>
+          <li>Improved extraction error handling in the installer</li>
+          <li>Fixed warnings in integrated libnbtplusplus code</li>
+          <li>Improved packaging-related workflow structure for release automation</li>
+        </ul>
+        <p><em>Removed</em></p>
+        <ul>
+          <li>Removed unused MeshMC documentation</li>
+          <li>Removed unused helper functions and variables in several source files</li>
+          <li>Removed unused parameters across multiple methods to simplify interfaces</li>
+          <li>Removed unnecessary packaging-related copy behavior from the release workflow</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.1.0" date="2026-04-14">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Added in-launcher installation support for mods, resource packs, and shader packs with a dependency solver</li>
+          <li>Improved update system and release pipeline, including checksum generation and updater handling</li>
+          <li>Completed large-scale Qt6 signal-slot modernization refactor</li>
+          <li>General build system, CI, and documentation cleanup</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>In-launcher installation support for mods, resource packs, and shader packs</li>
+          <li>Dependency solver for resolving content dependencies</li>
+          <li>SHA-256 checksum generation in release workflow</li>
+          <li>Updater binary discovery next to the running executable</li>
+          <li>Improved portable mode detection logic</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Refactored update mechanism and updater execution flow</li>
+          <li>Updated version handling to prioritize release tags</li>
+          <li>Migrated signal-slot connections to modern Qt syntax across the codebase</li>
+          <li>Updated CMake configuration, including Qt version constraints</li>
+        </ul>
+        <p><em>Removed</em></p>
+        <ul>
+          <li>Removed obsolete MeshMC man page documentation</li>
+          <li>Cleaned up unused files</li>
+          <li>Dropped qt5compat dependency</li>
+          <li>Removed unused libnbtplusplus inputs from flake configuration</li>
+          <li>Removed CI tag trigger</li>
+        </ul>
+      </description>
+    </release>
+    <release version="7.0.1" date="2026-04-13">
+      <description>
+        <p><em>Fixed</em></p>
+        <p>Fixed build timestamp not being set in generated files due to CMake configure order</p>
+      </description>
+    </release>
+    <release version="7.0.0" date="2026-04-12">
+      <description>
+        <p>Today, we aren't just talking about MultiMC. This is not true. PrismLauncher? Again no. Okay, ProjTLauncher? Again and again, no. This is MeshMC 7.0.0. This release ports the project from Qt5 to Qt6, migrates from the old CurseForge API to the new one, adds Modrinth support, and more!</p>
+      
+        <p><em>Welcome to customizable Catpacks</em></p>
+        <p>Catpacks are now customizable. To build your own cat empire, you can add your catpacks to the catpacks folder located in the binary folder within %AppData%\MeshMC or .local/share/MeshMC, or if you are using a portable binary.</p>
+      
+        <p><em>Modrinth support, now available</em></p>
+        <p>Now you'll be able to install Modrinth packages, and I hope this will make everyone happy.</p>
+
+        <p><em>Say hello to a launcher that includes Qt6</em></p>
+        <p>MeshMC 7.0.0 has completed the Qt6 migration by default, which is especially important for our future-proofing and for you to use the launcher more comfortably.</p>
+        <p><em>Other Changes</em></p>
+        <ul>
+          <li>Download your Java applications easily through your launcher with JavaDownloader.</li>
+          <li>Neoforge and Quilt support has been added. You can quickly install Neoforge and Quilt from the instance edit menu.</li>
+          <li>The libnbt++3 module now comes with meticulously crafted patches from Project Tick.</li>
+          <li>We are now sharing our Client IDs so that developers and users can get custom builds.</li>
+          <li>Added more themes and icons.</li>
+          <li>Now you can log in to your Microsoft account more easily with endpoint.</li>
+          <li>Refined AboutPage.</li>
+          <li>Changed Quazip dependency to libarchive.</li>
+          <li>Fixed more bugs.</li>
+        </ul>
+        <p><em>Note</em></p>
+        <p>MeshMC is a continuation of MultiMC. We've implemented AI Usage Policies and GPL transitions to make MeshMC more free, and you can be sure our code is more open to use. Our difference is that we aim to create a Minecraft launcher that people can compile even 20 years from now, freely package wherever they want, maintain the simplicity and iconic appeal of MultiMC, while also adding new features and always keeping that line. We are very happy to see you with this release, but we also want to guarantee that the problems that befell ProjT Launcher will not occur here. The reasons we abandoned ProjT Launcher were primarily licensing issues and problems with the codebase due to it being a PrismLauncher fork, but we want to preserve the MultiMC foundation in MeshMC. Therefore, we shut down ProjT Launcher. Thank you for your support. Stay with your cats.</p>
+      </description>
+    </release>
   </releases>
+  <categories>
+    <category>Game</category>
+  </categories>
   <url type="homepage">https://projecttick.org/p/meshmc</url>
   <url type="bugtracker">https://bugs.projecttick.org/enter_bug.cgi?product=MeshMC</url>
   <url type="faq">https://projecttick.org/handbook</url>
