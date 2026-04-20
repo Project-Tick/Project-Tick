@@ -46,5 +46,9 @@
     <content_attribute id="social-chat">intense</content_attribute>
     <content_attribute id="social-info">moderate</content_attribute>
   </content_rating>
+  <branding>
+    <color type="primary" scheme_preference="light">#3584e4</color>
+    <color type="primary" scheme_preference="dark">#0a2d6f</color>
+  </branding>
   <launchable type="desktop-id">@MeshMC_AppID@.desktop</launchable>
 </component>
