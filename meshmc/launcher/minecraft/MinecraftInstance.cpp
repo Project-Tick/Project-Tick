@@ -137,9 +137,8 @@ MinecraftInstance::MinecraftInstance(SettingsObjectPtr globalSettings,
 	// Java auto-download vendor preference
 	auto javaVendorOverride =
 		m_settings->registerSetting("OverrideJavaAutoDownloadVendor", false);
-	m_settings->registerOverride(
-		globalSettings->getSetting("JavaAutoDownload"),
-		javaVendorOverride);
+	m_settings->registerOverride(globalSettings->getSetting("JavaAutoDownload"),
+								 javaVendorOverride);
 	m_settings->registerOverride(
 		globalSettings->getSetting("JavaAutoDownloadVendor"),
 		javaVendorOverride);

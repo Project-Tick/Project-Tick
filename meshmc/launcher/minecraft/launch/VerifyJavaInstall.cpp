@@ -186,9 +186,9 @@ void VerifyJavaInstall::executeTask()
 #ifndef MeshMC_DISABLE_JAVA_DOWNLOADER
 	// Check runtime setting for auto-download
 	if (!m_inst->settings()->get("JavaAutoDownload").toBool()) {
-		emitFailed(
-			tr("Java %1 is required but not installed. Automatic Java download is disabled.")
-				.arg(requiredMajor));
+		emitFailed(tr("Java %1 is required but not installed. Automatic Java "
+					  "download is disabled.")
+					   .arg(requiredMajor));
 		return;
 	}
 	// Not found — auto-download
@@ -206,7 +206,8 @@ void VerifyJavaInstall::executeTask()
 #ifndef MeshMC_DISABLE_JAVA_DOWNLOADER
 void VerifyJavaInstall::autoDownloadJava(int requiredMajor)
 {
-	// Get vendor from instance settings (falls through to global if not overridden)
+	// Get vendor from instance settings (falls through to global if not
+	// overridden)
 	auto m_inst =
 		std::dynamic_pointer_cast<MinecraftInstance>(m_parent->instance());
 	m_preferredVendor =
@@ -214,9 +215,8 @@ void VerifyJavaInstall::autoDownloadJava(int requiredMajor)
 	if (m_preferredVendor.isEmpty()) {
 		m_preferredVendor = "net.minecraft.java";
 	}
-	emit logLine(
-		tr("Using Java vendor: %1").arg(m_preferredVendor),
-		MessageLevel::MeshMC);
+	emit logLine(tr("Using Java vendor: %1").arg(m_preferredVendor),
+				 MessageLevel::MeshMC);
 	fetchVersionList(requiredMajor);
 }
 
