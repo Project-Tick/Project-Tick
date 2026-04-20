@@ -18,4 +18,11 @@ endif()
 #################################### Register plugins here ####################################
 
 add_subdirectory(BackupSystem)
-add_subdirectory(NVIDIAPrime)
+
+if(UNIX AND NOT APPLE)
+    add_subdirectory(NVIDIAPrime)
+endif()
+
+if(NOT APPLE)
+    add_subdirectory(Filelink)
+endif()
