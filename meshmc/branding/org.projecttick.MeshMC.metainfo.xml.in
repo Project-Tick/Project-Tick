@@ -6,7 +6,6 @@
   <developer id="org.projecttick">
     <name>Project Tick</name>
   </developer>
-  <icon type="stock">org.projecttick.MeshMC</icon>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <description>
@@ -59,6 +58,14 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.9.0" date="2026-04-20">
+      <description>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Removed icon tag in MeshMC metainfo</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.8.0" date="2026-04-20">
       <description>
         <p><em>Highlights</em></p>
