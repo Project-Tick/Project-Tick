@@ -59,6 +59,46 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.8.0" date="2026-04-20">
+      <description>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Major feature expansion across CLI, plugins, and Linux integration</li>
+          <li>First-class Wayland support for better modern Linux compatibility</li>
+          <li>New Filelink plugin enabling cross-instance file linking and desktop shortcut creation</li>
+          <li>Improved distribution readiness with enhanced metainfo, branding, and Flathub presence</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>CLI support for instance management and export functionality</li>
+          <li>Filelink plugin for desktop shortcut creation and cross-instance file linking</li>
+          <li>Wayland support for instance window management and improved Linux environment handling</li>
+          <li>Callback-based action registration system for instance toolbar</li>
+          <li>GA4 Measurement Protocol support with new API secret and measurement ID</li>
+          <li>Branding colors for light and dark themes in metainfo.xml</li>
+          <li>SVG asset for MeshMC graphical resources</li>
+          <li>Documentation for Environment Variables and Application Settings APIs</li>
+          <li>Snapshot management system via GenerateLatestJsonCommand and SnapshotService</li>
+          <li>mmcmodules inclusion in Windows installer</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Updated metainfo with new features, screenshots, and licensing information</li>
+          <li>Refactored dialog window modality and improved layout constraints</li>
+          <li>Reformatted minecraft subdirectory structure</li>
+          <li>Replaced zlib with zlib-ng in Arch installation script</li>
+          <li>Improved Linux environment handling and integration details</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Removed internal visibility check for zlib symbols to resolve LTO incompatibility issues</li>
+        </ul>
+        <p><em>Removed</em></p>
+        <ul>
+          <li>Internal zlib symbol visibility enforcement (due to incompatibility with LTO)</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.7.0" date="2026-04-19">
       <description>
         <p><em>Fixed</em></p>
