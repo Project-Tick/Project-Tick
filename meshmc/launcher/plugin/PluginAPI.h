@@ -230,6 +230,14 @@ struct MMCOContext {
 									   const char* icon_name,
 									   const char* page_id);
 
+	/* Register a callback-based action in the instance toolbar.
+	 * Unlike ui_register_instance_action which opens a settings page,
+	 * this calls the given callback when the button is clicked. */
+	int (*ui_register_instance_action_cb)(void* mh, const char* text,
+										  const char* tooltip,
+										  const char* icon_name,
+										  void (*cb)(void* ud), void* ud);
+
 	/* Create a page widget. Returns opaque page handle. */
 	void* (*ui_page_create)(void* mh, const char* page_id,
 							const char* display_name, const char* icon_name);

@@ -50,6 +50,7 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QInputDialog>
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -307,6 +308,7 @@ MMCOContext PluginManager::buildContext(PluginMetadata& meta)
 	ctx.ui_input_dialog = api_ui_input_dialog;
 	ctx.ui_confirm_dialog = api_ui_confirm_dialog;
 	ctx.ui_register_instance_action = api_ui_register_instance_action;
+	ctx.ui_register_instance_action_cb = api_ui_register_instance_action_cb;
 
 	// S13 — UI Page Builder
 	ctx.ui_page_create = api_ui_page_create;
@@ -348,8 +350,7 @@ void PluginManager::ensurePluginDataDir(PluginMetadata& meta)
 {
 	QString baseDir;
 #ifdef Q_OS_WIN
-	baseDir =
-		QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	baseDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 #else
 	baseDir = QDir::homePath() + "/.local/share/meshmc";
 #endif
@@ -1568,7 +1569,8 @@ const char* PluginManager::api_ui_file_open_dialog(void* mh, const char* title,
 {
 	auto* r = rt(mh);
 	QString result = QFileDialog::getOpenFileName(
-		nullptr, title ? QString::fromUtf8(title) : QString(), QString(),
+		QApplication::activeWindow(),
+		title ? QString::fromUtf8(title) : QString(), QString(),
 		filter ? QString::fromUtf8(filter) : QString());
 	if (result.isEmpty())
 		return nullptr;
@@ -1582,7 +1584,8 @@ const char* PluginManager::api_ui_file_save_dialog(void* mh, const char* title,
 {
 	auto* r = rt(mh);
 	QString result = QFileDialog::getSaveFileName(
-		nullptr, title ? QString::fromUtf8(title) : QString(),
+		QApplication::activeWindow(),
+		title ? QString::fromUtf8(title) : QString(),
 		def ? QString::fromUtf8(def) : QString(),
 		filter ? QString::fromUtf8(filter) : QString());
 	if (result.isEmpty())
@@ -1633,6 +1636,24 @@ int PluginManager::api_ui_register_instance_action(void* mh, const char* text,
 	action.iconName = icon_name ? QString::fromUtf8(icon_name) : QString();
 	action.pageId = page_id ? QString::fromUtf8(page_id) : QString();
 	pm->m_instanceActions.append(action);
+	return 1;
+}
+
+int PluginManager::api_ui_register_instance_action_cb(
+	void* mh, const char* text, const char* tooltip, const char* icon_name,
+	void (*cb)(void* ud), void* ud)
+{
+	(void)mh;
+	auto* pm = APPLICATION->pluginManager();
+	if (!pm || !cb)
+		return 0;
+	InstanceCallbackAction action;
+	action.text = text ? QString::fromUtf8(text) : QString();
+	action.tooltip = tooltip ? QString::fromUtf8(tooltip) : QString();
+	action.iconName = icon_name ? QString::fromUtf8(icon_name) : QString();
+	action.callback = cb;
+	action.userData = ud;
+	pm->m_instanceCallbackActions.append(action);
 	return 1;
 }
 

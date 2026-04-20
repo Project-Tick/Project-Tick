@@ -65,6 +65,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QList>
 #include <QRegularExpression>
 #include <QString>
@@ -87,10 +88,13 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QJsonDocument>
+#include <QLocale>
 #include "Application.h"
 #include "BaseInstance.h"
 #include "InstanceList.h"
 #include "MMCZip.h"
+#include "icons/IconList.h"
 #include "minecraft/MinecraftInstance.h"
 #include "ui/pages/BasePage.h"
 
@@ -348,6 +352,14 @@ struct MMCOContext {
 									   const char* tooltip,
 									   const char* icon_name,
 									   const char* page_id);
+
+	/* Register a callback-based action in the instance toolbar.
+	 * Unlike ui_register_instance_action which opens a settings page,
+	 * this calls the given callback when the button is clicked. */
+	int (*ui_register_instance_action_cb)(void* mh, const char* text,
+										  const char* tooltip,
+										  const char* icon_name,
+										  MMCOMenuActionCallback cb, void* ud);
 
 	/* S13 — UI: Page Builder */
 	void* (*ui_page_create)(void* mh, const char* page_id,

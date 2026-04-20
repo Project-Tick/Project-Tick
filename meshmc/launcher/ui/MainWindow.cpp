@@ -1023,6 +1023,24 @@ MainWindow::MainWindow(QWidget* parent)
 			m_pluginInstanceActions.append(qa);
 		}
 
+		for (const auto& act :
+			 APPLICATION->pluginManager()->instanceCallbackActions()) {
+			auto* qa = new QAction(APPLICATION->getThemedIcon(act.iconName),
+								   act.text, this);
+			qa->setToolTip(act.tooltip);
+			auto cb = act.callback;
+			auto ud = act.userData;
+			connect(qa, &QAction::triggered, this, [cb, ud] {
+				if (cb)
+					cb(ud);
+			});
+			if (insertBefore)
+				instanceTB->insertAction(insertBefore, qa);
+			else
+				instanceTB->addAction(qa);
+			m_pluginInstanceActions.append(qa);
+		}
+
 		APPLICATION->pluginManager()->dispatchHook(MMCO_HOOK_UI_MAIN_READY);
 	}
 }

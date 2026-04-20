@@ -289,6 +289,11 @@ class PluginManager : public QObject
 											   const char* tooltip,
 											   const char* icon_name,
 											   const char* page_id);
+	static int api_ui_register_instance_action_cb(void* mh, const char* text,
+												  const char* tooltip,
+												  const char* icon_name,
+												  void (*cb)(void* ud),
+												  void* ud);
 
 	/* Section 13: UI Page Builder */
 	static void* api_ui_page_create(void* mh, const char* id, const char* name,
@@ -354,8 +359,21 @@ class PluginManager : public QObject
 		return m_instanceActions;
 	}
 
+	struct InstanceCallbackAction {
+		QString text;
+		QString tooltip;
+		QString iconName;
+		void (*callback)(void* ud);
+		void* userData;
+	};
+	const QVector<InstanceCallbackAction>& instanceCallbackActions() const
+	{
+		return m_instanceCallbackActions;
+	}
+
   private:
 	QVector<InstanceAction> m_instanceActions;
+	QVector<InstanceCallbackAction> m_instanceCallbackActions;
 
 	/* Pending launch modifications (set by plugins during PRE_LAUNCH hooks) */
 	QMap<QString, QString> m_pendingLaunchEnv;
