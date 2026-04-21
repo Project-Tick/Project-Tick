@@ -1,0 +1,18 @@
+name: "Project Tick merge action"
+description: "Merge a PR into the internal git repository on git.projecttick.org"
+author: "Project Tick contributors"
+inputs:
+  token:
+    description: 'GitHub token for API access and posting comments.'
+    default: ${{ github.token }}
+    required: true
+  ssh_key:
+    description: 'SSH private key with write access to the internal git repository.'
+    required: true
+  internal_git_base:
+    description: 'Base SSH URL for the internal git server (without trailing slash).'
+    default: 'git@git.projecttick.org/pub/scm/git/Project-Tick'
+    required: false
+runs:
+  using: 'docker'
+  image: 'docker://ghcr.io/project-tick/infra/merge:latest'
