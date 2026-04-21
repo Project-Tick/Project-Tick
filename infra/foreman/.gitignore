@@ -1,0 +1,12 @@
+*.egg-info
+*.py[oc]
+*.sqlite3
+.env
+.venv
+/foreman.db
+CLAUDE.md
+__pycache__/
+build/
+dist/
+wheels/
+.coverage
