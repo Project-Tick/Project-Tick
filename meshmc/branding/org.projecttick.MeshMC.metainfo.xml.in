@@ -58,6 +58,14 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.10.0" date="2026-04-22">
+      <description>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Fixed regression for dont launching X11</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.9.0" date="2026-04-20">
       <description>
         <p><em>Fixed</em></p>

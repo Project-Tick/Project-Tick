@@ -118,9 +118,13 @@ int main(int argc, char* argv[])
 	{
 		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
-		// Prefer Wayland backend when running under a Wayland session
+		// Prefer Wayland backend only when a Wayland socket is actually
+		// accessible. WAYLAND_DISPLAY is set by the compositor/Flatpak
+		// only when the socket is forwarded; XDG_SESSION_TYPE alone is
+		// not sufficient because Flatpak sandboxes may report "wayland"
+		// there even when --socket=wayland is not granted.
 		if (!env.contains("QT_QPA_PLATFORM") &&
-			env.value("XDG_SESSION_TYPE") == "wayland") {
+			env.contains("WAYLAND_DISPLAY")) {
 			qputenv("QT_QPA_PLATFORM", "wayland");
 		}
 
