@@ -235,6 +235,7 @@ class MainWindow::Ui
 	TranslatedAction actionChangeInstIcon;
 	TranslatedAction actionEditInstNotes;
 	TranslatedAction actionEditInstance;
+	TranslatedAction actionInstanceSettings;
 	TranslatedAction actionWorlds;
 	TranslatedAction actionMods;
 	TranslatedAction actionViewSelectedInstFolder;
@@ -602,6 +603,18 @@ class MainWindow::Ui
 		all_actions.append(&actionEditInstance);
 		instanceToolBar->addAction(actionEditInstance);
 
+		actionInstanceSettings = TranslatedAction(MainWindow);
+		actionInstanceSettings->setObjectName(
+			QStringLiteral("actionInstanceSettings"));
+		actionInstanceSettings->setIcon(
+			APPLICATION->getThemedIcon("instance-settings"));
+		actionInstanceSettings.setTextId(
+			QT_TRANSLATE_NOOP("MainWindow", "Instance Settings"));
+		actionInstanceSettings.setTooltipId(QT_TRANSLATE_NOOP(
+			"MainWindow", "Open the settings for the selected instance."));
+		all_actions.append(&actionInstanceSettings);
+		instanceToolBar->addAction(actionInstanceSettings);
+
 		actionEditInstNotes = TranslatedAction(MainWindow);
 		actionEditInstNotes->setObjectName(
 			QStringLiteral("actionEditInstNotes"));
@@ -660,16 +673,16 @@ class MainWindow::Ui
 		all_actions.append(&actionViewSelectedMCFolder);
 		instanceToolBar->addAction(actionViewSelectedMCFolder);
 
-		/*
 		actionViewSelectedModsFolder = TranslatedAction(MainWindow);
-		actionViewSelectedModsFolder->setObjectName(QStringLiteral("actionViewSelectedModsFolder"));
-		actionViewSelectedModsFolder.setTextId(QT_TRANSLATE_NOOP("MainWindow",
-		"Mods Folder"));
-		actionViewSelectedModsFolder.setTooltipId(QT_TRANSLATE_NOOP("MainWindow",
-		"Open the selected instance's mods folder in a file browser."));
+		actionViewSelectedModsFolder->setObjectName(
+			QStringLiteral("actionViewSelectedModsFolder"));
+		actionViewSelectedModsFolder.setTextId(
+			QT_TRANSLATE_NOOP("MainWindow", "Mods Folder"));
+		actionViewSelectedModsFolder.setTooltipId(QT_TRANSLATE_NOOP(
+			"MainWindow",
+			"Open the selected instance's mods folder in a file browser."));
 		all_actions.append(&actionViewSelectedModsFolder);
 		instanceToolBar->addAction(actionViewSelectedModsFolder);
-		*/
 
 		actionConfig_Folder = TranslatedAction(MainWindow);
 		actionConfig_Folder->setObjectName(
@@ -759,14 +772,18 @@ class MainWindow::Ui
 		QMetaObject::connectSlotsByName(MainWindow);
 
 		// Explicit connections for actions that connectSlotsByName can't
-		// auto-connect in Qt6
+		// auto-connect in Qt6. Guard against null since these actions are only
+		// created when the corresponding BuildConfig URLs are non-empty.
 		auto mainWin = qobject_cast<class MainWindow*>(MainWindow);
-		QObject::connect(actionREDDIT.operator->(), &QAction::triggered,
-						 mainWin, &MainWindow::on_actionREDDIT_triggered);
-		QObject::connect(actionDISCORD.operator->(), &QAction::triggered,
-						 mainWin, &MainWindow::on_actionDISCORD_triggered);
-		QObject::connect(actionReportBug.operator->(), &QAction::triggered,
-						 mainWin, &MainWindow::on_actionReportBug_triggered);
+		if (auto* a = actionREDDIT.operator->())
+			QObject::connect(a, &QAction::triggered, mainWin,
+							 &MainWindow::on_actionREDDIT_triggered);
+		if (auto* a = actionDISCORD.operator->())
+			QObject::connect(a, &QAction::triggered, mainWin,
+							 &MainWindow::on_actionDISCORD_triggered);
+		if (auto* a = actionReportBug.operator->())
+			QObject::connect(a, &QAction::triggered, mainWin,
+							 &MainWindow::on_actionReportBug_triggered);
 	} // setupUi
 
 	void retranslateUi(QMainWindow* MainWindow)
