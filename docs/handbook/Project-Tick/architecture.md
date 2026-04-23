@@ -224,7 +224,7 @@ All presets share a hidden `base` preset that enforces:
 | Clang | 17 | C++23 |
 | MSVC | 19.36 | C++23 |
 
-CMake minimum version: **3.28**
+CMake minimum version: **3.20**
 
 ### Meson Project (tomlplusplus)
 

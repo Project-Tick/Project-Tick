@@ -96,7 +96,7 @@ MeshMC includes a dual-source update checker (`UpdateChecker`):
 |---|---|---|
 | C++ | C++23 | Primary language |
 | Qt | 6.x | GUI framework, networking, data models |
-| CMake | ≥ 3.28 | Build system |
+| CMake | ≥ 3.20 | Build system |
 | Ninja | Any | Build generator (recommended) |
 
 ### Qt6 Modules Used

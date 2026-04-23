@@ -22,7 +22,7 @@ Each preset is defined in `CMakePresets.json` and configures:
 
 ### Build Requirements
 
-- CMake 3.28+
+- CMake 3.20+
 - GCC 14+ or Clang 18+ (C++23 support)
 - Qt6 (Core, Widgets, Concurrent, Network, NetworkAuth, Test, Xml)
 - Extra CMake Modules (ECM) from KDE
@@ -97,7 +97,7 @@ Qt6 handles Wayland and X11 transparently. MeshMC does not have platform-specifi
 
 ### Build Requirements
 
-- CMake 3.28+
+- CMake 3.20+
 - Xcode / AppleClang (C++23 support)
 - Qt6 via Homebrew
 - Same library dependencies as Linux
@@ -172,13 +172,13 @@ set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
 
 #### MSVC
 - Visual Studio 2022 17.10+ (MSVC v143, C++23)
-- CMake 3.28+
+- CMake 3.20+
 - Qt6 via installer or Scoop/Chocolatey
 - System packages for other dependencies (Scoop, Chocolatey, or winget)
 
 #### MinGW
 - MinGW-w64 13+ (GCC 14+ for C++23)
-- CMake 3.28+
+- CMake 3.20+
 - Qt6 built for MinGW
 
 ### Windows Resource File

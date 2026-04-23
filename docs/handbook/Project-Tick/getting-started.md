@@ -8,7 +8,7 @@ installed on your system:
 | Tool | Minimum Version | Purpose |
 |------|----------------|---------|
 | Git | 2.30+ | Source control, submodule management |
-| CMake | 3.28+ | Build system for C/C++ projects |
+| CMake | 3.20+ | Build system for C/C++ projects |
 | Ninja | 1.10+ | Fast build backend for CMake |
 | C++ compiler | GCC 13+ / Clang 17+ / MSVC 19.36+ | C++23 compilation |
 | C compiler | GCC 13+ / Clang 17+ / MSVC 19.36+ | C11/C23 compilation |

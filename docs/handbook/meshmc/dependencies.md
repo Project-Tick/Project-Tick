@@ -154,7 +154,7 @@ Qt wrapper around zlib/minizip for ZIP I/O:
 
 | Dependency | Purpose |
 |---|---|
-| CMake 3.28+ | Build system generator |
+| CMake 3.20+ | Build system generator |
 | Ninja | Build tool |
 | C++23 compiler | GCC 14+, Clang 18+, MSVC 17.10+ |
 | ECM | CMake macros |

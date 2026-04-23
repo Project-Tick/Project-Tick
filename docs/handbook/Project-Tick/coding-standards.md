@@ -466,7 +466,7 @@ The CI scripts in `ci/github-script/` follow the formatting enforced by
 
 ### General Principles
 
-- Minimum CMake version: 3.28 (meshmc), 3.15 (libnbtplusplus)
+- Minimum CMake version: 3.20 (meshmc), 3.15 (libnbtplusplus)
 - Use `target_*` commands instead of directory-level `include_directories()`
 - Export compile commands: `CMAKE_EXPORT_COMPILE_COMMANDS ON`
 - Use `find_package()` for external dependencies

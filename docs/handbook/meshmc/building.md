@@ -6,7 +6,7 @@
 
 | Tool | Minimum Version | Purpose |
 |---|---|---|
-| CMake | 3.28 | Build system generator |
+| CMake | 3.20 | Build system generator |
 | Ninja | Any recent | Build executor (recommended) |
 | C++ Compiler | GCC ≥ 13, Clang ≥ 17, MSVC ≥ 19.36 | C++23 compilation |
 | JDK | 17 | Building Java launcher components |

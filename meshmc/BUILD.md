@@ -20,7 +20,7 @@ This document explains how to build MeshMC from source on all supported platform
 
 ## Requirements
 
-- **CMake** >= 3.28
+- **CMake** >= 3.20
 - **Ninja** (recommended generator)
 - **C++ compiler** with C++23 support (GCC >= 13, Clang >= 17, MSVC >= 19.36)
 - **Qt 6** (Core, Widgets, Concurrent, Network, NetworkAuth, Test, Xml)

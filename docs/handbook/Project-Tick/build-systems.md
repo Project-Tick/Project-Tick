@@ -32,7 +32,7 @@ CMake is the dominant build system in Project Tick, used by seven sub-projects.
 
 | Component | CMake Minimum | C++ Standard | C Standard |
 |-----------|--------------|-------------|-----------|
-| meshmc | 3.28 | C++23 | C23 (C11 on MSVC) |
+| meshmc | 3.20 | C++23 | C23 (C11 on MSVC) |
 | neozip | 3.14 | — | C11 |
 | cmark | 3.5 | — | C99 |
 | genqrcode | 3.5 | — | C99 |

@@ -90,7 +90,7 @@ checks. CI runs clang-tidy as part of the lint stage.
 ### CMake
 A cross-platform build system generator. The primary build system for MeshMC,
 neozip, json4cpp, libnbtplusplus, genqrcode, cmark, and MNV. Project Tick
-requires CMake 3.28+ for MeshMC.
+requires CMake 3.20+ for MeshMC.
 
 ### CMake Presets
 A JSON-based configuration file (`CMakePresets.json`) that defines named sets
