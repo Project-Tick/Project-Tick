@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 # SPDX-FileCopyrightText: 2026 Project Tick
 # SPDX-FileContributor: Project Tick
 # SPDX-License-Identifier: GPL-3.0-or-later WITH LicenseRef-MeshMC-MMCO-Module-Exception-1.0
+
+# Required for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT to work (avoids /Zi PDB conflicts with sccache)
+cmake_policy(SET CMP0141 NEW)
+
 project(MeshMC)
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
