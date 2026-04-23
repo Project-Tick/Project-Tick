@@ -104,7 +104,6 @@ jobs:
           rm -rf /hostedtoolcache/*
 
       - name: Checkout repository
-        working-directory: ${{ github.workspace }}
         uses: actions/checkout@v6
         with:
           submodules: true
