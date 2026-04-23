@@ -109,6 +109,9 @@ namespace Flame
 
 	void ListModel::requestLogo(QString logo, QString url)
 	{
+		if (url.isEmpty()) {
+			return;
+		}
 		if (m_loadingLogos.contains(logo) || m_failedLogos.contains(logo)) {
 			return;
 		}
