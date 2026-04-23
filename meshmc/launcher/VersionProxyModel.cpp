@@ -319,50 +319,66 @@ void VersionProxyModel::sourceDataChanged(
 void VersionProxyModel::setSourceModel(QAbstractItemModel* replacingRaw)
 {
 	auto replacing = dynamic_cast<BaseVersionList*>(replacingRaw);
-	beginResetModel();
 
+	// Temporarily disconnect filterModel's reset signals so that the inner
+	// filterModel->setSourceModel() call does not emit a second
+	// modelAboutToBeReset / modelReset, which would cause our
+	// beginResetModel / endResetModel to be called twice (once from here
+	// and once from sourceAboutToBeReset / sourceReset). Qt prints
+	// "beginResetModel called without endResetModel" in that case and the
+	// model's internal state gets corrupted, leading to crashes.
+	disconnect(filterModel, &QAbstractItemModel::modelAboutToBeReset, this,
+			   &VersionProxyModel::sourceAboutToBeReset);
+	disconnect(filterModel, &QAbstractItemModel::modelReset, this,
+			   &VersionProxyModel::sourceReset);
+
+	beginResetModel();
 	m_columns.clear();
 	if (!replacing) {
 		roles.clear();
 		filterModel->setSourceModel(replacing);
 		endResetModel();
-		return;
+	} else {
+		roles = replacing->providesRoles();
+		if (roles.contains(BaseVersionList::VersionRole)) {
+			m_columns.push_back(Name);
+		}
+		/*
+		if(roles.contains(BaseVersionList::ParentVersionRole))
+		{
+			m_columns.push_back(ParentVersion);
+		}
+		*/
+		if (roles.contains(BaseVersionList::ArchitectureRole)) {
+			m_columns.push_back(Architecture);
+		}
+		if (roles.contains(BaseVersionList::PathRole)) {
+			m_columns.push_back(Path);
+		}
+		if (roles.contains(Meta::VersionList::TimeRole)) {
+			m_columns.push_back(Time);
+		}
+		if (roles.contains(BaseVersionList::BranchRole)) {
+			m_columns.push_back(Branch);
+		}
+		if (roles.contains(BaseVersionList::TypeRole)) {
+			m_columns.push_back(Type);
+		}
+		if (roles.contains(BaseVersionList::RecommendedRole)) {
+			hasRecommended = true;
+		}
+		if (roles.contains(BaseVersionList::LatestRole)) {
+			hasLatest = true;
+		}
+		filterModel->setSourceModel(replacing);
+		endResetModel();
 	}
 
-	roles = replacing->providesRoles();
-	if (roles.contains(BaseVersionList::VersionRole)) {
-		m_columns.push_back(Name);
-	}
-	/*
-	if(roles.contains(BaseVersionList::ParentVersionRole))
-	{
-		m_columns.push_back(ParentVersion);
-	}
-	*/
-	if (roles.contains(BaseVersionList::ArchitectureRole)) {
-		m_columns.push_back(Architecture);
-	}
-	if (roles.contains(BaseVersionList::PathRole)) {
-		m_columns.push_back(Path);
-	}
-	if (roles.contains(Meta::VersionList::TimeRole)) {
-		m_columns.push_back(Time);
-	}
-	if (roles.contains(BaseVersionList::BranchRole)) {
-		m_columns.push_back(Branch);
-	}
-	if (roles.contains(BaseVersionList::TypeRole)) {
-		m_columns.push_back(Type);
-	}
-	if (roles.contains(BaseVersionList::RecommendedRole)) {
-		hasRecommended = true;
-	}
-	if (roles.contains(BaseVersionList::LatestRole)) {
-		hasLatest = true;
-	}
-	filterModel->setSourceModel(replacing);
-
-	endResetModel();
+	// Reconnect now that our own reset pair is done.
+	connect(filterModel, &QAbstractItemModel::modelAboutToBeReset, this,
+			&VersionProxyModel::sourceAboutToBeReset);
+	connect(filterModel, &QAbstractItemModel::modelReset, this,
+			&VersionProxyModel::sourceReset);
 }
 
 QModelIndex VersionProxyModel::getRecommended() const
