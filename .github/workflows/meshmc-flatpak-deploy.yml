@@ -1,0 +1,75 @@
+name: Deploy to repository
+
+on:
+  schedule:
+    # Run daily
+    - cron: "58 1 * * *"
+  push:
+    branches:
+      - master
+    paths:
+      # Flatpak files
+      - "**.yml"
+      - "**.json"
+      - "scripts/**"
+      - "shared-modules/**"
+
+      # Site files
+      - "static/**"
+
+      # Workflows
+      - ".github/workflows/meshmc-flatpak-build.yml"
+      - ".github/workflows/meshmc-flatpak-deploy.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  build:
+    name: Build Flatpaks
+    permissions:
+      contents: read
+    uses: ./.github/workflows/meshmc-flatpak-build.yml
+    with:
+      cache-repository: true
+    secrets: inherit
+
+  upload:
+    name: Upload repository
+
+    needs: build
+
+    runs-on: ubuntu-slim
+
+    steps:
+      - name: Restore local repository
+        uses: actions/cache/restore@v5
+        with:
+          path: ${{ needs.build.outputs.repository-directory }}
+          key: ${{ needs.build.outputs.repository-cache-key }}
+          fail-on-cache-miss: true
+
+      - name: Upload repository as artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ${{ needs.build.outputs.repository-directory }}
+
+  deploy:
+    name: Deploy to GitHub pages
+
+    needs: upload
+
+    runs-on: ubuntu-slim
+
+    permissions:
+      id-token: write
+      pages: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,37 @@
+name: Update modules
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  update:
+    name: Run update
+
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: meshmc/flatpak
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.FLATPAK_PAT_TOKEN }}
+
+      - name: Run update
+        uses: docker://ghcr.io/flathub/flatpak-external-data-checker:latest
+        with:
+          args: --update --edit-only org.projecttick.MeshMC.yml
+
+      - name: Create Pull request
+        id: pull-request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: update-modules
+          commit-message: "chore: update modules"
+          title: "chore: update modules"
+          token: ${{ secrets.FLATPAK_PAT_TOKEN }}
