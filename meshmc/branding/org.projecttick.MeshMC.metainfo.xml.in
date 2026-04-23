@@ -27,31 +27,31 @@
   <screenshots>
     <screenshot type="default">
       <caption>The main MeshMC window</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-MainPage.png</image>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-MainWindow.png</image>
     </screenshot>
     <screenshot>
-      <caption>The main MeshMC window with Cat</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-MainPage-WithCatPack.png</image>
+      <caption>View MeshMC with your cats</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-MainWindow-With-Catpack.png</image>
     </screenshot>
     <screenshot>
-      <caption>Instance Settings</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-InstanceSettings-Version.png</image>
+      <caption>Manage instance version, modloaders and more</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-InstanceSettings-Version.png</image>
     </screenshot>
     <screenshot>
-      <caption>New Instance</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-NewInstance-Vanilla.png</image>
+      <caption>Create your new vanilla instance with MeshMC</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-NewInstance-Vanilla.png</image>
     </screenshot>
     <screenshot>
-      <caption>Icon picker</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-Pick-Icon.png</image>
+      <caption>Manage your instance backups</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-InstanceSettings-Backups.png</image>
     </screenshot>
     <screenshot>
       <caption>Language selection</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-Settings-Language.png</image>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-Settings-Language.png</image>
     </screenshot>
     <screenshot>
-      <caption>Java installation</caption>
-      <image type="source" width="1030" height="764">https://projecttick.org/img/MeshMC-dark-Settings-Java-Installations-DownloadJava.png</image>
+      <caption>Download java from vendors</caption>
+      <image type="source" width="1030" height="764">https://projecttick.org/img/screenshots/MeshMC-7.11.0-dark-Settings-Java-Installations.png</image>
     </screenshot>
   </screenshots>
   <recommends>
