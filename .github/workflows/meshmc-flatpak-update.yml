@@ -25,7 +25,7 @@ jobs:
       - name: Run update
         uses: docker://ghcr.io/flathub/flatpak-external-data-checker:latest
         with:
-          args: --update --edit-only org.projecttick.MeshMC.yml
+          args: --update --edit-only meshmc/flatpak/org.projecttick.MeshMC.yml
 
       - name: Create Pull request
         id: pull-request
