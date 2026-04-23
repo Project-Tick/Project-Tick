@@ -25,7 +25,7 @@
 
 #include "BlockedModsDialog.h"
 
-#include <QDesktopServices>
+#include <DesktopServices.h>
 #include <QDir>
 #include <QFont>
 #include <QGridLayout>
@@ -178,5 +178,5 @@ void BlockedModsDialog::openModDownload(int index)
 		QString("https://www.curseforge.com/api/v1/mods/%1/files/%2/download")
 			.arg(mod.projectId)
 			.arg(mod.fileId);
-	QDesktopServices::openUrl(QUrl(url));
+	DesktopServices::openUrl(QUrl(url));
 }
