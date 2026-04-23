@@ -141,7 +141,7 @@ jobs:
         # TODO(@YongDo-Hyun): Pin this to a tag when https://github.com/flatpak/flatpak-github-actions/pull/237 is included in a release!
         uses: flatpak/flatpak-github-actions/flatpak-builder@0a631396999e4243489a8a6ecf54fcb9f0575078
         with:
-          manifest-path: org.projecttick.MeshMC.yml
+          manifest-path: meshmc/flatpak/org.projecttick.MeshMC.yml
           arch: ${{ matrix.arch }}
           branch: nightly
           bundle: MeshMC-${{ env.VERSION }}-${{ matrix.arch }}.flatpak
