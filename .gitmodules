@@ -1,3 +1,6 @@
 [submodule "git"]
 	url = https://git.kernel.org/pub/scm/git/git.git
 	path = cgit/git
+[submodule "meshmc/flatpak/shared-modules"]
+	path = meshmc/flatpak/shared-modules
+	url = https://github.com/flathub/shared-modules.git
