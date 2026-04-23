@@ -555,21 +555,6 @@ jobs:
       contents: write
     secrets: inherit
 
-  tomlplusplus-docs:
-    name: "TOML++ Docs"
-    needs: [gate, tomlplusplus]
-    if: >-
-      always() &&
-      !cancelled() &&
-      needs.tomlplusplus.result == 'success' &&
-      needs.gate.outputs.is_master == 'true' &&
-      needs.gate.outputs.is_push == 'true' &&
-      needs.gate.outputs.tomlplusplus_changed == 'true'
-    uses: ./.github/workflows/tomlplusplus-gh-pages.yml
-    permissions:
-      contents: write
-    secrets: inherit
-
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  STAGE 6 — Backport Automation (PR merge events)               ║
   # ╚════════════════════════════════════════════════════════════════╝
