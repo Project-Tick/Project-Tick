@@ -142,10 +142,25 @@ static bool writeDiskEntry(struct archive* ar, const QString& absFilePath)
 	const void* buff;
 	size_t size;
 	la_int64_t offset;
-	while (archive_read_data_block(ar, &buff, &size, &offset) == ARCHIVE_OK) {
-		outFile.write(static_cast<const char*>(buff), size);
+	int readRet;
+	while ((readRet = archive_read_data_block(ar, &buff, &size, &offset)) ==
+		   ARCHIVE_OK) {
+		qint64 written =
+			outFile.write(static_cast<const char*>(buff), size);
+		if (written != static_cast<qint64>(size)) {
+			qWarning() << "Write error for" << absFilePath << ": wrote"
+					   << written << "of" << size << "bytes";
+			outFile.close();
+			return false;
+		}
 	}
 	outFile.close();
+
+	if (readRet != ARCHIVE_EOF) {
+		qWarning() << "Archive read error while extracting" << absFilePath
+				   << ":" << archive_error_string(ar);
+		return false;
+	}
 	return true;
 }
 
@@ -470,7 +485,8 @@ nonstd::optional<QStringList> MMCZip::extractSubDir(const QString& zipPath,
 
 	struct archive_entry* entry;
 	bool hasEntries = false;
-	while (archive_read_next_header(ar.get(), &entry) == ARCHIVE_OK) {
+	int readRet;
+	while ((readRet = archive_read_next_header(ar.get(), &entry)) == ARCHIVE_OK) {
 		hasEntries = true;
 		QString name = QString::fromUtf8(archive_entry_pathname(entry));
 		if (!name.startsWith(subdir)) {
@@ -493,6 +509,14 @@ nonstd::optional<QStringList> MMCZip::extractSubDir(const QString& zipPath,
 		}
 		extracted.append(absFilePath);
 		qDebug() << "Extracted file" << relName;
+	}
+
+	if (readRet != ARCHIVE_EOF) {
+		qWarning() << "Archive read failed for:" << zipPath
+				   << "Error:" << archive_error_string(ar.get());
+		for (const auto& f : extracted)
+			(void)QFile::remove(f);
+		return nonstd::nullopt;
 	}
 
 	if (!hasEntries) {
