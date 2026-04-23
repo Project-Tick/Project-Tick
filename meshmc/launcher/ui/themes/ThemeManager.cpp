@@ -28,6 +28,8 @@
 #include "SystemTheme.h"
 #include "DarkTheme.h"
 #include "BrightTheme.h"
+#include "GreenDarkTheme.h"
+#include "GreenLightTheme.h"
 #include "CustomTheme.h"
 #include "CatPack.h"
 
@@ -57,6 +59,8 @@ ThemeManager::ThemeManager()
 	auto darkTheme = new DarkTheme();
 	addTheme(std::unique_ptr<ITheme>(darkTheme));
 	addTheme(std::make_unique<BrightTheme>());
+	addTheme(std::make_unique<GreenDarkTheme>());
+	addTheme(std::make_unique<GreenLightTheme>());
 
 	// System widget themes from QStyleFactory
 	QStringList styles = QStyleFactory::keys();

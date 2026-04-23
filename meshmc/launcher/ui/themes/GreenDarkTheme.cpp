@@ -23,66 +23,67 @@
  *   along with this program.  If not, see <https://projecttick.org/licenses/>.
  */
 
-#include "DarkTheme.h"
+#include "GreenDarkTheme.h"
 
 #include <QObject>
 
-QString DarkTheme::id()
+QString GreenDarkTheme::id()
 {
-	return "dark";
+	return "green-dark";
 }
 
-QString DarkTheme::name()
+QString GreenDarkTheme::name()
 {
-	return QObject::tr("Dark");
+	return QObject::tr("Green Dark");
 }
 
-QString DarkTheme::tooltip()
+QString GreenDarkTheme::tooltip()
 {
 	return QObject::tr("A dark Fusion-based theme with green accents");
 }
 
-bool DarkTheme::hasColorScheme()
+bool GreenDarkTheme::hasColorScheme()
 {
 	return true;
 }
 
-QPalette DarkTheme::colorScheme()
+QPalette GreenDarkTheme::colorScheme()
 {
-	QPalette darkPalette;
-	darkPalette.setColor(QPalette::Window, QColor(49, 54, 59));
-	darkPalette.setColor(QPalette::WindowText, Qt::white);
-	darkPalette.setColor(QPalette::Base, QColor(35, 38, 41));
-	darkPalette.setColor(QPalette::AlternateBase, QColor(49, 54, 59));
-	darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
-	darkPalette.setColor(QPalette::ToolTipText, Qt::white);
-	darkPalette.setColor(QPalette::Text, Qt::white);
-	darkPalette.setColor(QPalette::Button, QColor(49, 54, 59));
-	darkPalette.setColor(QPalette::ButtonText, Qt::white);
-	darkPalette.setColor(QPalette::BrightText, Qt::red);
-	darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
-	darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-	darkPalette.setColor(QPalette::HighlightedText, Qt::black);
-	return fadeInactive(darkPalette, fadeAmount(), fadeColor());
+	QPalette palette;
+	palette.setColor(QPalette::Window, QColor(49, 49, 49));
+	palette.setColor(QPalette::WindowText, Qt::white);
+	palette.setColor(QPalette::Base, QColor(34, 34, 34));
+	palette.setColor(QPalette::AlternateBase, QColor(49, 49, 49));
+	palette.setColor(QPalette::ToolTipBase, Qt::white);
+	palette.setColor(QPalette::ToolTipText, Qt::white);
+	palette.setColor(QPalette::Text, Qt::white);
+	palette.setColor(QPalette::Button, QColor(49, 49, 49));
+	palette.setColor(QPalette::ButtonText, Qt::white);
+	palette.setColor(QPalette::BrightText, Qt::red);
+	palette.setColor(QPalette::Link, QColor(47, 163, 198));
+	palette.setColor(QPalette::Highlight, QColor(150, 219, 89));
+	palette.setColor(QPalette::HighlightedText, Qt::black);
+	palette.setColor(QPalette::PlaceholderText, Qt::darkGray);
+	return fadeInactive(palette, fadeAmount(), fadeColor());
 }
 
-double DarkTheme::fadeAmount()
+double GreenDarkTheme::fadeAmount()
 {
 	return 0.5;
 }
 
-QColor DarkTheme::fadeColor()
+QColor GreenDarkTheme::fadeColor()
 {
-	return QColor(49, 54, 59);
+	return QColor(49, 49, 49);
 }
 
-bool DarkTheme::hasStyleSheet()
+bool GreenDarkTheme::hasStyleSheet()
 {
 	return true;
 }
 
-QString DarkTheme::appStyleSheet()
+QString GreenDarkTheme::appStyleSheet()
 {
-	return "QToolTip { color: #ffffff; background-color: #2a82da; border: 1px "
+	return "QToolTip { color: #ffffff; background-color: #2fa3c6; border: 1px "
 		   "solid white; }";
 }

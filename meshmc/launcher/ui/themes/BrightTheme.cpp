@@ -39,7 +39,7 @@ QString BrightTheme::name()
 
 QString BrightTheme::tooltip()
 {
-	return QObject::tr("A bright Fusion-based theme with green accents");
+	return QObject::tr("A bright Fusion-based theme with blue accents");
 }
 
 bool BrightTheme::hasColorScheme()
@@ -50,18 +50,18 @@ bool BrightTheme::hasColorScheme()
 QPalette BrightTheme::colorScheme()
 {
 	QPalette brightPalette;
-	brightPalette.setColor(QPalette::Window, QColor(255, 255, 255));
-	brightPalette.setColor(QPalette::WindowText, QColor(49, 49, 49));
-	brightPalette.setColor(QPalette::Base, QColor(250, 250, 250));
+	brightPalette.setColor(QPalette::Window, QColor(239, 240, 241));
+	brightPalette.setColor(QPalette::WindowText, QColor(49, 54, 59));
+	brightPalette.setColor(QPalette::Base, QColor(252, 252, 252));
 	brightPalette.setColor(QPalette::AlternateBase, QColor(239, 240, 241));
-	brightPalette.setColor(QPalette::ToolTipBase, QColor(49, 49, 49));
+	brightPalette.setColor(QPalette::ToolTipBase, QColor(49, 54, 59));
 	brightPalette.setColor(QPalette::ToolTipText, QColor(239, 240, 241));
-	brightPalette.setColor(QPalette::Text, QColor(49, 49, 49));
-	brightPalette.setColor(QPalette::Button, QColor(255, 255, 255));
-	brightPalette.setColor(QPalette::ButtonText, QColor(49, 49, 49));
+	brightPalette.setColor(QPalette::Text, QColor(49, 54, 59));
+	brightPalette.setColor(QPalette::Button, QColor(239, 240, 241));
+	brightPalette.setColor(QPalette::ButtonText, QColor(49, 54, 59));
 	brightPalette.setColor(QPalette::BrightText, Qt::red);
-	brightPalette.setColor(QPalette::Link, QColor(37, 137, 164));
-	brightPalette.setColor(QPalette::Highlight, QColor(137, 207, 84));
+	brightPalette.setColor(QPalette::Link, QColor(41, 128, 185));
+	brightPalette.setColor(QPalette::Highlight, QColor(61, 174, 233));
 	brightPalette.setColor(QPalette::HighlightedText, QColor(239, 240, 241));
 	return fadeInactive(brightPalette, fadeAmount(), fadeColor());
 }
@@ -73,7 +73,7 @@ double BrightTheme::fadeAmount()
 
 QColor BrightTheme::fadeColor()
 {
-	return QColor(255, 255, 255);
+	return QColor(239, 240, 241);
 }
 
 bool BrightTheme::hasStyleSheet()

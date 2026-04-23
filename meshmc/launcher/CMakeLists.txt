@@ -664,6 +664,10 @@ SET(MESHMC_SOURCES
     ui/themes/FusionTheme.h
     ui/themes/BrightTheme.cpp
     ui/themes/BrightTheme.h
+    ui/themes/GreenDarkTheme.cpp
+    ui/themes/GreenDarkTheme.h
+    ui/themes/GreenLightTheme.cpp
+    ui/themes/GreenLightTheme.h
     ui/themes/CustomTheme.cpp
     ui/themes/CustomTheme.h
     ui/themes/DarkTheme.cpp
