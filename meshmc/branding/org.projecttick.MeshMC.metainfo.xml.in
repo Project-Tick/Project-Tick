@@ -58,6 +58,35 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.11.0" date="2026-04-23">
+      <description>
+        <p>This is a kind of return to the classic theme, but it still includes some solid fixes. Although it might not make much difference to humanity, it's the version that fooled me by making me refresh the screenshots.</p>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Improved UI responsiveness and stability</li>
+          <li>New Instance Settings integration</li>
+          <li>Version 7.11.0 with new themes</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>Instance Settings action in MainWindow toolbar</li>
+          <li>GreenDark and GreenLight themes</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Modpack detection moved to background thread</li>
+          <li>Replaced QDesktopServices with DesktopServices</li>
+          <li>Updated minimum CMake version to 3.20</li>
+          <li>Updated Screenshots for new themes</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Crash caused by improper model reset handling in setSourceModel</li>
+          <li>Error handling improvements in archive read/write</li>
+          <li>Prevented unnecessary processing for empty logo URLs</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.10.0" date="2026-04-22">
       <description>
         <p><em>Fixed</em></p>
