@@ -81,6 +81,7 @@ class InstanceImportTask : public InstanceTask
 	void downloadSucceeded();
 	void downloadFailed(QString reason);
 	void downloadProgressChanged(qint64 current, qint64 total);
+	void detectFinished();
 	void extractFinished();
 	void extractAborted();
 
@@ -99,4 +100,15 @@ class InstanceImportTask : public InstanceTask
 		Modrinth,
 		Technic
 	} m_modpackType = ModpackType::Unknown;
+
+	// Holds the raw detection results from the background scan.
+	struct DetectResult {
+		QString mmcRoot;	   // non-null → MeshMC pack
+		QString flameRoot;	   // non-null → Flame/CurseForge pack
+		QString modrinthRoot;  // non-null → Modrinth pack
+		bool technicFound = false;
+		QString extractTarget; // dir to pass to extractSubDir
+	};
+	QFuture<DetectResult> m_detectFuture;
+	QFutureWatcher<DetectResult> m_detectFutureWatcher;
 };

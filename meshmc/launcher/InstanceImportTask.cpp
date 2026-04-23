@@ -119,58 +119,114 @@ void InstanceImportTask::downloadProgressChanged(qint64 current, qint64 total)
 
 void InstanceImportTask::processZipPack()
 {
-	setStatus(tr("Extracting modpack"));
-	QDir extractDir(m_stagingPath);
-	qDebug() << "Attempting to create instance from" << m_archivePath;
+	setStatus(tr("Inspecting modpack archive"));
+	qDebug() << "Detecting modpack type for" << m_archivePath;
 
-	// find relevant files in the zip
-	QStringList blacklist = {"instance.cfg", "manifest.json",
-							 "modrinth.index.json"};
-	QString mmcFound =
-		MMCZip::findFolderOfFileInZip(m_archivePath, "instance.cfg");
-	bool technicFound = MMCZip::entryExists(m_archivePath, "bin/modpack.jar") ||
-						MMCZip::entryExists(m_archivePath, "bin/version.json");
-	QString flameFound =
-		MMCZip::findFolderOfFileInZip(m_archivePath, "manifest.json");
-	QString modrinthFound =
-		MMCZip::findFolderOfFileInZip(m_archivePath, "modrinth.index.json");
+	// Run ALL archive scanning in a background thread so the UI stays
+	// responsive. We also do a single listEntries() pass instead of
+	// calling findFolderOfFileInZip() / entryExists() separately (each of
+	// which would re-open the archive, and findFolderOfFileInZip is
+	// recursive so it opens the archive once per directory level).
+	const QString archivePath = m_archivePath;
+	const QString stagingPath = m_stagingPath;
+
+	m_detectFuture = QtConcurrent::run([archivePath, stagingPath]() {
+		DetectResult result;
+		result.extractTarget = stagingPath;
+
+		// Single archive open + single linear scan over all entries.
+		const QStringList entries = MMCZip::listEntries(archivePath);
+
+		// Helper: find the folder prefix (e.g. "root/") for the first
+		// entry whose filename component equals `needle`.
+		// Returns "" (empty, non-null) if found at root.
+		// Returns QString() (null) if not found.
+		auto findFolder = [&entries](const QString& needle) -> QString {
+			for (const QString& e : entries) {
+				if (e == needle)
+					return QLatin1String("");  // found at root
+				if (e.endsWith(QLatin1Char('/') + needle)) {
+					return e.left(e.lastIndexOf(QLatin1Char('/')) + 1);
+				}
+			}
+			return {};  // null → not found
+		};
+
+		result.mmcRoot = findFolder(QStringLiteral("instance.cfg"));
+		result.modrinthRoot =
+			findFolder(QStringLiteral("modrinth.index.json"));
+		result.flameRoot = findFolder(QStringLiteral("manifest.json"));
+		result.technicFound =
+			entries.contains(QStringLiteral("bin/modpack.jar")) ||
+			entries.contains(QStringLiteral("bin/version.json")) ||
+			entries.contains(QStringLiteral("bin/modpack.jar/")) ||
+			entries.contains(QStringLiteral("bin/version.json/"));
+
+		// For Technic, create the target subdir now (background thread is
+		// fine for filesystem ops).
+		if (result.technicFound && result.mmcRoot.isNull() &&
+			result.modrinthRoot.isNull()) {
+			QDir extractDir(stagingPath);
+			extractDir.mkpath(QStringLiteral(".minecraft"));
+			result.extractTarget =
+				extractDir.absoluteFilePath(QStringLiteral(".minecraft"));
+		}
+
+		return result;
+	});
+
+	connect(&m_detectFutureWatcher, &QFutureWatcher<DetectResult>::finished,
+			this, &InstanceImportTask::detectFinished);
+	m_detectFutureWatcher.setFuture(m_detectFuture);
+}
+
+void InstanceImportTask::detectFinished()
+{
+	const DetectResult r = m_detectFuture.result();
+
+	// Determine pack type (same priority order as before).
 	QString root;
-	if (!mmcFound.isNull()) {
-		// process as MeshMC instance/pack
-		qDebug() << "MeshMC:" << mmcFound;
-		root = mmcFound;
+	if (!r.mmcRoot.isNull()) {
+		qDebug() << "MeshMC:" << r.mmcRoot;
 		m_modpackType = ModpackType::MeshMC;
-	} else if (!modrinthFound.isNull()) {
-		// process as Modrinth pack
-		qDebug() << "Modrinth:" << modrinthFound;
-		root = modrinthFound;
+		root = r.mmcRoot;
+	} else if (!r.modrinthRoot.isNull()) {
+		qDebug() << "Modrinth:" << r.modrinthRoot;
 		m_modpackType = ModpackType::Modrinth;
-	} else if (technicFound) {
-		// process as Technic pack
-		qDebug() << "Technic:" << technicFound;
-		extractDir.mkpath(".minecraft");
-		extractDir.cd(".minecraft");
+		root = r.modrinthRoot;
+	} else if (r.technicFound) {
+		qDebug() << "Technic";
 		m_modpackType = ModpackType::Technic;
-	} else if (!flameFound.isNull()) {
-		// process as Flame pack
-		qDebug() << "Flame:" << flameFound;
-		root = flameFound;
+		// root stays empty — extractSubDir extracts everything
+	} else if (!r.flameRoot.isNull()) {
+		qDebug() << "Flame:" << r.flameRoot;
 		m_modpackType = ModpackType::Flame;
+		root = r.flameRoot;
 	}
+
 	if (m_modpackType == ModpackType::Unknown) {
-		emitFailed(tr("Archive does not contain a recognized modpack type."));
+		QFileInfo fi(m_archivePath);
+		if (!fi.exists() || fi.size() == 0) {
+			emitFailed(tr("Modpack archive is missing or empty:\n%1")
+						   .arg(m_archivePath));
+		} else {
+			emitFailed(
+				tr("Archive does not contain a recognized modpack type."));
+		}
 		return;
 	}
 
-	// make sure we extract just the pack
-	QString archivePath = m_archivePath;
+	setStatus(tr("Extracting modpack"));
+	const QString archivePath = m_archivePath;
 	m_extractFuture =
 		QtConcurrent::run(QThreadPool::globalInstance(), MMCZip::extractSubDir,
-						  archivePath, root, extractDir.absolutePath());
-	connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::finished,
-			this, &InstanceImportTask::extractFinished);
-	connect(&m_extractFutureWatcher, &QFutureWatcher<QStringList>::canceled,
-			this, &InstanceImportTask::extractAborted);
+						  archivePath, root, r.extractTarget);
+	connect(&m_extractFutureWatcher,
+			&QFutureWatcher<nonstd::optional<QStringList>>::finished, this,
+			&InstanceImportTask::extractFinished);
+	connect(&m_extractFutureWatcher,
+			&QFutureWatcher<nonstd::optional<QStringList>>::canceled, this,
+			&InstanceImportTask::extractAborted);
 	m_extractFutureWatcher.setFuture(m_extractFuture);
 }
 
