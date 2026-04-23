@@ -25,24 +25,7 @@ class CallbackData(BaseModel):
     cost: Optional[float] = None
 
 
-app_build_types = {
-    "io.github.ungoogled_software.ungoogled_chromium": "large",
-    "org.chromium.Chromium": "large",
-    "com.adamcake.Bolt": "large",
-    "org.libreoffice.LibreOffice": "large",
-    "org.freecad.FreeCAD": "large",
-    "org.freedesktop.LinuxAudio.Plugins.ChowDSP-Plugins": "large",
-    "org.paraview.ParaView": "large",
-    "com.bambulab.BambuStudio": "large",
-    "org.gnome.Fractal": "large",
-    "com.pot_app.pot": "large",
-    "org.mamedev.MAME": "large",
-    "org.catacombing.kumo": "large",
-    "io.qt.qtwebengine.BaseApp": "large",
-    "com.collaboraoffice.Office": "large",
-    "org.freedesktop.Sdk.Extension.llvm22": "large",
-    "org.kicad.KiCad": "large",
-}
+app_build_types: dict[str, str] = {}
 
 FAST_BUILD_P90_THRESHOLD_MINUTES = 20.0
 FAST_BUILD_MIN_BUILDS = 3

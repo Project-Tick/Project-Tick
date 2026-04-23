@@ -1,1 +1,1 @@
-"""Vorarbeiter app module."""
+"""Foreman app module."""
