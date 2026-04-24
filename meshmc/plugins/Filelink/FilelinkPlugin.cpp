@@ -1,12 +1,11 @@
 /* SPDX-FileCopyrightText: 2026 Project Tick
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
- * FilelinkPlugin — MMCO plugin that creates desktop shortcuts for
+ * FilelinkPlugin — MMCO plugin that creates launcher shortcuts for
  * MeshMC instances.
  *
- * Creates .desktop files (Linux) or .lnk shortcuts (Windows) on the
- * user's desktop so that instances can be launched directly without
- * opening MeshMC first.
+ * Creates .desktop files (Linux) or .lnk shortcuts (Windows) so that
+ * instances can be launched directly without opening MeshMC first.
  *
  * macOS is NOT supported.
  *
@@ -17,11 +16,105 @@
 
 #include "plugin/sdk/mmco_sdk.h"
 
-MMCO_DEFINE_MODULE("Filelink", "1.0.0", "Project Tick",
+#include <QComboBox>
+#include <QStandardPaths>
+
+MMCO_DEFINE_MODULE("Filelink", "2.0.0", "Project Tick",
 				   "Create desktop shortcuts for instances",
 				   "GPL-3.0-or-later");
 
 static MMCOContext* g_ctx = nullptr;
+
+static QString sanitizeShortcutName(const QString& shortcutName)
+{
+	QString safeName = shortcutName;
+#ifdef Q_OS_WIN
+	safeName.replace(QRegularExpression(R"([<>:"/\\|?*])"), "_");
+#else
+	safeName.replace('/', '_');
+#endif
+	return safeName;
+}
+
+static QString shortcutFileExtension()
+{
+#ifdef Q_OS_WIN
+	return QStringLiteral(".lnk");
+#elif defined(Q_OS_LINUX)
+	return QStringLiteral(".desktop");
+#else
+	return QString();
+#endif
+}
+
+static QString defaultShortcutFileName(const QString& shortcutName)
+{
+	return sanitizeShortcutName(shortcutName) + shortcutFileExtension();
+}
+
+static QString ensureShortcutExtension(QString path)
+{
+	QString extension = shortcutFileExtension();
+	if (!extension.isEmpty() &&
+		!path.endsWith(extension, Qt::CaseInsensitive)) {
+		path += extension;
+	}
+	return path;
+}
+
+static bool isFlatpakSandbox()
+{
+#ifdef Q_OS_LINUX
+	return QFileInfo::exists(QStringLiteral("/.flatpak-info")) ||
+		   qEnvironmentVariableIsSet("FLATPAK_ID");
+#else
+	return false;
+#endif
+}
+
+static QString currentSelectedInstanceId()
+{
+	if (!g_ctx)
+		return {};
+	const char* selected =
+		g_ctx->app_setting_get(g_ctx->module_handle, "SelectedInstance");
+	return selected ? QString::fromUtf8(selected) : QString();
+}
+
+static QString resolveShortcutIconPath(const QString& iconKey)
+{
+	auto iconList = APPLICATION->icons();
+	if (!iconList)
+		return {};
+
+	QString effectiveKey =
+		iconKey.isEmpty() ? QStringLiteral("default") : iconKey;
+	if (auto* iconEntry = iconList->icon(effectiveKey)) {
+		QString existingPath = iconEntry->getFilePath();
+		if (!existingPath.isEmpty() && QFileInfo::exists(existingPath))
+			return existingPath;
+	}
+
+	QString dataRoot =
+		QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	if (dataRoot.isEmpty())
+		dataRoot = QDir::tempPath();
+
+	QString iconDir =
+		QDir(dataRoot).filePath(QStringLiteral("filelink-shortcut-icons"));
+	if (!QDir().mkpath(iconDir))
+		return {};
+
+	QString safeKey = effectiveKey;
+	safeKey.replace(QRegularExpression(R"([^A-Za-z0-9_.-])"), "_");
+	if (safeKey.isEmpty())
+		safeKey = QStringLiteral("default");
+
+	QString exportedPath =
+		QDir(iconDir).filePath(safeKey + QStringLiteral(".png"));
+	iconList->saveIcon(effectiveKey, exportedPath, "PNG");
+	return QFileInfo::exists(exportedPath) ? exportedPath : QString();
+}
 
 #ifdef Q_OS_WIN
 
@@ -40,20 +133,18 @@ static QString desktopPath()
 }
 
 static bool createShortcut(const QString& instanceId,
+						   const QString& shortcutPath,
 						   const QString& shortcutName,
 						   const QString& description, const QString& iconPath,
 						   const QString& serverAddress)
 {
-	Q_UNUSED(iconPath);
-
-	QString desktop = desktopPath();
-	if (desktop.isEmpty())
+	if (shortcutPath.isEmpty())
 		return false;
 
-	QString safeName = shortcutName;
-	safeName.replace(QRegularExpression(R"([<>:"/\\|?*])"), "_");
+	QFileInfo shortcutInfo(shortcutPath);
+	if (!QDir().mkpath(shortcutInfo.absolutePath()))
+		return false;
 
-	QString lnkPath = QDir(desktop).filePath(safeName + ".lnk");
 	QString exePath = QCoreApplication::applicationFilePath();
 
 	CoInitialize(nullptr);
@@ -75,11 +166,14 @@ static bool createShortcut(const QString& instanceId,
 	psl->SetArguments(reinterpret_cast<LPCWSTR>(args.utf16()));
 
 	psl->SetDescription(reinterpret_cast<LPCWSTR>(description.utf16()));
+	if (!iconPath.isEmpty()) {
+		psl->SetIconLocation(reinterpret_cast<LPCWSTR>(iconPath.utf16()), 0);
+	}
 
 	IPersistFile* ppf = nullptr;
 	hr = psl->QueryInterface(IID_IPersistFile, (void**)&ppf);
 	if (SUCCEEDED(hr)) {
-		hr = ppf->Save(reinterpret_cast<LPCOLESTR>(lnkPath.utf16()), TRUE);
+		hr = ppf->Save(reinterpret_cast<LPCOLESTR>(shortcutPath.utf16()), TRUE);
 		ppf->Release();
 	}
 
@@ -90,11 +184,9 @@ static bool createShortcut(const QString& instanceId,
 
 static bool removeShortcut(const QString& shortcutName)
 {
-	QString safeName = shortcutName;
-	safeName.replace(QRegularExpression(R"([<>:"/\\|?*])"), "_");
-
 	QString desktop = desktopPath();
-	return QFile::remove(QDir(desktop).filePath(safeName + ".lnk"));
+	return QFile::remove(
+		QDir(desktop).filePath(sanitizeShortcutName(shortcutName) + ".lnk"));
 }
 
 #elif defined(Q_OS_LINUX)
@@ -105,29 +197,28 @@ static QString desktopPath()
 }
 
 static bool createShortcut(const QString& instanceId,
+						   const QString& shortcutPath,
 						   const QString& shortcutName,
-						   const QString& description, const QString& iconKey,
+						   const QString& description, const QString& iconPath,
 						   const QString& serverAddress)
 {
-	QString desktop = desktopPath();
-	if (desktop.isEmpty())
+	if (shortcutPath.isEmpty())
 		return false;
 
-	QDir().mkpath(desktop);
-
-	QString safeName = shortcutName;
-	safeName.replace('/', '_');
-
-	QString desktopFilePath = QDir(desktop).filePath(safeName + ".desktop");
+	QFileInfo shortcutInfo(shortcutPath);
+	if (!QDir().mkpath(shortcutInfo.absolutePath()))
+		return false;
 
 	QString exePath = QCoreApplication::applicationFilePath();
 
-	QString execLine = QString("%1 --launch \"%2\"").arg(exePath, instanceId);
+	QString execLine =
+		QString("\"%1\" --launch \"%2\"").arg(exePath, instanceId);
 	if (!serverAddress.isEmpty())
 		execLine += QString(" --server \"%1\"").arg(serverAddress);
 
-	QString iconName =
-		iconKey.isEmpty() ? QStringLiteral("org.projecttick.MeshMC") : iconKey;
+	QString iconName = iconPath.isEmpty()
+						   ? QStringLiteral("org.projecttick.MeshMC")
+						   : iconPath;
 
 	QString content = QStringLiteral("[Desktop Entry]\n"
 									 "Type=Application\n"
@@ -139,7 +230,7 @@ static bool createShortcut(const QString& instanceId,
 									 "Categories=Game;\n")
 						  .arg(shortcutName, description, execLine, iconName);
 
-	QFile f(desktopFilePath);
+	QFile f(shortcutPath);
 	if (!f.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
 		return false;
 
@@ -152,16 +243,14 @@ static bool createShortcut(const QString& instanceId,
 
 static bool removeShortcut(const QString& shortcutName)
 {
-	QString safeName = shortcutName;
-	safeName.replace('/', '_');
-
 	QString desktop = desktopPath();
-	return QFile::remove(QDir(desktop).filePath(safeName + ".desktop"));
+	return QFile::remove(QDir(desktop).filePath(
+		sanitizeShortcutName(shortcutName) + ".desktop"));
 }
 
 #else
 static bool createShortcut(const QString&, const QString&, const QString&,
-						   const QString&, const QString&)
+						   const QString&, const QString&, const QString&)
 {
 	return false;
 }
@@ -188,10 +277,18 @@ static void showFilelinkDialog(const QString& preselectedId = {})
 	QStringList instNames, instIds;
 	for (int i = 0; i < instList->count(); i++) {
 		auto inst = instList->at(i);
-		if (inst) {
+		if (inst && (preselectedId.isEmpty() || inst->id() == preselectedId)) {
 			instNames << inst->name();
 			instIds << inst->id();
 		}
+	}
+	if (instIds.isEmpty()) {
+		QMessageBox::information(
+			win, QObject::tr("Filelink"),
+			preselectedId.isEmpty()
+				? QObject::tr("No instances available.")
+				: QObject::tr("The selected instance is no longer available."));
+		return;
 	}
 
 	QDialog dlg(win);
@@ -262,6 +359,32 @@ static void showFilelinkDialog(const QString& preselectedId = {})
 	detailLayout->addLayout(serverRow);
 
 	mainLayout->addWidget(detailGroup);
+
+	enum class ShortcutSaveTarget {
+		Desktop = 0,
+		Other = 1,
+	};
+
+	const bool flatpakSandbox = isFlatpakSandbox();
+	auto* saveGroup = new QGroupBox(QObject::tr("Save Location"), &dlg);
+	auto* saveLayout = new QVBoxLayout(saveGroup);
+	auto* saveTargetCombo = new QComboBox(saveGroup);
+	if (!flatpakSandbox) {
+		saveTargetCombo->addItem(QObject::tr("Desktop"),
+								 static_cast<int>(ShortcutSaveTarget::Desktop));
+	}
+	saveTargetCombo->addItem(QObject::tr("Other"),
+							 static_cast<int>(ShortcutSaveTarget::Other));
+	if (flatpakSandbox) {
+		auto* saveHint =
+			new QLabel(QObject::tr("Flatpak builds use 'Other' so the file "
+								   "picker can save outside the sandbox."),
+					   saveGroup);
+		saveHint->setWordWrap(true);
+		saveLayout->addWidget(saveHint);
+	}
+	saveLayout->addWidget(saveTargetCombo);
+	mainLayout->addWidget(saveGroup);
 
 	// Icon selector
 	auto* iconGroup = new QGroupBox(QObject::tr("Icon"), &dlg);
@@ -352,11 +475,46 @@ static void showFilelinkDialog(const QString& preselectedId = {})
 			iconKey = iconItem->data(0, Qt::UserRole).toString();
 
 		QString server = serverEdit->text().trimmed();
+		QString shortcutPath;
+		QString defaultFilePath = defaultShortcutFileName(name);
+		auto saveTarget = static_cast<ShortcutSaveTarget>(
+			saveTargetCombo->currentData().toInt());
+		if (saveTarget == ShortcutSaveTarget::Desktop) {
+			QString desktop = desktopPath();
+			if (desktop.isEmpty()) {
+				QMessageBox::warning(
+					&dlg, QObject::tr("Filelink"),
+					QObject::tr(
+						"Desktop location is not available on this system."));
+				return;
+			}
+			shortcutPath = QDir(desktop).filePath(defaultFilePath);
+		} else {
+			QByteArray title = QObject::tr("Save Shortcut").toUtf8();
+			QByteArray defaultName = defaultFilePath.toUtf8();
+#ifdef Q_OS_WIN
+			constexpr auto filter = "Windows Shortcuts (*.lnk);;All Files (*)";
+#elif defined(Q_OS_LINUX)
+			constexpr auto filter = "Desktop Entries (*.desktop);;All Files (*)";
+#else
+			constexpr auto filter = "All Files (*)";
+#endif
+			const char* selectedPath = g_ctx->ui_file_save_dialog(
+				g_ctx->module_handle, title.constData(),
+				defaultName.constData(), filter);
+			if (!selectedPath)
+				return;
+			shortcutPath =
+				ensureShortcutExtension(QString::fromUtf8(selectedPath));
+		}
 
-		if (createShortcut(id, name, desc, iconKey, server)) {
+		QString iconPath = resolveShortcutIconPath(iconKey);
+
+		if (createShortcut(id, shortcutPath, name, desc, iconPath, server)) {
 			QMessageBox::information(
 				&dlg, QObject::tr("Filelink"),
-				QObject::tr("Desktop shortcut '%1' created.").arg(name));
+				QObject::tr("Shortcut '%1' created at '%2'.")
+					.arg(name, QDir::toNativeSeparators(shortcutPath)));
 			dlg.accept();
 		} else {
 			QMessageBox::warning(
@@ -380,7 +538,8 @@ static int on_context_menu(void* /*mh*/, uint32_t /*hook_id*/, void* payload,
 
 	g_ctx->ui_add_menu_item(
 		g_ctx->module_handle, evt->menu_handle, "Create Shortcut",
-		"emblem-symbolic-link", [](void* /*ud*/) { showFilelinkDialog(); },
+		"emblem-symbolic-link",
+		[](void* /*ud*/) { showFilelinkDialog(currentSelectedInstanceId()); },
 		nullptr);
 
 	return 0;
@@ -425,7 +584,8 @@ MMCO_EXPORT int mmco_init(MMCOContext* ctx)
 	ctx->ui_register_instance_action_cb(
 		ctx->module_handle, "Create Shortcut",
 		"Create a desktop shortcut for this instance", "emblem-symbolic-link",
-		[](void* /*ud*/) { showFilelinkDialog(); }, nullptr);
+		[](void* /*ud*/) { showFilelinkDialog(currentSelectedInstanceId()); },
+		nullptr);
 
 	MMCO_LOG(ctx, "Filelink plugin initialized.");
 	return 0;
