@@ -58,6 +58,36 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.12.0" date="2026-04-24">
+      <description>
+        <p>General fixes have been implemented. MeshMC 7.12.0 is here! The Filelink plugin (macOS, you have nothing to do with it) has been updated to version 2.0.0 and made more stable.</p>
+        <p><em>Highlights</em></p>
+        <ul>
+          <li>Offline account support with demo mode</li>
+          <li>Initial RPM packaging support</li>
+          <li>FilelinkPlugin improvements with customizable shortcuts and better icon handling</li>
+        </ul>
+        <p><em>Added</em></p>
+        <ul>
+          <li>Offline account support with demo mode functionality</li>
+          <li>Initial RPM spec file for MeshMC packaging</li>
+          <li>LICENSE file inclusion</li>
+          <li>FilelinkPlugin support for customizable shortcut paths</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Git URLs updated across CMakeLists, metainfo, and Flatpak manifest</li>
+          <li>README and source URLs aligned with GitLab hosting</li>
+          <li>Build and workflow configurations cleaned and standardized</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Improved icon handling in FilelinkPlugin</li>
+          <li>Flatpak workflow path inconsistencies</li>
+          <li>Repository path variable inconsistencies in build workflows</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.11.0" date="2026-04-23">
       <description>
         <p>This is a kind of return to the classic theme, but it still includes some solid fixes. Although it might not make much difference to humanity, it's the version that fooled me by making me refresh the screenshots.</p>
