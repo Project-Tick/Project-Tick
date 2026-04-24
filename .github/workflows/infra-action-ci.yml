@@ -122,8 +122,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: |
-            ghcr.io/${{ github.repository_owner }}/infra/merge:${{ github.sha }}-${{ matrix.platform }}
-            ghcr.io/${{ github.repository_owner }}/infra/merge:latest-${{ matrix.platform }}
+            ghcr.io/project-tick/infra/merge:${{ github.sha }}-${{ matrix.platform }}
+            ghcr.io/project-tick/infra/merge:latest-${{ matrix.platform }}
           labels: |
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=ssh://git@github.com:${{ github.repository }}.git
@@ -148,15 +148,15 @@ jobs:
       - name: Create and push manifest
         run: |
           docker manifest create \
-            ghcr.io/${{ github.repository_owner }}/infra/merge:${{ github.sha }} \
-            --amend ghcr.io/${{ github.repository_owner }}/infra/merge:${{ github.sha }}-amd64 \
-            --amend ghcr.io/${{ github.repository_owner }}/infra/merge:${{ github.sha }}-arm64
+            ghcr.io/project-tick/infra/merge:${{ github.sha }} \
+            --amend ghcr.io/project-tick/infra/merge:${{ github.sha }}-amd64 \
+            --amend ghcr.io/project-tick/infra/merge:${{ github.sha }}-arm64
 
-          docker manifest push ghcr.io/${{ github.repository_owner }}/merge:${{ github.sha }}
+          docker manifest push ghcr.io/project-tick/merge:${{ github.sha }}
 
           docker manifest create \
-            ghcr.io/${{ github.repository_owner }}/infra/merge:latest \
-            --amend ghcr.io/${{ github.repository_owner }}/infra/merge:${{ github.sha }}-amd64 \
-            --amend ghcr.io/${{ github.repository_owner }}/infra/merge:${{ github.sha }}-arm64
+            ghcr.io/project-tick/infra/merge:latest \
+            --amend ghcr.io/project-tick/infra/merge:${{ github.sha }}-amd64 \
+            --amend ghcr.io/project-tick/infra/merge:${{ github.sha }}-arm64
 
-          docker manifest push ghcr.io/${{ github.repository_owner }}/infra/merge:latest
+          docker manifest push ghcr.io/project-tick/infra/merge:latest
