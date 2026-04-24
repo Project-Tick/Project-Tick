@@ -34,42 +34,99 @@ jobs:
       cache-repository: true
     secrets: inherit
 
-  upload:
-    name: Upload repository
+  deploy:
+    name: Publish Flatpak repository
 
     needs: build
 
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-24.04
+
+    env:
+      DEPLOY_BRANCH: ${{ vars.FLATPAK_DEPLOY_BRANCH || 'master' }}
+      DEPLOY_GIT_EMAIL: ${{ vars.FLATPAK_DEPLOY_GIT_EMAIL || 'bot@projecttick.org' }}
+      DEPLOY_GIT_NAME: ${{ vars.FLATPAK_DEPLOY_GIT_NAME || 'Project Tick Bot' }}
+      DEPLOY_REPOSITORY: ${{ vars.FLATPAK_DEPLOY_REPOSITORY || '' }}
+      DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.FLATPAK_DEPLOY_SSH_PRIVATE_KEY || secrets.FTP_SSH_PRIVATE_KEY || '' }}
+      SOURCE_REPOSITORY: ${{ needs.build.outputs.repository-directory }}
 
     steps:
       - name: Restore local repository
         uses: actions/cache/restore@v5
         with:
-          path: ${{ needs.build.outputs.repository-directory }}
+          path: ${{ env.SOURCE_REPOSITORY }}
           key: ${{ needs.build.outputs.repository-cache-key }}
           fail-on-cache-miss: true
 
-      - name: Upload repository as artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: ${{ needs.build.outputs.repository-directory }}
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          set -euo pipefail
 
-  deploy:
-    name: Deploy to GitHub pages
+          if [[ -z "$DEPLOY_REPOSITORY" ]]; then
+            echo "::error::Missing repository variable FLATPAK_DEPLOY_REPOSITORY (SSH URL of the target deployment repository)."
+            exit 1
+          fi
 
-    needs: upload
+          if [[ -z "$DEPLOY_SSH_PRIVATE_KEY" ]]; then
+            echo "::error::Missing secret FLATPAK_DEPLOY_SSH_PRIVATE_KEY. You can also reuse FTP_SSH_PRIVATE_KEY."
+            exit 1
+          fi
 
-    runs-on: ubuntu-slim
+          if [[ ! -d "$GITHUB_WORKSPACE/$SOURCE_REPOSITORY" ]]; then
+            echo "::error::Flatpak repository directory was not restored: $GITHUB_WORKSPACE/$SOURCE_REPOSITORY"
+            exit 1
+          fi
 
-    permissions:
-      id-token: write
-      pages: write
+      - name: Prepare SSH credentials
+        shell: bash
+        run: |
+          set -euo pipefail
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+          install -d -m 700 ~/.ssh
+          printf '%s' "$DEPLOY_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
 
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          cat > ~/.ssh/config << 'EOF'
+          Host *
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking accept-new
+          EOF
+
+          chmod 600 ~/.ssh/config
+
+      - name: Configure git identity
+        shell: bash
+        run: |
+          git config --global user.name "$DEPLOY_GIT_NAME"
+          git config --global user.email "$DEPLOY_GIT_EMAIL"
+
+      - name: Push repository contents
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          deploy_dir="$(mktemp -d)"
+          git init -b "$DEPLOY_BRANCH" "$deploy_dir"
+
+          cd "$deploy_dir"
+          git remote add origin "$DEPLOY_REPOSITORY"
+
+          rsync -a --delete --exclude '.git' "$GITHUB_WORKSPACE/$SOURCE_REPOSITORY/" ./
+          git add -A
+
+          local_tree="$(git write-tree)"
+          remote_tree=''
+
+          if git fetch --depth=1 origin "$DEPLOY_BRANCH"; then
+            remote_tree="$(git rev-parse FETCH_HEAD^{tree})"
+          fi
+
+          if [[ -n "$remote_tree" && "$local_tree" == "$remote_tree" ]]; then
+            echo "Flatpak repository is already up to date."
+            exit 0
+          fi
+
+          git commit -m "Publish Flatpak repository for ${GITHUB_SHA::7}"
+          git push --force origin "HEAD:$DEPLOY_BRANCH"
