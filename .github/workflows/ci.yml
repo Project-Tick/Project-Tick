@@ -73,7 +73,7 @@ jobs:
       is_dependabot: ${{ steps.classify.outputs.is_dependabot }}
       is_master: ${{ steps.classify.outputs.is_master }}
       is_scheduled: ${{ steps.classify.outputs.is_scheduled }}
-      run_level: ${{ steps.classify.outputs.run_level }}
+      run_level: ${{ steps.finalize.outputs.run_level }}
       # ── Per-project change flags ────────────────────────────────
       archived_changed: ${{ steps.changes.outputs.archived_changed }}
       cgit_changed: ${{ steps.changes.outputs.cgit_changed }}
@@ -86,7 +86,7 @@ jobs:
       images4docker_changed: ${{ steps.changes.outputs.images4docker_changed }}
       json4cpp_changed: ${{ steps.changes.outputs.json4cpp_changed }}
       libnbtplusplus_changed: ${{ steps.changes.outputs.libnbtplusplus_changed }}
-      meshmc_changed: ${{ steps.changes.outputs.meshmc_changed }}
+      meshmc_changed: ${{ steps.finalize.outputs.meshmc_changed }}
       meta_changed: ${{ steps.changes.outputs.meta_changed }}
       mnv_changed: ${{ steps.changes.outputs.mnv_changed }}
       neozip_changed: ${{ steps.changes.outputs.neozip_changed }}
@@ -143,6 +143,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
           # ── Run level ─────────────────────────────────────────
+          # preliminary full candidates are finalized after change analysis
           # full    = merge queue, tags, master push, manual force-all
           # standard = normal PR, branch push
           # minimal  = dependabot, backport, draft
@@ -179,6 +180,39 @@ jobs:
           before-sha: ${{ github.event.before || '' }}
           current-sha: ${{ github.sha }}
           pr-title: ${{ github.event.pull_request.title || '' }}
+
+      - name: Finalize gate outputs
+        id: finalize
+        shell: bash
+        env:
+          BASE_RUN_LEVEL: ${{ steps.classify.outputs.run_level }}
+          IS_PUSH: ${{ steps.classify.outputs.is_push }}
+          IS_MASTER: ${{ steps.classify.outputs.is_master }}
+          CHANGED_PROJECTS: ${{ steps.changes.outputs.changed_projects || '' }}
+          ROOT_CHANGED: ${{ steps.changes.outputs.root_changed || 'false' }}
+          MESHMC_CHANGED: ${{ steps.changes.outputs.meshmc_changed || 'false' }}
+        run: |
+          set -euo pipefail
+
+          run_level="$BASE_RUN_LEVEL"
+          meshmc_changed="$MESHMC_CHANGED"
+
+          if [[ "$CHANGED_PROJECTS" =~ (^|,)(archived|cgit|cmark|corebinutils|forgewrapper|genqrcode|hooks|images4docker|json4cpp|libnbtplusplus|meshmc|meta|mnv|neozip|tomlplusplus)(,|$) ]]; then
+            has_project_changes=true
+          else
+            has_project_changes=false
+          fi
+
+          if [[ "$IS_PUSH" == "true" ]] && [[ "$IS_MASTER" == "true" ]] && [[ "$BASE_RUN_LEVEL" == "full" ]] && [[ "$has_project_changes" == "false" ]]; then
+            run_level=standard
+          fi
+
+          if [[ "$IS_PUSH" == "true" ]] && [[ "$IS_MASTER" == "true" ]] && [[ "$ROOT_CHANGED" == "true" ]]; then
+            meshmc_changed=true
+          fi
+
+          echo "run_level=$run_level" >> "$GITHUB_OUTPUT"
+          echo "meshmc_changed=$meshmc_changed" >> "$GITHUB_OUTPUT"
 
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  STAGE 1 — Lint & Commit Checks (fast, blocks everything)      ║
