@@ -11,7 +11,7 @@ inputs:
     required: true
   internal_git_base:
     description: 'Base SSH URL for the internal git server (without trailing slash).'
-    default: 'git@git.projecttick.org/pub/scm/git/Project-Tick'
+    default: 'git@git.projecttick.org/Project-Tick'
     required: false
 runs:
   using: 'docker'

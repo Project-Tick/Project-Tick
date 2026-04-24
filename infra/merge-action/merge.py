@@ -159,7 +159,7 @@ def main() -> None:
     # ── Build remote URLs ──────────────────────────────────────────────────────
     internal_git_base = os.environ.get(
         "INPUT_INTERNAL_GIT_BASE",
-        "git@git.projecttick.org/pub/scm/git/Project-Tick",
+        "git@git.projecttick.org/Project-Tick",
     )
     internal_git_url = f"{internal_git_base}/{repo_name}.git"
     github_url = f"https://x-access-token:{token}@github.com/{repo_full}.git"
