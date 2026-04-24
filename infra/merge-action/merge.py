@@ -27,12 +27,24 @@ import github
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
+BOT_EMAIL = "bot@projecttick.org"
+BOT_NAME = "Project Tick Bot"
+TRAILER_NAMES = {
+    "signed-off-by": "Signed-off-by",
+    "reviewed-by": "Reviewed-by",
+    "acked-by": "Acked-by",
+}
+
 # Matches: /merge         HEAD=abc123...
 #          /merge:main    HEAD=abc123...
 #          /merge:v1.0.x  HEAD=abc123...
 MERGE_RE = re.compile(
     r"^/merge(?::(?P<branch>[A-Za-z0-9._/+\-]+))?\s+HEAD=(?P<sha>[0-9a-f]{40})\b",
     re.IGNORECASE | re.MULTILINE,
+)
+TRAILER_RE = re.compile(
+    r"^(?P<key>signed-off-by|reviewed-by|acked-by):\s*(?P<value>.+\s+<[^<>]+>)\s*$",
+    re.IGNORECASE,
 )
 
 
@@ -85,6 +97,42 @@ def post_comment(pr: github.PullRequest.PullRequest, msg: str) -> None:
         logging.warning("Could not post comment: %s", exc)
 
 
+def build_merge_trailers(comment_body: str, command_end: int) -> list[str]:
+    trailers_by_name: dict[str, list[str]] = {
+        "Signed-off-by": [],
+        "Reviewed-by": [],
+        "Acked-by": [],
+    }
+
+    for line in comment_body[command_end:].splitlines():
+        trailer_match = TRAILER_RE.fullmatch(line.strip())
+        if not trailer_match:
+            continue
+
+        trailer_name = TRAILER_NAMES[trailer_match.group("key").lower()]
+        trailer_value = trailer_match.group("value").strip()
+        trailers_by_name[trailer_name].append(f"{trailer_name}: {trailer_value}")
+
+    trailers = trailers_by_name["Signed-off-by"] or [
+        f"Signed-off-by: {BOT_NAME} <{BOT_EMAIL}>"
+    ]
+    trailers.extend(trailers_by_name["Reviewed-by"])
+    trailers.extend(trailers_by_name["Acked-by"])
+    return trailers
+
+
+def build_merge_message(
+    issue_number: int, target_branch: str, trailers: list[str]
+) -> str:
+    return "\n".join(
+        [
+            f"GH-{issue_number} Merge PR into {target_branch}",
+            "",
+            *trailers,
+        ]
+    )
+
+
 def ensure_label(
     repo: github.Repository.Repository,
     name: str,
@@ -106,11 +154,13 @@ def finalize_pull_request(
     target_branch: str,
 ) -> None:
     message = (
-        f"This pull request has been merged into the internal git server on "
-        f"`{target_branch}`.\n\n"
+        f"This pull request (#{pr.number}) has been merged into the "
+        f"Project Tick GitLab on `{target_branch}`.\n\n"
         "The pull request is now closed. If further work is needed, please "
         "open a new pull request or issue.\n\n"
-        "Thanks!"
+        "Thanks!\n"
+        "---\n"
+        "Deet deet dot, I'm a bot."
     )
 
     post_comment(pr, message)
@@ -211,6 +261,7 @@ def main() -> None:
 
     target_branch: str | None = match.group("branch")
     expected_sha: str = match.group("sha").lower()
+    merge_trailers = build_merge_trailers(comment_body, match.end())
 
     logging.info(
         "/merge command: branch=%r sha=%s", target_branch or "(default)", expected_sha
@@ -261,8 +312,8 @@ def main() -> None:
         logging.warning("INPUT_SSH_KEY not set — assuming SSH agent is pre-configured")
 
     # ── Git identity ───────────────────────────────────────────────────────────
-    run(["git", "config", "--global", "user.name", "Project Tick Bot"])
-    run(["git", "config", "--global", "user.email", "bot@projecttick.org"])
+    run(["git", "config", "--global", "user.name", BOT_NAME])
+    run(["git", "config", "--global", "user.email", BOT_EMAIL])
 
     # ── Build remote URLs ──────────────────────────────────────────────────────
     internal_git_base = os.environ.get(
@@ -305,7 +356,7 @@ def main() -> None:
             sys.exit(1)
 
         # Merge
-        merge_msg = f"Merge PR #{issue_number} ({pr_head_ref}) into {target_branch}"
+        merge_msg = build_merge_message(issue_number, target_branch, merge_trailers)
         try:
             run(
                 [

@@ -40,13 +40,25 @@ The format of the command is:
 ```
 /merge:<optional target repo default branch, default:master> head=<pr head commit sha, 40 chars> <additional colloborators @foo @baz, default: PR author>
 
+Optional trailer lines can be added below the command to enrich the internal merge commit message:
+
+Signed-off-by: Bot Name <bot@example.com>
+Reviewed-by: Reviewer Name <reviewer@example.com>
+Acked-by: Acker Name <acker@example.com>
+
 # Examples
 
 /merge head=SHA
 /merge:beta head=SHA
 /merge:24.08 head=SHA
 /merge:24.08 head=SHA @foo @baz
+
+/merge:PATCH head=SHA
+Reviewed-by: Reviewer Name <reviewer@example.com>
+Acked-by: Acker Name <acker@example.com>
 ```
+
+If no explicit `Signed-off-by:` trailer is provided, the action adds a default bot sign-off automatically.
 
 ### Development
 
