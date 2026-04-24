@@ -76,7 +76,7 @@ jobs:
 
   docker:
     needs: ci
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+    if: ${{ github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
     strategy:
       matrix:
         include:
@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: docker
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+    if: ${{ github.ref == 'refs/heads/master' && github.event_name != 'pull_request' }}
     permissions:
       packages: write
     steps:
