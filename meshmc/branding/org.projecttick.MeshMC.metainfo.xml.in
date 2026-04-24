@@ -58,6 +58,14 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.13.0" date="2026-04-24">
+      <description>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Improved app location handling in FilelinkPlugin for Flatpak</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.12.0" date="2026-04-24">
       <description>
         <p>General fixes have been implemented. MeshMC 7.12.0 is here! The Filelink plugin (macOS, you have nothing to do with it) has been updated to version 2.0.0 and made more stable.</p>
