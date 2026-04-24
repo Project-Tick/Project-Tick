@@ -429,7 +429,7 @@
   <url type="help">https://projecttick.org/handbook/</url>
   <url type="translate">https://crowdin.com/project/projtlauncher</url>
   <url type="contact">https://bugs.projecttick.org/enter_bug.cgi?product=MeshMC</url>
-  <url type="vcs-browser">https://git.projecttick.org/pub/scm/git/Project-Tick/Project-Tick.git/</url>
+  <url type="vcs-browser">https://git.projecttick.org/Project-Tick/Project-Tick/</url>
   <url type="contribute">https://github.com/Project-Tick/Project-Tick/blob/master/GOVERNANCE.md</url>
   <content_rating type="oars-1.1">
     <content_attribute id="violence-fantasy">moderate</content_attribute>
