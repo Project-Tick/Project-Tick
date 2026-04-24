@@ -61,7 +61,7 @@ struct MinecraftProfile {
 	Katabasis::Validity validity = Katabasis::Validity::None;
 };
 
-enum class AccountType { MSA };
+enum class AccountType { MSA, Offline };
 
 enum class AccountState {
 	Unchecked,
@@ -89,6 +89,8 @@ struct AccountData {
 	QString lastError() const;
 
 	AccountType type = AccountType::MSA;
+
+	QString offlineUsername;
 
 	Katabasis::Token msaToken;
 	Katabasis::Token userToken;

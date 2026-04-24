@@ -77,6 +77,15 @@ MinecraftAccountPtr MinecraftAccount::createBlankMSA()
 	return account;
 }
 
+MinecraftAccountPtr MinecraftAccount::createOffline(const QString& username)
+{
+	MinecraftAccountPtr account(new MinecraftAccount());
+	account->data.type = AccountType::Offline;
+	account->data.offlineUsername = username;
+	account->data.accountState = AccountState::Online;
+	return account;
+}
+
 QJsonObject MinecraftAccount::saveToJson() const
 {
 	return data.saveState();
@@ -211,6 +220,16 @@ bool MinecraftAccount::shouldRefresh() const
 
 void MinecraftAccount::fillSession(AuthSessionPtr session)
 {
+	if (data.type == AccountType::Offline) {
+		session->status = AuthSession::PlayableOffline;
+		session->wants_online = false;
+		session->player_name = data.offlineUsername;
+		session->username = data.offlineUsername;
+		session->uuid = data.internalId;
+		session->session = "-";
+		session->user_type = "legacy";
+		return;
+	}
 	if (ownsMinecraft() && !hasProfile()) {
 		session->status = AuthSession::RequiresProfileSetup;
 	} else {

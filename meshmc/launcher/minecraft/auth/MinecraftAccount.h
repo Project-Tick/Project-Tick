@@ -96,6 +96,8 @@ class MinecraftAccount : public QObject, public Usable
 
 	static MinecraftAccountPtr createBlankMSA();
 
+	static MinecraftAccountPtr createOffline(const QString& username);
+
 	static MinecraftAccountPtr loadFromJsonV3(const QJsonObject& json);
 
 	//! Saves a MinecraftAccount to a JSON object and returns it.
@@ -143,16 +145,22 @@ class MinecraftAccount : public QObject, public Usable
 
 	bool ownsMinecraft() const
 	{
+		if (data.type == AccountType::Offline)
+			return true;
 		return data.minecraftEntitlement.ownsMinecraft;
 	}
 
 	bool hasProfile() const
 	{
+		if (data.type == AccountType::Offline)
+			return true;
 		return data.profileId().size() != 0;
 	}
 
 	QString typeString() const
 	{
+		if (data.type == AccountType::Offline)
+			return "offline";
 		return "msa";
 	}
 

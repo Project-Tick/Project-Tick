@@ -91,7 +91,60 @@ void LaunchController::decideAccount()
 		if (reply == QMessageBox::Yes) {
 			// Open the account manager.
 			APPLICATION->ShowGlobalSettings(m_parentWidget, "accounts");
+		} else {
+			// Offer demo mode as an alternative
+			QMessageBox demoBox(m_parentWidget);
+			demoBox.setWindowTitle(tr("No Account — Play Demo?"));
+			demoBox.setIcon(QMessageBox::Question);
+			demoBox.setText(
+				tr("<b>No Microsoft account is linked.</b><br><br>"
+				   "Without a Microsoft account you cannot play the full "
+				   "version of Minecraft.<br><br>"
+				   "<b>Demo Mode</b> lets you try Minecraft with the "
+				   "following limitations:<br>"
+				   "&nbsp;&bull;&nbsp;Only a small area of the world is "
+				   "accessible<br>"
+				   "&nbsp;&bull;&nbsp;Progress is not saved after the demo "
+				   "ends<br>"
+				   "&nbsp;&bull;&nbsp;Multiplayer is not available<br><br>"
+				   "Would you like to launch Minecraft in Demo Mode?"));
+			auto yesButton =
+				demoBox.addButton(tr("Play Demo"), QMessageBox::YesRole);
+			auto noButton =
+				demoBox.addButton(tr("Cancel"), QMessageBox::NoRole);
+			demoBox.setDefaultButton(noButton);
+			demoBox.exec();
+
+			if (demoBox.clickedButton() == yesButton) {
+				bool ok = false;
+				QString username = QInputDialog::getText(
+					m_parentWidget, tr("Demo Mode — Choose Username"),
+					tr("Enter a username to use in Demo Mode:"),
+					QLineEdit::Normal, tr("User"), &ok);
+				if (!ok) {
+					// User cancelled username dialog → abort (login() will
+					// handle the failure)
+					return;
+				}
+				m_demoMode = true;
+				m_demoUsername =
+					username.trimmed().isEmpty() ? tr("User") : username.trimmed();
+			} else {
+				// User declined demo mode → abort (login() will handle the
+				// failure)
+				return;
+			}
 		}
+	}
+
+	if (m_demoMode) {
+		return;
+	}
+
+	// If still no accounts after the dialog (e.g. user cancelled demo mode
+	// or didn't add an account), bail out — login() will handle the failure.
+	if (accounts->count() <= 0) {
+		return;
 	}
 
 	m_accountToUse = accounts->defaultAccount();
@@ -116,6 +169,18 @@ void LaunchController::decideAccount()
 void LaunchController::login()
 {
 	decideAccount();
+
+	// Demo mode: bypass normal account login entirely
+	if (m_demoMode) {
+		m_session = std::make_shared<AuthSession>();
+		m_session->wants_online = m_online;
+		m_session->status = AuthSession::PlayableOnline;
+		m_session->user_type = "legacy";
+		m_session->MakeDemo();
+		m_session->player_name = m_demoUsername; // use the chosen username
+		launchInstance();
+		return;
+	}
 
 	// if no account is selected, we bail
 	if (!m_accountToUse) {
@@ -146,21 +211,27 @@ void LaunchController::login()
 			}
 			case AccountState::Online: {
 				if (!m_session->wants_online) {
-					// we ask the user for a player name
-					bool ok = false;
-					QString usedname = m_session->player_name;
-					QString name = QInputDialog::getText(
-						m_parentWidget, tr("Player name"),
-						tr("Choose your offline mode player name."),
-						QLineEdit::Normal, m_session->player_name, &ok);
-					if (!ok) {
-						tryagain = false;
-						break;
+					if (m_accountToUse->isMSA()) {
+						// MSA account in offline mode: ask for a player name
+						bool ok = false;
+						QString usedname = m_session->player_name;
+						QString name = QInputDialog::getText(
+							m_parentWidget, tr("Player name"),
+							tr("Choose your offline mode player name."),
+							QLineEdit::Normal, m_session->player_name, &ok);
+						if (!ok) {
+							tryagain = false;
+							break;
+						}
+						if (name.length()) {
+							usedname = name;
+						}
+						m_session->MakeOffline(usedname);
+					} else {
+						// Offline account: username is already stored, just
+						// launch
+						m_session->MakeOffline(m_session->player_name);
 					}
-					if (name.length()) {
-						usedname = name;
-					}
-					m_session->MakeOffline(usedname);
 					// offline flavored game from here :3
 				}
 				if (m_accountToUse->ownsMinecraft()) {

@@ -107,11 +107,11 @@ template <typename T> class shared_qobject_ptr
 	{
 		return m_ptr;
 	}
-	bool operator==(const shared_qobject_ptr<T>& other)
+	bool operator==(const shared_qobject_ptr<T>& other) const
 	{
 		return m_ptr == other.m_ptr;
 	}
-	bool operator!=(const shared_qobject_ptr<T>& other)
+	bool operator!=(const shared_qobject_ptr<T>& other) const
 	{
 		return m_ptr != other.m_ptr;
 	}

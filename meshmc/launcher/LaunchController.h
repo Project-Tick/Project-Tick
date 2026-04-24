@@ -98,6 +98,8 @@ class LaunchController : public Task
   private:
 	BaseProfilerFactory* m_profiler = nullptr;
 	bool m_online = true;
+	bool m_demoMode = false;
+	QString m_demoUsername;
 	InstancePtr m_instance;
 	QWidget* m_parentWidget = nullptr;
 	InstanceWindow* m_console = nullptr;

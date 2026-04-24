@@ -45,6 +45,8 @@
 
 #include <QItemSelectionModel>
 #include <QMenu>
+#include <QInputDialog>
+#include <QLineEdit>
 
 #include <QDebug>
 
@@ -161,6 +163,39 @@ void AccountListPage::on_actionAddMicrosoft_triggered()
 	}
 }
 
+void AccountListPage::on_actionAddOffline_triggered()
+{
+	// Check if at least one MSA account exists
+	bool hasMSA = false;
+	for (int i = 0; i < m_accounts->count(); i++) {
+		if (m_accounts->at(i)->isMSA()) {
+			hasMSA = true;
+			break;
+		}
+	}
+	if (!hasMSA) {
+		CustomMessageBox::selectable(
+			this, tr("Microsoft Account Required"),
+			tr("Adding an offline account requires at least one Microsoft "
+			   "account to be logged in. Please add a Microsoft account first."),
+			QMessageBox::Warning)
+			->exec();
+		return;
+	}
+
+	bool ok = false;
+	QString username = QInputDialog::getText(
+		this, tr("Add Offline Account"),
+		tr("Enter a username for the offline account:"),
+		QLineEdit::Normal, tr("User"), &ok);
+	if (!ok || username.trimmed().isEmpty()) {
+		return;
+	}
+
+	auto account = MinecraftAccount::createOffline(username.trimmed());
+	m_accounts->addAccount(account);
+}
+
 void AccountListPage::on_actionRemove_triggered()
 {
 	QModelIndexList selection =
@@ -219,6 +254,16 @@ void AccountListPage::updateButtonStates()
 	ui->actionUploadSkin->setEnabled(accountIsReady);
 	ui->actionDeleteSkin->setEnabled(accountIsReady);
 	ui->actionRefresh->setEnabled(accountIsReady);
+
+	// Offline account button: only enabled if at least one MSA account exists
+	bool hasMSA = false;
+	for (int i = 0; i < m_accounts->count(); i++) {
+		if (m_accounts->at(i)->isMSA()) {
+			hasMSA = true;
+			break;
+		}
+	}
+	ui->actionAddOffline->setEnabled(hasMSA);
 
 	if (m_accounts->defaultAccount().get() == nullptr) {
 		ui->actionNoDefault->setEnabled(false);

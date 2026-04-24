@@ -293,9 +293,14 @@ bool AccountData::resumeStateFromV3(QJsonObject data)
 	auto typeS = typeV.toString();
 	if (typeS == "MSA") {
 		type = AccountType::MSA;
+	} else if (typeS == "Offline") {
+		type = AccountType::Offline;
+		offlineUsername = data.value("offlineUsername").toString("User");
+		accountState = AccountState::Online;
+		return true;
 	} else {
 		qWarning() << "Failed to parse account data: type is not recognized "
-					  "(only MSA is supported).";
+					  "(only MSA and Offline are supported).";
 		return false;
 	}
 
@@ -321,6 +326,11 @@ bool AccountData::resumeStateFromV3(QJsonObject data)
 QJsonObject AccountData::saveState() const
 {
 	QJsonObject output;
+	if (type == AccountType::Offline) {
+		output["type"] = "Offline";
+		output["offlineUsername"] = offlineUsername;
+		return output;
+	}
 	output["type"] = "MSA";
 	tokenToJSONV3(output, msaToken, "msa");
 	tokenToJSONV3(output, userToken, "utoken");
@@ -345,6 +355,9 @@ QString AccountData::profileId() const
 
 QString AccountData::profileName() const
 {
+	if (type == AccountType::Offline) {
+		return offlineUsername;
+	}
 	if (minecraftProfile.name.size() == 0) {
 		return QObject::tr("No profile (%1)").arg(accountDisplayString());
 	} else {
@@ -354,6 +367,9 @@ QString AccountData::profileName() const
 
 QString AccountData::accountDisplayString() const
 {
+	if (type == AccountType::Offline) {
+		return offlineUsername;
+	}
 	if (xboxApiToken.extra.contains("gtg")) {
 		return xboxApiToken.extra["gtg"].toString();
 	}
