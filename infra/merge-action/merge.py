@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -57,8 +58,24 @@ def setup_ssh(ssh_key: str) -> None:
         f.write(
             "\nHost git.projecttick.org\n"
             f"    IdentityFile {key_path}\n"
+            "    IdentitiesOnly yes\n"
             "    StrictHostKeyChecking no\n"
+            "    UserKnownHostsFile /dev/null\n"
         )
+
+    os.environ["GIT_SSH_COMMAND"] = " ".join(
+        [
+            "ssh",
+            "-i",
+            shlex.quote(key_path),
+            "-o",
+            "IdentitiesOnly=yes",
+            "-o",
+            "StrictHostKeyChecking=no",
+            "-o",
+            "UserKnownHostsFile=/dev/null",
+        ]
+    )
 
 
 def post_comment(pr: github.PullRequest.PullRequest, msg: str) -> None:
