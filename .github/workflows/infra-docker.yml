@@ -11,10 +11,8 @@ jobs:
   build-images:
     name: Build & push Docker images
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infra/actions-images
     permissions:
+      contents: read
       packages: write
 
     strategy:
@@ -107,8 +105,8 @@ jobs:
         # 6.15.0
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4
         with:
-          context: .
-          file: Dockerfile
+          context: infra/actions-images
+          file: infra/actions-images/Dockerfile
           platforms: linux/amd64,linux/arm64
           pull: true
           push: true
@@ -123,8 +121,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Write the Dockerfile for the ${{ matrix.runtime.name }} runtime
+        working-directory: infra/actions-images
         run: |
-          cat >> ${{ matrix.runtime.name }}.Dockerfile <<-EOF
+          cat > ${{ matrix.runtime.name }}.Dockerfile <<-EOF
           # syntax = docker/dockerfile:experimental
           FROM localhost:5000/base:latest
           RUN --security=insecure flatpak install -y --noninteractive ${{matrix.runtime.remote}} ${{ matrix.runtime.packages }}
@@ -135,8 +134,8 @@ jobs:
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4
         with:
           allow: security.insecure
-          context: .
-          file: ${{ matrix.runtime.name }}.Dockerfile
+          context: infra/actions-images
+          file: infra/actions-images/${{ matrix.runtime.name }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/project-tick/infra/flatpak-github-actions:${{ matrix.runtime.name }}
