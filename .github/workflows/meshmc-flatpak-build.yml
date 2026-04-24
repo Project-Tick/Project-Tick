@@ -5,32 +5,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    paths:
-      # Flatpak files
-      - "**.yml"
-      - "**.json"
-      - "scripts/**"
-      - "shared-modules/**"
-
-      # Site files
-      - "static/**"
-
-      # Workflows
-      - ".github/workflows/meshmc-flatpak-build.yml"
-  pull_request:
-    paths:
-      # Flatpak files
-      - "**.yml"
-      - "**.json"
-      - "scripts/**"
-      - "shared-modules/**"
-
-      # Site files
-      - "static/**"
-
-      # Workflows
-      - ".github/workflows/meshmc-flatpak-build.yml"
   workflow_call:
     inputs:
       # NOTE: This is a workaround for https://github.com/actions/runner/issues/3146
