@@ -68,6 +68,40 @@ def post_comment(pr: github.PullRequest.PullRequest, msg: str) -> None:
         logging.warning("Could not post comment: %s", exc)
 
 
+def build_internal_git_url(
+    internal_git_base: str, repo_full: str, repo_name: str
+) -> str:
+    """Build an SSH remote URL for the mirrored internal git repository."""
+    repo_owner = repo_full.lower().split("/", 1)[0]
+    repo_full_lower = repo_full.lower()
+    repo_name_lower = repo_name.lower()
+    base = internal_git_base.strip().rstrip("/")
+
+    if not base:
+        return f"git@git.projecttick.org:{repo_full_lower}.git"
+
+    if base.endswith(".git"):
+        return base
+
+    if ":" in base:
+        host, path_prefix = base.split(":", 1)
+        normalized_path_prefix = path_prefix.strip("/")
+        if not normalized_path_prefix:
+            return f"{host}:{repo_full_lower}.git"
+        if normalized_path_prefix.lower() == repo_owner:
+            normalized_path_prefix = repo_owner
+        return f"{host}:{normalized_path_prefix}/{repo_name_lower}.git"
+
+    if "/" in base:
+        host, path_prefix = base.split("/", 1)
+        normalized_path_prefix = path_prefix.strip("/")
+        if normalized_path_prefix.lower() == repo_owner:
+            normalized_path_prefix = repo_owner
+        return f"{host}:{normalized_path_prefix}/{repo_name_lower}.git"
+
+    return f"{base}:{repo_full_lower}.git"
+
+
 def main() -> None:
     # ── Read GitHub event ──────────────────────────────────────────────────────
     event_path = os.environ.get("GITHUB_EVENT_PATH", "")
@@ -158,10 +192,9 @@ def main() -> None:
 
     # ── Build remote URLs ──────────────────────────────────────────────────────
     internal_git_base = os.environ.get(
-        "INPUT_INTERNAL_GIT_BASE",
-        "git@git.projecttick.org/Project-Tick",
+        "INPUT_INTERNAL_GIT_BASE", "git@git.projecttick.org"
     )
-    internal_git_url = f"{internal_git_base}/{repo_name}.git"
+    internal_git_url = build_internal_git_url(internal_git_base, repo_full, repo_name)
     github_url = f"https://x-access-token:{token}@github.com/{repo_full}.git"
 
     # ── Clone → merge → push ───────────────────────────────────────────────────
