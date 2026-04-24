@@ -19,7 +19,7 @@
 #include <QComboBox>
 #include <QStandardPaths>
 
-MMCO_DEFINE_MODULE("Filelink", "2.0.0", "Project Tick",
+MMCO_DEFINE_MODULE("Filelink", "2.1.0", "Project Tick",
 				   "Create desktop shortcuts for instances",
 				   "GPL-3.0-or-later");
 
@@ -116,6 +116,44 @@ static QString resolveShortcutIconPath(const QString& iconKey)
 	return QFileInfo::exists(exportedPath) ? exportedPath : QString();
 }
 
+static QString desktopExecQuote(QString argument)
+{
+	argument.replace('\\', QStringLiteral("\\\\"));
+	argument.replace('"', QStringLiteral("\\\""));
+	return QStringLiteral("\"%1\"").arg(argument);
+}
+
+static QString buildShortcutExecLine(const QString& instanceId,
+							 const QString& serverAddress)
+{
+#ifdef Q_OS_LINUX
+	if (isFlatpakSandbox()) {
+		QString appId = qEnvironmentVariable("FLATPAK_ID");
+		if (appId.isEmpty())
+			appId = QStringLiteral("org.projecttick.MeshMC");
+
+		QString execLine =
+			QStringLiteral("flatpak run %1 --launch %2")
+				.arg(appId, desktopExecQuote(instanceId));
+		if (!serverAddress.isEmpty()) {
+			execLine +=
+				QStringLiteral(" --server %1").arg(desktopExecQuote(serverAddress));
+		}
+		return execLine;
+	}
+#endif
+
+	QString execLine = QStringLiteral("%1 --launch %2")
+					   .arg(
+						   desktopExecQuote(QCoreApplication::applicationFilePath()),
+						   desktopExecQuote(instanceId));
+	if (!serverAddress.isEmpty()) {
+		execLine +=
+			QStringLiteral(" --server %1").arg(desktopExecQuote(serverAddress));
+	}
+	return execLine;
+}
+
 #ifdef Q_OS_WIN
 
 #include <shlobj.h>
@@ -209,12 +247,7 @@ static bool createShortcut(const QString& instanceId,
 	if (!QDir().mkpath(shortcutInfo.absolutePath()))
 		return false;
 
-	QString exePath = QCoreApplication::applicationFilePath();
-
-	QString execLine =
-		QString("\"%1\" --launch \"%2\"").arg(exePath, instanceId);
-	if (!serverAddress.isEmpty())
-		execLine += QString(" --server \"%1\"").arg(serverAddress);
+	QString execLine = buildShortcutExecLine(instanceId, serverAddress);
 
 	QString iconName = iconPath.isEmpty()
 						   ? QStringLiteral("org.projecttick.MeshMC")
