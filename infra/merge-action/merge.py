@@ -85,6 +85,62 @@ def post_comment(pr: github.PullRequest.PullRequest, msg: str) -> None:
         logging.warning("Could not post comment: %s", exc)
 
 
+def ensure_label(
+    repo: github.Repository.Repository,
+    name: str,
+    color: str,
+    description: str,
+) -> None:
+    try:
+        repo.get_label(name)
+    except github.GithubException as exc:
+        if exc.status != 404:
+            raise
+        repo.create_label(name=name, color=color, description=description)
+
+
+def finalize_pull_request(
+    repo: github.Repository.Repository,
+    pr: github.PullRequest.PullRequest,
+    issue: github.Issue.Issue,
+    target_branch: str,
+) -> None:
+    message = (
+        f"This pull request has been merged into the internal git server on "
+        f"`{target_branch}`.\n\n"
+        "The pull request is now closed. If further work is needed, please "
+        "open a new pull request or issue.\n\n"
+        "Thanks!"
+    )
+
+    post_comment(pr, message)
+
+    try:
+        ensure_label(
+            repo,
+            "ready",
+            "0E8A16",
+            "Merged internally and ready for follow-up handling.",
+        )
+        label_names = {label.name for label in issue.get_labels()}
+        if "ready" not in label_names:
+            issue.add_to_labels("ready")
+    except github.GithubException as exc:
+        logging.warning("Could not apply the ready label: %s", exc)
+
+    try:
+        if issue.state != "closed":
+            issue.edit(state="closed")
+    except github.GithubException as exc:
+        logging.warning("Could not close the pull request: %s", exc)
+
+    try:
+        if not issue.locked:
+            issue.lock(lock_reason="resolved")
+    except github.GithubException as exc:
+        logging.warning("Could not lock the pull request: %s", exc)
+
+
 def build_internal_git_url(
     internal_git_base: str, repo_full: str, repo_name: str
 ) -> str:
@@ -171,6 +227,7 @@ def main() -> None:
     try:
         gh_repo = gh.get_repo(repo_full)
         pr = gh_repo.get_pull(issue_number)
+        issue_obj = gh_repo.get_issue(issue_number)
     except github.GithubException as exc:
         logging.error(
             "Failed to fetch PR #%d from %s: %s", issue_number, repo_full, exc
@@ -280,10 +337,7 @@ def main() -> None:
             post_comment(pr, msg)
             sys.exit(1)
 
-    post_comment(
-        pr,
-        f"✅ PR #{issue_number} merged into `{target_branch}` on the internal git.",
-    )
+    finalize_pull_request(gh_repo, pr, issue_obj, target_branch)
     logging.info("Done.")
 
 
