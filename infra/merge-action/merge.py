@@ -121,7 +121,9 @@ def main() -> None:
         gh_repo = gh.get_repo(repo_full)
         pr = gh_repo.get_pull(issue_number)
     except github.GithubException as exc:
-        logging.error("Failed to fetch PR #%d from %s: %s", issue_number, repo_full, exc)
+        logging.error(
+            "Failed to fetch PR #%d from %s: %s", issue_number, repo_full, exc
+        )
         sys.exit(1)
 
     # ── Verify SHA ─────────────────────────────────────────────────────────────
@@ -141,9 +143,7 @@ def main() -> None:
         logging.info("No branch specified; using PR base branch: %s", target_branch)
 
     pr_head_ref = pr.head.ref
-    logging.info(
-        "Merging PR #%d (%s → %s)", issue_number, pr_head_ref, target_branch
-    )
+    logging.info("Merging PR #%d (%s → %s)", issue_number, pr_head_ref, target_branch)
 
     # ── SSH setup ──────────────────────────────────────────────────────────────
     ssh_key = os.environ.get("INPUT_SSH_KEY", "")
@@ -191,9 +191,14 @@ def main() -> None:
         try:
             run(
                 [
-                    "git", "-C", tmpdir,
-                    "merge", "--no-ff", expected_sha,
-                    "-m", merge_msg,
+                    "git",
+                    "-C",
+                    tmpdir,
+                    "merge",
+                    "--no-ff",
+                    expected_sha,
+                    "-m",
+                    merge_msg,
                 ]
             )
         except subprocess.CalledProcessError:
