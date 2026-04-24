@@ -1,6 +1,6 @@
 beautifulsoup4==4.14.3
 CacheControl==0.14.2
-certifi==2026.2.25
+certifi==2026.4.22
 charset-normalizer==3.4.7
 filelock==3.20.3
 idna==3.11
