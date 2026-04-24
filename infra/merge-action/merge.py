@@ -222,8 +222,19 @@ def main() -> None:
         run(["git", "-C", tmpdir, "remote", "add", "upstream", github_url])
         run(["git", "-C", tmpdir, "fetch", "upstream"])
 
-        # Check out the target branch from origin (must already exist)
-        run(["git", "-C", tmpdir, "checkout", target_branch])
+        # Check out the target branch from origin explicitly to avoid ambiguity
+        # when upstream has a branch with the same name.
+        run(
+            [
+                "git",
+                "-C",
+                tmpdir,
+                "checkout",
+                "-B",
+                target_branch,
+                f"origin/{target_branch}",
+            ]
+        )
 
         # Sanity-check: the expected commit must be present after fetch
         probe = subprocess.run(

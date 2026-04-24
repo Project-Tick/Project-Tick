@@ -31,11 +31,11 @@
 %global build_platform CentOS
 %endif
 
-%global snapshot 202604221645
+%global snapshot 202604241545
 
 Name:           meshmc
 Version:        %{snapshot}
-Release:        4%{?dist}
+Release:        1%{?dist}
 Summary:        Custom Minecraft launcher with multi-instance management
 Group:          Amusements/Games
 License:        GPL-3.0-or-later AND Apache-2.0 AND LGPL-3.0-only AND LGPL-2.1 AND OFL-1.1 AND MIT
