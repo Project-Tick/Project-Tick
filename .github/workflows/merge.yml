@@ -7,7 +7,7 @@ jobs:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/merge') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: project-tick/project-tick/infra/merge-action@a637f0d447db0ba5aba1f42167ca26dc4f97e621
+      - uses: project-tick/project-tick/infra/merge-action@a19c92b54fc1b97bbdf050346ea12f1db8823410
         with:
           token: ${{ secrets.MERGE_TOKEN }}
           ssh_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
