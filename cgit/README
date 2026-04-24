@@ -92,5 +92,5 @@ the HTTP headers `Modified` and `Expires`.
 Online presence
 ---------------
 
-* The cgit homepage is hosted by cgit at
-<https://git.projecttick.org/pub/scm/git/Project-Tick/Project-Tick.git/tree/cgit/README>
+* The cgit homepage is hosted by gitlab at
+<https://git.projecttick.org/project-tick/project-tick/-/blob/master/cgit/README>

@@ -1043,7 +1043,7 @@ static void cgit_parse_args(int argc, const char **argv)
 
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "--version")) {
-			printf("CGit %s | https://git.projecttick.org/pub/scm/git/Project-Tick/Project-Tick.git/\n\nCompiled in features:\n", CGIT_VERSION);
+			printf("CGit %s | https://git.projecttick.org/Project-Tick/Project-Tick.git/\n\nCompiled in features:\n", CGIT_VERSION);
 #ifdef NO_LUA
 			printf("[-] ");
 #else
