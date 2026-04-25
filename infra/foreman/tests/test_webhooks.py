@@ -1452,11 +1452,15 @@ async def test_create_pipeline_pr():
 
         _, kwargs = mock_pipeline_service.create_pipeline.call_args
         assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
-        assert kwargs["params"].get("dispatch_owner") == "test-owner"
-        assert kwargs["params"].get("dispatch_repo") == "test-repo"
+        assert kwargs["params"].get("dispatch_owner") == settings.github_org
+        assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
         assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
         assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/pull/123/head"
         assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
+        assert (
+            kwargs["params"]["dispatch_inputs"].get("source-repository")
+            == "https://github.com/test-owner/test-repo.git"
+        )
         assert kwargs["params"]["dispatch_inputs"].get("pr-number") == "123"
         assert kwargs["params"]["dispatch_inputs"].get("base-ref") == "master"
 
@@ -1517,11 +1521,15 @@ async def test_create_pipeline_push():
                 assert kwargs["params"].get("ref") == "refs/heads/master"
                 assert kwargs["params"].get("push") == "true"
                 assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
-                assert kwargs["params"].get("dispatch_owner") == "test-owner"
-                assert kwargs["params"].get("dispatch_repo") == "test-repo"
+                assert kwargs["params"].get("dispatch_owner") == settings.github_org
+                assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
                 assert kwargs["params"]["dispatch_inputs"].get("event-name") == "push"
                 assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/heads/master"
                 assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
+                assert (
+                    kwargs["params"]["dispatch_inputs"].get("source-repository")
+                    == "https://github.com/test-owner/test-repo.git"
+                )
 
                 assert mock_pipeline_service.create_pipeline.called
                 assert mock_pipeline_service.start_pipeline.called

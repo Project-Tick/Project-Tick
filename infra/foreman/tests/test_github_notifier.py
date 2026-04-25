@@ -374,6 +374,36 @@ async def test_handle_build_completion_failure_creates_stable_issue(github_notif
 
 
 @pytest.mark.asyncio
+async def test_handle_build_completion_failure_delegates_stable_issue_to_gitlab(
+    github_notifier, mock_pipeline
+):
+    mock_pipeline.params = {
+        "sha": "abc123",
+        "repo": "Project-Tick/Project-Tick",
+        "gitlab_base_url": "https://git.projecttick.org",
+        "gitlab_project_path": "project-tick/project-tick",
+    }
+    mock_pipeline.flat_manager_repo = "stable"
+
+    with patch.object(github_notifier, "notify_build_status") as mock_status:
+        with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
+            with patch(
+                "app.services.gitlab_notifier.GitLabNotifier._handle_stable_issue_lifecycle",
+                AsyncMock(),
+            ) as mock_gitlab_issue:
+                with patch(
+                    "app.services.github_notifier.create_github_issue",
+                    AsyncMock(),
+                ) as mock_issue:
+                    await github_notifier.handle_build_completion(mock_pipeline, "failure")
+
+                    mock_status.assert_called_once_with(mock_pipeline, "failure")
+                    mock_pr.assert_not_called()
+                    mock_gitlab_issue.assert_awaited_once_with(mock_pipeline, "failure")
+                    mock_issue.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_handle_build_completion_success_closes_retry_issue(github_notifier, mock_pipeline):
     mock_pipeline.params = {
         "sha": "abc123",

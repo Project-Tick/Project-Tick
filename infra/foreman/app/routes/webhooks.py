@@ -133,11 +133,8 @@ def build_github_dispatch_params(
     actor_login: str,
     extra_inputs: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    owner, repo = (
-        repo_name.split("/", 1)
-        if "/" in repo_name
-        else (settings.github_org, settings.github_ci_repo)
-    )
+    dispatch_repo_full_name = f"{settings.github_org}/{settings.github_ci_repo}"
+    source_repo_name = repo_name if "/" in repo_name else dispatch_repo_full_name
 
     dispatch_inputs = {
         "force-all": "false",
@@ -146,12 +143,16 @@ def build_github_dispatch_params(
         "source-ref": source_ref,
         "source-sha": source_sha or "",
     }
+    if source_repo_name.lower() != dispatch_repo_full_name.lower():
+        dispatch_inputs["source-repository"] = (
+            f"https://github.com/{source_repo_name}.git"
+        )
     if extra_inputs:
         dispatch_inputs.update(extra_inputs)
 
     return {
-        "dispatch_owner": owner,
-        "dispatch_repo": repo,
+        "dispatch_owner": settings.github_org,
+        "dispatch_repo": settings.github_ci_repo,
         "dispatch_workflow_id": settings.github_ci_workflow,
         "dispatch_ref": settings.github_ci_ref,
         "dispatch_inputs": {
@@ -159,6 +160,19 @@ def build_github_dispatch_params(
             for key, value in dispatch_inputs.items()
             if value is not None and value != ""
         },
+    }
+
+
+def build_gitlab_issue_routing_params(repo_name: str) -> dict[str, str]:
+    repo_slug = repo_name.split("/", 1)[-1].strip()
+    if not repo_slug or repo_name.lower() != f"{settings.github_org}/{settings.github_ci_repo}".lower():
+        return {}
+
+    namespace = settings.github_org.lower()
+    project_path = f"{namespace}/{repo_slug.lower()}"
+    return {
+        "gitlab_base_url": settings.gitlab_base_url,
+        "gitlab_project_path": project_path,
     }
 
 
@@ -1311,6 +1325,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 "pr_target_branch": pr_base_ref,
             }
         )
+        params.update(build_gitlab_issue_routing_params(event.repository))
         params.update(
             build_github_dispatch_params(
                 repo_name=event.repository,
@@ -1339,6 +1354,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 "push": "true",
             }
         )
+        params.update(build_gitlab_issue_routing_params(event.repository))
         params.update(
             build_github_dispatch_params(
                 repo_name=event.repository,

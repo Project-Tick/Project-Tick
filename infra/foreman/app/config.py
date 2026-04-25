@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     database_replica_url: str | None = None
     debug: bool = False
     gitlab_api_token: str | None = None
+    gitlab_base_url: str = "https://git.projecttick.org"
     gitlab_webhook_secret: str = "test_gitlab_webhook_secret"
     github_token: str = "test_github_token"
     github_status_token: str = "test_github_status_token"

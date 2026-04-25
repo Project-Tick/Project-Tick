@@ -59,6 +59,16 @@ class GitHubNotifier:
         if (pipeline.flat_manager_repo or "") != "stable":
             return
 
+        gitlab_base_url = pipeline.params.get("gitlab_base_url")
+        gitlab_project_path = pipeline.params.get("gitlab_project_path")
+        if isinstance(gitlab_base_url, str) and gitlab_base_url and isinstance(
+            gitlab_project_path, str
+        ) and gitlab_project_path:
+            from app.services.gitlab_notifier import GitLabNotifier
+
+            await GitLabNotifier()._handle_stable_issue_lifecycle(pipeline, status)
+            return
+
         git_repo = pipeline.params.get("repo")
         if not isinstance(git_repo, str) or not git_repo:
             return

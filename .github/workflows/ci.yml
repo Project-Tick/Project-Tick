@@ -278,8 +278,8 @@ jobs:
     name: "Gate"
     runs-on: ubuntu-latest
     if: >-
-      !(env.CI_EVENT_NAME == 'pull_request_target' && !github.event.pull_request.merged) &&
-      !(env.CI_EVENT_NAME == 'pull_request' && env.CI_PR_DRAFT == 'true')
+      !((github.event.inputs.event-name || github.event_name) == 'pull_request_target' && !github.event.pull_request.merged) &&
+      !((github.event.inputs.event-name || github.event_name) == 'pull_request' && (github.event.inputs.pr-draft || 'false') == 'true')
     outputs:
       # ── Event classification ────────────────────────────────────
       is_push: ${{ steps.classify.outputs.is_push }}
