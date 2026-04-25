@@ -13,9 +13,11 @@ from app.routes import (
     pipelines_router,
     webhooks_router,
 )
+from app.services.scheduler import ForemanScheduler
 
 setup_logging()
 logger = structlog.get_logger(__name__)
+scheduler = ForemanScheduler()
 
 if settings.sentry_dsn:
     sentry_sdk.init(
@@ -30,7 +32,9 @@ if settings.sentry_dsn:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Application startup")
+    await scheduler.start()
     yield
+    await scheduler.stop()
     logger.info("Application shutdown")
 
 

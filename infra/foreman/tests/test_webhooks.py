@@ -11,7 +11,63 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import settings
+from app.config import WorkflowDispatchRule, settings
+
+
+def _ci_test_rule(*triggers: str) -> WorkflowDispatchRule:
+    return WorkflowDispatchRule(
+        name="test-ci",
+        workflow_id="ci.yml",
+        workflow_name="CI",
+        triggers=list(triggers),
+        github_status_context="ci",
+        forward_source_repository=True,
+        forward_source_ref=True,
+        forward_source_sha=True,
+        forward_event_metadata=True,
+        forward_pr_metadata=True,
+    )
+
+
+_ALL_CI_TRIGGERS = (
+    "github_pull_request",
+    "github_pull_request_comment",
+    "github_push",
+    "github_issue_retry",
+    "gitlab_merge_request",
+    "gitlab_issue_retry",
+)
+
+
+@pytest.fixture(autouse=True)
+def _inject_default_ci_rule(request):
+    """Backfill a permissive CI dispatch rule for legacy tests.
+
+    The product-distributed registry defaults no longer match the synthetic
+    `test-owner/test-repo` repository used in these tests; opt out via
+    `@pytest.mark.no_default_ci_rule` when a test installs its own rules.
+    """
+
+    if request.node.get_closest_marker("no_default_ci_rule"):
+        yield
+        return
+
+    # Preserve any tag/schedule rules from real defaults so tag/schedule
+    # tests still see a release-sources rule etc.
+    extra_rules = [
+        rule
+        for rule in settings.workflow_dispatch_rules
+        if any(
+            trigger in rule.triggers
+            for trigger in ("github_tag_push", "schedule")
+        )
+    ]
+    with patch.object(
+        settings,
+        "workflow_dispatch_rules",
+        [_ci_test_rule(*_ALL_CI_TRIGGERS), *extra_rules],
+    ):
+        yield
 from app.main import app
 from app.models import Pipeline, PipelineStatus
 from app.routes.webhooks import is_submodule_only_pr
@@ -258,6 +314,7 @@ def test_receive_github_webhook_master_push_dispatches(client: TestClient, mock_
     """Test that a master push webhook is stored and dispatched."""
     delivery_id = str(uuid.uuid4())
     pipeline_id = uuid.uuid4()
+    additional_pipeline_ids = [uuid.uuid4(), uuid.uuid4()]
     payload = dict(SAMPLE_PUSH_PAYLOAD)
     payload["after"] = "abcdef1234567890abcdef1234567890abcdef12"
     headers = {
@@ -272,18 +329,26 @@ def test_receive_github_webhook_master_push_dispatches(client: TestClient, mock_
                 "app.routes.webhooks.create_pipeline",
                 AsyncMock(return_value=pipeline_id),
             ) as mock_create_pipeline:
-                response = client.post(
-                    "/api/webhooks/github",
-                    json=payload,
-                    headers=headers,
-                )
+                with patch(
+                    "app.routes.webhooks.create_additional_push_pipelines",
+                    AsyncMock(return_value=additional_pipeline_ids),
+                ) as mock_additional:
+                    response = client.post(
+                        "/api/webhooks/github",
+                        json=payload,
+                        headers=headers,
+                    )
 
     assert response.status_code == 202
     response_data = response.json()
     assert response_data["message"] == "Webhook received"
     assert response_data["event_id"] == delivery_id
     assert response_data["pipeline_id"] == str(pipeline_id)
+    assert response_data["additional_pipeline_ids"] == [
+        str(pipeline_id) for pipeline_id in additional_pipeline_ids
+    ]
     mock_create_pipeline.assert_awaited_once()
+    mock_additional.assert_awaited_once()
     assert mock_db.add.called
     assert mock_db.commit.called
 
@@ -320,6 +385,91 @@ def test_receive_github_webhook_feature_branch_push_is_ignored(client: TestClien
     mock_create_pipeline.assert_not_awaited()
     assert not mock_db.add.called
     assert not mock_db.commit.called
+
+
+@pytest.mark.asyncio
+@pytest.mark.no_default_ci_rule
+async def test_create_additional_push_pipelines_dispatches_master_companions():
+    event_id = uuid.uuid4()
+    webhook_event = WebhookEvent(
+        id=event_id,
+        source=WebhookSource.GITHUB,
+        payload={
+            "repository": {"full_name": f"{settings.github_org}/{settings.github_ci_repo}"},
+            "sender": {"login": "test-actor"},
+            "ref": "refs/heads/master",
+            "after": "abcdef1234567890abcdef1234567890abcdef12",
+            "commits": [
+                {
+                    "id": "abc123",
+                    "modified": [".github/actions/source-checkout/action.yml"],
+                }
+            ],
+        },
+        repository=f"{settings.github_org}/{settings.github_ci_repo}",
+        actor="test-actor",
+    )
+
+    created_pipeline_ids = [uuid.uuid4()]
+
+    with patch(
+        "app.routes.webhooks.create_pipelines_for_rules",
+        AsyncMock(return_value=created_pipeline_ids),
+    ) as mock_create:
+        from app.routes.webhooks import create_additional_push_pipelines
+
+        pipeline_ids = await create_additional_push_pipelines(webhook_event)
+
+    assert pipeline_ids == created_pipeline_ids
+    mock_create.assert_awaited_once()
+    workflow_ids = {rule.workflow_id for rule in mock_create.await_args.kwargs["rules"]}
+    assert workflow_ids == {
+        "infra-test.yml",
+    }
+    assert mock_create.await_args.kwargs["base_params"]["ref"] == "refs/heads/master"
+    assert mock_create.await_args.kwargs["base_params"]["push"] == "true"
+
+
+@pytest.mark.asyncio
+@pytest.mark.no_default_ci_rule
+async def test_create_additional_push_pipelines_includes_meshmc_when_paths_match():
+    event_id = uuid.uuid4()
+    webhook_event = WebhookEvent(
+        id=event_id,
+        source=WebhookSource.GITHUB,
+        payload={
+            "repository": {"full_name": f"{settings.github_org}/{settings.github_ci_repo}"},
+            "sender": {"login": "test-actor"},
+            "ref": "refs/heads/master",
+            "after": "abcdef1234567890abcdef1234567890abcdef12",
+            "commits": [
+                {
+                    "id": "abc123",
+                    "modified": ["meshmc/src/main.cpp"],
+                }
+            ],
+        },
+        repository=f"{settings.github_org}/{settings.github_ci_repo}",
+        actor="test-actor",
+    )
+
+    created_pipeline_ids = [uuid.uuid4() for _ in range(3)]
+
+    with patch(
+        "app.routes.webhooks.create_pipelines_for_rules",
+        AsyncMock(return_value=created_pipeline_ids),
+    ) as mock_create:
+        from app.routes.webhooks import create_additional_push_pipelines
+
+        pipeline_ids = await create_additional_push_pipelines(webhook_event)
+
+    assert pipeline_ids == created_pipeline_ids
+    workflow_ids = [rule.workflow_id for rule in mock_create.await_args.kwargs["rules"]]
+    assert workflow_ids == [
+        "meshmc-nix.yml",
+        "meshmc-codeql.yml",
+        "meshmc-container.yml",
+    ]
 
 
 def test_receive_github_webhook_missing_header(client: TestClient):
@@ -543,14 +693,15 @@ def test_should_not_store_event_push_to_feature_branch():
     assert should_store_event(payload) is False
 
 
-def test_should_not_store_event_push_to_tag():
-    """Test should_store_event returns False for tag pushes."""
+def test_should_store_event_tag_push():
+    """Test should_store_event returns True for configured tag pushes."""
     from app.routes.webhooks import should_store_event
 
     payload = dict(SAMPLE_PUSH_PAYLOAD)
     payload["ref"] = "refs/tags/v1.2.3"
+    payload["after"] = "abcdef1234567890abcdef1234567890abcdef12"
 
-    assert should_store_event(payload) is False
+    assert should_store_event(payload) is True
 
 
 def test_should_not_store_event_deleted_branch_push():
@@ -635,8 +786,12 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
         patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
         patch.object(settings, "github_org", "Project-Tick"),
         patch.object(settings, "github_ci_repo", "Project-Tick"),
-        patch.object(settings, "github_ci_workflow", "ci.yml"),
         patch.object(settings, "github_ci_ref", "master"),
+        patch.object(
+            settings,
+            "workflow_dispatch_rules",
+            [_ci_test_rule("gitlab_merge_request", "gitlab_issue_retry")],
+        ),
         patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
         patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
     ):
@@ -911,8 +1066,12 @@ def test_receive_gitlab_issue_retry_dispatches_root_ci(client: TestClient):
         patch.object(settings, "gitlab_api_token", "gitlab-api-token"),
         patch.object(settings, "github_org", "Project-Tick"),
         patch.object(settings, "github_ci_repo", "Project-Tick"),
-        patch.object(settings, "github_ci_workflow", "ci.yml"),
         patch.object(settings, "github_ci_ref", "master"),
+        patch.object(
+            settings,
+            "workflow_dispatch_rules",
+            [_ci_test_rule("gitlab_issue_retry")],
+        ),
         patch(
             "app.routes.webhooks.validate_gitlab_issue_retry_permissions",
             AsyncMock(return_value=True),
@@ -1538,6 +1697,11 @@ async def test_create_pipeline_pr():
 
     with (
         patch("app.routes.webhooks.settings.ff_disable_test_builds", False),
+        patch.object(
+            settings,
+            "workflow_dispatch_rules",
+            [_ci_test_rule("github_pull_request", "github_pull_request_comment")],
+        ),
         patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service),
         patch("app.routes.webhooks.get_db", mock_get_db),
         patch("app.pipelines.build.get_db", mock_get_db),
@@ -1551,7 +1715,7 @@ async def test_create_pipeline_pr():
         mock_pipeline_service.create_pipeline.assert_called_once()
 
         _, kwargs = mock_pipeline_service.create_pipeline.call_args
-        assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        assert kwargs["params"].get("dispatch_workflow_id") == "ci.yml"
         assert kwargs["params"].get("dispatch_owner") == settings.github_org
         assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
         assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
@@ -1609,20 +1773,25 @@ async def test_create_pipeline_push():
     with patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service):
         with patch("app.routes.webhooks.get_db", mock_get_db):
             with patch("app.pipelines.build.get_db", mock_get_db):
-                from app.routes.webhooks import create_pipeline
+                with patch.object(
+                    settings,
+                    "workflow_dispatch_rules",
+                    [_ci_test_rule("github_push")],
+                ):
+                    from app.routes.webhooks import create_pipeline
 
-                result = await create_pipeline(webhook_event)
+                    result = await create_pipeline(webhook_event)
 
-                assert result == pipeline_id
+                    assert result == pipeline_id
 
-                # Verify the parameters passed to create_pipeline
-                args, kwargs = mock_pipeline_service.create_pipeline.call_args
-                assert "params" in kwargs
-                assert kwargs["params"].get("ref") == "refs/heads/master"
-                assert kwargs["params"].get("push") == "true"
-                assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
-                assert kwargs["params"].get("dispatch_owner") == settings.github_org
-                assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
+                    # Verify the parameters passed to create_pipeline
+                    args, kwargs = mock_pipeline_service.create_pipeline.call_args
+                    assert "params" in kwargs
+                    assert kwargs["params"].get("ref") == "refs/heads/master"
+                    assert kwargs["params"].get("push") == "true"
+                    assert kwargs["params"].get("dispatch_workflow_id") == "ci.yml"
+                    assert kwargs["params"].get("dispatch_owner") == settings.github_org
+                    assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
                 assert kwargs["params"]["dispatch_inputs"].get("event-name") == "push"
                 assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/heads/master"
                 assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
@@ -1634,6 +1803,57 @@ async def test_create_pipeline_push():
                 assert mock_pipeline_service.create_pipeline.called
                 assert mock_pipeline_service.start_pipeline.called
                 assert isinstance(result, uuid.UUID)
+
+
+@pytest.mark.asyncio
+async def test_create_pipeline_tag_push_dispatches_release_workflow():
+    event_id = uuid.uuid4()
+    pipeline_id = uuid.uuid4()
+
+    modified_payload = dict(SAMPLE_PUSH_PAYLOAD)
+    modified_payload["ref"] = "refs/tags/v1.2.3"
+    modified_payload["after"] = "abcdef123456"
+
+    webhook_event = WebhookEvent(
+        id=event_id,
+        source=WebhookSource.GITHUB,
+        payload=modified_payload,
+        repository="test-owner/test-repo",
+        actor="test-actor",
+    )
+
+    mock_pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="org.flathub.test-repo",
+        params={},
+        webhook_event_id=event_id,
+        status=PipelineStatus.PENDING,
+    )
+
+    mock_pipeline_service = AsyncMock()
+    mock_pipeline_service.create_pipeline.return_value = mock_pipeline
+    mock_pipeline_service.prepare_pipeline_for_start.return_value = mock_pipeline
+    mock_pipeline_service.supersede_conflicting_test_pipelines.return_value = None
+    mock_pipeline_service.should_queue_test_build.return_value = False
+    mock_pipeline_service.start_pipeline.return_value = mock_pipeline
+
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.get.return_value = mock_pipeline
+    mock_get_db = create_mock_get_db(mock_db)
+
+    with patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service):
+        with patch("app.routes.webhooks.get_db", mock_get_db):
+            with patch("app.pipelines.build.get_db", mock_get_db):
+                from app.routes.webhooks import create_pipeline
+
+                result = await create_pipeline(webhook_event)
+
+                assert result == pipeline_id
+
+                _, kwargs = mock_pipeline_service.create_pipeline.call_args
+                assert kwargs["params"].get("dispatch_workflow_id") == "release-sources.yml"
+                assert kwargs["params"]["dispatch_inputs"].get("version") == "v1.2.3"
+                assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/tags/v1.2.3"
 
 
 @pytest.mark.asyncio
@@ -1695,6 +1915,11 @@ async def test_create_pipeline_comment():
 
     with (
         patch("app.routes.webhooks.settings.ff_disable_test_builds", False),
+        patch.object(
+            settings,
+            "workflow_dispatch_rules",
+            [_ci_test_rule("github_pull_request", "github_pull_request_comment")],
+        ),
         patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service),
         patch("app.routes.webhooks.get_db", mock_get_db),
         patch("app.pipelines.build.get_db", mock_get_db),
@@ -1710,7 +1935,7 @@ async def test_create_pipeline_comment():
         assert "params" in kwargs
         assert kwargs["params"].get("pr_number") == "42"
         assert kwargs["params"].get("ref") == "refs/pull/42/head"
-        assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        assert kwargs["params"].get("dispatch_workflow_id") == "ci.yml"
         assert kwargs["params"].get("dispatch_owner") == settings.github_org
         assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
         assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
@@ -3284,6 +3509,11 @@ async def test_create_pipeline_pr_stores_target_branch(
 
     with (
         patch("app.routes.webhooks.settings.ff_disable_test_builds", False),
+        patch.object(
+            settings,
+            "workflow_dispatch_rules",
+            [_ci_test_rule("github_pull_request", "github_pull_request_comment")],
+        ),
         patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service),
         patch("app.routes.webhooks.get_db", mock_get_db),
         patch("app.pipelines.build.get_db", mock_get_db),
@@ -3361,6 +3591,11 @@ async def test_create_pipeline_bot_build_stores_target_branch(
 
     with (
         patch("app.routes.webhooks.settings.ff_disable_test_builds", False),
+        patch.object(
+            settings,
+            "workflow_dispatch_rules",
+            [_ci_test_rule("github_pull_request", "github_pull_request_comment")],
+        ),
         patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service),
         patch("app.routes.webhooks.get_db", mock_get_db),
         patch("app.pipelines.build.get_db", mock_get_db),

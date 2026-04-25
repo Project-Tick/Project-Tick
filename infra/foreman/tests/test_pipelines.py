@@ -68,6 +68,27 @@ async def test_create_pipeline(build_pipeline, mock_db, monkeypatch):
     assert result.status == PipelineStatus.PENDING
 
 
+def test_dispatch_schedule_workflows_endpoint():
+    schedule_name = "daily"
+    pipeline_ids = [uuid.uuid4(), uuid.uuid4()]
+    client = TestClient(app)
+
+    with patch(
+        "app.routes.pipelines.dispatch_named_schedule",
+        AsyncMock(return_value=pipeline_ids),
+    ) as mock_create:
+        response = client.post(
+            f"/api/schedules/{schedule_name}/dispatch",
+            headers={"Authorization": "Bearer raeVenga1eez3Geeca"},
+        )
+
+    assert response.status_code == 202
+    assert response.json()["status"] == "scheduled"
+    assert response.json()["schedule_name"] == schedule_name
+    assert response.json()["pipeline_ids"] == [str(pipeline_id) for pipeline_id in pipeline_ids]
+    mock_create.assert_awaited_once()
+
+
 @pytest.mark.asyncio
 async def test_start_pipeline(build_pipeline, mock_db):
     pipeline_id = uuid.uuid4()
@@ -2202,6 +2223,50 @@ async def test_supersede_conflicting_test_pipelines_does_not_supersede_different
     query_params = query.compile().params.values()
     assert "refs/pull/123/head" in query_params
     assert "refs/pull/456/head" not in query_params
+
+
+@pytest.mark.asyncio
+async def test_supersede_conflicting_pipelines_does_not_supersede_different_workflow():
+    old_pipeline = Pipeline(
+        id=uuid.uuid4(),
+        app_id="Project-Tick",
+        params={
+            "ref": "refs/heads/master",
+            "dispatch_workflow_id": "ci.yml",
+        },
+        status=PipelineStatus.RUNNING,
+        provider_data={"run_id": "12345"},
+        callback_token=str(uuid.uuid4()),
+    )
+
+    new_pipeline = Pipeline(
+        id=uuid.uuid4(),
+        app_id="Project-Tick",
+        params={
+            "ref": "refs/heads/master",
+            "dispatch_workflow_id": "infra-action-ci.yml",
+        },
+        status=PipelineStatus.PENDING,
+        provider_data={},
+        callback_token=str(uuid.uuid4()),
+    )
+
+    mock_db_session = AsyncMock(spec=AsyncSession)
+    mock_execute_result = MagicMock()
+    mock_execute_result.scalars.return_value.all.return_value = [old_pipeline]
+    mock_db_session.execute.return_value = mock_execute_result
+
+    with patch("app.pipelines.build.GitHubActionsService") as mock_actions_class:
+        mock_actions_class.return_value.cancel = AsyncMock()
+        build_pipeline = BuildPipeline()
+
+        await build_pipeline._supersede_conflicting_pipelines(
+            db=mock_db_session,
+            pipeline=new_pipeline,
+        )
+
+    assert old_pipeline.status == PipelineStatus.RUNNING
+    mock_actions_class.return_value.cancel.assert_not_awaited()
 
 
 @pytest.mark.asyncio

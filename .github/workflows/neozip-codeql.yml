@@ -2,10 +2,67 @@ name: "neozip: CodeQL"
 
 on:
   workflow_call:
+    inputs:
+      callback_url:
+        description: Optional Foreman callback base URL
+        required: false
+        type: string
+        default: ""
+      callback_token:
+        description: Optional Foreman callback bearer token
+        required: false
+        type: string
+        default: ""
   workflow_dispatch:
+    inputs:
+      callback_url:
+        description: Optional Foreman callback base URL
+        type: string
+        default: ""
+      callback_token:
+        description: Optional Foreman callback bearer token
+        type: string
+        default: ""
 
 jobs:
+  callback-start:
+    name: "Callback Start"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      callback_url: ${{ steps.prepare.outputs.callback_url }}
+      pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Prepare callback destination
+        id: prepare
+        uses: ./.github/actions/foreman-prepare-callback
+        with:
+          callback_url: ${{ inputs.callback_url || github.event.inputs.callback_url || '' }}
+          callback_token: ${{ inputs.callback_token || github.event.inputs.callback_token || '' }}
+          foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
+          repository: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          event_name: ${{ github.event_name }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
+          pr_number: ${{ github.event.inputs.pr-number || '' }}
+          pr_head_sha: ${{ github.event.inputs.pr-head-sha || '' }}
+          pr_target_branch: ${{ github.event.inputs.base-ref || '' }}
+
+      - name: Report workflow run URL
+        uses: ./.github/actions/foreman-send-callback
+        with:
+          callback_url: ${{ steps.prepare.outputs.callback_url }}
+          callback_token: ${{ steps.prepare.outputs.callback_token }}
+          endpoint: log_url
+          payload_json: ${{ format('{{"log_url":"{0}/{1}/actions/runs/{2}"}}', github.server_url, github.repository, github.run_id) }}
+
   analyze:
+    needs: callback-start
     name: CodeQL (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     permissions:
@@ -49,3 +106,42 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: "/oss:${{ matrix.os }}"
+
+  callback-status:
+    name: "Callback Status"
+    if: always()
+    needs:
+      - callback-start
+      - analyze
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve final workflow status
+        id: resolve-status
+        shell: bash
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+
+          status="success"
+          if jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="failure"
+          elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="cancelled"
+          fi
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Report final workflow status
+        uses: ./.github/actions/foreman-send-callback
+        with:
+          callback_url: ${{ needs.callback-start.outputs.callback_url }}
+          pipeline_id: ${{ needs.callback-start.outputs.pipeline_id }}
+          foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
+          endpoint: status
+          payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-status.outputs.status) }}

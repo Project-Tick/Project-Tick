@@ -13,6 +13,7 @@ from app.config import settings
 from app.database import get_db
 from app.models import Pipeline, PipelineStatus
 from app.services import github_actions_service
+from app.services.failure_issues import FailureIssueService
 from app.services.github_actions import GitHubActionsService
 from app.services.gitlab_notifier import GitLabNotifier
 from app.services.github_notifier import GitHubNotifier
@@ -186,6 +187,23 @@ def resolve_pipeline_target_repo(pipeline: Pipeline) -> str:
     return "test"
 
 
+def get_pipeline_workflow_key(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+
+    for key in ("dispatch_workflow_id", "workflow_id", "workflow_name"):
+        value = params.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip().lower()
+
+    provider_data = dict(pipeline.provider_data or {})
+    for key in ("workflow_id", "workflow_name"):
+        value = provider_data.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip().lower()
+
+    return "build"
+
+
 class BuildPipeline:
     def __init__(self):
         self.provider = github_actions_service
@@ -341,7 +359,12 @@ class BuildPipeline:
             .params(ref=ref)
         )
         result = await db.execute(query)
-        conflicting = list(result.scalars().all())
+        workflow_key = get_pipeline_workflow_key(pipeline)
+        conflicting = [
+            old_pipeline
+            for old_pipeline in result.scalars().all()
+            if get_pipeline_workflow_key(old_pipeline) == workflow_key
+        ]
 
         for old_pipeline in conflicting:
             old_pipeline.status = PipelineStatus.SUPERSEDED
@@ -635,6 +658,7 @@ class BuildPipeline:
 
             notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
             await notifier.handle_build_completion(pipeline, status_value)
+            await FailureIssueService().open_failure_issue(pipeline, status_value)
 
             updates["pipeline_status"] = status_value
             await self.start_pending_builds()

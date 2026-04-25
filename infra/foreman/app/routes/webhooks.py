@@ -22,6 +22,16 @@ from app.pipelines.build import (
     resolve_pipeline_target_repo,
 )
 from app.services.github_actions import GitHubActionsService
+from app.services.change_events import record_change_event
+from app.services.workflow_dispatch import (
+    WorkflowEventContext,
+    build_dispatch_params_for_rule,
+    collect_changed_paths,
+    create_pipelines_for_rules,
+    get_branch_name,
+    get_matching_workflow_rules,
+    get_tag_name,
+)
 from app.utils.github import (
     add_issue_comment,
     close_github_issue,
@@ -54,6 +64,19 @@ BUILD_FAILURE_ISSUE_RE = re.compile(
     r"Build log: (?P<log_url>\S+)"
     r"(?:\s+GitHub repository: (?P<github_repo>\S+))?"
     r"(?:\s+Source repository: (?P<source_repository>\S+))?",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
+
+WORKFLOW_FAILURE_ISSUE_RE = re.compile(
+    r"The workflow pipeline for `(?P<app_id>[^`]+)` failed\.\s+"
+    r"Pipeline ID: (?P<pipeline_id>[0-9a-fA-F-]+)\s+"
+    r"Workflow target: (?P<workflow_target>\S+)\s+"
+    r"Target repo class: (?P<target_repo>\w+)"
+    r"(?:.*?Commit SHA: (?P<sha>[0-9a-fA-F]+))?"
+    r"(?:.*?Ref: (?P<ref>\S+))?"
+    r"(?:.*?GitHub repository: (?P<github_repo>\S+))?"
+    r"(?:.*?Source repository: (?P<source_repository>\S+))?"
+    r"(?:.*?Build log: (?P<log_url>\S+))?",
     re.IGNORECASE | re.MULTILINE | re.DOTALL,
 )
 
@@ -125,55 +148,182 @@ def get_gitlab_admin_mention() -> str:
     return mention if mention.startswith("@") else f"@{mention}"
 
 
-def build_github_dispatch_params(
-    repo_name: str,
-    source_event_name: str,
-    source_ref: str,
-    source_sha: str | None,
-    actor_login: str,
-    extra_inputs: dict[str, str] | None = None,
-) -> dict[str, Any]:
-    dispatch_repo_full_name = f"{settings.github_org}/{settings.github_ci_repo}"
-    source_repo_name = repo_name if "/" in repo_name else dispatch_repo_full_name
-
-    dispatch_inputs = {
-        "force-all": "false",
-        "event-name": source_event_name,
-        "event-actor": actor_login,
-        "source-ref": source_ref,
-        "source-sha": source_sha or "",
-    }
-    if source_repo_name.lower() != dispatch_repo_full_name.lower():
-        dispatch_inputs["source-repository"] = (
-            f"https://github.com/{source_repo_name}.git"
-        )
-    if extra_inputs:
-        dispatch_inputs.update(extra_inputs)
-
-    return {
-        "dispatch_owner": settings.github_org,
-        "dispatch_repo": settings.github_ci_repo,
-        "dispatch_workflow_id": settings.github_ci_workflow,
-        "dispatch_ref": settings.github_ci_ref,
-        "dispatch_inputs": {
-            key: value
-            for key, value in dispatch_inputs.items()
-            if value is not None and value != ""
-        },
-    }
-
-
 def build_gitlab_issue_routing_params(repo_name: str) -> dict[str, str]:
-    repo_slug = repo_name.split("/", 1)[-1].strip()
-    if not repo_slug or repo_name.lower() != f"{settings.github_org}/{settings.github_ci_repo}".lower():
-        return {}
-
-    namespace = settings.github_org.lower()
-    project_path = f"{namespace}/{repo_slug.lower()}"
     return {
-        "gitlab_base_url": settings.gitlab_base_url,
-        "gitlab_project_path": project_path,
+        "gitlab_base_url": settings.failure_issue_gitlab_base_url
+        or settings.gitlab_base_url,
+        "gitlab_project_path": settings.failure_issue_gitlab_project,
     }
+
+
+def get_push_matching_rules(event: WebhookEvent) -> list[WorkflowDispatchRule]:
+    payload = event.payload
+    ref = str(payload.get("ref", ""))
+    return get_matching_workflow_rules(
+        trigger="github_push",
+        ref=ref,
+        branch_name=get_branch_name(ref),
+        changed_paths=collect_changed_paths(payload),
+    )
+
+
+async def create_additional_push_pipelines(event: WebhookEvent) -> list[uuid.UUID]:
+    payload = event.payload
+    ref = str(payload.get("ref", ""))
+    changed_paths = collect_changed_paths(payload)
+    matching_rules = get_push_matching_rules(event)
+    additional_rules = matching_rules[1:]
+    if not additional_rules:
+        return []
+
+    context = WorkflowEventContext(
+        source_repo_name=event.repository,
+        source_ref=ref,
+        source_sha=str(payload.get("after", "")),
+        before_sha=str(payload.get("before", "")),
+        actor_login=event.actor,
+        event_name="push",
+        head_ref=get_branch_name(ref),
+    )
+    base_params: dict[str, Any] = {
+        "repo": event.repository,
+        "ref": ref,
+        "push": "true",
+    }
+    if context.source_sha:
+        base_params["sha"] = context.source_sha
+
+    return await create_pipelines_for_rules(
+        rules=additional_rules,
+        base_params=base_params,
+        context=context,
+        fallback_app_id=event.repository.split("/")[-1],
+        webhook_event_id=event.id,
+    )
+
+
+def get_first_matching_workflow_rule(
+    *,
+    trigger: str,
+    ref: str = "",
+    branch_name: str = "",
+    changed_paths: set[str] | None = None,
+    schedule_name: str = "",
+):
+    rules = get_matching_workflow_rules(
+        trigger=trigger,
+        ref=ref,
+        branch_name=branch_name,
+        changed_paths=changed_paths,
+        schedule_name=schedule_name,
+    )
+    return rules[0] if rules else None
+
+
+def trigger_requires_changed_paths(trigger: str) -> bool:
+    return any(
+        rule.enabled and trigger in rule.triggers and bool(rule.path_patterns)
+        for rule in settings.workflow_dispatch_rules
+    )
+
+
+def get_workflow_rule_for_target(workflow_target: str):
+    if not workflow_target or ":" not in workflow_target:
+        return None
+
+    repo_target, workflow_id = workflow_target.split(":", maxsplit=1)
+    if "/" not in repo_target:
+        return None
+
+    owner, repo = repo_target.split("/", maxsplit=1)
+    owner = owner.strip().lower()
+    repo = repo.strip().lower()
+    workflow_id = workflow_id.strip()
+    if not owner or not repo or not workflow_id:
+        return None
+
+    for rule in settings.workflow_dispatch_rules:
+        rule_owner = (rule.owner or settings.github_org).lower()
+        rule_repo = (rule.repo or settings.github_ci_repo).lower()
+        if rule_owner == owner and rule_repo == repo and rule.workflow_id == workflow_id:
+            return rule
+
+    return None
+
+
+async def fetch_github_pull_request_changed_paths(
+    git_repo: str,
+    pr_number: int,
+) -> set[str]:
+    paths: set[str] = set()
+    github_client = get_github_client()
+    page = 1
+
+    while True:
+        response = await github_client.request(
+            "get",
+            f"https://api.github.com/repos/{git_repo}/pulls/{pr_number}/files",
+            context={"repo": git_repo, "pr_number": pr_number, "page": page},
+            params={"per_page": 100, "page": page},
+        )
+        if response is None:
+            return paths
+
+        payload = response.json()
+        if not isinstance(payload, list):
+            return paths
+
+        for item in payload:
+            if not isinstance(item, dict):
+                continue
+            filename = item.get("filename")
+            if isinstance(filename, str) and filename:
+                paths.add(filename)
+
+        if len(payload) < 100:
+            return paths
+        page += 1
+
+
+async def fetch_gitlab_merge_request_changed_paths(
+    gitlab_base_url: str,
+    project_path: str,
+    merge_request_iid: str,
+) -> set[str]:
+    if not settings.gitlab_api_token:
+        return set()
+
+    endpoint = (
+        f"{gitlab_base_url.rstrip('/')}/api/v4/projects/{quote(project_path, safe='')}/"
+        f"merge_requests/{merge_request_iid}/changes"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                endpoint,
+                headers={"PRIVATE-TOKEN": settings.gitlab_api_token},
+            )
+            response.raise_for_status()
+            payload = response.json()
+    except (httpx.HTTPError, ValueError) as error:
+        logger.warning(
+            "Failed to fetch GitLab merge request changed paths",
+            endpoint=endpoint,
+            error=str(error),
+        )
+        return set()
+
+    changes = payload.get("changes", []) if isinstance(payload, dict) else []
+    paths: set[str] = set()
+    for change in changes:
+        if not isinstance(change, dict):
+            continue
+        for key in ("new_path", "old_path"):
+            value = change.get(key)
+            if isinstance(value, str) and value:
+                paths.add(value)
+    return paths
 
 
 def describe_target_branch(target_branch: str) -> str:
@@ -207,6 +357,7 @@ async def parse_failure_issue(issue_body: str, git_repo: str) -> dict[str, Any] 
         return None
 
     for pattern, issue_type in (
+        (WORKFLOW_FAILURE_ISSUE_RE, "workflow_failure"),
         (BUILD_FAILURE_ISSUE_RE, "build_failure"),
         (JOB_FAILURE_ISSUE_RE, "job_failure"),
     ):
@@ -232,6 +383,8 @@ async def parse_failure_issue(issue_body: str, git_repo: str) -> dict[str, Any] 
             result["github_repo"] = parsed["github_repo"]
         if parsed.get("source_repository"):
             result["source_repository"] = parsed["source_repository"]
+        if parsed.get("workflow_target"):
+            result["workflow_target"] = parsed["workflow_target"]
         if issue_type == "job_failure" and parsed.get("job_type"):
             result["job_type"] = parsed["job_type"]
 
@@ -604,10 +757,11 @@ def should_store_event(payload: dict) -> bool:
         pr_action = payload.get("action", "")
         target_ref = payload.get("pull_request", {}).get("base", {}).get("ref")
         if pr_action in ["opened", "synchronize", "reopened"]:
-            return (
-                not target_ref
-                or target_ref in ("master", "beta")
-                or target_ref.startswith("branch/")
+            return bool(
+                get_matching_workflow_rules(
+                    trigger="github_pull_request",
+                    branch_name=str(target_ref or ""),
+                )
             )
 
     if "commits" in payload and ref:
@@ -615,8 +769,24 @@ def should_store_event(payload: dict) -> bool:
         if payload.get("deleted") or after_sha == ("0" * 40):
             return False
 
-        if ref == "refs/heads/master":
-            return True
+        changed_paths = collect_changed_paths(payload)
+        if ref.startswith("refs/tags/"):
+            return bool(
+                get_matching_workflow_rules(
+                    trigger="github_tag_push",
+                    ref=ref,
+                    changed_paths=changed_paths,
+                )
+            )
+
+        return bool(
+            get_matching_workflow_rules(
+                trigger="github_push",
+                ref=ref,
+                branch_name=get_branch_name(ref),
+                changed_paths=changed_paths,
+            )
+        )
 
     if "comment" in payload:
         comment_author = payload.get("comment", {}).get("user", {}).get("login")
@@ -733,6 +903,32 @@ async def handle_issue_retry(
     if run_title:
         params["retry_from_run_title"] = run_title
 
+    workflow_rule = get_workflow_rule_for_target(
+        str(parsed_issue.get("workflow_target", ""))
+    ) or get_first_matching_workflow_rule(
+        trigger="github_issue_retry",
+        ref=parsed_issue["ref"],
+        branch_name=get_branch_name(parsed_issue["ref"]),
+    )
+    if workflow_rule is None:
+        await add_issue_comment(
+            git_repo=git_repo,
+            issue_number=issue_number,
+            comment="No workflow dispatch rule is configured for GitHub issue retries.",
+        )
+        return None
+
+    params.update(
+        build_dispatch_params_for_rule(
+            workflow_rule,
+            WorkflowEventContext(
+                source_repo_name=git_repo,
+                source_ref=parsed_issue["ref"],
+                source_sha=parsed_issue["sha"],
+            ),
+        )
+    )
+
     pipeline_service = BuildPipeline()
     pipeline = await pipeline_service.create_pipeline(
         app_id=str(parsed_issue.get("app_id") or git_repo.rsplit("/", 1)[-1]),
@@ -760,6 +956,9 @@ async def handle_issue_retry(
                 else "Stable build retry enqueued"
             ),
             target_url=target_url,
+            context=str(
+                pipeline.params.get("github_status_context") or "builds/x86_64"
+            ),
         )
 
     if not should_queue_test_build:
@@ -860,16 +1059,32 @@ async def handle_gitlab_issue_retry(
         "gitlab_source_branch": source_branch,
         "gitlab_target_branch": source_branch or settings.github_ci_ref,
         "pr_target_branch": source_branch or settings.github_ci_ref,
-        "dispatch_owner": settings.github_org,
-        "dispatch_repo": settings.github_ci_repo,
-        "dispatch_workflow_id": settings.github_ci_workflow,
-        "dispatch_ref": settings.github_ci_ref,
-        "dispatch_inputs": {
-            "force-all": "false",
-            "source-repository": source_repository,
-            "source-ref": ref,
-        },
     }
+
+    workflow_rule = get_first_matching_workflow_rule(
+        trigger="gitlab_issue_retry",
+        ref=ref,
+        branch_name=source_branch or settings.github_ci_ref,
+    )
+    workflow_target = str(parsed_issue.get("workflow_target", ""))
+    if workflow_target:
+        workflow_rule = get_workflow_rule_for_target(workflow_target) or workflow_rule
+    if workflow_rule is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="No workflow dispatch rule is configured for GitLab issue retries.",
+        )
+
+    params.update(
+        build_dispatch_params_for_rule(
+            workflow_rule,
+            WorkflowEventContext(
+                source_repository_url=source_repository or "",
+                source_ref=ref,
+                source_sha=parsed_issue["sha"],
+            ),
+        )
+    )
 
     pipeline_service = BuildPipeline()
     pipeline = await pipeline_service.create_pipeline(
@@ -1053,30 +1268,52 @@ async def receive_gitlab_webhook(
         )
 
     delivery_id = x_gitlab_event_uuid or str(uuid.uuid4())
+    changed_paths = set()
+    if trigger_requires_changed_paths("gitlab_merge_request"):
+        changed_paths = await fetch_gitlab_merge_request_changed_paths(
+            gitlab_base_url,
+            gitlab_project_path,
+            merge_request_iid,
+        )
+
+    workflow_rule = get_first_matching_workflow_rule(
+        trigger="gitlab_merge_request",
+        ref=source_ref,
+        branch_name=target_branch,
+        changed_paths=changed_paths,
+    )
+    if workflow_rule is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="No workflow dispatch rule is configured for GitLab merge request builds.",
+        )
+
     build_pipeline = BuildPipeline()
+    params = {
+        "ref": source_ref,
+        "use_spot": False,
+        "build_type": "default",
+        "gitlab_base_url": gitlab_base_url,
+        "gitlab_project_path": gitlab_project_path,
+        "gitlab_merge_request_iid": merge_request_iid,
+        "gitlab_source_branch": merge_request.get("source_branch", ""),
+        "gitlab_target_branch": target_branch,
+        "gitlab_source_sha": source_sha,
+        "pr_target_branch": target_branch,
+    }
+    params.update(
+        build_dispatch_params_for_rule(
+            workflow_rule,
+            WorkflowEventContext(
+                source_repository_url=source_repository,
+                source_ref=source_ref,
+                source_sha=source_sha,
+            ),
+        )
+    )
     pipeline = await build_pipeline.create_pipeline(
         app_id=f"gitlab-mr-{merge_request_iid}",
-        params={
-            "ref": source_ref,
-            "use_spot": False,
-            "build_type": "default",
-            "dispatch_owner": settings.github_org,
-            "dispatch_repo": settings.github_ci_repo,
-            "dispatch_workflow_id": settings.github_ci_workflow,
-            "dispatch_ref": settings.github_ci_ref,
-            "dispatch_inputs": {
-                "force-all": "false",
-                "source-repository": source_repository,
-                "source-ref": source_ref,
-            },
-            "gitlab_base_url": gitlab_base_url,
-            "gitlab_project_path": gitlab_project_path,
-            "gitlab_merge_request_iid": merge_request_iid,
-            "gitlab_source_branch": merge_request.get("source_branch", ""),
-            "gitlab_target_branch": target_branch,
-            "gitlab_source_sha": source_sha,
-            "pr_target_branch": target_branch,
-        },
+        params=params,
         webhook_event_id=None,
     )
     pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline.id)
@@ -1247,6 +1484,7 @@ async def receive_github_webhook(
     )
 
     pipeline_id = None
+    additional_pipeline_ids: list[uuid.UUID] = []
     if should_store_event(payload):
         try:
             async with get_db() as db:
@@ -1254,6 +1492,22 @@ async def receive_github_webhook(
                 await db.commit()
 
             pipeline_id = await create_pipeline(event)
+            if is_push_event:
+                additional_pipeline_ids = await create_additional_push_pipelines(event)
+                ref = str(payload.get("ref", ""))
+                if ref.startswith("refs/heads/"):
+                    matching_rules = get_push_matching_rules(event)
+                    all_pipeline_ids = [
+                        candidate_id
+                        for candidate_id in [pipeline_id, *additional_pipeline_ids]
+                        if candidate_id is not None
+                    ]
+                    await record_change_event(
+                        event=event,
+                        changed_paths=collect_changed_paths(payload),
+                        rules=matching_rules,
+                        pipeline_ids=all_pipeline_ids,
+                    )
 
         except Exception as e:
             logger.error(
@@ -1269,6 +1523,10 @@ async def receive_github_webhook(
     response = {"message": "Webhook received", "event_id": str(event.id)}
     if pipeline_id:
         response["pipeline_id"] = str(pipeline_id)
+    if additional_pipeline_ids:
+        response["additional_pipeline_ids"] = [
+            str(pipeline_id) for pipeline_id in additional_pipeline_ids
+        ]
 
     return response
 
@@ -1327,22 +1585,37 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             }
         )
         params.update(build_gitlab_issue_routing_params(event.repository))
+        changed_paths = set()
+        if pr_number is not None and trigger_requires_changed_paths("github_pull_request"):
+            changed_paths = await fetch_github_pull_request_changed_paths(
+                event.repository,
+                int(pr_number),
+            )
+        workflow_rule = get_first_matching_workflow_rule(
+            trigger="github_pull_request",
+            ref=params["ref"],
+            branch_name=pr_base_ref,
+            changed_paths=changed_paths,
+        )
+        if workflow_rule is None:
+            return None
         params.update(
-            build_github_dispatch_params(
-                repo_name=event.repository,
-                source_event_name="pull_request",
-                source_ref=params["ref"],
-                source_sha=sha,
-                actor_login=event.actor,
-                extra_inputs={
-                    "pr-number": params["pr_number"],
-                    "pr-base-sha": str(pr_base.get("sha", "")),
-                    "pr-head-sha": str(pr_head.get("sha", "")),
-                    "pr-title": str(pr.get("title", "")),
-                    "head-ref": pr_head_ref,
-                    "base-ref": pr_base_ref,
-                    "pr-draft": "true" if pr.get("draft") else "false",
-                },
+            build_dispatch_params_for_rule(
+                workflow_rule,
+                WorkflowEventContext(
+                    source_repo_name=event.repository,
+                    source_ref=params["ref"],
+                    source_sha=str(sha or ""),
+                    actor_login=event.actor,
+                    event_name="pull_request",
+                    pr_number=params["pr_number"],
+                    pr_base_sha=str(pr_base.get("sha", "")),
+                    pr_head_sha=str(pr_head.get("sha", "")),
+                    pr_title=str(pr.get("title", "")),
+                    pr_draft="true" if pr.get("draft") else "false",
+                    head_ref=pr_head_ref,
+                    base_ref=pr_base_ref,
+                ),
             )
         )
 
@@ -1355,20 +1628,39 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 "push": "true",
             }
         )
-        params.update(build_gitlab_issue_routing_params(event.repository))
+        changed_paths = collect_changed_paths(payload)
+        if ref.startswith("refs/tags/"):
+            workflow_rule = get_first_matching_workflow_rule(
+                trigger="github_tag_push",
+                ref=ref,
+                changed_paths=changed_paths,
+            )
+            if workflow_rule is None:
+                return None
+            params["tag"] = "true"
+        else:
+            params.update(build_gitlab_issue_routing_params(event.repository))
+            workflow_rule = get_first_matching_workflow_rule(
+                trigger="github_push",
+                ref=ref,
+                branch_name=get_branch_name(ref),
+                changed_paths=changed_paths,
+            )
+            if workflow_rule is None:
+                return None
         params.update(
-            build_github_dispatch_params(
-                repo_name=event.repository,
-                source_event_name="push",
-                source_ref=ref,
-                source_sha=sha,
-                actor_login=event.actor,
-                extra_inputs={
-                    "before-sha": str(payload.get("before", "")),
-                    "head-ref": ref.removeprefix("refs/heads/")
-                    if ref.startswith("refs/heads/")
-                    else "",
-                },
+            build_dispatch_params_for_rule(
+                workflow_rule,
+                WorkflowEventContext(
+                    source_repo_name=event.repository,
+                    source_ref=ref,
+                    source_sha=str(sha or ""),
+                    before_sha=str(payload.get("before", "")),
+                    actor_login=event.actor,
+                    event_name="push",
+                    head_ref=get_branch_name(ref),
+                    tag_name=get_tag_name(ref),
+                ),
             )
         )
 
@@ -1512,6 +1804,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             pr_head: dict[str, Any] = {}
             pr_base: dict[str, Any] = {}
             github_client = get_github_client()
+            changed_paths = set()
 
             try:
                 response = await github_client.request(
@@ -1526,6 +1819,11 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 pr_base = pr_data.get("base", {})
                 sha = pr_head.get("sha")
                 pr_target_branch = pr_base.get("ref", "master")
+                if trigger_requires_changed_paths("github_pull_request_comment"):
+                    changed_paths = await fetch_github_pull_request_changed_paths(
+                        repo,
+                        int(issue_number),
+                    )
 
                 pr_state = pr_data.get("state")
                 if pr_state in ["closed", "merged"]:
@@ -1566,22 +1864,31 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 }
             )
             params.update(build_gitlab_issue_routing_params(repo))
+            workflow_rule = get_first_matching_workflow_rule(
+                trigger="github_pull_request_comment",
+                ref=pr_ref,
+                branch_name=pr_target_branch,
+                changed_paths=changed_paths,
+            )
+            if workflow_rule is None:
+                return None
             params.update(
-                build_github_dispatch_params(
-                    repo_name=repo,
-                    source_event_name="pull_request",
-                    source_ref=pr_ref,
-                    source_sha=sha,
-                    actor_login=event.actor,
-                    extra_inputs={
-                        "pr-number": str(issue_number),
-                        "pr-base-sha": str(pr_base.get("sha", "")),
-                        "pr-head-sha": str(pr_head.get("sha", "")),
-                        "pr-title": str(pr_data.get("title", "")),
-                        "head-ref": str(pr_head.get("ref", "")),
-                        "base-ref": pr_target_branch,
-                        "pr-draft": "true" if pr_data.get("draft") else "false",
-                    },
+                build_dispatch_params_for_rule(
+                    workflow_rule,
+                    WorkflowEventContext(
+                        source_repo_name=repo,
+                        source_ref=pr_ref,
+                        source_sha=str(sha or ""),
+                        actor_login=event.actor,
+                        event_name="pull_request",
+                        pr_number=str(issue_number),
+                        pr_base_sha=str(pr_base.get("sha", "")),
+                        pr_head_sha=str(pr_head.get("sha", "")),
+                        pr_title=str(pr_data.get("title", "")),
+                        pr_draft="true" if pr_data.get("draft") else "false",
+                        head_ref=str(pr_head.get("ref", "")),
+                        base_ref=pr_target_branch,
+                    ),
                 )
             )
 
@@ -1617,6 +1924,9 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 git_repo=git_repo,
                 description=description,
                 target_url=target_url,
+                context=str(
+                    pipeline.params.get("github_status_context") or "builds/x86_64"
+                ),
             )
         except Exception as e:
             logger.warning(

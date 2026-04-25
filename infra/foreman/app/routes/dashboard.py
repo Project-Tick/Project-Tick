@@ -8,9 +8,11 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import case, func, select
 
+from app.config import settings
 from app.database import get_db
-from app.models import Pipeline, PipelineStatus
+from app.models import ChangeEvent, Pipeline, PipelineStatus
 from app.pipelines.build import resolve_pipeline_target_repo
+from app.services.change_events import get_change_targets, get_recent_change_events
 
 dashboard_router = APIRouter(tags=["dashboard"])
 
@@ -279,6 +281,7 @@ templates.env.globals["get_pipeline_source_url"] = get_pipeline_source_url  # ty
 templates.env.globals["get_pipeline_target_repo"] = get_pipeline_target_repo  # ty: ignore[invalid-assignment]
 templates.env.globals["get_pipeline_status_display"] = get_pipeline_status_display  # ty: ignore[invalid-assignment]
 templates.env.globals["get_pipeline_identity_bits"] = get_pipeline_identity_bits  # ty: ignore[invalid-assignment]
+templates.env.globals["get_change_targets"] = get_change_targets  # ty: ignore[invalid-assignment]
 
 
 def group_pipelines(
@@ -416,6 +419,10 @@ def group_pipelines_by_target(pipelines: list[Pipeline]) -> dict[str, list[Pipel
     return grouped
 
 
+async def get_recent_changes(limit: int | None = None) -> list[ChangeEvent]:
+    return await get_recent_change_events(limit=limit)
+
+
 @dashboard_router.get("/", response_class=HTMLResponse)
 async def dashboard(
     request: Request,
@@ -464,6 +471,21 @@ async def dashboard(
 @dashboard_router.get("/reproducible", include_in_schema=False)
 async def redirect_reproducible():
     return RedirectResponse(url="/", status_code=302)
+
+
+@dashboard_router.get("/changes", response_class=HTMLResponse)
+async def changes_dashboard(request: Request):
+    changes = await get_recent_changes(limit=settings.changes_history_limit)
+    latest_change = changes[0] if changes else None
+
+    return templates.TemplateResponse(
+        request=request,
+        name="changes.html",
+        context={
+            "changes": changes,
+            "latest_change": latest_change,
+        },
+    )
 
 
 @dashboard_router.get("/api/htmx/builds", response_class=HTMLResponse)

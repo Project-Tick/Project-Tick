@@ -3,14 +3,21 @@
 name: "Release: Package Source Archives"
 
 on:
-  push:
-    tags:
-      - "*"
   workflow_dispatch:
     inputs:
       version:
         description: "Version string (e.g. 1.2.3)"
         required: true
+      source-repository:
+        description: Optional external source repository URL
+        required: false
+        type: string
+        default: ""
+      source-ref:
+        description: Optional external source ref
+        required: false
+        type: string
+        default: ""
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -60,14 +67,308 @@ jobs:
           payload_json: ${{ format('{{"log_url":"{0}/{1}/actions/runs/{2}"}}', github.server_url, github.repository, github.run_id) }}
 
   meshmc_build:
-    name: MeshMC Build
+    name: Build (${{ matrix.artifact-name }})
     needs: callback-start
-    uses: ./.github/workflows/meshmc-release.yml
+    environment: Release
     permissions:
       contents: read
       id-token: write
       packages: write
-    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            artifact-name: Linux
+            cmake-preset: linux
+            qt-version: 6.10.2
+
+          - os: ubuntu-24.04-arm
+            artifact-name: Linux-aarch64
+            cmake-preset: linux
+            qt-version: 6.10.2
+
+          - os: windows-2022
+            artifact-name: Windows-MinGW-w64
+            cmake-preset: windows_mingw
+            msystem: CLANG64
+            vcvars-arch: amd64_x86
+
+          - os: windows-11-arm
+            artifact-name: Windows-MinGW-arm64
+            cmake-preset: windows_mingw
+            msystem: CLANGARM64
+            vcvars-arch: arm64
+
+          - os: windows-2022
+            artifact-name: Windows-MSVC
+            cmake-preset: windows_msvc
+            vcvars-arch: amd64
+            qt-version: 6.10.2
+
+          - os: windows-11-arm
+            artifact-name: Windows-MSVC-arm64
+            cmake-preset: windows_msvc
+            vcvars-arch: arm64
+            qt-version: 6.10.2
+
+          - os: macos-26
+            artifact-name: macOS
+            cmake-preset: macos_universal
+            macosx-deployment-target: 12.0
+            qt-version: 6.9.3
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: ${{ matrix.msystem != '' && 'msys2 {0}' || 'bash' }}
+        working-directory: meshmc
+    env:
+      ARTIFACT_NAME: ${{ matrix.artifact-name }}
+      BUILD_PLATFORM: official
+      BUILD_TYPE: Release
+      CMAKE_PRESET: ${{ matrix.cmake-preset }}
+      MACOSX_DEPLOYMENT_TARGET: ${{ matrix.macosx-deployment-target }}
+    steps:
+      - name: Checkout
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+        with:
+          submodules: true
+
+      - name: Setup dependencies
+        id: setup-dependencies
+        uses: ./.github/actions/meshmc/setup-dependencies
+        with:
+          build-type: ${{ env.BUILD_TYPE }}
+          artifact-name: ${{ matrix.artifact-name }}
+          msystem: ${{ matrix.msystem }}
+          vcvars-arch: ${{ matrix.vcvars-arch }}
+          qt-version: ${{ matrix.qt-version }}
+
+      - name: Build and install monorepo libraries (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        shell: bash
+        run: |
+          MONOREPO_ROOT="${GITHUB_WORKSPACE}"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release"
+
+          install_lib() {
+            local dir="$1"; shift
+            echo "::group::Building $dir"
+            cmake -S "$MONOREPO_ROOT/$dir" -B "$MONOREPO_ROOT/$dir/build" \
+              $CMAKE_COMMON "$@" -G Ninja
+            cmake --build "$MONOREPO_ROOT/$dir/build"
+            sudo cmake --install "$MONOREPO_ROOT/$dir/build"
+            echo "::endgroup::"
+          }
+
+          install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
+          install_lib cmark
+          install_lib libnbtplusplus
+          install_lib optional-bare
+          install_lib xz-embedded
+          install_lib systeminfo
+          install_lib ganalytics
+          install_lib rainbow
+          install_lib iconfix
+          install_lib LocalPeer
+          install_lib classparser
+          install_lib katabasis
+          install_lib javacheck
+          install_lib javalauncher
+          sudo ldconfig
+
+      - name: Build and install monorepo libraries (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        shell: bash
+        run: |
+          MONOREPO_ROOT="${GITHUB_WORKSPACE}"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64;x86_64"
+
+          install_lib() {
+            local dir="$1"; shift
+            echo "::group::Building $dir"
+            cmake -S "$MONOREPO_ROOT/$dir" -B "$MONOREPO_ROOT/$dir/build" \
+              $CMAKE_COMMON "$@" -G Ninja
+            cmake --build "$MONOREPO_ROOT/$dir/build"
+            sudo cmake --install "$MONOREPO_ROOT/$dir/build"
+            echo "::endgroup::"
+          }
+
+          echo "::group::Building libarchive"
+          git clone --depth 1 --branch v3.7.9 https://github.com/libarchive/libarchive.git "$RUNNER_TEMP/libarchive"
+          cmake -S "$RUNNER_TEMP/libarchive" -B "$RUNNER_TEMP/libarchive/build" \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+            -DENABLE_TEST=OFF \
+            -DENABLE_OPENSSL=OFF \
+            -DENABLE_LZ4=OFF \
+            -DENABLE_ZSTD=OFF \
+            -G Ninja
+          cmake --build "$RUNNER_TEMP/libarchive/build" --parallel
+          sudo cmake --install "$RUNNER_TEMP/libarchive/build"
+          echo "::endgroup::"
+
+          install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
+          install_lib cmark
+          install_lib tomlplusplus
+          install_lib libnbtplusplus
+          install_lib optional-bare
+          install_lib xz-embedded
+          install_lib systeminfo
+          install_lib ganalytics
+          install_lib rainbow
+          install_lib iconfix
+          install_lib LocalPeer
+          install_lib classparser
+          install_lib katabasis
+          install_lib javacheck
+          install_lib javalauncher
+
+      - name: Build and install monorepo libraries (Windows MinGW)
+        if: ${{ runner.os == 'Windows' && matrix.msystem != '' }}
+        run: |
+          MONOREPO_ROOT="${GITHUB_WORKSPACE}"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} -DCMAKE_BUILD_TYPE=Release"
+
+          install_lib() {
+            local dir="$1"; shift
+            echo "::group::Building $dir"
+            cmake -S "$MONOREPO_ROOT/$dir" -B "$MONOREPO_ROOT/$dir/build" \
+              $CMAKE_COMMON "$@" -G Ninja
+            cmake --build "$MONOREPO_ROOT/$dir/build"
+            cmake --install "$MONOREPO_ROOT/$dir/build"
+            echo "::endgroup::"
+          }
+
+          install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
+          install_lib cmark
+          install_lib libnbtplusplus
+          install_lib optional-bare
+          install_lib xz-embedded
+          install_lib systeminfo
+          install_lib ganalytics
+          install_lib rainbow
+          install_lib iconfix
+          install_lib LocalPeer
+          install_lib classparser
+          install_lib katabasis
+          install_lib javacheck
+          install_lib javalauncher
+
+      - name: Build and install monorepo libraries (Windows MSVC)
+        if: ${{ runner.os == 'Windows' && matrix.msystem == '' }}
+        shell: bash
+        env:
+          CMAKE_C_COMPILER_LAUNCHER: ""
+          CMAKE_CXX_COMPILER_LAUNCHER: ""
+        run: |
+          MONOREPO_ROOT="${GITHUB_WORKSPACE}"
+          INSTALL_PREFIX="${GITHUB_WORKSPACE}/meshmc-deps"
+          CMAKE_COMMON="-DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=$BUILD_TYPE"
+
+          install_lib() {
+            local dir="$1"; shift
+            echo "::group::Building $dir"
+            cmake -S "$MONOREPO_ROOT/$dir" -B "$MONOREPO_ROOT/$dir/build" \
+              $CMAKE_COMMON "$@" -G Ninja
+            cmake --build "$MONOREPO_ROOT/$dir/build"
+            cmake --install "$MONOREPO_ROOT/$dir/build"
+            echo "::endgroup::"
+          }
+
+          echo "::group::Installing extra-cmake-modules"
+          git clone --depth 1 --branch v6.13.0 https://invent.kde.org/frameworks/extra-cmake-modules.git "$RUNNER_TEMP/ecm"
+          cmake -S "$RUNNER_TEMP/ecm" -B "$RUNNER_TEMP/ecm/build" \
+            -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" -G Ninja
+          cmake --install "$RUNNER_TEMP/ecm/build"
+          echo "::endgroup::"
+
+          echo "::group::Building libarchive"
+          git clone --depth 1 --branch v3.7.9 https://github.com/libarchive/libarchive.git "$RUNNER_TEMP/libarchive"
+          cmake -S "$RUNNER_TEMP/libarchive" -B "$RUNNER_TEMP/libarchive/build" \
+            -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
+            -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
+            -DENABLE_TEST=OFF \
+            -DENABLE_OPENSSL=OFF \
+            -G Ninja
+          cmake --build "$RUNNER_TEMP/libarchive/build" --parallel
+          cmake --install "$RUNNER_TEMP/libarchive/build"
+          echo "::endgroup::"
+
+          install_lib neozip -DZLIB_COMPAT=OFF -DWITH_GTEST=OFF
+          install_lib cmark
+          install_lib tomlplusplus
+          install_lib libnbtplusplus
+          install_lib optional-bare
+          install_lib xz-embedded
+          install_lib systeminfo
+          install_lib ganalytics
+          install_lib rainbow
+          install_lib iconfix
+          install_lib LocalPeer
+          install_lib classparser
+          install_lib katabasis
+          install_lib javacheck
+          install_lib javalauncher
+
+          echo "CMAKE_PREFIX_PATH=$INSTALL_PREFIX" >> "$GITHUB_ENV"
+          echo "$INSTALL_PREFIX/bin" >> "$GITHUB_PATH"
+
+      - name: Configure project
+        run: |
+          cmake --preset "$CMAKE_PRESET"
+
+      - name: Run build
+        run: |
+          cmake --build --preset "$CMAKE_PRESET" --config "$BUILD_TYPE"
+
+      - name: Run tests
+        run: |
+          ctest --preset "$CMAKE_PRESET" --build-config "$BUILD_TYPE"
+
+      - name: Get short version
+        id: short-version
+        shell: bash
+        run: |
+          echo "version=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Package (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        uses: ./.github/actions/meshmc/package/linux
+        with:
+          version: ${{ steps.short-version.outputs.version }}
+          build-type: ${{ steps.setup-dependencies.outputs.build-type }}
+          artifact-name: ${{ matrix.artifact-name }}
+          qt-version: ${{ steps.setup-dependencies.outputs.qt-version }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
+
+      - name: Package (macOS)
+        if: ${{ runner.os == 'macOS' }}
+        uses: ./.github/actions/meshmc/package/macos
+        with:
+          version: ${{ steps.short-version.outputs.version }}
+          build-type: ${{ steps.setup-dependencies.outputs.build-type }}
+          artifact-name: ${{ matrix.artifact-name }}
+          apple-codesign-cert: ${{ secrets.APPLE_CODESIGN_CERT }}
+          apple-codesign-password: ${{ secrets.APPLE_CODESIGN_PASSWORD }}
+          apple-codesign-id: ${{ secrets.APPLE_CODESIGN_ID }}
+          apple-notarize-apple-id: ${{ secrets.APPLE_NOTARIZE_APPLE_ID }}
+          apple-notarize-team-id: ${{ secrets.APPLE_NOTARIZE_TEAM_ID }}
+          apple-notarize-password: ${{ secrets.APPLE_NOTARIZE_PASSWORD }}
+          sparkle-ed25519-key: ${{ secrets.SPARKLE_ED25519_KEY }}
+
+      - name: Package (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        uses: ./.github/actions/meshmc/package/windows
+        with:
+          version: ${{ steps.short-version.outputs.version }}
+          build-type: ${{ env.BUILD_TYPE }}
+          artifact-name: ${{ matrix.artifact-name }}
+          windows-codesign-cert: ${{ secrets.WINDOWS_CODESIGN_CERT }}
+          windows-codesign-password: ${{ secrets.WINDOWS_CODESIGN_PASSWORD }}
+          msystem: ${{ matrix.msystem }}
 
 
   neozip_build:
@@ -141,8 +442,8 @@ jobs:
             deploy-name: win-arm64ec-compat
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout source repository
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
           show-progress: 'false'
 
@@ -190,8 +491,8 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Checkout source repository
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
           submodules: recursive
 
@@ -275,8 +576,8 @@ jobs:
           - neozip
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Checkout source repository
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
           submodules: recursive
 
@@ -315,13 +616,8 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout (for component version extraction)
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout: |
-            meshmc/CMakeLists.txt
-            neozip/zlib.h.in
-          sparse-checkout-cone-mode: false
+      - name: Checkout source repository
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
 
       - name: Set version
         run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> "$GITHUB_ENV"

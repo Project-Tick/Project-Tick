@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Project-Tick changes{% endblock %}
+
+{% block head %}
+<style>
+    .change-card {
+        border: 1px solid rgba(36, 71, 143, 0.12);
+        border-radius: 0.75rem;
+        padding: 1rem 1.1rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(180deg, rgba(36, 71, 143, 0.05), rgba(36, 71, 143, 0.01));
+    }
+    .change-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0.9rem;
+    }
+    .change-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        background: rgba(36, 71, 143, 0.08);
+        border: 1px solid rgba(36, 71, 143, 0.14);
+        color: var(--muted-color);
+        font-size: 0.75rem;
+        line-height: 1.2;
+    }
+    .change-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1rem;
+    }
+    .mono-list {
+        font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
+        font-size: 0.85rem;
+    }
+    .mono-list li {
+        margin-bottom: 0.25rem;
+        word-break: break-all;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include "partials/nav.html" %}
+
+<section>
+    <h1>Changes</h1>
+    <p>Foreman records each branch push, the changed paths it observed, and the workflow rain it dispatched.</p>
+</section>
+
+{% if latest_change %}
+<section class="change-card">
+    <h2 style="margin-bottom: 0.35rem;">Latest</h2>
+    <strong>{{ latest_change.repository }}</strong>
+    <div class="change-meta">
+        <span class="change-chip">{{ latest_change.actor }}</span>
+        <span class="change-chip">{{ latest_change.ref }}</span>
+        <span class="change-chip">{{ format_time(latest_change.created_at) }}</span>
+        <span class="change-chip">{{ latest_change.after_sha[:12] }}</span>
+    </div>
+    <div class="change-grid">
+        <div>
+            <h3>Changed Paths</h3>
+            <ul class="mono-list">
+                {% for path in latest_change.changed_paths %}
+                <li>{{ path }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h3>Dispatched Workflows</h3>
+            <ul class="mono-list">
+                {% for target in get_change_targets(latest_change) %}
+                <li>{{ target }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section>
+    <h2>History</h2>
+    {% if changes %}
+        {% for change in changes %}
+        <article class="change-card">
+            <header>
+                <strong>{{ change.repository }}</strong>
+                <small style="display: block; color: var(--muted-color);">{{ format_time(change.created_at) }}</small>
+            </header>
+            <div class="change-meta">
+                <span class="change-chip">{{ change.actor }}</span>
+                <span class="change-chip">{{ change.ref }}</span>
+                <span class="change-chip">{{ change.after_sha[:12] }}</span>
+                <span class="change-chip">{{ change.pipeline_ids | length }} pipelines</span>
+            </div>
+            <div class="change-grid">
+                <div>
+                    <h3>Paths</h3>
+                    <ul class="mono-list">
+                        {% for path in change.changed_paths[:12] %}
+                        <li>{{ path }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <h3>Dispatches</h3>
+                    <ul class="mono-list">
+                        {% for target in get_change_targets(change) %}
+                        <li>{{ target }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    {% else %}
+        <p>No push change history has been recorded yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

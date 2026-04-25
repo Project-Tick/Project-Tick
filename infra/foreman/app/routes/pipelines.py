@@ -20,6 +20,12 @@ from app.schemas.pipelines import (
     PipelineType,
 )
 from app.services import pipeline_service
+from app.services.workflow_dispatch import (
+    WorkflowEventContext,
+    create_pipelines_for_rules,
+    get_matching_workflow_rules,
+)
+from app.services.schedule_dispatch import dispatch_named_schedule
 
 logger = structlog.get_logger(__name__)
 pipelines_router = APIRouter(prefix="/api", tags=["pipelines"])
@@ -152,6 +158,31 @@ async def register_external_pipeline(
         "pipeline_status": pipeline.status,
         "callback_url": f"{settings.base_url}/api/pipelines/{pipeline.id}/callback",
         "callback_token": pipeline.callback_token,
+    }
+
+
+@pipelines_router.post(
+    "/schedules/{schedule_name}/dispatch",
+    response_model=dict[str, Any],
+    status_code=http_status.HTTP_202_ACCEPTED,
+)
+async def dispatch_schedule_workflows(
+    schedule_name: str,
+    token: str = Depends(verify_token),
+):
+    rules = get_matching_workflow_rules(trigger="schedule", schedule_name=schedule_name)
+    if not rules:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail=f"No workflow dispatch rules matched schedule '{schedule_name}'.",
+        )
+
+    pipeline_ids = await dispatch_named_schedule(schedule_name)
+
+    return {
+        "status": "scheduled",
+        "schedule_name": schedule_name,
+        "pipeline_ids": [str(pipeline_id) for pipeline_id in pipeline_ids],
     }
 
 

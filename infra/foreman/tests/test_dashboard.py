@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
+from app.models.change_event import ChangeEvent
 from app.models import Pipeline, PipelineStatus
 
 
@@ -182,3 +183,37 @@ def test_app_status_groups_builds_by_target_repo(client):
     assert "project-tick/project-tick@mr-17" in response.text
     assert "project-tick/project-tick@beta" in response.text
     assert "Reproducible builds" not in response.text
+
+
+def test_changes_dashboard_shows_latest_change(client):
+    now = datetime.now()
+    change_event = ChangeEvent(
+        id=uuid.uuid4(),
+        repository="Project-Tick/Project-Tick",
+        actor="samet",
+        ref="refs/heads/master",
+        before_sha="1" * 40,
+        after_sha="2" * 40,
+        changed_paths=["meshmc/src/main.cpp", "json4cpp/include/json.hpp"],
+        matched_rule_names=["meshmc-push-meshmc-build", "json4cpp-push-json4cpp-ci"],
+        dispatched_workflows=[
+            {
+                "owner": "MeshMC-MMCO-Infra",
+                "repo": "foreman",
+                "workflow_id": "meshmc-build.yml",
+            }
+        ],
+        pipeline_ids=[str(uuid.uuid4())],
+        created_at=now,
+    )
+
+    with patch(
+        "app.routes.dashboard.get_recent_changes",
+        new=AsyncMock(return_value=[change_event]),
+    ):
+        response = client.get("/changes")
+
+    assert response.status_code == 200
+    assert "Foreman records each branch push" in response.text
+    assert "meshmc/src/main.cpp" in response.text
+    assert "MeshMC-MMCO-Infra/foreman:meshmc-build.yml" in response.text
