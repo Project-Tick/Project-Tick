@@ -611,10 +611,11 @@ def should_store_event(payload: dict) -> bool:
             )
 
     if "commits" in payload and ref:
-        if ref in (
-            "refs/heads/master",
-            "refs/heads/beta",
-        ) or ref.startswith("refs/heads/branch/"):
+        after_sha = str(payload.get("after", ""))
+        if payload.get("deleted") or after_sha == ("0" * 40):
+            return False
+
+        if ref.startswith("refs/heads/"):
             return True
 
     if "comment" in payload:
