@@ -960,15 +960,44 @@ jobs:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
+      - name: Resolve cancelled workflow status
+        id: resolve-status-cancelled
+        if: ${{ cancelled() }}
+        shell: bash
+        run: echo "status=cancelled" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve final workflow status
+        id: resolve-status
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          VERDICT_RESULT: ${{ needs.verdict.result }}
+        run: |
+          set -euo pipefail
+
+          case "$VERDICT_RESULT" in
+            success)
+              status="success"
+              ;;
+            cancelled)
+              status="cancelled"
+              ;;
+            *)
+              status="failure"
+              ;;
+          esac
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
       - name: Report final workflow status
+        if: ${{ always() }}
         shell: bash
         env:
           CALLBACK_URL: ${{ needs.callback-start.outputs.callback_url }}
           PIPELINE_ID: ${{ needs.callback-start.outputs.pipeline_id }}
           FOREMAN_BASE_URL: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
           FOREMAN_API_TOKEN: ${{ secrets.FOREMAN_API_TOKEN || '' }}
-          VERDICT_RESULT: ${{ needs.verdict.result }}
-          WORKFLOW_CANCELLED: ${{ cancelled() && 'true' || 'false' }}
+          PIPELINE_STATUS: ${{ steps.resolve-status-cancelled.outputs.status || steps.resolve-status.outputs.status || 'failure' }}
         run: |
           set -euo pipefail
 
@@ -977,23 +1006,7 @@ jobs:
             exit 0
           fi
 
-          if [[ "$WORKFLOW_CANCELLED" == "true" ]]; then
-            pipeline_status="cancelled"
-          else
-            case "$VERDICT_RESULT" in
-              success)
-                pipeline_status="success"
-                ;;
-              cancelled)
-                pipeline_status="cancelled"
-                ;;
-              *)
-                pipeline_status="failure"
-                ;;
-            esac
-          fi
-
-          payload="$(printf '{\"status\":\"%s\"}' "$pipeline_status")"
+          payload="$(printf '{\"status\":\"%s\"}' "$PIPELINE_STATUS")"
 
           curl \
             --silent \

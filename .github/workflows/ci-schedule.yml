@@ -314,34 +314,37 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Resolve cancelled workflow status
+        id: resolve-status-cancelled
+        if: ${{ cancelled() }}
+        shell: bash
+        run: echo "status=cancelled" >> "$GITHUB_OUTPUT"
+
       - name: Resolve final workflow status
         id: resolve-status
+        if: ${{ !cancelled() }}
         shell: bash
         env:
           VERDICT_RESULT: ${{ needs.verdict.result }}
-          WORKFLOW_CANCELLED: ${{ cancelled() && 'true' || 'false' }}
         run: |
           set -euo pipefail
 
-          if [[ "$WORKFLOW_CANCELLED" == "true" ]]; then
-            status="cancelled"
-          else
-            case "$VERDICT_RESULT" in
-              success)
-                status="success"
-                ;;
-              cancelled)
-                status="cancelled"
-                ;;
-              *)
-                status="failure"
-                ;;
-            esac
-          fi
+          case "$VERDICT_RESULT" in
+            success)
+              status="success"
+              ;;
+            cancelled)
+              status="cancelled"
+              ;;
+            *)
+              status="failure"
+              ;;
+          esac
 
           echo "status=$status" >> "$GITHUB_OUTPUT"
 
       - name: Report final workflow status
+        if: ${{ always() }}
         uses: ./.github/actions/foreman-send-callback
         with:
           callback_url: ${{ needs.callback-start.outputs.callback_url }}
@@ -349,4 +352,4 @@ jobs:
           foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
           foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
           endpoint: status
-          payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-status.outputs.status) }}
+          payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-status-cancelled.outputs.status || steps.resolve-status.outputs.status || 'failure') }}
