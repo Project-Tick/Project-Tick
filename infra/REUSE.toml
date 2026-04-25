@@ -1,0 +1,22 @@
+version = 1
+
+[[annotations]]
+path = [
+  "actions-images/**"
+]
+SPDX-License-Identifier = "MIT"
+SPDX-FileCopyrightText = "2025 Flathub & 2026 Project Tick"
+
+[[annotations]]
+path = [
+  "foreman/**"
+]
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileCopyrightText = "Flathub & 2026 Project Tick"
+
+[[annotations]]
+path = [
+  "merge-action/**"
+]
+SPDX-License-Identifier = "MIT"
+SPDX-FileCopyrightText = "2025 Flathub & 2026 Project Tick"
