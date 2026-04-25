@@ -359,16 +359,7 @@ async def test_handle_build_completion_cancelled(github_notifier, mock_pipeline)
 
 @pytest.mark.asyncio
 async def test_handle_build_completion_failure_creates_stable_issue(github_notifier, mock_pipeline):
-    mock_pipeline.params = {
-        "sha": "abc123",
-        "repo": "project-tick/org.test.App",
-        "dispatch_owner": "NeoZip-Infra",
-        "dispatch_repo": "foreman",
-        "dispatch_workflow_id": "neozip-cmake.yml",
-        "dispatch_inputs": {
-            "source-repository": "https://github.com/Project-Tick/Project-Tick.git",
-        },
-    }
+    mock_pipeline.params = {"sha": "abc123", "repo": "project-tick/org.test.App"}
     mock_pipeline.flat_manager_repo = "stable"
 
     with patch.object(github_notifier, "notify_build_status") as mock_status:
@@ -380,7 +371,6 @@ async def test_handle_build_completion_failure_creates_stable_issue(github_notif
                 mock_pr.assert_not_called()
                 mock_issue.assert_awaited_once()
                 assert "bot, retry" in mock_issue.await_args.kwargs["body"]
-                assert "Workflow target: NeoZip-Infra/foreman:neozip-cmake.yml" in mock_issue.await_args.kwargs["body"]
 
 
 @pytest.mark.asyncio

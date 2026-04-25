@@ -10,10 +10,6 @@ from app.utils.github import get_build_job_arches
 logger = structlog.get_logger(__name__)
 
 
-def _get_string(value: object) -> str:
-    return value if isinstance(value, str) else ""
-
-
 class GitLabNotifier:
     status_name = "github-actions/CI"
 
@@ -43,17 +39,6 @@ class GitLabNotifier:
 
     def _get_status_name(self, pipeline: Pipeline) -> str:
         return f"{self.status_name}/{self._get_target_branch(pipeline)}"
-
-    def _get_dispatch_target(self, pipeline: Pipeline) -> str:
-        owner = self._get_param(pipeline, "dispatch_owner")
-        repo = self._get_param(pipeline, "dispatch_repo")
-        workflow_id = self._get_param(pipeline, "dispatch_workflow_id") or self._get_param(
-            pipeline,
-            "workflow_id",
-        )
-        if owner and repo and workflow_id:
-            return f"{owner}/{repo}:{workflow_id}"
-        return workflow_id
 
     async def _get_component_targets(self, pipeline: Pipeline) -> list[str]:
         log_url = pipeline.log_url or ""
@@ -259,15 +244,11 @@ class GitLabNotifier:
         ref = self._get_param(pipeline, "ref") or f"refs/heads/{self._get_target_branch(pipeline)}"
         github_repo = self._get_param(pipeline, "repo")
         source_repository = ""
-        dispatch_inputs = (pipeline.params or {}).get("dispatch_inputs")
-        workflow_target = self._get_dispatch_target(pipeline)
 
         gitlab_base_url = self._get_param(pipeline, "gitlab_base_url")
         project_path = self._get_param(pipeline, "gitlab_project_path")
         if gitlab_base_url and project_path:
             source_repository = f"{gitlab_base_url}/{project_path}.git"
-        elif isinstance(dispatch_inputs, dict):
-            source_repository = _get_string(dispatch_inputs.get("source-repository"))
 
         lines = [
             f"The stable build pipeline for `{pipeline.app_id}` failed.",
@@ -282,8 +263,6 @@ class GitLabNotifier:
             lines.append(f"GitHub repository: {github_repo}")
         if source_repository:
             lines.append(f"Source repository: {source_repository}")
-        if workflow_target:
-            lines.append(f"Workflow target: {workflow_target}")
 
         lines.extend(
             [

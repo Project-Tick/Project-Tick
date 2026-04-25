@@ -63,8 +63,7 @@ BUILD_FAILURE_ISSUE_RE = re.compile(
     r"(?:Ref: (?P<ref>\S+)\s+)?"
     r"Build log: (?P<log_url>\S+)"
     r"(?:\s+GitHub repository: (?P<github_repo>\S+))?"
-    r"(?:\s+Source repository: (?P<source_repository>\S+))?"
-    r"(?:\s+Workflow target: (?P<workflow_target>\S+))?",
+    r"(?:\s+Source repository: (?P<source_repository>\S+))?",
     re.IGNORECASE | re.MULTILINE | re.DOTALL,
 )
 
@@ -228,10 +227,7 @@ def trigger_requires_changed_paths(trigger: str) -> bool:
     )
 
 
-def get_workflow_rule_for_target(
-    workflow_target: str,
-    preferred_trigger: str = "",
-):
+def get_workflow_rule_for_target(workflow_target: str):
     if not workflow_target or ":" not in workflow_target:
         return None
 
@@ -246,16 +242,13 @@ def get_workflow_rule_for_target(
     if not owner or not repo or not workflow_id:
         return None
 
-    fallback_rule = None
     for rule in settings.workflow_dispatch_rules:
         rule_owner = (rule.owner or settings.github_org).lower()
         rule_repo = (rule.repo or settings.github_ci_repo).lower()
         if rule_owner == owner and rule_repo == repo and rule.workflow_id == workflow_id:
-            fallback_rule = fallback_rule or rule
-            if preferred_trigger and preferred_trigger in rule.triggers:
-                return rule
+            return rule
 
-    return fallback_rule
+    return None
 
 
 async def fetch_github_pull_request_changed_paths(
@@ -351,50 +344,6 @@ def extract_run_id_from_log_url(log_url: str | None) -> str | None:
 
     run_id = log_url.rstrip("/").split("/")[-1]
     return run_id or None
-
-
-def extract_workflow_target_from_run_payload(
-    run_payload: dict[str, Any],
-    owner: str,
-    repo: str,
-) -> str | None:
-    workflow_path = str(run_payload.get("path", "")).strip()
-    if not workflow_path:
-        return None
-
-    workflow_path = workflow_path.split("@", maxsplit=1)[0].strip()
-    workflow_id = workflow_path.rsplit("/", maxsplit=1)[-1].strip()
-    if not workflow_id:
-        return None
-
-    return f"{owner}/{repo}:{workflow_id}"
-
-
-async def resolve_workflow_target_from_log_url(log_url: str | None) -> str | None:
-    if not log_url:
-        return None
-
-    parsed_url = urlparse(log_url)
-    if parsed_url.netloc.lower() != "github.com":
-        return None
-
-    parts = [part for part in parsed_url.path.split("/") if part]
-    if len(parts) < 5 or parts[2] != "actions" or parts[3] != "runs":
-        return None
-
-    owner, repo, run_id = parts[0], parts[1], parts[4]
-    if not run_id.isdigit():
-        return None
-
-    run_details = await GitHubActionsService().get_workflow_run_details(
-        owner,
-        repo,
-        int(run_id),
-    )
-    if not isinstance(run_details, dict):
-        return None
-
-    return extract_workflow_target_from_run_payload(run_details, owner, repo)
 
 
 def _default_ref_for_target_repo(target_repo: str) -> str:
@@ -954,22 +903,13 @@ async def handle_issue_retry(
     if run_title:
         params["retry_from_run_title"] = run_title
 
-    workflow_target = str(parsed_issue.get("workflow_target", "")).strip()
-    if not workflow_target:
-        workflow_target = await resolve_workflow_target_from_log_url(
-            parsed_issue.get("log_url")
-        ) or ""
-
     workflow_rule = get_workflow_rule_for_target(
-        workflow_target,
-        preferred_trigger="github_issue_retry",
+        str(parsed_issue.get("workflow_target", ""))
+    ) or get_first_matching_workflow_rule(
+        trigger="github_issue_retry",
+        ref=parsed_issue["ref"],
+        branch_name=get_branch_name(parsed_issue["ref"]),
     )
-    if workflow_rule is None:
-        workflow_rule = get_first_matching_workflow_rule(
-            trigger="github_issue_retry",
-            ref=parsed_issue["ref"],
-            branch_name=get_branch_name(parsed_issue["ref"]),
-        )
     if workflow_rule is None:
         await add_issue_comment(
             git_repo=git_repo,
@@ -1121,22 +1061,14 @@ async def handle_gitlab_issue_retry(
         "pr_target_branch": source_branch or settings.github_ci_ref,
     }
 
-    workflow_target = str(parsed_issue.get("workflow_target", "")).strip()
-    if not workflow_target:
-        workflow_target = await resolve_workflow_target_from_log_url(
-            parsed_issue.get("log_url")
-        ) or ""
-
-    workflow_rule = get_workflow_rule_for_target(
-        workflow_target,
-        preferred_trigger="gitlab_issue_retry",
+    workflow_rule = get_first_matching_workflow_rule(
+        trigger="gitlab_issue_retry",
+        ref=ref,
+        branch_name=source_branch or settings.github_ci_ref,
     )
-    if workflow_rule is None:
-        workflow_rule = get_first_matching_workflow_rule(
-            trigger="gitlab_issue_retry",
-            ref=ref,
-            branch_name=source_branch or settings.github_ci_ref,
-        )
+    workflow_target = str(parsed_issue.get("workflow_target", ""))
+    if workflow_target:
+        workflow_rule = get_workflow_rule_for_target(workflow_target) or workflow_rule
     if workflow_rule is None:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
