@@ -16,6 +16,11 @@ class PipelineTriggerRequest(BaseModel):
     params: dict[str, Any]
 
 
+class ExternalPipelineRegistrationRequest(BaseModel):
+    app_id: str
+    params: dict[str, Any]
+
+
 class PipelineSummary(BaseModel):
     id: str
     app_id: str
@@ -42,6 +47,15 @@ class PipelineResponse(BaseModel):
     created_at: datetime
     started_at: datetime | None = None
     finished_at: datetime | None = None
+
+
+class ExternalPipelineRegistrationResponse(BaseModel):
+    status: str
+    pipeline_id: str
+    app_id: str
+    pipeline_status: PipelineStatus
+    callback_url: str
+    callback_token: str
 
 
 class PipelineStatusCallback(BaseModel):

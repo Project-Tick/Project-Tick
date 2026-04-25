@@ -12,6 +12,8 @@ from app.database import get_db
 from app.models import Pipeline, PipelineStatus, PipelineTrigger
 from app.pipelines import BuildPipeline
 from app.schemas.pipelines import (
+    ExternalPipelineRegistrationRequest,
+    ExternalPipelineRegistrationResponse,
     PipelineResponse,
     PipelineSummary,
     PipelineTriggerRequest,
@@ -114,6 +116,43 @@ async def trigger_pipeline(
                 detail=str(e),
             )
         raise
+
+
+@pipelines_router.post(
+    "/pipelines/external",
+    response_model=ExternalPipelineRegistrationResponse,
+    status_code=http_status.HTTP_201_CREATED,
+)
+async def register_external_pipeline(
+    data: ExternalPipelineRegistrationRequest,
+    token: str = Depends(verify_token),
+):
+    build_pipeline = BuildPipeline()
+
+    try:
+        pipeline = await build_pipeline.register_external_pipeline(
+            app_id=data.app_id,
+            params=data.params,
+        )
+    except ValueError as e:
+        if "not found" in str(e).lower():
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND,
+                detail=str(e),
+            )
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+    return {
+        "status": "registered",
+        "pipeline_id": str(pipeline.id),
+        "app_id": pipeline.app_id,
+        "pipeline_status": pipeline.status,
+        "callback_url": f"{settings.base_url}/api/pipelines/{pipeline.id}/callback",
+        "callback_token": pipeline.callback_token,
+    }
 
 
 @pipelines_router.get(

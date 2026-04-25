@@ -229,6 +229,30 @@ class BuildPipeline:
             await db.commit()
             return pipeline
 
+    async def register_external_pipeline(
+        self,
+        app_id: str,
+        params: dict[str, Any],
+        webhook_event_id: uuid.UUID | None = None,
+    ) -> Pipeline:
+        pipeline = await self.create_pipeline(
+            app_id=app_id,
+            params=params,
+            webhook_event_id=webhook_event_id,
+        )
+
+        async with get_db() as db:
+            db_pipeline = await db.get(Pipeline, pipeline.id)
+            if not db_pipeline:
+                raise ValueError(f"Pipeline {pipeline.id} not found")
+
+            await self._prepare_pipeline_metadata(db, db_pipeline)
+            db_pipeline.status = PipelineStatus.RUNNING
+            db_pipeline.started_at = datetime.now(tz=timezone.utc)
+            await self._supersede_conflicting_pipelines(db, db_pipeline)
+            await db.commit()
+            return db_pipeline
+
     async def _count_running_spot_builds(self, db: AsyncSession) -> int:
         query = text("""
             SELECT COUNT(*)

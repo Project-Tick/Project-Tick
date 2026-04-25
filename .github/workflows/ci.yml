@@ -71,17 +71,131 @@ jobs:
   callback-start:
     name: "Callback Start"
     if: >-
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.callback_url != '' &&
-      github.event.inputs.callback_token != ''
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request' ||
+      github.event_name == 'merge_group'
     runs-on: ubuntu-latest
+    outputs:
+      callback_url: ${{ steps.prepare.outputs.callback_url }}
+      callback_token: ${{ steps.prepare.outputs.callback_token }}
+      pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     permissions: {}
     steps:
-      - name: Report workflow run URL
+      - name: Prepare callback destination
+        id: prepare
         shell: bash
         env:
-          CALLBACK_URL: ${{ github.event.inputs.callback_url }}
-          CALLBACK_TOKEN: ${{ github.event.inputs.callback_token }}
+          INPUT_CALLBACK_URL: ${{ github.event.inputs.callback_url || '' }}
+          INPUT_CALLBACK_TOKEN: ${{ github.event.inputs.callback_token || '' }}
+          FOREMAN_BASE_URL: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
+          FOREMAN_API_TOKEN: ${{ secrets.FOREMAN_API_TOKEN || '' }}
+          EVENT_NAME: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          REF: ${{ github.ref }}
+          SHA: ${{ github.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || '' }}
+          PR_TARGET_BRANCH: ${{ github.event.pull_request.base.ref || '' }}
+          MERGE_GROUP_BASE_REF: ${{ github.event.merge_group.base_ref || '' }}
+        run: |
+          set -euo pipefail
+
+          callback_url=""
+          callback_token=""
+          pipeline_id=""
+
+          if [[ -n "$INPUT_CALLBACK_URL" && -n "$INPUT_CALLBACK_TOKEN" ]]; then
+            callback_url="$INPUT_CALLBACK_URL"
+            callback_token="$INPUT_CALLBACK_TOKEN"
+          elif [[ -n "$FOREMAN_API_TOKEN" && ( "$EVENT_NAME" == "push" || "$EVENT_NAME" == "pull_request" || "$EVENT_NAME" == "merge_group" ) ]]; then
+            app_id="${REPOSITORY#*/}"
+
+            payload="$(jq -nc \
+              --arg app_id "$app_id" \
+              --arg repo "$REPOSITORY" \
+              --arg ref "$REF" \
+              --arg sha "$SHA" \
+              --arg event_name "$EVENT_NAME" \
+              --arg pr_number "$PR_NUMBER" \
+              --arg pr_head_sha "$PR_HEAD_SHA" \
+              --arg pr_target_branch "$PR_TARGET_BRANCH" \
+              --arg merge_group_base_ref "$MERGE_GROUP_BASE_REF" \
+              '{
+                app_id: $app_id,
+                params: (
+                  {
+                    repo: $repo,
+                    ref: (
+                      if $event_name == "pull_request" and $pr_number != "" then
+                        "refs/pull/\($pr_number)/head"
+                      else
+                        $ref
+                      end
+                    ),
+                    sha: (
+                      if $event_name == "pull_request" and $pr_head_sha != "" then
+                        $pr_head_sha
+                      else
+                        $sha
+                      end
+                    ),
+                    native_github_ci: "true"
+                  }
+                  + (
+                    if $event_name == "pull_request" and $pr_number != "" then
+                      {
+                        pr_number: $pr_number,
+                        pr_target_branch: $pr_target_branch
+                      }
+                    elif $event_name == "merge_group" and $merge_group_base_ref != "" then
+                      {
+                        pr_target_branch: $merge_group_base_ref
+                      }
+                    else
+                      {}
+                    end
+                  )
+                )
+              }')"
+
+            if register_response="$(curl \
+              --silent \
+              --show-error \
+              --fail \
+              --retry 3 \
+              --retry-all-errors \
+              --request POST \
+              --header "Authorization: Bearer $FOREMAN_API_TOKEN" \
+              --header "Content-Type: application/json" \
+              --data "$payload" \
+              "${FOREMAN_BASE_URL%/}/api/pipelines/external")"; then
+              callback_url="$(printf '%s' "$register_response" | jq -r '.callback_url // ""')"
+              callback_token="$(printf '%s' "$register_response" | jq -r '.callback_token // ""')"
+              pipeline_id="$(printf '%s' "$register_response" | jq -r '.pipeline_id // ""')"
+
+              if [[ -n "$callback_token" ]]; then
+                echo "::add-mask::$callback_token"
+              fi
+            else
+              echo "::warning::Failed to register this workflow run in Foreman."
+            fi
+          else
+            echo "No Foreman callback destination configured for this event."
+          fi
+
+          {
+            echo "callback_url=$callback_url"
+            echo "callback_token=$callback_token"
+            echo "pipeline_id=$pipeline_id"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Report workflow run URL
+        if: steps.prepare.outputs.callback_url != '' && steps.prepare.outputs.callback_token != ''
+        shell: bash
+        env:
+          CALLBACK_URL: ${{ steps.prepare.outputs.callback_url }}
+          CALLBACK_TOKEN: ${{ steps.prepare.outputs.callback_token }}
           RUN_URL: ${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }}
         run: |
           set -euo pipefail
@@ -780,23 +894,31 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    needs: [verdict]
+    needs: [callback-start, verdict]
     if: >-
       always() &&
-      github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.callback_url != '' &&
-      github.event.inputs.callback_token != ''
+      (
+        github.event_name == 'workflow_dispatch' ||
+        github.event_name == 'push' ||
+        github.event_name == 'pull_request' ||
+        github.event_name == 'merge_group'
+      )
     runs-on: ubuntu-latest
     permissions: {}
     steps:
       - name: Report final workflow status
         shell: bash
         env:
-          CALLBACK_URL: ${{ github.event.inputs.callback_url }}
-          CALLBACK_TOKEN: ${{ github.event.inputs.callback_token }}
+          CALLBACK_URL: ${{ needs.callback-start.outputs.callback_url }}
+          CALLBACK_TOKEN: ${{ needs.callback-start.outputs.callback_token }}
           VERDICT_RESULT: ${{ needs.verdict.result }}
         run: |
           set -euo pipefail
+
+          if [[ -z "$CALLBACK_URL" || -z "$CALLBACK_TOKEN" ]]; then
+            echo "Callback inputs missing; skipping callback status report."
+            exit 0
+          fi
 
           case "$VERDICT_RESULT" in
             success)

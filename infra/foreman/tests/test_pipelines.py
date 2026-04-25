@@ -214,6 +214,53 @@ async def test_prepare_pipeline_for_start_resolves_target_repo(
 
 
 @pytest.mark.asyncio
+async def test_register_external_pipeline_sets_running_and_resolves_target_repo():
+    pipeline_id = uuid.uuid4()
+    pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="Project-Tick",
+        status=PipelineStatus.PENDING,
+        params={
+            "repo": "Project-Tick/Project-Tick",
+            "ref": "refs/heads/master",
+            "sha": "abcdef123456",
+        },
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.get.return_value = pipeline
+    mock_get_db = create_mock_get_db(mock_db)
+
+    build_pipeline = BuildPipeline()
+    build_pipeline.create_pipeline = AsyncMock(return_value=pipeline)
+    build_pipeline._supersede_conflicting_pipelines = AsyncMock()
+
+    with (
+        patch("app.pipelines.build.get_db", mock_get_db),
+        patch("app.pipelines.build.get_app_p90_build_time", AsyncMock(return_value=None)),
+    ):
+        registered_pipeline = await build_pipeline.register_external_pipeline(
+            app_id="Project-Tick",
+            params={
+                "repo": "Project-Tick/Project-Tick",
+                "ref": "refs/heads/master",
+                "sha": "abcdef123456",
+            },
+        )
+
+    assert registered_pipeline.status == PipelineStatus.RUNNING
+    assert registered_pipeline.started_at is not None
+    assert registered_pipeline.flat_manager_repo == "stable"
+    mock_db.commit.assert_awaited_once()
+    build_pipeline._supersede_conflicting_pipelines.assert_awaited_once_with(
+        mock_db,
+        pipeline,
+    )
+
+
+@pytest.mark.asyncio
 async def test_handle_log_url_callback_uses_gitlab_notifier(build_pipeline, mock_db, sample_pipeline):
     sample_pipeline.params = {
         "gitlab_project_path": "project-tick/project-tick",
@@ -567,6 +614,57 @@ def test_trigger_pipeline_endpoint(mock_pipeline_service):
         app_id="org.flathub.Test",
         params={"branch": "main"},
     )
+
+
+def test_register_external_pipeline_endpoint():
+    from app.config import settings
+
+    test_client = TestClient(app)
+    pipeline_id = uuid.uuid4()
+    pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="Project-Tick",
+        status=PipelineStatus.RUNNING,
+        params={
+            "repo": "Project-Tick/Project-Tick",
+            "ref": "refs/heads/master",
+            "sha": "abcdef123456",
+        },
+        provider_data={},
+        callback_token="external-callback-token",
+        flat_manager_repo="stable",
+    )
+
+    request_data = {
+        "app_id": "Project-Tick",
+        "params": {
+            "repo": "Project-Tick/Project-Tick",
+            "ref": "refs/heads/master",
+            "sha": "abcdef123456",
+        },
+    }
+    headers = {"Authorization": f"Bearer {settings.admin_token}"}
+
+    with patch("app.routes.pipelines.BuildPipeline") as build_pipeline_class:
+        build_pipeline_class.return_value.register_external_pipeline = AsyncMock(
+            return_value=pipeline
+        )
+        response = test_client.post(
+            "/api/pipelines/external",
+            json=request_data,
+            headers=headers,
+        )
+
+    assert response.status_code == 201
+    assert response.json()["status"] == "registered"
+    assert response.json()["pipeline_id"] == str(pipeline_id)
+    assert response.json()["app_id"] == "Project-Tick"
+    assert response.json()["pipeline_status"] == "running"
+    assert (
+        response.json()["callback_url"]
+        == f"{settings.base_url}/api/pipelines/{pipeline_id}/callback"
+    )
+    assert response.json()["callback_token"] == "external-callback-token"
 
 
 def test_trigger_pipeline_unauthorized(mock_pipeline_service):
