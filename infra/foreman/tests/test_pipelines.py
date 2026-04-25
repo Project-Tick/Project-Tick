@@ -2095,6 +2095,119 @@ async def test_supersedes_pending_pipeline_without_build_id():
 
 
 @pytest.mark.asyncio
+async def test_native_github_ci_schedule_does_not_supersede_push_pipeline():
+    new_pipeline_id = uuid.uuid4()
+    old_pipeline_id = uuid.uuid4()
+
+    old_pipeline = Pipeline(
+        id=old_pipeline_id,
+        app_id="Project-Tick",
+        params={
+            "ref": "refs/heads/master",
+            "native_github_ci": "true",
+            "event_name": "push",
+        },
+        status=PipelineStatus.RUNNING,
+        flat_manager_repo="stable",
+        build_id=111,
+        provider_data={"run_id": "12345"},
+        callback_token=str(uuid.uuid4()),
+    )
+
+    new_pipeline = Pipeline(
+        id=new_pipeline_id,
+        app_id="Project-Tick",
+        params={
+            "ref": "refs/heads/master",
+            "native_github_ci": "true",
+            "workflow_name": "Docker images",
+            "github_event_name": "schedule",
+            "schedule": "0 2 * * 1,5",
+        },
+        status=PipelineStatus.PENDING,
+        provider_data={},
+        callback_token=str(uuid.uuid4()),
+    )
+
+    mock_db_session = AsyncMock(spec=AsyncSession)
+    mock_execute_result = MagicMock()
+    mock_execute_result.scalars.return_value.all.return_value = [old_pipeline]
+    mock_db_session.execute.return_value = mock_execute_result
+
+    mock_flat_manager = MagicMock()
+    mock_flat_manager.purge = AsyncMock()
+
+    with (
+        patch("app.pipelines.build.GitHubActionsService") as mock_actions_class,
+    ):
+        mock_actions_class.return_value.cancel = AsyncMock()
+        build_pipeline = BuildPipeline()
+        build_pipeline.flat_manager = mock_flat_manager
+
+        await build_pipeline._supersede_conflicting_pipelines(
+            db=mock_db_session,
+            pipeline=new_pipeline,
+        )
+
+    assert old_pipeline.status == PipelineStatus.RUNNING
+    mock_flat_manager.purge.assert_not_awaited()
+    mock_actions_class.return_value.cancel.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_native_github_ci_matching_push_supersedes_running_pipeline():
+    new_pipeline_id = uuid.uuid4()
+    old_pipeline_id = uuid.uuid4()
+
+    old_pipeline = Pipeline(
+        id=old_pipeline_id,
+        app_id="Project-Tick",
+        params={
+            "ref": "refs/heads/master",
+            "native_github_ci": "true",
+            "workflow_name": "CI",
+            "event_name": "push",
+        },
+        status=PipelineStatus.RUNNING,
+        provider_data={"run_id": "12345"},
+        callback_token=str(uuid.uuid4()),
+    )
+
+    new_pipeline = Pipeline(
+        id=new_pipeline_id,
+        app_id="Project-Tick",
+        params={
+            "ref": "refs/heads/master",
+            "native_github_ci": "true",
+            "workflow_name": "CI",
+            "github_event_name": "push",
+        },
+        status=PipelineStatus.PENDING,
+        provider_data={},
+        callback_token=str(uuid.uuid4()),
+    )
+
+    mock_db_session = AsyncMock(spec=AsyncSession)
+    mock_execute_result = MagicMock()
+    mock_execute_result.scalars.return_value.all.return_value = [old_pipeline]
+    mock_db_session.execute.return_value = mock_execute_result
+
+    with patch("app.pipelines.build.GitHubActionsService") as mock_actions_class:
+        mock_actions_class.return_value.cancel = AsyncMock()
+        build_pipeline = BuildPipeline()
+
+        await build_pipeline._supersede_conflicting_pipelines(
+            db=mock_db_session,
+            pipeline=new_pipeline,
+        )
+
+    assert old_pipeline.status == PipelineStatus.SUPERSEDED
+    mock_actions_class.return_value.cancel.assert_awaited_once_with(
+        str(old_pipeline_id), {"run_id": "12345"}
+    )
+
+
+@pytest.mark.asyncio
 async def test_supersede_conflicting_test_pipelines_by_ref():
     new_pipeline_id = uuid.uuid4()
     old_pipeline_id = uuid.uuid4()

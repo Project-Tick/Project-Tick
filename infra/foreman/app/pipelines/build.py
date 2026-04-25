@@ -194,6 +194,21 @@ class BuildPipeline:
     def is_spot_build_type(build_type: str | None) -> bool:
         return build_type in SPOT_BUILD_TYPES
 
+    @staticmethod
+    def _get_supersede_conflict_scope(params: dict[str, Any] | None) -> tuple[str, str, str]:
+        pipeline_params = dict(params or {})
+        if not pipeline_params.get("native_github_ci"):
+            return ("default", "", "")
+
+        workflow_name = str(pipeline_params.get("workflow_name") or "").strip().lower()
+        event_name = str(
+            pipeline_params.get("github_event_name")
+            or pipeline_params.get("event_name")
+            or ""
+        ).strip().lower()
+        schedule = str(pipeline_params.get("schedule") or "").strip()
+        return (workflow_name, event_name, schedule)
+
     async def create_pipeline(
         self,
         app_id: str,
@@ -330,6 +345,8 @@ class BuildPipeline:
         if not ref:
             return
 
+        conflict_scope = self._get_supersede_conflict_scope(pipeline.params)
+
         query = (
             select(Pipeline)
             .where(
@@ -341,7 +358,11 @@ class BuildPipeline:
             .params(ref=ref)
         )
         result = await db.execute(query)
-        conflicting = list(result.scalars().all())
+        conflicting = [
+            old_pipeline
+            for old_pipeline in result.scalars().all()
+            if self._get_supersede_conflict_scope(old_pipeline.params) == conflict_scope
+        ]
 
         for old_pipeline in conflicting:
             old_pipeline.status = PipelineStatus.SUPERSEDED
