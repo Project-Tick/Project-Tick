@@ -38,7 +38,7 @@ runs:
       if: ${{ inputs.msystem == '' }}
       shell: pwsh
       run: |
-        choco install pkgconfiglite -y
+        choco install pkgconfiglite -y --allow-empty-checksums
 
     - name: Setup MSYS2 (MinGW)
       if: ${{ inputs.msystem != '' }}

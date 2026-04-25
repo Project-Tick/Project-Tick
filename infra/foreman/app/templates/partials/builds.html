@@ -2,32 +2,32 @@
 
 {% if grouped_pipelines.in_progress %}
 <tr class="section-header">
-    <th colspan="6">In progress</th>
+    <th colspan="6">In progress <span class="section-count">{{ grouped_pipelines.in_progress | length }}</span></th>
 </tr>
 {% for pipeline in grouped_pipelines.in_progress %}
 {{ render_pipeline(pipeline) }}
 {% endfor %}
 {% endif %}
 
-{% if grouped_pipelines.awaiting_publishing %}
+{% if grouped_pipelines.superseded %}
 <tr class="section-header">
-    <th colspan="6">Awaiting publishing</th>
+    <th colspan="6">Replaced / cancelling <span class="section-count">{{ grouped_pipelines.superseded | length }}</span></th>
 </tr>
-{% for pipeline in grouped_pipelines.awaiting_publishing %}
+{% for pipeline in grouped_pipelines.superseded %}
 {{ render_pipeline(pipeline) }}
 {% endfor %}
 {% endif %}
 
 {% if grouped_pipelines.completed %}
 <tr class="section-header">
-    <th colspan="6">Completed</th>
+    <th colspan="6">Completed <span class="section-count">{{ grouped_pipelines.completed | length }}</span></th>
 </tr>
 {% for pipeline in grouped_pipelines.completed %}
 {{ render_pipeline(pipeline) }}
 {% endfor %}
 {% endif %}
 
-{% if not grouped_pipelines.awaiting_publishing and not grouped_pipelines.in_progress and not grouped_pipelines.completed %}
+{% if not grouped_pipelines.in_progress and not grouped_pipelines.superseded and not grouped_pipelines.completed %}
 <tr>
     <td colspan="6" style="text-align: center;">No builds found</td>
 </tr>

@@ -40,7 +40,6 @@ jobs:
       contents: read
     outputs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
-      callback_token_b64: ${{ steps.prepare.outputs.callback_token_b64 }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
       - uses: actions/checkout@v6
@@ -241,6 +240,8 @@ jobs:
         uses: ./.github/actions/foreman-send-callback
         with:
           callback_url: ${{ needs.callback-start.outputs.callback_url }}
-          callback_token_b64: ${{ needs.callback-start.outputs.callback_token_b64 }}
+          pipeline_id: ${{ needs.callback-start.outputs.pipeline_id }}
+          foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
           endpoint: status
           payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-status.outputs.status) }}

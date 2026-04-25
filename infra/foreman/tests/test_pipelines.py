@@ -1353,6 +1353,40 @@ def test_pipeline_log_url_callback_success(mock_get_db, sample_pipeline):
     mock_notifier.handle_build_started.assert_called_once()
 
 
+def test_pipeline_admin_log_url_callback_success(mock_get_db, sample_pipeline):
+    from app.config import settings
+
+    test_client = TestClient(app)
+
+    pipeline_id = sample_pipeline.id
+
+    mock_get_db_session = create_mock_get_db(mock_get_db)
+
+    with (
+        patch("app.routes.pipelines.get_db", mock_get_db_session),
+        patch("app.pipelines.build.get_db", mock_get_db_session),
+        patch("app.pipelines.build.GitHubNotifier") as mock_notifier_class,
+    ):
+        mock_get_db.get.return_value = sample_pipeline
+        mock_notifier = MagicMock()
+        mock_notifier.handle_build_started = AsyncMock()
+        mock_notifier_class.return_value = mock_notifier
+
+        data = {"log_url": "https://github.com/flathub-infra/builds/runs/67890"}
+        headers = {"Authorization": f"Bearer {settings.admin_token}"}
+
+        response = test_client.post(
+            f"/api/pipelines/{pipeline_id}/admin-callback/log_url",
+            json=data,
+            headers=headers,
+        )
+
+    assert response.status_code == 200
+    assert response.json()["log_url"] == data["log_url"]
+    assert sample_pipeline.log_url == data["log_url"]
+    mock_notifier.handle_build_started.assert_called_once()
+
+
 def test_pipeline_log_url_callback_cancelled_pipeline(mock_get_db, sample_pipeline):
     test_client = TestClient(app)
 
@@ -1531,6 +1565,39 @@ def test_pipeline_status_callback_success(mock_get_db, sample_pipeline):
     assert response.json()["pipeline_status"] == "success"
     assert sample_pipeline.status == PipelineStatus.SUCCEEDED
     assert sample_pipeline.finished_at is not None
+
+
+def test_pipeline_admin_status_callback_success(sample_pipeline):
+    from app.config import settings
+
+    test_client = TestClient(app)
+
+    pipeline_id = sample_pipeline.id
+    data = {"status": "success"}
+    headers = {"Authorization": f"Bearer {settings.admin_token}"}
+
+    with patch.object(
+        BuildPipeline,
+        "handle_status_callback",
+        new_callable=AsyncMock,
+    ) as mock_handle_status:
+        mock_handle_status.return_value = (
+            sample_pipeline,
+            {"pipeline_status": "success"},
+        )
+
+        response = test_client.post(
+            f"/api/pipelines/{pipeline_id}/admin-callback/status",
+            json=data,
+            headers=headers,
+        )
+
+    assert response.status_code == 200
+    assert response.json()["pipeline_status"] == "success"
+    mock_handle_status.assert_awaited_once_with(
+        pipeline_id=pipeline_id,
+        callback_data=data,
+    )
 
 
 def test_pipeline_status_callback_already_finalized(mock_get_db, sample_pipeline):

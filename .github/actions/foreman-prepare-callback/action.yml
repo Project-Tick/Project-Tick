@@ -67,9 +67,6 @@ outputs:
   callback_token:
     description: Resolved callback token.
     value: ${{ steps.prepare.outputs.callback_token }}
-  callback_token_b64:
-    description: Resolved callback token encoded as base64 for cross-job transport.
-    value: ${{ steps.prepare.outputs.callback_token_b64 }}
   pipeline_id:
     description: Registered Foreman pipeline ID when available.
     value: ${{ steps.prepare.outputs.pipeline_id }}
@@ -101,7 +98,6 @@ runs:
 
         callback_url="$INPUT_CALLBACK_URL"
         callback_token="$INPUT_CALLBACK_TOKEN"
-        callback_token_b64=""
         pipeline_id=""
 
         if [[ -n "$callback_url" && -n "$callback_token" ]]; then
@@ -191,17 +187,19 @@ runs:
           fi
         fi
 
-        if [[ -n "$callback_token" ]]; then
-          callback_token_b64="$(printf '%s' "$callback_token" | base64 | tr -d '\n')"
+        if [[ -z "$pipeline_id" && -n "$callback_url" ]]; then
+          pipeline_id="$(printf '%s' "$callback_url" | sed -nE 's#^.*/api/pipelines/([0-9a-fA-F-]+)/callback/?$#\1#p')"
         fi
-
-        {
-          echo "callback_url=$callback_url"
-          echo "callback_token=$callback_token"
-          echo "callback_token_b64=$callback_token_b64"
-          echo "pipeline_id=$pipeline_id"
-        } >> "$GITHUB_OUTPUT"
 
         if [[ -n "$callback_token" ]]; then
           echo "::add-mask::$callback_token"
         fi
+
+        if [[ -n "$callback_token" ]]; then
+          echo "callback_token=$callback_token" >> "$GITHUB_OUTPUT"
+        fi
+
+        {
+          echo "callback_url=$callback_url"
+          echo "pipeline_id=$pipeline_id"
+        } >> "$GITHUB_OUTPUT"

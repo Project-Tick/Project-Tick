@@ -64,7 +64,52 @@ def test_builds_table_shows_request_and_source_for_gitlab_pipeline(client):
     assert response.status_code == 200
     assert "MR !17" in response.text
     assert "project-tick/project-tick@mr-17" in response.text
-    assert "stable" in response.text
+    assert "test" in response.text
+
+
+def test_builds_table_shows_pipeline_identity_bits(client):
+    pipeline = make_pipeline(
+        id=uuid.UUID("12345678-1234-5678-1234-567812345678"),
+        params={
+            "gitlab_base_url": "https://git.projecttick.org",
+            "gitlab_project_path": "project-tick/project-tick",
+            "gitlab_merge_request_iid": "17",
+            "gitlab_source_branch": "feature/gitlab-build",
+            "gitlab_target_branch": "master",
+            "pr_target_branch": "master",
+            "build_type": "large",
+            "dispatch_inputs": {
+                "source-repository": "https://git.projecttick.org/project-tick/project-tick.git",
+                "source-ref": "refs/merge-requests/17/head",
+            },
+        },
+    )
+
+    with patch(
+        "app.routes.dashboard.get_recent_pipelines",
+        new=AsyncMock(return_value=[pipeline]),
+    ):
+        response = client.get("/api/htmx/builds")
+
+    assert response.status_code == 200
+    assert "gitlab-mr-17" in response.text
+    assert "large" in response.text
+    assert "#12345678" in response.text
+
+
+def test_builds_table_places_superseded_pipeline_in_replaced_section(client):
+    pipeline = make_pipeline(status=PipelineStatus.SUPERSEDED)
+
+    with patch(
+        "app.routes.dashboard.get_recent_pipelines",
+        new=AsyncMock(return_value=[pipeline]),
+    ):
+        response = client.get("/api/htmx/builds")
+
+    assert response.status_code == 200
+    assert "Replaced / cancelling" in response.text
+    assert '>replaced</a>' in response.text
+    assert "Completed <span class=\"section-count\">1</span>" not in response.text
 
 
 def test_reproducible_route_redirects_to_dashboard(client):

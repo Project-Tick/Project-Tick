@@ -289,6 +289,46 @@ async def pipeline_cost_callback(
     )
 
 
+@pipelines_router.post(
+    "/pipelines/{pipeline_id}/admin-callback/{callback_kind}",
+    status_code=http_status.HTTP_200_OK,
+)
+async def pipeline_admin_callback(
+    pipeline_id: uuid.UUID,
+    callback_kind: str,
+    data: dict[str, Any],
+    token: str = Depends(verify_token),
+):
+    build_pipeline = BuildPipeline()
+
+    handlers: dict[
+        str,
+        tuple[Callable[..., Awaitable[tuple[Any, dict[str, Any]]]], list[str] | None],
+    ] = {
+        "metadata": (build_pipeline.handle_metadata_callback, None),
+        "log_url": (build_pipeline.handle_log_url_callback, ["Log URL already set"]),
+        "status": (
+            build_pipeline.handle_status_callback,
+            ["Pipeline status already finalized"],
+        ),
+        "cost": (build_pipeline.handle_cost_callback, None),
+    }
+
+    if callback_kind not in handlers:
+        raise HTTPException(
+            status_code=http_status.HTTP_404_NOT_FOUND,
+            detail=f"Unknown callback type: {callback_kind}",
+        )
+
+    handler, conflict_messages = handlers[callback_kind]
+    return await execute_callback_handler(
+        handler,
+        pipeline_id,
+        data,
+        conflict_messages=conflict_messages,
+    )
+
+
 @pipelines_router.get(
     "/pipelines/{pipeline_id}/log_url",
 )

@@ -160,12 +160,28 @@ def get_pipeline_status_display(pipeline: Pipeline) -> dict[str, str | None]:
         badge_class = f"badge-{status_value}-{get_pipeline_target_repo(pipeline)}"
     elif status_value == "succeeded":
         badge_class = "badge-succeeded"
+    elif status_value == "superseded":
+        label = "replaced"
 
     return {
         "label": label,
         "badge_class": badge_class,
         "url": status_url,
     }
+
+
+def get_pipeline_build_type(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    return _get_string(params.get("build_type"))
+
+
+def get_pipeline_identity_bits(pipeline: Pipeline) -> list[str]:
+    identity = [pipeline.app_id]
+    build_type = get_pipeline_build_type(pipeline)
+    if build_type:
+        identity.append(build_type)
+    identity.append(f"#{str(pipeline.id).split('-', maxsplit=1)[0]}")
+    return identity
 
 
 def format_time(dt: datetime | None) -> str:
@@ -223,12 +239,14 @@ templates.env.globals["get_pipeline_source_label"] = get_pipeline_source_label  
 templates.env.globals["get_pipeline_source_url"] = get_pipeline_source_url  # ty: ignore[invalid-assignment]
 templates.env.globals["get_pipeline_target_repo"] = get_pipeline_target_repo  # ty: ignore[invalid-assignment]
 templates.env.globals["get_pipeline_status_display"] = get_pipeline_status_display  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_identity_bits"] = get_pipeline_identity_bits  # ty: ignore[invalid-assignment]
 
 
 def group_pipelines(
     pipelines: list[Pipeline],
 ) -> dict[str, list[Pipeline]]:
     in_progress: list[Pipeline] = []
+    superseded: list[Pipeline] = []
     completed: list[Pipeline] = []
 
     in_progress_statuses = {
@@ -239,11 +257,14 @@ def group_pipelines(
     for p in pipelines:
         if p.status in in_progress_statuses:
             in_progress.append(p)
+        elif p.status == PipelineStatus.SUPERSEDED:
+            superseded.append(p)
         else:
             completed.append(p)
 
     return {
         "in_progress": in_progress,
+        "superseded": superseded,
         "completed": completed,
     }
 
@@ -352,6 +373,7 @@ async def dashboard(
             "statuses": [
                 PipelineStatus.PENDING,
                 PipelineStatus.RUNNING,
+                PipelineStatus.SUPERSEDED,
                 PipelineStatus.SUCCEEDED,
                 PipelineStatus.CANCELLED,
                 PipelineStatus.FAILED,

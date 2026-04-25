@@ -4,7 +4,8 @@
 {% set request_url = get_pipeline_request_url(pipeline) %}
 {% set source_label = get_pipeline_source_label(pipeline) %}
 {% set source_url = get_pipeline_source_url(pipeline) %}
-<tr>
+{% set identity_bits = get_pipeline_identity_bits(pipeline) %}
+<tr class="pipeline-row">
     <td>
         {% if status.url %}
         <a href="{{ status.url }}" target="_blank" class="badge {{ status.badge_class }}">{{ status.label }}</a>
@@ -13,11 +14,18 @@
         {% endif %}
     </td>
     <td>
-        <a href="/status/{{ pipeline.app_id }}" class="plain-link">
-            {% if request_url %}<span title="{{ request_url }}">{% endif %}
-            {{ request_label }}
-            {% if request_url %}</span>{% endif %}
-        </a>
+        <div class="pipeline-primary">
+            <a href="/status/{{ pipeline.app_id }}" class="plain-link">
+                {% if request_url %}<span title="{{ request_url }}">{% endif %}
+                {{ request_label }}
+                {% if request_url %}</span>{% endif %}
+            </a>
+        </div>
+        <div class="pipeline-meta">
+            {% for bit in identity_bits %}
+            <span class="pipeline-chip">{{ bit }}</span>
+            {% endfor %}
+        </div>
     </td>
     <td>{{ get_pipeline_target_repo(pipeline) }}</td>
     <td>
