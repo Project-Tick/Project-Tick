@@ -1,5 +1,15 @@
 {% from "partials/pipeline_row.html" import render_pipeline %}
 
+{% for workflow_group in workflow_groups %}
+{% if not loop.first %}
+<tr class="workflow-section-separator">
+    <td colspan="6"></td>
+</tr>
+{% endif %}
+<tr class="workflow-section-header">
+    <th colspan="6">{{ workflow_group.label }} <span class="section-count">{{ workflow_group.total }}</span></th>
+</tr>
+{% set grouped_pipelines = workflow_group.grouped_pipelines %}
 {% if grouped_pipelines.in_progress %}
 <tr class="section-header">
     <th colspan="6">In progress <span class="section-count">{{ grouped_pipelines.in_progress | length }}</span></th>
@@ -26,8 +36,9 @@
 {{ render_pipeline(pipeline) }}
 {% endfor %}
 {% endif %}
+{% endfor %}
 
-{% if not grouped_pipelines.in_progress and not grouped_pipelines.superseded and not grouped_pipelines.completed %}
+{% if not workflow_groups %}
 <tr>
     <td colspan="6" style="text-align: center;">No builds found</td>
 </tr>

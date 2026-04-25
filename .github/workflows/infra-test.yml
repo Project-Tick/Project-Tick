@@ -1,10 +1,6 @@
 name: "Test build with published image"
 
 on:
-  push:
-    branches: master
-  pull_request:
-    branches: master
   workflow_dispatch:
     inputs:
       callback_url:

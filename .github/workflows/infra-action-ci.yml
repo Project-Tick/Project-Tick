@@ -1,20 +1,6 @@
 name: Action CI
 
 on:
-  push:
-    branches: master
-    paths-ignore:
-      - '.gitignore'
-      - 'LICENSE'
-      - 'README.md'
-      - 'action.yml'
-  pull_request:
-    branches: master
-    paths-ignore:
-      - '.gitignore'
-      - 'LICENSE'
-      - 'README.md'
-      - 'action.yml'
   workflow_dispatch:
     inputs:
       callback_url:

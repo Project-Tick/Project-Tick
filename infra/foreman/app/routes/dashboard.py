@@ -150,6 +150,45 @@ def get_pipeline_source_url(pipeline: Pipeline) -> str:
     return ""
 
 
+def _humanize_workflow_label(value: str) -> str:
+    normalized = value.strip()
+    if not normalized:
+        return "Build"
+
+    if normalized.endswith((".yml", ".yaml")):
+        normalized = normalized.rsplit(".", maxsplit=1)[0]
+
+    if normalized.lower() == "ci":
+        return "CI"
+
+    words = normalized.replace("-", " ").replace("_", " ").split()
+    acronyms = {"ci", "mr", "pr", "qa", "api"}
+    return " ".join(
+        word.upper() if word.lower() in acronyms else word.capitalize()
+        for word in words
+    )
+
+
+def get_pipeline_workflow_identity(pipeline: Pipeline) -> tuple[str, str]:
+    params = dict(pipeline.params or {})
+
+    workflow_name = _get_string(params.get("workflow_name")).strip()
+    if workflow_name:
+        return workflow_name.lower(), workflow_name
+
+    for key in ("dispatch_workflow_id", "workflow_id"):
+        workflow_id = _get_string(params.get(key)).strip()
+        if workflow_id:
+            return workflow_id.lower(), _humanize_workflow_label(workflow_id)
+
+    provider_data = dict(pipeline.provider_data or {})
+    workflow_id = _get_string(provider_data.get("workflow_id")).strip()
+    if workflow_id:
+        return workflow_id.lower(), _humanize_workflow_label(workflow_id)
+
+    return "build", "Build"
+
+
 def get_pipeline_status_display(pipeline: Pipeline) -> dict[str, str | None]:
     status_value = pipeline.status.value
     status_url = pipeline.log_url or None
@@ -269,6 +308,37 @@ def group_pipelines(
     }
 
 
+def group_pipelines_by_workflow(
+    pipelines: list[Pipeline],
+) -> list[dict[str, Any]]:
+    ordered_groups: list[dict[str, Any]] = []
+    groups_by_key: dict[str, dict[str, Any]] = {}
+
+    for pipeline in pipelines:
+        workflow_key, workflow_label = get_pipeline_workflow_identity(pipeline)
+        group = groups_by_key.get(workflow_key)
+        if group is None:
+            group = {
+                "key": workflow_key,
+                "label": workflow_label,
+                "pipelines": [],
+            }
+            groups_by_key[workflow_key] = group
+            ordered_groups.append(group)
+
+        group["pipelines"].append(pipeline)
+
+    return [
+        {
+            "key": group["key"],
+            "label": group["label"],
+            "total": len(group["pipelines"]),
+            "grouped_pipelines": group_pipelines(group["pipelines"]),
+        }
+        for group in ordered_groups
+    ]
+
+
 async def get_recent_pipelines(
     status: str | None = None,
     app_id: str | None = None,
@@ -364,12 +434,14 @@ async def dashboard(
     )
 
     grouped = group_pipelines(pipelines)
+    workflow_groups = group_pipelines_by_workflow(pipelines)
 
     return templates.TemplateResponse(
         request=request,
         name="dashboard.html",
         context={
             "grouped_pipelines": grouped,
+            "workflow_groups": workflow_groups,
             "statuses": [
                 PipelineStatus.PENDING,
                 PipelineStatus.RUNNING,
@@ -412,12 +484,14 @@ async def builds_table(
     )
 
     grouped = group_pipelines(pipelines)
+    workflow_groups = group_pipelines_by_workflow(pipelines)
 
     return templates.TemplateResponse(
         request=request,
         name="partials/builds.html",
         context={
             "grouped_pipelines": grouped,
+            "workflow_groups": workflow_groups,
         },
     )
 

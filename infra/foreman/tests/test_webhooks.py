@@ -1610,6 +1610,17 @@ async def test_create_pipeline_comment():
         assert "params" in kwargs
         assert kwargs["params"].get("pr_number") == "42"
         assert kwargs["params"].get("ref") == "refs/pull/42/head"
+        assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        assert kwargs["params"].get("dispatch_owner") == settings.github_org
+        assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
+        assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
+        assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/pull/42/head"
+        assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "fedcba654321"
+        assert (
+            kwargs["params"]["dispatch_inputs"].get("source-repository")
+            == "https://github.com/test-owner/test-repo.git"
+        )
+        assert kwargs["params"]["dispatch_inputs"].get("pr-number") == "42"
         assert mock_pipeline_service.create_pipeline.called
         assert mock_pipeline_service.start_pipeline.called
         assert isinstance(result, uuid.UUID)

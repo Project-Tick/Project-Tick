@@ -112,6 +112,37 @@ def test_builds_table_places_superseded_pipeline_in_replaced_section(client):
     assert "Completed <span class=\"section-count\">1</span>" not in response.text
 
 
+def test_builds_table_groups_pipelines_by_workflow(client):
+    ci_pipeline = make_pipeline(
+        params={
+            "dispatch_workflow_id": "ci.yml",
+            "dispatch_inputs": {
+                "source-repository": "https://github.com/project-tick/Project-Tick.git",
+                "source-ref": "refs/heads/master",
+            },
+        },
+    )
+    action_pipeline = make_pipeline(
+        id=uuid.uuid4(),
+        status=PipelineStatus.RUNNING,
+        params={
+            "workflow_name": "Action CI",
+            "gitlab_project_path": "project-tick/project-tick",
+            "gitlab_base_url": "https://git.projecttick.org",
+        },
+    )
+
+    with patch(
+        "app.routes.dashboard.get_recent_pipelines",
+        new=AsyncMock(return_value=[ci_pipeline, action_pipeline]),
+    ):
+        response = client.get("/api/htmx/builds")
+
+    assert response.status_code == 200
+    assert "<th colspan=\"6\">CI <span class=\"section-count\">1</span></th>" in response.text
+    assert "<th colspan=\"6\">Action CI <span class=\"section-count\">1</span></th>" in response.text
+
+
 def test_reproducible_route_redirects_to_dashboard(client):
     response = client.get("/reproducible", follow_redirects=False)
 

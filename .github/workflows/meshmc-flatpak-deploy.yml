@@ -4,22 +4,6 @@ on:
   schedule:
     # Run daily
     - cron: "58 1 * * *"
-  push:
-    branches:
-      - master
-    paths:
-      # Flatpak files
-      - "**.yml"
-      - "**.json"
-      - "scripts/**"
-      - "shared-modules/**"
-
-      # Site files
-      - "static/**"
-
-      # Workflows
-      - ".github/workflows/meshmc-flatpak-build.yml"
-      - ".github/workflows/meshmc-flatpak-deploy.yml"
   workflow_dispatch:
     inputs:
       callback_url:

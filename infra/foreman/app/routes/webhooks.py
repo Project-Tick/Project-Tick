@@ -1507,6 +1507,9 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
 
             pr_ref = f"refs/pull/{issue_number}/head"
             pr_target_branch = "master"
+            pr_data: dict[str, Any] = {}
+            pr_head: dict[str, Any] = {}
+            pr_base: dict[str, Any] = {}
             github_client = get_github_client()
 
             try:
@@ -1518,8 +1521,10 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 if response is None:
                     return None
                 pr_data = response.json()
-                sha = pr_data.get("head", {}).get("sha")
-                pr_target_branch = pr_data.get("base", {}).get("ref", "master")
+                pr_head = pr_data.get("head", {})
+                pr_base = pr_data.get("base", {})
+                sha = pr_head.get("sha")
+                pr_target_branch = pr_base.get("ref", "master")
 
                 pr_state = pr_data.get("state")
                 if pr_state in ["closed", "merged"]:
@@ -1558,6 +1563,25 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                     "use_spot": False,
                     "pr_target_branch": pr_target_branch,
                 }
+            )
+            params.update(build_gitlab_issue_routing_params(repo))
+            params.update(
+                build_github_dispatch_params(
+                    repo_name=repo,
+                    source_event_name="pull_request",
+                    source_ref=pr_ref,
+                    source_sha=sha,
+                    actor_login=event.actor,
+                    extra_inputs={
+                        "pr-number": str(issue_number),
+                        "pr-base-sha": str(pr_base.get("sha", "")),
+                        "pr-head-sha": str(pr_head.get("sha", "")),
+                        "pr-title": str(pr_data.get("title", "")),
+                        "head-ref": str(pr_head.get("ref", "")),
+                        "base-ref": pr_target_branch,
+                        "pr-draft": "true" if pr_data.get("draft") else "false",
+                    },
+                )
             )
 
     if sha:

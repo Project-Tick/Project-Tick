@@ -23,9 +23,6 @@ on:
         required: false
         type: string
         default: ""
-  branch_protection_rule:
-  push:
-    branches: [master, main, develop]
 
 permissions:
   contents: read
