@@ -11,13 +11,58 @@ on:
       version:
         description: "Version string (e.g. 1.2.3)"
         required: true
+      callback_url:
+        description: Optional Foreman callback base URL
+        required: false
+        type: string
+        default: ""
+      callback_token:
+        description: Optional Foreman callback bearer token
+        required: false
+        type: string
+        default: ""
 
 permissions: {}
 
 jobs:
 
+  callback-start:
+    name: "Callback Start"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      callback_url: ${{ steps.prepare.outputs.callback_url }}
+      callback_token_b64: ${{ steps.prepare.outputs.callback_token_b64 }}
+      pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Prepare callback destination
+        id: prepare
+        uses: ./.github/actions/foreman-prepare-callback
+        with:
+          callback_url: ${{ github.event.inputs.callback_url || '' }}
+          callback_token: ${{ github.event.inputs.callback_token || '' }}
+          foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
+          repository: ${{ github.repository }}
+          workflow_name: ${{ github.workflow }}
+          event_name: ${{ github.event_name }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
+
+      - name: Report workflow run URL
+        uses: ./.github/actions/foreman-send-callback
+        with:
+          callback_url: ${{ steps.prepare.outputs.callback_url }}
+          callback_token: ${{ steps.prepare.outputs.callback_token }}
+          endpoint: log_url
+          payload_json: ${{ format('{{"log_url":"{0}/{1}/actions/runs/{2}"}}', github.server_url, github.repository, github.run_id) }}
+
   meshmc_build:
     name: MeshMC Build
+    needs: callback-start
     uses: ./.github/workflows/meshmc-release.yml
     permissions:
       contents: read
@@ -28,6 +73,7 @@ jobs:
 
   neozip_build:
     name: neozip Build (${{ matrix.name }})
+    needs: callback-start
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -140,6 +186,7 @@ jobs:
 
   meshmc_prepare_source:
     name: MeshMC Source Archives
+    needs: callback-start
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -197,6 +244,7 @@ jobs:
 
   package_sources:
     name: Source Archives (${{ matrix.project }})
+    needs: callback-start
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -542,3 +590,45 @@ jobs:
               "${FTP_USER}@${FTP_HOST}:${remote}/"
             echo "::endgroup::"
           done
+
+  callback-status:
+    name: "Callback Status"
+    if: always()
+    needs:
+      - callback-start
+      - meshmc_build
+      - neozip_build
+      - meshmc_prepare_source
+      - package_sources
+      - create_release
+      - deploy_to_server
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve final workflow status
+        id: resolve-status
+        shell: bash
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+
+          status="success"
+          if jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="failure"
+          elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="cancelled"
+          fi
+
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Report final workflow status
+        uses: ./.github/actions/foreman-send-callback
+        with:
+          callback_url: ${{ needs.callback-start.outputs.callback_url }}
+          callback_token_b64: ${{ needs.callback-start.outputs.callback_token_b64 }}
+          endpoint: status
+          payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-status.outputs.status) }}

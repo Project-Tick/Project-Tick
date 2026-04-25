@@ -1,0 +1,207 @@
+name: Foreman Prepare Callback
+description: Resolve callback credentials from explicit inputs or by registering the current workflow run in Foreman.
+
+inputs:
+  callback_url:
+    description: Explicit callback URL passed by the caller.
+    required: false
+    default: ""
+  callback_token:
+    description: Explicit callback token passed by the caller.
+    required: false
+    default: ""
+  foreman_base_url:
+    description: Public Foreman base URL.
+    required: false
+    default: https://builds.projecttick.net
+  foreman_api_token:
+    description: Foreman admin API token used for external registration.
+    required: false
+    default: ""
+  repository:
+    description: GitHub repository in owner/repo form.
+    required: true
+  workflow_name:
+    description: Current workflow display name.
+    required: true
+  event_name:
+    description: Current GitHub event name.
+    required: true
+  ref:
+    description: Current Git ref.
+    required: false
+    default: ""
+  sha:
+    description: Current commit SHA.
+    required: false
+    default: ""
+  pr_number:
+    description: Pull request number for PR-triggered workflows.
+    required: false
+    default: ""
+  pr_head_sha:
+    description: Pull request head SHA for PR-triggered workflows.
+    required: false
+    default: ""
+  pr_target_branch:
+    description: Pull request target branch.
+    required: false
+    default: ""
+  merge_group_base_ref:
+    description: Merge group base ref when applicable.
+    required: false
+    default: ""
+  schedule:
+    description: Raw cron string for scheduled workflows.
+    required: false
+    default: ""
+  app_id:
+    description: Optional app ID override.
+    required: false
+    default: ""
+
+outputs:
+  callback_url:
+    description: Resolved callback URL.
+    value: ${{ steps.prepare.outputs.callback_url }}
+  callback_token:
+    description: Resolved callback token.
+    value: ${{ steps.prepare.outputs.callback_token }}
+  callback_token_b64:
+    description: Resolved callback token encoded as base64 for cross-job transport.
+    value: ${{ steps.prepare.outputs.callback_token_b64 }}
+  pipeline_id:
+    description: Registered Foreman pipeline ID when available.
+    value: ${{ steps.prepare.outputs.pipeline_id }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve callback credentials
+      id: prepare
+      shell: bash
+      env:
+        INPUT_CALLBACK_URL: ${{ inputs.callback_url }}
+        INPUT_CALLBACK_TOKEN: ${{ inputs.callback_token }}
+        FOREMAN_BASE_URL: ${{ inputs.foreman_base_url }}
+        FOREMAN_API_TOKEN: ${{ inputs.foreman_api_token }}
+        REPOSITORY: ${{ inputs.repository }}
+        WORKFLOW_NAME: ${{ inputs.workflow_name }}
+        EVENT_NAME: ${{ inputs.event_name }}
+        REF: ${{ inputs.ref }}
+        SHA: ${{ inputs.sha }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_HEAD_SHA: ${{ inputs.pr_head_sha }}
+        PR_TARGET_BRANCH: ${{ inputs.pr_target_branch }}
+        MERGE_GROUP_BASE_REF: ${{ inputs.merge_group_base_ref }}
+        SCHEDULE: ${{ inputs.schedule }}
+        INPUT_APP_ID: ${{ inputs.app_id }}
+      run: |
+        set -euo pipefail
+
+        callback_url="$INPUT_CALLBACK_URL"
+        callback_token="$INPUT_CALLBACK_TOKEN"
+        callback_token_b64=""
+        pipeline_id=""
+
+        if [[ -n "$callback_url" && -n "$callback_token" ]]; then
+          :
+        elif [[ -n "$FOREMAN_API_TOKEN" && "$EVENT_NAME" != "workflow_call" ]]; then
+          app_id="$INPUT_APP_ID"
+          if [[ -z "$app_id" ]]; then
+            app_id="${REPOSITORY#*/}"
+          fi
+
+          effective_ref="$REF"
+          effective_sha="$SHA"
+
+          if [[ "$EVENT_NAME" == "pull_request" && -n "$PR_NUMBER" ]]; then
+            effective_ref="refs/pull/$PR_NUMBER/head"
+            if [[ -n "$PR_HEAD_SHA" ]]; then
+              effective_sha="$PR_HEAD_SHA"
+            fi
+          fi
+
+          payload="$(jq -nc \
+            --arg app_id "$app_id" \
+            --arg repo "$REPOSITORY" \
+            --arg ref "$effective_ref" \
+            --arg sha "$effective_sha" \
+            --arg workflow_name "$WORKFLOW_NAME" \
+            --arg event_name "$EVENT_NAME" \
+            --arg pr_number "$PR_NUMBER" \
+            --arg pr_target_branch "$PR_TARGET_BRANCH" \
+            --arg merge_group_base_ref "$MERGE_GROUP_BASE_REF" \
+            --arg schedule "$SCHEDULE" \
+            '{
+              app_id: $app_id,
+              params: (
+                {
+                  repo: $repo,
+                  ref: $ref,
+                  sha: $sha,
+                  native_github_ci: "true",
+                  workflow_name: $workflow_name,
+                  github_event_name: $event_name
+                }
+                + (
+                  if $pr_number != "" then
+                    {
+                      pr_number: $pr_number,
+                      pr_target_branch: $pr_target_branch
+                    }
+                  elif $event_name == "merge_group" and $merge_group_base_ref != "" then
+                    {
+                      pr_target_branch: $merge_group_base_ref
+                    }
+                  else
+                    {}
+                  end
+                )
+                + (
+                  if $event_name == "push" then
+                    { push: "true" }
+                  elif $event_name == "workflow_dispatch" then
+                    { manual_dispatch: "true" }
+                  elif $event_name == "schedule" and $schedule != "" then
+                    { schedule: $schedule }
+                  else
+                    {}
+                  end
+                )
+              )
+            }')"
+
+          if register_response="$(curl \
+            --silent \
+            --show-error \
+            --fail \
+            --retry 3 \
+            --retry-all-errors \
+            --request POST \
+            --header "Authorization: Bearer $FOREMAN_API_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data "$payload" \
+            "${FOREMAN_BASE_URL%/}/api/pipelines/external")"; then
+            callback_url="$(printf '%s' "$register_response" | jq -r '.callback_url // ""')"
+            callback_token="$(printf '%s' "$register_response" | jq -r '.callback_token // ""')"
+            pipeline_id="$(printf '%s' "$register_response" | jq -r '.pipeline_id // ""')"
+          else
+            echo "::warning::Failed to register this workflow run in Foreman."
+          fi
+        fi
+
+        if [[ -n "$callback_token" ]]; then
+          callback_token_b64="$(printf '%s' "$callback_token" | base64 | tr -d '\n')"
+        fi
+
+        {
+          echo "callback_url=$callback_url"
+          echo "callback_token=$callback_token"
+          echo "callback_token_b64=$callback_token_b64"
+          echo "pipeline_id=$pipeline_id"
+        } >> "$GITHUB_OUTPUT"
+
+        if [[ -n "$callback_token" ]]; then
+          echo "::add-mask::$callback_token"
+        fi

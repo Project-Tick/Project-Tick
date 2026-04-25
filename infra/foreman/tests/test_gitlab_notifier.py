@@ -72,3 +72,33 @@ async def test_handle_build_completion_uses_target_label_for_beta(gitlab_notifie
         "✅ [Build for beta succeeded]"
         f"({mock_pipeline.log_url})."
     )
+
+
+@pytest.mark.asyncio
+async def test_handle_build_completion_failure_creates_stable_issue(
+    gitlab_notifier, mock_pipeline
+):
+    gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
+    gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
+    gitlab_notifier._create_issue = AsyncMock(return_value=("https://git/issue/1", 1))
+
+    await gitlab_notifier.handle_build_completion(mock_pipeline, "failure")
+
+    gitlab_notifier._create_issue.assert_awaited_once()
+    assert "bot, retry" in gitlab_notifier._create_issue.await_args.args[2]
+
+
+@pytest.mark.asyncio
+async def test_handle_build_completion_success_closes_retry_issue(
+    gitlab_notifier, mock_pipeline
+):
+    gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
+    gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
+    gitlab_notifier._create_issue_note = AsyncMock(return_value=True)
+    gitlab_notifier._close_issue = AsyncMock(return_value=True)
+    mock_pipeline.params["retry_from_gitlab_issue_iid"] = "11"
+
+    await gitlab_notifier.handle_build_completion(mock_pipeline, "success")
+
+    gitlab_notifier._create_issue_note.assert_awaited_once()
+    gitlab_notifier._close_issue.assert_awaited_once_with(mock_pipeline, "11")

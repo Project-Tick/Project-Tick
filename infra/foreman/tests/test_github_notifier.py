@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -355,6 +355,46 @@ async def test_handle_build_completion_cancelled(github_notifier, mock_pipeline)
 
             mock_status.assert_called_once_with(mock_pipeline, "cancelled")
             mock_pr.assert_called_once_with(mock_pipeline, "cancelled")
+
+
+@pytest.mark.asyncio
+async def test_handle_build_completion_failure_creates_stable_issue(github_notifier, mock_pipeline):
+    mock_pipeline.params = {"sha": "abc123", "repo": "project-tick/org.test.App"}
+    mock_pipeline.flat_manager_repo = "stable"
+
+    with patch.object(github_notifier, "notify_build_status") as mock_status:
+        with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
+            with patch("app.services.github_notifier.create_github_issue", AsyncMock()) as mock_issue:
+                await github_notifier.handle_build_completion(mock_pipeline, "failure")
+
+                mock_status.assert_called_once_with(mock_pipeline, "failure")
+                mock_pr.assert_not_called()
+                mock_issue.assert_awaited_once()
+                assert "bot, retry" in mock_issue.await_args.kwargs["body"]
+
+
+@pytest.mark.asyncio
+async def test_handle_build_completion_success_closes_retry_issue(github_notifier, mock_pipeline):
+    mock_pipeline.params = {
+        "sha": "abc123",
+        "repo": "project-tick/org.test.App",
+        "retry_from_issue": "17",
+    }
+    mock_pipeline.flat_manager_repo = "stable"
+
+    with patch.object(github_notifier, "notify_build_status") as mock_status:
+        with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
+            with patch("app.services.github_notifier.add_issue_comment", AsyncMock()) as mock_comment:
+                with patch("app.services.github_notifier.close_github_issue", AsyncMock()) as mock_close:
+                    await github_notifier.handle_build_completion(mock_pipeline, "success")
+
+                    mock_status.assert_called_once_with(mock_pipeline, "success")
+                    mock_pr.assert_not_called()
+                    mock_comment.assert_awaited_once()
+                    mock_close.assert_awaited_once_with(
+                        git_repo="project-tick/org.test.App",
+                        issue_number=17,
+                    )
 
 
 @pytest.mark.asyncio

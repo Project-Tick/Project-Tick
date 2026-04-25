@@ -1,6 +1,7 @@
 import secrets
 import uuid
 from datetime import datetime, timezone
+from inspect import isawaitable
 from typing import Any, Optional
 
 import structlog
@@ -62,6 +63,8 @@ async def get_app_p90_build_time(db: AsyncSession, app_id: str) -> float | None:
         },
     )
     row = result.first()
+    if isawaitable(row):
+        row = await row
     if row is None or row[0] is None:
         return None
     return float(row[0])
@@ -147,12 +150,29 @@ def get_target_repo_for_branch(branch: str | None) -> str:
     return TARGET_REPO_BY_BRANCH.get(normalized_branch, "test")
 
 
+def is_review_pipeline(params: dict[str, Any]) -> bool:
+    for key in ("pr_number", "gitlab_merge_request_iid"):
+        value = params.get(key)
+        if isinstance(value, str) and value.strip():
+            return True
+        if isinstance(value, int):
+            return True
+
+    ref = params.get("ref")
+    return isinstance(ref, str) and ref.startswith(
+        ("refs/pull/", "refs/merge-requests/")
+    )
+
+
 def resolve_pipeline_target_repo(pipeline: Pipeline) -> str:
     params = dict(pipeline.params or {})
 
     explicit_target_repo = params.get("target_repo")
     if isinstance(explicit_target_repo, str) and explicit_target_repo.strip():
         return explicit_target_repo.strip()
+
+    if is_review_pipeline(params):
+        return "test"
 
     for branch_key in ("gitlab_target_branch", "pr_target_branch"):
         branch = params.get(branch_key)
@@ -525,6 +545,11 @@ class BuildPipeline:
             try:
                 run_id = parsed_data.log_url.rstrip("/").split("/")[-1]
                 provider_data["run_id"] = run_id
+                repo = (pipeline.params or {}).get("repo")
+                if isinstance(repo, str) and "/" in repo:
+                    owner, repo_name = repo.split("/", 1)
+                    provider_data.setdefault("owner", owner)
+                    provider_data.setdefault("repo", repo_name)
                 pipeline.provider_data = provider_data
             except (IndexError, AttributeError):
                 logger.warning(

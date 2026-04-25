@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
-      callback_token: ${{ steps.prepare.outputs.callback_token }}
+      callback_token_b64: ${{ steps.prepare.outputs.callback_token_b64 }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     permissions: {}
     steps:
@@ -103,6 +103,7 @@ jobs:
 
           callback_url=""
           callback_token=""
+          callback_token_b64=""
           pipeline_id=""
 
           if [[ -n "$INPUT_CALLBACK_URL" && -n "$INPUT_CALLBACK_TOKEN" ]]; then
@@ -174,9 +175,6 @@ jobs:
               callback_token="$(printf '%s' "$register_response" | jq -r '.callback_token // ""')"
               pipeline_id="$(printf '%s' "$register_response" | jq -r '.pipeline_id // ""')"
 
-              if [[ -n "$callback_token" ]]; then
-                echo "::add-mask::$callback_token"
-              fi
             else
               echo "::warning::Failed to register this workflow run in Foreman."
             fi
@@ -184,9 +182,15 @@ jobs:
             echo "No Foreman callback destination configured for this event."
           fi
 
+          if [[ -n "$callback_token" ]]; then
+            callback_token_b64="$(printf '%s' "$callback_token" | base64 | tr -d '\n')"
+            echo "::add-mask::$callback_token"
+          fi
+
           {
             echo "callback_url=$callback_url"
             echo "callback_token=$callback_token"
+            echo "callback_token_b64=$callback_token_b64"
             echo "pipeline_id=$pipeline_id"
           } >> "$GITHUB_OUTPUT"
 
@@ -910,10 +914,15 @@ jobs:
         shell: bash
         env:
           CALLBACK_URL: ${{ needs.callback-start.outputs.callback_url }}
-          CALLBACK_TOKEN: ${{ needs.callback-start.outputs.callback_token }}
+          CALLBACK_TOKEN_B64: ${{ needs.callback-start.outputs.callback_token_b64 }}
           VERDICT_RESULT: ${{ needs.verdict.result }}
         run: |
           set -euo pipefail
+
+          CALLBACK_TOKEN=""
+          if [[ -n "$CALLBACK_TOKEN_B64" ]]; then
+            CALLBACK_TOKEN="$(printf '%s' "$CALLBACK_TOKEN_B64" | base64 -d)"
+          fi
 
           if [[ -z "$CALLBACK_URL" || -z "$CALLBACK_TOKEN" ]]; then
             echo "Callback inputs missing; skipping callback status report."

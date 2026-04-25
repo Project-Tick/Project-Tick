@@ -186,6 +186,36 @@ SAMPLE_GITLAB_PING_ADMINS_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, ping
 SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
 SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, cancel"
 
+SAMPLE_GITLAB_ISSUE_RETRY_PAYLOAD = {
+    "object_kind": "note",
+    "user": {"username": "samet", "id": 7},
+    "project": {
+        "path_with_namespace": "project-tick/project-tick",
+        "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+    },
+    "issue": {
+        "iid": 23,
+        "state": "opened",
+        "description": (
+            "The stable build pipeline for `Project-Tick` failed.\n\n"
+            "Commit SHA: abcdef1234567890\n"
+            "Ref: refs/heads/master\n"
+            "Build log: https://github.com/Project-Tick/Project-Tick/actions/runs/321\n"
+            "GitHub repository: Project-Tick/Project-Tick\n"
+            "Source repository: https://git.projecttick.org/project-tick/project-tick.git\n\n"
+            "Please investigate this failure.\n"
+            "To retry the stable build, comment `bot, retry` on this issue."
+        ),
+    },
+    "object_attributes": {
+        "note": "bot, retry",
+        "noteable_type": "Issue",
+        "action": "create",
+        "system": False,
+        "internal": False,
+    },
+}
+
 
 @pytest.fixture
 def client():
@@ -521,7 +551,7 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
     assert response.json()["command"] == expected_command
     assert response.json()["pipeline_id"] == str(pipeline_id)
     assert response.json()["pipeline_status"] == "running"
-    assert response.json()["target_repo"] == "stable"
+    assert response.json()["target_repo"] == "test"
 
     build_pipeline.create_pipeline.assert_awaited_once()
     create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
@@ -547,7 +577,8 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
     assert create_kwargs["params"]["gitlab_target_branch"] == "master"
     assert create_kwargs["params"]["pr_target_branch"] == "master"
     note_mock.assert_awaited_once()
-    assert "target branch `master`" in note_mock.await_args.args[1]
+    assert "Test build" in note_mock.await_args.args[1]
+    assert "merge request targeting `master`" in note_mock.await_args.args[1]
 
 
 def test_receive_gitlab_webhook_pings_admins(client: TestClient):
@@ -705,6 +736,108 @@ def test_receive_gitlab_webhook_cancels_active_pipelines(client: TestClient):
     note_mock.assert_awaited_once_with(
         SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD,
         "Cancelled 1 active build(s).",
+    )
+
+
+def test_receive_gitlab_webhook_cancels_active_pipelines_with_log_url_only(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+
+    active_pipeline = Pipeline(
+        id=uuid.uuid4(),
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.RUNNING,
+        params={},
+        provider_data={"owner": "Project-Tick", "repo": "Project-Tick"},
+        callback_token="cancel-token",
+        log_url="https://github.com/Project-Tick/Project-Tick/actions/runs/123",
+    )
+
+    mock_result = MagicMock()
+    mock_result.scalars.return_value.all.return_value = [active_pipeline]
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.execute = AsyncMock(return_value=mock_result)
+    mock_get_db = create_mock_get_db(mock_db)
+    note_mock = AsyncMock(return_value=True)
+    cancel_mock = AsyncMock()
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch("app.routes.webhooks.get_db", mock_get_db),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+        patch("app.routes.webhooks.cancel_pipeline", cancel_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["cancelled_count"] == 1
+    cancel_mock.assert_awaited_once()
+    assert cancel_mock.await_args.args[2]["run_id"] == "123"
+
+
+def test_receive_gitlab_issue_retry_dispatches_root_ci(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Token": "gitlab-secret",
+        "X-Gitlab-Event-UUID": str(uuid.uuid4()),
+    }
+
+    pipeline_id = uuid.uuid4()
+    mock_pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="Project-Tick",
+        status=PipelineStatus.RUNNING,
+        params={},
+        provider_data={},
+        callback_token="test-callback-token",
+        flat_manager_repo="stable",
+    )
+
+    build_pipeline = MagicMock()
+    build_pipeline.create_pipeline = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.prepare_pipeline_for_start = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.supersede_conflicting_test_pipelines = AsyncMock()
+    build_pipeline.should_queue_test_build = AsyncMock(return_value=False)
+    build_pipeline.start_pipeline = AsyncMock(return_value=mock_pipeline)
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch.object(settings, "gitlab_api_token", "gitlab-api-token"),
+        patch.object(settings, "github_org", "Project-Tick"),
+        patch.object(settings, "github_ci_repo", "Project-Tick"),
+        patch.object(settings, "github_ci_workflow", "ci.yml"),
+        patch.object(settings, "github_ci_ref", "master"),
+        patch(
+            "app.routes.webhooks.validate_gitlab_issue_retry_permissions",
+            AsyncMock(return_value=True),
+        ),
+        patch("app.routes.webhooks.create_gitlab_issue_note", AsyncMock()),
+        patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_ISSUE_RETRY_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["command"] == "bot, retry"
+    assert response.json()["pipeline_id"] == str(pipeline_id)
+    assert response.json()["target_repo"] == "stable"
+
+    create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
+    assert create_kwargs["params"]["target_repo"] == "stable"
+    assert create_kwargs["params"]["retry_from_gitlab_issue_iid"] == "23"
+    assert create_kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["source-ref"]
+        == "refs/heads/master"
     )
 
 

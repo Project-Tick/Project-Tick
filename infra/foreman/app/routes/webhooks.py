@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import re
 import uuid
 from datetime import datetime, timezone
 from urllib.parse import quote, urlparse
@@ -22,8 +23,12 @@ from app.pipelines.build import (
 )
 from app.services.github_actions import GitHubActionsService
 from app.utils.github import (
+    add_issue_comment,
+    close_github_issue,
     create_pr_comment,
     get_github_client,
+    get_workflow_run_title,
+    is_issue_edited,
     update_commit_status,
 )
 
@@ -40,6 +45,29 @@ DISABLED_TEST_BUILDS_MSG = (
 BOT_BUILD_COMMANDS = ("bot, build", "bot, retry")
 BOT_COMMANDS = BOT_BUILD_COMMANDS + ("bot, ping admins", "bot, cancel")
 GITLAB_NOTE_COMMANDS = BOT_COMMANDS + ("bot, status", "bot, help")
+GITLAB_ISSUE_COMMANDS = ("bot, retry", "bot, help")
+
+BUILD_FAILURE_ISSUE_RE = re.compile(
+    r"The (?P<target_repo>\w+) build pipeline for `(?P<app_id>[^`]+)` failed\.\s+"
+    r"Commit SHA: (?P<sha>[0-9a-fA-F]+)\s+"
+    r"(?:Ref: (?P<ref>\S+)\s+)?"
+    r"Build log: (?P<log_url>\S+)"
+    r"(?:\s+GitHub repository: (?P<github_repo>\S+))?"
+    r"(?:\s+Source repository: (?P<source_repository>\S+))?",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
+
+JOB_FAILURE_ISSUE_RE = re.compile(
+    r"The (?P<job_type>[\w-]+) job for `(?P<app_id>[^`]+)` failed in the "
+    r"(?P<target_repo>\w+) repository\.\s+"
+    r"\*\*Build Information:\*\*\s+"
+    r"- Commit SHA: (?P<sha>[0-9a-fA-F]+).*?"
+    r"(?:- Ref: (?P<ref>\S+).*?)?"
+    r"- Build log: (?P<log_url>\S+)"
+    r"(?:.*?GitHub repository: (?P<github_repo>\S+))?"
+    r"(?:.*?Source repository: (?P<source_repository>\S+))?",
+    re.IGNORECASE | re.MULTILINE | re.DOTALL,
+)
 
 
 def filter_bot_command_text(
@@ -109,6 +137,100 @@ def describe_target_branch(target_branch: str) -> str:
     return f"target branch `{normalized_target_branch}`"
 
 
+def extract_run_id_from_log_url(log_url: str | None) -> str | None:
+    if not log_url:
+        return None
+
+    run_id = log_url.rstrip("/").split("/")[-1]
+    return run_id or None
+
+
+def _default_ref_for_target_repo(target_repo: str) -> str:
+    if target_repo == "beta":
+        return "refs/heads/beta"
+    return "refs/heads/master"
+
+
+async def parse_failure_issue(issue_body: str, git_repo: str) -> dict[str, Any] | None:
+    if not issue_body:
+        return None
+
+    for pattern, issue_type in (
+        (BUILD_FAILURE_ISSUE_RE, "build_failure"),
+        (JOB_FAILURE_ISSUE_RE, "job_failure"),
+    ):
+        match = pattern.search(issue_body.strip())
+        if not match:
+            continue
+
+        parsed = {key: value for key, value in match.groupdict().items() if value}
+        target_repo = str(parsed.get("target_repo", "stable")).lower()
+        ref = parsed.get("ref") or _default_ref_for_target_repo(target_repo)
+
+        result: dict[str, Any] = {
+            "app_id": parsed.get("app_id") or git_repo.rsplit("/", 1)[-1],
+            "sha": parsed["sha"],
+            "repo": git_repo,
+            "ref": ref,
+            "flat_manager_repo": target_repo,
+            "issue_type": issue_type,
+            "log_url": parsed.get("log_url", ""),
+        }
+
+        if parsed.get("github_repo"):
+            result["github_repo"] = parsed["github_repo"]
+        if parsed.get("source_repository"):
+            result["source_repository"] = parsed["source_repository"]
+        if issue_type == "job_failure" and parsed.get("job_type"):
+            result["job_type"] = parsed["job_type"]
+
+        return result
+
+    return None
+
+
+async def validate_retry_permissions(git_repo: str, comment_author: str) -> bool:
+    if not settings.github_status_token or not git_repo or "/" not in git_repo:
+        return False
+
+    owner, _repo = git_repo.split("/", 1)
+    headers = {
+        "Authorization": f"Bearer {settings.github_status_token}",
+        "Accept": "application/vnd.github+json",
+    }
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        collaborator_response = await client.get(
+            f"https://api.github.com/repos/{git_repo}/collaborators/{comment_author}",
+            headers=headers,
+        )
+        if collaborator_response.status_code == status.HTTP_204_NO_CONTENT:
+            return True
+
+        org_response = await client.get(
+            f"https://api.github.com/orgs/{owner}/members/{comment_author}",
+            headers=headers,
+        )
+        return org_response.status_code == status.HTTP_204_NO_CONTENT
+
+
+def build_cancel_provider_data(pipeline: Pipeline) -> dict[str, Any] | None:
+    provider_data = dict(pipeline.provider_data) if pipeline.provider_data else {}
+
+    if not provider_data.get("run_id"):
+        run_id = extract_run_id_from_log_url(pipeline.log_url)
+        if run_id:
+            provider_data["run_id"] = run_id
+
+    repo = (pipeline.params or {}).get("repo")
+    if isinstance(repo, str) and "/" in repo:
+        owner, repo_name = repo.split("/", 1)
+        provider_data.setdefault("owner", owner)
+        provider_data.setdefault("repo", repo_name)
+
+    return provider_data or None
+
+
 def get_gitlab_note_command(payload: dict[str, Any]) -> str | None:
     if payload.get("object_kind") != "note":
         return None
@@ -128,6 +250,27 @@ def get_gitlab_note_command(payload: dict[str, Any]) -> str | None:
 
     note = object_attributes.get("note", "")
     return extract_bot_command(note, GITLAB_NOTE_COMMANDS)
+
+
+def get_gitlab_issue_command(payload: dict[str, Any]) -> str | None:
+    if payload.get("object_kind") != "note":
+        return None
+
+    object_attributes = payload.get("object_attributes", {})
+    issue = payload.get("issue", {})
+    action = object_attributes.get("action")
+
+    if object_attributes.get("noteable_type") != "Issue":
+        return None
+    if object_attributes.get("system") or object_attributes.get("internal"):
+        return None
+    if action not in (None, "", "create", "update"):
+        return None
+    if issue.get("state") in ("closed", "merged"):
+        return None
+
+    note = object_attributes.get("note", "")
+    return extract_bot_command(note, GITLAB_ISSUE_COMMANDS)
 
 
 async def list_gitlab_merge_request_pipelines(
@@ -273,6 +416,135 @@ async def create_gitlab_merge_request_note(
     return False
 
 
+def _get_gitlab_issue_iid(payload: dict[str, Any]) -> str:
+    issue = payload.get("issue", {})
+    issue_iid = issue.get("iid")
+    return str(issue_iid) if issue_iid is not None else ""
+
+
+async def create_gitlab_issue_note(
+    payload: dict[str, Any],
+    note: str,
+    issue_iid: str | None = None,
+) -> bool:
+    if not settings.gitlab_api_token:
+        logger.info("Skipping GitLab issue note because GITLAB_API_TOKEN is not configured")
+        return False
+
+    project_path = get_gitlab_project_path(payload)
+    gitlab_base_url = get_gitlab_base_url(payload)
+    resolved_issue_iid = issue_iid or _get_gitlab_issue_iid(payload)
+
+    if not resolved_issue_iid or not project_path or not gitlab_base_url:
+        logger.warning(
+            "Skipping GitLab issue note because payload is missing required routing fields",
+            has_issue_iid=bool(resolved_issue_iid),
+            has_project_path=bool(project_path),
+            has_gitlab_base_url=bool(gitlab_base_url),
+        )
+        return False
+
+    endpoint = (
+        f"{gitlab_base_url}/api/v4/projects/{quote(project_path, safe='')}/"
+        f"issues/{resolved_issue_iid}/notes"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(
+                endpoint,
+                headers={"PRIVATE-TOKEN": settings.gitlab_api_token},
+                data={"body": note},
+            )
+            response.raise_for_status()
+        return True
+    except httpx.HTTPStatusError as error:
+        logger.warning(
+            "GitLab issue note creation failed",
+            endpoint=endpoint,
+            status_code=error.response.status_code,
+            response_text=error.response.text[:400],
+        )
+    except httpx.HTTPError as error:
+        logger.warning(
+            "GitLab issue note request failed",
+            endpoint=endpoint,
+            error=str(error),
+        )
+
+    return False
+
+
+async def close_gitlab_issue(payload: dict[str, Any], issue_iid: str | None = None) -> bool:
+    if not settings.gitlab_api_token:
+        return False
+
+    project_path = get_gitlab_project_path(payload)
+    gitlab_base_url = get_gitlab_base_url(payload)
+    resolved_issue_iid = issue_iid or _get_gitlab_issue_iid(payload)
+
+    if not resolved_issue_iid or not project_path or not gitlab_base_url:
+        return False
+
+    endpoint = (
+        f"{gitlab_base_url}/api/v4/projects/{quote(project_path, safe='')}/"
+        f"issues/{resolved_issue_iid}"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.put(
+                endpoint,
+                headers={"PRIVATE-TOKEN": settings.gitlab_api_token},
+                data={"state_event": "close"},
+            )
+            response.raise_for_status()
+        return True
+    except httpx.HTTPError as error:
+        logger.warning(
+            "GitLab issue close request failed",
+            endpoint=endpoint,
+            error=str(error),
+        )
+        return False
+
+
+async def validate_gitlab_issue_retry_permissions(payload: dict[str, Any]) -> bool:
+    if not settings.gitlab_api_token:
+        return False
+
+    project_path = get_gitlab_project_path(payload)
+    gitlab_base_url = get_gitlab_base_url(payload)
+    user_id = payload.get("user", {}).get("id")
+
+    if not project_path or not gitlab_base_url or user_id is None:
+        return False
+
+    endpoint = (
+        f"{gitlab_base_url}/api/v4/projects/{quote(project_path, safe='')}/"
+        f"members/all/{user_id}"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(
+                endpoint,
+                headers={"PRIVATE-TOKEN": settings.gitlab_api_token},
+            )
+            if response.status_code != status.HTTP_200_OK:
+                return False
+
+            access_level = int(response.json().get("access_level", 0))
+            return access_level >= 40
+    except (httpx.HTTPError, TypeError, ValueError) as error:
+        logger.warning(
+            "GitLab issue retry permission check failed",
+            endpoint=endpoint,
+            error=str(error),
+        )
+        return False
+
+
 def should_store_event(payload: dict) -> bool:
     ref = payload.get("ref", "")
     comment = payload.get("comment", {}).get("body", "")
@@ -329,7 +601,7 @@ async def cancel_gitlab_merge_request_pipelines(merge_request_iid: str) -> int:
             (
                 pipeline.id,
                 pipeline.build_id,
-                dict(pipeline.provider_data) if pipeline.provider_data else None,
+                build_cancel_provider_data(pipeline),
             )
             for pipeline in active_pipelines
         ]
@@ -346,6 +618,241 @@ async def cancel_gitlab_merge_request_pipelines(merge_request_iid: str) -> int:
         )
 
     return len(pipelines_to_cancel)
+
+
+async def handle_issue_retry(
+    git_repo: str,
+    issue_number: int,
+    issue_body: str,
+    comment_author: str,
+    webhook_event_id: uuid.UUID | None,
+) -> uuid.UUID | None:
+    if not await validate_retry_permissions(git_repo, comment_author):
+        await add_issue_comment(
+            git_repo=git_repo,
+            issue_number=issue_number,
+            comment=(
+                f"User `{comment_author}` does not have permission to retry stable builds "
+                "from issues."
+            ),
+        )
+        return None
+
+    issue_edited = await is_issue_edited(git_repo, issue_number)
+    if issue_edited:
+        await add_issue_comment(
+            git_repo=git_repo,
+            issue_number=issue_number,
+            comment=(
+                "This issue was edited after it was opened. Could not safely parse build "
+                "parameters for retry."
+            ),
+        )
+        return None
+
+    parsed_issue = await parse_failure_issue(issue_body, git_repo)
+    if parsed_issue is None:
+        await add_issue_comment(
+            git_repo=git_repo,
+            issue_number=issue_number,
+            comment="Could not parse build parameters from this failure issue.",
+        )
+        return None
+
+    run_id = extract_run_id_from_log_url(parsed_issue.get("log_url"))
+    run_title = None
+    if run_id and run_id.isdigit():
+        run_title = await get_workflow_run_title(int(run_id))
+
+    params: dict[str, Any] = {
+        "repo": parsed_issue.get("github_repo") or git_repo,
+        "ref": parsed_issue["ref"],
+        "sha": parsed_issue["sha"],
+        "target_repo": parsed_issue["flat_manager_repo"],
+        "build_type": "default",
+        "use_spot": False,
+        "retry_count": 1,
+        "retry_from_issue": issue_number,
+        "retry_command_source": "github_issue",
+    }
+
+    if parsed_issue.get("job_type"):
+        params["retry_job_type"] = parsed_issue["job_type"]
+    if run_title:
+        params["retry_from_run_title"] = run_title
+
+    pipeline_service = BuildPipeline()
+    pipeline = await pipeline_service.create_pipeline(
+        app_id=str(parsed_issue.get("app_id") or git_repo.rsplit("/", 1)[-1]),
+        params=params,
+        webhook_event_id=webhook_event_id,
+    )
+    pipeline = await pipeline_service.prepare_pipeline_for_start(pipeline.id)
+    await pipeline_service.supersede_conflicting_test_pipelines(pipeline.id)
+    should_queue_test_build = await pipeline_service.should_queue_test_build(
+        pipeline.id
+    )
+
+    target_url = f"{settings.base_url}/api/pipelines/{pipeline.id}"
+    commit_sha = pipeline.params.get("sha")
+    pipeline_repo = pipeline.params.get("repo")
+
+    if commit_sha and pipeline_repo:
+        await update_commit_status(
+            sha=commit_sha,
+            state="pending",
+            git_repo=pipeline_repo,
+            description=(
+                "Stable build retry queued — waiting for capacity"
+                if should_queue_test_build
+                else "Stable build retry enqueued"
+            ),
+            target_url=target_url,
+        )
+
+    if not should_queue_test_build:
+        pipeline = await pipeline_service.start_pipeline(pipeline.id)
+
+    await add_issue_comment(
+        git_repo=git_repo,
+        issue_number=issue_number,
+        comment=(
+            "🔁 Stable build retry queued — waiting for capacity."
+            if should_queue_test_build
+            else "🔁 Stable build retry enqueued."
+        )
+        + f"\n\nTrack progress: {target_url}",
+    )
+
+    return pipeline.id
+
+
+async def handle_gitlab_issue_retry(
+    payload: dict[str, Any],
+    command: str,
+    delivery_id: str,
+) -> dict[str, Any]:
+    issue_iid = _get_gitlab_issue_iid(payload)
+    if not issue_iid:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing issue IID in GitLab payload.",
+        )
+
+    if command == "bot, help":
+        await create_gitlab_issue_note(
+            payload,
+            "Available commands:\n- `bot, retry` — Retry the stable build referenced by this issue",
+            issue_iid=issue_iid,
+        )
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+        }
+
+    comment_author = payload.get("user", {}).get("username", "")
+    if not await validate_gitlab_issue_retry_permissions(payload):
+        await create_gitlab_issue_note(
+            payload,
+            (
+                f"User `{comment_author}` does not have permission to retry stable builds "
+                "from issues."
+            ),
+            issue_iid=issue_iid,
+        )
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+        }
+
+    parsed_issue = await parse_failure_issue(
+        payload.get("issue", {}).get("description", ""),
+        get_gitlab_project_path(payload),
+    )
+    if parsed_issue is None:
+        await create_gitlab_issue_note(
+            payload,
+            "Could not parse build parameters from this failure issue.",
+            issue_iid=issue_iid,
+        )
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+        }
+
+    gitlab_base_url = get_gitlab_base_url(payload)
+    project_path = get_gitlab_project_path(payload)
+    source_repository = parsed_issue.get("source_repository")
+    if not source_repository and gitlab_base_url and project_path:
+        source_repository = f"{gitlab_base_url}/{project_path}.git"
+
+    ref = parsed_issue["ref"]
+    source_branch = (
+        ref.removeprefix("refs/heads/") if ref.startswith("refs/heads/") else ""
+    )
+
+    params: dict[str, Any] = {
+        "ref": ref,
+        "sha": parsed_issue["sha"],
+        "repo": parsed_issue.get("github_repo") or parsed_issue["repo"],
+        "target_repo": parsed_issue["flat_manager_repo"],
+        "build_type": "default",
+        "use_spot": False,
+        "retry_count": 1,
+        "retry_from_gitlab_issue_iid": issue_iid,
+        "retry_command_source": "gitlab_issue",
+        "gitlab_base_url": gitlab_base_url,
+        "gitlab_project_path": project_path,
+        "gitlab_issue_iid": issue_iid,
+        "gitlab_source_sha": parsed_issue["sha"],
+        "gitlab_source_branch": source_branch,
+        "gitlab_target_branch": source_branch or settings.github_ci_ref,
+        "pr_target_branch": source_branch or settings.github_ci_ref,
+        "dispatch_owner": settings.github_org,
+        "dispatch_repo": settings.github_ci_repo,
+        "dispatch_workflow_id": settings.github_ci_workflow,
+        "dispatch_ref": settings.github_ci_ref,
+        "dispatch_inputs": {
+            "force-all": "false",
+            "source-repository": source_repository,
+            "source-ref": ref,
+        },
+    }
+
+    pipeline_service = BuildPipeline()
+    pipeline = await pipeline_service.create_pipeline(
+        app_id=str(parsed_issue.get("app_id") or project_path.rsplit("/", 1)[-1]),
+        params=params,
+        webhook_event_id=None,
+    )
+    pipeline = await pipeline_service.prepare_pipeline_for_start(pipeline.id)
+    await pipeline_service.supersede_conflicting_test_pipelines(pipeline.id)
+    should_queue_test_build = await pipeline_service.should_queue_test_build(
+        pipeline.id
+    )
+
+    if not should_queue_test_build:
+        pipeline = await pipeline_service.start_pipeline(pipeline.id)
+
+    await create_gitlab_issue_note(
+        payload,
+        (
+            "🔁 Stable build retry queued — waiting for capacity."
+            if should_queue_test_build
+            else "🔁 Stable build retry enqueued."
+        )
+        + f"\n\nTrack progress: {settings.base_url}/api/pipelines/{pipeline.id}",
+        issue_iid=issue_iid,
+    )
+
+    return {
+        "message": "GitLab webhook received",
+        "event_id": delivery_id,
+        "command": command,
+        "pipeline_id": str(pipeline.id),
+        "pipeline_status": pipeline.status.value,
+        "target_repo": pipeline.flat_manager_repo or parsed_issue["flat_manager_repo"],
+    }
 
 
 @webhooks_router.post(
@@ -379,6 +886,14 @@ async def receive_gitlab_webhook(
 
     if x_gitlab_event != "Note Hook":
         return {"message": "Webhook received but ignored due to event type filter."}
+
+    issue_command = get_gitlab_issue_command(payload)
+    if issue_command:
+        return await handle_gitlab_issue_retry(
+            payload,
+            issue_command,
+            x_gitlab_event_uuid or str(uuid.uuid4()),
+        )
 
     command = get_gitlab_note_command(payload)
 
@@ -519,13 +1034,22 @@ async def receive_gitlab_webhook(
     if not should_queue:
         pipeline = await build_pipeline.start_pipeline(pipeline.id)
 
-    note_prefix = "🔁 Retry" if command == "bot, retry" else "🚧 Build"
-    target_description = describe_target_branch(target_branch)
-    note = (
-        f"{note_prefix} queued — waiting for capacity for {target_description}."
-        if should_queue
-        else f"{note_prefix} enqueued for {target_description}."
-    )
+    target_repo = pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline)
+    if target_repo == "test":
+        note_prefix = "🔁 Test build" if command == "bot, retry" else "🚧 Test build"
+        note = (
+            f"{note_prefix} queued — waiting for capacity for merge request targeting `{target_branch}`."
+            if should_queue
+            else f"{note_prefix} enqueued for merge request targeting `{target_branch}`."
+        )
+    else:
+        note_prefix = "🔁 Retry" if command == "bot, retry" else "🚧 Build"
+        target_description = describe_target_branch(target_branch)
+        note = (
+            f"{note_prefix} queued — waiting for capacity for {target_description}."
+            if should_queue
+            else f"{note_prefix} enqueued for {target_description}."
+        )
     await create_gitlab_merge_request_note(payload, note)
 
     return {
@@ -534,7 +1058,7 @@ async def receive_gitlab_webhook(
         "command": command,
         "pipeline_id": str(pipeline.id),
         "pipeline_status": pipeline.status.value,
-        "target_repo": pipeline.flat_manager_repo or get_target_repo_for_branch(target_branch),
+        "target_repo": target_repo,
     }
 
 
@@ -831,9 +1355,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                     (
                         pipeline.id,
                         pipeline.build_id,
-                        dict(pipeline.provider_data)
-                        if pipeline.provider_data
-                        else None,
+                        build_cancel_provider_data(pipeline),
                     )
                     for pipeline in active_pipelines
                 ]
@@ -864,6 +1386,15 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             )
 
             return None
+
+        elif command == "bot, retry" and not pr_url and issue_number is not None:
+            return await handle_issue_retry(
+                git_repo=repo,
+                issue_number=issue_number,
+                issue_body=str(issue.get("body", "")),
+                comment_author=comment_author,
+                webhook_event_id=event.id,
+            )
 
         elif is_build_bot_command(command):
             if not pr_url or issue_number is None:

@@ -176,10 +176,10 @@ async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipelin
 @pytest.mark.parametrize(
     ("params", "expected_target_repo"),
     [
-        ({"pr_target_branch": "master"}, "stable"),
-        ({"pr_target_branch": "beta"}, "beta"),
-        ({"gitlab_target_branch": "master"}, "stable"),
-        ({"gitlab_target_branch": "beta"}, "beta"),
+        ({"pr_number": "42", "pr_target_branch": "master"}, "test"),
+        ({"pr_number": "42", "pr_target_branch": "beta"}, "test"),
+        ({"gitlab_merge_request_iid": "17", "gitlab_target_branch": "master"}, "test"),
+        ({"gitlab_merge_request_iid": "17", "gitlab_target_branch": "beta"}, "test"),
         ({"ref": "refs/heads/feature/demo"}, "test"),
     ],
 )
@@ -210,6 +210,38 @@ async def test_prepare_pipeline_for_start_resolves_target_repo(
         prepared_pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline_id)
 
     assert prepared_pipeline.flat_manager_repo == expected_target_repo
+    mock_db.commit.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_prepare_pipeline_for_start_honors_explicit_target_repo_for_review_pipeline():
+    pipeline_id = uuid.uuid4()
+    pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.PENDING,
+        params={
+            "gitlab_merge_request_iid": "17",
+            "gitlab_target_branch": "master",
+            "target_repo": "stable",
+        },
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.get.return_value = pipeline
+
+    @asynccontextmanager
+    async def mock_get_db(*, use_replica: bool = False):
+        yield mock_db
+
+    build_pipeline = BuildPipeline()
+
+    with patch("app.pipelines.build.get_db", mock_get_db):
+        prepared_pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline_id)
+
+    assert prepared_pipeline.flat_manager_repo == "stable"
     mock_db.commit.assert_awaited_once()
 
 
