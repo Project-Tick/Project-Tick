@@ -125,6 +125,43 @@ def get_gitlab_admin_mention() -> str:
     return mention if mention.startswith("@") else f"@{mention}"
 
 
+def build_github_dispatch_params(
+    repo_name: str,
+    source_event_name: str,
+    source_ref: str,
+    source_sha: str | None,
+    actor_login: str,
+    extra_inputs: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    owner, repo = (
+        repo_name.split("/", 1)
+        if "/" in repo_name
+        else (settings.github_org, settings.github_ci_repo)
+    )
+
+    dispatch_inputs = {
+        "force-all": "false",
+        "event-name": source_event_name,
+        "event-actor": actor_login,
+        "source-ref": source_ref,
+        "source-sha": source_sha or "",
+    }
+    if extra_inputs:
+        dispatch_inputs.update(extra_inputs)
+
+    return {
+        "dispatch_owner": owner,
+        "dispatch_repo": repo,
+        "dispatch_workflow_id": settings.github_ci_workflow,
+        "dispatch_ref": settings.github_ci_ref,
+        "dispatch_inputs": {
+            key: value
+            for key, value in dispatch_inputs.items()
+            if value is not None and value != ""
+        },
+    }
+
+
 def describe_target_branch(target_branch: str) -> str:
     normalized_target_branch = target_branch.strip() or settings.github_ci_ref
     target_repo = get_target_repo_for_branch(normalized_target_branch)
@@ -1245,6 +1282,8 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             return None
 
         pr_number = pr.get("number")
+        pr_head = pr.get("head", {})
+        pr_base = pr.get("base", {})
 
         if settings.ff_disable_test_builds:
             logger.info(
@@ -1261,14 +1300,34 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
             )
             return None
 
-        sha = pr.get("head", {}).get("sha")
+        sha = pr_head.get("sha")
+        pr_head_ref = str(pr_head.get("ref", ""))
+        pr_base_ref = str(pr_base.get("ref", "master"))
         params.update(
             {
                 "ref": f"refs/pull/{pr_number}/head",
                 "pr_number": str(pr_number) if pr_number is not None else "",
                 "action": str(payload.get("action", "")),
-                "pr_target_branch": pr.get("base", {}).get("ref", "master"),
+                "pr_target_branch": pr_base_ref,
             }
+        )
+        params.update(
+            build_github_dispatch_params(
+                repo_name=event.repository,
+                source_event_name="pull_request",
+                source_ref=params["ref"],
+                source_sha=sha,
+                actor_login=event.actor,
+                extra_inputs={
+                    "pr-number": params["pr_number"],
+                    "pr-base-sha": str(pr_base.get("sha", "")),
+                    "pr-head-sha": str(pr_head.get("sha", "")),
+                    "pr-title": str(pr.get("title", "")),
+                    "head-ref": pr_head_ref,
+                    "base-ref": pr_base_ref,
+                    "pr-draft": "true" if pr.get("draft") else "false",
+                },
+            )
         )
 
     elif "commits" in payload and payload.get("ref", ""):
@@ -1279,6 +1338,21 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                 "ref": ref,
                 "push": "true",
             }
+        )
+        params.update(
+            build_github_dispatch_params(
+                repo_name=event.repository,
+                source_event_name="push",
+                source_ref=ref,
+                source_sha=sha,
+                actor_login=event.actor,
+                extra_inputs={
+                    "before-sha": str(payload.get("before", "")),
+                    "head-ref": ref.removeprefix("refs/heads/")
+                    if ref.startswith("refs/heads/")
+                    else "",
+                },
+            )
         )
 
     elif "comment" in payload:

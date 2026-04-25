@@ -1450,6 +1450,16 @@ async def test_create_pipeline_pr():
 
         mock_pipeline_service.create_pipeline.assert_called_once()
 
+        _, kwargs = mock_pipeline_service.create_pipeline.call_args
+        assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        assert kwargs["params"].get("dispatch_owner") == "test-owner"
+        assert kwargs["params"].get("dispatch_repo") == "test-repo"
+        assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
+        assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/pull/123/head"
+        assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
+        assert kwargs["params"]["dispatch_inputs"].get("pr-number") == "123"
+        assert kwargs["params"]["dispatch_inputs"].get("base-ref") == "master"
+
         mock_pipeline_service.start_pipeline.assert_called_once_with(
             pipeline_id=pipeline_id
         )
@@ -1495,25 +1505,27 @@ async def test_create_pipeline_push():
     with patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service):
         with patch("app.routes.webhooks.get_db", mock_get_db):
             with patch("app.pipelines.build.get_db", mock_get_db):
-                with patch(
-                    "app.routes.webhooks.is_eol_only_push",
-                    AsyncMock(return_value=(False, None)),
-                ):
-                    from app.routes.webhooks import create_pipeline
+                from app.routes.webhooks import create_pipeline
 
-                    result = await create_pipeline(webhook_event)
+                result = await create_pipeline(webhook_event)
 
-                    assert result == pipeline_id
+                assert result == pipeline_id
 
-                    # Verify the parameters passed to create_pipeline
-                    args, kwargs = mock_pipeline_service.create_pipeline.call_args
-                    assert "params" in kwargs
-                    assert kwargs["params"].get("ref") == "refs/heads/master"
-                    assert kwargs["params"].get("push") == "true"
+                # Verify the parameters passed to create_pipeline
+                args, kwargs = mock_pipeline_service.create_pipeline.call_args
+                assert "params" in kwargs
+                assert kwargs["params"].get("ref") == "refs/heads/master"
+                assert kwargs["params"].get("push") == "true"
+                assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+                assert kwargs["params"].get("dispatch_owner") == "test-owner"
+                assert kwargs["params"].get("dispatch_repo") == "test-repo"
+                assert kwargs["params"]["dispatch_inputs"].get("event-name") == "push"
+                assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/heads/master"
+                assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
 
-                    assert mock_pipeline_service.create_pipeline.called
-                    assert mock_pipeline_service.start_pipeline.called
-                    assert isinstance(result, uuid.UUID)
+                assert mock_pipeline_service.create_pipeline.called
+                assert mock_pipeline_service.start_pipeline.called
+                assert isinstance(result, uuid.UUID)
 
 
 @pytest.mark.asyncio

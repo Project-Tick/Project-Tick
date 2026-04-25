@@ -113,7 +113,7 @@ runs:
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
         path: ${{ inputs.path }}
-        ref: ${{ inputs.ref }}
+        ref: ${{ inputs.ref || github.event.inputs.source-ref || '' }}
         show-progress: ${{ inputs.show-progress }}
         submodules: ${{ inputs.submodules }}
 

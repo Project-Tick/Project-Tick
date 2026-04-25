@@ -4,18 +4,14 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  Project Tick — Monolithic CI Orchestrator                       ║
 # ║                                                                  ║
-# ║  Every push, pull request, merge queue entry, tag push, and      ║
-# ║  manual dispatch flows through this single gate. Nothing runs    ║
+# ║  Every bot-dispatched push, pull request, merge queue entry,     ║
+# ║  and manual dispatch flow through this single gate. Nothing      ║
 # ║  unless this file says so.                                       ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 name: CI
 
 on:
-  push:
-    branches: ["master"]
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
   pull_request_target:
     types: [closed, labeled]
   merge_group:
@@ -39,6 +35,50 @@ on:
         description: "Optional external ref to fetch when source-repository is set"
         type: string
         default: ""
+      event-name:
+        description: "Original event name when dispatched by the bot"
+        type: string
+        default: ""
+      event-actor:
+        description: "Original actor login when dispatched by the bot"
+        type: string
+        default: ""
+      source-sha:
+        description: "Original source SHA when dispatched by the bot"
+        type: string
+        default: ""
+      before-sha:
+        description: "Original push before SHA when dispatched by the bot"
+        type: string
+        default: ""
+      head-ref:
+        description: "Original head ref when dispatched by the bot"
+        type: string
+        default: ""
+      base-ref:
+        description: "Original base ref when dispatched by the bot"
+        type: string
+        default: ""
+      pr-number:
+        description: "Original PR number when dispatched by the bot"
+        type: string
+        default: ""
+      pr-base-sha:
+        description: "Original PR base SHA when dispatched by the bot"
+        type: string
+        default: ""
+      pr-head-sha:
+        description: "Original PR head SHA when dispatched by the bot"
+        type: string
+        default: ""
+      pr-title:
+        description: "Original PR title when dispatched by the bot"
+        type: string
+        default: ""
+      pr-draft:
+        description: "Original PR draft flag when dispatched by the bot"
+        type: string
+        default: ""
       callback_url:
         description: "Optional Foreman callback base URL"
         type: string
@@ -53,9 +93,10 @@ permissions:
 
 concurrency:
   group: >-
-    ci-${{ github.event_name }}-${{
-      github.event_name == 'merge_group' && github.event.merge_group.head_ref ||
-      (github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && format('pr-{0}', github.event.pull_request.number) ||
+    ci-${{ github.event.inputs.event-name || github.event_name }}-${{
+      github.event.inputs.source-ref ||
+      (github.event_name == 'merge_group' && github.event.merge_group.head_ref) ||
+      (github.event_name == 'pull_request_target' && format('pr-{0}', github.event.pull_request.number)) ||
       github.ref
     }}
   cancel-in-progress: true
@@ -65,15 +106,26 @@ concurrency:
 # ╚════════════════════════════════════════════════════════════════╝
 env:
   CI: true
-  FORCE_ALL: ${{ github.event.inputs.force-all == 'true' || github.event_name == 'merge_group' }}
+  CI_EVENT_NAME: ${{ github.event.inputs.event-name || github.event_name }}
+  CI_REF: ${{ github.event.inputs.source-ref || github.ref }}
+  CI_SHA: ${{ github.event.inputs.source-sha || github.sha }}
+  CI_BEFORE_SHA: ${{ github.event.inputs.before-sha || github.event.before || '' }}
+  CI_ACTOR: ${{ github.event.inputs.event-actor || github.actor }}
+  CI_HEAD_REF: ${{ github.event.inputs.head-ref || github.head_ref || '' }}
+  CI_BASE_REF: ${{ github.event.inputs.base-ref || github.base_ref || '' }}
+  CI_PR_NUMBER: ${{ github.event.inputs.pr-number || github.event.pull_request.number || '' }}
+  CI_PR_BASE_SHA: ${{ github.event.inputs.pr-base-sha || github.event.pull_request.base.sha || github.event.merge_group.base_sha || '' }}
+  CI_PR_HEAD_SHA: ${{ github.event.inputs.pr-head-sha || github.event.pull_request.head.sha || github.event.merge_group.head_sha || '' }}
+  CI_PR_TITLE: ${{ github.event.inputs.pr-title || github.event.pull_request.title || '' }}
+  CI_PR_DRAFT: ${{ github.event.inputs.pr-draft || (github.event.pull_request.draft && 'true' || 'false') }}
+  CI_MERGE_GROUP_BASE_REF: ${{ github.event.merge_group.base_ref || '' }}
+  FORCE_ALL: ${{ github.event.inputs.force-all == 'true' || (github.event.inputs.event-name || github.event_name) == 'merge_group' }}
 
 jobs:
   callback-start:
     name: "Callback Start"
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
-      github.event_name == 'pull_request' ||
       github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     outputs:
@@ -89,14 +141,14 @@ jobs:
           INPUT_CALLBACK_TOKEN: ${{ github.event.inputs.callback_token || '' }}
           FOREMAN_BASE_URL: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
           FOREMAN_API_TOKEN: ${{ secrets.FOREMAN_API_TOKEN || '' }}
-          EVENT_NAME: ${{ github.event_name }}
+          EVENT_NAME: ${{ env.CI_EVENT_NAME }}
           REPOSITORY: ${{ github.repository }}
-          REF: ${{ github.ref }}
-          SHA: ${{ github.sha }}
-          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || '' }}
-          PR_TARGET_BRANCH: ${{ github.event.pull_request.base.ref || '' }}
-          MERGE_GROUP_BASE_REF: ${{ github.event.merge_group.base_ref || '' }}
+          REF: ${{ env.CI_REF }}
+          SHA: ${{ env.CI_SHA }}
+          PR_NUMBER: ${{ env.CI_PR_NUMBER }}
+          PR_HEAD_SHA: ${{ env.CI_PR_HEAD_SHA }}
+          PR_TARGET_BRANCH: ${{ env.CI_BASE_REF }}
+          MERGE_GROUP_BASE_REF: ${{ env.CI_MERGE_GROUP_BASE_REF }}
         run: |
           set -euo pipefail
 
@@ -226,8 +278,8 @@ jobs:
     name: "Gate"
     runs-on: ubuntu-latest
     if: >-
-      !(github.event_name == 'pull_request_target' && !github.event.pull_request.merged) &&
-      !(github.event_name == 'pull_request' && github.event.pull_request.draft)
+      !(env.CI_EVENT_NAME == 'pull_request_target' && !github.event.pull_request.merged) &&
+      !(env.CI_EVENT_NAME == 'pull_request' && env.CI_PR_DRAFT == 'true')
     outputs:
       # ── Event classification ────────────────────────────────────
       is_push: ${{ steps.classify.outputs.is_push }}
@@ -284,15 +336,15 @@ jobs:
       - name: Classify event
         id: classify
         env:
-          GH_HEAD_REF: ${{ github.head_ref }}
-          GH_BASE_REF: ${{ github.base_ref }}
+          GH_HEAD_REF: ${{ env.CI_HEAD_REF }}
+          GH_BASE_REF: ${{ env.CI_BASE_REF }}
         run: |
           # shellcheck disable=SC2129
           set -euo pipefail
 
-          REF="${GITHUB_REF:-}"
-          EVENT="${{ github.event_name }}"
-          ACTOR="${{ github.actor }}"
+          REF="${{ env.CI_REF }}"
+          EVENT="${{ env.CI_EVENT_NAME }}"
+          ACTOR="${{ env.CI_ACTOR }}"
           HEAD_REF="${GH_HEAD_REF:-}"
 
           # ── Booleans ──────────────────────────────────────────
@@ -340,12 +392,12 @@ jobs:
         if: github.event_name != 'pull_request_target'
         uses: ./.github/actions/change-analysis
         with:
-          event-name: ${{ github.event_name }}
-          base-sha: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || '' }}
-          head-sha: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || '' }}
-          before-sha: ${{ github.event.before || '' }}
-          current-sha: ${{ github.sha }}
-          pr-title: ${{ github.event.pull_request.title || '' }}
+          event-name: ${{ env.CI_EVENT_NAME }}
+          base-sha: ${{ env.CI_PR_BASE_SHA }}
+          head-sha: ${{ env.CI_PR_HEAD_SHA }}
+          before-sha: ${{ env.CI_BEFORE_SHA }}
+          current-sha: ${{ env.CI_SHA }}
+          pr-title: ${{ env.CI_PR_TITLE }}
 
       - name: Finalize gate outputs
         id: finalize
@@ -903,8 +955,6 @@ jobs:
       always() &&
       (
         github.event_name == 'workflow_dispatch' ||
-        github.event_name == 'push' ||
-        github.event_name == 'pull_request' ||
         github.event_name == 'merge_group'
       )
     runs-on: ubuntu-latest
