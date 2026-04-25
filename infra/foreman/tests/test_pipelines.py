@@ -173,6 +173,47 @@ async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipelin
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("params", "expected_target_repo"),
+    [
+        ({"pr_target_branch": "master"}, "stable"),
+        ({"pr_target_branch": "beta"}, "beta"),
+        ({"gitlab_target_branch": "master"}, "stable"),
+        ({"gitlab_target_branch": "beta"}, "beta"),
+        ({"ref": "refs/heads/feature/demo"}, "test"),
+    ],
+)
+async def test_prepare_pipeline_for_start_resolves_target_repo(
+    params,
+    expected_target_repo,
+):
+    pipeline_id = uuid.uuid4()
+    pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.PENDING,
+        params=params,
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.get.return_value = pipeline
+
+    @asynccontextmanager
+    async def mock_get_db(*, use_replica: bool = False):
+        yield mock_db
+
+    build_pipeline = BuildPipeline()
+
+    with patch("app.pipelines.build.get_db", mock_get_db):
+        prepared_pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline_id)
+
+    assert prepared_pipeline.flat_manager_repo == expected_target_repo
+    mock_db.commit.assert_awaited_once()
+
+
+@pytest.mark.asyncio
 async def test_handle_log_url_callback_uses_gitlab_notifier(build_pipeline, mock_db, sample_pipeline):
     sample_pipeline.params = {
         "gitlab_project_path": "project-tick/project-tick",

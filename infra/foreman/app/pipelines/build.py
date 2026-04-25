@@ -32,6 +32,11 @@ FAST_BUILD_P90_THRESHOLD_MINUTES = 20.0
 FAST_BUILD_MIN_BUILDS = 3
 FAST_BUILD_LOOKBACK_DAYS = 90
 SPOT_BUILD_TYPES = ("medium", "large")
+TARGET_REPO_BY_BRANCH = {
+    "master": "stable",
+    "main": "stable",
+    "beta": "beta",
+}
 
 
 async def get_app_p90_build_time(db: AsyncSession, app_id: str) -> float | None:
@@ -131,6 +136,36 @@ def uses_gitlab_notifier(pipeline: Pipeline) -> bool:
     return bool(params.get("gitlab_project_path") and params.get("gitlab_source_sha"))
 
 
+def get_target_repo_for_branch(branch: str | None) -> str:
+    if not branch:
+        return "test"
+
+    normalized_branch = branch.strip()
+    if not normalized_branch:
+        return "test"
+
+    return TARGET_REPO_BY_BRANCH.get(normalized_branch, "test")
+
+
+def resolve_pipeline_target_repo(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+
+    explicit_target_repo = params.get("target_repo")
+    if isinstance(explicit_target_repo, str) and explicit_target_repo.strip():
+        return explicit_target_repo.strip()
+
+    for branch_key in ("gitlab_target_branch", "pr_target_branch"):
+        branch = params.get(branch_key)
+        if isinstance(branch, str) and branch.strip():
+            return get_target_repo_for_branch(branch)
+
+    ref = params.get("ref")
+    if isinstance(ref, str) and ref.startswith("refs/heads/"):
+        return get_target_repo_for_branch(ref.removeprefix("refs/heads/"))
+
+    return "test"
+
+
 class BuildPipeline:
     def __init__(self):
         self.provider = github_actions_service
@@ -174,7 +209,7 @@ class BuildPipeline:
 
         flat_manager_repo: str
         if pipeline.flat_manager_repo is None:
-            flat_manager_repo = "test"
+            flat_manager_repo = resolve_pipeline_target_repo(pipeline)
             pipeline.flat_manager_repo = flat_manager_repo
         else:
             flat_manager_repo = pipeline.flat_manager_repo

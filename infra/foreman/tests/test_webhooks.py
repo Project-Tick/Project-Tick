@@ -160,6 +160,7 @@ SAMPLE_GITLAB_NOTE_PAYLOAD = {
     "merge_request": {
         "iid": 17,
         "state": "opened",
+        "target_branch": "master",
         "source_branch": "feature/gitlab-build",
         "last_commit": {"id": "abcdef1234567890"},
         "source": {
@@ -175,6 +176,15 @@ SAMPLE_GITLAB_NOTE_PAYLOAD = {
         "internal": False,
     },
 }
+
+SAMPLE_GITLAB_RETRY_NOTE_PAYLOAD = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
+SAMPLE_GITLAB_RETRY_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, retry"
+
+SAMPLE_GITLAB_PING_ADMINS_NOTE_PAYLOAD = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
+SAMPLE_GITLAB_PING_ADMINS_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, ping admins"
+
+SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
+SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, cancel"
 
 
 @pytest.fixture
@@ -455,7 +465,18 @@ def test_should_not_store_event():
         assert should_store_event(payload) is False
 
 
-def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
+@pytest.mark.parametrize(
+    ("payload", "expected_command"),
+    [
+        (SAMPLE_GITLAB_NOTE_PAYLOAD, "bot, build"),
+        (SAMPLE_GITLAB_RETRY_NOTE_PAYLOAD, "bot, retry"),
+    ],
+)
+def test_receive_gitlab_webhook_dispatches_root_ci(
+    client: TestClient,
+    payload: dict[str, Any],
+    expected_command: str,
+):
     headers = {
         "X-Gitlab-Event": "Note Hook",
         "X-Gitlab-Event-UUID": str(uuid.uuid4()),
@@ -478,6 +499,7 @@ def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
     build_pipeline.supersede_conflicting_test_pipelines = AsyncMock()
     build_pipeline.should_queue_test_build = AsyncMock(return_value=False)
     build_pipeline.start_pipeline = AsyncMock(return_value=mock_pipeline)
+    note_mock = AsyncMock(return_value=True)
 
     with (
         patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
@@ -486,17 +508,20 @@ def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
         patch.object(settings, "github_ci_workflow", "ci.yml"),
         patch.object(settings, "github_ci_ref", "master"),
         patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
     ):
         response = client.post(
             "/api/webhooks/gitlab",
-            json=SAMPLE_GITLAB_NOTE_PAYLOAD,
+            json=payload,
             headers=headers,
         )
 
     assert response.status_code == 202
     assert response.json()["message"] == "GitLab webhook received"
+    assert response.json()["command"] == expected_command
     assert response.json()["pipeline_id"] == str(pipeline_id)
     assert response.json()["pipeline_status"] == "running"
+    assert response.json()["target_repo"] == "stable"
 
     build_pipeline.create_pipeline.assert_awaited_once()
     create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
@@ -519,6 +544,168 @@ def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
         == "project-tick/project-tick"
     )
     assert create_kwargs["params"]["gitlab_base_url"] == "https://git.projecttick.org"
+    assert create_kwargs["params"]["gitlab_target_branch"] == "master"
+    assert create_kwargs["params"]["pr_target_branch"] == "master"
+    note_mock.assert_awaited_once()
+    assert "target branch `master`" in note_mock.await_args.args[1]
+
+
+def test_receive_gitlab_webhook_pings_admins(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+    note_mock = AsyncMock(return_value=True)
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch.object(settings, "gitlab_admin_mention", "@pt-admins"),
+        patch.object(settings, "ff_admin_ping_comment", True),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_PING_ADMINS_NOTE_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["command"] == "bot, ping admins"
+    note_mock.assert_awaited_once_with(
+        SAMPLE_GITLAB_PING_ADMINS_NOTE_PAYLOAD,
+        "Contacted admins: cc @pt-admins",
+    )
+
+
+def test_receive_gitlab_webhook_status_returns_recent_pipelines(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+    payload = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
+    payload["object_attributes"]["note"] = "bot, status"
+
+    pipelines = [
+        Pipeline(
+            id=uuid.uuid4(),
+            app_id="gitlab-mr-17",
+            status=PipelineStatus.RUNNING,
+            flat_manager_repo="stable",
+            params={"pr_target_branch": "master"},
+            log_url="https://github.com/Project-Tick/Project-Tick/actions/runs/1",
+            provider_data={},
+            callback_token="status-token-1",
+        ),
+        Pipeline(
+            id=uuid.uuid4(),
+            app_id="gitlab-mr-17",
+            status=PipelineStatus.SUCCEEDED,
+            flat_manager_repo="beta",
+            params={"pr_target_branch": "beta"},
+            provider_data={},
+            callback_token="status-token-2",
+        ),
+    ]
+
+    mock_result = MagicMock()
+    mock_result.scalars.return_value.all.return_value = pipelines
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.execute = AsyncMock(return_value=mock_result)
+    mock_get_db = create_mock_get_db(mock_db)
+    note_mock = AsyncMock(return_value=True)
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch("app.routes.webhooks.get_db", mock_get_db),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=payload,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["command"] == "bot, status"
+    assert response.json()["pipeline_count"] == 2
+    note_text = note_mock.await_args.args[1]
+    assert "Recent pipelines:" in note_text
+    assert "`running`" in note_text
+    assert "`stable`" in note_text
+    assert "`beta`" in note_text
+
+
+def test_receive_gitlab_webhook_help_lists_commands(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+    payload = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
+    payload["object_attributes"]["note"] = "bot, help"
+    note_mock = AsyncMock(return_value=True)
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=payload,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["command"] == "bot, help"
+    note_text = note_mock.await_args.args[1]
+    assert "Available commands:" in note_text
+    assert "bot, status" in note_text
+    assert "bot, help" in note_text
+
+
+def test_receive_gitlab_webhook_cancels_active_pipelines(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+
+    active_pipeline = Pipeline(
+        id=uuid.uuid4(),
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.RUNNING,
+        params={},
+        provider_data={"run_id": "123"},
+        callback_token="cancel-token",
+    )
+
+    mock_result = MagicMock()
+    mock_result.scalars.return_value.all.return_value = [active_pipeline]
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.execute = AsyncMock(return_value=mock_result)
+    mock_get_db = create_mock_get_db(mock_db)
+    note_mock = AsyncMock(return_value=True)
+    cancel_mock = AsyncMock()
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch("app.routes.webhooks.get_db", mock_get_db),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+        patch("app.routes.webhooks.cancel_pipeline", cancel_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["command"] == "bot, cancel"
+    assert response.json()["cancelled_count"] == 1
+    assert active_pipeline.status == PipelineStatus.CANCELLED
+    cancel_mock.assert_awaited_once()
+    note_mock.assert_awaited_once_with(
+        SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD,
+        "Cancelled 1 active build(s).",
+    )
 
 
 @pytest.mark.asyncio

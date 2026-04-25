@@ -13,7 +13,13 @@ from app.config import settings
 from app.database import get_db
 from app.models.pipeline import Pipeline, PipelineStatus
 from app.models.webhook_event import WebhookEvent, WebhookSource
-from app.pipelines.build import BuildPipeline, app_build_types, cancel_pipeline
+from app.pipelines.build import (
+    BuildPipeline,
+    app_build_types,
+    cancel_pipeline,
+    get_target_repo_for_branch,
+    resolve_pipeline_target_repo,
+)
 from app.services.github_actions import GitHubActionsService
 from app.utils.github import (
     create_pr_comment,
@@ -31,10 +37,15 @@ DISABLED_TEST_BUILDS_MSG = (
     "{statuspage_url} for updates."
 )
 
-BOT_COMMANDS = ("bot, build", "bot, ping admins", "bot, cancel")
+BOT_BUILD_COMMANDS = ("bot, build", "bot, retry")
+BOT_COMMANDS = BOT_BUILD_COMMANDS + ("bot, ping admins", "bot, cancel")
+GITLAB_NOTE_COMMANDS = BOT_COMMANDS + ("bot, status", "bot, help")
 
 
-def filter_bot_command_text(text: str) -> str:
+def filter_bot_command_text(
+    text: str,
+    commands: tuple[str, ...] = BOT_COMMANDS,
+) -> str:
     filtered_lines = []
     for line in text.splitlines():
         stripped_line = line.lstrip()
@@ -46,7 +57,7 @@ def filter_bot_command_text(text: str) -> str:
             continue
         if any(
             f"`{command}`" in line or f"<code>{command}</code>" in line
-            for command in BOT_COMMANDS
+            for command in commands
         ):
             continue
         filtered_lines.append(line)
@@ -58,25 +69,109 @@ def has_bot_command(text: str, command: str) -> bool:
     return command.lower() in filter_bot_command_text(text).lower()
 
 
-def is_gitlab_build_note(payload: dict[str, Any]) -> bool:
+def extract_bot_command(
+    text: str,
+    commands: tuple[str, ...] = BOT_COMMANDS,
+) -> str | None:
+    filtered_text = filter_bot_command_text(text, commands).lower()
+    earliest_match: tuple[int, str] | None = None
+
+    for command in commands:
+        index = filtered_text.find(command)
+        if index == -1:
+            continue
+        if earliest_match is None or index < earliest_match[0]:
+            earliest_match = (index, command)
+
+    return earliest_match[1] if earliest_match else None
+
+
+def is_build_bot_command(command: str | None) -> bool:
+    return command in BOT_BUILD_COMMANDS
+
+
+def get_gitlab_admin_mention() -> str:
+    mention = settings.gitlab_admin_mention or settings.admin_team
+    if not mention:
+        return "@admins"
+    return mention if mention.startswith("@") else f"@{mention}"
+
+
+def describe_target_branch(target_branch: str) -> str:
+    normalized_target_branch = target_branch.strip() or settings.github_ci_ref
+    target_repo = get_target_repo_for_branch(normalized_target_branch)
+
+    if target_repo == "stable":
+        return f"target branch `{normalized_target_branch}` (stable)"
+    if target_repo == "beta":
+        return f"target branch `{normalized_target_branch}`"
+
+    return f"target branch `{normalized_target_branch}`"
+
+
+def get_gitlab_note_command(payload: dict[str, Any]) -> str | None:
     if payload.get("object_kind") != "note":
-        return False
+        return None
 
     object_attributes = payload.get("object_attributes", {})
     merge_request = payload.get("merge_request", {})
     action = object_attributes.get("action")
 
     if object_attributes.get("noteable_type") != "MergeRequest":
-        return False
+        return None
     if object_attributes.get("system") or object_attributes.get("internal"):
-        return False
+        return None
     if action not in (None, "", "create", "update"):
-        return False
+        return None
     if merge_request.get("state") in ("closed", "merged"):
-        return False
+        return None
 
     note = object_attributes.get("note", "")
-    return has_bot_command(note, "bot, build")
+    return extract_bot_command(note, GITLAB_NOTE_COMMANDS)
+
+
+async def list_gitlab_merge_request_pipelines(
+    merge_request_iid: str,
+    limit: int = 5,
+) -> list[Pipeline]:
+    async with get_db(use_replica=True) as db:
+        query = (
+            select(Pipeline)
+            .where(Pipeline.app_id == f"gitlab-mr-{merge_request_iid}")
+            .order_by(Pipeline.created_at.desc())
+            .limit(limit)
+        )
+        result = await db.execute(query)
+        return list(result.scalars().all())
+
+
+def format_gitlab_pipeline_status_note(pipelines: list[Pipeline]) -> str:
+    if not pipelines:
+        return "No pipelines recorded for this merge request yet."
+
+    lines = ["Recent pipelines:"]
+
+    for pipeline in pipelines:
+        target_repo = pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline)
+        line = f"- `{pipeline.status.value}` • `{target_repo}`"
+        if pipeline.log_url:
+            line += f" • {pipeline.log_url}"
+        lines.append(line)
+
+    return "\n".join(lines)
+
+
+def get_gitlab_help_note() -> str:
+    return "\n".join(
+        [
+            "Available commands:",
+            "- `bot, build` or `bot, retry` — Queue a GitHub Actions build for this MR",
+            "- `bot, cancel` — Cancel active builds for this MR",
+            "- `bot, status` — Show recent pipeline status for this MR",
+            "- `bot, ping admins` — Mention the configured admin group",
+            "- `bot, help` — Show this help message",
+        ]
+    )
 
 
 def get_gitlab_merge_request_ref(payload: dict[str, Any]) -> str:
@@ -205,18 +300,52 @@ def should_store_event(payload: dict) -> bool:
         if comment_author in ("github-actions[bot]",):
             return False
 
-        filtered_comment = filter_bot_command_text(comment)
-
-        if "bot, build" in filtered_comment.lower():
-            return True
-
-        if "bot, ping admins" in filtered_comment.lower():
-            return True
-
-        if "bot, cancel" in filtered_comment.lower():
+        if extract_bot_command(comment):
             return True
 
     return False
+
+
+async def cancel_gitlab_merge_request_pipelines(merge_request_iid: str) -> int:
+    app_id = f"gitlab-mr-{merge_request_iid}"
+    pipelines_to_cancel: list[tuple[uuid.UUID, int | None, dict[str, Any] | None]] = []
+
+    async with get_db() as db:
+        query = select(Pipeline).where(
+            Pipeline.app_id == app_id,
+            Pipeline.status.in_([PipelineStatus.PENDING, PipelineStatus.RUNNING]),
+        )
+        result = await db.execute(query)
+        active_pipelines = list(result.scalars().all())
+
+        if not active_pipelines:
+            return 0
+
+        for pipeline in active_pipelines:
+            pipeline.status = PipelineStatus.CANCELLED
+            pipeline.finished_at = datetime.now(timezone.utc)
+
+        pipelines_to_cancel = [
+            (
+                pipeline.id,
+                pipeline.build_id,
+                dict(pipeline.provider_data) if pipeline.provider_data else None,
+            )
+            for pipeline in active_pipelines
+        ]
+
+        await db.commit()
+
+    github_actions = GitHubActionsService()
+    for pipeline_id, build_id, provider_data in pipelines_to_cancel:
+        await cancel_pipeline(
+            pipeline_id,
+            build_id,
+            provider_data,
+            github_actions=github_actions,
+        )
+
+    return len(pipelines_to_cancel)
 
 
 @webhooks_router.post(
@@ -251,10 +380,73 @@ async def receive_gitlab_webhook(
     if x_gitlab_event != "Note Hook":
         return {"message": "Webhook received but ignored due to event type filter."}
 
-    if not is_gitlab_build_note(payload):
+    command = get_gitlab_note_command(payload)
+
+    if not command:
         return {"message": "Webhook received but ignored due to note filter."}
 
+    if command == "bot, ping admins":
+        if settings.ff_admin_ping_comment:
+            note = f"Contacted admins: cc {get_gitlab_admin_mention()}"
+        else:
+            note = "Admin ping is disabled by configuration."
+
+        await create_gitlab_merge_request_note(payload, note)
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+        }
+
     merge_request = payload.get("merge_request", {})
+    merge_request_iid = str(merge_request.get("iid", ""))
+
+    if command == "bot, help":
+        await create_gitlab_merge_request_note(payload, get_gitlab_help_note())
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+        }
+
+    if command == "bot, status":
+        if not merge_request_iid:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Missing merge request IID in GitLab payload.",
+            )
+
+        pipelines = await list_gitlab_merge_request_pipelines(merge_request_iid)
+        await create_gitlab_merge_request_note(
+            payload,
+            format_gitlab_pipeline_status_note(pipelines),
+        )
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+            "pipeline_count": len(pipelines),
+        }
+
+    if command == "bot, cancel":
+        if not merge_request_iid:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail="Missing merge request IID in GitLab payload.",
+            )
+
+        cancelled_count = await cancel_gitlab_merge_request_pipelines(
+            merge_request_iid
+        )
+        note = (
+            f"Cancelled {cancelled_count} active build(s)."
+            if cancelled_count
+            else "No active builds found to cancel."
+        )
+        await create_gitlab_merge_request_note(payload, note)
+        return {
+            "message": "GitLab webhook received",
+            "command": command,
+            "cancelled_count": cancelled_count,
+        }
+
     source_info = merge_request.get("source", {})
     source_repository = source_info.get("git_http_url") or payload.get(
         "project", {}
@@ -272,8 +464,8 @@ async def receive_gitlab_webhook(
             detail="Missing source ref in GitLab payload.",
         )
 
-    merge_request_iid = str(merge_request.get("iid", ""))
     source_sha = merge_request.get("last_commit", {}).get("id", "")
+    target_branch = merge_request.get("target_branch", settings.github_ci_ref)
     gitlab_project_path = get_gitlab_project_path(payload)
     gitlab_base_url = get_gitlab_base_url(payload)
 
@@ -314,7 +506,9 @@ async def receive_gitlab_webhook(
             "gitlab_project_path": gitlab_project_path,
             "gitlab_merge_request_iid": merge_request_iid,
             "gitlab_source_branch": merge_request.get("source_branch", ""),
+            "gitlab_target_branch": target_branch,
             "gitlab_source_sha": source_sha,
+            "pr_target_branch": target_branch,
         },
         webhook_event_id=None,
     )
@@ -325,11 +519,22 @@ async def receive_gitlab_webhook(
     if not should_queue:
         pipeline = await build_pipeline.start_pipeline(pipeline.id)
 
+    note_prefix = "🔁 Retry" if command == "bot, retry" else "🚧 Build"
+    target_description = describe_target_branch(target_branch)
+    note = (
+        f"{note_prefix} queued — waiting for capacity for {target_description}."
+        if should_queue
+        else f"{note_prefix} enqueued for {target_description}."
+    )
+    await create_gitlab_merge_request_note(payload, note)
+
     return {
         "message": "GitLab webhook received",
         "event_id": delivery_id,
+        "command": command,
         "pipeline_id": str(pipeline.id),
         "pipeline_status": pipeline.status.value,
+        "target_repo": pipeline.flat_manager_repo or get_target_repo_for_branch(target_branch),
     }
 
 
@@ -553,14 +758,15 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
         )
 
     elif "comment" in payload:
-        comment_body = payload.get("comment", {}).get("body", "").lower()
+        comment_body = payload.get("comment", {}).get("body", "")
+        command = extract_bot_command(comment_body)
         issue = payload.get("issue", {})
         issue_number = issue.get("number")
         comment_author = payload.get("comment", {}).get("user", {}).get("login", "")
         pr_url = issue.get("pull_request", {}).get("url", "")
         repo = event.repository
 
-        if "bot, ping admins" in comment_body:
+        if command == "bot, ping admins":
             if issue_number is None:
                 logger.error(
                     "Missing issue number for admin ping",
@@ -585,7 +791,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
                     )
             return None
 
-        elif "bot, cancel" in comment_body:
+        elif command == "bot, cancel":
             if not pr_url or issue_number is None:
                 return None
 
@@ -659,7 +865,7 @@ async def create_pipeline(event: WebhookEvent) -> uuid.UUID | None:
 
             return None
 
-        elif "bot, build" in comment_body:
+        elif is_build_bot_command(command):
             if not pr_url or issue_number is None:
                 return None
 

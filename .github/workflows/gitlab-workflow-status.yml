@@ -26,7 +26,6 @@ on:
       - 'json4cpp: Publish documentation'
       - 'json4cpp: Semgrep'
       - 'libnbtplusplus: CI'
-      - 'Merge command'
       - 'MeshMC: Backport'
       - 'Blocked/Stacked Pull Requests Automation'
       - 'MeshMC: Build'

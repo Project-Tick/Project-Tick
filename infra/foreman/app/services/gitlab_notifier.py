@@ -17,6 +17,28 @@ class GitLabNotifier:
         value = (pipeline.params or {}).get(key, "")
         return value if isinstance(value, str) else ""
 
+    def _get_target_branch(self, pipeline: Pipeline) -> str:
+        for key in ("gitlab_target_branch", "pr_target_branch"):
+            value = self._get_param(pipeline, key)
+            if value:
+                return value
+
+        return self._get_param(pipeline, "gitlab_source_branch") or "master"
+
+    def _get_target_label(self, pipeline: Pipeline) -> str:
+        target_branch = self._get_target_branch(pipeline)
+        target_repo = pipeline.flat_manager_repo or "test"
+
+        if target_repo == "stable":
+            return f"{target_branch} (stable)"
+        if target_repo == "beta":
+            return target_branch
+
+        return target_branch
+
+    def _get_status_name(self, pipeline: Pipeline) -> str:
+        return f"{self.status_name}/{self._get_target_branch(pipeline)}"
+
     async def _create_merge_request_note(
         self,
         pipeline: Pipeline,
@@ -111,7 +133,7 @@ class GitLabNotifier:
 
         payload = {
             "state": state,
-            "name": self.status_name,
+            "name": self._get_status_name(pipeline),
             "description": description,
         }
 
@@ -153,15 +175,16 @@ class GitLabNotifier:
         pipeline: Pipeline,
         log_url: str,
     ) -> None:
+        target_label = self._get_target_label(pipeline)
         await self._update_commit_status(
             pipeline,
             state="running",
-            description="Workflow running on GitHub Actions",
+            description=f"Workflow running for {target_label} on GitHub Actions",
             target_url=log_url,
         )
         await self._create_merge_request_note(
             pipeline,
-            f"🚧 [Test build started]({log_url}).",
+            f"🚧 [Build for {target_label} started]({log_url}).",
         )
 
     async def handle_build_completion(
@@ -170,30 +193,31 @@ class GitLabNotifier:
         status: str,
     ) -> None:
         log_url = pipeline.log_url or ""
+        target_label = self._get_target_label(pipeline)
 
         if status == "success":
             state = "success"
-            description = "Workflow succeeded on GitHub Actions"
+            description = f"Workflow succeeded for {target_label} on GitHub Actions"
             note = (
-                f"✅ [Test build succeeded]({log_url})."
+                f"✅ [Build for {target_label} succeeded]({log_url})."
                 if log_url
-                else "✅ Test build succeeded."
+                else f"✅ Build for {target_label} succeeded."
             )
         elif status == "cancelled":
             state = "canceled"
-            description = "Workflow cancelled on GitHub Actions"
+            description = f"Workflow cancelled for {target_label} on GitHub Actions"
             note = (
-                f"⏹️ [Test build was cancelled]({log_url})."
+                f"⏹️ [Build for {target_label} was cancelled]({log_url})."
                 if log_url
-                else "⏹️ Test build was cancelled."
+                else f"⏹️ Build for {target_label} was cancelled."
             )
         else:
             state = "failed"
-            description = "Workflow failed on GitHub Actions"
+            description = f"Workflow failed for {target_label} on GitHub Actions"
             note = (
-                f"❌ [Test build failed]({log_url})."
+                f"❌ [Build for {target_label} failed]({log_url})."
                 if log_url
-                else "❌ Test build failed."
+                else f"❌ Build for {target_label} failed."
             )
 
         await self._update_commit_status(

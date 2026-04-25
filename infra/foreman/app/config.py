@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     github_ci_ref: str = "master"
     workflow_repo: str = "foreman"
     admin_team: str = "project-tick/maintainers"
+    gitlab_admin_mention: str | None = None
     statuspage_url: str = "https://status.projecttick.org"
     sentry_dsn: str | None = None
     ff_admin_ping_comment: bool = True
