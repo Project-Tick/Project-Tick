@@ -10,7 +10,7 @@ import structlog
 from fastapi import APIRouter, Header, HTTPException, Request, status
 from sqlalchemy import select, text
 from typing import Any
-from app.config import WorkflowDispatchRule, settings
+from app.config import settings
 from app.database import get_db
 from app.models.pipeline import Pipeline, PipelineStatus
 from app.models.webhook_event import WebhookEvent, WebhookSource
