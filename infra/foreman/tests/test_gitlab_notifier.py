@@ -81,11 +81,15 @@ async def test_handle_build_completion_failure_creates_stable_issue(
     gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
     gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
     gitlab_notifier._create_issue = AsyncMock(return_value=("https://git/issue/1", 1))
+    mock_pipeline.params["dispatch_owner"] = "NeoZip-Infra"
+    mock_pipeline.params["dispatch_repo"] = "foreman"
+    mock_pipeline.params["dispatch_workflow_id"] = "neozip-cmake.yml"
 
     await gitlab_notifier.handle_build_completion(mock_pipeline, "failure")
 
     gitlab_notifier._create_issue.assert_awaited_once()
     assert "bot, retry" in gitlab_notifier._create_issue.await_args.args[2]
+    assert "Workflow target: NeoZip-Infra/foreman:neozip-cmake.yml" in gitlab_notifier._create_issue.await_args.args[2]
 
 
 @pytest.mark.asyncio

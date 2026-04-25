@@ -17,6 +17,22 @@ from app.utils.github import (
 logger = structlog.get_logger(__name__)
 
 
+def _get_string(value: object) -> str:
+    return value if isinstance(value, str) else ""
+
+
+def _get_dispatch_target(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    owner = _get_string(params.get("dispatch_owner"))
+    repo = _get_string(params.get("dispatch_repo"))
+    workflow_id = _get_string(params.get("dispatch_workflow_id")) or _get_string(
+        params.get("workflow_id")
+    )
+    if owner and repo and workflow_id:
+        return f"{owner}/{repo}:{workflow_id}"
+    return workflow_id
+
+
 class GitHubNotifier:
     def __init__(self):
         pass
@@ -35,6 +51,12 @@ class GitHubNotifier:
         sha = pipeline.params.get("sha", "")
         ref = pipeline.params.get("ref", "refs/heads/master")
         git_repo = pipeline.params.get("repo", "")
+        dispatch_inputs = pipeline.params.get("dispatch_inputs")
+        source_repository = ""
+        if isinstance(dispatch_inputs, dict):
+            source_repository = _get_string(dispatch_inputs.get("source-repository"))
+
+        workflow_target = _get_dispatch_target(pipeline)
 
         lines = [
             f"The stable build pipeline for `{pipeline.app_id}` failed.",
@@ -47,6 +69,10 @@ class GitHubNotifier:
             lines.append(f"Build log: {pipeline.log_url}")
         if git_repo:
             lines.append(f"GitHub repository: {git_repo}")
+        if source_repository:
+            lines.append(f"Source repository: {source_repository}")
+        if workflow_target:
+            lines.append(f"Workflow target: {workflow_target}")
 
         lines.extend(
             [
