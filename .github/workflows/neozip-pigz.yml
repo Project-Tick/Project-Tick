@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
           show-progress: 'false'
 

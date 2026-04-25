@@ -31,6 +31,14 @@ on:
         type: choice
         options: [Debug, Release]
         default: Debug
+      source-repository:
+        description: "Optional external repository URL to fetch source from"
+        type: string
+        default: ""
+      source-ref:
+        description: "Optional external ref to fetch when source-repository is set"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -111,7 +119,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
           fetch-depth: 0
 
@@ -149,7 +157,7 @@ jobs:
           # minimal  = dependabot, backport, draft
           if [[ "$EVENT" == "merge_group" ]] || \
              [[ "$REF" == refs/tags/* ]] || \
-             [[ "$REF" == "refs/heads/master" ]] || \
+             ([[ "$EVENT" == "push" ]] && [[ "$REF" == "refs/heads/master" || "$REF" == "refs/heads/main" ]]) || \
              [[ "${{ env.FORCE_ALL }}" == "true" ]]; then
             echo "run_level=full" >> "$GITHUB_OUTPUT"
           elif [[ "$ACTOR" == "dependabot[bot]" ]]; then

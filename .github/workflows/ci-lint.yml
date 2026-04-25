@@ -33,7 +33,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
           fetch-depth: 0
 
@@ -64,7 +64,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
 
       - name: Check REUSE compliance
         uses: fsfe/reuse-action@v6
@@ -80,7 +80,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
 
       - name: Check trailing whitespace
         run: |
@@ -114,7 +114,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
 
       - name: Run actionlint
         uses: raven-actions/actionlint@v2

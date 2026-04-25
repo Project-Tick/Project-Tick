@@ -1,0 +1,129 @@
+name: Source checkout
+description: Checkout the workflow repository or an externally supplied source ref.
+
+inputs:
+  fetch-depth:
+    description: Number of commits to fetch. Use 0 for full history.
+    default: "1"
+  submodules:
+    description: Whether to initialize submodules.
+    default: "false"
+  repository:
+    description: Repository to checkout. Leave empty to use the current repository.
+    default: ""
+  path:
+    description: Relative path under the workspace.
+    default: "."
+  ref:
+    description: Explicit ref to checkout.
+    default: ""
+  show-progress:
+    description: Whether checkout progress should be shown.
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve checkout source
+      id: resolve
+      shell: bash
+      env:
+        EVENT_INPUTS: ${{ toJSON(github.event.inputs) }}
+        EVENT_SOURCE_REPOSITORY: ${{ github.event.inputs.source-repository || '' }}
+        EVENT_SOURCE_REF: ${{ github.event.inputs.source-ref || '' }}
+        INPUT_REPOSITORY: ${{ inputs.repository }}
+        INPUT_REF: ${{ inputs.ref }}
+      run: |
+        set -euo pipefail
+
+        use_external=false
+        source_repository=""
+        source_ref=""
+
+        if [[ "$EVENT_INPUTS" != "null" ]] && [[ -n "$EVENT_SOURCE_REPOSITORY" ]] && [[ -z "$INPUT_REPOSITORY" ]] && [[ -z "$INPUT_REF" ]]; then
+          use_external=true
+          source_repository="$EVENT_SOURCE_REPOSITORY"
+          source_ref="$EVENT_SOURCE_REF"
+        fi
+
+        {
+          echo "use-external=$use_external"
+          echo "source-repository=$source_repository"
+          echo "source-ref=$source_ref"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Checkout external source
+      if: ${{ steps.resolve.outputs.use-external == 'true' }}
+      shell: bash
+      env:
+        EXTERNAL_SOURCE_REPOSITORY: ${{ steps.resolve.outputs.source-repository }}
+        EXTERNAL_SOURCE_REF: ${{ steps.resolve.outputs.source-ref }}
+        FETCH_DEPTH: ${{ inputs.fetch-depth }}
+        INPUT_PATH: ${{ inputs.path }}
+        SHOW_PROGRESS: ${{ inputs.show-progress }}
+        SOURCE_AUTH_TOKEN: ${{ env.PT_GITLAB_SOURCE_TOKEN || '' }}
+        SOURCE_AUTH_USERNAME: ${{ env.PT_GITLAB_SOURCE_USERNAME || 'oauth2' }}
+        SUBMODULES: ${{ inputs.submodules }}
+      run: |
+        set -euo pipefail
+
+        target_dir="$GITHUB_WORKSPACE"
+        if [[ "$INPUT_PATH" != "." ]]; then
+          target_dir="$GITHUB_WORKSPACE/$INPUT_PATH"
+        fi
+
+        repo_url="$EXTERNAL_SOURCE_REPOSITORY"
+        if [[ -n "$SOURCE_AUTH_TOKEN" ]] && [[ "$repo_url" == https://* ]]; then
+          repo_url="https://${SOURCE_AUTH_USERNAME}:${SOURCE_AUTH_TOKEN}@${repo_url#https://}"
+        fi
+
+        mkdir -p "$target_dir"
+        find "$target_dir" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+
+        git init "$target_dir"
+        git -C "$target_dir" config advice.detachedHead false
+        git config --global --add safe.directory "$target_dir"
+        git -C "$target_dir" remote add origin "$repo_url"
+
+        fetch_args=(fetch --no-tags --prune --no-recurse-submodules origin "$EXTERNAL_SOURCE_REF")
+        if [[ "$FETCH_DEPTH" != "0" ]]; then
+          fetch_args+=(--depth "$FETCH_DEPTH")
+        fi
+        if [[ "$SHOW_PROGRESS" != "true" ]]; then
+          fetch_args+=(--quiet)
+        fi
+
+        git -C "$target_dir" "${fetch_args[@]}"
+        git -C "$target_dir" checkout --force --detach FETCH_HEAD
+
+        case "$SUBMODULES" in
+          true)
+            git -C "$target_dir" submodule sync --recursive
+            git -C "$target_dir" submodule update --init
+            ;;
+          recursive)
+            git -C "$target_dir" submodule sync --recursive
+            git -C "$target_dir" submodule update --init --recursive
+            ;;
+        esac
+
+    - name: Checkout current repository
+      if: ${{ steps.resolve.outputs.use-external != 'true' && inputs.repository == '' }}
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+        path: ${{ inputs.path }}
+        ref: ${{ inputs.ref }}
+        show-progress: ${{ inputs.show-progress }}
+        submodules: ${{ inputs.submodules }}
+
+    - name: Checkout custom repository
+      if: ${{ steps.resolve.outputs.use-external != 'true' && inputs.repository != '' }}
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+        path: ${{ inputs.path }}
+        ref: ${{ inputs.ref }}
+        repository: ${{ inputs.repository }}
+        show-progress: ${{ inputs.show-progress }}
+        submodules: ${{ inputs.submodules }}

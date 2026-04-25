@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     container: gcc:latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
@@ -31,7 +31,7 @@ jobs:
       matrix:
         target: [ci_test_amalgamation, ci_test_single_header, ci_cppcheck, ci_cpplint, ci_reproducible_tests, ci_non_git_tests, ci_offline_testdata, ci_reuse_compliance, ci_test_valgrind]
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Install Valgrind
         run: sudo apt-get update ; sudo apt-get install -y valgrind
       - name: Get latest CMake and ninja
@@ -51,7 +51,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: apt-get update ; apt-get install -y git clang-tools iwyu unzip
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
@@ -67,7 +67,7 @@ jobs:
         compiler: ['7', '8', '9', '10', '11', '12', '13', '14', '15', 'latest']
     container: gcc:${{ matrix.compiler }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
@@ -83,7 +83,7 @@ jobs:
         compiler: ['11', '12', '13', '14', '15-bullseye', '16', '17', '18', '19', '20', 'latest']
     container: silkeh/clang:${{ matrix.compiler }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@v4.3.1
       - name: Run CMake
@@ -94,7 +94,7 @@ jobs:
   ci_test_coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -118,7 +118,7 @@ jobs:
       matrix:
         os: [macos-14, macos-15]
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -131,7 +131,7 @@ jobs:
       matrix:
         os: [windows-2022, windows-2025]
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On -G "Visual Studio 17 2022"
       - name: Build
@@ -142,7 +142,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:

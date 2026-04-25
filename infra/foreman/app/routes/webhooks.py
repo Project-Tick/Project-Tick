@@ -30,6 +30,66 @@ DISABLED_TEST_BUILDS_MSG = (
     "{statuspage_url} for updates."
 )
 
+BOT_COMMANDS = ("bot, build", "bot, ping admins", "bot, cancel")
+
+
+def filter_bot_command_text(text: str) -> str:
+    filtered_lines = []
+    for line in text.splitlines():
+        stripped_line = line.lstrip()
+        if stripped_line.startswith(">"):
+            continue
+        if stripped_line.startswith(("`", "<code>")) and stripped_line.rstrip().endswith(
+            ("`", "</code>")
+        ):
+            continue
+        if any(
+            f"`{command}`" in line or f"<code>{command}</code>" in line
+            for command in BOT_COMMANDS
+        ):
+            continue
+        filtered_lines.append(line)
+
+    return "\n".join(filtered_lines)
+
+
+def has_bot_command(text: str, command: str) -> bool:
+    return command.lower() in filter_bot_command_text(text).lower()
+
+
+def is_gitlab_build_note(payload: dict[str, Any]) -> bool:
+    if payload.get("object_kind") != "note":
+        return False
+
+    object_attributes = payload.get("object_attributes", {})
+    merge_request = payload.get("merge_request", {})
+    action = object_attributes.get("action")
+
+    if object_attributes.get("noteable_type") != "MergeRequest":
+        return False
+    if object_attributes.get("system") or object_attributes.get("internal"):
+        return False
+    if action not in (None, "", "create", "update"):
+        return False
+    if merge_request.get("state") in ("closed", "merged"):
+        return False
+
+    note = object_attributes.get("note", "")
+    return has_bot_command(note, "bot, build")
+
+
+def get_gitlab_merge_request_ref(payload: dict[str, Any]) -> str:
+    merge_request = payload.get("merge_request", {})
+    merge_request_iid = merge_request.get("iid")
+    if merge_request_iid:
+        return f"refs/merge-requests/{merge_request_iid}/head"
+
+    source_branch = merge_request.get("source_branch", "")
+    if source_branch:
+        return f"refs/heads/{source_branch}"
+
+    return ""
+
 
 def should_store_event(payload: dict) -> bool:
     ref = payload.get("ref", "")
@@ -58,30 +118,9 @@ def should_store_event(payload: dict) -> bool:
         if comment_author in ("github-actions[bot]",):
             return False
 
-        comment_lines = []
-        for line in comment.splitlines():
-            if line.lstrip().startswith(">"):
-                continue
-            if line.lstrip().startswith(("`", "<code>")) and line.rstrip().endswith(
-                ("`", "</code>")
-            ):
-                continue
-            if any(
-                s in line
-                for s in (
-                    "`bot, build`",
-                    "<code>bot, build</code>",
-                    "`bot, ping admins`",
-                    "<code>bot, ping admins</code>",
-                    "`bot, cancel`",
-                    "<code>bot, cancel</code>",
-                )
-            ):
-                continue
-            comment_lines.append(line)
-        filtered_comment = "\n".join(comment_lines)
+        filtered_comment = filter_bot_command_text(comment)
 
-        if "bot, build" in filtered_comment:
+        if "bot, build" in filtered_comment.lower():
             return True
 
         if "bot, ping admins" in filtered_comment.lower():
@@ -91,6 +130,87 @@ def should_store_event(payload: dict) -> bool:
             return True
 
     return False
+
+
+@webhooks_router.post(
+    "/gitlab",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def receive_gitlab_webhook(
+    request: Request,
+    x_gitlab_event: str | None = Header(None, description="GitLab event name"),
+    x_gitlab_event_uuid: str | None = Header(
+        None, description="GitLab event UUID"
+    ),
+    x_gitlab_token: str | None = Header(None, description="GitLab webhook token"),
+):
+    if settings.gitlab_webhook_secret:
+        if not x_gitlab_token or not hmac.compare_digest(
+            settings.gitlab_webhook_secret, x_gitlab_token
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid GitLab webhook token.",
+            )
+
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid JSON payload.",
+        )
+
+    if x_gitlab_event != "Note Hook":
+        return {"message": "Webhook received but ignored due to event type filter."}
+
+    if not is_gitlab_build_note(payload):
+        return {"message": "Webhook received but ignored due to note filter."}
+
+    merge_request = payload.get("merge_request", {})
+    source_info = merge_request.get("source", {})
+    source_repository = source_info.get("git_http_url") or payload.get(
+        "project", {}
+    ).get("git_http_url", "")
+    source_ref = get_gitlab_merge_request_ref(payload)
+
+    if not source_repository:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing source repository URL in GitLab payload.",
+        )
+    if not source_ref:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing source ref in GitLab payload.",
+        )
+
+    merge_request_iid = merge_request.get("iid", "unknown")
+    delivery_id = x_gitlab_event_uuid or str(uuid.uuid4())
+    github_actions = GitHubActionsService()
+    dispatch_result = await github_actions.dispatch(
+        job_id=f"gitlab-mr-{merge_request_iid}",
+        pipeline_id=delivery_id,
+        job_data={
+            "params": {
+                "owner": settings.github_org,
+                "repo": settings.github_ci_repo,
+                "workflow_id": settings.github_ci_workflow,
+                "ref": settings.github_ci_ref,
+                "inputs": {
+                    "force-all": "false",
+                    "source-repository": source_repository,
+                    "source-ref": source_ref,
+                },
+            }
+        },
+    )
+
+    return {
+        "message": "GitLab webhook received",
+        "event_id": delivery_id,
+        "dispatch": dispatch_result,
+    }
 
 
 async def is_submodule_only_pr(

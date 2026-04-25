@@ -2,6 +2,7 @@ import hashlib
 import hmac
 import json
 import uuid
+from copy import deepcopy
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, Mock, call, patch
 
@@ -146,6 +147,32 @@ SAMPLE_BOT_CANCEL_PAYLOAD = {
         "pull_request": {
             "url": "https://api.github.com/repos/test-owner/test-repo/pulls/42"
         },
+    },
+}
+
+SAMPLE_GITLAB_NOTE_PAYLOAD = {
+    "object_kind": "note",
+    "user": {"username": "samet"},
+    "project": {
+        "path_with_namespace": "project-tick/project-tick",
+        "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+    },
+    "merge_request": {
+        "iid": 17,
+        "state": "opened",
+        "source_branch": "feature/gitlab-build",
+        "last_commit": {"id": "abcdef1234567890"},
+        "source": {
+            "path_with_namespace": "project-tick/project-tick",
+            "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+        },
+    },
+    "object_attributes": {
+        "note": "please bot, build this MR",
+        "noteable_type": "MergeRequest",
+        "action": "create",
+        "system": False,
+        "internal": False,
     },
 }
 
@@ -426,6 +453,90 @@ def test_should_not_store_event():
 
     for payload in payloads:
         assert should_store_event(payload) is False
+
+
+def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Note Hook",
+        "X-Gitlab-Event-UUID": str(uuid.uuid4()),
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+
+    dispatch_mock = AsyncMock(
+        return_value={
+            "status": "dispatched",
+            "workflow_id": "ci.yml",
+            "repo": "Project-Tick",
+        }
+    )
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch.object(settings, "github_org", "Project-Tick"),
+        patch.object(settings, "github_ci_repo", "Project-Tick"),
+        patch.object(settings, "github_ci_workflow", "ci.yml"),
+        patch.object(settings, "github_ci_ref", "master"),
+        patch("app.routes.webhooks.GitHubActionsService.dispatch", dispatch_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_NOTE_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["message"] == "GitLab webhook received"
+    dispatch_mock.assert_awaited_once()
+
+    dispatch_kwargs = dispatch_mock.await_args.kwargs
+    assert dispatch_kwargs["job_data"]["params"]["owner"] == "Project-Tick"
+    assert dispatch_kwargs["job_data"]["params"]["repo"] == "Project-Tick"
+    assert dispatch_kwargs["job_data"]["params"]["workflow_id"] == "ci.yml"
+    assert dispatch_kwargs["job_data"]["params"]["ref"] == "master"
+    assert (
+        dispatch_kwargs["job_data"]["params"]["inputs"]["source-repository"]
+        == "https://git.projecttick.org/project-tick/project-tick.git"
+    )
+    assert (
+        dispatch_kwargs["job_data"]["params"]["inputs"]["source-ref"]
+        == "refs/merge-requests/17/head"
+    )
+
+
+def test_receive_gitlab_webhook_ignores_quoted_build_note(client: TestClient):
+    payload = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
+    payload["object_attributes"]["note"] = "> bot, build"
+
+    dispatch_mock = AsyncMock()
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", ""),
+        patch("app.routes.webhooks.GitHubActionsService.dispatch", dispatch_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=payload,
+            headers={"X-Gitlab-Event": "Note Hook"},
+        )
+
+    assert response.status_code == 202
+    assert "ignored due to note filter" in response.json()["message"]
+    dispatch_mock.assert_not_awaited()
+
+
+def test_receive_gitlab_webhook_invalid_token(client: TestClient):
+    with patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_NOTE_PAYLOAD,
+            headers={
+                "X-Gitlab-Event": "Note Hook",
+                "X-Gitlab-Token": "wrong-secret",
+            },
+        )
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Invalid GitLab webhook token."
 
 
 def test_receive_github_webhook_ignore_event(client: TestClient, mock_db):

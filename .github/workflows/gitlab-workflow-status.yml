@@ -1,0 +1,88 @@
+name: Report GitLab workflow status
+
+on:
+  workflow_run:
+    workflows:
+      - 'AUR: Update meshmc'
+      - 'cgit: CI'
+      - 'Lint & Checks'
+      - 'Scheduled CI'
+      - 'CI'
+      - 'Close PRs to master'
+      - 'cmark: CI'
+      - 'cmark: Fuzz'
+      - 'corebinutils: CI'
+      - 'ForgeWrapper: Build'
+      - 'genqrcode: CI'
+      - 'images4docker: Build'
+      - 'Action CI'
+      - 'Docker images'
+      - 'Test build with published image'
+      - 'json4cpp: Comment Check Amalgamation'
+      - 'json4cpp: Check amalgamation'
+      - 'json4cpp: CI'
+      - 'json4cpp: Flawfinder'
+      - 'json4cpp: Fuzz'
+      - 'json4cpp: Publish documentation'
+      - 'json4cpp: Semgrep'
+      - 'libnbtplusplus: CI'
+      - 'Merge command'
+      - 'MeshMC: Backport'
+      - 'Blocked/Stacked Pull Requests Automation'
+      - 'MeshMC: Build'
+      - 'MeshMC: CodeQL'
+      - 'MeshMC: Container'
+      - 'MeshMC: Update Flake'
+      - 'Build'
+      - 'Deploy to repository'
+      - 'Update modules'
+      - 'Merged Blocking Pull Request Automation'
+      - 'MeshMC: Nix'
+      - 'MeshMC: Release'
+      - 'mnv: CI'
+      - 'mnv: CodeQL'
+      - 'mnv: Coverity'
+      - 'mnv: Check Links'
+      - 'neozip: Static Analysis'
+      - 'neozip: CI'
+      - 'neozip: CMake'
+      - 'neozip: CodeQL'
+      - 'neozip: Configure'
+      - 'neozip: Fuzz'
+      - 'neozip: Libpng'
+      - 'neozip: Link'
+      - 'neozip: Lint'
+      - 'neozip: OSB'
+      - 'neozip: Pigz'
+      - 'neozip: Package Check'
+      - 'neozip: Release'
+      - 'Release: Package Source Archives'
+      - 'Dependency Review'
+      - 'Labeler'
+      - 'Scorecard supply-chain security'
+      - 'Stale: Comment and close stale issues and PRs'
+      - 'tomlplusplus: CI'
+      - 'tomlplusplus: Fuzz'
+      - 'tomlplusplus: gh-pages'
+    types:
+      - requested
+      - in_progress
+      - completed
+
+permissions: {}
+
+jobs:
+  report:
+    if: ${{ github.event.workflow_run.name != 'Report GitLab status' && github.event.workflow_run.name != 'Report GitLab workflow status' && github.event.workflow_run.name != 'Report GitLab job status' }}
+    uses: ./.github/workflows/gitlab-status.yml
+    with:
+      gitlab-url: ${{ vars.GITLAB_STATUS_BASE_URL || 'https://git.projecttick.org' }}
+      project: ${{ vars.GITLAB_STATUS_PROJECT || '' }}
+      sha: ${{ github.event.workflow_run.head_sha }}
+      ref: ${{ github.event.workflow_run.head_branch || '' }}
+      state: ${{ github.event.action == 'requested' && 'pending' || github.event.action == 'in_progress' && 'running' || github.event.workflow_run.conclusion == 'success' && 'success' || github.event.workflow_run.conclusion == 'skipped' && 'skipped' || github.event.workflow_run.conclusion == 'neutral' && 'skipped' || (github.event.workflow_run.conclusion == 'cancelled' || github.event.workflow_run.conclusion == 'stale') && 'canceled' || 'failed' }}
+      name: ${{ format('github-actions/{0}', github.event.workflow_run.name) }}
+      description: ${{ github.event.action == 'requested' && 'Workflow queued on GitHub Actions' || github.event.action == 'in_progress' && 'Workflow running on GitHub Actions' || github.event.workflow_run.conclusion == 'success' && 'Workflow succeeded on GitHub Actions' || github.event.workflow_run.conclusion == 'skipped' && 'Workflow skipped on GitHub Actions' || github.event.workflow_run.conclusion == 'neutral' && 'Workflow completed neutrally on GitHub Actions' || (github.event.workflow_run.conclusion == 'cancelled' || github.event.workflow_run.conclusion == 'stale') && 'Workflow cancelled on GitHub Actions' || 'Workflow failed on GitHub Actions' }}
+      target-url: ${{ github.event.workflow_run.html_url }}
+    secrets:
+      token: ${{ secrets.GITLAB_STATUS_TOKEN }}

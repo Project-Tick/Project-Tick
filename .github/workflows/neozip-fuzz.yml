@@ -16,7 +16,7 @@ jobs:
     name: Fuzzing
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Build Fuzzers
         id: build
         uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master

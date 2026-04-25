@@ -7,10 +7,14 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/test_db"
     database_replica_url: str | None = None
     debug: bool = False
+    gitlab_webhook_secret: str = "test_gitlab_webhook_secret"
     github_token: str = "test_github_token"
     github_status_token: str = "test_github_status_token"
     github_webhook_secret: str = "test_webhook_secret"
     github_org: str = "project-tick"
+    github_ci_repo: str = "Project-Tick"
+    github_ci_workflow: str = "ci.yml"
+    github_ci_ref: str = "master"
     workflow_repo: str = "foreman"
     admin_team: str = "project-tick/maintainers"
     statuspage_url: str = "https://status.projecttick.org"

@@ -25,10 +25,9 @@ class GitHubActionsService:
         app_id = job_data.get("app_id", "")
 
         inputs = params.get("inputs", {})
-        workflow_inputs = {
-            **inputs,
-            "app_id": app_id,
-        }
+        workflow_inputs = dict(inputs)
+        if app_id:
+            workflow_inputs["app_id"] = app_id
 
         additional_params = params.get("additional_params", {})
         if additional_params:

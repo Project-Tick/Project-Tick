@@ -1,0 +1,29 @@
+name: Report GitLab job status
+
+on:
+  workflow_job:
+    types:
+      - queued
+      - in_progress
+      - completed
+
+permissions: {}
+
+jobs:
+  report:
+    if: >-
+      github.event.workflow_job.workflow_name != 'Report GitLab status' &&
+      github.event.workflow_job.workflow_name != 'Report GitLab workflow status' &&
+      github.event.workflow_job.workflow_name != 'Report GitLab job status'
+    uses: ./.github/workflows/gitlab-status.yml
+    with:
+      gitlab-url: ${{ vars.GITLAB_STATUS_BASE_URL || 'https://git.projecttick.org' }}
+      project: ${{ vars.GITLAB_STATUS_PROJECT || '' }}
+      sha: ${{ github.event.workflow_job.head_sha }}
+      ref: ${{ github.event.workflow_job.head_branch || '' }}
+      state: ${{ github.event.action == 'queued' && 'pending' || github.event.action == 'in_progress' && 'running' || github.event.workflow_job.conclusion == 'success' && 'success' || github.event.workflow_job.conclusion == 'skipped' && 'skipped' || github.event.workflow_job.conclusion == 'neutral' && 'skipped' || (github.event.workflow_job.conclusion == 'cancelled' || github.event.workflow_job.conclusion == 'stale') && 'canceled' || 'failed' }}
+      name: ${{ format('github-actions/job/{0}#{1}', github.event.workflow_job.name, github.event.workflow_job.run_id) }}
+      description: ${{ github.event.action == 'queued' && 'Job queued on GitHub Actions' || github.event.action == 'in_progress' && 'Job running on GitHub Actions' || github.event.workflow_job.conclusion == 'success' && 'Job succeeded on GitHub Actions' || github.event.workflow_job.conclusion == 'skipped' && 'Job skipped on GitHub Actions' || github.event.workflow_job.conclusion == 'neutral' && 'Job completed neutrally on GitHub Actions' || (github.event.workflow_job.conclusion == 'cancelled' || github.event.workflow_job.conclusion == 'stale') && 'Job cancelled on GitHub Actions' || 'Job failed on GitHub Actions' }}
+      target-url: ${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.event.workflow_job.run_id) }}
+    secrets:
+      token: ${{ secrets.GITLAB_STATUS_TOKEN }}
