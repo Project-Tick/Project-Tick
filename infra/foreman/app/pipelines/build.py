@@ -490,12 +490,11 @@ class BuildPipeline:
             if not pipeline:
                 raise ValueError(f"Pipeline {pipeline_id} not found")
 
-            if pipeline.log_url:
-                raise ValueError("Log URL already set")
-
             updates: dict[str, Any] = {}
-            pipeline.log_url = parsed_data.log_url
-            updates["log_url"] = pipeline.log_url
+            previous_log_url = pipeline.log_url
+            if previous_log_url != parsed_data.log_url:
+                pipeline.log_url = parsed_data.log_url
+                updates["log_url"] = pipeline.log_url
 
             provider_data = dict(pipeline.provider_data or {})
 
@@ -532,8 +531,9 @@ class BuildPipeline:
                         )
                 return pipeline, updates
 
-            notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
-            await notifier.handle_build_started(pipeline, parsed_data.log_url)
+            if previous_log_url != parsed_data.log_url:
+                notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
+                await notifier.handle_build_started(pipeline, parsed_data.log_url)
 
             return pipeline, updates
 

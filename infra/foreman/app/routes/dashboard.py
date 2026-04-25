@@ -1,17 +1,171 @@
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import case, func, select
 
 from app.database import get_db
 from app.models import Pipeline, PipelineStatus
+from app.pipelines.build import resolve_pipeline_target_repo
 
 dashboard_router = APIRouter(tags=["dashboard"])
 
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
+
+
+def _get_string(value: Any) -> str:
+    return value if isinstance(value, str) else ""
+
+
+def _normalize_ref(ref: str) -> str:
+    if ref.startswith("refs/heads/"):
+        return ref.removeprefix("refs/heads/")
+    if ref.startswith("refs/tags/"):
+        return ref.removeprefix("refs/tags/")
+    if ref.startswith("refs/merge-requests/") and ref.endswith("/head"):
+        parts = ref.split("/")
+        if len(parts) >= 4:
+            return f"mr-{parts[2]}"
+    return ref
+
+
+def _get_source_repository_url(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    dispatch_inputs = params.get("dispatch_inputs")
+    if isinstance(dispatch_inputs, dict):
+        source_repository = _get_string(dispatch_inputs.get("source-repository"))
+        if source_repository:
+            return source_repository
+
+    git_http_url = _get_string(params.get("gitlab_source_repository"))
+    if git_http_url:
+        return git_http_url
+
+    git_repo = _get_string(params.get("repo"))
+    if git_repo:
+        return f"https://github.com/{git_repo}"
+
+    return ""
+
+
+def _get_source_ref(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    dispatch_inputs = params.get("dispatch_inputs")
+    if isinstance(dispatch_inputs, dict):
+        source_ref = _get_string(dispatch_inputs.get("source-ref"))
+        if source_ref:
+            return source_ref
+
+    for key in ("gitlab_source_branch", "pr_target_branch", "gitlab_target_branch", "ref"):
+        value = _get_string(params.get(key))
+        if value:
+            return value
+
+    return ""
+
+
+def get_pipeline_target_repo(pipeline: Pipeline) -> str:
+    return pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline)
+
+
+def _get_gitlab_merge_request_url(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    gitlab_base_url = _get_string(params.get("gitlab_base_url")).rstrip("/")
+    gitlab_project_path = _get_string(params.get("gitlab_project_path"))
+    merge_request_iid = _get_string(params.get("gitlab_merge_request_iid"))
+
+    if gitlab_base_url and gitlab_project_path and merge_request_iid:
+        return f"{gitlab_base_url}/{gitlab_project_path}/-/merge_requests/{merge_request_iid}"
+
+    return ""
+
+
+def get_pipeline_request_label(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    merge_request_iid = _get_string(params.get("gitlab_merge_request_iid"))
+    pr_number = _get_string(params.get("pr_number"))
+
+    if merge_request_iid:
+        return f"MR !{merge_request_iid}"
+    if pr_number:
+        return f"PR #{pr_number}"
+
+    source_ref = _normalize_ref(_get_source_ref(pipeline))
+    if source_ref and source_ref != pipeline.app_id:
+        return source_ref
+
+    return pipeline.app_id
+
+
+def get_pipeline_request_url(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    git_repo = _get_string(params.get("repo"))
+    pr_number = _get_string(params.get("pr_number"))
+
+    gitlab_merge_request_url = _get_gitlab_merge_request_url(pipeline)
+    if gitlab_merge_request_url:
+        return gitlab_merge_request_url
+    if git_repo and pr_number:
+        return f"https://github.com/{git_repo}/pull/{pr_number}"
+
+    return ""
+
+
+def get_pipeline_source_label(pipeline: Pipeline) -> str:
+    source_repository_url = _get_source_repository_url(pipeline)
+    source_ref = _normalize_ref(_get_source_ref(pipeline))
+
+    if source_repository_url:
+        parsed = urlparse(source_repository_url)
+        repository_label = parsed.path.removeprefix("/").removesuffix(".git") or source_repository_url
+        return f"{repository_label}@{source_ref}" if source_ref else repository_label
+
+    gitlab_project_path = _get_string(dict(pipeline.params or {}).get("gitlab_project_path"))
+    if gitlab_project_path:
+        return f"{gitlab_project_path}@{source_ref}" if source_ref else gitlab_project_path
+
+    return "-"
+
+
+def get_pipeline_source_url(pipeline: Pipeline) -> str:
+    params = dict(pipeline.params or {})
+    git_repo = _get_string(params.get("repo"))
+    sha = _get_string(params.get("sha"))
+
+    gitlab_merge_request_url = _get_gitlab_merge_request_url(pipeline)
+    if gitlab_merge_request_url:
+        return gitlab_merge_request_url
+
+    source_repository_url = _get_source_repository_url(pipeline)
+    if source_repository_url:
+        return source_repository_url.removesuffix(".git")
+
+    if git_repo and sha:
+        return f"https://github.com/{git_repo}/commit/{sha}"
+
+    return ""
+
+
+def get_pipeline_status_display(pipeline: Pipeline) -> dict[str, str | None]:
+    status_value = pipeline.status.value
+    status_url = pipeline.log_url or None
+    badge_class = f"badge-{status_value}"
+    label = status_value
+
+    if status_value in {"committed", "publishing"}:
+        badge_class = f"badge-{status_value}-{get_pipeline_target_repo(pipeline)}"
+    elif status_value == "succeeded":
+        badge_class = "badge-succeeded"
+
+    return {
+        "label": label,
+        "badge_class": badge_class,
+        "url": status_url,
+    }
 
 
 def format_time(dt: datetime | None) -> str:
@@ -63,6 +217,12 @@ def format_duration(started_at: datetime | None, finished_at: datetime | None) -
 
 templates.env.globals["format_time"] = format_time  # ty: ignore[invalid-assignment]
 templates.env.globals["format_duration"] = format_duration  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_request_label"] = get_pipeline_request_label  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_request_url"] = get_pipeline_request_url  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_source_label"] = get_pipeline_source_label  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_source_url"] = get_pipeline_source_url  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_target_repo"] = get_pipeline_target_repo  # ty: ignore[invalid-assignment]
+templates.env.globals["get_pipeline_status_display"] = get_pipeline_status_display  # ty: ignore[invalid-assignment]
 
 
 def group_pipelines(
@@ -72,8 +232,8 @@ def group_pipelines(
     completed: list[Pipeline] = []
 
     in_progress_statuses = {
+        PipelineStatus.PENDING,
         PipelineStatus.RUNNING,
-        PipelineStatus.SUCCEEDED,
     }
 
     for p in pipelines:
@@ -156,6 +316,15 @@ async def get_app_builds(app_id: str, limit: int = 5) -> list[Pipeline]:
         return list(result.scalars().all())
 
 
+def group_pipelines_by_target(pipelines: list[Pipeline]) -> dict[str, list[Pipeline]]:
+    grouped = {"stable": [], "beta": [], "test": []}
+
+    for pipeline in pipelines:
+        grouped.setdefault(get_pipeline_target_repo(pipeline), []).append(pipeline)
+
+    return grouped
+
+
 @dashboard_router.get("/", response_class=HTMLResponse)
 async def dashboard(
     request: Request,
@@ -181,6 +350,7 @@ async def dashboard(
         context={
             "grouped_pipelines": grouped,
             "statuses": [
+                PipelineStatus.PENDING,
                 PipelineStatus.RUNNING,
                 PipelineStatus.SUCCEEDED,
                 PipelineStatus.CANCELLED,
@@ -195,6 +365,11 @@ async def dashboard(
             },
         },
     )
+
+
+@dashboard_router.get("/reproducible", include_in_schema=False)
+async def redirect_reproducible():
+    return RedirectResponse(url="/", status_code=302)
 
 
 @dashboard_router.get("/api/htmx/builds", response_class=HTMLResponse)
@@ -227,7 +402,9 @@ async def builds_table(
 
 @dashboard_router.get("/status/{app_id}", response_class=HTMLResponse)
 async def app_status(request: Request, app_id: str):
-    recent_builds = await get_app_builds(app_id, limit=10)
+    recent_builds = await get_app_builds(app_id, limit=25)
+    grouped_builds = group_pipelines_by_target(recent_builds)
+    display_name = get_pipeline_request_label(recent_builds[0]) if recent_builds else app_id
 
     chart_data = [
         {
@@ -243,7 +420,11 @@ async def app_status(request: Request, app_id: str):
         name="app_status.html",
         context={
             "app_id": app_id,
+            "display_name": display_name,
             "recent_builds": recent_builds,
+            "stable_builds": grouped_builds.get("stable", []),
+            "beta_builds": grouped_builds.get("beta", []),
+            "test_builds": grouped_builds.get("test", []),
             "chart_data": chart_data,
         },
     )

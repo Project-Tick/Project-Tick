@@ -20,7 +20,7 @@
         background-color: #0d6efd;
         color: white;
     }
-    .badge-published, .badge-committed-test {
+    .badge-published, .badge-succeeded, .badge-committed-test {
         background-color: #198754;
         color: white;
     }
@@ -84,12 +84,12 @@
             <select name="status">
                 <option value="">All</option>
                 {% for s in statuses %}
-                <option value="{{ s.value }}">{{ 'committing' if s.value == 'succeeded' else s.value }}</option>
+                <option value="{{ s.value }}">{{ s.value }}</option>
                 {% endfor %}
             </select>
         </label>
         <label>
-            App ID
+            Request
             <input type="text" name="app_id" autocomplete="on">
         </label>
         <label>
@@ -124,7 +124,7 @@ flatpickr(".flatpickr-datetime", {
     <thead>
         <tr>
             <th>Status</th>
-            <th>App ID</th>
+            <th>Request</th>
             <th>Repo</th>
             <th>Source</th>
             <th>Started</th>

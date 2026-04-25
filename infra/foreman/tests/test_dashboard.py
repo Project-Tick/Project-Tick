@@ -9,14 +9,25 @@ def make_pipeline(**overrides):
     now = datetime.now()
     defaults = {
         "id": uuid.uuid4(),
-        "app_id": "org.test.App",
-        "status": PipelineStatus.FAILED,
+        "app_id": "gitlab-mr-17",
+        "status": PipelineStatus.SUCCEEDED,
         "flat_manager_repo": "stable",
-        "params": {"repo": "flathub/org.test.App", "sha": "abc123def456"},
+        "params": {
+            "gitlab_base_url": "https://git.projecttick.org",
+            "gitlab_project_path": "project-tick/project-tick",
+            "gitlab_merge_request_iid": "17",
+            "gitlab_source_branch": "feature/gitlab-build",
+            "gitlab_target_branch": "master",
+            "pr_target_branch": "master",
+            "dispatch_inputs": {
+                "source-repository": "https://git.projecttick.org/project-tick/project-tick.git",
+                "source-ref": "refs/merge-requests/17/head",
+            },
+        },
         "created_at": now - timedelta(minutes=10),
         "started_at": now - timedelta(minutes=5),
         "finished_at": now,
-        "log_url": None,
+        "log_url": "https://github.com/Project-Tick/Project-Tick/actions/runs/123",
         "build_id": 123,
         "commit_job_id": None,
         "publish_job_id": None,
@@ -26,8 +37,8 @@ def make_pipeline(**overrides):
     return Pipeline(**defaults)
 
 
-def test_builds_table_failed_badge_links_to_commit_job(client):
-    pipeline = make_pipeline(commit_job_id=12345)
+def test_builds_table_places_succeeded_pipeline_in_completed(client):
+    pipeline = make_pipeline()
 
     with patch(
         "app.routes.dashboard.get_recent_pipelines",
@@ -36,56 +47,62 @@ def test_builds_table_failed_badge_links_to_commit_job(client):
         response = client.get("/api/htmx/builds")
 
     assert response.status_code == 200
-    assert 'href="https://hub.flathub.org/status/12345"' in response.text
-    assert ">failed</a>" in response.text
+    assert "Completed" in response.text
+    assert 'badge badge-succeeded' in response.text
+    assert '>succeeded</a>' in response.text
 
 
-def test_builds_table_failed_badge_prefers_update_repo_job(client):
-    pipeline = make_pipeline(
-        commit_job_id=12345,
-        publish_job_id=12346,
-        update_repo_job_id=12347,
+def test_builds_table_shows_request_and_source_for_gitlab_pipeline(client):
+    pipeline = make_pipeline(flat_manager_repo=None)
+
+    with patch(
+        "app.routes.dashboard.get_recent_pipelines",
+        new=AsyncMock(return_value=[pipeline]),
+    ):
+        response = client.get("/api/htmx/builds")
+
+    assert response.status_code == 200
+    assert "MR !17" in response.text
+    assert "project-tick/project-tick@mr-17" in response.text
+    assert "stable" in response.text
+
+
+def test_reproducible_route_redirects_to_dashboard(client):
+    response = client.get("/reproducible", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.headers["location"] == "/"
+
+
+def test_app_status_groups_builds_by_target_repo(client):
+    stable_pipeline = make_pipeline(flat_manager_repo="stable")
+    beta_pipeline = make_pipeline(
+        id=uuid.uuid4(),
+        flat_manager_repo="beta",
+        params={
+            "gitlab_base_url": "https://git.projecttick.org",
+            "gitlab_project_path": "project-tick/project-tick",
+            "gitlab_merge_request_iid": "17",
+            "gitlab_source_branch": "feature/gitlab-build",
+            "gitlab_target_branch": "beta",
+            "pr_target_branch": "beta",
+            "dispatch_inputs": {
+                "source-repository": "https://git.projecttick.org/project-tick/project-tick.git",
+                "source-ref": "refs/heads/beta",
+            },
+        },
     )
 
     with patch(
-        "app.routes.dashboard.get_recent_pipelines",
-        new=AsyncMock(return_value=[pipeline]),
+        "app.routes.dashboard.get_app_builds",
+        new=AsyncMock(return_value=[stable_pipeline, beta_pipeline]),
     ):
-        response = client.get("/api/htmx/builds")
+        response = client.get("/status/gitlab-mr-17")
 
     assert response.status_code == 200
-    assert 'href="https://hub.flathub.org/status/12347"' in response.text
-    assert 'href="https://hub.flathub.org/status/12346"' not in response.text
-
-
-def test_builds_table_failed_badge_falls_back_to_log_url(client):
-    pipeline = make_pipeline(log_url="https://example.com/logs/123")
-
-    with patch(
-        "app.routes.dashboard.get_recent_pipelines",
-        new=AsyncMock(return_value=[pipeline]),
-    ):
-        response = client.get("/api/htmx/builds")
-
-    assert response.status_code == 200
-    assert 'href="https://example.com/logs/123"' in response.text
-
-
-def test_app_status_failed_badge_links_in_stable_table(client):
-    stable_pipeline = make_pipeline(commit_job_id=12345)
-
-    with (
-        patch(
-            "app.routes.dashboard.get_app_builds",
-            new=AsyncMock(return_value=([stable_pipeline], {})),
-        ),
-        patch(
-            "app.routes.dashboard.get_status_banner",
-            new=AsyncMock(return_value=None),
-        ),
-    ):
-        response = client.get("/status/org.test.App")
-
-    assert response.status_code == 200
-    assert 'href="https://hub.flathub.org/status/12345"' in response.text
-    assert ">failed</a>" in response.text
+    assert "Build status of MR !17" in response.text
+    assert "Latest stable builds" in response.text
+    assert "Latest beta builds" in response.text
+    assert "project-tick/project-tick@mr-17" in response.text
+    assert "project-tick/project-tick@beta" in response.text
+    assert "Reproducible builds" not in response.text

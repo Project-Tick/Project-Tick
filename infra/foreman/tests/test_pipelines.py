@@ -1284,8 +1284,12 @@ def test_pipeline_log_url_callback_already_set(mock_get_db, sample_pipeline):
     with (
         patch("app.routes.pipelines.get_db", mock_get_db_session),
         patch("app.pipelines.build.get_db", mock_get_db_session),
+        patch("app.pipelines.build.GitHubNotifier") as mock_notifier_class,
     ):
         mock_get_db.get.return_value = sample_pipeline
+        mock_notifier = MagicMock()
+        mock_notifier.handle_build_started = AsyncMock()
+        mock_notifier_class.return_value = mock_notifier
 
         data = {"log_url": "https://github.com/flathub-infra/builds/runs/12345"}
         headers = {"Authorization": "Bearer test_token_12345"}
@@ -1294,8 +1298,41 @@ def test_pipeline_log_url_callback_already_set(mock_get_db, sample_pipeline):
             f"/api/pipelines/{pipeline_id}/callback/log_url", json=data, headers=headers
         )
 
-    assert response.status_code == 409
-    assert "Log URL already set" in response.json()["detail"]
+    assert response.status_code == 200
+    assert response.json()["log_url"] == data["log_url"]
+    assert sample_pipeline.log_url == data["log_url"]
+    mock_notifier.handle_build_started.assert_called_once()
+
+
+def test_pipeline_log_url_callback_same_url_is_noop(mock_get_db, sample_pipeline):
+    test_client = TestClient(app)
+
+    pipeline_id = sample_pipeline.id
+    sample_pipeline.log_url = "https://github.com/flathub-infra/builds/runs/12345"
+
+    mock_get_db_session = create_mock_get_db(mock_get_db)
+
+    with (
+        patch("app.routes.pipelines.get_db", mock_get_db_session),
+        patch("app.pipelines.build.get_db", mock_get_db_session),
+        patch("app.pipelines.build.GitHubNotifier") as mock_notifier_class,
+    ):
+        mock_get_db.get.return_value = sample_pipeline
+        mock_notifier = MagicMock()
+        mock_notifier.handle_build_started = AsyncMock()
+        mock_notifier_class.return_value = mock_notifier
+
+        data = {"log_url": sample_pipeline.log_url}
+        headers = {"Authorization": "Bearer test_token_12345"}
+
+        response = test_client.post(
+            f"/api/pipelines/{pipeline_id}/callback/log_url", json=data, headers=headers
+        )
+
+    assert response.status_code == 200
+    assert "log_url" not in response.json()
+    assert sample_pipeline.log_url == data["log_url"]
+    mock_notifier.handle_build_started.assert_not_called()
 
 
 def test_pipeline_log_url_callback_missing_log_url(mock_get_db, sample_pipeline):

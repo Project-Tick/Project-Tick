@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "partials/pipeline_row.html" import render_pipeline %}
 
-{% block title %}Project-Tick build status of {{ app_id }}{% endblock %}
+{% block title %}Project-Tick build status of {{ display_name }}{% endblock %}
 
 {% block head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -22,7 +22,7 @@
         background-color: #0d6efd;
         color: white;
     }
-    .badge-published, .badge-committed-test {
+    .badge-published, .badge-succeeded, .badge-committed-test {
         background-color: #198754;
         color: white;
     }
@@ -40,18 +40,6 @@
     }
     .badge-failed {
         background-color: #dc3545;
-        color: white;
-    }
-    .badge-reproducible {
-        background-color: #198754;
-        color: white;
-    }
-    .badge-unreproducible {
-        background-color: #dc3545;
-        color: white;
-    }
-    .badge-unknown {
-        background-color: #6c757d;
         color: white;
     }
     table {
@@ -76,7 +64,7 @@
 
 {% block content %}
 {% include "partials/nav.html" %}
-<h2>Build status of {{ app_id }}</h2>
+<h2>Build status of {{ display_name }}</h2>
 
 {% if chart_data %}
 <div style="height: 200px; margin-top: 1.5rem; margin-bottom: 1rem;">
@@ -89,86 +77,21 @@
     <thead>
         <tr>
             <th>Status</th>
-            <th>App ID</th>
+            <th>Request</th>
             <th>Repo</th>
             <th>Source</th>
             <th>Started</th>
             <th>Duration</th>
-            <th>Reproducible?</th>
         </tr>
     </thead>
     <tbody>
         {% if stable_builds %}
         {% for pipeline in stable_builds %}
-        <tr>
-            <td>
-                {% set target = pipeline.flat_manager_repo or 'stable' %}
-                {% set failed_target_url = none %}
-                {% if pipeline.update_repo_job_id %}
-                {% set failed_target_url = flat_manager_url ~ '/status/' ~ pipeline.update_repo_job_id %}
-                {% elif pipeline.publish_job_id %}
-                {% set failed_target_url = flat_manager_url ~ '/status/' ~ pipeline.publish_job_id %}
-                {% elif pipeline.commit_job_id %}
-                {% set failed_target_url = flat_manager_url ~ '/status/' ~ pipeline.commit_job_id %}
-                {% elif pipeline.log_url %}
-                {% set failed_target_url = pipeline.log_url %}
-                {% endif %}
-                {% if pipeline.status.value in ['committed', 'publishing'] %}
-                {% set badge_class = 'badge-' ~ pipeline.status.value ~ '-' ~ target %}
-                {% elif pipeline.status.value == 'succeeded' %}
-                {% set badge_class = 'badge-committing' %}
-                {% else %}
-                {% set badge_class = 'badge-' ~ pipeline.status.value %}
-                {% endif %}
-                {% if pipeline.status.value == 'succeeded' and pipeline.commit_job_id %}
-                <a href="{{ flat_manager_url }}/status/{{ pipeline.commit_job_id }}" target="_blank" class="badge {{ badge_class }}">committing</a>
-                {% elif pipeline.status.value == 'committed' and pipeline.commit_job_id %}
-                <a href="{{ flat_manager_url }}/status/{{ pipeline.commit_job_id }}" target="_blank" class="badge {{ badge_class }}">{{ pipeline.status.value }}</a>
-                {% elif pipeline.status.value == 'publishing' and pipeline.update_repo_job_id %}
-                <a href="{{ flat_manager_url }}/status/{{ pipeline.update_repo_job_id }}" target="_blank" class="badge {{ badge_class }}">{{ pipeline.status.value }}</a>
-                {% elif pipeline.status.value == 'failed' and failed_target_url %}
-                <a href="{{ failed_target_url }}" target="_blank" class="badge {{ badge_class }}">{{ pipeline.status.value }}</a>
-                {% else %}
-                <span class="badge {{ badge_class }}">{{ pipeline.status.value }}</span>
-                {% endif %}
-            </td>
-            <td><a href="/status/{{ pipeline.app_id }}" class="plain-link">{{ pipeline.app_id }}</a></td>
-            <td>{{ pipeline.flat_manager_repo or '-' }}</td>
-            <td>
-                {% set git_repo = pipeline.params.get('repo', '') %}
-                {% set pr_number = pipeline.params.get('pr_number', '') %}
-                {% set sha = pipeline.params.get('sha', '') %}
-                {% if pr_number %}
-                <a href="https://github.com/{{ git_repo }}/pull/{{ pr_number }}" target="_blank">PR #{{ pr_number }}</a>
-                {% elif sha %}
-                <a href="https://github.com/{{ git_repo }}/commit/{{ sha }}" target="_blank">{{ sha[:7] }}</a>
-                {% else %}
-                -
-                {% endif %}
-            </td>
-            <td>
-                {% if pipeline.log_url %}
-                <a href="{{ pipeline.log_url }}" target="_blank">{{ format_time(pipeline.started_at) }}</a>
-                {% else %}
-                {{ format_time(pipeline.started_at) }}
-                {% endif %}
-            </td>
-            <td>{{ format_duration(pipeline.started_at, pipeline.finished_at) }}</td>
-            <td>
-                {% set repro_info = stable_reprocheck.get(pipeline.id) %}
-                {% if repro_info and repro_info.status_code == "0" %}
-                <span class="badge badge-reproducible">reproducible</span>
-                {% elif repro_info and repro_info.status_code == "42" %}
-                <a href="/diffoscope/{{ repro_info.repro_pipeline_id }}" target="_blank" class="badge badge-unreproducible">unreproducible</a>
-                {% else %}
-                <span class="badge badge-unknown">unknown</span>
-                {% endif %}
-            </td>
-        </tr>
+        {{ render_pipeline(pipeline) }}
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="7" style="text-align: center;">No stable builds found</td>
+            <td colspan="6" style="text-align: center;">No stable builds found</td>
         </tr>
         {% endif %}
     </tbody>
