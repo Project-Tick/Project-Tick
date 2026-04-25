@@ -293,7 +293,7 @@ Event (push/PR/merge_queue/tag)
      ├──► Lint & Checks (commit messages, formatting, CODEOWNERS)
      │
      ├──► meshmc-build.yml       (if meshmc/ changed)
-    ├──► neozip-*.yml           (if neozip/ changed)
+     ├──► neozip-ci.yml          (if neozip/ changed)
      ├──► cmark-ci.yml           (if cmark/ changed)
      ├──► json4cpp-ci.yml        (if json4cpp/ changed)
      ├──► tomlplusplus-ci.yml    (if tomlplusplus/ changed)
@@ -305,7 +305,7 @@ Event (push/PR/merge_queue/tag)
      ├──► mnv-ci.yml             (if mnv/ changed)
      │
      └──► Release workflows      (if tag push)
-        ├── release-sources.yml
+          ├── meshmc-release.yml
           ├── meshmc-publish.yml
           └── neozip-release.yml
 ```
@@ -321,7 +321,7 @@ The `.github/workflows/` directory contains 50+ workflow files:
 
 **Per-Project CI:**
 - `meshmc-build.yml`, `meshmc-codeql.yml`, `meshmc-container.yml`, `meshmc-nix.yml`
-- `neozip-cmake.yml`, `neozip-configure.yml`, `neozip-analyze.yml`, `neozip-codeql.yml`, `neozip-fuzz.yml`, `neozip-lint.yml`
+- `neozip-ci.yml`, `neozip-cmake.yml`, `neozip-configure.yml`, `neozip-analyze.yml`, `neozip-codeql.yml`, `neozip-fuzz.yml`, `neozip-lint.yml`
 - `json4cpp-ci.yml`, `json4cpp-fuzz.yml`, `json4cpp-amalgam.yml`, `json4cpp-flawfinder.yml`, `json4cpp-semgrep.yml`
 - `cmark-ci.yml`, `cmark-fuzz.yml`
 - `tomlplusplus-ci.yml`, `tomlplusplus-fuzz.yml`
@@ -330,7 +330,7 @@ The `.github/workflows/` directory contains 50+ workflow files:
 - `forgewrapper-build.yml`, `libnbtplusplus-ci.yml`, `genqrcode-ci.yml`
 
 **Release & Publishing:**
-- `release-sources.yml`, `meshmc-publish.yml`
+- `meshmc-release.yml`, `meshmc-publish.yml`
 - `neozip-release.yml`
 - `images4docker-build.yml`
 - `tomlplusplus-gh-pages.yml`, `json4cpp-publish-docs.yml`

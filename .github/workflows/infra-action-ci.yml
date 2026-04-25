@@ -3,14 +3,6 @@ name: Action CI
 on:
   workflow_dispatch:
     inputs:
-      source-repository:
-        description: Optional external source repository URL
-        type: string
-        default: ""
-      source-ref:
-        description: Optional external source ref
-        type: string
-        default: ""
       callback_url:
         description: Optional Foreman callback base URL
         type: string
@@ -19,6 +11,8 @@ on:
         description: Optional Foreman callback bearer token
         type: string
         default: ""
+  schedule:
+    - cron: '0 0 * * 1,5'
 
 env:
   # Match with docker image
@@ -73,7 +67,9 @@ jobs:
       cancel-in-progress: true
     steps:
         # 4.2.2
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
         with:
@@ -128,7 +124,9 @@ jobs:
       cancel-in-progress: true
     steps:
         # 4.2.2
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
 
       - name: Set up Docker Buildx
         # 3.10.0

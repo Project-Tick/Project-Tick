@@ -152,7 +152,7 @@ Pushing a tag triggers the corresponding release workflow:
 
 | Tag Pattern          | Workflow                      | Artifacts                             |
 |----------------------|-------------------------------|---------------------------------------|
-| `v*`                 | `release-sources.yml`         | MeshMC binaries, source archives      |
+| `v*`                 | `meshmc-release.yml`          | Linux/macOS/Windows binaries          |
 | `v*`                 | `meshmc-publish.yml`          | Flathub, AUR, packaging repos         |
 | `neozip-v*`          | `neozip-release.yml`          | Source archive, shared libraries      |
 | `json4cpp-v*`        | (manual)                      | Updated single-header                 |
@@ -178,13 +178,15 @@ MeshMC releases build for all supported platforms:
 ### Release Workflow Steps
 
 ```
-release-sources.yml:
+meshmc-release.yml:
   1. Checkout code at tag
-  2. Build MeshMC release artifacts directly in the workflow
-  3. Build neozip release bundles
-  4. Package source archives for MeshMC and related components
-  5. Create the GitHub release draft with all artifacts
-  6. Stage the deployment bundle and checksums
+  2. Set up dependencies (via .github/actions/meshmc/setup-dependencies/)
+  3. Configure with CMake presets (Release mode)
+  4. Build
+  5. Run tests (ctest)
+  6. Package (via .github/actions/meshmc/package/)
+  7. Create GitHub Release with artifacts
+  8. Upload checksums (SHA-256)
 ```
 
 ### Post-Release Publishing
@@ -318,7 +320,7 @@ For critical security fixes or regressions:
 Development builds are produced on every push to `master`:
 
 - MeshMC: `meshmc-ci.yml` produces nightly artifacts
-- neozip: leaf workflows such as `neozip-cmake.yml`, `neozip-codeql.yml`, and `neozip-pkgcheck.yml` attach build artifacts
+- neozip: `neozip-ci.yml` attaches build artifacts
 - Other components: CI produces artifacts accessible from workflow runs
 
 Pre-release builds are not tagged and are identified by commit SHA or

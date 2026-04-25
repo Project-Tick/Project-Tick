@@ -1,6 +1,9 @@
 name: Deploy to repository
 
 on:
+  schedule:
+    # Run daily
+    - cron: "58 1 * * *"
   workflow_dispatch:
     inputs:
       callback_url:
@@ -52,102 +55,12 @@ jobs:
   build:
     name: Build Flatpaks
     needs: callback-start
-    defaults:
-      run:
-        working-directory: meshmc/flatpak
-    outputs:
-      repository-cache-key: ${{ steps.restore-repository.outputs.cache-primary-key }}
-      repository-directory: ${{ env.REPOSITORY_PATH }}
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        include:
-          - os: ubuntu-24.04
-            arch: x86_64
-          - os: ubuntu-24.04-arm
-            arch: aarch64
-    runs-on: ${{ matrix.os }}
-    container:
-      image: ghcr.io/flathub-infra/flatpak-github-actions:kde-6.10
-      options: --privileged
-      volumes:
-        - /opt/hostedtoolcache:/hostedtoolcache
-    env:
-      GPG_KEY_ID: ${{ secrets.FLATPAK_GPG_PRIVATE_KEY != '' && vars.GPG_KEY_ID || '' }}
-      REPOSITORY_DIR: repo
-      REPOSITORY_PATH: meshmc/flatpak/repo
-    steps:
-      - name: Free up disk space
-        working-directory: ${{ github.workspace }}
-        shell: bash
-        run: |
-          rm -rf /hostedtoolcache/*
-
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        with:
-          submodules: true
-
-      - name: Set short version
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          UPSTREAM_SHA="$(gh api /repos/Project-Tick/Project-Tick/branches/master --jq '.commit.sha')"
-          echo "VERSION=${UPSTREAM_SHA::7}" >> "$GITHUB_ENV"
-
-      - name: Restore local repository
-        id: restore-repository
-        uses: actions/cache/restore@v5
-        with:
-          path: ${{ env.REPOSITORY_PATH }}
-          key: repository-${{ github.run_id }}-${{ runner.arch }}
-          restore-keys: repository-
-
-      - name: Setup signing
-        shell: bash
-        env:
-          FLATPAK_GPG_PRIVATE_KEY: ${{ secrets.FLATPAK_GPG_PRIVATE_KEY || '' }}
-        run: |
-          if [[ -z "$FLATPAK_GPG_PRIVATE_KEY" ]]; then
-            echo ":warning: Not signing Flatpaks or ostree repositories, as the signing key was not present" >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo -n "$FLATPAK_GPG_PRIVATE_KEY" | base64 -d | gpg --import
-            gpg --list-keys --keyid-format=long "$GPG_KEY_ID"
-          fi
-
-      - name: Build Flatpak
-        uses: flatpak/flatpak-github-actions/flatpak-builder@0a631396999e4243489a8a6ecf54fcb9f0575078
-        with:
-          manifest-path: meshmc/flatpak/org.projecttick.MeshMC.yml
-          arch: ${{ matrix.arch }}
-          branch: nightly
-          bundle: MeshMC-${{ env.VERSION }}-${{ matrix.arch }}.flatpak
-          repo-dir: ${{ env.REPOSITORY_PATH }}
-          gpg-sign: ${{ env.GPG_KEY_ID }}
-
-      - name: Update and prune repository
-        shell: bash
-        run: |
-          flatpak build-update-repo \
-            "${GPG_KEY_ID:+--gpg-sign="$GPG_KEY_ID"}" \
-            --generate-static-deltas \
-            --prune \
-            "$REPOSITORY_DIR"
-
-      - name: Copy static assets to repository
-        shell: bash
-        run: |
-          cp -r static/. "$REPOSITORY_DIR"/
-
-      - name: Cache local repository
-        uses: actions/cache/save@v5
-        with:
-          path: ${{ env.REPOSITORY_PATH }}
-          key: ${{ steps.restore-repository.outputs.cache-primary-key }}
+    uses: ./.github/workflows/meshmc-flatpak-build.yml
+    with:
+      cache-repository: true
+    secrets: inherit
 
   deploy:
     name: Publish Flatpak repository

@@ -21,13 +21,6 @@ class GitHubNotifier:
     def __init__(self):
         pass
 
-    @staticmethod
-    def _get_status_context(pipeline: Pipeline) -> str:
-        value = pipeline.params.get("github_status_context")
-        if isinstance(value, str) and value:
-            return value
-        return "builds/x86_64"
-
     def _build_failure_issue_title(self, pipeline: Pipeline) -> str:
         return f"Stable build failed for {pipeline.app_id}"
 
@@ -178,7 +171,6 @@ class GitHubNotifier:
             git_repo=git_repo,
             description=description,
             target_url=target_url,
-            context=self._get_status_context(pipeline),
         )
 
     async def notify_build_started(
@@ -208,7 +200,6 @@ class GitHubNotifier:
             git_repo=git_repo,
             description="Build in progress",
             target_url=log_url,
-            context=self._get_status_context(pipeline),
         )
 
     async def notify_pr_build_started(

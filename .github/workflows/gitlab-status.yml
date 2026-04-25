@@ -1,45 +1,6 @@
 name: Report GitLab status
 
 on:
-  workflow_dispatch:
-    inputs:
-      gitlab-url:
-        description: Base URL of the target GitLab instance
-        required: false
-        type: string
-        default: https://git.projecttick.org
-      project:
-        description: Numeric GitLab project ID or project path
-        required: false
-        type: string
-        default: ''
-      sha:
-        description: Commit SHA to attach the status to
-        required: true
-        type: string
-      ref:
-        description: Branch or tag name for the status
-        required: false
-        type: string
-        default: ''
-      state:
-        description: GitLab external status state
-        required: true
-        type: string
-      name:
-        description: External status name shown in GitLab
-        required: true
-        type: string
-      description:
-        description: Short status description
-        required: false
-        type: string
-        default: ''
-      target-url:
-        description: Link back to the GitHub Actions run
-        required: false
-        type: string
-        default: ''
   workflow_call:
     inputs:
       gitlab-url:
@@ -93,15 +54,15 @@ jobs:
       - name: Post status to GitLab
         shell: bash
         env:
-          GITLAB_URL: ${{ inputs.gitlab-url || github.event.inputs.gitlab-url }}
-          GITLAB_PROJECT: ${{ inputs.project || github.event.inputs.project }}
+          GITLAB_URL: ${{ inputs.gitlab-url }}
+          GITLAB_PROJECT: ${{ inputs.project }}
           GITLAB_TOKEN: ${{ secrets.token }}
-          GITLAB_SHA: ${{ inputs.sha || github.event.inputs.sha }}
-          GITLAB_REF: ${{ inputs.ref || github.event.inputs.ref }}
-          GITLAB_STATE: ${{ inputs.state || github.event.inputs.state }}
-          GITLAB_NAME: ${{ inputs.name || github.event.inputs.name }}
-          GITLAB_DESCRIPTION: ${{ inputs.description || github.event.inputs.description }}
-          GITLAB_TARGET_URL: ${{ inputs.target-url || github.event.inputs.target-url }}
+          GITLAB_SHA: ${{ inputs.sha }}
+          GITLAB_REF: ${{ inputs.ref }}
+          GITLAB_STATE: ${{ inputs.state }}
+          GITLAB_NAME: ${{ inputs.name }}
+          GITLAB_DESCRIPTION: ${{ inputs.description }}
+          GITLAB_TARGET_URL: ${{ inputs.target-url }}
         run: |
           set -euo pipefail
 

@@ -35,8 +35,3 @@ dev = [
 [tool.mypy]
 check_untyped_defs = true
 show_error_codes = true
-
-[tool.pytest.ini_options]
-markers = [
-    "no_default_ci_rule: use the real distributed workflow registry instead of the permissive legacy CI test rule",
-]

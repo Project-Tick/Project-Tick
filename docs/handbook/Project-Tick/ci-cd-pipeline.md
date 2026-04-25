@@ -175,6 +175,7 @@ the component:
 
 | Workflow | Purpose |
 |----------|---------|
+| `neozip-ci.yml` | Primary CI |
 | `neozip-cmake.yml` | CMake build matrix |
 | `neozip-configure.yml` | Autotools (configure) build |
 | `neozip-analyze.yml` | Static analysis |
@@ -224,7 +225,7 @@ the component:
 
 | Workflow | Purpose |
 |----------|---------|
-| `release-sources.yml` | Build MeshMC release artifacts and source bundles |
+| `meshmc-release.yml` | Create MeshMC releases |
 | `meshmc-publish.yml` | Publish MeshMC artifacts |
 | `neozip-release.yml` | Create NeoZip releases |
 
@@ -486,11 +487,11 @@ updates, fuzzing, and signed releases.
 ### MeshMC Releases
 
 1. A release tag is pushed (e.g., `7.0.0`)
-2. Foreman dispatches `release-sources.yml`
-3. `release-sources.yml`:
-  - Builds release binaries for all platforms
-  - Packages source archives and deployment bundles
-  - Creates the GitHub release draft with artifacts
+2. `ci.yml` detects `is_release_tag` and dispatches release workflows
+3. `meshmc-release.yml`:
+   - Builds release binaries for all platforms
+   - Creates GitHub release with changelog
+   - Uploads platform-specific artifacts
 4. `meshmc-publish.yml`:
    - Publishes artifacts to distribution channels
 
