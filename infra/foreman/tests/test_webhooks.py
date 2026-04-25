@@ -254,12 +254,11 @@ def test_receive_github_webhook_success(client: TestClient, mock_db):
                     assert mock_db.commit.called
 
 
-def test_receive_github_webhook_feature_branch_push_dispatches(client: TestClient, mock_db):
-    """Test that a regular branch push webhook is stored and dispatched."""
+def test_receive_github_webhook_master_push_dispatches(client: TestClient, mock_db):
+    """Test that a master push webhook is stored and dispatched."""
     delivery_id = str(uuid.uuid4())
     pipeline_id = uuid.uuid4()
     payload = dict(SAMPLE_PUSH_PAYLOAD)
-    payload["ref"] = "refs/heads/feature-x"
     payload["after"] = "abcdef1234567890abcdef1234567890abcdef12"
     headers = {
         "X-GitHub-Delivery": delivery_id,
@@ -287,6 +286,40 @@ def test_receive_github_webhook_feature_branch_push_dispatches(client: TestClien
     mock_create_pipeline.assert_awaited_once()
     assert mock_db.add.called
     assert mock_db.commit.called
+
+
+def test_receive_github_webhook_feature_branch_push_is_ignored(client: TestClient, mock_db):
+    """Test that non-master branch pushes do not dispatch workflows."""
+    delivery_id = str(uuid.uuid4())
+    payload = dict(SAMPLE_PUSH_PAYLOAD)
+    payload["ref"] = "refs/heads/feature-x"
+    payload["after"] = "abcdef1234567890abcdef1234567890abcdef12"
+    headers = {
+        "X-GitHub-Delivery": delivery_id,
+    }
+
+    mock_get_db = create_mock_get_db(mock_db)
+
+    with patch("app.routes.webhooks.get_db", mock_get_db):
+        with patch("app.routes.webhooks.settings.github_webhook_secret", ""):
+            with patch(
+                "app.routes.webhooks.create_pipeline",
+                AsyncMock(),
+            ) as mock_create_pipeline:
+                response = client.post(
+                    "/api/webhooks/github",
+                    json=payload,
+                    headers=headers,
+                )
+
+    assert response.status_code == 202
+    response_data = response.json()
+    assert response_data["message"] == "Webhook received"
+    assert response_data["event_id"] == delivery_id
+    assert "pipeline_id" not in response_data
+    mock_create_pipeline.assert_not_awaited()
+    assert not mock_db.add.called
+    assert not mock_db.commit.called
 
 
 def test_receive_github_webhook_missing_header(client: TestClient):
@@ -480,34 +513,34 @@ def test_should_store_event_push_to_master():
     assert should_store_event(SAMPLE_PUSH_PAYLOAD) is True
 
 
-def test_should_store_event_push_to_beta():
-    """Test should_store_event returns True for push to beta."""
+def test_should_not_store_event_push_to_beta():
+    """Test should_store_event returns False for push to beta."""
     from app.routes.webhooks import should_store_event
 
     payload = dict(SAMPLE_PUSH_PAYLOAD)
     payload["ref"] = "refs/heads/beta"
 
-    assert should_store_event(payload) is True
+    assert should_store_event(payload) is False
 
 
-def test_should_store_event_push_to_branch():
-    """Test should_store_event returns True for push to branch/*."""
+def test_should_not_store_event_push_to_branch():
+    """Test should_store_event returns False for push to branch/*."""
     from app.routes.webhooks import should_store_event
 
     payload = dict(SAMPLE_PUSH_PAYLOAD)
     payload["ref"] = "refs/heads/branch/feature-x"
 
-    assert should_store_event(payload) is True
+    assert should_store_event(payload) is False
 
 
-def test_should_store_event_push_to_feature_branch():
-    """Test should_store_event returns True for a regular branch push."""
+def test_should_not_store_event_push_to_feature_branch():
+    """Test should_store_event returns False for a regular branch push."""
     from app.routes.webhooks import should_store_event
 
     payload = dict(SAMPLE_PUSH_PAYLOAD)
     payload["ref"] = "refs/heads/feature-x"
 
-    assert should_store_event(payload) is True
+    assert should_store_event(payload) is False
 
 
 def test_should_not_store_event_push_to_tag():

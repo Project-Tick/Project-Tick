@@ -615,7 +615,7 @@ def should_store_event(payload: dict) -> bool:
         if payload.get("deleted") or after_sha == ("0" * 40):
             return False
 
-        if ref.startswith("refs/heads/"):
+        if ref == "refs/heads/master":
             return True
 
     if "comment" in payload:
