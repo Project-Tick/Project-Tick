@@ -319,20 +319,25 @@ jobs:
         shell: bash
         env:
           VERDICT_RESULT: ${{ needs.verdict.result }}
+          WORKFLOW_CANCELLED: ${{ cancelled() && 'true' || 'false' }}
         run: |
           set -euo pipefail
 
-          case "$VERDICT_RESULT" in
-            success)
-              status="success"
-              ;;
-            cancelled)
-              status="cancelled"
-              ;;
-            *)
-              status="failure"
-              ;;
-          esac
+          if [[ "$WORKFLOW_CANCELLED" == "true" ]]; then
+            status="cancelled"
+          else
+            case "$VERDICT_RESULT" in
+              success)
+                status="success"
+                ;;
+              cancelled)
+                status="cancelled"
+                ;;
+              *)
+                status="failure"
+                ;;
+            esac
+          fi
 
           echo "status=$status" >> "$GITHUB_OUTPUT"
 

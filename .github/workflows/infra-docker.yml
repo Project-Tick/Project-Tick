@@ -207,11 +207,14 @@ jobs:
         shell: bash
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
+          WORKFLOW_CANCELLED: ${{ cancelled() && 'true' || 'false' }}
         run: |
           set -euo pipefail
 
           status="success"
-          if jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
+          if [[ "$WORKFLOW_CANCELLED" == "true" ]]; then
+            status="cancelled"
+          elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
             status="failure"
           elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
             status="cancelled"
