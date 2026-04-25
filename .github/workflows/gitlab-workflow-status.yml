@@ -73,7 +73,7 @@ permissions: {}
 
 jobs:
   report:
-    if: ${{ github.event.workflow_run.name != 'Report GitLab status' && github.event.workflow_run.name != 'Report GitLab workflow status' && github.event.workflow_run.name != 'Report GitLab job status' }}
+    if: ${{ github.event.workflow_run.name != 'Report GitLab status' && github.event.workflow_run.name != 'Report GitLab workflow status' && github.event.workflow_run.name != 'Report GitLab job status' && !(github.event.workflow_run.name == 'CI' && github.event.workflow_run.event == 'workflow_dispatch') }}
     uses: ./.github/workflows/gitlab-status.yml
     with:
       gitlab-url: ${{ vars.GITLAB_STATUS_BASE_URL || 'https://git.projecttick.org' }}

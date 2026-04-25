@@ -13,6 +13,7 @@ from app.database import get_db
 from app.models import Pipeline, PipelineStatus
 from app.services import github_actions_service
 from app.services.github_actions import GitHubActionsService
+from app.services.gitlab_notifier import GitLabNotifier
 from app.services.github_notifier import GitHubNotifier
 
 logger = structlog.get_logger(__name__)
@@ -123,6 +124,11 @@ async def cancel_pipeline(
                 pipeline_id=str(pipeline_id),
                 error=str(e),
             )
+
+
+def uses_gitlab_notifier(pipeline: Pipeline) -> bool:
+    params = dict(pipeline.params or {})
+    return bool(params.get("gitlab_project_path") and params.get("gitlab_source_sha"))
 
 
 class BuildPipeline:
@@ -297,29 +303,55 @@ class BuildPipeline:
 
             await self._supersede_conflicting_pipelines(db, pipeline)
 
-            workflow_id = pipeline.params.get("workflow_id", "build.yml")
+            callback_url = f"{settings.base_url}/api/pipelines/{pipeline.id}/callback"
+            dispatch_inputs = pipeline.params.get("dispatch_inputs")
+            custom_dispatch = isinstance(dispatch_inputs, dict) and bool(dispatch_inputs)
 
-            inputs = {
-                "app_id": pipeline.app_id,
-                "git_ref": pipeline.params.get("ref", "master"),
-                "callback_url": f"{settings.base_url}/api/pipelines/{pipeline.id}/callback",
-                "callback_token": pipeline.callback_token,
-                "build_type": build_type,
-                "spot": "true" if pipeline.params.get("use_spot", True) else "false",
-                "pr_target_branch": pipeline.params.get("pr_target_branch", "master"),
-            }
+            if custom_dispatch:
+                workflow_id = str(
+                    pipeline.params.get(
+                        "dispatch_workflow_id",
+                        pipeline.params.get("workflow_id", "build.yml"),
+                    )
+                )
+                workflow_ref = str(pipeline.params.get("dispatch_ref", "main"))
+                owner = str(pipeline.params.get("dispatch_owner", settings.github_org))
+                repo = str(pipeline.params.get("dispatch_repo", settings.workflow_repo))
+                inputs = {
+                    str(key): str(value)
+                    for key, value in dispatch_inputs.items()
+                    if value is not None and value != ""
+                }
+                inputs["callback_url"] = callback_url
+                inputs["callback_token"] = pipeline.callback_token
+            else:
+                workflow_id = str(pipeline.params.get("workflow_id", "build.yml"))
+                workflow_ref = "main"
+                owner = settings.github_org
+                repo = settings.workflow_repo
+                inputs = {
+                    "app_id": pipeline.app_id,
+                    "git_ref": pipeline.params.get("ref", "master"),
+                    "callback_url": callback_url,
+                    "callback_token": pipeline.callback_token,
+                    "build_type": build_type,
+                    "spot": "true" if pipeline.params.get("use_spot", True) else "false",
+                    "pr_target_branch": pipeline.params.get("pr_target_branch", "master"),
+                }
 
             job_data = {
-                "app_id": pipeline.app_id,
-                "job_type": "build",
+                "job_type": "ci" if custom_dispatch else "build",
                 "params": {
-                    "owner": settings.github_org,
-                    "repo": settings.workflow_repo,
+                    "owner": owner,
+                    "repo": repo,
                     "workflow_id": workflow_id,
-                    "ref": "main",
+                    "ref": workflow_ref,
                     "inputs": inputs,
                 },
             }
+
+            if not custom_dispatch:
+                job_data["app_id"] = pipeline.app_id
 
             provider_result = await self.provider.dispatch(
                 str(pipeline.id), str(pipeline.id), job_data
@@ -465,8 +497,8 @@ class BuildPipeline:
                         )
                 return pipeline, updates
 
-            github_notifier = GitHubNotifier()
-            await github_notifier.handle_build_started(pipeline, parsed_data.log_url)
+            notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
+            await notifier.handle_build_started(pipeline, parsed_data.log_url)
 
             return pipeline, updates
 
@@ -517,8 +549,8 @@ class BuildPipeline:
 
             await db.commit()
 
-            github_notifier = GitHubNotifier()
-            await github_notifier.handle_build_completion(pipeline, status_value)
+            notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
+            await notifier.handle_build_completion(pipeline, status_value)
 
             updates["pipeline_status"] = status_value
             await self.start_pending_builds()

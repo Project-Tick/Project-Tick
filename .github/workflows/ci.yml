@@ -39,6 +39,14 @@ on:
         description: "Optional external ref to fetch when source-repository is set"
         type: string
         default: ""
+      callback_url:
+        description: "Optional Foreman callback base URL"
+        type: string
+        default: ""
+      callback_token:
+        description: "Optional Foreman callback bearer token"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -60,6 +68,38 @@ env:
   FORCE_ALL: ${{ github.event.inputs.force-all == 'true' || github.event_name == 'merge_group' }}
 
 jobs:
+  callback-start:
+    name: "Callback Start"
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.callback_url != '' &&
+      github.event.inputs.callback_token != ''
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report workflow run URL
+        shell: bash
+        env:
+          CALLBACK_URL: ${{ github.event.inputs.callback_url }}
+          CALLBACK_TOKEN: ${{ github.event.inputs.callback_token }}
+          RUN_URL: ${{ format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id) }}
+        run: |
+          set -euo pipefail
+
+          payload="$(printf '{\"log_url\":\"%s\"}' "$RUN_URL")"
+
+          curl \
+            --silent \
+            --show-error \
+            --fail \
+            --retry 3 \
+            --retry-all-errors \
+            --request POST \
+            --header "Authorization: Bearer $CALLBACK_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data "$payload" \
+            "${CALLBACK_URL%/}/log_url"
+
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  STAGE 0 — Gate & Triage                                       ║
   # ╚════════════════════════════════════════════════════════════════╝
@@ -737,3 +777,49 @@ jobs:
           else
             echo "**Result: PASSED** — all executed jobs succeeded." >> "$GITHUB_STEP_SUMMARY"
           fi
+
+  callback-status:
+    name: "Callback Status"
+    needs: [verdict]
+    if: >-
+      always() &&
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.callback_url != '' &&
+      github.event.inputs.callback_token != ''
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Report final workflow status
+        shell: bash
+        env:
+          CALLBACK_URL: ${{ github.event.inputs.callback_url }}
+          CALLBACK_TOKEN: ${{ github.event.inputs.callback_token }}
+          VERDICT_RESULT: ${{ needs.verdict.result }}
+        run: |
+          set -euo pipefail
+
+          case "$VERDICT_RESULT" in
+            success)
+              pipeline_status="success"
+              ;;
+            cancelled)
+              pipeline_status="cancelled"
+              ;;
+            *)
+              pipeline_status="failure"
+              ;;
+          esac
+
+          payload="$(printf '{\"status\":\"%s\"}' "$pipeline_status")"
+
+          curl \
+            --silent \
+            --show-error \
+            --fail \
+            --retry 3 \
+            --retry-all-errors \
+            --request POST \
+            --header "Authorization: Bearer $CALLBACK_TOKEN" \
+            --header "Content-Type: application/json" \
+            --data "$payload" \
+            "${CALLBACK_URL%/}/status"

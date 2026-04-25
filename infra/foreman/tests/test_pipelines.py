@@ -114,6 +114,131 @@ async def test_start_pipeline(build_pipeline, mock_db):
 
 
 @pytest.mark.asyncio
+async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipeline, mock_db):
+    pipeline_id = uuid.uuid4()
+
+    pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.PENDING,
+        params={
+            "ref": "refs/merge-requests/17/head",
+            "build_type": "default",
+            "dispatch_owner": "Project-Tick",
+            "dispatch_repo": "Project-Tick",
+            "dispatch_workflow_id": "ci.yml",
+            "dispatch_ref": "master",
+            "dispatch_inputs": {
+                "force-all": "false",
+                "source-repository": "https://git.projecttick.org/project-tick/project-tick.git",
+                "source-ref": "refs/merge-requests/17/head",
+            },
+        },
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    async def mock_get(model_class, model_id):
+        if model_class is Pipeline and model_id == pipeline_id:
+            return pipeline
+        return None
+
+    mock_db.get = AsyncMock(side_effect=mock_get)
+    mock_result = MagicMock()
+    mock_result.scalars.return_value.all.return_value = []
+    mock_db.execute = AsyncMock(return_value=mock_result)
+    mock_get_db = create_mock_get_db(mock_db)
+    build_pipeline.provider.dispatch = AsyncMock(return_value={"status": "dispatched"})
+
+    with patch("app.pipelines.build.get_db", mock_get_db):
+        result = await build_pipeline.start_pipeline(pipeline_id)
+
+    assert result.status == PipelineStatus.RUNNING
+
+    dispatch_job_data = build_pipeline.provider.dispatch.await_args.args[2]
+    assert dispatch_job_data["params"]["owner"] == "Project-Tick"
+    assert dispatch_job_data["params"]["repo"] == "Project-Tick"
+    assert dispatch_job_data["params"]["workflow_id"] == "ci.yml"
+    assert dispatch_job_data["params"]["ref"] == "master"
+    assert dispatch_job_data["job_type"] == "ci"
+    assert "app_id" not in dispatch_job_data
+
+    inputs = dispatch_job_data["params"]["inputs"]
+    assert inputs["force-all"] == "false"
+    assert inputs["source-repository"] == "https://git.projecttick.org/project-tick/project-tick.git"
+    assert inputs["source-ref"] == "refs/merge-requests/17/head"
+    assert inputs["callback_url"].endswith(f"/api/pipelines/{pipeline_id}/callback")
+    assert inputs["callback_token"] == "test-callback-token"
+    assert "build_type" not in inputs
+
+
+@pytest.mark.asyncio
+async def test_handle_log_url_callback_uses_gitlab_notifier(build_pipeline, mock_db, sample_pipeline):
+    sample_pipeline.params = {
+        "gitlab_project_path": "project-tick/project-tick",
+        "gitlab_source_sha": "abcdef1234567890",
+    }
+    mock_db.get.return_value = sample_pipeline
+
+    mock_get_db = create_mock_get_db(mock_db)
+    gitlab_notifier = MagicMock()
+    gitlab_notifier.handle_build_started = AsyncMock()
+    github_notifier = MagicMock()
+    github_notifier.handle_build_started = AsyncMock()
+
+    with (
+        patch("app.pipelines.build.get_db", mock_get_db),
+        patch("app.pipelines.build.GitLabNotifier", return_value=gitlab_notifier),
+        patch("app.pipelines.build.GitHubNotifier", return_value=github_notifier),
+    ):
+        pipeline, updates = await build_pipeline.handle_log_url_callback(
+            sample_pipeline.id,
+            {"log_url": "https://github.com/Project-Tick/Project-Tick/actions/runs/123"},
+        )
+
+    assert pipeline.log_url == "https://github.com/Project-Tick/Project-Tick/actions/runs/123"
+    assert updates["log_url"] == pipeline.log_url
+    gitlab_notifier.handle_build_started.assert_awaited_once_with(
+        sample_pipeline,
+        "https://github.com/Project-Tick/Project-Tick/actions/runs/123",
+    )
+    github_notifier.handle_build_started.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_handle_status_callback_uses_gitlab_notifier(build_pipeline, mock_db, sample_pipeline):
+    sample_pipeline.params = {
+        "gitlab_project_path": "project-tick/project-tick",
+        "gitlab_source_sha": "abcdef1234567890",
+    }
+    mock_db.get.return_value = sample_pipeline
+
+    mock_get_db = create_mock_get_db(mock_db)
+    gitlab_notifier = MagicMock()
+    gitlab_notifier.handle_build_completion = AsyncMock()
+    github_notifier = MagicMock()
+    github_notifier.handle_build_completion = AsyncMock()
+
+    with (
+        patch("app.pipelines.build.get_db", mock_get_db),
+        patch("app.pipelines.build.GitLabNotifier", return_value=gitlab_notifier),
+        patch("app.pipelines.build.GitHubNotifier", return_value=github_notifier),
+    ):
+        pipeline, updates = await build_pipeline.handle_status_callback(
+            sample_pipeline.id,
+            {"status": "success"},
+        )
+
+    assert pipeline.status == PipelineStatus.SUCCEEDED
+    assert updates["pipeline_status"] == "success"
+    gitlab_notifier.handle_build_completion.assert_awaited_once_with(
+        sample_pipeline,
+        "success",
+    )
+    github_notifier.handle_build_completion.assert_not_called()
+
+
+@pytest.mark.asyncio
 @patch("app.pipelines.build.get_app_p90_build_time", return_value=None)
 @patch("app.pipelines.build.get_db")
 @patch("app.services.github_actions_service")

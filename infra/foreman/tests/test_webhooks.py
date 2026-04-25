@@ -462,13 +462,22 @@ def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
         "X-Gitlab-Token": "gitlab-secret",
     }
 
-    dispatch_mock = AsyncMock(
-        return_value={
-            "status": "dispatched",
-            "workflow_id": "ci.yml",
-            "repo": "Project-Tick",
-        }
+    pipeline_id = uuid.uuid4()
+    mock_pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.RUNNING,
+        params={},
+        provider_data={},
+        callback_token="test-callback-token",
     )
+
+    build_pipeline = MagicMock()
+    build_pipeline.create_pipeline = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.prepare_pipeline_for_start = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.supersede_conflicting_test_pipelines = AsyncMock()
+    build_pipeline.should_queue_test_build = AsyncMock(return_value=False)
+    build_pipeline.start_pipeline = AsyncMock(return_value=mock_pipeline)
 
     with (
         patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
@@ -476,7 +485,7 @@ def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
         patch.object(settings, "github_ci_repo", "Project-Tick"),
         patch.object(settings, "github_ci_workflow", "ci.yml"),
         patch.object(settings, "github_ci_ref", "master"),
-        patch("app.routes.webhooks.GitHubActionsService.dispatch", dispatch_mock),
+        patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
     ):
         response = client.post(
             "/api/webhooks/gitlab",
@@ -486,20 +495,58 @@ def test_receive_gitlab_webhook_dispatches_root_ci(client: TestClient):
 
     assert response.status_code == 202
     assert response.json()["message"] == "GitLab webhook received"
-    dispatch_mock.assert_awaited_once()
+    assert response.json()["pipeline_id"] == str(pipeline_id)
+    assert response.json()["pipeline_status"] == "running"
 
-    dispatch_kwargs = dispatch_mock.await_args.kwargs
-    assert dispatch_kwargs["job_data"]["params"]["owner"] == "Project-Tick"
-    assert dispatch_kwargs["job_data"]["params"]["repo"] == "Project-Tick"
-    assert dispatch_kwargs["job_data"]["params"]["workflow_id"] == "ci.yml"
-    assert dispatch_kwargs["job_data"]["params"]["ref"] == "master"
+    build_pipeline.create_pipeline.assert_awaited_once()
+    create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
+    assert create_kwargs["app_id"] == "gitlab-mr-17"
+    assert create_kwargs["params"]["dispatch_owner"] == "Project-Tick"
+    assert create_kwargs["params"]["dispatch_repo"] == "Project-Tick"
+    assert create_kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
+    assert create_kwargs["params"]["dispatch_ref"] == "master"
     assert (
-        dispatch_kwargs["job_data"]["params"]["inputs"]["source-repository"]
+        create_kwargs["params"]["dispatch_inputs"]["source-repository"]
         == "https://git.projecttick.org/project-tick/project-tick.git"
     )
     assert (
-        dispatch_kwargs["job_data"]["params"]["inputs"]["source-ref"]
+        create_kwargs["params"]["dispatch_inputs"]["source-ref"]
         == "refs/merge-requests/17/head"
+    )
+    assert create_kwargs["params"]["gitlab_source_sha"] == "abcdef1234567890"
+    assert (
+        create_kwargs["params"]["gitlab_project_path"]
+        == "project-tick/project-tick"
+    )
+    assert create_kwargs["params"]["gitlab_base_url"] == "https://git.projecttick.org"
+
+
+@pytest.mark.asyncio
+async def test_create_gitlab_merge_request_note_posts_note():
+    from app.routes.webhooks import create_gitlab_merge_request_note
+
+    mock_response = AsyncMock()
+    mock_response.raise_for_status = Mock()
+
+    mock_client_instance = AsyncMock()
+    mock_client_instance.post = AsyncMock(return_value=mock_response)
+    mock_client_instance.__aenter__ = AsyncMock(return_value=mock_client_instance)
+    mock_client_instance.__aexit__ = AsyncMock(return_value=None)
+
+    with (
+        patch.object(settings, "gitlab_api_token", "gitlab-api-token"),
+        patch("httpx.AsyncClient", return_value=mock_client_instance),
+    ):
+        result = await create_gitlab_merge_request_note(
+            SAMPLE_GITLAB_NOTE_PAYLOAD,
+            "queued",
+        )
+
+    assert result is True
+    mock_client_instance.post.assert_awaited_once_with(
+        "https://git.projecttick.org/api/v4/projects/project-tick%2Fproject-tick/merge_requests/17/notes",
+        headers={"PRIVATE-TOKEN": "gitlab-api-token"},
+        data={"body": "queued"},
     )
 
 
@@ -507,11 +554,12 @@ def test_receive_gitlab_webhook_ignores_quoted_build_note(client: TestClient):
     payload = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
     payload["object_attributes"]["note"] = "> bot, build"
 
-    dispatch_mock = AsyncMock()
+    build_pipeline = MagicMock()
+    build_pipeline.create_pipeline = AsyncMock()
 
     with (
         patch.object(settings, "gitlab_webhook_secret", ""),
-        patch("app.routes.webhooks.GitHubActionsService.dispatch", dispatch_mock),
+        patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
     ):
         response = client.post(
             "/api/webhooks/gitlab",
@@ -521,7 +569,7 @@ def test_receive_gitlab_webhook_ignores_quoted_build_note(client: TestClient):
 
     assert response.status_code == 202
     assert "ignored due to note filter" in response.json()["message"]
-    dispatch_mock.assert_not_awaited()
+    build_pipeline.create_pipeline.assert_not_awaited()
 
 
 def test_receive_gitlab_webhook_invalid_token(client: TestClient):
