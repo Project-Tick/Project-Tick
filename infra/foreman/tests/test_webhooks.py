@@ -2385,6 +2385,13 @@ SAMPLE_ISSUE_BODY_STABLE = """The stable build pipeline for `test-app` failed.
 Commit SHA: abc123456789
 Build log: https://github.com/flathub-infra/vorarbeiter/actions/runs/123456789"""
 
+SAMPLE_ISSUE_BODY_NATIVE_GITHUB_CI = """The stable build pipeline for `Project-Tick` failed.
+
+Commit SHA: abcdef1234567890
+Ref: refs/heads/master
+Build log: https://github.com/Project-Tick/Project-Tick/actions/runs/123456789
+GitHub repository: Project-Tick/Project-Tick"""
+
 SAMPLE_ISSUE_BODY_JOB_FAILURE = """The commit job for `test-app` failed in the stable repository.
 
 **Build Information:**
@@ -2601,7 +2608,73 @@ async def test_handle_issue_retry_success():
 
         assert result == pipeline_id
         mock_pipeline_service.create_pipeline.assert_called_once()
+        _, kwargs = mock_pipeline_service.create_pipeline.call_args
+        assert kwargs["params"]["repo"] == "flathub/test-app"
+        assert "dispatch_workflow_id" not in kwargs["params"]
         mock_pipeline_service.start_pipeline.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_handle_issue_retry_native_github_ci_dispatches_ci_workflow():
+    from app.routes.webhooks import handle_issue_retry
+
+    event_id = uuid.uuid4()
+    pipeline_id = uuid.uuid4()
+
+    mock_pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="Project-Tick",
+        params={"retry_count": 1, "retry_from_issue": 123},
+        status=PipelineStatus.PENDING,
+    )
+
+    mock_pipeline_service = AsyncMock()
+    mock_pipeline_service.create_pipeline.return_value = mock_pipeline
+    mock_pipeline_service.prepare_pipeline_for_start.return_value = mock_pipeline
+    mock_pipeline_service.supersede_conflicting_test_pipelines.return_value = None
+    mock_pipeline_service.should_queue_test_build.return_value = False
+    mock_pipeline_service.start_pipeline.return_value = mock_pipeline
+
+    with (
+        patch.object(settings, "github_org", "Project-Tick"),
+        patch.object(settings, "github_ci_repo", "Project-Tick"),
+        patch.object(settings, "github_ci_workflow", "ci.yml"),
+        patch.object(settings, "github_ci_ref", "master"),
+        patch("app.routes.webhooks.validate_retry_permissions", return_value=True),
+        patch("app.routes.webhooks.is_issue_edited", AsyncMock(return_value=False)),
+        patch(
+            "app.routes.webhooks.get_workflow_run_title",
+            AsyncMock(return_value="CI from refs/heads/master"),
+        ),
+        patch("app.routes.webhooks.BuildPipeline", return_value=mock_pipeline_service),
+        patch("app.routes.webhooks.update_commit_status", AsyncMock()),
+        patch("app.routes.webhooks.add_issue_comment", AsyncMock()),
+    ):
+        result = await handle_issue_retry(
+            git_repo="Project-Tick/Project-Tick",
+            issue_number=123,
+            issue_body=SAMPLE_ISSUE_BODY_NATIVE_GITHUB_CI,
+            comment_author="test-user",
+            webhook_event_id=event_id,
+        )
+
+    assert result == pipeline_id
+    mock_pipeline_service.create_pipeline.assert_called_once()
+    _, kwargs = mock_pipeline_service.create_pipeline.call_args
+    assert kwargs["params"]["repo"] == "Project-Tick/Project-Tick"
+    assert kwargs["params"]["ref"] == "refs/heads/master"
+    assert kwargs["params"]["sha"] == "abcdef1234567890"
+    assert kwargs["params"]["dispatch_owner"] == "Project-Tick"
+    assert kwargs["params"]["dispatch_repo"] == "Project-Tick"
+    assert kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
+    assert kwargs["params"]["dispatch_ref"] == "master"
+    assert kwargs["params"]["dispatch_inputs"]["event-name"] == "push"
+    assert kwargs["params"]["dispatch_inputs"]["event-actor"] == "test-user"
+    assert kwargs["params"]["dispatch_inputs"]["source-ref"] == "refs/heads/master"
+    assert kwargs["params"]["dispatch_inputs"]["source-sha"] == "abcdef1234567890"
+    assert kwargs["params"]["dispatch_inputs"]["head-ref"] == "master"
+    assert "source-repository" not in kwargs["params"]["dispatch_inputs"]
+    mock_pipeline_service.start_pipeline.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -2663,6 +2736,36 @@ async def test_handle_issue_retry_invalid_issue():
             mock_comment.assert_called_once()
             args, kwargs = mock_comment.call_args
             assert "Could not parse build parameters" in kwargs["comment"]
+
+
+@pytest.mark.asyncio
+async def test_create_pipeline_issue_retry_routes_to_handle_issue_retry():
+    from app.routes.webhooks import create_pipeline
+
+    event_id = uuid.uuid4()
+    pipeline_id = uuid.uuid4()
+    webhook_event = WebhookEvent(
+        id=event_id,
+        source=WebhookSource.GITHUB,
+        payload=SAMPLE_RETRY_COMMENT_PAYLOAD,
+        repository="flathub/test-app",
+        actor="test-actor",
+    )
+
+    with patch(
+        "app.routes.webhooks.handle_issue_retry",
+        AsyncMock(return_value=pipeline_id),
+    ) as mock_handle_issue_retry:
+        result = await create_pipeline(webhook_event)
+
+    assert result == pipeline_id
+    mock_handle_issue_retry.assert_awaited_once_with(
+        git_repo="flathub/test-app",
+        issue_number=123,
+        issue_body=SAMPLE_ISSUE_BODY_STABLE,
+        comment_author="test-user",
+        webhook_event_id=event_id,
+    )
 
 
 SAMPLE_CLOSED_PR_PAYLOAD = {

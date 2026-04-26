@@ -956,9 +956,11 @@ async def handle_issue_retry(
     if run_id and run_id.isdigit():
         run_title = await get_workflow_run_title(int(run_id))
 
+    retry_repo = str(parsed_issue.get("github_repo") or git_repo)
+    retry_ref = str(parsed_issue["ref"])
     params: dict[str, Any] = {
-        "repo": parsed_issue.get("github_repo") or git_repo,
-        "ref": parsed_issue["ref"],
+        "repo": retry_repo,
+        "ref": retry_ref,
         "sha": parsed_issue["sha"],
         "target_repo": parsed_issue["flat_manager_repo"],
         "build_type": "default",
@@ -972,6 +974,33 @@ async def handle_issue_retry(
         params["retry_job_type"] = parsed_issue["job_type"]
     if run_title:
         params["retry_from_run_title"] = run_title
+
+    native_github_ci_repo = f"{settings.github_org}/{settings.github_ci_repo}"
+    if retry_repo.lower() == native_github_ci_repo.lower():
+        head_ref = (
+            retry_ref.removeprefix("refs/heads/")
+            if retry_ref.startswith("refs/heads/")
+            else ""
+        )
+        params.update(
+            {
+                "event_name": "push",
+                "actor": comment_author,
+                "head_ref": head_ref,
+            }
+        )
+        params.update(
+            build_github_dispatch_params(
+                repo_name=retry_repo,
+                source_event_name="push",
+                source_ref=retry_ref,
+                source_sha=parsed_issue["sha"],
+                actor_login=comment_author,
+                extra_inputs={
+                    "head-ref": head_ref,
+                },
+            )
+        )
 
     pipeline_service = BuildPipeline()
     pipeline = await pipeline_service.create_pipeline(
