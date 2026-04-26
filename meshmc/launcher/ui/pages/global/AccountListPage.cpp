@@ -297,6 +297,17 @@ void AccountListPage::on_actionDeleteSkin_triggered()
 	QModelIndex selected = selection.first();
 	MinecraftAccountPtr account =
 		selected.data(AccountList::PointerRole).value<MinecraftAccountPtr>();
+
+	/* Confirm before permanently deleting the skin. */
+	auto reply = QMessageBox::question(
+		this, tr("Delete Skin"),
+		tr("Are you sure you want to delete the skin for account \"%1\"?\n"
+		   "This action cannot be undone.")
+			.arg(account->profileName()),
+		QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+	if (reply != QMessageBox::Yes)
+		return;
+
 	ProgressDialog prog(this);
 	auto deleteSkinTask =
 		std::make_shared<SkinDelete>(this, account->accessToken());
