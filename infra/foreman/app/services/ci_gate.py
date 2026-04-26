@@ -318,7 +318,7 @@ class CIGateService:
             or (event_name == "pull_request" and context["pr_draft"])
         )
 
-        if is_merge_queue or is_tag or context["force_all"]:
+        if is_merge_queue or context["force_all"]:
             run_level = "full"
         elif is_dependabot:
             run_level = "minimal"
@@ -401,6 +401,11 @@ class CIGateService:
             "neozip_release": workflow_enabled and ref.startswith("refs/tags/neozip-"),
             "release_sources": workflow_enabled and is_tag,
         }
+
+        if is_tag:
+            jobs = {key: False for key in jobs} | {
+                "release_sources": workflow_enabled,
+            }
 
         return {
             "is_push": is_push,
