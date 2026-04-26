@@ -86,6 +86,38 @@ async def test_build_plan_from_request_downgrades_master_root_only_run_and_marks
 
 
 @pytest.mark.asyncio
+async def test_build_plan_from_request_keeps_master_meshmc_and_root_push_targeted():
+    service = StubCIGateService(
+        changed_files=["meshmc/updater/CMakeLists.txt", "README.md"],
+        commit_message="build(meshmc): tweak updater",
+    )
+
+    plan = await service.build_plan_from_request(
+        type(
+            "Request",
+            (),
+            {
+                "model_dump": lambda self: {
+                    "event_name": "push",
+                    "repository": "Project-Tick/Project-Tick",
+                    "source_ref": "refs/heads/master",
+                    "source_sha": "abc123",
+                    "actor": "dev",
+                }
+            },
+        )()
+    )
+
+    assert plan["run_level"] == "standard"
+    assert plan["root_changed"] is True
+    assert plan["meshmc_changed"] is True
+    assert plan["changed_projects"] == "meshmc,root"
+    assert plan["jobs"]["meshmc"] is True
+    assert plan["jobs"]["meshmc_codeql"] is False
+    assert plan["jobs"]["mnv"] is False
+
+
+@pytest.mark.asyncio
 async def test_build_plan_from_request_disables_all_jobs_for_unmerged_pull_request_target():
     service = StubCIGateService(
         changed_files=["mnv/main.c"],

@@ -318,7 +318,7 @@ class CIGateService:
             or (event_name == "pull_request" and context["pr_draft"])
         )
 
-        if is_merge_queue or is_tag or (is_push and is_master) or context["force_all"]:
+        if is_merge_queue or is_tag or context["force_all"]:
             run_level = "full"
         elif is_dependabot:
             run_level = "minimal"
@@ -353,10 +353,6 @@ class CIGateService:
 
         if root_changed:
             changed_projects.append("root")
-
-        has_project_changes = any(change_flags[f"{project}_changed"] for project in PROJECTS if project != "ci")
-        if is_push and is_master and run_level == "full" and not has_project_changes:
-            run_level = "standard"
 
         if is_push and is_master and root_changed:
             change_flags["meshmc_changed"] = True
