@@ -48,7 +48,8 @@ GITLAB_NOTE_COMMANDS = BOT_COMMANDS + ("bot, status", "bot, help")
 GITLAB_ISSUE_COMMANDS = ("bot, retry", "bot, help")
 
 BUILD_FAILURE_ISSUE_RE = re.compile(
-    r"The (?P<target_repo>\w+) build pipeline for `(?P<app_id>[^`]+)` failed\.\s+"
+    r"The (?P<target_repo>\w+) build pipeline for `(?P<app_id>[^`]+)` "
+    r"(?:failed|was cancelled)\.\s+"
     r"Commit SHA: (?P<sha>[0-9a-fA-F]+)\s+"
     r"(?:Ref: (?P<ref>\S+)\s+)?"
     r"Build log: (?P<log_url>\S+)"

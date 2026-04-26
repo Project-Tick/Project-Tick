@@ -379,6 +379,21 @@ jobs:
     if: always()
     needs:
       - callback-start
+      - gate
+      - meshmc-flatpak-update
+      - infra-action-ci
+      - meshmc-flatpak-deploy
+      - infra-docker
+      - stale
+      - docker-images
+      - mnv-coverity
+      - mnv-link-check
+      - scorecard
+      - meshmc-flake-update
+      - mnv-codeql
+      - neozip-codeql
+      - json4cpp-flawfinder
+      - json4cpp-semgrep
       - verdict
     runs-on: ubuntu-latest
     permissions:
@@ -397,21 +412,16 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
         env:
-          VERDICT_RESULT: ${{ needs.verdict.result }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           set -euo pipefail
 
-          case "$VERDICT_RESULT" in
-            success)
-              status="success"
-              ;;
-            cancelled)
-              status="cancelled"
-              ;;
-            *)
-              status="failure"
-              ;;
-          esac
+          status="success"
+          if jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="failure"
+          elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="cancelled"
+          fi
 
           echo "status=$status" >> "$GITHUB_OUTPUT"
 

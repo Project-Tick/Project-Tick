@@ -89,6 +89,20 @@ async def test_handle_build_completion_failure_creates_stable_issue(
 
 
 @pytest.mark.asyncio
+async def test_handle_build_completion_cancelled_creates_stable_issue(
+    gitlab_notifier, mock_pipeline
+):
+    gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
+    gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
+    gitlab_notifier._create_issue = AsyncMock(return_value=("https://git/issue/1", 1))
+
+    await gitlab_notifier.handle_build_completion(mock_pipeline, "cancelled")
+
+    gitlab_notifier._create_issue.assert_awaited_once()
+    assert "was cancelled" in gitlab_notifier._create_issue.await_args.args[2]
+
+
+@pytest.mark.asyncio
 async def test_handle_build_completion_failure_does_not_create_stable_issue_for_schedule(
     gitlab_notifier, mock_pipeline
 ):

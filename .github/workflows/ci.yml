@@ -931,6 +931,30 @@ jobs:
     name: "Callback Status"
     needs:
       - callback-start
+      - gate
+      - lint
+      - mnv
+      - cgit
+      - cmark
+      - corebinutils
+      - genqrcode
+      - neozip
+      - json4cpp
+      - libnbtplusplus
+      - tomlplusplus
+      - meshmc
+      - forgewrapper
+      - images4docker
+      - cmark-fuzz
+      - json4cpp-fuzz
+      - json4cpp-amalgam
+      - tomlplusplus-fuzz
+      - neozip-fuzz
+      - meshmc-codeql
+      - mnv-codeql
+      - neozip-codeql
+      - meshmc-container
+      - meshmc-nix
       - verdict
       - json4cpp-docs
       - backport

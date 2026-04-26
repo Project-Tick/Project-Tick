@@ -22,16 +22,31 @@ class GitHubNotifier:
     def __init__(self):
         pass
 
-    def _build_failure_issue_title(self, pipeline: Pipeline) -> str:
-        return f"Stable build failed for {pipeline.app_id}"
+    def _build_failure_issue_title(
+        self,
+        pipeline: Pipeline,
+        status: str = "failure",
+    ) -> str:
+        outcome = "cancelled" if status == "cancelled" else "failed"
+        return f"Stable build {outcome} for {pipeline.app_id}"
 
-    def _build_failure_issue_body(self, pipeline: Pipeline) -> str:
+    def _build_failure_issue_body(
+        self,
+        pipeline: Pipeline,
+        status: str = "failure",
+    ) -> str:
         sha = pipeline.params.get("sha", "")
         ref = pipeline.params.get("ref", "refs/heads/master")
         git_repo = pipeline.params.get("repo", "")
+        outcome = "was cancelled" if status == "cancelled" else "failed"
+        investigation = (
+            "Please investigate this cancellation."
+            if status == "cancelled"
+            else "Please investigate this failure."
+        )
 
         lines = [
-            f"The stable build pipeline for `{pipeline.app_id}` failed.",
+            f"The stable build pipeline for `{pipeline.app_id}` {outcome}.",
             "",
             f"Commit SHA: {sha}",
             f"Ref: {ref}",
@@ -45,7 +60,7 @@ class GitHubNotifier:
         lines.extend(
             [
                 "",
-                "Please investigate this failure.",
+                investigation,
                 "To retry the stable build, comment `bot, retry` on this issue.",
             ]
         )
@@ -80,21 +95,28 @@ class GitHubNotifier:
         retry_issue_number = pipeline.params.get("retry_from_issue")
         log_url = pipeline.log_url or ""
 
-        if status == "failure":
+        if status in {"failure", "cancelled"}:
             if retry_issue_number:
+                comment = (
+                    f"❌ Stable retry failed.\n\nBuild log: {log_url}\n\n"
+                    "Please investigate and comment `bot, retry` again if another retry is needed."
+                    if status == "failure"
+                    else (
+                        f"⏹️ Stable retry was cancelled.\n\nBuild log: {log_url}"
+                        if log_url
+                        else "⏹️ Stable retry was cancelled."
+                    )
+                )
                 await add_issue_comment(
                     git_repo=git_repo,
                     issue_number=int(retry_issue_number),
-                    comment=(
-                        f"❌ Stable retry failed.\n\nBuild log: {log_url}\n\n"
-                        "Please investigate and comment `bot, retry` again if another retry is needed."
-                    ),
+                    comment=comment,
                 )
             else:
                 await create_github_issue(
                     git_repo=git_repo,
-                    title=self._build_failure_issue_title(pipeline),
-                    body=self._build_failure_issue_body(pipeline),
+                    title=self._build_failure_issue_title(pipeline, status),
+                    body=self._build_failure_issue_body(pipeline, status),
                 )
         elif status == "success" and retry_issue_number:
             await add_issue_comment(
@@ -107,17 +129,6 @@ class GitHubNotifier:
                 ),
             )
             await close_github_issue(git_repo=git_repo, issue_number=int(retry_issue_number))
-        elif status == "cancelled" and retry_issue_number:
-            await add_issue_comment(
-                git_repo=git_repo,
-                issue_number=int(retry_issue_number),
-                comment=(
-                    f"⏹️ Stable retry was cancelled.\n\nBuild log: {log_url}"
-                    if log_url
-                    else "⏹️ Stable retry was cancelled."
-                ),
-            )
-
     async def notify_build_status(
         self,
         pipeline: Pipeline,

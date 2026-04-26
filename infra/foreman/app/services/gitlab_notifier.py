@@ -235,16 +235,31 @@ class GitLabNotifier:
             )
             return False
 
-    def _build_failure_issue_title(self, pipeline: Pipeline) -> str:
-        return f"Stable build failed for {pipeline.app_id}"
+    def _build_failure_issue_title(
+        self,
+        pipeline: Pipeline,
+        status: str = "failure",
+    ) -> str:
+        outcome = "cancelled" if status == "cancelled" else "failed"
+        return f"Stable build {outcome} for {pipeline.app_id}"
 
-    def _build_failure_issue_body(self, pipeline: Pipeline) -> str:
+    def _build_failure_issue_body(
+        self,
+        pipeline: Pipeline,
+        status: str = "failure",
+    ) -> str:
         source_sha = self._get_param(pipeline, "gitlab_source_sha") or self._get_param(
             pipeline, "sha"
         )
         ref = self._get_param(pipeline, "ref") or f"refs/heads/{self._get_target_branch(pipeline)}"
         github_repo = self._get_param(pipeline, "repo")
         source_repository = ""
+        outcome = "was cancelled" if status == "cancelled" else "failed"
+        investigation = (
+            "Please investigate this cancellation."
+            if status == "cancelled"
+            else "Please investigate this failure."
+        )
 
         gitlab_base_url = self._get_param(pipeline, "gitlab_base_url")
         project_path = self._get_param(pipeline, "gitlab_project_path")
@@ -252,7 +267,7 @@ class GitLabNotifier:
             source_repository = f"{gitlab_base_url}/{project_path}.git"
 
         lines = [
-            f"The stable build pipeline for `{pipeline.app_id}` failed.",
+            f"The stable build pipeline for `{pipeline.app_id}` {outcome}.",
             "",
             f"Commit SHA: {source_sha}",
             f"Ref: {ref}",
@@ -268,7 +283,7 @@ class GitLabNotifier:
         lines.extend(
             [
                 "",
-                "Please investigate this failure.",
+                investigation,
                 "To retry the stable build, comment `bot, retry` on this issue.",
             ]
         )
@@ -289,18 +304,24 @@ class GitLabNotifier:
         retry_issue_iid = self._get_param(pipeline, "retry_from_gitlab_issue_iid")
         log_url = pipeline.log_url or ""
 
-        if status == "failure":
+        if status in {"failure", "cancelled"}:
             if retry_issue_iid:
                 note = (
                     f"❌ Stable retry failed.\n\nBuild log: {log_url}\n\n"
                     "Please investigate and comment `bot, retry` again if another retry is needed."
+                    if status == "failure"
+                    else (
+                        f"⏹️ Stable retry was cancelled.\n\nBuild log: {log_url}"
+                        if log_url
+                        else "⏹️ Stable retry was cancelled."
+                    )
                 )
                 await self._create_issue_note(pipeline, retry_issue_iid, note)
             else:
                 await self._create_issue(
                     pipeline,
-                    self._build_failure_issue_title(pipeline),
-                    self._build_failure_issue_body(pipeline),
+                    self._build_failure_issue_title(pipeline, status),
+                    self._build_failure_issue_body(pipeline, status),
                 )
         elif status == "success" and retry_issue_iid:
             note = (
@@ -310,13 +331,6 @@ class GitLabNotifier:
             )
             await self._create_issue_note(pipeline, retry_issue_iid, note)
             await self._close_issue(pipeline, retry_issue_iid)
-        elif status == "cancelled" and retry_issue_iid:
-            note = (
-                f"⏹️ Stable retry was cancelled.\n\nBuild log: {log_url}"
-                if log_url
-                else "⏹️ Stable retry was cancelled."
-            )
-            await self._create_issue_note(pipeline, retry_issue_iid, note)
 
     async def _update_commit_status(
         self,

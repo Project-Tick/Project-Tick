@@ -2269,6 +2269,31 @@ async def test_parse_failure_issue_stable_build():
 
 
 @pytest.mark.asyncio
+async def test_parse_failure_issue_cancelled_stable_build():
+    from app.routes.webhooks import parse_failure_issue
+
+    result = await parse_failure_issue(
+        (
+            "The stable build pipeline for `test-app` was cancelled.\n\n"
+            "Commit SHA: abc123456789\n"
+            "Ref: refs/heads/master\n"
+            "Build log: https://example.com/build.log\n"
+            "GitHub repository: flathub/test-app\n\n"
+            "Please investigate this cancellation.\n"
+            "To retry the stable build, comment `bot, retry` on this issue."
+        ),
+        "flathub/test-app",
+    )
+
+    assert result is not None
+    assert result["sha"] == "abc123456789"
+    assert result["repo"] == "flathub/test-app"
+    assert result["ref"] == "refs/heads/master"
+    assert result["flat_manager_repo"] == "stable"
+    assert result["issue_type"] == "build_failure"
+
+
+@pytest.mark.asyncio
 async def test_parse_failure_issue_job_failure():
     from app.routes.webhooks import parse_failure_issue
 
