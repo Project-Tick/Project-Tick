@@ -3,6 +3,10 @@ name: "Scorecard supply-chain security"
 on:
   workflow_dispatch:
     inputs:
+      emit-callbacks:
+        description: Whether this standalone run should report callbacks to Foreman
+        type: boolean
+        default: true
       callback_url:
         description: Optional Foreman callback base URL
         type: string
@@ -13,6 +17,11 @@ on:
         default: ""
   workflow_call:
     inputs:
+      emit-callbacks:
+        description: Whether this reusable invocation should report callbacks to Foreman
+        required: false
+        type: boolean
+        default: false
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -30,6 +39,7 @@ permissions:
 jobs:
   callback-start:
     name: "Callback Start"
+    if: ${{ inputs.emit-callbacks }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -63,7 +73,6 @@ jobs:
 
   analysis:
     name: Scorecard analysis
-    needs: callback-start
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -106,7 +115,7 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    if: always()
+    if: ${{ inputs.emit-callbacks && always() }}
     needs:
       - callback-start
       - analysis

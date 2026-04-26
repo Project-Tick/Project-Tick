@@ -8,6 +8,11 @@ on:
       version:
         description: "Version string (e.g. 1.2.3)"
         required: true
+      emit-callbacks:
+        description: Whether this standalone run should report callbacks to Foreman
+        required: false
+        type: boolean
+        default: true
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -25,6 +30,11 @@ on:
         required: false
         type: string
         default: ""
+      emit-callbacks:
+        description: Whether this reusable invocation should report callbacks to Foreman
+        required: false
+        type: boolean
+        default: false
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -42,7 +52,7 @@ jobs:
 
   callback-start:
     name: "Callback Start"
-    if: github.event_name != 'workflow_call'
+    if: ${{ inputs.emit-callbacks }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -603,7 +613,7 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    if: github.event_name != 'workflow_call' && always()
+    if: ${{ inputs.emit-callbacks && always() }}
     needs:
       - callback-start
       - meshmc_build

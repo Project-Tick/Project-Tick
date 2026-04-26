@@ -48,7 +48,7 @@ async def test_update_commit_status_success(mock_settings):
             == "https://api.github.com/repos/flathub/test-app/statuses/abc123"
         )
         assert call_args[1]["json"]["state"] == "success"
-        assert call_args[1]["json"]["context"] == "builds/x86_64"
+        assert call_args[1]["json"]["context"] == "Project-Tick/Foreman"
         assert call_args[1]["json"]["target_url"] == "https://example.com/build/123"
         assert call_args[1]["json"]["description"] == "Build succeeded"
         assert call_args[1]["headers"]["Authorization"] == "token test-token"

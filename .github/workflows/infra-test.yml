@@ -3,6 +3,10 @@ name: "Test build with published image"
 on:
   workflow_dispatch:
     inputs:
+      emit-callbacks:
+        description: Whether this standalone run should report callbacks to Foreman
+        type: boolean
+        default: true
       callback_url:
         description: Optional Foreman callback base URL
         type: string
@@ -13,6 +17,11 @@ on:
         default: ""
   workflow_call:
     inputs:
+      emit-callbacks:
+        description: Whether this reusable invocation should report callbacks to Foreman
+        required: false
+        type: boolean
+        default: false
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -35,6 +44,7 @@ env:
 jobs:
   callback-start:
     name: "Callback Start"
+    if: ${{ inputs.emit-callbacks }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -70,7 +80,6 @@ jobs:
           payload_json: ${{ format('{{"log_url":"{0}/{1}/actions/runs/{2}"}}', github.server_url, github.repository, github.run_id) }}
 
   actions_tagged:
-    needs: callback-start
     permissions: {}
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
@@ -117,7 +126,6 @@ jobs:
           flatpak info ${{ env.TEST_APPID }}
 
   actions_master:
-    needs: callback-start
     permissions: {}
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48
@@ -165,7 +173,7 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    if: always()
+    if: ${{ inputs.emit-callbacks && always() }}
     needs:
       - callback-start
       - actions_tagged

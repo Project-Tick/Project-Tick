@@ -133,9 +133,11 @@ def build_github_dispatch_params(
     source_sha: str | None,
     actor_login: str,
     extra_inputs: dict[str, str] | None = None,
+    source_repository: str | None = None,
 ) -> dict[str, Any]:
     dispatch_repo_full_name = f"{settings.github_org}/{settings.github_ci_repo}"
     source_repo_name = repo_name if "/" in repo_name else dispatch_repo_full_name
+    resolved_source_repository = source_repository
 
     dispatch_inputs = {
         "force-all": "false",
@@ -144,10 +146,10 @@ def build_github_dispatch_params(
         "source-ref": source_ref,
         "source-sha": source_sha or "",
     }
-    if source_repo_name.lower() != dispatch_repo_full_name.lower():
-        dispatch_inputs["source-repository"] = (
-            f"https://github.com/{source_repo_name}.git"
-        )
+    if not resolved_source_repository and source_repo_name.lower() != dispatch_repo_full_name.lower():
+        resolved_source_repository = f"https://github.com/{source_repo_name}.git"
+    if resolved_source_repository:
+        dispatch_inputs["source-repository"] = resolved_source_repository
     if extra_inputs:
         dispatch_inputs.update(extra_inputs)
 
@@ -175,6 +177,81 @@ def build_gitlab_issue_routing_params(repo_name: str) -> dict[str, str]:
         "gitlab_base_url": settings.gitlab_base_url,
         "gitlab_project_path": project_path,
     }
+
+
+def get_gitlab_merge_request_data(payload: dict[str, Any]) -> dict[str, Any]:
+    merge_request = payload.get("merge_request")
+    if isinstance(merge_request, dict) and merge_request:
+        return merge_request
+
+    if payload.get("object_kind") == "merge_request":
+        object_attributes = payload.get("object_attributes")
+        if isinstance(object_attributes, dict):
+            return object_attributes
+
+    return {}
+
+
+def get_gitlab_merge_request_iid(payload: dict[str, Any]) -> str:
+    merge_request = get_gitlab_merge_request_data(payload)
+    merge_request_iid = merge_request.get("iid")
+    return str(merge_request_iid) if merge_request_iid is not None else ""
+
+
+def get_gitlab_merge_request_source_sha(payload: dict[str, Any]) -> str:
+    merge_request = get_gitlab_merge_request_data(payload)
+    last_commit = merge_request.get("last_commit")
+    if isinstance(last_commit, dict):
+        last_commit_id = last_commit.get("id")
+        if last_commit_id is not None:
+            return str(last_commit_id)
+
+    source_sha = merge_request.get("last_commit_id") or merge_request.get("sha")
+    return str(source_sha) if source_sha is not None else ""
+
+
+def get_gitlab_merge_request_oldrev(payload: dict[str, Any]) -> str:
+    merge_request = get_gitlab_merge_request_data(payload)
+    oldrev = merge_request.get("oldrev")
+    return str(oldrev) if oldrev is not None else ""
+
+
+def is_gitlab_merge_request_draft(payload: dict[str, Any]) -> bool:
+    merge_request = get_gitlab_merge_request_data(payload)
+
+    for key in ("draft", "work_in_progress"):
+        draft_value = merge_request.get(key)
+        if isinstance(draft_value, bool):
+            return draft_value
+
+    title = str(merge_request.get("title", "")).lower()
+    return title.startswith(("draft:", "wip:"))
+
+
+def should_autostart_gitlab_merge_request_build(payload: dict[str, Any]) -> bool:
+    if payload.get("object_kind") != "merge_request":
+        return False
+
+    merge_request = get_gitlab_merge_request_data(payload)
+    state = str(merge_request.get("state", "")).lower()
+    if state in ("closed", "merged"):
+        return False
+
+    action = str(merge_request.get("action", "")).lower()
+    if action in ("open", "opened", "reopen", "reopened"):
+        return True
+    if action != "update":
+        return False
+
+    oldrev = get_gitlab_merge_request_oldrev(payload)
+    if oldrev and oldrev != ("0" * 40):
+        return True
+
+    changes = payload.get("changes")
+    if not isinstance(changes, dict):
+        return False
+
+    return any(key in changes for key in ("last_commit", "source_branch", "target_branch"))
 
 
 def describe_target_branch(target_branch: str) -> str:
@@ -288,7 +365,7 @@ def get_gitlab_note_command(payload: dict[str, Any]) -> str | None:
         return None
 
     object_attributes = payload.get("object_attributes", {})
-    merge_request = payload.get("merge_request", {})
+    merge_request = get_gitlab_merge_request_data(payload)
     action = object_attributes.get("action")
 
     if object_attributes.get("noteable_type") != "MergeRequest":
@@ -370,7 +447,7 @@ def get_gitlab_help_note() -> str:
 
 
 def get_gitlab_merge_request_ref(payload: dict[str, Any]) -> str:
-    merge_request = payload.get("merge_request", {})
+    merge_request = get_gitlab_merge_request_data(payload)
     merge_request_iid = merge_request.get("iid")
     if merge_request_iid:
         return f"refs/merge-requests/{merge_request_iid}/head"
@@ -383,7 +460,7 @@ def get_gitlab_merge_request_ref(payload: dict[str, Any]) -> str:
 
 
 def get_gitlab_project_path(payload: dict[str, Any]) -> str:
-    merge_request = payload.get("merge_request", {})
+    merge_request = get_gitlab_merge_request_data(payload)
     project = payload.get("project", {})
 
     for path in (
@@ -398,7 +475,7 @@ def get_gitlab_project_path(payload: dict[str, Any]) -> str:
 
 
 def get_gitlab_base_url(payload: dict[str, Any]) -> str:
-    merge_request = payload.get("merge_request", {})
+    merge_request = get_gitlab_merge_request_data(payload)
     project = payload.get("project", {})
 
     for repository_url in (
@@ -424,7 +501,7 @@ async def create_gitlab_merge_request_note(
         logger.info("Skipping GitLab merge request note because GITLAB_API_TOKEN is not configured")
         return False
 
-    merge_request_iid = payload.get("merge_request", {}).get("iid")
+    merge_request_iid = get_gitlab_merge_request_iid(payload)
     project_path = get_gitlab_project_path(payload)
     gitlab_base_url = get_gitlab_base_url(payload)
 
@@ -466,6 +543,168 @@ async def create_gitlab_merge_request_note(
         )
 
     return False
+
+
+def build_gitlab_merge_request_initial_note(should_queue: bool) -> str:
+    return (
+        "🚧 Test build queued — waiting for capacity."
+        if should_queue
+        else "🚧 Test build enqueued."
+    )
+
+
+async def trigger_gitlab_merge_request_build(
+    payload: dict[str, Any],
+    delivery_id: str,
+    command: str | None = None,
+) -> dict[str, Any]:
+    merge_request = get_gitlab_merge_request_data(payload)
+    merge_request_iid = get_gitlab_merge_request_iid(payload)
+    source_info = merge_request.get("source", {})
+    source_repository = str(
+        source_info.get("git_http_url")
+        or payload.get("project", {}).get("git_http_url", "")
+    )
+    source_ref = get_gitlab_merge_request_ref(payload)
+    source_sha = get_gitlab_merge_request_source_sha(payload)
+    target_branch = str(
+        merge_request.get("target_branch", settings.github_ci_ref)
+        or settings.github_ci_ref
+    )
+    source_branch = str(merge_request.get("source_branch", ""))
+    merge_request_title = str(merge_request.get("title", ""))
+    oldrev = get_gitlab_merge_request_oldrev(payload)
+    gitlab_project_path = get_gitlab_project_path(payload)
+    gitlab_base_url = get_gitlab_base_url(payload)
+
+    if settings.ff_disable_test_builds:
+        await create_gitlab_merge_request_note(
+            payload,
+            DISABLED_TEST_BUILDS_MSG.format(statuspage_url=settings.statuspage_url),
+        )
+        response = {
+            "message": "GitLab webhook received",
+            "event_id": delivery_id,
+        }
+        if command:
+            response["command"] = command
+        return response
+
+    if not merge_request_iid:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing merge request IID in GitLab payload.",
+        )
+    if not source_repository:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing source repository URL in GitLab payload.",
+        )
+    if not source_ref:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing source ref in GitLab payload.",
+        )
+    if not source_sha:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing merge request commit SHA in GitLab payload.",
+        )
+    if not gitlab_project_path or not gitlab_base_url:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing GitLab routing fields in payload.",
+        )
+
+    diff_refs = merge_request.get("diff_refs")
+    pr_base_sha = ""
+    if isinstance(diff_refs, dict):
+        base_sha = diff_refs.get("base_sha")
+        if base_sha is not None:
+            pr_base_sha = str(base_sha)
+
+    dispatch_repo = f"{settings.github_org}/{settings.github_ci_repo}"
+    dispatch_extra_inputs = {
+        "pr-number": merge_request_iid,
+        "pr-head-sha": source_sha,
+        "pr-title": merge_request_title,
+        "head-ref": source_branch,
+        "base-ref": target_branch,
+        "pr-draft": "true" if is_gitlab_merge_request_draft(payload) else "false",
+    }
+    if pr_base_sha:
+        dispatch_extra_inputs["pr-base-sha"] = pr_base_sha
+    if oldrev:
+        dispatch_extra_inputs["before-sha"] = oldrev
+
+    params = {
+        "repo": dispatch_repo,
+        "ref": source_ref,
+        "sha": source_sha,
+        "use_spot": False,
+        "build_type": "default",
+        "event_name": "pull_request",
+        "actor": str(payload.get("user", {}).get("username", "")),
+        "head_ref": source_branch,
+        "pr_target_branch": target_branch,
+        "pr_head_sha": source_sha,
+        "pr_title": merge_request_title,
+        "pr_draft": "true" if is_gitlab_merge_request_draft(payload) else "false",
+        "dispatch_owner": settings.github_org,
+        "dispatch_repo": settings.github_ci_repo,
+        "dispatch_workflow_id": settings.github_ci_workflow,
+        "dispatch_ref": settings.github_ci_ref,
+        "gitlab_base_url": gitlab_base_url,
+        "gitlab_project_path": gitlab_project_path,
+        "gitlab_merge_request_iid": merge_request_iid,
+        "gitlab_source_branch": source_branch,
+        "gitlab_target_branch": target_branch,
+        "gitlab_source_sha": source_sha,
+    }
+    if oldrev:
+        params["before_sha"] = oldrev
+    if pr_base_sha:
+        params["pr_base_sha"] = pr_base_sha
+    params.update(
+        build_github_dispatch_params(
+            repo_name=dispatch_repo,
+            source_event_name="pull_request",
+            source_ref=source_ref,
+            source_sha=source_sha,
+            actor_login=str(payload.get("user", {}).get("username", "")),
+            extra_inputs=dispatch_extra_inputs,
+            source_repository=source_repository,
+        )
+    )
+
+    build_pipeline = BuildPipeline()
+    pipeline = await build_pipeline.create_pipeline(
+        app_id=f"gitlab-mr-{merge_request_iid}",
+        params=params,
+        webhook_event_id=None,
+    )
+    pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline.id)
+    await build_pipeline.supersede_conflicting_test_pipelines(pipeline.id)
+    should_queue = await build_pipeline.should_queue_test_build(pipeline.id)
+
+    if not should_queue:
+        pipeline = await build_pipeline.start_pipeline(pipeline.id)
+
+    await create_gitlab_merge_request_note(
+        payload,
+        build_gitlab_merge_request_initial_note(should_queue),
+    )
+
+    response = {
+        "message": "GitLab webhook received",
+        "event_id": delivery_id,
+        "pipeline_id": str(pipeline.id),
+        "pipeline_status": pipeline.status.value,
+        "target_repo": pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline),
+    }
+    if command:
+        response["command"] = command
+    return response
 
 
 def _get_gitlab_issue_iid(payload: dict[str, Any]) -> str:
@@ -937,6 +1176,14 @@ async def receive_gitlab_webhook(
             detail="Invalid JSON payload.",
         )
 
+    if x_gitlab_event == "Merge Request Hook":
+        if not should_autostart_gitlab_merge_request_build(payload):
+            return {"message": "Webhook received but ignored due to merge request filter."}
+        return await trigger_gitlab_merge_request_build(
+            payload,
+            x_gitlab_event_uuid or str(uuid.uuid4()),
+        )
+
     if x_gitlab_event != "Note Hook":
         return {"message": "Webhook received but ignored due to event type filter."}
 
@@ -965,8 +1212,7 @@ async def receive_gitlab_webhook(
             "command": command,
         }
 
-    merge_request = payload.get("merge_request", {})
-    merge_request_iid = str(merge_request.get("iid", ""))
+    merge_request_iid = get_gitlab_merge_request_iid(payload)
 
     if command == "bot, help":
         await create_gitlab_merge_request_note(payload, get_gitlab_help_note())
@@ -1015,104 +1261,11 @@ async def receive_gitlab_webhook(
             "cancelled_count": cancelled_count,
         }
 
-    source_info = merge_request.get("source", {})
-    source_repository = source_info.get("git_http_url") or payload.get(
-        "project", {}
-    ).get("git_http_url", "")
-    source_ref = get_gitlab_merge_request_ref(payload)
-
-    if not source_repository:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Missing source repository URL in GitLab payload.",
-        )
-    if not source_ref:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Missing source ref in GitLab payload.",
-        )
-
-    source_sha = merge_request.get("last_commit", {}).get("id", "")
-    target_branch = merge_request.get("target_branch", settings.github_ci_ref)
-    gitlab_project_path = get_gitlab_project_path(payload)
-    gitlab_base_url = get_gitlab_base_url(payload)
-
-    if not merge_request_iid:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Missing merge request IID in GitLab payload.",
-        )
-    if not source_sha:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Missing merge request commit SHA in GitLab payload.",
-        )
-    if not gitlab_project_path or not gitlab_base_url:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Missing GitLab routing fields in payload.",
-        )
-
-    delivery_id = x_gitlab_event_uuid or str(uuid.uuid4())
-    build_pipeline = BuildPipeline()
-    pipeline = await build_pipeline.create_pipeline(
-        app_id=f"gitlab-mr-{merge_request_iid}",
-        params={
-            "ref": source_ref,
-            "use_spot": False,
-            "build_type": "default",
-            "dispatch_owner": settings.github_org,
-            "dispatch_repo": settings.github_ci_repo,
-            "dispatch_workflow_id": settings.github_ci_workflow,
-            "dispatch_ref": settings.github_ci_ref,
-            "dispatch_inputs": {
-                "force-all": "false",
-                "source-repository": source_repository,
-                "source-ref": source_ref,
-            },
-            "gitlab_base_url": gitlab_base_url,
-            "gitlab_project_path": gitlab_project_path,
-            "gitlab_merge_request_iid": merge_request_iid,
-            "gitlab_source_branch": merge_request.get("source_branch", ""),
-            "gitlab_target_branch": target_branch,
-            "gitlab_source_sha": source_sha,
-            "pr_target_branch": target_branch,
-        },
-        webhook_event_id=None,
+    return await trigger_gitlab_merge_request_build(
+        payload,
+        x_gitlab_event_uuid or str(uuid.uuid4()),
+        command=command,
     )
-    pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline.id)
-    await build_pipeline.supersede_conflicting_test_pipelines(pipeline.id)
-    should_queue = await build_pipeline.should_queue_test_build(pipeline.id)
-
-    if not should_queue:
-        pipeline = await build_pipeline.start_pipeline(pipeline.id)
-
-    target_repo = pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline)
-    if target_repo == "test":
-        note_prefix = "🔁 Test build" if command == "bot, retry" else "🚧 Test build"
-        note = (
-            f"{note_prefix} queued — waiting for capacity for merge request targeting `{target_branch}`."
-            if should_queue
-            else f"{note_prefix} enqueued for merge request targeting `{target_branch}`."
-        )
-    else:
-        note_prefix = "🔁 Retry" if command == "bot, retry" else "🚧 Build"
-        target_description = describe_target_branch(target_branch)
-        note = (
-            f"{note_prefix} queued — waiting for capacity for {target_description}."
-            if should_queue
-            else f"{note_prefix} enqueued for {target_description}."
-        )
-    await create_gitlab_merge_request_note(payload, note)
-
-    return {
-        "message": "GitLab webhook received",
-        "event_id": delivery_id,
-        "command": command,
-        "pipeline_id": str(pipeline.id),
-        "pipeline_status": pipeline.status.value,
-        "target_repo": target_repo,
-    }
 
 
 async def is_submodule_only_pr(

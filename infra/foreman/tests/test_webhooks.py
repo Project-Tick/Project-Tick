@@ -186,6 +186,34 @@ SAMPLE_GITLAB_PING_ADMINS_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, ping
 SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD = deepcopy(SAMPLE_GITLAB_NOTE_PAYLOAD)
 SAMPLE_GITLAB_CANCEL_NOTE_PAYLOAD["object_attributes"]["note"] = "bot, cancel"
 
+SAMPLE_GITLAB_MERGE_REQUEST_PAYLOAD = {
+    "object_kind": "merge_request",
+    "user": {"username": "samet"},
+    "project": {
+        "path_with_namespace": "project-tick/project-tick",
+        "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+    },
+    "object_attributes": {
+        "iid": 17,
+        "action": "open",
+        "state": "opened",
+        "title": "GitLab MR build parity",
+        "target_branch": "master",
+        "source_branch": "feature/gitlab-build",
+        "oldrev": "",
+        "last_commit": {"id": "abcdef1234567890"},
+        "diff_refs": {"base_sha": "1234567890abcdef"},
+        "source": {
+            "path_with_namespace": "project-tick/project-tick",
+            "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+        },
+        "target": {
+            "path_with_namespace": "project-tick/project-tick",
+            "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+        },
+    },
+}
+
 SAMPLE_GITLAB_ISSUE_RETRY_PAYLOAD = {
     "object_kind": "note",
     "user": {"username": "samet", "id": 7},
@@ -656,10 +684,16 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
     build_pipeline.create_pipeline.assert_awaited_once()
     create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
     assert create_kwargs["app_id"] == "gitlab-mr-17"
+    assert create_kwargs["params"]["repo"] == "Project-Tick/Project-Tick"
+    assert create_kwargs["params"]["event_name"] == "pull_request"
+    assert create_kwargs["params"]["head_ref"] == "feature/gitlab-build"
+    assert create_kwargs["params"]["pr_title"] == ""
     assert create_kwargs["params"]["dispatch_owner"] == "Project-Tick"
     assert create_kwargs["params"]["dispatch_repo"] == "Project-Tick"
     assert create_kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
     assert create_kwargs["params"]["dispatch_ref"] == "master"
+    assert create_kwargs["params"]["dispatch_inputs"]["event-name"] == "pull_request"
+    assert create_kwargs["params"]["dispatch_inputs"]["event-actor"] == "samet"
     assert (
         create_kwargs["params"]["dispatch_inputs"]["source-repository"]
         == "https://git.projecttick.org/project-tick/project-tick.git"
@@ -668,6 +702,10 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
         create_kwargs["params"]["dispatch_inputs"]["source-ref"]
         == "refs/merge-requests/17/head"
     )
+    assert create_kwargs["params"]["dispatch_inputs"]["pr-number"] == "17"
+    assert create_kwargs["params"]["dispatch_inputs"]["pr-head-sha"] == "abcdef1234567890"
+    assert create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "feature/gitlab-build"
+    assert create_kwargs["params"]["dispatch_inputs"]["base-ref"] == "master"
     assert create_kwargs["params"]["gitlab_source_sha"] == "abcdef1234567890"
     assert (
         create_kwargs["params"]["gitlab_project_path"]
@@ -677,8 +715,128 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
     assert create_kwargs["params"]["gitlab_target_branch"] == "master"
     assert create_kwargs["params"]["pr_target_branch"] == "master"
     note_mock.assert_awaited_once()
-    assert "Test build" in note_mock.await_args.args[1]
-    assert "merge request targeting `master`" in note_mock.await_args.args[1]
+    assert note_mock.await_args.args[1] == "🚧 Test build enqueued."
+
+
+def test_receive_gitlab_merge_request_webhook_dispatches_root_ci(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Merge Request Hook",
+        "X-Gitlab-Event-UUID": str(uuid.uuid4()),
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+
+    pipeline_id = uuid.uuid4()
+    mock_pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="gitlab-mr-17",
+        status=PipelineStatus.RUNNING,
+        params={},
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    build_pipeline = MagicMock()
+    build_pipeline.create_pipeline = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.prepare_pipeline_for_start = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.supersede_conflicting_test_pipelines = AsyncMock()
+    build_pipeline.should_queue_test_build = AsyncMock(return_value=False)
+    build_pipeline.start_pipeline = AsyncMock(return_value=mock_pipeline)
+    note_mock = AsyncMock(return_value=True)
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch.object(settings, "github_org", "Project-Tick"),
+        patch.object(settings, "github_ci_repo", "Project-Tick"),
+        patch.object(settings, "github_ci_workflow", "ci.yml"),
+        patch.object(settings, "github_ci_ref", "master"),
+        patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_MERGE_REQUEST_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["message"] == "GitLab webhook received"
+    assert response.json()["pipeline_id"] == str(pipeline_id)
+    assert response.json()["pipeline_status"] == "running"
+    assert response.json()["target_repo"] == "test"
+
+    build_pipeline.create_pipeline.assert_awaited_once()
+    create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
+    assert create_kwargs["app_id"] == "gitlab-mr-17"
+    assert create_kwargs["params"]["repo"] == "Project-Tick/Project-Tick"
+    assert create_kwargs["params"]["event_name"] == "pull_request"
+    assert create_kwargs["params"]["head_ref"] == "feature/gitlab-build"
+    assert create_kwargs["params"]["pr_title"] == "GitLab MR build parity"
+    assert create_kwargs["params"]["pr_base_sha"] == "1234567890abcdef"
+    assert create_kwargs["params"]["dispatch_owner"] == "Project-Tick"
+    assert create_kwargs["params"]["dispatch_repo"] == "Project-Tick"
+    assert create_kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
+    assert create_kwargs["params"]["dispatch_ref"] == "master"
+    assert create_kwargs["params"]["dispatch_inputs"]["event-name"] == "pull_request"
+    assert create_kwargs["params"]["dispatch_inputs"]["event-actor"] == "samet"
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["source-repository"]
+        == "https://git.projecttick.org/project-tick/project-tick.git"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["source-ref"]
+        == "refs/merge-requests/17/head"
+    )
+    assert create_kwargs["params"]["dispatch_inputs"]["pr-number"] == "17"
+    assert create_kwargs["params"]["dispatch_inputs"]["pr-head-sha"] == "abcdef1234567890"
+    assert create_kwargs["params"]["dispatch_inputs"]["pr-base-sha"] == "1234567890abcdef"
+    assert create_kwargs["params"]["dispatch_inputs"]["pr-title"] == "GitLab MR build parity"
+    assert create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "feature/gitlab-build"
+    assert create_kwargs["params"]["dispatch_inputs"]["base-ref"] == "master"
+    assert create_kwargs["params"]["gitlab_source_sha"] == "abcdef1234567890"
+    assert (
+        create_kwargs["params"]["gitlab_project_path"]
+        == "project-tick/project-tick"
+    )
+    assert create_kwargs["params"]["gitlab_base_url"] == "https://git.projecttick.org"
+    assert create_kwargs["params"]["gitlab_target_branch"] == "master"
+    assert create_kwargs["params"]["pr_target_branch"] == "master"
+    note_mock.assert_awaited_once_with(
+        SAMPLE_GITLAB_MERGE_REQUEST_PAYLOAD,
+        "🚧 Test build enqueued.",
+    )
+
+
+def test_receive_gitlab_merge_request_webhook_posts_disabled_build_note(
+    client: TestClient,
+):
+    headers = {
+        "X-Gitlab-Event": "Merge Request Hook",
+        "X-Gitlab-Event-UUID": str(uuid.uuid4()),
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+    note_mock = AsyncMock(return_value=True)
+    build_pipeline = MagicMock()
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch.object(settings, "ff_disable_test_builds", True),
+        patch.object(settings, "statuspage_url", "https://status.example.test"),
+        patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
+        patch("app.routes.webhooks.create_gitlab_merge_request_note", note_mock),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_MERGE_REQUEST_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["message"] == "GitLab webhook received"
+    assert "pipeline_id" not in response.json()
+    build_pipeline.create_pipeline.assert_not_called()
+    note_mock.assert_awaited_once()
+    assert "bot, build" in note_mock.await_args.args[1]
+    assert "https://status.example.test" in note_mock.await_args.args[1]
 
 
 def test_receive_gitlab_webhook_pings_admins(client: TestClient):
