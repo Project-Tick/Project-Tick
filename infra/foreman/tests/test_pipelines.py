@@ -181,7 +181,11 @@ async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipelin
         ({"pr_number": "42", "pr_target_branch": "beta"}, "test"),
         ({"gitlab_merge_request_iid": "17", "gitlab_target_branch": "master"}, "test"),
         ({"gitlab_merge_request_iid": "17", "gitlab_target_branch": "beta"}, "test"),
+        ({"ref": "refs/heads/master"}, "test"),
+        ({"ref": "refs/heads/main"}, "test"),
+        ({"ref": "refs/heads/beta"}, "beta"),
         ({"ref": "refs/heads/feature/demo"}, "test"),
+        ({"ref": "refs/tags/v1.2.3"}, "stable"),
     ],
 )
 async def test_prepare_pipeline_for_start_resolves_target_repo(
@@ -330,6 +334,53 @@ async def test_register_external_pipeline_sets_running_and_resolves_target_repo(
             params={
                 "repo": "Project-Tick/Project-Tick",
                 "ref": "refs/heads/master",
+                "sha": "abcdef123456",
+            },
+        )
+
+    assert registered_pipeline.status == PipelineStatus.RUNNING
+    assert registered_pipeline.started_at is not None
+    assert registered_pipeline.flat_manager_repo == "test"
+    mock_db.commit.assert_awaited_once()
+    build_pipeline._supersede_conflicting_pipelines.assert_awaited_once_with(
+        mock_db,
+        pipeline,
+    )
+
+
+@pytest.mark.asyncio
+async def test_register_external_pipeline_sets_tag_build_to_stable():
+    pipeline_id = uuid.uuid4()
+    pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="Project-Tick",
+        status=PipelineStatus.PENDING,
+        params={
+            "repo": "Project-Tick/Project-Tick",
+            "ref": "refs/tags/v1.2.3",
+            "sha": "abcdef123456",
+        },
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    mock_db = AsyncMock(spec=AsyncSession)
+    mock_db.get.return_value = pipeline
+    mock_get_db = create_mock_get_db(mock_db)
+
+    build_pipeline = BuildPipeline()
+    build_pipeline.create_pipeline = AsyncMock(return_value=pipeline)
+    build_pipeline._supersede_conflicting_pipelines = AsyncMock()
+
+    with (
+        patch("app.pipelines.build.get_db", mock_get_db),
+        patch("app.pipelines.build.get_app_p90_build_time", AsyncMock(return_value=None)),
+    ):
+        registered_pipeline = await build_pipeline.register_external_pipeline(
+            app_id="Project-Tick",
+            params={
+                "repo": "Project-Tick/Project-Tick",
+                "ref": "refs/tags/v1.2.3",
                 "sha": "abcdef123456",
             },
         )

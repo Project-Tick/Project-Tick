@@ -34,8 +34,6 @@ FAST_BUILD_MIN_BUILDS = 3
 FAST_BUILD_LOOKBACK_DAYS = 90
 SPOT_BUILD_TYPES = ("medium", "large")
 TARGET_REPO_BY_BRANCH = {
-    "master": "stable",
-    "main": "stable",
     "beta": "beta",
 }
 
@@ -181,12 +179,15 @@ def resolve_pipeline_target_repo(pipeline: Pipeline) -> str:
     if is_review_pipeline(params):
         return "test"
 
+    ref = params.get("ref")
+    if isinstance(ref, str) and ref.startswith("refs/tags/"):
+        return "stable"
+
     for branch_key in ("gitlab_target_branch", "pr_target_branch"):
         branch = params.get(branch_key)
         if isinstance(branch, str) and branch.strip():
             return get_target_repo_for_branch(branch)
 
-    ref = params.get("ref")
     if isinstance(ref, str) and ref.startswith("refs/heads/"):
         return get_target_repo_for_branch(ref.removeprefix("refs/heads/"))
 
