@@ -1,6 +1,6 @@
 # Wrapper Commands — `launch_prepend_wrapper()` {#prepend-wrapper}
 
-> **Section:** S15 (Launch Modifiers) · **Header:** `PluginAPI.h` · **Trampoline:** `PluginManager::api_launch_prepend_wrapper` · **Backend:** `QString`, instance `WrapperCommand` setting
+> **Section:** S15 (Launch Modifiers) · **Header:** `PluginAPI.h` · **Trampoline:** `PluginManager::api_launch_prepend_wrapper` · **Backend:** `QString`, transient `LaunchTask` wrapper state
 
 ---
 
@@ -14,8 +14,9 @@ int launch_prepend_wrapper(void* mh, const char* wrapper_cmd);
 
 Prepends a wrapper command to the Minecraft instance's launch command
 line. The wrapper is placed **before** any existing user-configured
-wrapper command and **before** the Java executable. After the instance
-exits, the original wrapper command is restored.
+wrapper command and **before** the Java executable. The prepend only
+applies to the current launch task; the instance settings are not
+modified.
 
 **This function may only be called inside an `INSTANCE_PRE_LAUNCH`
 hook callback (hook ID `0x0200`).** Calling it at any other time
@@ -104,20 +105,20 @@ nice -n 10 timeout 3600 strace -f [user-configured-wrapper] java [args...]
 ### How the Wrapper Is Applied
 
 After the `INSTANCE_PRE_LAUNCH` hook dispatch completes,
-`LaunchController` applies the pending wrapper by modifying the
-instance's `WrapperCommand` setting:
+`LaunchController` merges the pending wrapper with the instance's
+configured wrapper and stores the effective chain on the current
+`LaunchTask`:
 
 ```cpp
 QString pendingWrapper =
     APPLICATION->pluginManager()->takePendingLaunchWrapper();
-QString savedWrapper;
 if (!pendingWrapper.isEmpty()) {
-    savedWrapper = m_instance->getWrapperCommand().trimmed();
-    if (savedWrapper.isEmpty()) {
-        m_instance->settings()->set("WrapperCommand", pendingWrapper);
+    auto wrapperCommand = m_instance->getWrapperCommand().trimmed();
+    if (wrapperCommand.isEmpty()) {
+        m_launcher->setWrapperCommand(pendingWrapper);
     } else {
-        m_instance->settings()->set(
-            "WrapperCommand", pendingWrapper + " " + savedWrapper);
+        m_launcher->setWrapperCommand(
+            pendingWrapper + " " + wrapperCommand);
     }
 }
 ```
@@ -125,27 +126,23 @@ if (!pendingWrapper.isEmpty()) {
 The logic:
 1. Takes the pending wrapper string from the `PluginManager` (swap
    semantics — the manager's copy is cleared).
-2. Saves the instance's current `WrapperCommand` value.
-3. If the instance has no existing wrapper, sets the pending wrapper
-   as the `WrapperCommand`.
+2. Reads the instance's configured `WrapperCommand` through the normal
+   settings API.
+3. If the instance has no existing wrapper, stores the pending wrapper
+   directly on the current `LaunchTask`.
 4. If the instance already has a wrapper, concatenates the pending
-   wrapper **before** the existing one with a space separator.
+   wrapper **before** the existing one with a space separator and stores
+   the result on the current `LaunchTask`.
 
-### How the Wrapper Is Restored
+The launch steps then read `LaunchTask::wrapperCommand()` and apply that
+effective chain when spawning Java.
 
-After the instance exits, the original wrapper is restored:
+### Why No Restore Step Is Needed
 
-```cpp
-connect(m_launcher.get(), &Task::finished, this,
-        [pendingWrapper, savedWrapper, inst]() {
-            if (!pendingWrapper.isEmpty()) {
-                inst->settings()->set("WrapperCommand", savedWrapper);
-            }
-        });
-```
-
-This ensures the user's original `WrapperCommand` setting is never
-permanently modified by plugin activity.
+The effective wrapper now lives only on the `LaunchTask`. When the task
+finishes, that transient state is discarded with the task object. The
+user's configured `WrapperCommand` setting is never rewritten, so there
+is nothing to restore after the process exits.
 
 ### String Ownership
 

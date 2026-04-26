@@ -83,6 +83,10 @@ class InstanceSettingsPage : public QWidget, public BasePage
 	}
 	virtual bool shouldDisplay() const override;
 
+  signals:
+	void settingsLoaded();
+	void settingsAboutToApply();
+
   private slots:
 	void on_javaDetectBtn_clicked();
 	void on_javaTestBtn_clicked();

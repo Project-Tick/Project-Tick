@@ -77,6 +77,11 @@ void LaunchTask::prependStep(shared_qobject_ptr<LaunchStep> step)
 	m_steps.prepend(step);
 }
 
+void LaunchTask::setWrapperCommand(QString wrapperCommand)
+{
+	m_wrapperCommand = wrapperCommand.trimmed();
+}
+
 void LaunchTask::executeTask()
 {
 	m_instance->setCrashed(false);

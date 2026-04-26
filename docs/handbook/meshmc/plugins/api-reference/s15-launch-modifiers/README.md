@@ -59,14 +59,14 @@ User clicks "Launch"
 │ takePendingLaunchWrapper()           │ ← wrapper consumed
 ├──────────────────────────────────────┤
 │ qputenv() for each env var           │ ← applied to process env
-│ WrapperCommand setting updated       │ ← applied to instance
+│ LaunchTask::setWrapperCommand()      │ ← applied to current launch
 ├──────────────────────────────────────┤
 │           JVM spawns                 │
 ├──────────────────────────────────────┤
 │        Instance exits                │
 ├──────────────────────────────────────┤
 │ qunsetenv() for each env var         │ ← env vars removed
-│ WrapperCommand restored              │ ← original wrapper restored
+│ LaunchTask destroyed                 │ ← transient wrapper discarded
 └──────────────────────────────────────┘
 ```
 
@@ -124,7 +124,7 @@ inserts the new command **before** the existing wrapper chain.
 | Before hook dispatch | `clearPendingLaunchMods()` | Clears `m_pendingLaunchEnv` and `m_pendingLaunchWrapper` |
 | During hook dispatch | `launch_set_env()` / `launch_prepend_wrapper()` | Populates pending storage |
 | After hook dispatch | `takePendingLaunchEnv()` / `takePendingLaunchWrapper()` | Moves data out (swap semantics) |
-| After instance exits | Lambda on `Task::finished` | Restores env vars and wrapper command |
+| After instance exits | Lambda on `Task::finished` / task teardown | Restores env vars; transient wrapper disappears with `LaunchTask` |
 
 ---
 
@@ -145,8 +145,8 @@ inserts the new command **before** the existing wrapper chain.
 │  ┌──────────── Wrapper Commands ───────────────────────────┐   │
 │  │  launch_prepend_wrapper(mh, "strace -f")                │   │
 │  │  → m_pendingLaunchWrapper = "strace -f"                 │   │
-│  │  → WrapperCommand = "strace -f [original]"              │   │
-│  │  → WrapperCommand restored after instance exit          │   │
+│  │  → LaunchTask wrapper = "strace -f [original]"         │   │
+│  │  → Discarded when LaunchTask finishes                   │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                                                                │
 └────────────────────────────────────────────────────────────────┘

@@ -140,7 +140,7 @@ void MeshMCPartLaunch::executeTask()
 
 	qDebug() << args.join(' ');
 
-	QString wrapperCommandStr = instance->getWrapperCommand().trimmed();
+	QString wrapperCommandStr = m_parent->wrapperCommand();
 	if (!wrapperCommandStr.isEmpty()) {
 		auto wrapperArgs = Commandline::splitArgs(wrapperCommandStr);
 		auto wrapperCommand = wrapperArgs.takeFirst();

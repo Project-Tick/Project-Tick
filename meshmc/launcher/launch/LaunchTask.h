@@ -66,10 +66,16 @@ class LaunchTask : public Task
 	void appendStep(shared_qobject_ptr<LaunchStep> step);
 	void prependStep(shared_qobject_ptr<LaunchStep> step);
 	void setCensorFilter(QMap<QString, QString> filter);
+	void setWrapperCommand(QString wrapperCommand);
 
 	InstancePtr instance()
 	{
 		return m_instance;
+	}
+
+	QString wrapperCommand() const
+	{
+		return m_wrapperCommand;
 	}
 
 	void setPid(qint64 pid)
@@ -136,6 +142,7 @@ class LaunchTask : public Task
 	shared_qobject_ptr<LogModel> m_logModel;
 	QList<shared_qobject_ptr<LaunchStep>> m_steps;
 	QMap<QString, QString> m_censorFilter;
+	QString m_wrapperCommand;
 	int currentStep = -1;
 	State state = NotStarted;
 	qint64 m_pid = -1;

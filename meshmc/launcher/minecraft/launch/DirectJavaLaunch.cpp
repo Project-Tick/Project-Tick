@@ -92,7 +92,7 @@ void DirectJavaLaunch::executeTask()
 		minecraftInstance->processMinecraftArgs(m_session, m_serverToJoin);
 	args.append(mcArgs);
 
-	QString wrapperCommandStr = instance->getWrapperCommand().trimmed();
+	QString wrapperCommandStr = m_parent->wrapperCommand();
 	if (!wrapperCommandStr.isEmpty()) {
 		auto wrapperArgs = Commandline::splitArgs(wrapperCommandStr);
 		auto wrapperCommand = wrapperArgs.takeFirst();

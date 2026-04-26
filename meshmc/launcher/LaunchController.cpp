@@ -431,29 +431,23 @@ void LaunchController::launchInstance()
 		// Apply plugin-requested wrapper command (save original for restore)
 		QString pendingWrapper =
 			APPLICATION->pluginManager()->takePendingLaunchWrapper();
-		QString savedWrapper;
 		if (!pendingWrapper.isEmpty()) {
-			savedWrapper = m_instance->getWrapperCommand().trimmed();
-			if (savedWrapper.isEmpty()) {
-				m_instance->settings()->set("WrapperCommand", pendingWrapper);
+			auto wrapperCommand = m_instance->getWrapperCommand().trimmed();
+			if (wrapperCommand.isEmpty()) {
+				m_launcher->setWrapperCommand(pendingWrapper);
 			} else {
-				m_instance->settings()->set(
-					"WrapperCommand", pendingWrapper + " " + savedWrapper);
+				m_launcher->setWrapperCommand(pendingWrapper + " " +
+									 wrapperCommand);
 			}
 		}
 
-		// Restore env vars and wrapper after the launch task finishes
-		if (!pendingEnv.isEmpty() || !pendingWrapper.isEmpty()) {
-			auto inst = m_instance;
+		// Restore env vars after the launch task finishes
+		if (!pendingEnv.isEmpty()) {
 			connect(m_launcher.get(), &Task::finished, this,
-					[pendingEnv, pendingWrapper, savedWrapper, inst]() {
+					[pendingEnv]() {
 						for (auto it = pendingEnv.constBegin();
 							 it != pendingEnv.constEnd(); ++it) {
 							qunsetenv(it.key().toUtf8().constData());
-						}
-						if (!pendingWrapper.isEmpty()) {
-							inst->settings()->set("WrapperCommand",
-												  savedWrapper);
 						}
 					});
 		}

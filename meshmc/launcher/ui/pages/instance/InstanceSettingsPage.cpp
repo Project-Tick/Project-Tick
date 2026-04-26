@@ -62,6 +62,7 @@ InstanceSettingsPage::InstanceSettingsPage(BaseInstance* inst, QWidget* parent)
 			&InstanceSettingsPage::applySettings);
 	connect(APPLICATION, &Application::globalSettingsClosed, this,
 			&InstanceSettingsPage::loadSettings);
+	emit APPLICATION->instanceSettingsPageCreated(this, m_instance);
 	loadSettings();
 }
 
@@ -230,6 +231,8 @@ void InstanceSettingsPage::applySettings()
 	} else {
 		m_settings->reset("JoinServerOnLaunchAddress");
 	}
+
+	emit settingsAboutToApply();
 }
 
 void InstanceSettingsPage::loadSettings()
@@ -317,6 +320,8 @@ void InstanceSettingsPage::loadSettings()
 		m_settings->get("JoinServerOnLaunch").toBool());
 	ui->serverJoinAddress->setText(
 		m_settings->get("JoinServerOnLaunchAddress").toString());
+
+	emit settingsLoaded();
 }
 
 void InstanceSettingsPage::on_javaDetectBtn_clicked()

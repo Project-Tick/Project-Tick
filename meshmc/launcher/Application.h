@@ -43,6 +43,7 @@
 class LaunchController;
 class LocalPeer;
 class InstanceWindow;
+class InstanceSettingsPage;
 class MainWindow;
 class SetupWizard;
 class GenericPageProvider;
@@ -195,6 +196,8 @@ class Application : public QApplication
 	void updateAllowedChanged(bool status);
 	void globalSettingsAboutToOpen();
 	void globalSettingsClosed();
+	void instanceSettingsPageCreated(InstanceSettingsPage* page,
+								  BaseInstance* instance);
 
   public slots:
 	bool launch(InstancePtr instance, bool online = true,
