@@ -58,6 +58,32 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.14.0" date="2026-04-26">
+      <description>
+        <p><em>Highlights</em></p>
+        <p>MeshMC now includes a new Linux performance integration plugin, bringing launcher-level support for MangoHud and GameMode. This improves the Linux gameplay launch path by allowing performance tooling to be injected and managed more cleanly during Minecraft startup, instead of relying on users to wire everything manually like it is 1998 and desktop Linux is still a punishment ritual.</p>
+        <p>This release also improves launch wrapper state handling by moving transient launch state into LaunchTask, making the launch flow cleaner, less fragile, and easier to maintain. Module/version management has also been improved through new SDK version definitions in mmco_sdk.h.</p>
+        <p>And this is the final version of Project Tick before the Beta and LTS channels are released. Just so you know.</p>
+        <p><em>Added</em></p>
+        <ul>
+          <li>Added the LinuxPerf plugin for Linux performance tooling integration.</li>
+          <li>Added MangoHud integration support through the new Linux performance plugin.</li>
+          <li>Added GameMode integration support for Minecraft launches.</li>
+          <li>Added versioning definitions to mmco_sdk.h to improve module management and compatibility tracking.</li>
+          <li>Added a confirmation dialog before deleting skins in AccountListPage, reducing the chance of accidental skin removal.</li>
+        </ul>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Refactored launch wrapper handling to use LaunchTask for transient state management.</li>
+          <li>Improved launch-related documentation after the launch wrapper refactor.</li>
+        </ul>
+        <p><em>Fixed</em></p>
+        <ul>
+          <li>Added Apple-specific install RPATH handling for crashreporter and updater targets.</li>
+          <li>Improved platform-specific install behavior for macOS helper targets.</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.13.0" date="2026-04-24">
       <description>
         <p><em>Fixed</em></p>
