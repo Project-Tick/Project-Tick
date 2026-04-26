@@ -39,6 +39,12 @@ target_link_libraries(meshmc-crashreporter
         Qt6::Network
 )
 
+if(APPLE)
+    set_target_properties(meshmc-crashreporter PROPERTIES
+        INSTALL_RPATH "@executable_path/../Frameworks"
+    )
+endif()
+
 if(QRENCODE_FOUND)
     target_compile_definitions(meshmc-crashreporter PRIVATE MESHMC_HAS_QRENCODE)
     target_link_libraries(meshmc-crashreporter PRIVATE PkgConfig::QRENCODE)

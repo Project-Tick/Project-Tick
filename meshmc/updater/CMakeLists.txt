@@ -34,6 +34,12 @@ target_link_libraries(meshmc-updater
         LibArchive::LibArchive
 )
 
+if(APPLE)
+    set_target_properties(meshmc-updater PROPERTIES
+        INSTALL_RPATH "@executable_path/../Frameworks"
+    )
+endif()
+
 # Install alongside the main binary so UpdateController can find it.
 install(TARGETS meshmc-updater
     RUNTIME DESTINATION "${BINARY_DEST_DIR}"
