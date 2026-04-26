@@ -20,6 +20,7 @@ Project Tick is a modular ecosystem of tools including MeshMC (Minecraft launche
 - NeoZIP            =
 - Toml++            =
 - Website           =
+- Foreman           =
 
 <!-- | Please make each pattern for all product | 
      V                                          V
@@ -29,7 +30,7 @@ Project Tick is a modular ecosystem of tools including MeshMC (Minecraft launche
 
 ### Highlights <!-- Please write Hightlighted Notes -->
 
-### Changelog 
+### Changelog
 
 #### Added <!-- Please write added Features -->
 
