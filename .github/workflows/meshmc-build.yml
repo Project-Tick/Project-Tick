@@ -14,12 +14,20 @@ on:
       environment:
         description: Deployment environment to run under
         type: string
+      source-ref:
+        description: Source ref to build when invoked from another workflow.
+        type: string
+        default: ""
   workflow_dispatch:
     inputs:
       build-type:
         description: Type of build (Debug or Release)
         type: string
         default: Debug
+      source-ref:
+        description: Source ref to build instead of the workflow ref.
+        type: string
+        default: ""
 
 permissions: {}
 
@@ -100,6 +108,7 @@ jobs:
       - name: Checkout
         uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
         with:
+          ref: ${{ inputs.source-ref || '' }}
           submodules: true
 
       - name: Setup dependencies

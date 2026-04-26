@@ -2,6 +2,12 @@ name: "MeshMC: Release"
 
 on:
   workflow_call:
+    inputs:
+      source-ref:
+        description: Source ref to build when invoked from another workflow.
+        required: false
+        type: string
+        default: ""
 
 permissions: {}
 
@@ -16,6 +22,7 @@ jobs:
     with:
       build-type: Release
       environment: Release
+      source-ref: ${{ inputs.source-ref }}
     secrets: inherit
 
 

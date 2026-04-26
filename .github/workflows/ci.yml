@@ -823,6 +823,8 @@ jobs:
     needs: gate
     if: fromJSON(needs.gate.outputs.jobs_json).release_sources
     uses: ./.github/workflows/release-sources.yml
+    with:
+      source-ref: ${{ env.CI_REF }}
     permissions:
       contents: write
       id-token: write

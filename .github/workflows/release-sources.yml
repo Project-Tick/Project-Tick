@@ -6,8 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version string (e.g. 1.2.3)"
-        required: true
+        description: "Optional version string override. Defaults to source-ref or the workflow ref name."
+        required: false
+      source-ref:
+        description: "Optional source ref to package (for example refs/tags/v1.2.3)"
+        required: false
+        type: string
+        default: ""
       emit-callbacks:
         description: Whether this standalone run should report callbacks to Foreman
         required: false
@@ -27,6 +32,11 @@ on:
     inputs:
       version:
         description: "Version string override. Defaults to the caller ref name."
+        required: false
+        type: string
+        default: ""
+      source-ref:
+        description: "Optional source ref to package (for example refs/tags/v1.2.3)"
         required: false
         type: string
         default: ""
@@ -61,6 +71,18 @@ jobs:
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source-ref || github.ref }}
+
+      - name: Resolve source revision
+        id: source
+        shell: bash
+        env:
+          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
+        run: |
+          set -euo pipefail
+          echo "ref=$SOURCE_REF" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Prepare callback destination
         id: prepare
@@ -73,8 +95,8 @@ jobs:
           repository: ${{ github.repository }}
           workflow_name: ${{ github.workflow }}
           event_name: ${{ github.event_name }}
-          ref: ${{ github.ref }}
-          sha: ${{ github.sha }}
+          ref: ${{ steps.source.outputs.ref }}
+          sha: ${{ steps.source.outputs.sha }}
 
       - name: Report workflow run URL
         uses: ./.github/actions/foreman-send-callback
@@ -87,6 +109,8 @@ jobs:
   meshmc_build:
     name: MeshMC Build
     uses: ./.github/workflows/meshmc-release.yml
+    with:
+      source-ref: ${{ inputs.source-ref }}
     permissions:
       contents: read
       id-token: write
@@ -167,6 +191,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.source-ref || github.ref }}
           show-progress: 'false'
 
       - name: Install Windows 11 SDK (ARM)
@@ -215,10 +240,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
 
       - name: Set version
-        run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> "$GITHUB_ENV"
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version || '' }}
+          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
+        run: |
+          set -euo pipefail
+          version="$INPUT_VERSION"
+          if [[ -z "$version" ]]; then
+            version="${SOURCE_REF#refs/tags/}"
+            version="${version#refs/heads/}"
+          fi
+          if [[ -z "$version" ]]; then
+            version="$GITHUB_REF_NAME"
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
 
       - name: Patch CMakeLists.txt for bundled libraries
         shell: bash
@@ -299,10 +339,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
 
       - name: Set version
-        run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> "$GITHUB_ENV"
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version || '' }}
+          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
+        run: |
+          set -euo pipefail
+          version="$INPUT_VERSION"
+          if [[ -z "$version" ]]; then
+            version="${SOURCE_REF#refs/tags/}"
+            version="${version#refs/heads/}"
+          fi
+          if [[ -z "$version" ]]; then
+            version="$GITHUB_REF_NAME"
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
 
       - name: Prepare source tree
         id: prepare
@@ -339,13 +394,28 @@ jobs:
       - name: Checkout (for component version extraction)
         uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.source-ref || github.ref }}
           sparse-checkout: |
             meshmc/CMakeLists.txt
             neozip/zlib.h.in
           sparse-checkout-cone-mode: false
 
       - name: Set version
-        run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> "$GITHUB_ENV"
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version || '' }}
+          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
+        run: |
+          set -euo pipefail
+          version="$INPUT_VERSION"
+          if [[ -z "$version" ]]; then
+            version="${SOURCE_REF#refs/tags/}"
+            version="${version#refs/heads/}"
+          fi
+          if [[ -z "$version" ]]; then
+            version="$GITHUB_REF_NAME"
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
 
       - name: Generate components.json
         shell: bash
@@ -556,7 +626,21 @@ jobs:
       contents: read
     steps:
       - name: Set version
-        run: echo "VERSION=${{ inputs.version || github.ref_name }}" >> "$GITHUB_ENV"
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version || '' }}
+          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
+        run: |
+          set -euo pipefail
+          version="$INPUT_VERSION"
+          if [[ -z "$version" ]]; then
+            version="${SOURCE_REF#refs/tags/}"
+            version="${version#refs/heads/}"
+          fi
+          if [[ -z "$version" ]]; then
+            version="$GITHUB_REF_NAME"
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
 
       - name: Download deployment bundle
         uses: actions/download-artifact@v8
@@ -627,6 +711,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source-ref || github.ref }}
 
       - name: Resolve cancelled workflow status
         id: resolve-status-cancelled
