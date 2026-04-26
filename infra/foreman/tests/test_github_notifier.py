@@ -374,6 +374,29 @@ async def test_handle_build_completion_failure_creates_stable_issue(github_notif
 
 
 @pytest.mark.asyncio
+async def test_handle_build_completion_failure_does_not_create_stable_issue_for_schedule(
+    github_notifier, mock_pipeline
+):
+    mock_pipeline.params = {
+        "sha": "abc123",
+        "repo": "project-tick/org.test.App",
+        "native_github_ci": "true",
+        "github_event_name": "schedule",
+        "schedule": "0 3 * * *",
+    }
+    mock_pipeline.flat_manager_repo = "stable"
+
+    with patch.object(github_notifier, "notify_build_status") as mock_status:
+        with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
+            with patch("app.services.github_notifier.create_github_issue", AsyncMock()) as mock_issue:
+                await github_notifier.handle_build_completion(mock_pipeline, "failure")
+
+                mock_status.assert_called_once_with(mock_pipeline, "failure")
+                mock_pr.assert_not_called()
+                mock_issue.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_handle_build_completion_failure_delegates_stable_issue_to_gitlab(
     github_notifier, mock_pipeline
 ):

@@ -13,6 +13,7 @@ from app.utils.github import (
     get_linter_warning_messages,
     update_commit_status,
 )
+from app.utils.pipeline_events import is_scheduled_native_github_ci
 
 logger = structlog.get_logger(__name__)
 
@@ -57,6 +58,9 @@ class GitHubNotifier:
         status: str,
     ) -> None:
         if (pipeline.flat_manager_repo or "") != "stable":
+            return
+
+        if is_scheduled_native_github_ci(pipeline):
             return
 
         gitlab_base_url = pipeline.params.get("gitlab_base_url")

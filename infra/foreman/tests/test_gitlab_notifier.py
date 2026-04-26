@@ -89,6 +89,26 @@ async def test_handle_build_completion_failure_creates_stable_issue(
 
 
 @pytest.mark.asyncio
+async def test_handle_build_completion_failure_does_not_create_stable_issue_for_schedule(
+    gitlab_notifier, mock_pipeline
+):
+    gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
+    gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
+    gitlab_notifier._create_issue = AsyncMock(return_value=("https://git/issue/1", 1))
+    mock_pipeline.params.update(
+        {
+            "native_github_ci": "true",
+            "github_event_name": "schedule",
+            "schedule": "0 3 * * *",
+        }
+    )
+
+    await gitlab_notifier.handle_build_completion(mock_pipeline, "failure")
+
+    gitlab_notifier._create_issue.assert_not_awaited()
+
+
+@pytest.mark.asyncio
 async def test_handle_build_completion_success_closes_retry_issue(
     gitlab_notifier, mock_pipeline
 ):

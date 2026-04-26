@@ -5,6 +5,7 @@ import structlog
 
 from app.config import settings
 from app.models import Pipeline
+from app.utils.pipeline_events import is_scheduled_native_github_ci
 from app.utils.github import get_build_job_arches
 
 logger = structlog.get_logger(__name__)
@@ -280,6 +281,9 @@ class GitLabNotifier:
         status: str,
     ) -> None:
         if (pipeline.flat_manager_repo or "") != "stable":
+            return
+
+        if is_scheduled_native_github_ci(pipeline):
             return
 
         retry_issue_iid = self._get_param(pipeline, "retry_from_gitlab_issue_iid")

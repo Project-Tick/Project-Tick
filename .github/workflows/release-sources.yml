@@ -3,14 +3,28 @@
 name: "Release: Package Source Archives"
 
 on:
-  push:
-    tags:
-      - "*"
   workflow_dispatch:
     inputs:
       version:
         description: "Version string (e.g. 1.2.3)"
         required: true
+      callback_url:
+        description: Optional Foreman callback base URL
+        required: false
+        type: string
+        default: ""
+      callback_token:
+        description: Optional Foreman callback bearer token
+        required: false
+        type: string
+        default: ""
+  workflow_call:
+    inputs:
+      version:
+        description: "Version string override. Defaults to the caller ref name."
+        required: false
+        type: string
+        default: ""
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -28,6 +42,7 @@ jobs:
 
   callback-start:
     name: "Callback Start"
+    if: github.event_name != 'workflow_call'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,8 +56,8 @@ jobs:
         id: prepare
         uses: ./.github/actions/foreman-prepare-callback
         with:
-          callback_url: ${{ github.event.inputs.callback_url || '' }}
-          callback_token: ${{ github.event.inputs.callback_token || '' }}
+          callback_url: ${{ inputs.callback_url || github.event.inputs.callback_url || '' }}
+          callback_token: ${{ inputs.callback_token || github.event.inputs.callback_token || '' }}
           foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
           foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
           repository: ${{ github.repository }}
@@ -61,7 +76,6 @@ jobs:
 
   meshmc_build:
     name: MeshMC Build
-    needs: callback-start
     uses: ./.github/workflows/meshmc-release.yml
     permissions:
       contents: read
@@ -72,7 +86,6 @@ jobs:
 
   neozip_build:
     name: neozip Build (${{ matrix.name }})
-    needs: callback-start
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -185,7 +198,6 @@ jobs:
 
   meshmc_prepare_source:
     name: MeshMC Source Archives
-    needs: callback-start
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -243,7 +255,6 @@ jobs:
 
   package_sources:
     name: Source Archives (${{ matrix.project }})
-    needs: callback-start
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -592,7 +603,7 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    if: always()
+    if: github.event_name != 'workflow_call' && always()
     needs:
       - callback-start
       - meshmc_build

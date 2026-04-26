@@ -17,6 +17,12 @@ inputs:
   ref:
     description: Explicit ref to checkout.
     default: ""
+  source-repository:
+    description: Explicit external git repository URL to checkout.
+    default: ""
+  source-ref:
+    description: Explicit external ref to checkout when source-repository is used.
+    default: ""
   show-progress:
     description: Whether checkout progress should be shown.
     default: "true"
@@ -31,6 +37,8 @@ runs:
         EVENT_INPUTS: ${{ toJSON(github.event.inputs) }}
         EVENT_SOURCE_REPOSITORY: ${{ github.event.inputs.source-repository || '' }}
         EVENT_SOURCE_REF: ${{ github.event.inputs.source-ref || '' }}
+        INPUT_SOURCE_REPOSITORY: ${{ inputs.source-repository }}
+        INPUT_SOURCE_REF: ${{ inputs.source-ref }}
         INPUT_REPOSITORY: ${{ inputs.repository }}
         INPUT_REF: ${{ inputs.ref }}
       run: |
@@ -40,7 +48,11 @@ runs:
         source_repository=""
         source_ref=""
 
-        if [[ "$EVENT_INPUTS" != "null" ]] && [[ -n "$EVENT_SOURCE_REPOSITORY" ]] && [[ -z "$INPUT_REPOSITORY" ]] && [[ -z "$INPUT_REF" ]]; then
+        if [[ -n "$INPUT_SOURCE_REPOSITORY" ]]; then
+          use_external=true
+          source_repository="$INPUT_SOURCE_REPOSITORY"
+          source_ref="${INPUT_SOURCE_REF:-$INPUT_REF}"
+        elif [[ "$EVENT_INPUTS" != "null" ]] && [[ -n "$EVENT_SOURCE_REPOSITORY" ]] && [[ -z "$INPUT_REPOSITORY" ]] && [[ -z "$INPUT_REF" ]]; then
           use_external=true
           source_repository="$EVENT_SOURCE_REPOSITORY"
           source_ref="$EVENT_SOURCE_REF"

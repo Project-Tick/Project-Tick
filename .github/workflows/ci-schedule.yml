@@ -12,20 +12,28 @@ name: "Scheduled CI"
 
 on:
   schedule:
+    # ── Hourly (every hour) ──────────────────────────────────────
+    - cron: "0 * * * *"      # [0] hourly-flatpak-update
+    # ── Twice weekly (Mon/Fri 00:00 UTC) ────────────────────────
+    - cron: "0 0 * * 1,5"    # [1] infra-action
+    # ── Daily (01:58 UTC) ───────────────────────────────────────
+    - cron: "58 1 * * *"     # [2] daily-flatpak-deploy
+    # ── Twice weekly (Mon/Fri 02:00 UTC) ────────────────────────
+    - cron: "0 2 * * 1,5"    # [3] infra-docker
     # ── Daily (03:00 UTC) ─────────────────────────────────────────
-    - cron: "0 3 * * *"      # [0] daily: stale, coverity, docker
+    - cron: "0 3 * * *"      # [4] daily: stale, coverity, docker
     # ── Weekly Sunday (04:00 UTC) ─────────────────────────────────
-    - cron: "0 4 * * 0"      # [1] weekly-sun: link-check, scorecard, flake-update, codeql
+    - cron: "0 4 * * 0"      # [5] weekly-sun: link-check, scorecard, flake-update, codeql
     # ── Weekly Wednesday (14:00 UTC) ──────────────────────────────
-    - cron: "0 14 * * 3"     # [2] weekly-wed: flawfinder
+    - cron: "0 14 * * 3"     # [6] weekly-wed: flawfinder
     # ── Weekly Thursday (02:00 UTC) ───────────────────────────────
-    - cron: "0 2 * * 4"      # [3] weekly-thu: semgrep
+    - cron: "0 2 * * 4"      # [7] weekly-thu: semgrep
   workflow_dispatch:
     inputs:
       schedule-group:
         description: "Which schedule group to run"
         type: choice
-        options: [daily, weekly-sun, weekly-wed, weekly-thu, all]
+        options: [hourly-flatpak-update, infra-action, daily-flatpak-deploy, infra-docker, daily, weekly-sun, weekly-wed, weekly-thu, all]
         default: all
       callback_url:
         description: Optional Foreman callback base URL
@@ -87,6 +95,14 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             GROUP="${{ github.event.inputs.schedule-group }}"
+          elif [[ "${{ github.event.schedule }}" == "0 * * * *" ]]; then
+            GROUP="hourly-flatpak-update"
+          elif [[ "${{ github.event.schedule }}" == "0 0 * * 1,5" ]]; then
+            GROUP="infra-action"
+          elif [[ "${{ github.event.schedule }}" == "58 1 * * *" ]]; then
+            GROUP="daily-flatpak-deploy"
+          elif [[ "${{ github.event.schedule }}" == "0 2 * * 1,5" ]]; then
+            GROUP="infra-docker"
           elif [[ "${{ github.event.schedule }}" == "0 3 * * *" ]]; then
             GROUP="daily"
           elif [[ "${{ github.event.schedule }}" == "0 4 * * 0" ]]; then
@@ -100,6 +116,54 @@ jobs:
           fi
           echo "group=$GROUP" >> "$GITHUB_OUTPUT"
           echo "### Schedule Group: \`$GROUP\`" >> "$GITHUB_STEP_SUMMARY"
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Hourly Jobs                                                   ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  meshmc-flatpak-update:
+    name: "MeshMC Flatpak Update"
+    needs: gate
+    if: contains(fromJSON('["hourly-flatpak-update","all"]'), needs.gate.outputs.group)
+    uses: ./.github/workflows/meshmc-flatpak-update.yml
+    secrets: inherit
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Twice-Weekly Infra Jobs                                       ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  infra-action-ci:
+    name: "Infra Action CI"
+    needs: gate
+    if: contains(fromJSON('["infra-action","all"]'), needs.gate.outputs.group)
+    uses: ./.github/workflows/infra-action-ci.yml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+
+  infra-docker:
+    name: "Infra Docker"
+    needs: gate
+    if: contains(fromJSON('["infra-docker","all"]'), needs.gate.outputs.group)
+    uses: ./.github/workflows/infra-docker.yml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+
+  # ╔════════════════════════════════════════════════════════════════╗
+  # ║  Daily Flatpak Deploy                                          ║
+  # ╚════════════════════════════════════════════════════════════════╝
+
+  meshmc-flatpak-deploy:
+    name: "MeshMC Flatpak Deploy"
+    needs: gate
+    if: contains(fromJSON('["daily-flatpak-deploy","all"]'), needs.gate.outputs.group)
+    uses: ./.github/workflows/meshmc-flatpak-deploy.yml
+    permissions:
+      contents: read
+    secrets: inherit
 
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  Daily Jobs                                                    ║
@@ -252,6 +316,10 @@ jobs:
     if: always()
     needs:
       - gate
+      - meshmc-flatpak-update
+      - infra-action-ci
+      - meshmc-flatpak-deploy
+      - infra-docker
       - stale
       - docker-images
       - mnv-coverity
@@ -286,6 +354,10 @@ jobs:
           }
 
           report "Stale"            "${{ needs.stale.result }}"
+          report "Flatpak Update"   "${{ needs.meshmc-flatpak-update.result }}"
+          report "Infra Action CI"  "${{ needs.infra-action-ci.result }}"
+          report "Flatpak Deploy"   "${{ needs.meshmc-flatpak-deploy.result }}"
+          report "Infra Docker"     "${{ needs.infra-docker.result }}"
           report "Docker Images"    "${{ needs.docker-images.result }}"
           report "MNV Coverity"     "${{ needs.mnv-coverity.result }}"
           report "MNV Link Check"   "${{ needs.mnv-link-check.result }}"

@@ -21,6 +21,39 @@ class ExternalPipelineRegistrationRequest(BaseModel):
     params: dict[str, Any]
 
 
+class GitHubCIGatePlanRequest(BaseModel):
+    workflow_name: str = ""
+    repository: str = ""
+    source_repository: str = ""
+    source_ref: str = ""
+    source_sha: str = ""
+    event_name: str
+    actor: str = ""
+    before_sha: str = ""
+    head_ref: str = ""
+    base_ref: str = ""
+    pr_number: str = ""
+    pr_base_sha: str = ""
+    pr_head_sha: str = ""
+    pr_title: str = ""
+    pr_draft: bool = False
+    pr_merged: bool = False
+    pr_labels: list[str] = []
+    merge_group_base_ref: str = ""
+    force_all: bool = False
+    build_type: str = ""
+    schedule: str = ""
+
+    @field_validator("pr_draft", "pr_merged", "force_all", mode="before")
+    @classmethod
+    def coerce_bool_fields(cls, value: Any) -> bool:
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, (int, float)):
+            return bool(value)
+        return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+
 class PipelineSummary(BaseModel):
     id: str
     app_id: str

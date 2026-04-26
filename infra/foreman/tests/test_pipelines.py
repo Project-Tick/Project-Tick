@@ -11,6 +11,7 @@ from app.main import app
 from app.models import Pipeline, PipelineStatus, PipelineTrigger
 from app.pipelines.build import BuildPipeline
 from app.services import GitHubActionsService
+from app.services.ci_gate import CIGateService
 from tests.conftest import create_mock_get_db
 
 
@@ -211,6 +212,57 @@ async def test_prepare_pipeline_for_start_resolves_target_repo(
 
     assert prepared_pipeline.flat_manager_repo == expected_target_repo
     mock_db.commit.assert_awaited_once()
+
+
+def test_get_github_ci_gate_plan_route(client, auth_headers):
+    expected_plan = {
+        "run_level": "standard",
+        "changed_projects": "mnv",
+        "build_type": "Debug",
+        "jobs": {"lint": True},
+    }
+
+    with patch.object(CIGateService, "build_plan_from_request", AsyncMock(return_value=expected_plan)) as mock_plan:
+        response = client.post(
+            "/api/ci/github/gate-plan",
+            json={"event_name": "pull_request", "repository": "Project-Tick/Project-Tick"},
+            headers=auth_headers,
+        )
+
+    assert response.status_code == 200
+    assert response.json() == expected_plan
+    mock_plan.assert_awaited_once()
+
+
+def test_get_pipeline_ci_plan_route(client, sample_pipeline):
+    expected_plan = {
+        "run_level": "standard",
+        "changed_projects": "mnv",
+        "build_type": "Debug",
+        "jobs": {"lint": True},
+    }
+    mock_get_db = create_mock_get_db(AsyncMock())
+    mock_session = mock_get_db.keywords["mock_session"] if hasattr(mock_get_db, "keywords") else None
+
+    actual_mock_db = AsyncMock(spec=AsyncSession)
+    actual_mock_db.get = AsyncMock(return_value=sample_pipeline)
+    mock_get_db = create_mock_get_db(actual_mock_db)
+
+    with patch("app.routes.pipelines.get_db", mock_get_db):
+        with patch.object(BuildPipeline, "verify_callback_token", AsyncMock(return_value=None)):
+            with patch.object(
+                CIGateService,
+                "build_plan_from_pipeline",
+                AsyncMock(return_value=expected_plan),
+            ) as mock_plan:
+                response = client.get(
+                    f"/api/pipelines/{sample_pipeline.id}/ci-plan",
+                    headers={"Authorization": "Bearer sample-token"},
+                )
+
+    assert response.status_code == 200
+    assert response.json() == expected_plan
+    mock_plan.assert_awaited_once_with(sample_pipeline)
 
 
 @pytest.mark.asyncio

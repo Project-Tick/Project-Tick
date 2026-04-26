@@ -130,6 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
+      callback_token: ${{ steps.prepare.outputs.callback_token }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     permissions: {}
     steps:
@@ -276,51 +277,14 @@ jobs:
 
   gate:
     name: "Gate"
+    needs: callback-start
     runs-on: ubuntu-latest
-    if: >-
-      !((github.event.inputs.event-name || github.event_name) == 'pull_request_target' && !github.event.pull_request.merged) &&
-      !((github.event.inputs.event-name || github.event_name) == 'pull_request' && (github.event.inputs.pr-draft || 'false') == 'true')
+    if: always()
     outputs:
-      # ── Event classification ────────────────────────────────────
-      is_push: ${{ steps.classify.outputs.is_push }}
-      is_pr: ${{ steps.classify.outputs.is_pr }}
-      is_merge_queue: ${{ steps.classify.outputs.is_merge_queue }}
-      is_tag: ${{ steps.classify.outputs.is_tag }}
-      is_release_tag: ${{ steps.classify.outputs.is_release_tag }}
-      is_backport: ${{ steps.classify.outputs.is_backport }}
-      is_dependabot: ${{ steps.classify.outputs.is_dependabot }}
-      is_master: ${{ steps.classify.outputs.is_master }}
-      is_scheduled: ${{ steps.classify.outputs.is_scheduled }}
-      run_level: ${{ steps.finalize.outputs.run_level }}
-      # ── Per-project change flags ────────────────────────────────
-      archived_changed: ${{ steps.changes.outputs.archived_changed }}
-      cgit_changed: ${{ steps.changes.outputs.cgit_changed }}
-      ci_changed: ${{ steps.changes.outputs.ci_changed }}
-      cmark_changed: ${{ steps.changes.outputs.cmark_changed }}
-      corebinutils_changed: ${{ steps.changes.outputs.corebinutils_changed }}
-      forgewrapper_changed: ${{ steps.changes.outputs.forgewrapper_changed }}
-      genqrcode_changed: ${{ steps.changes.outputs.genqrcode_changed }}
-      hooks_changed: ${{ steps.changes.outputs.hooks_changed }}
-      images4docker_changed: ${{ steps.changes.outputs.images4docker_changed }}
-      json4cpp_changed: ${{ steps.changes.outputs.json4cpp_changed }}
-      libnbtplusplus_changed: ${{ steps.changes.outputs.libnbtplusplus_changed }}
-      meshmc_changed: ${{ steps.finalize.outputs.meshmc_changed }}
-      meta_changed: ${{ steps.changes.outputs.meta_changed }}
-      mnv_changed: ${{ steps.changes.outputs.mnv_changed }}
-      neozip_changed: ${{ steps.changes.outputs.neozip_changed }}
-      tomlplusplus_changed: ${{ steps.changes.outputs.tomlplusplus_changed }}
-      github_changed: ${{ steps.changes.outputs.github_changed }}
-      root_changed: ${{ steps.changes.outputs.root_changed }}
-      changed_projects: ${{ steps.changes.outputs.changed_projects }}
-      changed_count: ${{ steps.changes.outputs.changed_count }}
-      # ── Commit parsing ──────────────────────────────────────────
-      commit_type: ${{ steps.changes.outputs.commit_type }}
-      commit_scope: ${{ steps.changes.outputs.commit_scope }}
-      commit_subject: ${{ steps.changes.outputs.commit_subject }}
-      commit_breaking: ${{ steps.changes.outputs.commit_breaking }}
-      commit_message: ${{ steps.changes.outputs.commit_message }}
-      # ── Build config ────────────────────────────────────────────
-      build_type: ${{ steps.classify.outputs.build_type }}
+      run_level: ${{ steps.plan.outputs.run_level }}
+      changed_projects: ${{ steps.plan.outputs.changed_projects }}
+      build_type: ${{ steps.plan.outputs.build_type }}
+      jobs_json: ${{ steps.plan.outputs.jobs_json }}
 
     steps:
       - name: Harden runner
@@ -328,109 +292,132 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout
-        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
-        with:
-          fetch-depth: 0
-
-      - name: Classify event
-        id: classify
-        env:
-          GH_HEAD_REF: ${{ env.CI_HEAD_REF }}
-          GH_BASE_REF: ${{ env.CI_BASE_REF }}
-        run: |
-          # shellcheck disable=SC2129
-          set -euo pipefail
-
-          REF="${{ env.CI_REF }}"
-          EVENT="${{ env.CI_EVENT_NAME }}"
-          ACTOR="${{ env.CI_ACTOR }}"
-          HEAD_REF="${GH_HEAD_REF:-}"
-
-          # ── Booleans ──────────────────────────────────────────
-          {
-            echo "is_push=$([[ "$EVENT" == "push" ]] && echo true || echo false)"
-            echo "is_pr=$([[ "$EVENT" == "pull_request" || "$EVENT" == "pull_request_target" ]] && echo true || echo false)"
-            echo "is_merge_queue=$([[ "$EVENT" == "merge_group" ]] && echo true || echo false)"
-            echo "is_tag=$([[ "$REF" == refs/tags/* ]] && echo true || echo false)"
-            echo "is_release_tag=$([[ "$REF" =~ ^refs/tags/(meshmc|neozip|mnv|cmark|forgewrapper)- ]] && echo true || echo false)"
-            echo "is_backport=$([[ "$HEAD_REF" == backport-* || "$HEAD_REF" == backport/* ]] && echo true || echo false)"
-            echo "is_dependabot=$([[ "$ACTOR" == "dependabot[bot]" ]] && echo true || echo false)"
-            echo "is_master=$([[ "$REF" == "refs/heads/master" || "$REF" == "refs/heads/main" ]] && echo true || echo false)"
-            echo "is_scheduled=false"
-          } >> "$GITHUB_OUTPUT"
-
-          # ── Run level ─────────────────────────────────────────
-          # preliminary full candidates are finalized after change analysis
-          # full    = merge queue, tags, master push, manual force-all
-          # standard = normal PR, branch push
-          # minimal  = dependabot, backport, draft
-          if [[ "$EVENT" == "merge_group" ]] || \
-             [[ "$REF" == refs/tags/* ]] || \
-             ([[ "$EVENT" == "push" ]] && [[ "$REF" == "refs/heads/master" || "$REF" == "refs/heads/main" ]]) || \
-             [[ "${{ env.FORCE_ALL }}" == "true" ]]; then
-            echo "run_level=full" >> "$GITHUB_OUTPUT"
-          elif [[ "$ACTOR" == "dependabot[bot]" ]]; then
-            echo "run_level=minimal" >> "$GITHUB_OUTPUT"
-          elif [[ "$HEAD_REF" == backport-* ]]; then
-            echo "run_level=standard" >> "$GITHUB_OUTPUT"
-          else
-            echo "run_level=standard" >> "$GITHUB_OUTPUT"
-          fi
-
-          # ── Build type ────────────────────────────────────────
-          if [[ "$REF" == refs/tags/* ]]; then
-            echo "build_type=Release" >> "$GITHUB_OUTPUT"
-          elif [[ -n "${{ github.event.inputs.build-type || '' }}" ]]; then
-            echo "build_type=${{ github.event.inputs.build-type }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "build_type=Debug" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Detect changes
-        id: changes
-        if: github.event_name != 'pull_request_target'
-        uses: ./.github/actions/change-analysis
-        with:
-          event-name: ${{ env.CI_EVENT_NAME }}
-          base-sha: ${{ env.CI_PR_BASE_SHA }}
-          head-sha: ${{ env.CI_PR_HEAD_SHA }}
-          before-sha: ${{ env.CI_BEFORE_SHA }}
-          current-sha: ${{ env.CI_SHA }}
-          pr-title: ${{ env.CI_PR_TITLE }}
-
-      - name: Finalize gate outputs
-        id: finalize
+      - name: Resolve plan from Foreman
+        id: plan
         shell: bash
         env:
-          BASE_RUN_LEVEL: ${{ steps.classify.outputs.run_level }}
-          IS_PUSH: ${{ steps.classify.outputs.is_push }}
-          IS_MASTER: ${{ steps.classify.outputs.is_master }}
-          CHANGED_PROJECTS: ${{ steps.changes.outputs.changed_projects || '' }}
-          ROOT_CHANGED: ${{ steps.changes.outputs.root_changed || 'false' }}
-          MESHMC_CHANGED: ${{ steps.changes.outputs.meshmc_changed || 'false' }}
+          FOREMAN_BASE_URL: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
+          FOREMAN_API_TOKEN: ${{ secrets.FOREMAN_API_TOKEN || '' }}
+          CALLBACK_TOKEN: ${{ needs.callback-start.outputs.callback_token || '' }}
+          PIPELINE_ID: ${{ needs.callback-start.outputs.pipeline_id || '' }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_REPOSITORY: ${{ github.event.inputs.source-repository || '' }}
+          SOURCE_REF: ${{ env.CI_REF }}
+          SOURCE_SHA: ${{ env.CI_SHA }}
+          EVENT_NAME: ${{ env.CI_EVENT_NAME }}
+          ACTOR: ${{ env.CI_ACTOR }}
+          BEFORE_SHA: ${{ env.CI_BEFORE_SHA }}
+          HEAD_REF: ${{ env.CI_HEAD_REF }}
+          BASE_REF: ${{ env.CI_BASE_REF }}
+          PR_NUMBER: ${{ env.CI_PR_NUMBER }}
+          PR_BASE_SHA: ${{ env.CI_PR_BASE_SHA }}
+          PR_HEAD_SHA: ${{ env.CI_PR_HEAD_SHA }}
+          PR_TITLE: ${{ env.CI_PR_TITLE }}
+          PR_DRAFT: ${{ env.CI_PR_DRAFT }}
+          PR_MERGED: ${{ github.event.pull_request.merged && 'true' || 'false' }}
+          PR_LABELS_JSON: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+          MERGE_GROUP_BASE_REF: ${{ env.CI_MERGE_GROUP_BASE_REF }}
+          FORCE_ALL: ${{ env.FORCE_ALL }}
+          BUILD_TYPE_INPUT: ${{ github.event.inputs.build-type || '' }}
+          SCHEDULE: ${{ github.event.schedule || '' }}
         run: |
           set -euo pipefail
 
-          run_level="$BASE_RUN_LEVEL"
-          meshmc_changed="$MESHMC_CHANGED"
+          plan_file="$(mktemp)"
 
-          if [[ "$CHANGED_PROJECTS" =~ (^|,)(archived|cgit|cmark|corebinutils|forgewrapper|genqrcode|hooks|images4docker|json4cpp|libnbtplusplus|meshmc|meta|mnv|neozip|tomlplusplus)(,|$) ]]; then
-            has_project_changes=true
+          if [[ -n "$PIPELINE_ID" && -n "$CALLBACK_TOKEN" ]]; then
+            curl \
+              --silent \
+              --show-error \
+              --fail \
+              --retry 3 \
+              --retry-all-errors \
+              --header "Authorization: Bearer $CALLBACK_TOKEN" \
+              "${FOREMAN_BASE_URL%/}/api/pipelines/$PIPELINE_ID/ci-plan" \
+              > "$plan_file"
           else
-            has_project_changes=false
+            if [[ -z "$FOREMAN_API_TOKEN" ]]; then
+              echo "::error::FOREMAN_API_TOKEN is required to resolve the CI plan for this event."
+              exit 1
+            fi
+
+            payload="$(jq -nc \
+              --arg workflow_name "$WORKFLOW_NAME" \
+              --arg repository "$REPOSITORY" \
+              --arg source_repository "$SOURCE_REPOSITORY" \
+              --arg source_ref "$SOURCE_REF" \
+              --arg source_sha "$SOURCE_SHA" \
+              --arg event_name "$EVENT_NAME" \
+              --arg actor "$ACTOR" \
+              --arg before_sha "$BEFORE_SHA" \
+              --arg head_ref "$HEAD_REF" \
+              --arg base_ref "$BASE_REF" \
+              --arg pr_number "$PR_NUMBER" \
+              --arg pr_base_sha "$PR_BASE_SHA" \
+              --arg pr_head_sha "$PR_HEAD_SHA" \
+              --arg pr_title "$PR_TITLE" \
+              --arg pr_draft "$PR_DRAFT" \
+              --arg pr_merged "$PR_MERGED" \
+              --arg pr_labels_json "${PR_LABELS_JSON:-null}" \
+              --arg merge_group_base_ref "$MERGE_GROUP_BASE_REF" \
+              --arg force_all "$FORCE_ALL" \
+              --arg build_type "$BUILD_TYPE_INPUT" \
+              --arg schedule "$SCHEDULE" \
+              '{
+                workflow_name: $workflow_name,
+                repository: $repository,
+                source_repository: $source_repository,
+                source_ref: $source_ref,
+                source_sha: $source_sha,
+                event_name: $event_name,
+                actor: $actor,
+                before_sha: $before_sha,
+                head_ref: $head_ref,
+                base_ref: $base_ref,
+                pr_number: $pr_number,
+                pr_base_sha: $pr_base_sha,
+                pr_head_sha: $pr_head_sha,
+                pr_title: $pr_title,
+                pr_draft: ($pr_draft == "true"),
+                pr_merged: ($pr_merged == "true"),
+                pr_labels: ($pr_labels_json | fromjson? // []),
+                merge_group_base_ref: $merge_group_base_ref,
+                force_all: ($force_all == "true"),
+                build_type: $build_type,
+                schedule: $schedule
+              }')"
+
+            curl \
+              --silent \
+              --show-error \
+              --fail \
+              --retry 3 \
+              --retry-all-errors \
+              --request POST \
+              --header "Authorization: Bearer $FOREMAN_API_TOKEN" \
+              --header "Content-Type: application/json" \
+              --data "$payload" \
+              "${FOREMAN_BASE_URL%/}/api/ci/github/gate-plan" \
+              > "$plan_file"
           fi
 
-          if [[ "$IS_PUSH" == "true" ]] && [[ "$IS_MASTER" == "true" ]] && [[ "$BASE_RUN_LEVEL" == "full" ]] && [[ "$has_project_changes" == "false" ]]; then
-            run_level=standard
-          fi
+          {
+            echo "run_level=$(jq -r '.run_level' "$plan_file")"
+            echo "changed_projects=$(jq -r '.changed_projects // ""' "$plan_file")"
+            echo "build_type=$(jq -r '.build_type' "$plan_file")"
+            echo "jobs_json=$(jq -c '.jobs' "$plan_file")"
+          } >> "$GITHUB_OUTPUT"
 
-          if [[ "$IS_PUSH" == "true" ]] && [[ "$IS_MASTER" == "true" ]] && [[ "$ROOT_CHANGED" == "true" ]]; then
-            meshmc_changed=true
-          fi
+          runnable_jobs="$(jq -r '[.jobs | to_entries[] | select(.value == true) | .key] | join(", ")' "$plan_file")"
 
-          echo "run_level=$run_level" >> "$GITHUB_OUTPUT"
-          echo "meshmc_changed=$meshmc_changed" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Foreman CI Plan"
+            echo ""
+            echo "- Run level: $(jq -r '.run_level' "$plan_file")"
+            echo "- Changed projects: $(jq -r '.changed_projects // ""' "$plan_file")"
+            echo "- Runnable jobs: ${runnable_jobs:-none}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  STAGE 1 — Lint & Commit Checks (fast, blocks everything)      ║
@@ -439,7 +426,7 @@ jobs:
   lint:
     name: "Lint"
     needs: gate
-    if: needs.gate.outputs.is_pr == 'true'
+    if: fromJSON(needs.gate.outputs.jobs_json).lint
     uses: ./.github/workflows/ci-lint.yml
     permissions:
       contents: read
@@ -452,7 +439,7 @@ jobs:
   dependency-review:
     name: "Dependency Review"
     needs: gate
-    if: needs.gate.outputs.is_pr == 'true'
+    if: fromJSON(needs.gate.outputs.jobs_json).dependency_review
     uses: ./.github/workflows/repo-dependency-review.yml
     secrets: inherit
 
@@ -472,7 +459,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.mnv_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).mnv
     uses: ./.github/workflows/mnv-ci.yml
     permissions:
       contents: read
@@ -485,7 +472,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.cgit_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).cgit
     uses: ./.github/workflows/cgit-ci.yml
     permissions:
       contents: read
@@ -498,7 +485,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.cmark_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).cmark
     uses: ./.github/workflows/cmark-ci.yml
     permissions:
       contents: read
@@ -511,7 +498,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.corebinutils_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).corebinutils
     uses: ./.github/workflows/corebinutils-ci.yml
     permissions:
       contents: read
@@ -524,7 +511,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.genqrcode_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).genqrcode
     uses: ./.github/workflows/genqrcode-ci.yml
     permissions:
       contents: read
@@ -537,7 +524,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.neozip_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).neozip
     uses: ./.github/workflows/neozip-ci.yml
     permissions:
       contents: read
@@ -553,7 +540,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.json4cpp_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).json4cpp
     uses: ./.github/workflows/json4cpp-ci.yml
     permissions:
       contents: read
@@ -567,7 +554,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.libnbtplusplus_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).libnbtplusplus
     uses: ./.github/workflows/libnbtplusplus-ci.yml
     permissions:
       contents: read
@@ -580,7 +567,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.tomlplusplus_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).tomlplusplus
     uses: ./.github/workflows/tomlplusplus-ci.yml
     permissions:
       contents: read
@@ -594,7 +581,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.meshmc_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).meshmc
     uses: ./.github/workflows/meshmc-build.yml
     with:
       build-type: ${{ needs.gate.outputs.build_type }}
@@ -611,7 +598,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.forgewrapper_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).forgewrapper
     uses: ./.github/workflows/forgewrapper-build.yml
     permissions:
       contents: read
@@ -625,7 +612,7 @@ jobs:
       always() &&
       !cancelled() &&
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
-      (needs.gate.outputs.images4docker_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).images4docker
     uses: ./.github/workflows/images4docker-build.yml
     permissions:
       contents: read
@@ -646,8 +633,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.cmark.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.cmark_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).cmark_fuzz
     uses: ./.github/workflows/cmark-fuzz.yml
     permissions:
       contents: read
@@ -660,8 +646,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.json4cpp.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.json4cpp_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).json4cpp_fuzz
     uses: ./.github/workflows/json4cpp-fuzz.yml
     permissions:
       contents: read
@@ -674,7 +659,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.json4cpp.result == 'success' &&
-      (needs.gate.outputs.json4cpp_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).json4cpp_amalgam
     uses: ./.github/workflows/json4cpp-amalgam.yml
     permissions:
       contents: read
@@ -687,8 +672,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.tomlplusplus.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.tomlplusplus_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).tomlplusplus_fuzz
     uses: ./.github/workflows/tomlplusplus-fuzz.yml
     permissions:
       contents: read
@@ -702,8 +686,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.neozip.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.neozip_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).neozip_fuzz
     uses: ./.github/workflows/neozip-fuzz.yml
     permissions:
       contents: read
@@ -716,8 +699,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.meshmc.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.meshmc_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).meshmc_codeql
     uses: ./.github/workflows/meshmc-codeql.yml
     permissions:
       contents: read
@@ -731,8 +713,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.mnv.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.mnv_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).mnv_codeql
     uses: ./.github/workflows/mnv-codeql.yml
     permissions:
       contents: read
@@ -746,8 +727,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.neozip.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.neozip_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).neozip_codeql
     uses: ./.github/workflows/neozip-codeql.yml
     permissions:
       actions: read
@@ -766,8 +746,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.meshmc.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.meshmc_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).meshmc_container
     uses: ./.github/workflows/meshmc-container.yml
     permissions:
       contents: read
@@ -781,8 +760,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.meshmc.result == 'success' &&
-      needs.gate.outputs.run_level == 'full' &&
-      (needs.gate.outputs.meshmc_changed == 'true' || needs.gate.outputs.run_level == 'full')
+      fromJSON(needs.gate.outputs.jobs_json).meshmc_nix
     uses: ./.github/workflows/meshmc-nix.yml
     permissions:
       contents: read
@@ -799,9 +777,7 @@ jobs:
       always() &&
       !cancelled() &&
       needs.json4cpp.result == 'success' &&
-      needs.gate.outputs.is_master == 'true' &&
-      needs.gate.outputs.is_push == 'true' &&
-      needs.gate.outputs.json4cpp_changed == 'true'
+      fromJSON(needs.gate.outputs.jobs_json).json4cpp_docs
     uses: ./.github/workflows/json4cpp-publish-docs.yml
     permissions:
       contents: write
@@ -814,10 +790,7 @@ jobs:
   backport:
     name: "Backport"
     needs: gate
-    if: >-
-      github.event_name == 'pull_request_target' &&
-      github.event.pull_request.merged == true &&
-      contains(toJSON(github.event.pull_request.labels.*.name), 'backport')
+    if: fromJSON(needs.gate.outputs.jobs_json).backport
     uses: ./.github/workflows/meshmc-backport.yml
     permissions:
       contents: write
@@ -828,10 +801,7 @@ jobs:
   merge-blocking:
     name: "Merge Blocking PR"
     needs: gate
-    if: >-
-      github.event_name == 'pull_request_target' &&
-      github.event.pull_request.merged == true &&
-      contains(toJSON(github.event.pull_request.labels.*.name), 'status: blocking')
+    if: fromJSON(needs.gate.outputs.jobs_json).merge_blocking
     uses: ./.github/workflows/meshmc-merge-blocking-pr.yml
     secrets: inherit
 
@@ -842,12 +812,21 @@ jobs:
   neozip-release:
     name: "NeoZip Release"
     needs: gate
-    if: >-
-      needs.gate.outputs.is_tag == 'true' &&
-      startsWith(github.ref, 'refs/tags/neozip-')
+    if: fromJSON(needs.gate.outputs.jobs_json).neozip_release
     uses: ./.github/workflows/neozip-release.yml
     permissions:
       contents: write
+    secrets: inherit
+
+  release-sources:
+    name: "Release Sources"
+    needs: gate
+    if: fromJSON(needs.gate.outputs.jobs_json).release_sources
+    uses: ./.github/workflows/release-sources.yml
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
     secrets: inherit
 
   # ╔════════════════════════════════════════════════════════════════╗
@@ -950,7 +929,14 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    needs: [callback-start, verdict]
+    needs:
+      - callback-start
+      - verdict
+      - json4cpp-docs
+      - backport
+      - merge-blocking
+      - neozip-release
+      - release-sources
     if: >-
       always() &&
       (
@@ -971,21 +957,16 @@ jobs:
         if: ${{ !cancelled() }}
         shell: bash
         env:
-          VERDICT_RESULT: ${{ needs.verdict.result }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           set -euo pipefail
 
-          case "$VERDICT_RESULT" in
-            success)
-              status="success"
-              ;;
-            cancelled)
-              status="cancelled"
-              ;;
-            *)
-              status="failure"
-              ;;
-          esac
+          status="success"
+          if jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="failure"
+          elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
+            status="cancelled"
+          fi
 
           echo "status=$status" >> "$GITHUB_OUTPUT"
 

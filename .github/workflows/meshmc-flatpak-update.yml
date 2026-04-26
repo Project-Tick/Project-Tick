@@ -1,9 +1,6 @@
 name: Update modules
 
 on:
-  schedule:
-    # Run every hour
-    - cron: '0 * * * *'
   workflow_dispatch:
     inputs:
       callback_url:
@@ -14,12 +11,25 @@ on:
         description: Optional Foreman callback bearer token
         type: string
         default: ""
+  workflow_call:
+    inputs:
+      callback_url:
+        description: Optional Foreman callback base URL
+        required: false
+        type: string
+        default: ""
+      callback_token:
+        description: Optional Foreman callback bearer token
+        required: false
+        type: string
+        default: ""
 
 permissions: {}
 
 jobs:
   callback-start:
     name: "Callback Start"
+    if: github.event_name != 'workflow_call'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,8 +43,8 @@ jobs:
         id: prepare
         uses: ./.github/actions/foreman-prepare-callback
         with:
-          callback_url: ${{ github.event.inputs.callback_url || '' }}
-          callback_token: ${{ github.event.inputs.callback_token || '' }}
+          callback_url: ${{ inputs.callback_url || github.event.inputs.callback_url || '' }}
+          callback_token: ${{ inputs.callback_token || github.event.inputs.callback_token || '' }}
           foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
           foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
           repository: ${{ github.repository }}
@@ -54,8 +64,6 @@ jobs:
 
   update:
     name: Run update
-
-    needs: callback-start
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -82,7 +90,7 @@ jobs:
 
   callback-status:
     name: "Callback Status"
-    if: always()
+    if: github.event_name != 'workflow_call' && always()
     needs:
       - callback-start
       - update

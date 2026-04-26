@@ -14,12 +14,14 @@ from app.pipelines import BuildPipeline
 from app.schemas.pipelines import (
     ExternalPipelineRegistrationRequest,
     ExternalPipelineRegistrationResponse,
+    GitHubCIGatePlanRequest,
     PipelineResponse,
     PipelineSummary,
     PipelineTriggerRequest,
     PipelineType,
 )
 from app.services import pipeline_service
+from app.services.ci_gate import CIGateService
 
 logger = structlog.get_logger(__name__)
 pipelines_router = APIRouter(prefix="/api", tags=["pipelines"])
@@ -221,6 +223,66 @@ async def get_pipeline(
             )
 
         return pipeline_service.pipeline_to_response(pipeline)
+
+
+@pipelines_router.post(
+    "/ci/github/gate-plan",
+    response_model=dict[str, Any],
+    status_code=http_status.HTTP_200_OK,
+)
+async def get_github_ci_gate_plan(
+    data: GitHubCIGatePlanRequest,
+    token: str = Depends(verify_token),
+):
+    try:
+        return await CIGateService().build_plan_from_request(data)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+    except RuntimeError as e:
+        logger.warning("Failed to resolve GitHub CI gate plan", error=str(e))
+        raise HTTPException(
+            status_code=http_status.HTTP_502_BAD_GATEWAY,
+            detail="Unable to resolve CI gate plan",
+        )
+
+
+@pipelines_router.get(
+    "/pipelines/{pipeline_id}/ci-plan",
+    response_model=dict[str, Any],
+    status_code=http_status.HTTP_200_OK,
+)
+async def get_pipeline_ci_plan(
+    pipeline_id: uuid.UUID,
+    build_pipeline: VerifiedBuildPipeline,
+):
+    async with get_db(use_replica=True) as db:
+        pipeline = await db.get(Pipeline, pipeline_id)
+        if not pipeline:
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND,
+                detail=f"Pipeline {pipeline_id} not found",
+            )
+
+    try:
+        return await CIGateService().build_plan_from_pipeline(pipeline)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=http_status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+    except RuntimeError as e:
+        logger.warning(
+            "Failed to resolve pipeline-scoped CI gate plan",
+            pipeline_id=str(pipeline_id),
+            error=str(e),
+        )
+        raise HTTPException(
+            status_code=http_status.HTTP_502_BAD_GATEWAY,
+            detail="Unable to resolve CI gate plan",
+        )
 
 
 @pipelines_router.post(
