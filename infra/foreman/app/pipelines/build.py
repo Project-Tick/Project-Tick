@@ -171,6 +171,13 @@ def resolve_pipeline_target_repo(pipeline: Pipeline) -> str:
     if isinstance(explicit_target_repo, str) and explicit_target_repo.strip():
         return explicit_target_repo.strip()
 
+    # Scheduled CI pipelines are maintenance-only; they must never land in stable.
+    if params.get("native_github_ci"):
+        workflow_name = str(params.get("workflow_name") or "").strip()
+        event_name = str(params.get("github_event_name") or "").strip().lower()
+        if workflow_name == "Scheduled CI" or event_name == "schedule":
+            return "test"
+
     if is_review_pipeline(params):
         return "test"
 
