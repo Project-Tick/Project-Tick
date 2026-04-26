@@ -1040,25 +1040,6 @@ install(TARGETS ${MeshMC_Name}
     RUNTIME DESTINATION ${BINARY_DEST_DIR}
 )
 
-if(APPLE AND DEFINED MeshMC_AppBinaryName AND NOT MeshMC_AppBinaryName STREQUAL MeshMC_Name)
-    install(CODE "
-        set(_installed_bundle_src \"\${CMAKE_INSTALL_PREFIX}/${MeshMC_AppBinaryName}.app\")
-        set(_installed_bundle_dst \"\${CMAKE_INSTALL_PREFIX}/${MeshMC_Name}.app\")
-        if(EXISTS \"\${_installed_bundle_src}\")
-            execute_process(
-                COMMAND \"${CMAKE_COMMAND}\" -E copy_directory
-                    \"\${_installed_bundle_src}/Contents\"
-                    \"\${_installed_bundle_dst}/Contents\"
-                RESULT_VARIABLE _bundle_merge_result
-            )
-            if(NOT _bundle_merge_result EQUAL 0)
-                message(FATAL_ERROR \"Failed to merge installed app bundle into ${MeshMC_Name}.app\")
-            endif()
-            file(REMOVE_RECURSE \"\${_installed_bundle_src}\")
-        endif()
-    ")
-endif()
-
 #### The bundle mess! ####
 # Bundle utilities are used to complete the portable packages - they add all the libraries that would otherwise be missing on the target system.
 # NOTE: it seems that this absolutely has to be here, and nowhere else.
