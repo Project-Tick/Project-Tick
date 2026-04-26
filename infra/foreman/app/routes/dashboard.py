@@ -94,6 +94,10 @@ def get_pipeline_request_label(pipeline: Pipeline) -> str:
     if pr_number:
         return f"PR #{pr_number}"
 
+    workflow_identity = get_pipeline_explicit_workflow_identity(pipeline)
+    if workflow_identity is not None:
+        return workflow_identity[1]
+
     source_ref = _normalize_ref(_get_source_ref(pipeline))
     if source_ref and source_ref != pipeline.app_id:
         return source_ref
@@ -169,7 +173,7 @@ def _humanize_workflow_label(value: str) -> str:
     )
 
 
-def get_pipeline_workflow_identity(pipeline: Pipeline) -> tuple[str, str]:
+def get_pipeline_explicit_workflow_identity(pipeline: Pipeline) -> tuple[str, str] | None:
     params = dict(pipeline.params or {})
 
     workflow_name = _get_string(params.get("workflow_name")).strip()
@@ -185,6 +189,14 @@ def get_pipeline_workflow_identity(pipeline: Pipeline) -> tuple[str, str]:
     workflow_id = _get_string(provider_data.get("workflow_id")).strip()
     if workflow_id:
         return workflow_id.lower(), _humanize_workflow_label(workflow_id)
+
+    return None
+
+
+def get_pipeline_workflow_identity(pipeline: Pipeline) -> tuple[str, str]:
+    workflow_identity = get_pipeline_explicit_workflow_identity(pipeline)
+    if workflow_identity is not None:
+        return workflow_identity
 
     return "build", "Build"
 

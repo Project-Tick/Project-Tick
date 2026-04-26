@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
 from app.models import Pipeline, PipelineStatus
+from app.routes.dashboard import get_pipeline_request_label
 
 
 def make_pipeline(**overrides):
@@ -141,6 +142,20 @@ def test_builds_table_groups_pipelines_by_workflow(client):
     assert response.status_code == 200
     assert "<th colspan=\"6\">CI <span class=\"section-count\">1</span></th>" in response.text
     assert "<th colspan=\"6\">Action CI <span class=\"section-count\">1</span></th>" in response.text
+
+
+def test_get_pipeline_request_label_prefers_explicit_workflow_name_over_branch():
+    pipeline = make_pipeline(
+        params={
+            "dispatch_workflow_id": "ci.yml",
+            "dispatch_inputs": {
+                "source-repository": "https://github.com/project-tick/Project-Tick.git",
+                "source-ref": "refs/heads/master",
+            },
+        },
+    )
+
+    assert get_pipeline_request_label(pipeline) == "CI"
 
 
 def test_reproducible_route_redirects_to_dashboard(client):
