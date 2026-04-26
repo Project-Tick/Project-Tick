@@ -21,6 +21,7 @@ add_subdirectory(BackupSystem)
 
 if(UNIX AND NOT APPLE)
     add_subdirectory(NVIDIAPrime)
+    add_subdirectory(LinuxPerf)
 endif()
 
 if(NOT APPLE)
