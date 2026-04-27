@@ -22,6 +22,12 @@ Project Tick is a modular ecosystem of tools including MeshMC (Minecraft launche
 - Website           =
 - Foreman           =
 
+## MeshMC in-tree Plugin versions
+- BackupSystem      =
+- Filelink          =
+- LinuxPerf         =
+- NVIDIAPrime       =
+
 <!-- | Please make each pattern for all product | 
      V                                          V
 -->
