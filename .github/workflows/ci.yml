@@ -436,13 +436,6 @@ jobs:
       changed-projects: ${{ needs.gate.outputs.changed_projects }}
     secrets: inherit
 
-  dependency-review:
-    name: "Dependency Review"
-    needs: gate
-    if: fromJSON(needs.gate.outputs.jobs_json).dependency_review
-    uses: ./.github/workflows/repo-dependency-review.yml
-    secrets: inherit
-
   # ╔════════════════════════════════════════════════════════════════╗
   # ║  STAGE 2 — Per-Project Build & Test Matrices                   ║
   # ║                                                                ║

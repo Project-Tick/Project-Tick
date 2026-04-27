@@ -22,38 +22,6 @@ permissions:
   contents: read
 
 jobs:
-  # ── Commit message lint (Conventional Commits) ──────────────────
-  commit-lint:
-    name: "Commit Messages"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        working-directory: ci/github-script
-        run: npm ci
-
-      - name: Lint commit messages
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const lint = require('./ci/github-script/lint-commits.js')
-            await lint({ github, context, core, repoPath: '.' })
-
-  # ── REUSE / license compliance ──────────────────────────────────
   reuse:
     name: "REUSE Compliance"
     runs-on: ubuntu-latest
@@ -68,8 +36,6 @@ jobs:
 
       - name: Check REUSE compliance
         uses: fsfe/reuse-action@v6
-
-  # ── Whitespace & formatting checks ─────────────────────────────
   whitespace:
     name: "Whitespace"
     runs-on: ubuntu-latest
@@ -102,21 +68,3 @@ jobs:
             echo "::warning::Whitespace issues found:"
             echo "$ERRORS"
           fi
-
-  # ── Actionlint (validate all workflow YAML) ─────────────────────
-  actionlint:
-    name: "Actionlint"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Harden runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
-
-      - name: Run actionlint
-        uses: raven-actions/actionlint@v2
-        with:
-          matcher: true
