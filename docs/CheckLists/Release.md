@@ -8,6 +8,7 @@ We're starting the checklist with another release, another concern.
 [ ] Was the version bumped?
 [ ] Is the version consistent everywhere?
 [ ] How many products have been changed since the last tag? - ( Write here:  )
+[ ] Add new product versions to bugzilla
 
 ## Content
 [ ] Has the ChangeLog been written?
