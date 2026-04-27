@@ -274,7 +274,7 @@ def should_autostart_gitlab_merge_request_build(payload: dict[str, Any]) -> bool
 
 
 def should_autostart_gitlab_push_build(payload: dict[str, Any]) -> bool:
-    if payload.get("object_kind") != "push":
+    if payload.get("object_kind") not in ("push", "tag_push"):
         return False
 
     ref = str(payload.get("ref", ""))
@@ -1411,7 +1411,7 @@ async def receive_gitlab_webhook(
             detail="Invalid JSON payload.",
         )
 
-    if x_gitlab_event == "Push Hook":
+    if x_gitlab_event in ("Push Hook", "Tag Push Hook"):
         if not should_autostart_gitlab_push_build(payload):
             return {"message": "Webhook received but ignored due to push filter."}
         return await trigger_gitlab_push_build(
