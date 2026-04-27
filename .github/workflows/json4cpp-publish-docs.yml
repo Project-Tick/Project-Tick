@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-concurrency:
-  group: json4cpp-documentation
-  cancel-in-progress: false
-
 permissions:
   contents: read
 

@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-concurrency:
-  group: neozip-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
-
 jobs:
   # OSB runs first — guards against wasting time on uncompilable code
   osb:

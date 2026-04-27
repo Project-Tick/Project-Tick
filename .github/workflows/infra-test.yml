@@ -33,10 +33,6 @@ on:
         type: string
         default: ""
 
-concurrency:
-  group: actions_test-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   TEST_APPID: io.github.herve4m.Length
   MANIFEST_NAME: io.github.herve4m.Length.yaml

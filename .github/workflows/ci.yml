@@ -91,16 +91,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: >-
-    ci-${{ github.event.inputs.event-name || github.event_name }}-${{
-      github.event.inputs.source-ref ||
-      (github.event_name == 'merge_group' && github.event.merge_group.head_ref) ||
-      (github.event_name == 'pull_request_target' && format('pr-{0}', github.event.pull_request.number)) ||
-      github.ref
-    }}
-  cancel-in-progress: true
-
 # ╔════════════════════════════════════════════════════════════════╗
 # ║ Environment — shared across all jobs                           ║
 # ╚════════════════════════════════════════════════════════════════╝

@@ -1,9 +1,5 @@
 name: "MeshMC: Build"
 
-concurrency:
-  group: meshmc-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 on:
   workflow_call:
     inputs:

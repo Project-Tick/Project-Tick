@@ -1,9 +1,5 @@
 name: "MeshMC: Container"
 
-concurrency:
-  group: meshmc-container-${{ github.ref }}
-  cancel-in-progress: true
-
 on:
   workflow_dispatch:
   workflow_call:

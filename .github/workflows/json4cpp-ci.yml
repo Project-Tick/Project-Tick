@@ -7,10 +7,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: json4cpp-${{ github.workflow }}-${{ github.ref || github.run_id }}
-  cancel-in-progress: true
-
 jobs:
   ci_test_gcc:
     runs-on: ubuntu-latest

@@ -1,8 +1,4 @@
-name: Build
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+name: "MeshMC: Flatpak Build"
 
 on:
   workflow_call:

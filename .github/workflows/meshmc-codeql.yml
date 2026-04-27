@@ -1,9 +1,5 @@
 name: "MeshMC: CodeQL"
 
-concurrency:
-  group: meshmc-codeql-${{ github.ref }}
-  cancel-in-progress: true
-
 on:
   workflow_dispatch:
   workflow_call:

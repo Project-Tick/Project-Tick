@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-concurrency:
-  group: tomlplusplus-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   clang_version: "14"
   gcc_version: "11"

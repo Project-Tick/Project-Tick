@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-concurrency:
-  group: json4cpp-fuzz-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
