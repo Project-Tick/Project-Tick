@@ -126,6 +126,17 @@ def get_gitlab_admin_mention() -> str:
     return mention if mention.startswith("@") else f"@{mention}"
 
 
+def get_default_source_repository(repo_name: str) -> str | None:
+    normalized_repo_name = repo_name.strip().lower()
+    if normalized_repo_name == "project-tick/project-tick":
+        return f"{settings.gitlab_base_url.rstrip('/')}/project-tick/project-tick.git"
+
+    if "/" in repo_name:
+        return f"https://github.com/{repo_name}.git"
+
+    return None
+
+
 def build_github_dispatch_params(
     repo_name: str,
     source_event_name: str,
@@ -146,8 +157,8 @@ def build_github_dispatch_params(
         "source-ref": source_ref,
         "source-sha": source_sha or "",
     }
-    if not resolved_source_repository and source_repo_name.lower() != dispatch_repo_full_name.lower():
-        resolved_source_repository = f"https://github.com/{source_repo_name}.git"
+    if not resolved_source_repository:
+        resolved_source_repository = get_default_source_repository(source_repo_name)
     if resolved_source_repository:
         dispatch_inputs["source-repository"] = resolved_source_repository
     if extra_inputs:
@@ -252,6 +263,31 @@ def should_autostart_gitlab_merge_request_build(payload: dict[str, Any]) -> bool
         return False
 
     return any(key in changes for key in ("last_commit", "source_branch", "target_branch"))
+
+
+def should_autostart_gitlab_push_build(payload: dict[str, Any]) -> bool:
+    if payload.get("object_kind") != "push":
+        return False
+
+    ref = str(payload.get("ref", ""))
+    after_sha = str(payload.get("after", ""))
+
+    if payload.get("deleted") or after_sha == ("0" * 40):
+        return False
+
+    if ref.startswith("refs/tags/"):
+        return True
+
+    return ref == "refs/heads/master"
+
+
+def get_gitlab_push_source_sha(payload: dict[str, Any]) -> str:
+    for key in ("checkout_sha", "after"):
+        value = str(payload.get(key, ""))
+        if value and value != ("0" * 40):
+            return value
+
+    return ""
 
 
 def describe_target_branch(target_branch: str) -> str:
@@ -705,6 +741,112 @@ async def trigger_gitlab_merge_request_build(
     if command:
         response["command"] = command
     return response
+
+
+async def trigger_gitlab_push_build(
+    payload: dict[str, Any],
+    delivery_id: str,
+) -> dict[str, Any]:
+    project = payload.get("project", {})
+    project_path = get_gitlab_project_path(payload)
+    gitlab_base_url = get_gitlab_base_url(payload)
+    source_repository = str(project.get("git_http_url", ""))
+    ref = str(payload.get("ref", ""))
+    source_sha = get_gitlab_push_source_sha(payload)
+    actor_login = str(
+        payload.get("user_username")
+        or payload.get("user_name")
+        or payload.get("user", {}).get("username", "")
+    )
+    head_ref = ref.removeprefix("refs/heads/") if ref.startswith("refs/heads/") else ""
+
+    if not source_repository and gitlab_base_url and project_path:
+        source_repository = f"{gitlab_base_url}/{project_path}.git"
+
+    if not source_repository:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing source repository URL in GitLab push payload.",
+        )
+    if not ref:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing ref in GitLab push payload.",
+        )
+    if not source_sha:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing commit SHA in GitLab push payload.",
+        )
+    if not gitlab_base_url or not project_path:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Missing GitLab routing fields in push payload.",
+        )
+
+    dispatch_repo = f"{settings.github_org}/{settings.github_ci_repo}"
+    params = {
+        "repo": dispatch_repo,
+        "ref": ref,
+        "sha": source_sha,
+        "push": "true",
+        "event_name": "push",
+        "actor": actor_login,
+        "head_ref": head_ref,
+        "dispatch_owner": settings.github_org,
+        "dispatch_repo": settings.github_ci_repo,
+        "dispatch_workflow_id": settings.github_ci_workflow,
+        "dispatch_ref": settings.github_ci_ref,
+        "gitlab_base_url": gitlab_base_url,
+        "gitlab_project_path": project_path,
+        "gitlab_source_sha": source_sha,
+    }
+
+    if head_ref:
+        params["gitlab_source_branch"] = head_ref
+        params["gitlab_target_branch"] = head_ref
+        params["pr_target_branch"] = head_ref
+
+    params.update(
+        build_github_dispatch_params(
+            repo_name=dispatch_repo,
+            source_event_name="push",
+            source_ref=ref,
+            source_sha=source_sha,
+            actor_login=actor_login,
+            extra_inputs={
+                "before-sha": str(payload.get("before", "")),
+                "head-ref": head_ref,
+            },
+            source_repository=source_repository,
+        )
+    )
+
+    build_pipeline = BuildPipeline()
+    pipeline = await build_pipeline.create_pipeline(
+        app_id=(
+            settings.github_ci_repo
+            if project_path.lower()
+            == f"{settings.github_org}/{settings.github_ci_repo}".lower()
+            else project_path.rsplit("/", 1)[-1]
+        ),
+        params=params,
+        webhook_event_id=None,
+    )
+    pipeline = await build_pipeline.prepare_pipeline_for_start(pipeline.id)
+    await build_pipeline.supersede_conflicting_test_pipelines(pipeline.id)
+    should_queue = await build_pipeline.should_queue_test_build(pipeline.id)
+
+    if not should_queue:
+        pipeline = await build_pipeline.start_pipeline(pipeline.id)
+
+    return {
+        "message": "GitLab webhook received",
+        "event_id": delivery_id,
+        "pipeline_id": str(pipeline.id),
+        "pipeline_status": pipeline.status.value,
+        "target_repo": pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline),
+    }
 
 
 def _get_gitlab_issue_iid(payload: dict[str, Any]) -> str:
@@ -1208,6 +1350,14 @@ async def receive_gitlab_webhook(
             detail="Invalid JSON payload.",
         )
 
+    if x_gitlab_event == "Push Hook":
+        if not should_autostart_gitlab_push_build(payload):
+            return {"message": "Webhook received but ignored due to push filter."}
+        return await trigger_gitlab_push_build(
+            payload,
+            x_gitlab_event_uuid or str(uuid.uuid4()),
+        )
+
     if x_gitlab_event == "Merge Request Hook":
         if not should_autostart_gitlab_merge_request_build(payload):
             return {"message": "Webhook received but ignored due to merge request filter."}
@@ -1406,6 +1556,12 @@ async def receive_github_webhook(
         "reopened",
     ]
     is_push_event = "commits" in payload and payload.get("ref", "")
+
+    native_repo = f"{settings.github_org}/{settings.github_ci_repo}".lower()
+    if is_push_event and repo_name.lower() == native_repo:
+        return {
+            "message": "Webhook received but ignored because GitLab push hooks are authoritative for this repository."
+        }
 
     if repo_name in ignored_repos and (is_pr_event or is_push_event):
         return {"message": "Webhook received but ignored due to repository filter."}

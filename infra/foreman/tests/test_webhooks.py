@@ -214,6 +214,19 @@ SAMPLE_GITLAB_MERGE_REQUEST_PAYLOAD = {
     },
 }
 
+SAMPLE_GITLAB_PUSH_PAYLOAD = {
+    "object_kind": "push",
+    "ref": "refs/heads/master",
+    "before": "1234567890abcdef1234567890abcdef12345678",
+    "after": "abcdef1234567890abcdef1234567890abcdef12",
+    "checkout_sha": "abcdef1234567890abcdef1234567890abcdef12",
+    "user_username": "samet",
+    "project": {
+        "path_with_namespace": "project-tick/project-tick",
+        "git_http_url": "https://git.projecttick.org/project-tick/project-tick.git",
+    },
+}
+
 SAMPLE_GITLAB_ISSUE_RETRY_PAYLOAD = {
     "object_kind": "note",
     "user": {"username": "samet", "id": 7},
@@ -314,6 +327,42 @@ def test_receive_github_webhook_master_push_dispatches(client: TestClient, mock_
     mock_create_pipeline.assert_awaited_once()
     assert mock_db.add.called
     assert mock_db.commit.called
+
+
+def test_receive_github_webhook_native_push_is_ignored_in_favor_of_gitlab(
+    client: TestClient,
+    mock_db,
+):
+    delivery_id = str(uuid.uuid4())
+    payload = {
+        **SAMPLE_PUSH_PAYLOAD,
+        "repository": {"full_name": "Project-Tick/Project-Tick"},
+        "after": "abcdef1234567890abcdef1234567890abcdef12",
+    }
+    headers = {
+        "X-GitHub-Delivery": delivery_id,
+    }
+
+    mock_get_db = create_mock_get_db(mock_db)
+
+    with (
+        patch("app.routes.webhooks.get_db", mock_get_db),
+        patch.object(settings, "github_webhook_secret", ""),
+        patch.object(settings, "github_org", "Project-Tick"),
+        patch.object(settings, "github_ci_repo", "Project-Tick"),
+        patch("app.routes.webhooks.create_pipeline", AsyncMock()) as mock_create_pipeline,
+    ):
+        response = client.post(
+            "/api/webhooks/github",
+            json=payload,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert "GitLab push hooks are authoritative" in response.json()["message"]
+    mock_create_pipeline.assert_not_awaited()
+    assert not mock_db.add.called
+    assert not mock_db.commit.called
 
 
 def test_receive_github_webhook_tag_push_dispatches(client: TestClient, mock_db):
@@ -840,6 +889,91 @@ def test_receive_gitlab_merge_request_webhook_dispatches_root_ci(client: TestCli
         SAMPLE_GITLAB_MERGE_REQUEST_PAYLOAD,
         "🚧 Test build enqueued.",
     )
+
+
+def test_receive_gitlab_push_webhook_dispatches_root_ci(client: TestClient):
+    headers = {
+        "X-Gitlab-Event": "Push Hook",
+        "X-Gitlab-Event-UUID": str(uuid.uuid4()),
+        "X-Gitlab-Token": "gitlab-secret",
+    }
+
+    pipeline_id = uuid.uuid4()
+    mock_pipeline = Pipeline(
+        id=pipeline_id,
+        app_id="Project-Tick",
+        status=PipelineStatus.RUNNING,
+        params={},
+        provider_data={},
+        callback_token="test-callback-token",
+    )
+
+    build_pipeline = MagicMock()
+    build_pipeline.create_pipeline = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.prepare_pipeline_for_start = AsyncMock(return_value=mock_pipeline)
+    build_pipeline.supersede_conflicting_test_pipelines = AsyncMock()
+    build_pipeline.should_queue_test_build = AsyncMock(return_value=False)
+    build_pipeline.start_pipeline = AsyncMock(return_value=mock_pipeline)
+
+    with (
+        patch.object(settings, "gitlab_webhook_secret", "gitlab-secret"),
+        patch.object(settings, "github_org", "Project-Tick"),
+        patch.object(settings, "github_ci_repo", "Project-Tick"),
+        patch.object(settings, "github_ci_workflow", "ci.yml"),
+        patch.object(settings, "github_ci_ref", "master"),
+        patch("app.routes.webhooks.BuildPipeline", return_value=build_pipeline),
+    ):
+        response = client.post(
+            "/api/webhooks/gitlab",
+            json=SAMPLE_GITLAB_PUSH_PAYLOAD,
+            headers=headers,
+        )
+
+    assert response.status_code == 202
+    assert response.json()["message"] == "GitLab webhook received"
+    assert response.json()["pipeline_id"] == str(pipeline_id)
+    assert response.json()["pipeline_status"] == "running"
+    assert response.json()["target_repo"] == "test"
+
+    build_pipeline.create_pipeline.assert_awaited_once()
+    create_kwargs = build_pipeline.create_pipeline.await_args.kwargs
+    assert create_kwargs["app_id"] == "Project-Tick"
+    assert create_kwargs["params"]["repo"] == "Project-Tick/Project-Tick"
+    assert create_kwargs["params"]["push"] == "true"
+    assert create_kwargs["params"]["event_name"] == "push"
+    assert create_kwargs["params"]["head_ref"] == "master"
+    assert create_kwargs["params"]["dispatch_owner"] == "Project-Tick"
+    assert create_kwargs["params"]["dispatch_repo"] == "Project-Tick"
+    assert create_kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
+    assert create_kwargs["params"]["dispatch_ref"] == "master"
+    assert create_kwargs["params"]["dispatch_inputs"]["event-name"] == "push"
+    assert create_kwargs["params"]["dispatch_inputs"]["event-actor"] == "samet"
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["source-repository"]
+        == "https://git.projecttick.org/project-tick/project-tick.git"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["source-ref"]
+        == "refs/heads/master"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["source-sha"]
+        == "abcdef1234567890abcdef1234567890abcdef12"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["before-sha"]
+        == "1234567890abcdef1234567890abcdef12345678"
+    )
+    assert create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "master"
+    assert create_kwargs["params"]["gitlab_base_url"] == "https://git.projecttick.org"
+    assert create_kwargs["params"]["gitlab_project_path"] == "project-tick/project-tick"
+    assert (
+        create_kwargs["params"]["gitlab_source_sha"]
+        == "abcdef1234567890abcdef1234567890abcdef12"
+    )
+    assert create_kwargs["params"]["gitlab_source_branch"] == "master"
+    assert create_kwargs["params"]["gitlab_target_branch"] == "master"
+    assert create_kwargs["params"]["pr_target_branch"] == "master"
 
 
 def test_receive_gitlab_merge_request_webhook_posts_disabled_build_note(
