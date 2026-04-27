@@ -610,7 +610,15 @@ class BuildPipeline:
                 return pipeline, updates
 
             if previous_log_url != parsed_data.log_url:
-                notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
+                if uses_gitlab_notifier(pipeline):
+                    notifier = GitLabNotifier()
+                else:
+                    logger.warning(
+                        "Using deprecated GitHubNotifier for build_started; pipeline lacks "
+                        "gitlab_source_sha. Commit status will be written to GitHub only.",
+                        pipeline_id=str(pipeline_id),
+                    )
+                    notifier = GitHubNotifier()
                 await notifier.handle_build_started(pipeline, parsed_data.log_url)
 
             return pipeline, updates
@@ -662,7 +670,15 @@ class BuildPipeline:
 
             await db.commit()
 
-            notifier = GitLabNotifier() if uses_gitlab_notifier(pipeline) else GitHubNotifier()
+            if uses_gitlab_notifier(pipeline):
+                notifier = GitLabNotifier()
+            else:
+                logger.warning(
+                    "Using deprecated GitHubNotifier for build_completion; pipeline lacks "
+                    "gitlab_source_sha. Commit status will be written to GitHub only.",
+                    pipeline_id=str(pipeline_id),
+                )
+                notifier = GitHubNotifier()
             await notifier.handle_build_completion(pipeline, status_value)
 
             updates["pipeline_status"] = status_value

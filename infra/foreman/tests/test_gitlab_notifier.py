@@ -50,10 +50,14 @@ async def test_handle_build_started_includes_target_label(gitlab_notifier, mock_
     assert gitlab_notifier._update_commit_status.await_args.kwargs["description"] == (
         "Workflow running for master (stable) on GitHub Actions"
     )
-    assert gitlab_notifier._create_merge_request_note.await_args.args[1] == (
+    actual_note = gitlab_notifier._create_merge_request_note.await_args.args[1]
+    assert actual_note.startswith(
         "🚧 [Build for master (stable) started]"
         f"({mock_pipeline.log_url})."
     )
+    # Commit SHA is now included in started note
+    assert "Commit:" in actual_note
+    assert "abcdef123456" in actual_note
 
 
 @pytest.mark.asyncio
@@ -85,7 +89,13 @@ async def test_handle_build_completion_failure_creates_stable_issue(
     await gitlab_notifier.handle_build_completion(mock_pipeline, "failure")
 
     gitlab_notifier._create_issue.assert_awaited_once()
-    assert "bot, retry" in gitlab_notifier._create_issue.await_args.args[2]
+    body = gitlab_notifier._create_issue.await_args.args[2]
+    assert "bot, retry" in body
+    assert "## Build Information" in body
+    assert "## Action Required" in body
+    labels = gitlab_notifier._create_issue.await_args.kwargs.get("labels", [])
+    assert "build-failure" in labels
+    assert "stable" in labels
 
 
 @pytest.mark.asyncio
@@ -99,7 +109,12 @@ async def test_handle_build_completion_cancelled_creates_stable_issue(
     await gitlab_notifier.handle_build_completion(mock_pipeline, "cancelled")
 
     gitlab_notifier._create_issue.assert_awaited_once()
-    assert "was cancelled" in gitlab_notifier._create_issue.await_args.args[2]
+    body = gitlab_notifier._create_issue.await_args.args[2]
+    assert "was cancelled" in body
+    assert "## Build Information" in body
+    labels = gitlab_notifier._create_issue.await_args.kwargs.get("labels", [])
+    assert "build-failure" in labels
+    assert "cancelled" in labels
 
 
 @pytest.mark.asyncio

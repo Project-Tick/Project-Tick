@@ -178,12 +178,19 @@ def build_github_dispatch_params(
 
 
 def build_gitlab_issue_routing_params(repo_name: str) -> dict[str, str]:
-    repo_slug = repo_name.split("/", 1)[-1].strip()
-    if not repo_slug or repo_name.lower() != f"{settings.github_org}/{settings.github_ci_repo}".lower():
+    if not settings.gitlab_base_url:
         return {}
 
-    namespace = settings.github_org.lower()
-    project_path = f"{namespace}/{repo_slug.lower()}"
+    repo_slug = repo_name.split("/", 1)[-1].strip()
+    native_repo = f"{settings.github_org}/{settings.github_ci_repo}".lower()
+
+    if repo_name.lower() == native_repo and repo_slug:
+        namespace = settings.github_org.lower()
+        project_path = f"{namespace}/{repo_slug.lower()}"
+    else:
+        # Non-native repos fall back to the CI project as the GitLab notification target
+        project_path = f"{settings.github_org.lower()}/{settings.github_ci_repo.lower()}"
+
     return {
         "gitlab_base_url": settings.gitlab_base_url,
         "gitlab_project_path": project_path,

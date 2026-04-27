@@ -1,3 +1,5 @@
+import asyncio
+from datetime import datetime, timezone
 from urllib.parse import quote
 
 import httpx
@@ -6,7 +8,7 @@ import structlog
 from app.config import settings
 from app.models import Pipeline
 from app.utils.pipeline_events import is_scheduled_native_github_ci
-from app.utils.github import get_build_job_arches
+from app.utils.github import get_build_job_arches, get_linter_warning_messages
 
 logger = structlog.get_logger(__name__)
 
@@ -131,6 +133,7 @@ class GitLabNotifier:
         pipeline: Pipeline,
         title: str,
         description: str,
+        labels: list[str] | None = None,
     ) -> tuple[str, int] | None:
         if not settings.gitlab_api_token:
             return None
@@ -145,12 +148,16 @@ class GitLabNotifier:
             f"{gitlab_base_url}/api/v4/projects/{quote(project_path, safe='')}/issues"
         )
 
+        issue_data: dict[str, str] = {"title": title, "description": description}
+        if labels:
+            issue_data["labels"] = ",".join(labels)
+
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:
                 response = await client.post(
                     endpoint,
                     headers={"PRIVATE-TOKEN": settings.gitlab_api_token},
-                    data={"title": title, "description": description},
+                    data=issue_data,
                 )
                 response.raise_for_status()
                 payload = response.json()
@@ -243,6 +250,12 @@ class GitLabNotifier:
         outcome = "cancelled" if status == "cancelled" else "failed"
         return f"Stable build {outcome} for {pipeline.app_id}"
 
+    def _build_failure_issue_labels(self, status: str = "failure") -> list[str]:
+        labels = ["build-failure", "stable"]
+        if status == "cancelled":
+            labels.append("cancelled")
+        return labels
+
     def _build_failure_issue_body(
         self,
         pipeline: Pipeline,
@@ -252,8 +265,12 @@ class GitLabNotifier:
             pipeline, "sha"
         )
         ref = self._get_param(pipeline, "ref") or f"refs/heads/{self._get_target_branch(pipeline)}"
+        target_branch = self._get_target_branch(pipeline)
+        actor = self._get_param(pipeline, "actor")
+        build_type = self._get_param(pipeline, "build_type") or "default"
         github_repo = self._get_param(pipeline, "repo")
-        source_repository = ""
+        gitlab_base_url = self._get_param(pipeline, "gitlab_base_url")
+        project_path = self._get_param(pipeline, "gitlab_project_path")
         outcome = "was cancelled" if status == "cancelled" else "failed"
         investigation = (
             "Please investigate this cancellation."
@@ -261,27 +278,51 @@ class GitLabNotifier:
             else "Please investigate this failure."
         )
 
-        gitlab_base_url = self._get_param(pipeline, "gitlab_base_url")
-        project_path = self._get_param(pipeline, "gitlab_project_path")
+        source_repository = ""
         if gitlab_base_url and project_path:
             source_repository = f"{gitlab_base_url}/{project_path}.git"
 
-        lines = [
+        commit_link = ""
+        if gitlab_base_url and project_path and source_sha:
+            commit_link = (
+                f"{gitlab_base_url}/{project_path}/-/commit/{source_sha}"
+            )
+
+        duration = self._format_build_duration(pipeline)
+
+        lines: list[str] = [
             f"The stable build pipeline for `{pipeline.app_id}` {outcome}.",
             "",
-            f"Commit SHA: {source_sha}",
-            f"Ref: {ref}",
+            "## Build Information",
+            "",
         ]
 
+        if source_sha:
+            sha_display = f"[`{source_sha[:12]}`]({commit_link})" if commit_link else f"`{source_sha}`"
+            lines.append(f"- **Commit SHA:** {sha_display}")
+        if ref:
+            lines.append(f"- **Ref:** `{ref}`")
+        if target_branch:
+            lines.append(f"- **Target branch:** `{target_branch}`")
+        if actor:
+            lines.append(f"- **Actor:** `{actor}`")
+        if build_type:
+            lines.append(f"- **Build type:** `{build_type}`")
+        if duration:
+            lines.append(f"- **Duration:** {duration}")
         if pipeline.log_url:
-            lines.append(f"Build log: {pipeline.log_url}")
+            lines.append(f"- **Build log:** {pipeline.log_url}")
+        if pipeline.id:
+            lines.append(f"- **Pipeline ID:** `{pipeline.id}`")
         if github_repo:
-            lines.append(f"GitHub repository: {github_repo}")
+            lines.append(f"- **GitHub repository:** `{github_repo}`")
         if source_repository:
-            lines.append(f"Source repository: {source_repository}")
+            lines.append(f"- **Source repository:** {source_repository}")
 
         lines.extend(
             [
+                "",
+                "## Action Required",
                 "",
                 investigation,
                 "To retry the stable build, comment `bot, retry` on this issue.",
@@ -322,6 +363,7 @@ class GitLabNotifier:
                     pipeline,
                     self._build_failure_issue_title(pipeline, status),
                     self._build_failure_issue_body(pipeline, status),
+                    labels=self._build_failure_issue_labels(status),
                 )
         elif status == "success" and retry_issue_iid:
             note = (
@@ -405,6 +447,57 @@ class GitLabNotifier:
 
         return False
 
+    def _format_build_duration(self, pipeline: Pipeline) -> str:
+        if pipeline.started_at and pipeline.finished_at:
+            started = pipeline.started_at
+            finished = pipeline.finished_at
+            if started.tzinfo is None:
+                started = started.replace(tzinfo=timezone.utc)
+            if finished.tzinfo is None:
+                finished = finished.replace(tzinfo=timezone.utc)
+            seconds = int((finished - started).total_seconds())
+            if seconds >= 3600:
+                h, rem = divmod(seconds, 3600)
+                m, s = divmod(rem, 60)
+                return f"{h}h {m}m {s}s"
+            elif seconds >= 60:
+                m, s = divmod(seconds, 60)
+                return f"{m}m {s}s"
+            return f"{seconds}s"
+        return ""
+
+    async def _get_run_details(
+        self, pipeline: Pipeline
+    ) -> tuple[list[str], list[str]]:
+        log_url = pipeline.log_url or ""
+        if not log_url:
+            return [], []
+
+        try:
+            run_id = int(log_url.rstrip("/").split("/")[-1])
+        except (ValueError, TypeError, IndexError):
+            return [], []
+
+        owner = ""
+        repo = ""
+        provider_data = dict(pipeline.provider_data or {})
+        if provider_data.get("owner") and provider_data.get("repo"):
+            owner = str(provider_data["owner"])
+            repo = str(provider_data["repo"])
+        else:
+            source_repo = self._get_param(pipeline, "repo")
+            if "/" in source_repo:
+                owner, repo = source_repo.split("/", 1)
+
+        if not owner or not repo:
+            return [], []
+
+        linter_warnings, arches = await asyncio.gather(
+            get_linter_warning_messages(run_id),
+            get_build_job_arches(run_id, owner=owner, repo=repo),
+        )
+        return list(linter_warnings), list(arches)
+
     async def handle_build_started(
         self,
         pipeline: Pipeline,
@@ -415,6 +508,10 @@ class GitLabNotifier:
         targets_suffix = (
             f"\n\nTargets: {', '.join(component_targets)}." if component_targets else ""
         )
+
+        source_sha = self._get_param(pipeline, "gitlab_source_sha") or self._get_param(pipeline, "sha")
+        sha_suffix = f"\n\nCommit: `{source_sha[:12]}`" if source_sha else ""
+
         await self._update_commit_status(
             pipeline,
             state="running",
@@ -423,7 +520,7 @@ class GitLabNotifier:
         )
         await self._create_merge_request_note(
             pipeline,
-            f"🚧 [Build for {target_label} started]({log_url}).{targets_suffix}",
+            f"🚧 [Build for {target_label} started]({log_url}).{targets_suffix}{sha_suffix}",
         )
 
     async def handle_build_completion(
@@ -434,33 +531,58 @@ class GitLabNotifier:
         log_url = pipeline.log_url or ""
         target_label = self._get_target_label(pipeline)
         component_targets = await self._get_component_targets(pipeline)
-        targets_suffix = (
-            f"\n\nTargets: {', '.join(component_targets)}." if component_targets else ""
-        )
+
+        linter_warnings, raw_arches = await self._get_run_details(pipeline)
+
+        duration = self._format_build_duration(pipeline)
+        duration_suffix = f"\n\n⏱ Build duration: {duration}." if duration else ""
+
+        arch_suffix = ""
+        if raw_arches:
+            sorted_arches = sorted(raw_arches)
+            if len(sorted_arches) == 1:
+                arch_text = sorted_arches[0]
+            elif len(sorted_arches) == 2:
+                arch_text = " and ".join(sorted_arches)
+            else:
+                arch_text = ", ".join(sorted_arches[:-1]) + ", and " + sorted_arches[-1]
+            plural = "s" if len(sorted_arches) > 1 else ""
+            arch_suffix = f"\n\n*Built for {arch_text} architecture{plural}.*"
+        elif component_targets:
+            arch_suffix = f"\n\nTargets: {', '.join(component_targets)}."
+
+        linter_suffix = ""
+        if linter_warnings and status in {"success", "committed"}:
+            warnings_text = "\n".join(f"- {w.strip()}" for w in linter_warnings)
+            linter_suffix = (
+                "\n\n⚠️ Linter warnings:\n\n"
+                "_These warnings may become errors in the future. Please try to resolve them._\n\n"
+                f"{warnings_text}"
+            )
 
         if status == "success":
             state = "success"
             description = f"Workflow succeeded for {target_label} on GitHub Actions"
             note = (
-                f"✅ [Build for {target_label} succeeded]({log_url}).{targets_suffix}"
+                f"✅ [Build for {target_label} succeeded]({log_url}).{arch_suffix}{duration_suffix}{linter_suffix}"
                 if log_url
-                else f"✅ Build for {target_label} succeeded.{targets_suffix}"
+                else f"✅ Build for {target_label} succeeded.{arch_suffix}{duration_suffix}{linter_suffix}"
             )
         elif status == "cancelled":
             state = "canceled"
             description = f"Workflow cancelled for {target_label} on GitHub Actions"
             note = (
-                f"⏹️ [Build for {target_label} was cancelled]({log_url}).{targets_suffix}"
+                f"⏹️ [Build for {target_label} was cancelled]({log_url}).{duration_suffix}"
                 if log_url
-                else f"⏹️ Build for {target_label} was cancelled.{targets_suffix}"
+                else f"⏹️ Build for {target_label} was cancelled.{duration_suffix}"
             )
         else:
             state = "failed"
             description = f"Workflow failed for {target_label} on GitHub Actions"
             note = (
-                f"❌ [Build for {target_label} failed]({log_url}).{targets_suffix}"
+                f"❌ [Build for {target_label} failed]({log_url}).{duration_suffix}"
                 if log_url
-                else f"❌ Build for {target_label} failed.{targets_suffix}"
+                else f"❌ Build for {target_label} failed.{duration_suffix}"
             )
 
         await self._update_commit_status(

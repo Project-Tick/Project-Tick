@@ -1,13 +1,11 @@
 import asyncio
+import warnings
 
 import structlog
 
 from app.config import settings
 from app.models import Pipeline
 from app.utils.github import (
-    add_issue_comment,
-    close_github_issue,
-    create_github_issue,
     create_pr_comment,
     get_build_job_arches,
     get_linter_warning_messages,
@@ -17,8 +15,24 @@ from app.utils.pipeline_events import is_scheduled_native_github_ci
 
 logger = structlog.get_logger(__name__)
 
+_DEPRECATION_MSG = (
+    "GitHubNotifier is deprecated and will be removed in a future release. "
+    "All build notifications (commit status, issue lifecycle, PR comments) are now "
+    "handled by GitLabNotifier. GitHubNotifier only remains for GitHub PR comment "
+    "delivery (notify_pr_build_started / notify_pr_build_complete) and GitHub commit "
+    "status writes for GitHub-originated pipelines."
+)
+
 
 class GitHubNotifier:
+    """
+    .. deprecated::
+        GitHubNotifier is deprecated. Use :class:`app.services.gitlab_notifier.GitLabNotifier`
+        for all new notification paths. Only GitHub PR comment delivery and GitHub commit
+        status updates for GitHub-sourced pipelines are still routed here.
+        All stable issue lifecycle and failure issue creation now goes to GitLab.
+    """
+
     def __init__(self):
         pass
 
@@ -78,57 +92,10 @@ class GitHubNotifier:
         if is_scheduled_native_github_ci(pipeline):
             return
 
-        gitlab_base_url = pipeline.params.get("gitlab_base_url")
-        gitlab_project_path = pipeline.params.get("gitlab_project_path")
-        if isinstance(gitlab_base_url, str) and gitlab_base_url and isinstance(
-            gitlab_project_path, str
-        ) and gitlab_project_path:
-            from app.services.gitlab_notifier import GitLabNotifier
+        # All stable issue lifecycle is handled on GitLab
+        from app.services.gitlab_notifier import GitLabNotifier
 
-            await GitLabNotifier()._handle_stable_issue_lifecycle(pipeline, status)
-            return
-
-        git_repo = pipeline.params.get("repo")
-        if not isinstance(git_repo, str) or not git_repo:
-            return
-
-        retry_issue_number = pipeline.params.get("retry_from_issue")
-        log_url = pipeline.log_url or ""
-
-        if status in {"failure", "cancelled"}:
-            if retry_issue_number:
-                comment = (
-                    f"❌ Stable retry failed.\n\nBuild log: {log_url}\n\n"
-                    "Please investigate and comment `bot, retry` again if another retry is needed."
-                    if status == "failure"
-                    else (
-                        f"⏹️ Stable retry was cancelled.\n\nBuild log: {log_url}"
-                        if log_url
-                        else "⏹️ Stable retry was cancelled."
-                    )
-                )
-                await add_issue_comment(
-                    git_repo=git_repo,
-                    issue_number=int(retry_issue_number),
-                    comment=comment,
-                )
-            else:
-                await create_github_issue(
-                    git_repo=git_repo,
-                    title=self._build_failure_issue_title(pipeline, status),
-                    body=self._build_failure_issue_body(pipeline, status),
-                )
-        elif status == "success" and retry_issue_number:
-            await add_issue_comment(
-                git_repo=git_repo,
-                issue_number=int(retry_issue_number),
-                comment=(
-                    f"✅ Stable retry succeeded.\n\nBuild log: {log_url}"
-                    if log_url
-                    else "✅ Stable retry succeeded."
-                ),
-            )
-            await close_github_issue(git_repo=git_repo, issue_number=int(retry_issue_number))
+        await GitLabNotifier()._handle_stable_issue_lifecycle(pipeline, status)
     async def notify_build_status(
         self,
         pipeline: Pipeline,

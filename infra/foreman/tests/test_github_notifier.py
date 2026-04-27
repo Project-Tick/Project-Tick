@@ -364,13 +364,15 @@ async def test_handle_build_completion_failure_creates_stable_issue(github_notif
 
     with patch.object(github_notifier, "notify_build_status") as mock_status:
         with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
-            with patch("app.services.github_notifier.create_github_issue", AsyncMock()) as mock_issue:
+            with patch(
+                "app.services.gitlab_notifier.GitLabNotifier._handle_stable_issue_lifecycle",
+                AsyncMock(),
+            ) as mock_gitlab_issue:
                 await github_notifier.handle_build_completion(mock_pipeline, "failure")
 
                 mock_status.assert_called_once_with(mock_pipeline, "failure")
                 mock_pr.assert_not_called()
-                mock_issue.assert_awaited_once()
-                assert "bot, retry" in mock_issue.await_args.kwargs["body"]
+                mock_gitlab_issue.assert_awaited_once_with(mock_pipeline, "failure")
 
 
 @pytest.mark.asyncio
@@ -382,13 +384,15 @@ async def test_handle_build_completion_cancelled_creates_stable_issue(
 
     with patch.object(github_notifier, "notify_build_status") as mock_status:
         with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
-            with patch("app.services.github_notifier.create_github_issue", AsyncMock()) as mock_issue:
+            with patch(
+                "app.services.gitlab_notifier.GitLabNotifier._handle_stable_issue_lifecycle",
+                AsyncMock(),
+            ) as mock_gitlab_issue:
                 await github_notifier.handle_build_completion(mock_pipeline, "cancelled")
 
                 mock_status.assert_called_once_with(mock_pipeline, "cancelled")
                 mock_pr.assert_not_called()
-                mock_issue.assert_awaited_once()
-                assert "was cancelled" in mock_issue.await_args.kwargs["body"]
+                mock_gitlab_issue.assert_awaited_once_with(mock_pipeline, "cancelled")
 
 
 @pytest.mark.asyncio
@@ -406,23 +410,25 @@ async def test_handle_build_completion_failure_does_not_create_stable_issue_for_
 
     with patch.object(github_notifier, "notify_build_status") as mock_status:
         with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
-            with patch("app.services.github_notifier.create_github_issue", AsyncMock()) as mock_issue:
+            with patch(
+                "app.services.gitlab_notifier.GitLabNotifier._handle_stable_issue_lifecycle",
+                AsyncMock(),
+            ) as mock_gitlab_issue:
                 await github_notifier.handle_build_completion(mock_pipeline, "failure")
 
                 mock_status.assert_called_once_with(mock_pipeline, "failure")
                 mock_pr.assert_not_called()
-                mock_issue.assert_not_called()
+                mock_gitlab_issue.assert_not_called()
 
 
 @pytest.mark.asyncio
 async def test_handle_build_completion_failure_delegates_stable_issue_to_gitlab(
     github_notifier, mock_pipeline
 ):
+    # Stable issue lifecycle is always delegated to GitLab regardless of params
     mock_pipeline.params = {
         "sha": "abc123",
         "repo": "Project-Tick/Project-Tick",
-        "gitlab_base_url": "https://git.projecttick.org",
-        "gitlab_project_path": "project-tick/project-tick",
     }
     mock_pipeline.flat_manager_repo = "stable"
 
@@ -432,40 +438,32 @@ async def test_handle_build_completion_failure_delegates_stable_issue_to_gitlab(
                 "app.services.gitlab_notifier.GitLabNotifier._handle_stable_issue_lifecycle",
                 AsyncMock(),
             ) as mock_gitlab_issue:
-                with patch(
-                    "app.services.github_notifier.create_github_issue",
-                    AsyncMock(),
-                ) as mock_issue:
-                    await github_notifier.handle_build_completion(mock_pipeline, "failure")
+                await github_notifier.handle_build_completion(mock_pipeline, "failure")
 
-                    mock_status.assert_called_once_with(mock_pipeline, "failure")
-                    mock_pr.assert_not_called()
-                    mock_gitlab_issue.assert_awaited_once_with(mock_pipeline, "failure")
-                    mock_issue.assert_not_called()
+                mock_status.assert_called_once_with(mock_pipeline, "failure")
+                mock_pr.assert_not_called()
+                mock_gitlab_issue.assert_awaited_once_with(mock_pipeline, "failure")
 
 
 @pytest.mark.asyncio
-async def test_handle_build_completion_success_closes_retry_issue(github_notifier, mock_pipeline):
+async def test_handle_build_completion_success_stable_delegates_to_gitlab(github_notifier, mock_pipeline):
     mock_pipeline.params = {
         "sha": "abc123",
         "repo": "project-tick/org.test.App",
-        "retry_from_issue": "17",
     }
     mock_pipeline.flat_manager_repo = "stable"
 
     with patch.object(github_notifier, "notify_build_status") as mock_status:
         with patch.object(github_notifier, "notify_pr_build_complete") as mock_pr:
-            with patch("app.services.github_notifier.add_issue_comment", AsyncMock()) as mock_comment:
-                with patch("app.services.github_notifier.close_github_issue", AsyncMock()) as mock_close:
-                    await github_notifier.handle_build_completion(mock_pipeline, "success")
+            with patch(
+                "app.services.gitlab_notifier.GitLabNotifier._handle_stable_issue_lifecycle",
+                AsyncMock(),
+            ) as mock_gitlab_issue:
+                await github_notifier.handle_build_completion(mock_pipeline, "success")
 
-                    mock_status.assert_called_once_with(mock_pipeline, "success")
-                    mock_pr.assert_not_called()
-                    mock_comment.assert_awaited_once()
-                    mock_close.assert_awaited_once_with(
-                        git_repo="project-tick/org.test.App",
-                        issue_number=17,
-                    )
+                mock_status.assert_called_once_with(mock_pipeline, "success")
+                mock_pr.assert_not_called()
+                mock_gitlab_issue.assert_awaited_once_with(mock_pipeline, "success")
 
 
 @pytest.mark.asyncio
