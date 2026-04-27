@@ -10,7 +10,27 @@ MeshMC is a custom launcher for Minecraft that focuses on predictability, long t
     <img src="https://repology.org/badge/vertical-allrepos/meshmc.svg" alt="Packaging status" align="right">
 </a>
 
-Currently, MeshMC Packaged on AUR.
+Currently, MeshMC Packaged on AUR and Flathub.
+
+## Download on Flathub
+
+Firstly, please add flathub repo with this command:
+
+```bash
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+```
+
+and install MeshMC with Flatpak
+
+```bash
+flatpak install flathub org.projecttick.MeshMC
+```
+
+Lastly, run with flatpak
+
+```bash
+flatpak run org.projecttick.MeshMC
+```
 
 ## Translations
 Translations can be done [on crowdin](https://crowdin.com/project/projtlauncher). Please avoid making direct pull requests to the translations repository.
