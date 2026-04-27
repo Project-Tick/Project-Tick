@@ -864,48 +864,56 @@ async def trigger_gitlab_push_build(
         beta_tag_name = "vBETA" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M")
         beta_ref = f"refs/tags/{beta_tag_name}"
 
-        await create_github_tag(
+        tag_created = await create_github_tag(
             f"{settings.github_org}/{settings.github_ci_repo}",
             beta_tag_name,
             source_sha,
         )
-
-        beta_params: dict[str, Any] = {
-            "repo": dispatch_repo,
-            "ref": beta_ref,
-            "sha": source_sha,
-            "push": "true",
-            "event_name": "push",
-            "actor": actor_login,
-            "head_ref": "",
-            "dispatch_owner": settings.github_org,
-            "dispatch_repo": settings.github_ci_repo,
-            "dispatch_workflow_id": settings.github_ci_workflow,
-            "dispatch_ref": settings.github_ci_ref,
-            "gitlab_base_url": gitlab_base_url,
-            "gitlab_project_path": project_path,
-            "gitlab_source_sha": source_sha,
-        }
-        beta_params.update(
-            build_github_dispatch_params(
-                repo_name=dispatch_repo,
-                source_event_name="push",
-                source_ref=beta_ref,
+        if not tag_created:
+            logger.error(
+                "Failed to create beta tag on GitHub — aborting beta pipeline",
+                beta_tag_name=beta_tag_name,
                 source_sha=source_sha,
-                actor_login=actor_login,
-                source_repository=source_repository,
+                repo=f"{settings.github_org}/{settings.github_ci_repo}",
             )
-        )
+            response["beta_error"] = f"Failed to create GitHub tag {beta_tag_name}"
+        else:
+            beta_params: dict[str, Any] = {
+                "repo": dispatch_repo,
+                "ref": beta_ref,
+                "sha": source_sha,
+                "push": "true",
+                "event_name": "push",
+                "actor": actor_login,
+                "head_ref": "",
+                "dispatch_owner": settings.github_org,
+                "dispatch_repo": settings.github_ci_repo,
+                "dispatch_workflow_id": settings.github_ci_workflow,
+                "dispatch_ref": settings.github_ci_ref,
+                "gitlab_base_url": gitlab_base_url,
+                "gitlab_project_path": project_path,
+                "gitlab_source_sha": source_sha,
+            }
+            beta_params.update(
+                build_github_dispatch_params(
+                    repo_name=dispatch_repo,
+                    source_event_name="push",
+                    source_ref=beta_ref,
+                    source_sha=source_sha,
+                    actor_login=actor_login,
+                    source_repository=source_repository,
+                )
+            )
 
-        beta_pipeline = await build_pipeline.create_pipeline(
-            app_id=settings.github_ci_repo,
-            params=beta_params,
-            webhook_event_id=None,
-        )
-        beta_pipeline = await build_pipeline.prepare_pipeline_for_start(beta_pipeline.id)
-        beta_pipeline = await build_pipeline.start_pipeline(beta_pipeline.id)
-        response["beta_pipeline_id"] = str(beta_pipeline.id)
-        response["beta_tag"] = beta_tag_name
+            beta_pipeline = await build_pipeline.create_pipeline(
+                app_id=settings.github_ci_repo,
+                params=beta_params,
+                webhook_event_id=None,
+            )
+            beta_pipeline = await build_pipeline.prepare_pipeline_for_start(beta_pipeline.id)
+            beta_pipeline = await build_pipeline.start_pipeline(beta_pipeline.id)
+            response["beta_pipeline_id"] = str(beta_pipeline.id)
+            response["beta_tag"] = beta_tag_name
 
     return response
 

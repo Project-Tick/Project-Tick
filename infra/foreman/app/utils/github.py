@@ -723,7 +723,7 @@ async def create_github_tag(git_repo: str, tag_name: str, sha: str) -> bool:
         return False
 
     url = f"https://api.github.com/repos/{git_repo}/git/refs"
-    client = get_github_client()
+    client = get_github_actions_client()
     result = await client.request_with_result(
         "post",
         url,

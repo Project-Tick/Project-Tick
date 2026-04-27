@@ -63,16 +63,24 @@ class CIGateService:
         request: GitHubCIGatePlanRequest,
     ) -> dict[str, Any]:
         context = self._build_context(request.model_dump())
-        changed_files, commit_message = await self._collect_changed_files_and_commit_message(
-            context
-        )
+        # For tag pushes, skip git analysis — tags just reference existing commits
+        if context["event_name"] == "push" and context["source_ref"].startswith("refs/tags/"):
+            changed_files, commit_message = [], ""
+        else:
+            changed_files, commit_message = await self._collect_changed_files_and_commit_message(
+                context
+            )
         return self._build_plan(context, changed_files, commit_message)
 
     async def build_plan_from_pipeline(self, pipeline: Pipeline) -> dict[str, Any]:
         context = self._build_context_from_pipeline(pipeline)
-        changed_files, commit_message = await self._collect_changed_files_and_commit_message(
-            context
-        )
+        # For tag pushes, skip git analysis — tags just reference existing commits
+        if context["event_name"] == "push" and context["source_ref"].startswith("refs/tags/"):
+            changed_files, commit_message = [], ""
+        else:
+            changed_files, commit_message = await self._collect_changed_files_and_commit_message(
+                context
+            )
         return self._build_plan(context, changed_files, commit_message)
 
     def _build_context(self, raw: dict[str, Any]) -> dict[str, Any]:
