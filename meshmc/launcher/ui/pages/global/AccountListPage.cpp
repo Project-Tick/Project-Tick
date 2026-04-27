@@ -177,17 +177,18 @@ void AccountListPage::on_actionAddOffline_triggered()
 		CustomMessageBox::selectable(
 			this, tr("Microsoft Account Required"),
 			tr("Adding an offline account requires at least one Microsoft "
-			   "account to be logged in. Please add a Microsoft account first."),
+			   "account to be logged in. Please add a Microsoft account "
+			   "first."),
 			QMessageBox::Warning)
 			->exec();
 		return;
 	}
 
 	bool ok = false;
-	QString username = QInputDialog::getText(
-		this, tr("Add Offline Account"),
-		tr("Enter a username for the offline account:"),
-		QLineEdit::Normal, tr("User"), &ok);
+	QString username =
+		QInputDialog::getText(this, tr("Add Offline Account"),
+							  tr("Enter a username for the offline account:"),
+							  QLineEdit::Normal, tr("User"), &ok);
 	if (!ok || username.trimmed().isEmpty()) {
 		return;
 	}

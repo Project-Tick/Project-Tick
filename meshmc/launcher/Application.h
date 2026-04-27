@@ -197,7 +197,7 @@ class Application : public QApplication
 	void globalSettingsAboutToOpen();
 	void globalSettingsClosed();
 	void instanceSettingsPageCreated(InstanceSettingsPage* page,
-								  BaseInstance* instance);
+									 BaseInstance* instance);
 
   public slots:
 	bool launch(InstancePtr instance, bool online = true,

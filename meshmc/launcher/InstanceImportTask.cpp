@@ -144,17 +144,16 @@ void InstanceImportTask::processZipPack()
 		auto findFolder = [&entries](const QString& needle) -> QString {
 			for (const QString& e : entries) {
 				if (e == needle)
-					return QLatin1String("");  // found at root
+					return QLatin1String(""); // found at root
 				if (e.endsWith(QLatin1Char('/') + needle)) {
 					return e.left(e.lastIndexOf(QLatin1Char('/')) + 1);
 				}
 			}
-			return {};  // null → not found
+			return {}; // null → not found
 		};
 
 		result.mmcRoot = findFolder(QStringLiteral("instance.cfg"));
-		result.modrinthRoot =
-			findFolder(QStringLiteral("modrinth.index.json"));
+		result.modrinthRoot = findFolder(QStringLiteral("modrinth.index.json"));
 		result.flameRoot = findFolder(QStringLiteral("manifest.json"));
 		result.technicFound =
 			entries.contains(QStringLiteral("bin/modpack.jar")) ||

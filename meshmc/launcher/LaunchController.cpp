@@ -127,8 +127,9 @@ void LaunchController::decideAccount()
 					return;
 				}
 				m_demoMode = true;
-				m_demoUsername =
-					username.trimmed().isEmpty() ? tr("User") : username.trimmed();
+				m_demoUsername = username.trimmed().isEmpty()
+									 ? tr("User")
+									 : username.trimmed();
 			} else {
 				// User declined demo mode → abort (login() will handle the
 				// failure)
@@ -437,19 +438,18 @@ void LaunchController::launchInstance()
 				m_launcher->setWrapperCommand(pendingWrapper);
 			} else {
 				m_launcher->setWrapperCommand(pendingWrapper + " " +
-									 wrapperCommand);
+											  wrapperCommand);
 			}
 		}
 
 		// Restore env vars after the launch task finishes
 		if (!pendingEnv.isEmpty()) {
-			connect(m_launcher.get(), &Task::finished, this,
-					[pendingEnv]() {
-						for (auto it = pendingEnv.constBegin();
-							 it != pendingEnv.constEnd(); ++it) {
-							qunsetenv(it.key().toUtf8().constData());
-						}
-					});
+			connect(m_launcher.get(), &Task::finished, this, [pendingEnv]() {
+				for (auto it = pendingEnv.constBegin();
+					 it != pendingEnv.constEnd(); ++it) {
+					qunsetenv(it.key().toUtf8().constData());
+				}
+			});
 		}
 	}
 

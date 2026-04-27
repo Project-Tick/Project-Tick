@@ -103,9 +103,9 @@ class InstanceImportTask : public InstanceTask
 
 	// Holds the raw detection results from the background scan.
 	struct DetectResult {
-		QString mmcRoot;	   // non-null → MeshMC pack
-		QString flameRoot;	   // non-null → Flame/CurseForge pack
-		QString modrinthRoot;  // non-null → Modrinth pack
+		QString mmcRoot;	  // non-null → MeshMC pack
+		QString flameRoot;	  // non-null → Flame/CurseForge pack
+		QString modrinthRoot; // non-null → Modrinth pack
 		bool technicFound = false;
 		QString extractTarget; // dir to pass to extractSubDir
 	};

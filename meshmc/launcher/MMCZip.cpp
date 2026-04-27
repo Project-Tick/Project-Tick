@@ -145,8 +145,7 @@ static bool writeDiskEntry(struct archive* ar, const QString& absFilePath)
 	int readRet;
 	while ((readRet = archive_read_data_block(ar, &buff, &size, &offset)) ==
 		   ARCHIVE_OK) {
-		qint64 written =
-			outFile.write(static_cast<const char*>(buff), size);
+		qint64 written = outFile.write(static_cast<const char*>(buff), size);
 		if (written != static_cast<qint64>(size)) {
 			qWarning() << "Write error for" << absFilePath << ": wrote"
 					   << written << "of" << size << "bytes";
@@ -486,7 +485,8 @@ nonstd::optional<QStringList> MMCZip::extractSubDir(const QString& zipPath,
 	struct archive_entry* entry;
 	bool hasEntries = false;
 	int readRet;
-	while ((readRet = archive_read_next_header(ar.get(), &entry)) == ARCHIVE_OK) {
+	while ((readRet = archive_read_next_header(ar.get(), &entry)) ==
+		   ARCHIVE_OK) {
 		hasEntries = true;
 		QString name = QString::fromUtf8(archive_entry_pathname(entry));
 		if (!name.startsWith(subdir)) {
