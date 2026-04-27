@@ -1,3 +1,41 @@
+# Project Tick 202604272058 Snapshot
+
+Project Tick is a modular ecosystem of tools including MeshMC (Minecraft launcher), MNV (editor), and supporting infrastructure.
+
+## Product versions
+
+- Actions           = N/A
+- CGit              = 10.0.3
+- CMark             = 0.31.2
+- CoreBinUtils      = 10.0.3
+- ForgeWrapper      = ProjT
+- GenQRCode         = 4.1.1
+- Hooks             = 10.0.3
+- images4docker     = 10.0.3
+- Json++ (json4cpp) = 10.0.3
+- LibNBT++          = 3.1
+- MeshMC            = 7.16.0
+- Meta              = 10.0.3
+- MNV               = 10.0.4
+- NeoZIP            = 10.1.0
+- Toml++            = 10.0.3
+- Website           = 10.0.3
+- Foreman           = 0.2.0
+
+## MeshMC in-tree Plugin versions
+- BackupSystem      = 1.1.0
+- Filelink          = 2.1.0
+- LinuxPerf         = 1.2.0
+- NVIDIAPrime       = 1.0.0
+
+## MeshMC
+
+### Changelog
+
+#### Fixed
+
+Fixed Flatpak MangoHUD integration by detecting the mounted runtime extension directly and using absolute wrapper paths instead of PATH-dependent lookup.
+
 # Project Tick 202604271705 Snapshot
 
 Project Tick is a modular ecosystem of tools including MeshMC (Minecraft launcher), MNV (editor), and supporting infrastructure.
