@@ -18,6 +18,11 @@ on:
         required: false
         type: boolean
         default: true
+      beta_source_only:
+        description: "Beta release: skip MeshMC binary build, package source artifacts only"
+        required: false
+        type: boolean
+        default: false
       callback_url:
         description: Optional Foreman callback base URL
         required: false
@@ -42,6 +47,11 @@ on:
         default: ""
       emit-callbacks:
         description: Whether this reusable invocation should report callbacks to Foreman
+        required: false
+        type: boolean
+        default: false
+      beta_source_only:
+        description: "Beta release: skip MeshMC binary build, package source artifacts only"
         required: false
         type: boolean
         default: false
@@ -108,6 +118,7 @@ jobs:
 
   meshmc_build:
     name: MeshMC Build
+    if: ${{ !inputs.beta_source_only }}
     uses: ./.github/workflows/meshmc-release.yml
     with:
       source-ref: ${{ inputs.source-ref }}
@@ -386,6 +397,12 @@ jobs:
   create_release:
     name: Create Release Draft
     needs: [meshmc_build, neozip_build, meshmc_prepare_source, package_sources]
+    if: |
+      always() &&
+      (needs.meshmc_build.result == 'success' || needs.meshmc_build.result == 'skipped') &&
+      needs.neozip_build.result == 'success' &&
+      needs.meshmc_prepare_source.result == 'success' &&
+      needs.package_sources.result == 'success'
 
     runs-on: ubuntu-latest
     permissions:
@@ -465,6 +482,7 @@ jobs:
 
       # ── MeshMC binary packaging ──────────────────────────────────
       - name: Package MeshMC binary artifacts
+        if: ${{ !inputs.beta_source_only }}
         run: |
           # shellcheck disable=SC2086,SC2035
           mv MeshMC-Linux-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-Portable-${{ env.VERSION }}.tar.gz
@@ -513,8 +531,9 @@ jobs:
             cd ..
           done
 
-      # ── Release draft ────────────────────────────────────────────
+      # ── Release draft (full: stable / lts) ──────────────────────
       - name: Create release draft
+        if: ${{ !inputs.beta_source_only }}
         uses: softprops/action-gh-release@v3
         continue-on-error: true
         with:
@@ -571,6 +590,45 @@ jobs:
             source-systeminfo/*
             source-xz-embedded/*
 
+      # ── Release draft (beta: source artifacts only) ───────────────
+      - name: Create beta release draft
+        if: ${{ inputs.beta_source_only }}
+        uses: softprops/action-gh-release@v3
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref }}
+          name: Beta ${{ env.VERSION }}
+          draft: false
+          prerelease: true
+          fail_on_unmatched_files: true
+          files: |
+            components.json
+            neozip-*/neozip-*.zip
+            meshmc-source-archives/*
+            source-neozip/*
+            source-cgit/*
+            source-cmark/*
+            source-corebinutils/*
+            source-forgewrapper/*
+            source-genqrcode/*
+            source-images4docker/*
+            source-json4cpp/*
+            source-libnbtplusplus/*
+            source-mnv/*
+            source-tomlplusplus/*
+            source-LocalPeer/*
+            source-classparser/*
+            source-ganalytics/*
+            source-iconfix/*
+            source-javacheck/*
+            source-javalauncher/*
+            source-katabasis/*
+            source-optional-bare/*
+            source-rainbow/*
+            source-systeminfo/*
+            source-xz-embedded/*
+
       # ── Stage deployment bundle ──────────────────────────────────
       - name: Stage deployment bundle
         shell: bash
@@ -580,7 +638,9 @@ jobs:
 
           # MeshMC — packaged binaries (files only, not artifact dirs) + source archives
           mkdir -p deploy-bundle/meshmc
-          find . -maxdepth 1 -type f -name 'MeshMC-*' -exec cp {} deploy-bundle/meshmc/ \;
+          if [[ "${{ inputs.beta_source_only }}" != 'true' ]]; then
+            find . -maxdepth 1 -type f -name 'MeshMC-*' -exec cp {} deploy-bundle/meshmc/ \;
+          fi
           cp -a meshmc-source-archives/. deploy-bundle/meshmc/
 
           # NeoZip — binary artifacts + source archives

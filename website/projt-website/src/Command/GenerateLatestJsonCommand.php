@@ -39,7 +39,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:generate-latest-json',
-    description: 'Scan the FTP directory for the latest snapshot and generate latest.json.',
+    description: 'Scan the FTP directory and generate a single latest.json containing all release channels (stable, beta, lts).',
 )]
 class GenerateLatestJsonCommand extends Command
 {
@@ -55,57 +55,54 @@ class GenerateLatestJsonCommand extends Command
 
         $io->title('Generating latest.json');
 
-        $tag = $this->snapshotService->findLatestSnapshotTag();
-        if ($tag === null) {
-            $io->error('No components-v*.json snapshot files found on the FTP.');
-            return Command::FAILURE;
-        }
-
-        $io->info('Latest snapshot tag: ' . $tag);
-
         $data = $this->snapshotService->buildLatestJson();
-        if ($data === null) {
-            $io->error('Failed to build latest.json data.');
+
+        if (empty(array_intersect_key($data, array_flip(SnapshotService::CHANNELS)))) {
+            $io->error('No snapshot tags found for any channel. latest.json not written.');
             return Command::FAILURE;
         }
 
         $path = $this->snapshotService->writeLatestJson($data);
-
         $io->success('latest.json written to: ' . $path);
 
-        // Print summary
-        $io->section('Snapshot Summary');
-        $io->table(
-            ['Field', 'Value'],
-            [
-                ['Release Tag', $data['release_tag']],
-                ['Release Date', $data['release_date']],
-                ['Components JSON', $data['components_json_url']],
-            ]
-        );
-
-        if (!empty($data['components'])) {
-            $io->section('Component Versions');
-            $rows = [];
-            foreach ($data['components'] as $name => $info) {
-                $rows[] = [$name, $info['version'] ?? 'N/A'];
+        foreach (SnapshotService::CHANNELS as $channel) {
+            if (!isset($data[$channel])) {
+                $io->warning(sprintf('Channel "%s": no snapshot tag found — omitted.', $channel));
+                continue;
             }
-            $io->table(['Component', 'Version'], $rows);
-        }
 
-        if (!empty($data['downloads'])) {
-            $io->section('Downloads');
-            $downloadCount = 0;
-            foreach ($data['downloads'] as $name => $info) {
-                $fileCount = count($info['files'] ?? []);
-                $downloadCount += $fileCount;
-                $io->writeln(sprintf('  <info>%s</info>: %d file(s)', $name, $fileCount));
+            $ch = $data[$channel];
+            $io->section(strtoupper($channel));
+            $io->table(
+                ['Field', 'Value'],
+                [
+                    ['Release Tag', $ch['release_tag']],
+                    ['Release Date', $ch['release_date']],
+                    ['Components JSON', $ch['components_json_url']],
+                ]
+            );
+
+            if (!empty($ch['components'])) {
+                $rows = [];
+                foreach ($ch['components'] as $name => $info) {
+                    $rows[] = [$name, $info['version'] ?? 'N/A'];
+                }
+                $io->table(['Component', 'Version'], $rows);
             }
-            $io->newLine();
-            $io->writeln(sprintf('Total: <info>%d</info> component(s) with releases, <info>%d</info> file(s)',
-                count($data['downloads']),
-                $downloadCount
-            ));
+
+            if (!empty($ch['downloads'])) {
+                $downloadCount = 0;
+                foreach ($ch['downloads'] as $name => $info) {
+                    $fileCount = count($info['files'] ?? []);
+                    $downloadCount += $fileCount;
+                    $io->writeln(sprintf('  <info>%s</info>: %d file(s)', $name, $fileCount));
+                }
+                $io->newLine();
+                $io->writeln(sprintf('Total: <info>%d</info> component(s), <info>%d</info> file(s)',
+                    count($ch['downloads']),
+                    $downloadCount,
+                ));
+            }
         }
 
         return Command::SUCCESS;

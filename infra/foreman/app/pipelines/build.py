@@ -34,7 +34,7 @@ FAST_BUILD_MIN_BUILDS = 3
 FAST_BUILD_LOOKBACK_DAYS = 90
 SPOT_BUILD_TYPES = ("medium", "large")
 TARGET_REPO_BY_BRANCH = {
-    "beta": "beta",
+    "lts": "lts",
 }
 
 
@@ -181,6 +181,11 @@ def resolve_pipeline_target_repo(pipeline: Pipeline) -> str:
 
     ref = params.get("ref")
     if isinstance(ref, str) and ref.startswith("refs/tags/"):
+        tag_name = ref.removeprefix("refs/tags/")
+        if tag_name.startswith("vBETA"):
+            return "beta"
+        if tag_name.startswith("vLTS"):
+            return "lts"
         return "stable"
 
     for branch_key in ("gitlab_target_branch", "pr_target_branch"):

@@ -183,9 +183,12 @@ async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipelin
         ({"gitlab_merge_request_iid": "17", "gitlab_target_branch": "beta"}, "test"),
         ({"ref": "refs/heads/master"}, "test"),
         ({"ref": "refs/heads/main"}, "test"),
-        ({"ref": "refs/heads/beta"}, "beta"),
+        ({"ref": "refs/heads/lts"}, "lts"),
         ({"ref": "refs/heads/feature/demo"}, "test"),
+        ({"ref": "refs/tags/v202604191350"}, "stable"),
         ({"ref": "refs/tags/v1.2.3"}, "stable"),
+        ({"ref": "refs/tags/vBETA202604191350"}, "beta"),
+        ({"ref": "refs/tags/vLTS202604"}, "lts"),
     ],
 )
 async def test_prepare_pipeline_for_start_resolves_target_repo(

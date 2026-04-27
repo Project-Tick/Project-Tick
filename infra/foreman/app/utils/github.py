@@ -712,3 +712,56 @@ async def get_linter_warning_messages(
         if a.get("message") and "warning found in linter" in a.get("message", "")
     ]
     return list(set(messages))
+
+
+async def create_github_tag(git_repo: str, tag_name: str, sha: str) -> bool:
+    """Create a lightweight git tag ref on GitHub pointing to the given commit SHA.
+
+    Returns True on success, False if the tag already exists or on error.
+    """
+    if not git_repo or not tag_name or not sha:
+        return False
+
+    url = f"https://api.github.com/repos/{git_repo}/git/refs"
+    client = get_github_client()
+    result = await client.request_with_result(
+        "post",
+        url,
+        json={"ref": f"refs/tags/{tag_name}", "sha": sha},
+        context={"git_repo": git_repo, "tag_name": tag_name, "sha": sha},
+        raise_for_status=False,
+    )
+
+    if result.response is None:
+        logger.warning(
+            "Failed to create GitHub tag — no response",
+            tag_name=tag_name,
+            git_repo=git_repo,
+        )
+        return False
+
+    if result.response.status_code in (200, 201):
+        logger.info(
+            "Created GitHub tag",
+            tag_name=tag_name,
+            git_repo=git_repo,
+            sha=sha,
+        )
+        return True
+
+    if result.response.status_code == 422:
+        logger.warning(
+            "GitHub tag already exists, skipping creation",
+            tag_name=tag_name,
+            git_repo=git_repo,
+        )
+        return False
+
+    logger.warning(
+        "Unexpected status creating GitHub tag",
+        tag_name=tag_name,
+        git_repo=git_repo,
+        status_code=result.response.status_code,
+    )
+    return False
+

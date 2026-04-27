@@ -306,6 +306,17 @@ class CIGateService:
         is_pr = event_name in PR_EVENTS
         is_merge_queue = event_name == "merge_group"
         is_tag = ref.startswith("refs/tags/")
+        _tag_name = ref.removeprefix("refs/tags/") if is_tag else ""
+        is_beta_tag = is_tag and _tag_name.startswith("vBETA")
+        is_lts_tag = is_tag and _tag_name.startswith("vLTS")
+        if is_beta_tag:
+            tag_channel = "beta"
+        elif is_lts_tag:
+            tag_channel = "lts"
+        elif is_tag:
+            tag_channel = "stable"
+        else:
+            tag_channel = ""
         is_release_tag = any(
             ref.startswith(f"refs/tags/{prefix}-") for prefix in RELEASE_TAG_PREFIXES
         )
@@ -400,11 +411,14 @@ class CIGateService:
             "merge_blocking": workflow_enabled and event_name == "pull_request_target" and context["pr_merged"] and "status: blocking" in context["pr_labels"],
             "neozip_release": workflow_enabled and ref.startswith("refs/tags/neozip-"),
             "release_sources": workflow_enabled and is_tag,
+            # For beta tags: source artifacts only — skip meshmc binary compilation.
+            "beta_source_only": is_beta_tag,
         }
 
         if is_tag:
             jobs = {key: False for key in jobs} | {
                 "release_sources": workflow_enabled,
+                "beta_source_only": is_beta_tag,
             }
 
         return {
@@ -412,6 +426,9 @@ class CIGateService:
             "is_pr": is_pr,
             "is_merge_queue": is_merge_queue,
             "is_tag": is_tag,
+            "is_beta_tag": is_beta_tag,
+            "is_lts_tag": is_lts_tag,
+            "tag_channel": tag_channel,
             "is_release_tag": is_release_tag,
             "is_backport": is_backport,
             "is_dependabot": is_dependabot,

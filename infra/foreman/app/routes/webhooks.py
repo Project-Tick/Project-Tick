@@ -25,6 +25,7 @@ from app.services.github_actions import GitHubActionsService
 from app.utils.github import (
     add_issue_comment,
     close_github_issue,
+    create_github_tag,
     create_pr_comment,
     get_github_client,
     get_workflow_run_title,
@@ -285,7 +286,7 @@ def should_autostart_gitlab_push_build(payload: dict[str, Any]) -> bool:
     if ref.startswith("refs/tags/"):
         return True
 
-    return ref == "refs/heads/master"
+    return ref in {"refs/heads/master", "refs/heads/lts"}
 
 
 def get_gitlab_push_source_sha(payload: dict[str, Any]) -> str:
@@ -303,6 +304,8 @@ def describe_target_branch(target_branch: str) -> str:
 
     if target_repo == "stable":
         return f"target branch `{normalized_target_branch}` (stable)"
+    if target_repo == "lts":
+        return f"target branch `{normalized_target_branch}` (lts)"
     if target_repo == "beta":
         return f"target branch `{normalized_target_branch}`"
 
@@ -318,8 +321,8 @@ def extract_run_id_from_log_url(log_url: str | None) -> str | None:
 
 
 def _default_ref_for_target_repo(target_repo: str) -> str:
-    if target_repo == "beta":
-        return "refs/heads/beta"
+    if target_repo == "lts":
+        return "refs/heads/lts"
     return "refs/heads/master"
 
 
@@ -847,13 +850,64 @@ async def trigger_gitlab_push_build(
     if not should_queue:
         pipeline = await build_pipeline.start_pipeline(pipeline.id)
 
-    return {
+    response = {
         "message": "GitLab webhook received",
         "event_id": delivery_id,
         "pipeline_id": str(pipeline.id),
         "pipeline_status": pipeline.status.value,
         "target_repo": pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline),
     }
+
+    # For master pushes: auto-create a vBETA tag and dispatch a beta release pipeline.
+    # Beta tags are never created manually — Foreman owns them entirely.
+    if ref == "refs/heads/master" and source_sha:
+        beta_tag_name = "vBETA" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M")
+        beta_ref = f"refs/tags/{beta_tag_name}"
+
+        await create_github_tag(
+            f"{settings.github_org}/{settings.github_ci_repo}",
+            beta_tag_name,
+            source_sha,
+        )
+
+        beta_params: dict[str, Any] = {
+            "repo": dispatch_repo,
+            "ref": beta_ref,
+            "sha": source_sha,
+            "push": "true",
+            "event_name": "push",
+            "actor": actor_login,
+            "head_ref": "",
+            "dispatch_owner": settings.github_org,
+            "dispatch_repo": settings.github_ci_repo,
+            "dispatch_workflow_id": settings.github_ci_workflow,
+            "dispatch_ref": settings.github_ci_ref,
+            "gitlab_base_url": gitlab_base_url,
+            "gitlab_project_path": project_path,
+            "gitlab_source_sha": source_sha,
+        }
+        beta_params.update(
+            build_github_dispatch_params(
+                repo_name=dispatch_repo,
+                source_event_name="push",
+                source_ref=beta_ref,
+                source_sha=source_sha,
+                actor_login=actor_login,
+                source_repository=source_repository,
+            )
+        )
+
+        beta_pipeline = await build_pipeline.create_pipeline(
+            app_id=settings.github_ci_repo,
+            params=beta_params,
+            webhook_event_id=None,
+        )
+        beta_pipeline = await build_pipeline.prepare_pipeline_for_start(beta_pipeline.id)
+        beta_pipeline = await build_pipeline.start_pipeline(beta_pipeline.id)
+        response["beta_pipeline_id"] = str(beta_pipeline.id)
+        response["beta_tag"] = beta_tag_name
+
+    return response
 
 
 def _get_gitlab_issue_iid(payload: dict[str, Any]) -> str:
@@ -995,7 +1049,7 @@ def should_store_event(payload: dict) -> bool:
         if pr_action in ["opened", "synchronize", "reopened"]:
             return (
                 not target_ref
-                or target_ref in ("master", "beta")
+                or target_ref in ("master", "lts")
                 or target_ref.startswith("branch/")
             )
 

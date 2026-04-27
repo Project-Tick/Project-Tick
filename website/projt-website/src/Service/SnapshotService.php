@@ -32,17 +32,33 @@ namespace App\Service;
 
 /**
  * Scans the FTP directory for snapshot component files and resolves the latest
- * snapshot release, producing a latest.json with download metadata.
+ * snapshot release per channel (stable / beta / lts), producing a single
+ * latest.json that contains all channels under their respective keys.
+ *
+ * Tag formats:
+ *   stable  — vYYYYMMDDHHmm   (e.g. v202604191350)
+ *   beta    — vBETAYYYYMMDDHHmm (e.g. vBETA202604191350)
+ *   lts     — vLTSYYYYMM       (e.g. vLTS202604)
  */
 class SnapshotService
 {
     private const FTP_ROOT = '/var/www/ftp/Project-Tick';
     private const DOWNLOAD_ROOT_URL = 'https://ftp.projecttick.org/Project-Tick';
 
+    public const CHANNELS = ['stable', 'beta', 'lts'];
+
+    /** Regex patterns (anchored) for each channel's tag format. */
+    private const CHANNEL_TAG_PATTERNS = [
+        'stable' => '/^v\d{12}$/',
+        'beta'   => '/^vBETA\d{12}$/',
+        'lts'    => '/^vLTS\d{6}$/',
+    ];
+
     /**
-     * Find all components-v*.json files and return the latest release tag.
+     * Find all components-v*.json files and return the latest release tag for
+     * the given channel (stable, beta, or lts).
      */
-    public function findLatestSnapshotTag(): ?string
+    public function findLatestSnapshotTag(string $channel = 'stable'): ?string
     {
         $pattern = self::FTP_ROOT . '/components-v*.json';
         $files = glob($pattern);
@@ -51,12 +67,17 @@ class SnapshotService
             return null;
         }
 
+        $channelPattern = self::CHANNEL_TAG_PATTERNS[$channel] ?? self::CHANNEL_TAG_PATTERNS['stable'];
+
         $tags = [];
         foreach ($files as $file) {
             $basename = basename($file);
-            // Extract tag from "components-v202604191350.json"
-            if (preg_match('/^components-(v\d+)\.json$/', $basename, $m)) {
-                $tags[] = $m[1];
+            // Extract tag from "components-<tag>.json"
+            if (preg_match('/^components-(v[^.]+)\.json$/', $basename, $m)) {
+                $tag = $m[1];
+                if (preg_match($channelPattern, $tag)) {
+                    $tags[] = $tag;
+                }
             }
         }
 
@@ -64,7 +85,8 @@ class SnapshotService
             return null;
         }
 
-        // Sort descending by the numeric portion
+        // Sort descending by the string value (lexicographic is correct for
+        // zero-padded numeric suffixes with same-length prefix per channel)
         usort($tags, function (string $a, string $b): int {
             return strcmp($b, $a);
         });
@@ -129,13 +151,13 @@ class SnapshotService
     }
 
     /**
-     * Build the full latest.json structure for the latest snapshot.
+     * Build the per-channel data structure for the given channel.
      *
      * @return array|null
      */
-    public function buildLatestJson(): ?array
+    public function buildChannelData(string $channel): ?array
     {
-        $tag = $this->findLatestSnapshotTag();
+        $tag = $this->findLatestSnapshotTag($channel);
         if ($tag === null) {
             return null;
         }
@@ -147,7 +169,6 @@ class SnapshotService
 
         $dirs = $this->scanComponentDirectories($tag);
 
-        // Build per-component download info
         $componentDownloads = [];
         foreach ($dirs as $dirName => $info) {
             if (!$info['has_release']) {
@@ -158,12 +179,10 @@ class SnapshotService
                 'download_url' => $info['download_url'],
             ];
 
-            // If this component has version info in components.json, include it
             if (isset($components['components'][$dirName]['version'])) {
                 $entry['version'] = $components['components'][$dirName]['version'];
             }
 
-            // List actual files in the release directory
             $releaseDir = self::FTP_ROOT . '/' . $dirName . '/releases/download/' . $tag;
             $files = $this->listReleaseFiles($releaseDir, $dirName, $tag);
             if (!empty($files)) {
@@ -174,13 +193,34 @@ class SnapshotService
         }
 
         return [
-            'schema_version' => 1,
             'release_tag' => $tag,
             'release_date' => $components['release_date'] ?? date('Y-m-d'),
             'components_json_url' => self::DOWNLOAD_ROOT_URL . '/components-' . $tag . '.json',
             'components' => $components['components'] ?? [],
             'downloads' => $componentDownloads,
         ];
+    }
+
+    /**
+     * Build the full latest.json structure containing all channels.
+     * Channels with no release tag are omitted.
+     *
+     * @return array
+     */
+    public function buildLatestJson(): array
+    {
+        $result = [
+            'schema_version' => 1,
+        ];
+
+        foreach (self::CHANNELS as $channel) {
+            $data = $this->buildChannelData($channel);
+            if ($data !== null) {
+                $result[$channel] = $data;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -228,6 +268,8 @@ class SnapshotService
 
     /**
      * Write latest.json to the FTP root directory.
+     *
+     * Returns the path of the written file.
      */
     public function writeLatestJson(array $data): string
     {
