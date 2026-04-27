@@ -204,7 +204,7 @@ add_custom_target(tcversion echo "\\#\\#teamcity[setParameter name=\\'env.MESHMC
 
 ######## Secondly, please set version numbers ########
 set(MeshMC_VERSION_MAJOR    7)
-set(MeshMC_VERSION_MINOR    15)
+set(MeshMC_VERSION_MINOR    16)
 set(MeshMC_VERSION_HOTFIX   0)
 
 set(MeshMC_RELEASE_VERSION_NAME "${MeshMC_VERSION_MAJOR}.${MeshMC_VERSION_MINOR}.${MeshMC_VERSION_HOTFIX}")

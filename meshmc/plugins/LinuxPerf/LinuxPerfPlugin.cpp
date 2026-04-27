@@ -5,9 +5,10 @@
 #include "plugin/sdk/mmco_sdk.h"
 #include "ui/pages/instance/InstanceSettingsPage.h"
 #include "vendor/gamemode_client.h"
+#include <QFileInfo>
 #include <QStandardPaths>
 
-MMCO_DEFINE_MODULE("Linux Performance Tools", "1.1.0", "Project Tick",
+MMCO_DEFINE_MODULE("Linux Performance Tools", "1.2.0", "Project Tick",
 				   "MangoHud FPS overlay and GameMode performance integration "
 				   "for Minecraft on Linux",
 				   "GPL-3.0-or-later");
@@ -30,8 +31,31 @@ static bool is_flatpak()
 	return QFile::exists(QStringLiteral("/.flatpak-info"));
 }
 
+static QString flatpak_mangohud_executable()
+{
+	const QStringList candidates = {
+		QStringLiteral("/usr/lib/extensions/vulkan/MangoHud/bin/mangohud"),
+		QStringLiteral(
+			"/usr/lib/extensions/vulkan/"
+			"org.freedesktop.Platform.VulkanLayer.MangoHud/bin/mangohud")};
+
+	for (const auto& candidate : candidates) {
+		QFileInfo info(candidate);
+		if (info.exists() && info.isExecutable())
+			return candidate;
+	}
+
+	return {};
+}
+
 static QString mangohud_executable()
 {
+	if (is_flatpak()) {
+		auto flatpakExecutable = flatpak_mangohud_executable();
+		if (!flatpakExecutable.isEmpty())
+			return flatpakExecutable;
+	}
+
 	return QStandardPaths::findExecutable(QStringLiteral("mangohud"));
 }
 
@@ -54,10 +78,10 @@ static QString mangohud_missing_tooltip()
 {
 	if (is_flatpak()) {
 		return QObject::tr(
-			"MangoHud is not available inside this Flatpak sandbox.\n"
-			"Install the matching "
-			"org.freedesktop.Platform.VulkanLayer.MangoHud "
-			"extension for the runtime and restart MeshMC.");
+			"MangoHud is not mounted inside this Flatpak sandbox.\n"
+			"Install the org.freedesktop.Platform.VulkanLayer.MangoHud branch\n"
+			"that matches the base runtime and restart MeshMC. A mismatched\n"
+			"branch will not appear under /usr/lib/extensions/vulkan.");
 	}
 
 	return QObject::tr(
@@ -467,10 +491,12 @@ static int on_instance_pre_launch(void* mh, uint32_t /*hook_id*/, void* payload,
 		isGamemodeEnabledForInstance(instance) && gamemoderun_available();
 
 	if (mangoEnabled) {
+		QByteArray mangohudWrapper = mangohud_executable().toUtf8();
+
 		/* Use the wrapper in both native and Flatpak environments. In the
-		 * Flatpak build, meshmc-wrapper extends PATH so the MangoHud runtime
-		 * extension's wrapper becomes visible when installed. */
-		g_ctx->launch_prepend_wrapper(mh, "mangohud");
+		 * Flatpak build, prefer the mounted extension path directly instead of
+		 * relying on PATH propagation. */
+		g_ctx->launch_prepend_wrapper(mh, mangohudWrapper.constData());
 
 		/* MANGOHUD=1  — enables the Vulkan implicit layer (all MC ≥ 1.17) */
 		g_ctx->launch_set_env(mh, "MANGOHUD", "1");
@@ -490,23 +516,26 @@ static int on_instance_pre_launch(void* mh, uint32_t /*hook_id*/, void* payload,
 		g_ctx->launch_set_env(mh, "MANGOHUD_CONFIGFILE", mangoCfg.constData());
 
 		char buf[512];
-		snprintf(
-			buf, sizeof(buf),
-			"LinuxPerf: instance '%s': mangohud wrapper + env vars applied%s",
-			iname, is_flatpak() ? " (Flatpak)" : "");
+		snprintf(buf, sizeof(buf),
+				 "LinuxPerf: instance '%s': mangohud wrapper '%s' + env vars "
+				 "applied%s",
+				 iname, mangohudWrapper.constData(),
+				 is_flatpak() ? " (Flatpak)" : "");
 		MMCO_LOG(g_ctx, buf);
 	}
 
 	if (gamemodeEnabled) {
+		QByteArray gamemodeWrapper = gamemoderun_executable().toUtf8();
+
 		/* Prepend gamemoderun so it wraps the entire command (including
 		 * mangohud if both are enabled), ensuring GameMode activates for the
 		 * child PID. */
-		g_ctx->launch_prepend_wrapper(mh, "gamemoderun");
+		g_ctx->launch_prepend_wrapper(mh, gamemodeWrapper.constData());
 
 		char buf[512];
 		snprintf(buf, sizeof(buf),
-				 "LinuxPerf: instance '%s': gamemoderun wrapper applied",
-				 iname);
+				 "LinuxPerf: instance '%s': gamemoderun wrapper '%s' applied",
+				 iname, gamemodeWrapper.constData());
 		MMCO_LOG(g_ctx, buf);
 	}
 
