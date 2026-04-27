@@ -19,7 +19,7 @@ inputs:
     default: ""
   source-repository:
     description: Explicit external git repository URL to checkout.
-    default: ""
+    default: "https://git.projecttick.org/project-tick/project-tick.git"
   source-ref:
     description: Explicit external ref to checkout when source-repository is used.
     default: ""
@@ -41,6 +41,7 @@ runs:
         INPUT_SOURCE_REF: ${{ inputs.source-ref }}
         INPUT_REPOSITORY: ${{ inputs.repository }}
         INPUT_REF: ${{ inputs.ref }}
+        DEFAULT_SOURCE_REF: ${{ github.event.inputs.source-ref || github.ref || 'refs/heads/master' }}
       run: |
         set -euo pipefail
 
@@ -48,14 +49,24 @@ runs:
         source_repository=""
         source_ref=""
 
-        if [[ -n "$INPUT_SOURCE_REPOSITORY" ]]; then
+        if [[ -n "$INPUT_REPOSITORY" ]]; then
+          use_external=false
+        elif [[ -n "$INPUT_SOURCE_REPOSITORY" ]]; then
           use_external=true
           source_repository="$INPUT_SOURCE_REPOSITORY"
-          source_ref="${INPUT_SOURCE_REF:-$INPUT_REF}"
+          if [[ -n "$INPUT_SOURCE_REF" ]]; then
+            source_ref="$INPUT_SOURCE_REF"
+          elif [[ -n "$EVENT_SOURCE_REF" ]]; then
+            source_ref="$EVENT_SOURCE_REF"
+          elif [[ -n "$INPUT_REF" ]]; then
+            source_ref="$INPUT_REF"
+          else
+            source_ref="$DEFAULT_SOURCE_REF"
+          fi
         elif [[ "$EVENT_INPUTS" != "null" ]] && [[ -n "$EVENT_SOURCE_REPOSITORY" ]] && [[ -z "$INPUT_REPOSITORY" ]] && [[ -z "$INPUT_REF" ]]; then
           use_external=true
           source_repository="$EVENT_SOURCE_REPOSITORY"
-          source_ref="$EVENT_SOURCE_REF"
+          source_ref="${EVENT_SOURCE_REF:-$DEFAULT_SOURCE_REF}"
         fi
 
         {
