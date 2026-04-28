@@ -352,7 +352,7 @@ void PluginManager::ensurePluginDataDir(PluginMetadata& meta)
 #ifdef Q_OS_WIN
 	baseDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 #else
-	baseDir = QDir::homePath() + "/.local/share/meshmc";
+	baseDir = QDir::homePath() + "/.local/share/MeshMC";
 #endif
 	meta.dataDir = QDir(baseDir).filePath("plugin-data/" + meta.moduleId());
 	QDir().mkpath(meta.dataDir);

@@ -52,6 +52,7 @@ void GetSkinStep::perform()
 void GetSkinStep::rehydrate()
 {
 	// NOOP, for now.
+	// TODO: Make the most of this space.
 }
 
 void GetSkinStep::onRequestDone(QNetworkReply::NetworkError error,
