@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.1
+        uses: lukka/get-cmake@v4.3.2
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -31,7 +31,7 @@ jobs:
       - name: Install Valgrind
         run: sudo apt-get update ; sudo apt-get install -y valgrind
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.1
+        uses: lukka/get-cmake@v4.3.2
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -49,7 +49,7 @@ jobs:
         run: apt-get update ; apt-get install -y git clang-tools iwyu unzip
       - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.1
+        uses: lukka/get-cmake@v4.3.2
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.1
+        uses: lukka/get-cmake@v4.3.2
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build
@@ -81,7 +81,7 @@ jobs:
     steps:
       - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.1
+        uses: lukka/get-cmake@v4.3.2
       - name: Run CMake
         run: cmake -S json4cpp -B build -DJSON_CI=On
       - name: Build

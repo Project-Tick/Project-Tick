@@ -75,7 +75,7 @@ jobs:
           rm -rf /hostedtoolcache/*
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           submodules: true
 
