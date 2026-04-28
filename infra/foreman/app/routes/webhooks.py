@@ -25,7 +25,7 @@ from app.services.github_actions import GitHubActionsService
 from app.utils.github import (
     add_issue_comment,
     close_github_issue,
-    create_github_tag,
+    create_gitlab_tag,
     create_pr_comment,
     get_github_client,
     get_workflow_run_title,
@@ -864,17 +864,17 @@ async def trigger_gitlab_push_build(
         beta_tag_name = "vBETA" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M")
         beta_ref = f"refs/tags/{beta_tag_name}"
 
-        tag_created = await create_github_tag(
-            f"{settings.github_org}/{settings.github_ci_repo}",
+        tag_created = await create_gitlab_tag(
+            f"project-tick/project-tick",
             beta_tag_name,
             source_sha,
         )
         if not tag_created:
             logger.error(
-                "Failed to create beta tag on GitHub — aborting beta pipeline",
+                "Failed to create beta tag on GitLab — aborting beta pipeline",
                 beta_tag_name=beta_tag_name,
                 source_sha=source_sha,
-                repo=f"{settings.github_org}/{settings.github_ci_repo}",
+                repo=f"project-tick/project-tick",
             )
             response["beta_error"] = f"Failed to create GitHub tag {beta_tag_name}"
         else:
