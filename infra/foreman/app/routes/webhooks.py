@@ -910,8 +910,6 @@ async def trigger_gitlab_push_build(
                 params=beta_params,
                 webhook_event_id=None,
             )
-            beta_pipeline = await build_pipeline.prepare_pipeline_for_start(beta_pipeline.id)
-            beta_pipeline = await build_pipeline.start_pipeline(beta_pipeline.id)
             response["beta_pipeline_id"] = str(beta_pipeline.id)
             response["beta_tag"] = beta_tag_name
 
