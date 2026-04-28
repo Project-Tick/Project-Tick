@@ -17,7 +17,7 @@ jobs:
     if: github.repository_owner == 'Project-Tick' && github.event.pull_request.merged == true && (github.event_name != 'labeled' || startsWith('backport', github.event.label.name))
     runs-on: ubuntu-latest
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 

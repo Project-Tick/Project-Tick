@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           submodules: "true"
 

@@ -18,7 +18,7 @@ jobs:
         egress-policy: audit
 
     - name: Checkout
-      uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      uses: Project-Tick-Infrastructure/checkout@v1
 
     - name: Build Fuzzers
       id: build

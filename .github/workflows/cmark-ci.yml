@@ -8,7 +8,7 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Install clang-tidy
         run: sudo apt-get install -y clang-tidy
       - name: lint with clang-tidy
@@ -76,7 +76,7 @@ jobs:
       CXXFLAGS: '${{ matrix.san_cflags }} ${{ matrix.asan_cflags }}'
 
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Build and test
         working-directory: cmark
         run: |
@@ -99,7 +99,7 @@ jobs:
           - build_type: 'static'
             cmake_shared: 'NO'
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Build and test
         working-directory: cmark

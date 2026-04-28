@@ -80,7 +80,7 @@ jobs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 
@@ -200,7 +200,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.0.2
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           show-progress: 'false'
@@ -249,7 +249,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
@@ -348,7 +348,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
@@ -409,13 +409,9 @@ jobs:
       contents: write
     steps:
       - name: Checkout (for component version extraction)
-        uses: actions/checkout@v6.0.2
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
-          sparse-checkout: |
-            meshmc/CMakeLists.txt
-            neozip/zlib.h.in
-          sparse-checkout-cone-mode: false
 
       - name: Set version
         shell: bash
@@ -599,7 +595,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref }}
           name: Beta ${{ env.VERSION }}
-          draft: false
+          draft: true
           prerelease: true
           fail_on_unmatched_files: true
           files: |
@@ -770,7 +766,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 

@@ -44,7 +44,7 @@ jobs:
           github-token: ${{ github.token }}
 
       - name: Checkout repository
-        uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+        uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Determine metadata for image
         id: image-metadata
