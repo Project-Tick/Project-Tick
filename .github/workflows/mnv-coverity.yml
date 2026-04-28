@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Checkout repository
         if: env.TOKEN
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Download Coverity
         if: env.TOKEN
