@@ -1,4 +1,7 @@
 /*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: Project Tick
+ *
  * mangohud_detect.h — Compile-time / runtime detection helpers for MangoHud.
  *
  * Vendored / authored for MeshMC LinuxPerf plugin.

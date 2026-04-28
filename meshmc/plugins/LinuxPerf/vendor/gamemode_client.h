@@ -1,4 +1,7 @@
 /*
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: Feral Interactive
+ *
  * Copyright (c) 2017-2025, Feral Interactive and the GameMode contributors
  * All rights reserved.
  *

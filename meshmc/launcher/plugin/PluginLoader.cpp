@@ -55,13 +55,17 @@ QStringList PluginLoader::defaultSearchPaths()
 	if (!localData.isEmpty())
 		paths << QDir(localData).filePath("mmcmodules");
 #else
+	// TODO: Edit this so that the system and user levels differentiate between them in the about dialog.
 	// ~/.local/lib/mmcmodules
 	QString home = QDir::homePath();
 	paths << home + "/.local/lib/mmcmodules";
+	paths << home + "/.local/share/MeshMC/mmcmodules";
 
 	// System-wide
 	paths << "/usr/local/lib/mmcmodules";
 	paths << "/usr/lib/mmcmodules";
+	paths << "/usr/local/bin/mmcmodules";
+	paths << "/usr/bin/mmcmodules";
 #endif
 
 	return paths;

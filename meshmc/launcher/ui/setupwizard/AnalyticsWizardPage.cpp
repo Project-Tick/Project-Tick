@@ -47,7 +47,7 @@ AnalyticsWizardPage::AnalyticsWizardPage(QWidget* parent)
 
 	checkBox = new QCheckBox(this);
 	checkBox->setObjectName(QStringLiteral("checkBox"));
-	checkBox->setChecked(true);
+	checkBox->setChecked(false);
 	verticalLayout_3->addWidget(checkBox);
 	retranslate();
 }
