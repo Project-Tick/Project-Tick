@@ -64,12 +64,15 @@ class CIGateService:
     ) -> dict[str, Any]:
         try:
             context = self._build_context(request.model_dump())
-            if context["event_name"] == "push" and context["source_ref"].startswith("refs/tags/"):
+            if context["event_name"] == "push" and context["source_ref"].startswith(
+                "refs/tags/"
+            ):
                 changed_files, commit_message = [], ""
             else:
-                changed_files, commit_message = await self._collect_changed_files_and_commit_message(
-                    context
-                )
+                (
+                    changed_files,
+                    commit_message,
+                ) = await self._collect_changed_files_and_commit_message(context)
             return self._build_plan(context, changed_files, commit_message)
         except Exception as e:
             logger.exception("gate_plan_resolution_failed")
@@ -79,12 +82,15 @@ class CIGateService:
     async def build_plan_from_pipeline(self, pipeline: Pipeline) -> dict[str, Any]:
         context = self._build_context_from_pipeline(pipeline)
         # For tag pushes, skip git analysis — tags just reference existing commits
-        if context["event_name"] == "push" and context["source_ref"].startswith("refs/tags/"):
+        if context["event_name"] == "push" and context["source_ref"].startswith(
+            "refs/tags/"
+        ):
             changed_files, commit_message = [], ""
         else:
-            changed_files, commit_message = await self._collect_changed_files_and_commit_message(
-                context
-            )
+            (
+                changed_files,
+                commit_message,
+            ) = await self._collect_changed_files_and_commit_message(context)
         return self._build_plan(context, changed_files, commit_message)
 
     def _build_context(self, raw: dict[str, Any]) -> dict[str, Any]:
@@ -95,7 +101,9 @@ class CIGateService:
         build_type_input = _string(raw.get("build_type"))
 
         return {
-            "workflow_name": _string(raw.get("workflow_name") or settings.github_ci_workflow),
+            "workflow_name": _string(
+                raw.get("workflow_name") or settings.github_ci_workflow
+            ),
             "repository": repository,
             "source_repository": source_repository,
             "repo_url": self._resolve_repo_url(repository, source_repository),
@@ -128,8 +136,7 @@ class CIGateService:
         source_ref = _string(dispatch_inputs.get("source-ref") or params.get("ref"))
 
         event_name = _string(
-            params.get("github_event_name")
-            or params.get("event_name")
+            params.get("github_event_name") or params.get("event_name")
         ).lower()
         if not event_name:
             if params.get("pr_number") or params.get("gitlab_merge_request_iid"):
@@ -148,7 +155,9 @@ class CIGateService:
         repo_name = _string(params.get("repo") or params.get("dispatch_repo"))
 
         return {
-            "workflow_name": _string(params.get("workflow_name") or settings.github_ci_workflow),
+            "workflow_name": _string(
+                params.get("workflow_name") or settings.github_ci_workflow
+            ),
             "repository": repo_name,
             "source_repository": source_repository,
             "repo_url": self._resolve_repo_url(repo_name, source_repository),
@@ -157,15 +166,21 @@ class CIGateService:
             "event_name": event_name,
             "actor": _string(params.get("actor")),
             "before_sha": _string(params.get("before_sha")),
-            "head_ref": _string(params.get("head_ref") or params.get("gitlab_source_branch")),
+            "head_ref": _string(
+                params.get("head_ref") or params.get("gitlab_source_branch")
+            ),
             "base_ref": _string(
                 params.get("pr_target_branch")
                 or params.get("gitlab_target_branch")
                 or params.get("merge_group_base_ref")
             ),
-            "pr_number": _string(params.get("pr_number") or params.get("gitlab_merge_request_iid")),
+            "pr_number": _string(
+                params.get("pr_number") or params.get("gitlab_merge_request_iid")
+            ),
             "pr_base_sha": _string(params.get("pr_base_sha")),
-            "pr_head_sha": _string(params.get("pr_head_sha") or params.get("gitlab_source_sha")),
+            "pr_head_sha": _string(
+                params.get("pr_head_sha") or params.get("gitlab_source_sha")
+            ),
             "pr_title": _string(params.get("pr_title")),
             "pr_draft": _truthy(params.get("pr_draft")),
             "pr_merged": _truthy(params.get("pr_merged")),
@@ -207,10 +222,14 @@ class CIGateService:
             await self._run_git(temp_dir, "remote", "add", "origin", repo_url)
 
             base_target, head_target = self._resolve_diff_targets(context)
-            local_head = await self._fetch_target(temp_dir, head_target, "head")
+            local_head = await self._fetch_target(
+                temp_dir, head_target, "head", context
+            )
 
             if base_target:
-                local_base = await self._fetch_target(temp_dir, base_target, "base")
+                local_base = await self._fetch_target(
+                    temp_dir, base_target, "base", context
+                )
                 changed_files_output = await self._run_git(
                     temp_dir,
                     "diff",
@@ -237,7 +256,9 @@ class CIGateService:
                     local_head,
                 )
 
-        changed_files = [line for line in changed_files_output.splitlines() if line.strip()]
+        changed_files = [
+            line for line in changed_files_output.splitlines() if line.strip()
+        ]
         return (changed_files, commit_message.strip())
 
     def _resolve_diff_targets(self, context: dict[str, Any]) -> tuple[str | None, str]:
@@ -253,7 +274,12 @@ class CIGateService:
         if event_name == "merge_group" and base_ref and source_ref:
             return (f"refs/heads/{base_ref}", source_ref)
 
-        if event_name == "push" and source_sha and before_sha and before_sha != "0" * 40:
+        if (
+            event_name == "push"
+            and source_sha
+            and before_sha
+            and before_sha != "0" * 40
+        ):
             return (before_sha, source_sha)
 
         if base_ref and source_ref and source_ref != f"refs/heads/{base_ref}":
@@ -265,30 +291,43 @@ class CIGateService:
 
         return (None, head_target)
 
-    async def _fetch_target(self, temp_dir: Path, target: str, name: str) -> str:
+    async def _fetch_target(
+        self, temp_dir: Path, target: str, name: str, context: dict[str, Any] = None
+    ) -> str:
         local_ref = f"refs/foreman/{name}"
-        fetch_args = [
-            "fetch",
-            "--no-tags",
-            "--depth",
-            "200",
-            "origin",
-            f"{target}:{local_ref}",
-        ]
 
+        # İlk deneme: Belirtilen hedefi (ref veya SHA) çek
         try:
-            await self._run_git(temp_dir, *fetch_args)
-        except RuntimeError as e:
-            logger.warning("primary_fetch_failed", target=target, error=str(e))
-            try:
-                await self._run_git(temp_dir, "fetch", "--no-tags", "--depth", "200", "origin", target)
-                fetched_sha = await self._run_git(temp_dir, "rev-parse", "FETCH_HEAD")
-                await self._run_git(temp_dir, "update-ref", local_ref, fetched_sha.strip())
-            except RuntimeError as e2:
-                logger.error("all_fetch_attempts_failed", target=target, error=str(e2))
-                return "HEAD" 
+            await self._run_git(
+                temp_dir,
+                "fetch",
+                "--no-tags",
+                "--depth",
+                "200",
+                "origin",
+                f"{target}:{local_ref}",
+            )
+            return local_ref
+        except RuntimeError:
+            logger.warning("fetch_failed_trying_fallback", target=target)
 
-        return local_ref
+        # İkinci deneme: Eğer target bir ref ise ve başarısız olduysa, SHA ile dene
+        sha = context.get("source_sha") if context else None
+        if sha and target != sha:
+            try:
+                await self._run_git(
+                    temp_dir, "fetch", "--no-tags", "--depth", "200", "origin", sha
+                )
+                fetched_sha = await self._run_git(temp_dir, "rev-parse", "FETCH_HEAD")
+                await self._run_git(
+                    temp_dir, "update-ref", local_ref, fetched_sha.strip()
+                )
+                return local_ref
+            except RuntimeError:
+                logger.error("sha_fetch_failed", sha=sha)
+
+        # Son çare: Hiçbir şey çekilemediyse hata fırlat ki boş plan üretilmesin
+        raise RuntimeError(f"Could not fetch target {target} or fallback SHA")
 
     async def _run_git(self, temp_dir: Path, *args: str) -> str:
         process = await asyncio.create_subprocess_exec(
@@ -337,7 +376,9 @@ class CIGateService:
         is_release_tag = any(
             ref.startswith(f"refs/tags/{prefix}-") for prefix in RELEASE_TAG_PREFIXES
         )
-        is_backport = head_ref.startswith("backport-") or head_ref.startswith("backport/")
+        is_backport = head_ref.startswith("backport-") or head_ref.startswith(
+            "backport/"
+        )
         is_dependabot = actor == "dependabot[bot]"
         is_master = ref in {"refs/heads/master", "refs/heads/main"}
         is_scheduled = event_name == "schedule"
@@ -363,12 +404,17 @@ class CIGateService:
         changed_projects: list[str] = []
 
         for project in PROJECTS:
-            changed = any(path == project or path.startswith(f"{project}/") for path in changed_files)
+            changed = any(
+                path == project or path.startswith(f"{project}/")
+                for path in changed_files
+            )
             change_flags[f"{project}_changed"] = changed
             if changed:
                 changed_projects.append(project)
 
-        github_changed = any(path == ".github" or path.startswith(".github/") for path in changed_files)
+        github_changed = any(
+            path == ".github" or path.startswith(".github/") for path in changed_files
+        )
         if github_changed:
             changed_projects.append(".github")
 
@@ -401,31 +447,71 @@ class CIGateService:
         jobs = {
             "lint": workflow_enabled and is_pr,
             "dependency_review": workflow_enabled and is_pr,
-            "mnv": workflow_enabled and (change_flags["mnv_changed"] or run_level == "full"),
-            "cgit": workflow_enabled and (change_flags["cgit_changed"] or run_level == "full"),
-            "cmark": workflow_enabled and (change_flags["cmark_changed"] or run_level == "full"),
-            "corebinutils": workflow_enabled and (change_flags["corebinutils_changed"] or run_level == "full"),
-            "genqrcode": workflow_enabled and (change_flags["genqrcode_changed"] or run_level == "full"),
-            "neozip": workflow_enabled and (change_flags["neozip_changed"] or run_level == "full"),
-            "json4cpp": workflow_enabled and (change_flags["json4cpp_changed"] or run_level == "full"),
-            "libnbtplusplus": workflow_enabled and (change_flags["libnbtplusplus_changed"] or run_level == "full"),
-            "tomlplusplus": workflow_enabled and (change_flags["tomlplusplus_changed"] or run_level == "full"),
-            "meshmc": workflow_enabled and (change_flags["meshmc_changed"] or run_level == "full"),
-            "forgewrapper": workflow_enabled and (change_flags["forgewrapper_changed"] or run_level == "full"),
-            "images4docker": workflow_enabled and (change_flags["images4docker_changed"] or run_level == "full"),
-            "cmark_fuzz": workflow_enabled and run_level == "full" and (change_flags["cmark_changed"] or run_level == "full"),
-            "json4cpp_fuzz": workflow_enabled and run_level == "full" and (change_flags["json4cpp_changed"] or run_level == "full"),
-            "json4cpp_amalgam": workflow_enabled and (change_flags["json4cpp_changed"] or run_level == "full"),
-            "tomlplusplus_fuzz": workflow_enabled and run_level == "full" and (change_flags["tomlplusplus_changed"] or run_level == "full"),
-            "neozip_fuzz": workflow_enabled and run_level == "full" and (change_flags["neozip_changed"] or run_level == "full"),
-            "meshmc_codeql": workflow_enabled and run_level == "full" and (change_flags["meshmc_changed"] or run_level == "full"),
-            "mnv_codeql": workflow_enabled and run_level == "full" and (change_flags["mnv_changed"] or run_level == "full"),
-            "neozip_codeql": workflow_enabled and run_level == "full" and (change_flags["neozip_changed"] or run_level == "full"),
-            "meshmc_container": workflow_enabled and run_level == "full" and (change_flags["meshmc_changed"] or run_level == "full"),
-            "meshmc_nix": workflow_enabled and run_level == "full" and (change_flags["meshmc_changed"] or run_level == "full"),
-            "json4cpp_docs": workflow_enabled and is_master and is_push and change_flags["json4cpp_changed"],
-            "backport": workflow_enabled and event_name == "pull_request_target" and context["pr_merged"] and "backport" in context["pr_labels"],
-            "merge_blocking": workflow_enabled and event_name == "pull_request_target" and context["pr_merged"] and "status: blocking" in context["pr_labels"],
+            "mnv": workflow_enabled
+            and (change_flags["mnv_changed"] or run_level == "full"),
+            "cgit": workflow_enabled
+            and (change_flags["cgit_changed"] or run_level == "full"),
+            "cmark": workflow_enabled
+            and (change_flags["cmark_changed"] or run_level == "full"),
+            "corebinutils": workflow_enabled
+            and (change_flags["corebinutils_changed"] or run_level == "full"),
+            "genqrcode": workflow_enabled
+            and (change_flags["genqrcode_changed"] or run_level == "full"),
+            "neozip": workflow_enabled
+            and (change_flags["neozip_changed"] or run_level == "full"),
+            "json4cpp": workflow_enabled
+            and (change_flags["json4cpp_changed"] or run_level == "full"),
+            "libnbtplusplus": workflow_enabled
+            and (change_flags["libnbtplusplus_changed"] or run_level == "full"),
+            "tomlplusplus": workflow_enabled
+            and (change_flags["tomlplusplus_changed"] or run_level == "full"),
+            "meshmc": workflow_enabled
+            and (change_flags["meshmc_changed"] or run_level == "full"),
+            "forgewrapper": workflow_enabled
+            and (change_flags["forgewrapper_changed"] or run_level == "full"),
+            "images4docker": workflow_enabled
+            and (change_flags["images4docker_changed"] or run_level == "full"),
+            "cmark_fuzz": workflow_enabled
+            and run_level == "full"
+            and (change_flags["cmark_changed"] or run_level == "full"),
+            "json4cpp_fuzz": workflow_enabled
+            and run_level == "full"
+            and (change_flags["json4cpp_changed"] or run_level == "full"),
+            "json4cpp_amalgam": workflow_enabled
+            and (change_flags["json4cpp_changed"] or run_level == "full"),
+            "tomlplusplus_fuzz": workflow_enabled
+            and run_level == "full"
+            and (change_flags["tomlplusplus_changed"] or run_level == "full"),
+            "neozip_fuzz": workflow_enabled
+            and run_level == "full"
+            and (change_flags["neozip_changed"] or run_level == "full"),
+            "meshmc_codeql": workflow_enabled
+            and run_level == "full"
+            and (change_flags["meshmc_changed"] or run_level == "full"),
+            "mnv_codeql": workflow_enabled
+            and run_level == "full"
+            and (change_flags["mnv_changed"] or run_level == "full"),
+            "neozip_codeql": workflow_enabled
+            and run_level == "full"
+            and (change_flags["neozip_changed"] or run_level == "full"),
+            "meshmc_container": workflow_enabled
+            and run_level == "full"
+            and (change_flags["meshmc_changed"] or run_level == "full"),
+            "meshmc_nix": workflow_enabled
+            and run_level == "full"
+            and (change_flags["meshmc_changed"] or run_level == "full"),
+            "json4cpp_docs": workflow_enabled
+            and is_master
+            and is_push
+            and change_flags["json4cpp_changed"],
+            "backport": workflow_enabled
+            and event_name == "pull_request_target"
+            and context["pr_merged"]
+            and "backport" in context["pr_labels"],
+            "merge_blocking": workflow_enabled
+            and event_name == "pull_request_target"
+            and context["pr_merged"]
+            and "status: blocking" in context["pr_labels"],
             "neozip_release": workflow_enabled and ref.startswith("refs/tags/neozip-"),
             "release_sources": workflow_enabled and is_tag,
             # For beta tags: source artifacts only — skip meshmc binary compilation.

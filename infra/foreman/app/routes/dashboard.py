@@ -60,7 +60,12 @@ def _get_source_ref(pipeline: Pipeline) -> str:
         if source_ref:
             return source_ref
 
-    for key in ("gitlab_source_branch", "pr_target_branch", "gitlab_target_branch", "ref"):
+    for key in (
+        "gitlab_source_branch",
+        "pr_target_branch",
+        "gitlab_target_branch",
+        "ref",
+    ):
         value = _get_string(params.get(key))
         if value:
             return value
@@ -125,12 +130,18 @@ def get_pipeline_source_label(pipeline: Pipeline) -> str:
 
     if source_repository_url:
         parsed = urlparse(source_repository_url)
-        repository_label = parsed.path.removeprefix("/").removesuffix(".git") or source_repository_url
+        repository_label = (
+            parsed.path.removeprefix("/").removesuffix(".git") or source_repository_url
+        )
         return f"{repository_label}@{source_ref}" if source_ref else repository_label
 
-    gitlab_project_path = _get_string(dict(pipeline.params or {}).get("gitlab_project_path"))
+    gitlab_project_path = _get_string(
+        dict(pipeline.params or {}).get("gitlab_project_path")
+    )
     if gitlab_project_path:
-        return f"{gitlab_project_path}@{source_ref}" if source_ref else gitlab_project_path
+        return (
+            f"{gitlab_project_path}@{source_ref}" if source_ref else gitlab_project_path
+        )
 
     return "-"
 
@@ -173,7 +184,9 @@ def _humanize_workflow_label(value: str) -> str:
     )
 
 
-def get_pipeline_explicit_workflow_identity(pipeline: Pipeline) -> tuple[str, str] | None:
+def get_pipeline_explicit_workflow_identity(
+    pipeline: Pipeline,
+) -> tuple[str, str] | None:
     params = dict(pipeline.params or {})
 
     workflow_name = _get_string(params.get("workflow_name")).strip()
@@ -512,7 +525,9 @@ async def builds_table(
 async def app_status(request: Request, app_id: str):
     recent_builds = await get_app_builds(app_id, limit=25)
     grouped_builds = group_pipelines_by_target(recent_builds)
-    display_name = get_pipeline_request_label(recent_builds[0]) if recent_builds else app_id
+    display_name = (
+        get_pipeline_request_label(recent_builds[0]) if recent_builds else app_id
+    )
 
     chart_data = [
         {

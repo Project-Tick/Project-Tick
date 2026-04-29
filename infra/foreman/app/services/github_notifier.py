@@ -1,5 +1,4 @@
 import asyncio
-import warnings
 
 import structlog
 
@@ -96,6 +95,7 @@ class GitHubNotifier:
         from app.services.gitlab_notifier import GitLabNotifier
 
         await GitLabNotifier()._handle_stable_issue_lifecycle(pipeline, status)
+
     async def notify_build_status(
         self,
         pipeline: Pipeline,

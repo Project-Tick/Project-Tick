@@ -49,8 +49,8 @@ def test_builds_table_places_succeeded_pipeline_in_completed(client):
 
     assert response.status_code == 200
     assert "Completed" in response.text
-    assert 'badge badge-succeeded' in response.text
-    assert '>succeeded</a>' in response.text
+    assert "badge badge-succeeded" in response.text
+    assert ">succeeded</a>" in response.text
 
 
 def test_builds_table_shows_request_and_source_for_gitlab_pipeline(client):
@@ -109,8 +109,8 @@ def test_builds_table_places_superseded_pipeline_in_replaced_section(client):
 
     assert response.status_code == 200
     assert "Replaced / cancelling" in response.text
-    assert '>replaced</a>' in response.text
-    assert "Completed <span class=\"section-count\">1</span>" not in response.text
+    assert ">replaced</a>" in response.text
+    assert 'Completed <span class="section-count">1</span>' not in response.text
 
 
 def test_builds_table_groups_pipelines_by_workflow(client):
@@ -140,8 +140,13 @@ def test_builds_table_groups_pipelines_by_workflow(client):
         response = client.get("/api/htmx/builds")
 
     assert response.status_code == 200
-    assert "<th colspan=\"6\">CI <span class=\"section-count\">1</span></th>" in response.text
-    assert "<th colspan=\"6\">Action CI <span class=\"section-count\">1</span></th>" in response.text
+    assert (
+        '<th colspan="6">CI <span class="section-count">1</span></th>' in response.text
+    )
+    assert (
+        '<th colspan="6">Action CI <span class="section-count">1</span></th>'
+        in response.text
+    )
 
 
 def test_get_pipeline_request_label_prefers_explicit_workflow_name_over_branch():

@@ -115,7 +115,9 @@ async def test_start_pipeline(build_pipeline, mock_db):
 
 
 @pytest.mark.asyncio
-async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipeline, mock_db):
+async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(
+    build_pipeline, mock_db
+):
     pipeline_id = uuid.uuid4()
 
     pipeline = Pipeline(
@@ -166,7 +168,10 @@ async def test_start_pipeline_uses_dispatch_inputs_for_external_ci(build_pipelin
 
     inputs = dispatch_job_data["params"]["inputs"]
     assert inputs["force-all"] == "false"
-    assert inputs["source-repository"] == "https://git.projecttick.org/project-tick/project-tick.git"
+    assert (
+        inputs["source-repository"]
+        == "https://git.projecttick.org/project-tick/project-tick.git"
+    )
     assert inputs["source-ref"] == "refs/merge-requests/17/head"
     assert inputs["callback_url"].endswith(f"/api/pipelines/{pipeline_id}/callback")
     assert inputs["callback_token"] == "test-callback-token"
@@ -229,10 +234,15 @@ def test_get_github_ci_gate_plan_route(client, auth_headers):
         "jobs": {"lint": True},
     }
 
-    with patch.object(CIGateService, "build_plan_from_request", AsyncMock(return_value=expected_plan)) as mock_plan:
+    with patch.object(
+        CIGateService, "build_plan_from_request", AsyncMock(return_value=expected_plan)
+    ) as mock_plan:
         response = client.post(
             "/api/ci/github/gate-plan",
-            json={"event_name": "pull_request", "repository": "Project-Tick/Project-Tick"},
+            json={
+                "event_name": "pull_request",
+                "repository": "Project-Tick/Project-Tick",
+            },
             headers=auth_headers,
         )
 
@@ -249,14 +259,20 @@ def test_get_pipeline_ci_plan_route(client, sample_pipeline):
         "jobs": {"lint": True},
     }
     mock_get_db = create_mock_get_db(AsyncMock())
-    mock_session = mock_get_db.keywords["mock_session"] if hasattr(mock_get_db, "keywords") else None
+    mock_session = (
+        mock_get_db.keywords["mock_session"]
+        if hasattr(mock_get_db, "keywords")
+        else None
+    )
 
     actual_mock_db = AsyncMock(spec=AsyncSession)
     actual_mock_db.get = AsyncMock(return_value=sample_pipeline)
     mock_get_db = create_mock_get_db(actual_mock_db)
 
     with patch("app.routes.pipelines.get_db", mock_get_db):
-        with patch.object(BuildPipeline, "verify_callback_token", AsyncMock(return_value=None)):
+        with patch.object(
+            BuildPipeline, "verify_callback_token", AsyncMock(return_value=None)
+        ):
             with patch.object(
                 CIGateService,
                 "build_plan_from_pipeline",
@@ -330,7 +346,9 @@ async def test_register_external_pipeline_sets_running_and_resolves_target_repo(
 
     with (
         patch("app.pipelines.build.get_db", mock_get_db),
-        patch("app.pipelines.build.get_app_p90_build_time", AsyncMock(return_value=None)),
+        patch(
+            "app.pipelines.build.get_app_p90_build_time", AsyncMock(return_value=None)
+        ),
     ):
         registered_pipeline = await build_pipeline.register_external_pipeline(
             app_id="Project-Tick",
@@ -377,7 +395,9 @@ async def test_register_external_pipeline_sets_tag_build_to_stable():
 
     with (
         patch("app.pipelines.build.get_db", mock_get_db),
-        patch("app.pipelines.build.get_app_p90_build_time", AsyncMock(return_value=None)),
+        patch(
+            "app.pipelines.build.get_app_p90_build_time", AsyncMock(return_value=None)
+        ),
     ):
         registered_pipeline = await build_pipeline.register_external_pipeline(
             app_id="Project-Tick",
@@ -399,7 +419,9 @@ async def test_register_external_pipeline_sets_tag_build_to_stable():
 
 
 @pytest.mark.asyncio
-async def test_handle_log_url_callback_uses_gitlab_notifier(build_pipeline, mock_db, sample_pipeline):
+async def test_handle_log_url_callback_uses_gitlab_notifier(
+    build_pipeline, mock_db, sample_pipeline
+):
     sample_pipeline.params = {
         "gitlab_project_path": "project-tick/project-tick",
         "gitlab_source_sha": "abcdef1234567890",
@@ -419,10 +441,15 @@ async def test_handle_log_url_callback_uses_gitlab_notifier(build_pipeline, mock
     ):
         pipeline, updates = await build_pipeline.handle_log_url_callback(
             sample_pipeline.id,
-            {"log_url": "https://github.com/Project-Tick/Project-Tick/actions/runs/123"},
+            {
+                "log_url": "https://github.com/Project-Tick/Project-Tick/actions/runs/123"
+            },
         )
 
-    assert pipeline.log_url == "https://github.com/Project-Tick/Project-Tick/actions/runs/123"
+    assert (
+        pipeline.log_url
+        == "https://github.com/Project-Tick/Project-Tick/actions/runs/123"
+    )
     assert updates["log_url"] == pipeline.log_url
     gitlab_notifier.handle_build_started.assert_awaited_once_with(
         sample_pipeline,
@@ -432,7 +459,9 @@ async def test_handle_log_url_callback_uses_gitlab_notifier(build_pipeline, mock
 
 
 @pytest.mark.asyncio
-async def test_handle_status_callback_uses_gitlab_notifier(build_pipeline, mock_db, sample_pipeline):
+async def test_handle_status_callback_uses_gitlab_notifier(
+    build_pipeline, mock_db, sample_pipeline
+):
     sample_pipeline.params = {
         "gitlab_project_path": "project-tick/project-tick",
         "gitlab_source_sha": "abcdef1234567890",

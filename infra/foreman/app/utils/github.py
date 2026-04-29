@@ -721,9 +721,7 @@ async def create_gitlab_tag(git_repo: str, tag_name: str, sha: str) -> bool:
     """
     if not git_repo or not tag_name or not sha:
         return False
-    headers = {
-        "PRIVATE-TOKEN": settings.gitlab_api_token
-    }
+    headers = {"PRIVATE-TOKEN": settings.gitlab_api_token}
     encoded_repo = git_repo.replace("/", "%2F")
     url = f"https://git.projecttick.org/api/v4/projects/{encoded_repo}/repository/tags"
     client = get_github_actions_client()
@@ -768,4 +766,3 @@ async def create_gitlab_tag(git_repo: str, tag_name: str, sha: str) -> bool:
         status_code=result.response.status_code,
     )
     return False
-

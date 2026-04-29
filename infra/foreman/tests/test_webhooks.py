@@ -350,7 +350,9 @@ def test_receive_github_webhook_native_push_is_ignored_in_favor_of_gitlab(
         patch.object(settings, "github_webhook_secret", ""),
         patch.object(settings, "github_org", "Project-Tick"),
         patch.object(settings, "github_ci_repo", "Project-Tick"),
-        patch("app.routes.webhooks.create_pipeline", AsyncMock()) as mock_create_pipeline,
+        patch(
+            "app.routes.webhooks.create_pipeline", AsyncMock()
+        ) as mock_create_pipeline,
     ):
         response = client.post(
             "/api/webhooks/github",
@@ -400,7 +402,9 @@ def test_receive_github_webhook_tag_push_dispatches(client: TestClient, mock_db)
     assert mock_db.commit.called
 
 
-def test_receive_github_webhook_feature_branch_push_is_ignored(client: TestClient, mock_db):
+def test_receive_github_webhook_feature_branch_push_is_ignored(
+    client: TestClient, mock_db
+):
     """Test that non-master branch pushes do not dispatch workflows."""
     delivery_id = str(uuid.uuid4())
     payload = dict(SAMPLE_PUSH_PAYLOAD)
@@ -788,14 +792,15 @@ def test_receive_gitlab_webhook_dispatches_root_ci(
         == "refs/merge-requests/17/head"
     )
     assert create_kwargs["params"]["dispatch_inputs"]["pr-number"] == "17"
-    assert create_kwargs["params"]["dispatch_inputs"]["pr-head-sha"] == "abcdef1234567890"
-    assert create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "feature/gitlab-build"
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["pr-head-sha"] == "abcdef1234567890"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "feature/gitlab-build"
+    )
     assert create_kwargs["params"]["dispatch_inputs"]["base-ref"] == "master"
     assert create_kwargs["params"]["gitlab_source_sha"] == "abcdef1234567890"
-    assert (
-        create_kwargs["params"]["gitlab_project_path"]
-        == "project-tick/project-tick"
-    )
+    assert create_kwargs["params"]["gitlab_project_path"] == "project-tick/project-tick"
     assert create_kwargs["params"]["gitlab_base_url"] == "https://git.projecttick.org"
     assert create_kwargs["params"]["gitlab_target_branch"] == "master"
     assert create_kwargs["params"]["pr_target_branch"] == "master"
@@ -872,16 +877,22 @@ def test_receive_gitlab_merge_request_webhook_dispatches_root_ci(client: TestCli
         == "refs/merge-requests/17/head"
     )
     assert create_kwargs["params"]["dispatch_inputs"]["pr-number"] == "17"
-    assert create_kwargs["params"]["dispatch_inputs"]["pr-head-sha"] == "abcdef1234567890"
-    assert create_kwargs["params"]["dispatch_inputs"]["pr-base-sha"] == "1234567890abcdef"
-    assert create_kwargs["params"]["dispatch_inputs"]["pr-title"] == "GitLab MR build parity"
-    assert create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "feature/gitlab-build"
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["pr-head-sha"] == "abcdef1234567890"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["pr-base-sha"] == "1234567890abcdef"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["pr-title"]
+        == "GitLab MR build parity"
+    )
+    assert (
+        create_kwargs["params"]["dispatch_inputs"]["head-ref"] == "feature/gitlab-build"
+    )
     assert create_kwargs["params"]["dispatch_inputs"]["base-ref"] == "master"
     assert create_kwargs["params"]["gitlab_source_sha"] == "abcdef1234567890"
-    assert (
-        create_kwargs["params"]["gitlab_project_path"]
-        == "project-tick/project-tick"
-    )
+    assert create_kwargs["params"]["gitlab_project_path"] == "project-tick/project-tick"
     assert create_kwargs["params"]["gitlab_base_url"] == "https://git.projecttick.org"
     assert create_kwargs["params"]["gitlab_target_branch"] == "master"
     assert create_kwargs["params"]["pr_target_branch"] == "master"
@@ -953,8 +964,7 @@ def test_receive_gitlab_push_webhook_dispatches_root_ci(client: TestClient):
         == "https://git.projecttick.org/project-tick/project-tick.git"
     )
     assert (
-        create_kwargs["params"]["dispatch_inputs"]["source-ref"]
-        == "refs/heads/master"
+        create_kwargs["params"]["dispatch_inputs"]["source-ref"] == "refs/heads/master"
     )
     assert (
         create_kwargs["params"]["dispatch_inputs"]["source-sha"]
@@ -1167,7 +1177,9 @@ def test_receive_gitlab_webhook_cancels_active_pipelines(client: TestClient):
     )
 
 
-def test_receive_gitlab_webhook_cancels_active_pipelines_with_log_url_only(client: TestClient):
+def test_receive_gitlab_webhook_cancels_active_pipelines_with_log_url_only(
+    client: TestClient,
+):
     headers = {
         "X-Gitlab-Event": "Note Hook",
         "X-Gitlab-Token": "gitlab-secret",
@@ -1264,8 +1276,7 @@ def test_receive_gitlab_issue_retry_dispatches_root_ci(client: TestClient):
     assert create_kwargs["params"]["retry_from_gitlab_issue_iid"] == "23"
     assert create_kwargs["params"]["dispatch_workflow_id"] == "ci.yml"
     assert (
-        create_kwargs["params"]["dispatch_inputs"]["source-ref"]
-        == "refs/heads/master"
+        create_kwargs["params"]["dispatch_inputs"]["source-ref"] == "refs/heads/master"
     )
 
 
@@ -1879,11 +1890,16 @@ async def test_create_pipeline_pr():
         mock_pipeline_service.create_pipeline.assert_called_once()
 
         _, kwargs = mock_pipeline_service.create_pipeline.call_args
-        assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        assert (
+            kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        )
         assert kwargs["params"].get("dispatch_owner") == settings.github_org
         assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
         assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
-        assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/pull/123/head"
+        assert (
+            kwargs["params"]["dispatch_inputs"].get("source-ref")
+            == "refs/pull/123/head"
+        )
         assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
         assert (
             kwargs["params"]["dispatch_inputs"].get("source-repository")
@@ -1948,12 +1964,21 @@ async def test_create_pipeline_push():
                 assert "params" in kwargs
                 assert kwargs["params"].get("ref") == "refs/heads/master"
                 assert kwargs["params"].get("push") == "true"
-                assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+                assert (
+                    kwargs["params"].get("dispatch_workflow_id")
+                    == settings.github_ci_workflow
+                )
                 assert kwargs["params"].get("dispatch_owner") == settings.github_org
                 assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
                 assert kwargs["params"]["dispatch_inputs"].get("event-name") == "push"
-                assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/heads/master"
-                assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "abcdef123456"
+                assert (
+                    kwargs["params"]["dispatch_inputs"].get("source-ref")
+                    == "refs/heads/master"
+                )
+                assert (
+                    kwargs["params"]["dispatch_inputs"].get("source-sha")
+                    == "abcdef123456"
+                )
                 assert (
                     kwargs["params"]["dispatch_inputs"].get("source-repository")
                     == "https://github.com/test-owner/test-repo.git"
@@ -2038,11 +2063,15 @@ async def test_create_pipeline_comment():
         assert "params" in kwargs
         assert kwargs["params"].get("pr_number") == "42"
         assert kwargs["params"].get("ref") == "refs/pull/42/head"
-        assert kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        assert (
+            kwargs["params"].get("dispatch_workflow_id") == settings.github_ci_workflow
+        )
         assert kwargs["params"].get("dispatch_owner") == settings.github_org
         assert kwargs["params"].get("dispatch_repo") == settings.github_ci_repo
         assert kwargs["params"]["dispatch_inputs"].get("event-name") == "pull_request"
-        assert kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/pull/42/head"
+        assert (
+            kwargs["params"]["dispatch_inputs"].get("source-ref") == "refs/pull/42/head"
+        )
         assert kwargs["params"]["dispatch_inputs"].get("source-sha") == "fedcba654321"
         assert (
             kwargs["params"]["dispatch_inputs"].get("source-repository")

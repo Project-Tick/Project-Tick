@@ -24,7 +24,6 @@ from app.pipelines.build import (
 from app.services.github_actions import GitHubActionsService
 from app.utils.github import (
     add_issue_comment,
-    close_github_issue,
     create_gitlab_tag,
     create_pr_comment,
     get_github_client,
@@ -81,9 +80,9 @@ def filter_bot_command_text(
         stripped_line = line.lstrip()
         if stripped_line.startswith(">"):
             continue
-        if stripped_line.startswith(("`", "<code>")) and stripped_line.rstrip().endswith(
-            ("`", "</code>")
-        ):
+        if stripped_line.startswith(
+            ("`", "<code>")
+        ) and stripped_line.rstrip().endswith(("`", "</code>")):
             continue
         if any(
             f"`{command}`" in line or f"<code>{command}</code>" in line
@@ -190,7 +189,9 @@ def build_gitlab_issue_routing_params(repo_name: str) -> dict[str, str]:
         project_path = f"{namespace}/{repo_slug.lower()}"
     else:
         # Non-native repos fall back to the CI project as the GitLab notification target
-        project_path = f"{settings.github_org.lower()}/{settings.github_ci_repo.lower()}"
+        project_path = (
+            f"{settings.github_org.lower()}/{settings.github_ci_repo.lower()}"
+        )
 
     return {
         "gitlab_base_url": settings.gitlab_base_url,
@@ -270,7 +271,9 @@ def should_autostart_gitlab_merge_request_build(payload: dict[str, Any]) -> bool
     if not isinstance(changes, dict):
         return False
 
-    return any(key in changes for key in ("last_commit", "source_branch", "target_branch"))
+    return any(
+        key in changes for key in ("last_commit", "source_branch", "target_branch")
+    )
 
 
 def should_autostart_gitlab_push_build(payload: dict[str, Any]) -> bool:
@@ -470,7 +473,9 @@ def format_gitlab_pipeline_status_note(pipelines: list[Pipeline]) -> str:
     lines = ["Recent pipelines:"]
 
     for pipeline in pipelines:
-        target_repo = pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline)
+        target_repo = pipeline.flat_manager_repo or resolve_pipeline_target_repo(
+            pipeline
+        )
         line = f"- `{pipeline.status.value}` • `{target_repo}`"
         if pipeline.log_url:
             line += f" • {pipeline.log_url}"
@@ -544,7 +549,9 @@ async def create_gitlab_merge_request_note(
     note: str,
 ) -> bool:
     if not settings.gitlab_api_token:
-        logger.info("Skipping GitLab merge request note because GITLAB_API_TOKEN is not configured")
+        logger.info(
+            "Skipping GitLab merge request note because GITLAB_API_TOKEN is not configured"
+        )
         return False
 
     merge_request_iid = get_gitlab_merge_request_iid(payload)
@@ -746,7 +753,8 @@ async def trigger_gitlab_merge_request_build(
         "event_id": delivery_id,
         "pipeline_id": str(pipeline.id),
         "pipeline_status": pipeline.status.value,
-        "target_repo": pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline),
+        "target_repo": pipeline.flat_manager_repo
+        or resolve_pipeline_target_repo(pipeline),
     }
     if command:
         response["command"] = command
@@ -855,7 +863,8 @@ async def trigger_gitlab_push_build(
         "event_id": delivery_id,
         "pipeline_id": str(pipeline.id),
         "pipeline_status": pipeline.status.value,
-        "target_repo": pipeline.flat_manager_repo or resolve_pipeline_target_repo(pipeline),
+        "target_repo": pipeline.flat_manager_repo
+        or resolve_pipeline_target_repo(pipeline),
     }
 
     # For master pushes: auto-create a vBETA tag and dispatch a beta release pipeline.
@@ -865,7 +874,7 @@ async def trigger_gitlab_push_build(
         beta_ref = f"refs/tags/{beta_tag_name}"
 
         tag_created = await create_gitlab_tag(
-            f"project-tick/project-tick",
+            "project-tick/project-tick",
             beta_tag_name,
             source_sha,
         )
@@ -874,7 +883,7 @@ async def trigger_gitlab_push_build(
                 "Failed to create beta tag on GitLab — aborting beta pipeline",
                 beta_tag_name=beta_tag_name,
                 source_sha=source_sha,
-                repo=f"project-tick/project-tick",
+                repo="project-tick/project-tick",
             )
             response["beta_error"] = f"Failed to create GitHub tag {beta_tag_name}"
         else:
@@ -928,7 +937,9 @@ async def create_gitlab_issue_note(
     issue_iid: str | None = None,
 ) -> bool:
     if not settings.gitlab_api_token:
-        logger.info("Skipping GitLab issue note because GITLAB_API_TOKEN is not configured")
+        logger.info(
+            "Skipping GitLab issue note because GITLAB_API_TOKEN is not configured"
+        )
         return False
 
     project_path = get_gitlab_project_path(payload)
@@ -975,7 +986,9 @@ async def create_gitlab_issue_note(
     return False
 
 
-async def close_gitlab_issue(payload: dict[str, Any], issue_iid: str | None = None) -> bool:
+async def close_gitlab_issue(
+    payload: dict[str, Any], issue_iid: str | None = None
+) -> bool:
     if not settings.gitlab_api_token:
         return False
 
@@ -1395,9 +1408,7 @@ async def handle_gitlab_issue_retry(
 async def receive_gitlab_webhook(
     request: Request,
     x_gitlab_event: str | None = Header(None, description="GitLab event name"),
-    x_gitlab_event_uuid: str | None = Header(
-        None, description="GitLab event UUID"
-    ),
+    x_gitlab_event_uuid: str | None = Header(None, description="GitLab event UUID"),
     x_gitlab_token: str | None = Header(None, description="GitLab webhook token"),
 ):
     if settings.gitlab_webhook_secret:
@@ -1427,7 +1438,9 @@ async def receive_gitlab_webhook(
 
     if x_gitlab_event == "Merge Request Hook":
         if not should_autostart_gitlab_merge_request_build(payload):
-            return {"message": "Webhook received but ignored due to merge request filter."}
+            return {
+                "message": "Webhook received but ignored due to merge request filter."
+            }
         return await trigger_gitlab_merge_request_build(
             payload,
             x_gitlab_event_uuid or str(uuid.uuid4()),
@@ -1495,9 +1508,7 @@ async def receive_gitlab_webhook(
                 detail="Missing merge request IID in GitLab payload.",
             )
 
-        cancelled_count = await cancel_gitlab_merge_request_pipelines(
-            merge_request_iid
-        )
+        cancelled_count = await cancel_gitlab_merge_request_pipelines(merge_request_iid)
         note = (
             f"Cancelled {cancelled_count} active build(s)."
             if cancelled_count
