@@ -84,8 +84,8 @@ modules:
     buildsystem: autotools
     sources:
       - type: archive
-        url: https://xorg.freedesktop.org/archive/individual/app/xrandr-1.5.3.tar.xz
-        sha256: f8dd7566adb74147fab9964680b6bbadee87cf406a7fcff51718a5e6949b841c
+        url: https://xorg.freedesktop.org/archive/individual/app/xrandr-1.5.4.tar.xz
+        sha256: 2cafccb2aaf2491a4068676117a0d4f90ab307724b96fffc54cd1da953779400
         x-checker-data:
           type: anitya
           project-id: 14957
@@ -147,7 +147,7 @@ modules:
         branch: master
         disable-submodules: true
         disable-lfs: true
-  
+
   - name: libnbtplusplus
     buildsystem: cmake-ninja
     builddir: true
@@ -173,7 +173,7 @@ modules:
         branch: master
         disable-submodules: true
         disable-lfs: true
-  
+
   - name: optional-bare
     buildsystem: cmake-ninja
     builddir: true
@@ -338,7 +338,8 @@ modules:
         -DMeshMC_PLUGINS=ON
         -DMeshMC_STAGING_PLUGINS=ON
         -DBUILD_TESTING=OFF
-        -DCMAKE_CXX_FLAGS=-pedantic\ -fstack-protector-strong\ --param=ssp-buffer-size=4\ -O3
+        -DCMAKE_CXX_FLAGS=-pedantic\ -fstack-protector-strong\ --param=ssp-buffer-size=4\
+        -O3
       - sed -i 's|DIRECTORIES "/usr/lib"|DIRECTORIES "/app/lib" "/usr/lib"|g' _flatpak_build/launcher/cmake_install.cmake
       - sed -i 's|DIRECTORIES "/lib"|DIRECTORIES "/app/lib" "/lib"|g' _flatpak_build/launcher/cmake_install.cmake
       - cmake --build _flatpak_build -j${FLATPAK_BUILDER_N_JOBS}
