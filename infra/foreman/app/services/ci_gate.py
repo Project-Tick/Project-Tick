@@ -62,15 +62,19 @@ class CIGateService:
         self,
         request: GitHubCIGatePlanRequest,
     ) -> dict[str, Any]:
-        context = self._build_context(request.model_dump())
-        # For tag pushes, skip git analysis — tags just reference existing commits
-        if context["event_name"] == "push" and context["source_ref"].startswith("refs/tags/"):
-            changed_files, commit_message = [], ""
-        else:
-            changed_files, commit_message = await self._collect_changed_files_and_commit_message(
-                context
-            )
-        return self._build_plan(context, changed_files, commit_message)
+        try:
+            context = self._build_context(request.model_dump())
+            if context["event_name"] == "push" and context["source_ref"].startswith("refs/tags/"):
+                changed_files, commit_message = [], ""
+            else:
+                changed_files, commit_message = await self._collect_changed_files_and_commit_message(
+                    context
+                )
+            return self._build_plan(context, changed_files, commit_message)
+        except Exception as e:
+            logger.exception("gate_plan_resolution_failed")
+            # Hata durumunda güvenli bir "default" plan dön ki 502 vermesin
+            return {"error": str(e), "jobs": {}, "force_all": False}
 
     async def build_plan_from_pipeline(self, pipeline: Pipeline) -> dict[str, Any]:
         context = self._build_context_from_pipeline(pipeline)
@@ -274,10 +278,15 @@ class CIGateService:
 
         try:
             await self._run_git(temp_dir, *fetch_args)
-        except RuntimeError:
-            await self._run_git(temp_dir, "fetch", "--no-tags", "--depth", "200", "origin", target)
-            fetched_sha = await self._run_git(temp_dir, "rev-parse", "FETCH_HEAD")
-            await self._run_git(temp_dir, "update-ref", local_ref, fetched_sha.strip())
+        except RuntimeError as e:
+            logger.warning("primary_fetch_failed", target=target, error=str(e))
+            try:
+                await self._run_git(temp_dir, "fetch", "--no-tags", "--depth", "200", "origin", target)
+                fetched_sha = await self._run_git(temp_dir, "rev-parse", "FETCH_HEAD")
+                await self._run_git(temp_dir, "update-ref", local_ref, fetched_sha.strip())
+            except RuntimeError as e2:
+                logger.error("all_fetch_attempts_failed", target=target, error=str(e2))
+                return "HEAD" 
 
         return local_ref
 
