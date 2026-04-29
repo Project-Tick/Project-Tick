@@ -219,7 +219,7 @@ async def update_commit_status(
     git_repo: str,
     target_url: str | None = None,
     description: str | None = None,
-    context: str = "Project-Tick/Foreman",
+    context: str = "Project-Tick/Project-Tick",
     db: "AsyncSession | None" = None,
 ) -> bool:
     if not git_repo:
