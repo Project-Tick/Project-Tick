@@ -58,6 +58,16 @@
     <memory>2048</memory>
   </recommends>
   <releases>
+    <release version="7.17.0" date="2026-04-29">
+      <description>
+        <p><em>Changed</em></p>
+        <ul>
+          <li>Changed bug report url and source of truth url for metainfo</li>
+          <li>Changed search mmcmodules directories</li>
+          <li>Changed MeshMC Plugins home dir. Please create a backup.</li>
+        </ul>
+      </description>
+    </release>
     <release version="7.16.0" date="2026-04-27">
       <description>
         <p><em>Fixed</em></p>
