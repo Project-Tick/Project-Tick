@@ -296,7 +296,6 @@ class CIGateService:
     ) -> str:
         local_ref = f"refs/foreman/{name}"
 
-        # İlk deneme: Belirtilen hedefi (ref veya SHA) çek
         try:
             await self._run_git(
                 temp_dir,
@@ -311,7 +310,6 @@ class CIGateService:
         except RuntimeError:
             logger.warning("fetch_failed_trying_fallback", target=target)
 
-        # İkinci deneme: Eğer target bir ref ise ve başarısız olduysa, SHA ile dene
         sha = context.get("source_sha") if context else None
         if sha and target != sha:
             try:
@@ -326,7 +324,6 @@ class CIGateService:
             except RuntimeError:
                 logger.error("sha_fetch_failed", sha=sha)
 
-        # Son çare: Hiçbir şey çekilemediyse hata fırlat ki boş plan üretilmesin
         raise RuntimeError(f"Could not fetch target {target} or fallback SHA")
 
     async def _run_git(self, temp_dir: Path, *args: str) -> str:
