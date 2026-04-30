@@ -381,7 +381,6 @@ class CIGateService:
         is_scheduled = event_name == "schedule"
         workflow_enabled = not (
             (event_name == "pull_request_target" and not context["pr_merged"])
-            or (event_name == "pull_request" and context["pr_draft"])
         )
 
         if is_merge_queue or context["force_all"]:
