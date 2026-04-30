@@ -50,7 +50,6 @@
 
 #include "HoeDown.h"
 #include "MMCStrings.h"
-#include "plugin/PluginManager.h"
 
 namespace
 {
@@ -86,85 +85,6 @@ namespace
 		}
 	}
 
-	QString getPluginsHtml()
-	{
-		auto* pm = APPLICATION->pluginManager();
-		if (!pm || pm->moduleCount() == 0) {
-			return QString("<p><i>%1</i></p>")
-				.arg(QObject::tr("No plugins loaded."));
-		}
-
-		QString html;
-		html += QLatin1String(
-			"<style>"
-			"table { width: 100%; border-collapse: collapse; }"
-			"td { padding: 4px 8px; vertical-align: top; }"
-			"td.label { font-weight: bold; white-space: nowrap; width: 1%; }"
-			"hr { border: none; border-top: 1px solid #ccc; margin: 10px 0; }"
-			"</style>");
-
-		const auto& modules = pm->modules();
-		for (int i = 0; i < modules.size(); ++i) {
-			const auto& mod = modules[i];
-			if (i > 0)
-				html += QLatin1String("<hr>");
-
-			html += QLatin1String("<table>");
-
-			html +=
-				QString(
-					"<tr><td class=\"label\">%1</td><td><b>%2</b></td></tr>")
-					.arg(QObject::tr("Name:"), mod.name.toHtmlEscaped());
-
-			if (!mod.author.isEmpty()) {
-				html +=
-					QString("<tr><td class=\"label\">%1</td><td>%2</td></tr>")
-						.arg(QObject::tr("Author:"),
-							 mod.author.toHtmlEscaped());
-			}
-
-			if (!mod.version.isEmpty()) {
-				html +=
-					QString("<tr><td class=\"label\">%1</td><td>%2</td></tr>")
-						.arg(QObject::tr("Version:"),
-							 mod.version.toHtmlEscaped());
-			}
-
-			if (!mod.license.isEmpty()) {
-				html +=
-					QString("<tr><td class=\"label\">%1</td><td>%2</td></tr>")
-						.arg(QObject::tr("License:"),
-							 mod.license.toHtmlEscaped());
-			}
-
-			if (!mod.description.isEmpty()) {
-				html +=
-					QString("<tr><td class=\"label\">%1</td><td>%2</td></tr>")
-						.arg(QObject::tr("Description:"),
-							 mod.description.toHtmlEscaped());
-			}
-
-			if (!mod.codeLink.isEmpty()) {
-				if (mod.codeLink.startsWith(QLatin1String("http://")) ||
-					mod.codeLink.startsWith(QLatin1String("https://"))) {
-					html += QString("<tr><td class=\"label\">%1</td><td><a "
-									"href=\"%2\">%2</a></td></tr>")
-								.arg(QObject::tr("Source Code:"),
-									 mod.codeLink.toHtmlEscaped());
-				} else {
-					html +=
-						QString(
-							"<tr><td class=\"label\">%1</td><td>%2</td></tr>")
-							.arg(QObject::tr("Source Code:"),
-								 mod.codeLink.toHtmlEscaped());
-				}
-			}
-
-			html += QLatin1String("</table>");
-		}
-		return html;
-	}
-
 } // namespace
 
 AboutDialog::AboutDialog(QWidget* parent)
@@ -181,9 +101,6 @@ AboutDialog::AboutDialog(QWidget* parent)
 
 	QString lhtml = getLicenseHtml();
 	ui->licenseText->setHtml(Strings::htmlListPatch(lhtml));
-
-	QString phtml = getPluginsHtml();
-	ui->pluginsText->setHtml(phtml);
 
 	ui->urlLabel->setOpenExternalLinks(true);
 

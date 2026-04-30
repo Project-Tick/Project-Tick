@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 18.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   version="1.1"
+   id="Calque_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 32 32"
+   enable-background="new 0 0 32 32"
+   xml:space="preserve"
+   sodipodi:docname="plugins.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs4" /><sodipodi:namedview
+   id="namedview4"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="12.828125"
+   inkscape:cx="17.344702"
+   inkscape:cy="15.161998"
+   inkscape:window-width="1025"
+   inkscape:window-height="690"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="Calque_1" />
+<rect
+   fill-rule="evenodd"
+   clip-rule="evenodd"
+   fill="none"
+   width="32"
+   height="32"
+   id="rect1" />
+<path
+   fill="#B6B5B6"
+   d="M30,28H2c-1.1,0-2-0.9-2-2V8c0-1.1,0.9-2,2-2h28c1.1,0,2,0.9,2,2v18C32,27.1,31.1,28,30,28z"
+   id="path1" />
+<path
+   fill="#FBFBFB"
+   d="M30,27H2c-1.1,0-2-0.9-2-2V8c0-1.1,0.9-2,2-2h28c1.1,0,2,0.9,2,2v17C32,26.1,31.1,27,30,27z"
+   id="path2" />
+
+<g
+   style="fill:#585858;fill-opacity:1"
+   id="g2"
+   transform="matrix(0,0.64921742,-0.64921742,0,22.933192,10.144945)"><path
+     d="m 20,14 v 4 a 2,2 0 0 1 -2,2 h -4 v -2 a 2,2 0 0 0 -2,-2 2,2 0 0 0 -2,2 v 2 H 6 A 2,2 0 0 1 4,18 V 14 H 2 A 2,2 0 0 1 0,12 2,2 0 0 1 2,10 H 4 V 6 C 4,4.9 4.9,4 6,4 h 4 V 2 a 2,2 0 0 1 2,-2 2,2 0 0 1 2,2 v 2 h 4 a 2,2 0 0 1 2,2 v 4 h -2 a 2,2 0 0 0 -2,2 2,2 0 0 0 2,2 z"
+     id="path1-6"
+     style="fill:#585858;fill-opacity:1" /></g></svg>

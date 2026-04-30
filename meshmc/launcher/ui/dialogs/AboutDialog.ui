@@ -243,20 +243,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="pluginsTab">
-      <attribute name="title">
-       <string>Plugins</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QTextBrowser" name="pluginsText">
-         <property name="openExternalLinks">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="creditsTab">
       <attribute name="title">
        <string>Credits</string>
@@ -339,7 +325,6 @@
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>pluginsText</tabstop>
   <tabstop>creditsText</tabstop>
   <tabstop>licenseText</tabstop>
   <tabstop>aboutQt</tabstop>
