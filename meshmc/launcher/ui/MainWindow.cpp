@@ -103,6 +103,7 @@
 #include "ui/dialogs/ProgressDialog.h"
 #include "ui/dialogs/AboutDialog.h"
 #include "ui/dialogs/MeshMCLogsDialog.h"
+#include "ui/dialogs/PluginsDialog.h"
 #include "ui/dialogs/UpdateProgressDialog.h"
 #include "ui/dialogs/VersionSelectDialog.h"
 #include "ui/dialogs/CustomMessageBox.h"
@@ -263,6 +264,7 @@ class MainWindow::Ui
 	TranslatedAction actionReportBug;
 	TranslatedAction actionDISCORD;
 	TranslatedAction actionREDDIT;
+	TranslatedAction actionPlugins;
 	TranslatedAction actionMeshMCLogs;
 	TranslatedAction actionAbout;
 
@@ -408,6 +410,18 @@ class MainWindow::Ui
 				QT_TRANSLATE_NOOP("MainWindow", "Open %1 subreddit."));
 			all_actions.append(&actionREDDIT);
 			helpMenu->addAction(actionREDDIT);
+		}
+
+		if (APPLICATION->pluginManager()->moduleCount() >= 1) {
+			actionPlugins = TranslatedAction(MainWindow);
+			actionPlugins->setObjectName(QStringLiteral("actionPlugins"));
+			actionPlugins->setIcon(APPLICATION->getThemedIcon("plugins"));
+			actionPlugins.setTextId(
+				QT_TRANSLATE_NOOP("MainWindow", "Plugins"));
+			actionPlugins.setTooltipId(QT_TRANSLATE_NOOP(
+				"MainWindow", "View and manage MMCO Plugins."));
+			all_actions.append(&actionPlugins);
+			helpMenu->addAction(actionPlugins);
 		}
 
 		actionMeshMCLogs = TranslatedAction(MainWindow);
@@ -1908,6 +1922,12 @@ void MainWindow::newsButtonClicked()
 void MainWindow::on_actionAbout_triggered()
 {
 	AboutDialog dialog(this);
+	dialog.exec();
+}
+
+void MainWindow::on_actionPlugins_triggered()
+{
+	PluginsDialog dialog(this);
 	dialog.exec();
 }
 

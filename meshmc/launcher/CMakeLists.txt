@@ -818,6 +818,8 @@ SET(MESHMC_SOURCES
     ui/dialogs/NotificationDialog.h
     ui/pagedialog/PageDialog.cpp
     ui/pagedialog/PageDialog.h
+    ui/dialogs/PluginsDialog.cpp
+    ui/dialogs/PluginsDialog.h
     ui/dialogs/ProgressDialog.cpp
     ui/dialogs/ProgressDialog.h
     ui/dialogs/UpdateDialog.cpp
@@ -926,6 +928,7 @@ qt6_wrap_ui(MESHMC_UI
     ui/dialogs/NotificationDialog.ui
     ui/dialogs/UpdateDialog.ui
     ui/dialogs/MeshMCLogsDialog.ui
+    ui/dialogs/PluginsDialog.ui
     ui/dialogs/NewComponentDialog.ui
     ui/dialogs/ProfileSelectDialog.ui
     ui/dialogs/SkinUploadDialog.ui
