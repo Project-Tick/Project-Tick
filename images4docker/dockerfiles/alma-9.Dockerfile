@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM almalinux:9
+FROM almalinux:10
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
