@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     container: gcc:latest
     steps:
+      - name: install git
+        run: sudo apt-get install git
       - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@v4.3.2
