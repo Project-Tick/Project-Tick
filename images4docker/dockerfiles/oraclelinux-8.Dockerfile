@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM oraclelinux:8
+FROM oraclelinux:10
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
