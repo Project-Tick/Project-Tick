@@ -1,4 +1,4 @@
-FROM ghcr.io/flathub/flatpak-builder-lint:latest
+FROM ghcr.io/flathub/flatpak-builder-lint:latest@sha256:55ab266774df16f13548c19b2b990c2041425bb90389267ef324856ff21d3fce
 
 ENTRYPOINT []
 ENV TMPDIR=/tmp

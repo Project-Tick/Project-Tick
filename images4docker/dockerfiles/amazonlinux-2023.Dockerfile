@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM amazonlinux:2023
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM amazonlinux:2023@sha256:ceeab7e010ed03ea155cfbbfd7140672eba5a49e1110b8b4ed35342312c3f21a
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
