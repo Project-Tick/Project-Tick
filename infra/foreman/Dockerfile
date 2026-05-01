@@ -1,4 +1,4 @@
-FROM debian:stable AS builder
+FROM debian:trixie-20260421 AS builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 COPY pyproject.toml uv.lock /
 ENV UV_PYTHON_INSTALL_DIR=/python
