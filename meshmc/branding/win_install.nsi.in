@@ -374,6 +374,8 @@ Section "@MeshMC_DisplayName@"
   SetOutPath $INSTDIR
 
   File "@MeshMC_AppBinaryName@.exe"
+  File "@MeshMC_AppBinaryName@-updater.exe"
+  File "@MeshMC_AppBinaryName@-crashreporter.exe"
   File /r "mmcmodules"
   File "qt.conf"
   File "qtlogging.ini"

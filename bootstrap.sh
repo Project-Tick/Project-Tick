@@ -104,6 +104,18 @@ check_dependencies() {
     check_lib "QuaZip"    "quazip1-qt6"
     check_lib "zlib"      "zlib"
     check_lib "ECM"       "ECM"
+    check_cmd "Ruby"      "ruby"
+    check_cmd "Yamllint"  "yamllint"
+    # Gem kontrolü (dosya olarak aramak en garantisidir)
+    if gem list gitlab-dangerfiles -i &>/dev/null; then
+        ok "gitlab-dangerfiles gem is installed"
+    else
+        warn "gitlab-dangerfiles gem is NOT installed"
+        MISSING_DEPS+=("gitlab-dangerfiles")
+    fi
+
+    check_lib "Qt6"       "Qt6Core"
+    # ... diğer check_lib satırları ...
     echo
 }
 
@@ -118,7 +130,9 @@ install_debian_ubuntu() {
         zlib1g-dev \
         extra-cmake-modules \
         pkg-config \
-        reuse
+        reuse \
+        ruby \
+        yamllint
 }
 
 install_fedora() {
@@ -131,7 +145,9 @@ install_fedora() {
         zlib-devel \
         extra-cmake-modules \
         pkgconf \
-        reuse
+        reuse \
+        ruby \
+        yamllint
 }
 
 install_rhel() {
@@ -145,7 +161,9 @@ install_rhel() {
         zlib-devel \
         extra-cmake-modules \
         pkgconf \
-        reuse
+        reuse \
+        ruby \
+        yamllint
 }
 
 install_suse() {
@@ -158,7 +176,9 @@ install_suse() {
         zlib-devel \
         extra-cmake-modules \
         pkg-config \
-        python3-reuse
+        python3-reuse \
+        ruby \
+        yamllint
 }
 
 install_arch() {
@@ -171,7 +191,9 @@ install_arch() {
         zlib-ng \
         extra-cmake-modules \
         pkgconf \
-        reuse
+        reuse \
+        ruby \
+        yamllint
 }
 
 install_macos() {
@@ -189,7 +211,9 @@ install_macos() {
         zlib \
         extra-cmake-modules \
         reuse \
-        lefthook
+        lefthook \
+        ruby \
+        yamllint
 }
 
 install_lefthook() {
@@ -238,6 +262,19 @@ setup_mise() {
     fi
 }
 
+setup_ruby_gems() {
+    info "Installing Ruby gems..."
+    gem install gitlab-dangerfiles --user-install --no-document
+    local gem_bin
+    gem_bin=$(ruby -e 'print Gem.user_dir')/bin
+    export PATH="$gem_bin:$PATH"
+}
+
+setup_npm_packages() {
+    info "Installing global NPM packages..."
+    sudo npm install -g markdownlint-cli2
+}
+
 install_missing() {
     if [ ${#MISSING_DEPS[@]} -eq 0 ]; then
         ok "All dependencies are already installed!"
@@ -256,6 +293,8 @@ install_missing() {
         macos)         install_macos          ;;
     esac
 
+    setup_npm_packages
+    setup_ruby_gems
     install_lefthook
 
     echo
