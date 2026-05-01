@@ -33,7 +33,7 @@ pre-push:
       tags: backend style
       files: >
         git diff --name-only --diff-filter=d
-        $(git merge-base origin/master HEAD)..HEAD
+        $(git merge-base origin/master HEAD)..HEAD | grep -v '^.github/'
       glob: '*.{yml,yaml}{,.*}'
       run: scripts/lint-yaml.sh {files}
     commit-message-linting:
