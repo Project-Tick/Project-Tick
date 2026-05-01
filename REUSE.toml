@@ -24,7 +24,8 @@ path = [
   "**.nix",
   "**.in",
   "**/.gitignore",
-  "meshmc/libraries/README"
+  "meshmc/libraries/README",
+  "renovate.json"
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "NONE"
