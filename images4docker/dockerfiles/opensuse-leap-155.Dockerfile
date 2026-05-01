@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM opensuse/leap:15.5
+FROM opensuse/leap:15.6
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
