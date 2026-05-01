@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM ubuntu:22.04
+FROM ubuntu:26.04
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
