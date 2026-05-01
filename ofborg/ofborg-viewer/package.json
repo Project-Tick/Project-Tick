@@ -7,7 +7,7 @@
     "dev": "npx esbuild src/index.js --bundle --outfile=dist/bundle.js --format=iife --target=es2018 --servedir=dist --define:GIT_REVISION='\"dev\"' --define:VERSION='\"dev\"'"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.0",
     "less": "^4.2.0"
   },
   "dependencies": {
