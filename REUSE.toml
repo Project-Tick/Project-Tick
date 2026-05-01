@@ -177,3 +177,11 @@ path = [
        ]
 SPDX-License-Identifier = "LicenseRef-Project-Tick-Trademark"
 SPDX-FileCopyrightText = "2025-2026 Project Tick"
+
+[[annotations]]
+path = [
+        ".lefthook/**",
+        "scripts/**"
+       ]
+SPDX-License-Identifier = "MIT"
+SPDX-FileCopyrightText = "Gitlab Inc."
