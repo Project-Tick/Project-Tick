@@ -25,6 +25,7 @@
   "branchTopic": "{{depName}}",
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
+  "automergeType": "pr",
   "rollbackPrs": true,
   "osvVulnerabilityAlerts": true,
   "rangeStrategy": "bump",
@@ -50,14 +51,16 @@
         "dockerfile"
       ],
       "groupName": "docker updates",
-      "pinDigests": true
+      "pinDigests": true,
+      "automerge": true
     },
     {
       "matchUpdateTypes": [
         "minor",
         "patch"
       ],
-      "groupName": "all non-major updates"
+      "groupName": "all non-major updates",
+      "automerge": true
     }
   ]
 }
