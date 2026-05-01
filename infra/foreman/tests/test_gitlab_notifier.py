@@ -41,19 +41,22 @@ def test_get_status_name_uses_target_branch(gitlab_notifier, mock_pipeline):
 
 
 @pytest.mark.asyncio
-async def test_handle_build_started_includes_target_label(gitlab_notifier, mock_pipeline):
+async def test_handle_build_started_includes_target_label(
+    gitlab_notifier, mock_pipeline
+):
     gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
     gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
 
-    await gitlab_notifier.handle_build_started(mock_pipeline, mock_pipeline.log_url or "")
+    await gitlab_notifier.handle_build_started(
+        mock_pipeline, mock_pipeline.log_url or ""
+    )
 
     assert gitlab_notifier._update_commit_status.await_args.kwargs["description"] == (
         "Workflow running for master (stable) on GitHub Actions"
     )
     actual_note = gitlab_notifier._create_merge_request_note.await_args.args[1]
     assert actual_note.startswith(
-        "🚧 [Build for master (stable) started]"
-        f"({mock_pipeline.log_url})."
+        f"🚧 [Build for master (stable) started]({mock_pipeline.log_url})."
     )
     # Commit SHA is now included in started note
     assert "Commit:" in actual_note
@@ -61,7 +64,9 @@ async def test_handle_build_started_includes_target_label(gitlab_notifier, mock_
 
 
 @pytest.mark.asyncio
-async def test_handle_build_completion_uses_target_label_for_beta(gitlab_notifier, mock_pipeline):
+async def test_handle_build_completion_uses_target_label_for_beta(
+    gitlab_notifier, mock_pipeline
+):
     gitlab_notifier._update_commit_status = AsyncMock(return_value=True)
     gitlab_notifier._create_merge_request_note = AsyncMock(return_value=True)
     mock_pipeline.flat_manager_repo = "beta"
@@ -73,8 +78,7 @@ async def test_handle_build_completion_uses_target_label_for_beta(gitlab_notifie
         "Workflow succeeded for beta on GitHub Actions"
     )
     assert gitlab_notifier._create_merge_request_note.await_args.args[1] == (
-        "✅ [Build for beta succeeded]"
-        f"({mock_pipeline.log_url})."
+        f"✅ [Build for beta succeeded]({mock_pipeline.log_url})."
     )
 
 

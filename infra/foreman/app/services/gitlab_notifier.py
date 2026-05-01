@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timezone
+from datetime import timezone
 from urllib.parse import quote
 
 import httpx
@@ -264,7 +264,10 @@ class GitLabNotifier:
         source_sha = self._get_param(pipeline, "gitlab_source_sha") or self._get_param(
             pipeline, "sha"
         )
-        ref = self._get_param(pipeline, "ref") or f"refs/heads/{self._get_target_branch(pipeline)}"
+        ref = (
+            self._get_param(pipeline, "ref")
+            or f"refs/heads/{self._get_target_branch(pipeline)}"
+        )
         target_branch = self._get_target_branch(pipeline)
         actor = self._get_param(pipeline, "actor")
         build_type = self._get_param(pipeline, "build_type") or "default"
@@ -284,9 +287,7 @@ class GitLabNotifier:
 
         commit_link = ""
         if gitlab_base_url and project_path and source_sha:
-            commit_link = (
-                f"{gitlab_base_url}/{project_path}/-/commit/{source_sha}"
-            )
+            commit_link = f"{gitlab_base_url}/{project_path}/-/commit/{source_sha}"
 
         duration = self._format_build_duration(pipeline)
 
@@ -298,7 +299,11 @@ class GitLabNotifier:
         ]
 
         if source_sha:
-            sha_display = f"[`{source_sha[:12]}`]({commit_link})" if commit_link else f"`{source_sha}`"
+            sha_display = (
+                f"[`{source_sha[:12]}`]({commit_link})"
+                if commit_link
+                else f"`{source_sha}`"
+            )
             lines.append(f"- **Commit SHA:** {sha_display}")
         if ref:
             lines.append(f"- **Ref:** `{ref}`")
@@ -466,9 +471,7 @@ class GitLabNotifier:
             return f"{seconds}s"
         return ""
 
-    async def _get_run_details(
-        self, pipeline: Pipeline
-    ) -> tuple[list[str], list[str]]:
+    async def _get_run_details(self, pipeline: Pipeline) -> tuple[list[str], list[str]]:
         log_url = pipeline.log_url or ""
         if not log_url:
             return [], []
@@ -509,7 +512,9 @@ class GitLabNotifier:
             f"\n\nTargets: {', '.join(component_targets)}." if component_targets else ""
         )
 
-        source_sha = self._get_param(pipeline, "gitlab_source_sha") or self._get_param(pipeline, "sha")
+        source_sha = self._get_param(pipeline, "gitlab_source_sha") or self._get_param(
+            pipeline, "sha"
+        )
         sha_suffix = f"\n\nCommit: `{source_sha[:12]}`" if source_sha else ""
 
         await self._update_commit_status(

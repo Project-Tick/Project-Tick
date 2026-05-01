@@ -80,7 +80,7 @@ jobs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 
@@ -200,7 +200,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           show-progress: 'false'
@@ -249,7 +249,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
@@ -348,7 +348,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
@@ -395,7 +395,7 @@ jobs:
 
 
   create_release:
-    name: Create Release Draft
+    name: Create Release
     needs: [meshmc_build, neozip_build, meshmc_prepare_source, package_sources]
     if: |
       always() &&
@@ -409,13 +409,9 @@ jobs:
       contents: write
     steps:
       - name: Checkout (for component version extraction)
-        uses: actions/checkout@v6
+        uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
-          sparse-checkout: |
-            meshmc/CMakeLists.txt
-            neozip/zlib.h.in
-          sparse-checkout-cone-mode: false
 
       - name: Set version
         shell: bash
@@ -531,104 +527,6 @@ jobs:
             cd ..
           done
 
-      # ── Release draft (full: stable / lts) ──────────────────────
-      - name: Create release draft
-        if: ${{ !inputs.beta_source_only }}
-        uses: softprops/action-gh-release@v3
-        continue-on-error: true
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref }}
-          name: Release ${{ env.VERSION }}
-          draft: true
-          prerelease: false
-          fail_on_unmatched_files: true
-          files: |
-            components.json
-            MeshMC-Linux-x86_64.AppImage
-            MeshMC-Linux-x86_64.AppImage.zsync
-            MeshMC-Linux-aarch64.AppImage
-            MeshMC-Linux-aarch64.AppImage.zsync
-            MeshMC-Linux-Portable-${{ env.VERSION }}.tar.gz
-            MeshMC-Linux-aarch64-Portable-${{ env.VERSION }}.tar.gz
-            MeshMC-Windows-MinGW-w64-${{ env.VERSION }}.zip
-            MeshMC-Windows-MinGW-w64-Portable-${{ env.VERSION }}.zip
-            MeshMC-Windows-MinGW-w64-Setup-${{ env.VERSION }}.exe
-            MeshMC-Windows-MinGW-arm64-${{ env.VERSION }}.zip
-            MeshMC-Windows-MinGW-arm64-Portable-${{ env.VERSION }}.zip
-            MeshMC-Windows-MinGW-arm64-Setup-${{ env.VERSION }}.exe
-            MeshMC-Windows-MSVC-arm64-${{ env.VERSION }}.zip
-            MeshMC-Windows-MSVC-arm64-Portable-${{ env.VERSION }}.zip
-            MeshMC-Windows-MSVC-arm64-Setup-${{ env.VERSION }}.exe
-            MeshMC-Windows-MSVC-${{ env.VERSION }}.zip
-            MeshMC-Windows-MSVC-Portable-${{ env.VERSION }}.zip
-            MeshMC-Windows-MSVC-Setup-${{ env.VERSION }}.exe
-            MeshMC-macOS-${{ env.VERSION }}.zip
-            MeshMC-macOS-${{ env.VERSION }}.dmg
-            neozip-*/neozip-*.zip
-            meshmc-source-archives/*
-            source-neozip/*
-            source-cgit/*
-            source-cmark/*
-            source-corebinutils/*
-            source-forgewrapper/*
-            source-genqrcode/*
-            source-images4docker/*
-            source-json4cpp/*
-            source-libnbtplusplus/*
-            source-mnv/*
-            source-tomlplusplus/*
-            source-LocalPeer/*
-            source-classparser/*
-            source-ganalytics/*
-            source-iconfix/*
-            source-javacheck/*
-            source-javalauncher/*
-            source-katabasis/*
-            source-optional-bare/*
-            source-rainbow/*
-            source-systeminfo/*
-            source-xz-embedded/*
-
-      # ── Release draft (beta: source artifacts only) ───────────────
-      - name: Create beta release draft
-        if: ${{ inputs.beta_source_only }}
-        uses: softprops/action-gh-release@v3
-        continue-on-error: true
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref }}
-          name: Beta ${{ env.VERSION }}
-          draft: false
-          prerelease: true
-          fail_on_unmatched_files: true
-          files: |
-            components.json
-            neozip-*/neozip-*.zip
-            meshmc-source-archives/*
-            source-neozip/*
-            source-cgit/*
-            source-cmark/*
-            source-corebinutils/*
-            source-forgewrapper/*
-            source-genqrcode/*
-            source-images4docker/*
-            source-json4cpp/*
-            source-libnbtplusplus/*
-            source-mnv/*
-            source-tomlplusplus/*
-            source-LocalPeer/*
-            source-classparser/*
-            source-ganalytics/*
-            source-iconfix/*
-            source-javacheck/*
-            source-javalauncher/*
-            source-katabasis/*
-            source-optional-bare/*
-            source-rainbow/*
-            source-systeminfo/*
-            source-xz-embedded/*
-
       # ── Stage deployment bundle ──────────────────────────────────
       - name: Stage deployment bundle
         shell: bash
@@ -670,6 +568,7 @@ jobs:
           echo "=== Deployment bundle ==="
           find deploy-bundle -type f | sort
 
+      # TODO: refactor this!
       - name: Upload deployment bundle
         uses: actions/upload-artifact@v7
         with:
@@ -677,14 +576,6 @@ jobs:
           path: deploy-bundle/
           if-no-files-found: error
 
-
-  deploy_to_server:
-    name: Deploy to FTP Server
-    needs: [create_release]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
       - name: Set version
         shell: bash
         env:
@@ -765,12 +656,11 @@ jobs:
       - meshmc_prepare_source
       - package_sources
       - create_release
-      - deploy_to_server
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 

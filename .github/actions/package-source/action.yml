@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 name: Package Source Tarball
 description: >
-  Create source archives in multiple formats (.tar, .tar.xz, .tar.gz, .tar.zst, .zip, .7z),
+  Create source archives in multiple formats (.tar.xz, .tar.gz),
   and optionally GPG-sign each artifact.
 
 inputs:
@@ -38,7 +38,7 @@ runs:
       shell: bash
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y -qq p7zip-full zstd xz-utils zip
+        sudo apt-get install -y -qq xz-utils
 
     - name: Create archives
       shell: bash
@@ -64,11 +64,9 @@ runs:
         tar -cf "$OUT_DIR/${BASE}.tar" -C "$STAGING" "$BASE"
         gzip -9 -k "$OUT_DIR/${BASE}.tar"
         xz -9 -k "$OUT_DIR/${BASE}.tar"
-        zstd -19 "$OUT_DIR/${BASE}.tar" -o "$OUT_DIR/${BASE}.tar.zst"
-        (cd "$STAGING" && zip -r -9 -q "$OLDPWD/$OUT_DIR/${BASE}.zip" "$BASE")
-        7z a -mx=9 "$OUT_DIR/${BASE}.7z" "$STAGING/$BASE" > /dev/null
 
         rm -rf "$STAGING"
+        rm -rf "$OUT_DIR/${BASE}.tar"
 
         echo "### 📦 Archives created for ${BASE}" >> "$GITHUB_STEP_SUMMARY"
         ls -lh "$OUT_DIR"/ >> "$GITHUB_STEP_SUMMARY"

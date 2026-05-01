@@ -174,7 +174,10 @@ async def test_build_plan_from_pipeline_infers_gitlab_merge_request_as_pr():
     plan = await service.build_plan_from_pipeline(pipeline)
 
     assert service.contexts[0]["event_name"] == "pull_request"
-    assert service.contexts[0]["source_repository"] == "https://git.projecttick.org/project-tick/project-tick.git"
+    assert (
+        service.contexts[0]["source_repository"]
+        == "https://git.projecttick.org/project-tick/project-tick.git"
+    )
     assert plan["is_pr"] is True
     assert plan["jobs"]["lint"] is True
     assert plan["jobs"]["json4cpp"] is True

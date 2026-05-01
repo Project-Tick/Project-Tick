@@ -18,10 +18,10 @@ jobs:
         working-directory: genqrcode
         shell: bash
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Install vcpkg deps (Windows)
         if: matrix.os == 'windows-latest'
-        uses: lukka/run-vcpkg@v11
+        uses: lukka/run-vcpkg@v11.6
         with:
           vcpkgGitCommitId: '77df67cfff9c12ccfdb52284e07c87c75092f723'
       - name: Install vcpkg packages (Windows)
@@ -54,7 +54,7 @@ jobs:
       run:
         working-directory: genqrcode
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Install deps (macOS)
         if: matrix.os == 'macos-latest'
         run: brew install automake autoconf libtool pkg-config libpng

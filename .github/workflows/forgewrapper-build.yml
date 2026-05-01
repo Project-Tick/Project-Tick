@@ -11,7 +11,7 @@ jobs:
       run:
         working-directory: forgewrapper
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
@@ -35,7 +35,7 @@ jobs:
       run:
         working-directory: forgewrapper
     steps:
-      - uses: Project-Tick/Project-Tick/.github/actions/source-checkout@master
+      - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:

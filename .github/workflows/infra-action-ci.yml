@@ -48,7 +48,7 @@ jobs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Prepare callback destination
         id: prepare
@@ -86,19 +86,19 @@ jobs:
       cancel-in-progress: true
     steps:
         # 4.2.2
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
 
-      - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install uv
         # 5.4.0
-        uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         with:
-          version: "0.7.5"
+          version: "0.11.8"
           enable-cache: true
           cache-dependency-glob: |
             **/uv.lock
@@ -143,17 +143,17 @@ jobs:
       cancel-in-progress: true
     steps:
         # 4.2.2
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
 
       - name: Set up Docker Buildx
         # 3.10.0
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd
 
       - name: Login to ghcr.io
         # 3.4.0
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -161,7 +161,7 @@ jobs:
 
       - name: Build and push
         # 6.15.0
-        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f
         with:
           context: infra/merge-action
           file: infra/merge-action/Dockerfile
@@ -188,7 +188,7 @@ jobs:
     steps:
       - name: Login to ghcr.io
         # 3.4.0
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -222,7 +222,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Resolve cancelled workflow status
         id: resolve-status-cancelled

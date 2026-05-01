@@ -43,5 +43,6 @@
         <file>scalable/server.svg</file>
         <file>scalable/appearance.svg</file>
         <file>scalable/backup.svg</file>
+        <file>scalable/plugins.svg</file>
     </qresource>
 </RCC>

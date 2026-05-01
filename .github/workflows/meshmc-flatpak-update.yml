@@ -46,7 +46,7 @@ jobs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Prepare callback destination
         id: prepare
@@ -79,7 +79,7 @@ jobs:
         working-directory: meshmc/flatpak
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           token: ${{ secrets.FLATPAK_PAT_TOKEN }}
 
@@ -107,7 +107,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Resolve cancelled workflow status
         id: resolve-status-cancelled

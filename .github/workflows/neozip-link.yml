@@ -15,7 +15,7 @@ jobs:
           show-progress: 'false'
 
       - name: Checkout zlib repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           show-progress: 'false'
           repository: madler/zlib

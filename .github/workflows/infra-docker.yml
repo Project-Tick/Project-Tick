@@ -46,7 +46,7 @@ jobs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Prepare callback destination
         id: prepare
@@ -150,23 +150,23 @@ jobs:
           sudo rm -rf /var/lib/apt/lists/*
 
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
 
       - name: Set up QEMU
         # 3.6.0
-        uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
 
       - name: Set up Docker Buildx
         # 3.10.0
-        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd
         with:
           driver-opts: network=host
 
       - name: Build & push the base image to local registry
         # 6.15.0
-        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f
         with:
           context: infra/actions-images
           file: infra/actions-images/Dockerfile
@@ -177,7 +177,7 @@ jobs:
 
       - name: Login to ghcr.io
         # 3.4.0
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -194,7 +194,7 @@ jobs:
 
       - name: Build & push the ${{ matrix.runtime.name }} image
         # 6.15.0
-        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f
         with:
           allow: security.insecure
           context: infra/actions-images
@@ -219,7 +219,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: Project-Tick-Infrastructure/checkout@v1
 
       - name: Resolve cancelled workflow status
         id: resolve-status-cancelled

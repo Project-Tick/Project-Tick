@@ -1,10 +1,62 @@
+---
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: 2026 Project Tick
 #
 # MeshMC Lefthook Configuration
 # https://lefthook.dev/configuration/
 
+post-commit:
+  scripts:
+    'lint_commit_message':
+      runner: bash
+
+pre-push:
+  parallel: true
+  skip:
+    - ref: master
+  commands:
+    jsonlint:
+      tags: style
+      files: >
+        git diff --name-only --diff-filter=d
+        $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{json}'
+      run: scripts/lint-json -v {files}
+    markdownlint:
+      tags: documentation style
+      files: >
+        git diff --name-only --diff-filter=d
+        $(git merge-base origin/master HEAD)..HEAD
+      glob: 'docs/*.md'
+      run: markdownlint-cli2 {files}
+    yamllint:
+      tags: backend style
+      files: >
+        git diff --name-only --diff-filter=d
+        $(git merge-base origin/master HEAD)..HEAD | grep -v '^.github/'
+      glob: '*.{yml,yaml}{,.*}'
+      run: scripts/lint-yaml.sh {files}
+    commit-message-linting:
+      tags: style
+      files: >
+        git diff --name-only
+        $(git merge-base origin/master HEAD)..HEAD
+      run: >-
+        echo {files} >/dev/null &&
+        ruby scripts/lint/commit_linter.rb
+
+  scripts:
+    'merge_conflicts':
+      runner: bash
+
 pre-commit:
+  parallel: true
+  commands:
+    markdownlint:
+      tags: documentation style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'docs/*.md'
+      run: markdownlint-cli2 {files}
   jobs:
     - name: reuse-lint
       run: |
@@ -17,14 +69,20 @@ pre-commit:
           reuse lint
         fi
 
-pre-push:
-  jobs:
-    - name: reuse-lint
-      run: |
-        if ! reuse lint; then
-          echo "Downloading missing licenses..."
-          reuse download --all
-          git add LICENSES/
-          echo "Missing licenses downloaded and staged."
-          reuse lint
-        fi
+auto-fix:
+  parallel: true
+  commands:
+    jsonlint:
+      tags: style
+      files: >
+        git diff --name-only --diff-filter=d
+        $(git merge-base origin/master HEAD) --cached
+      glob: '*.{json}'
+      run: scripts/lint-json --format --verbose {files}
+    markdownlint:
+      tags: documentation style
+      files: >
+        git diff --name-only --diff-filter=d
+        $(git merge-base origin/master HEAD) --cached
+      glob: 'docs/*.md'
+      run: markdownlint-cli2 --fix {files}

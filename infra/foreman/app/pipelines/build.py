@@ -208,17 +208,23 @@ class BuildPipeline:
         return build_type in SPOT_BUILD_TYPES
 
     @staticmethod
-    def _get_supersede_conflict_scope(params: dict[str, Any] | None) -> tuple[str, str, str]:
+    def _get_supersede_conflict_scope(
+        params: dict[str, Any] | None,
+    ) -> tuple[str, str, str]:
         pipeline_params = dict(params or {})
         if not pipeline_params.get("native_github_ci"):
             return ("default", "", "")
 
         workflow_name = str(pipeline_params.get("workflow_name") or "").strip().lower()
-        event_name = str(
-            pipeline_params.get("github_event_name")
-            or pipeline_params.get("event_name")
-            or ""
-        ).strip().lower()
+        event_name = (
+            str(
+                pipeline_params.get("github_event_name")
+                or pipeline_params.get("event_name")
+                or ""
+            )
+            .strip()
+            .lower()
+        )
         schedule = str(pipeline_params.get("schedule") or "").strip()
         return (workflow_name, event_name, schedule)
 
@@ -418,7 +424,9 @@ class BuildPipeline:
 
             callback_url = f"{settings.base_url}/api/pipelines/{pipeline.id}/callback"
             dispatch_inputs = pipeline.params.get("dispatch_inputs")
-            custom_dispatch = isinstance(dispatch_inputs, dict) and bool(dispatch_inputs)
+            custom_dispatch = isinstance(dispatch_inputs, dict) and bool(
+                dispatch_inputs
+            )
 
             if custom_dispatch:
                 workflow_id = str(
@@ -448,8 +456,12 @@ class BuildPipeline:
                     "callback_url": callback_url,
                     "callback_token": pipeline.callback_token,
                     "build_type": build_type,
-                    "spot": "true" if pipeline.params.get("use_spot", True) else "false",
-                    "pr_target_branch": pipeline.params.get("pr_target_branch", "master"),
+                    "spot": "true"
+                    if pipeline.params.get("use_spot", True)
+                    else "false",
+                    "pr_target_branch": pipeline.params.get(
+                        "pr_target_branch", "master"
+                    ),
                 }
 
             job_data = {

@@ -24,7 +24,8 @@ path = [
   "**.nix",
   "**.in",
   "**/.gitignore",
-  "meshmc/libraries/README"
+  "meshmc/libraries/README",
+  "renovate.json"
 ]
 SPDX-License-Identifier = "CC0-1.0"
 SPDX-FileCopyrightText = "NONE"
@@ -177,3 +178,11 @@ path = [
        ]
 SPDX-License-Identifier = "LicenseRef-Project-Tick-Trademark"
 SPDX-FileCopyrightText = "2025-2026 Project Tick"
+
+[[annotations]]
+path = [
+        ".lefthook/**",
+        "scripts/**"
+       ]
+SPDX-License-Identifier = "MIT"
+SPDX-FileCopyrightText = "Gitlab Inc."

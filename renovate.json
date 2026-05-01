@@ -1,0 +1,63 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "assignees": [
+    "YongDo-Hyun"
+  ],
+  "reviewers": [
+    "YongDo-Hyun"
+  ],
+  "semanticCommitScope": "deps",
+  "prCreation": "immediate",
+  "ignorePresets": [
+    ":ignoreModulesAndTests"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/__fixtures__/**",
+    "test/**"
+  ],
+  "rebaseWhen": "conflicted",
+  "baseBranchPatterns": [
+    "$default",
+    "lts"
+  ],
+  "branchPrefix": "renovate/",
+  "branchTopic": "{{depName}}",
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "rollbackPrs": true,
+  "osvVulnerabilityAlerts": true,
+  "rangeStrategy": "bump",
+  "abandonmentThreshold": "1 year",
+  "fetchChangeLogs": "pr",
+  "dependencyDashboard": true,
+  "useBaseBranchConfig": "merge",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "before 3am on monday"
+    ]
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "groupName": "docker updates",
+      "pinDigests": true
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major updates"
+    }
+  ]
+}

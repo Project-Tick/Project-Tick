@@ -1,4 +1,4 @@
-FROM python:3.12 AS builder
+FROM python:3.14 AS builder
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -14,7 +14,7 @@ RUN uv export --no-emit-workspace --no-dev --no-annotate --no-header \
 RUN python -m venv /venv && \
     /venv/bin/python -m pip install -r /requirements.txt
 
-FROM python:3.12-slim
+FROM python:3.14-slim
 ENV PATH="/venv/bin:$PATH"
 
 RUN apt-get update && \

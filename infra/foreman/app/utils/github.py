@@ -2,7 +2,7 @@ import asyncio
 import time
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable
-
+from datetime import datetime
 import httpx
 import structlog
 
@@ -219,7 +219,7 @@ async def update_commit_status(
     git_repo: str,
     target_url: str | None = None,
     description: str | None = None,
-    context: str = "Project-Tick/Foreman",
+    context: str = "Project-Tick/Project-Tick",
     db: "AsyncSession | None" = None,
 ) -> bool:
     if not git_repo:
@@ -714,27 +714,29 @@ async def get_linter_warning_messages(
     return list(set(messages))
 
 
-async def create_github_tag(git_repo: str, tag_name: str, sha: str) -> bool:
-    """Create a lightweight git tag ref on GitHub pointing to the given commit SHA.
+async def create_gitlab_tag(git_repo: str, tag_name: str, sha: str) -> bool:
+    """Create a lightweight git tag ref on Gitlab pointing to the given commit SHA.
 
     Returns True on success, False if the tag already exists or on error.
     """
     if not git_repo or not tag_name or not sha:
         return False
-
-    url = f"https://api.github.com/repos/{git_repo}/git/refs"
+    headers = {"PRIVATE-TOKEN": settings.gitlab_api_token}
+    encoded_repo = git_repo.replace("/", "%2F")
+    url = f"https://git.projecttick.org/api/v4/projects/{encoded_repo}/repository/tags"
     client = get_github_actions_client()
     result = await client.request_with_result(
         "post",
         url,
-        json={"ref": f"refs/tags/{tag_name}", "sha": sha},
+        json={"tag_name": tag_name, "ref": sha},
+        headers=headers,
         context={"git_repo": git_repo, "tag_name": tag_name, "sha": sha},
         raise_for_status=False,
     )
 
     if result.response is None:
         logger.warning(
-            "Failed to create GitHub tag — no response",
+            "Failed to create GitLab tag - no response",
             tag_name=tag_name,
             git_repo=git_repo,
         )
@@ -742,7 +744,7 @@ async def create_github_tag(git_repo: str, tag_name: str, sha: str) -> bool:
 
     if result.response.status_code in (200, 201):
         logger.info(
-            "Created GitHub tag",
+            "Created GitLab tag",
             tag_name=tag_name,
             git_repo=git_repo,
             sha=sha,
@@ -751,17 +753,16 @@ async def create_github_tag(git_repo: str, tag_name: str, sha: str) -> bool:
 
     if result.response.status_code == 422:
         logger.warning(
-            "GitHub tag already exists, skipping creation",
+            "GitLab tag already exists, skipping creation",
             tag_name=tag_name,
             git_repo=git_repo,
         )
         return False
 
     logger.warning(
-        "Unexpected status creating GitHub tag",
+        "Unexpected status creating GitLab tag",
         tag_name=tag_name,
         git_repo=git_repo,
         status_code=result.response.status_code,
     )
     return False
-

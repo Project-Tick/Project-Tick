@@ -4,6 +4,7 @@
         <file>index.theme</file>
 
         <file>scalable/backup.svg</file>
+        <file>scalable/plugins.svg</file>
 
         <!-- REDDIT logo icon, needs reddit license! -->
         <file>scalable/reddit-alien.svg</file>
