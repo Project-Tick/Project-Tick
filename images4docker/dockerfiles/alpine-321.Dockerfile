@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM alpine:3.21
+FROM alpine:3.23
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
