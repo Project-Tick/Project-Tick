@@ -1,5 +1,5 @@
 beautifulsoup4==4.14.3
-CacheControl==0.14.2
+CacheControl==0.14.4
 certifi==2026.4.22
 charset-normalizer==3.4.7
 filelock==3.29.0
