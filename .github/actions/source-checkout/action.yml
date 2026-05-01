@@ -102,10 +102,9 @@ runs:
 
         mkdir -p "$target_dir"
         find "$target_dir" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-
+        git config --global --add safe.directory "*"
         git init "$target_dir"
         git -C "$target_dir" config advice.detachedHead false
-        git config --global --add safe.directory "$target_dir"
         git -C "$target_dir" remote add origin "$repo_url"
 
         fetch_args=(fetch --no-tags --prune --no-recurse-submodules origin "$EXTERNAL_SOURCE_REF")
