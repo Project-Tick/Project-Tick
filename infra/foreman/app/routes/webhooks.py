@@ -870,7 +870,7 @@ async def trigger_gitlab_push_build(
     # For master pushes: auto-create a vBETA tag and dispatch a beta release pipeline.
     # Beta tags are never created manually — Foreman owns them entirely.
     if ref == "refs/heads/master" and source_sha:
-        beta_tag_name = "vBETA" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M")
+        beta_tag_name = "vBETA" + datetime.now(timezone.utc).strftime("%Y%m%d0000")
         beta_ref = f"refs/tags/{beta_tag_name}"
 
         tag_created = await create_gitlab_tag(
@@ -879,8 +879,8 @@ async def trigger_gitlab_push_build(
             source_sha,
         )
         if not tag_created:
-            logger.error(
-                "Failed to create beta tag on GitLab — aborting beta pipeline",
+            logger.warning(
+                "Failed to create beta tag on GitLab - aborting beta pipeline",
                 beta_tag_name=beta_tag_name,
                 source_sha=source_sha,
                 repo="project-tick/project-tick",
