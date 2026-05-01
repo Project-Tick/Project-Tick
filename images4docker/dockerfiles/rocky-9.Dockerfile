@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM rockylinux/rockylinux:9
+FROM rockylinux/rockylinux:10
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
