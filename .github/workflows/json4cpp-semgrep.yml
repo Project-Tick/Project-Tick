@@ -21,7 +21,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: Project-Tick-Infrastructure/checkout@v1
+      - uses: Project-Tick-Infrastructure/checkout@v2
 
       - uses: semgrep/semgrep@34b079df03bd8ed6860552adf3905cc5d146dc4d
         with:

@@ -32,7 +32,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
 
       - name: Check REUSE compliance
         uses: fsfe/reuse-action@v6
@@ -46,7 +46,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
 
       - name: Check trailing whitespace
         run: |
