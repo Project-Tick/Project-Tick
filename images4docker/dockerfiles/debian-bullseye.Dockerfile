@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM debian:bullseye
+FROM debian:bullseye-20260421
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
