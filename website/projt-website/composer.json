@@ -38,7 +38,7 @@
         "symfony/property-access": "6.4.*",
         "symfony/property-info": "6.4.*",
         "symfony/rate-limiter": "*",
-        "symfony/runtime": "6.4.*",
+        "symfony/runtime": "8.0.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/serializer": "6.4.*",
         "symfony/stimulus-bundle": "^2.32",
