@@ -80,7 +80,7 @@ jobs:
       callback_url: ${{ steps.prepare.outputs.callback_url }}
       pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
     steps:
-      - uses: Project-Tick-Infrastructure/checkout@v1
+      - uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 
@@ -200,7 +200,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           show-progress: 'false'
@@ -249,7 +249,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
@@ -348,7 +348,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           submodules: recursive
@@ -409,7 +409,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout (for component version extraction)
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 
@@ -660,7 +660,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: Project-Tick-Infrastructure/checkout@v1
+      - uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
 

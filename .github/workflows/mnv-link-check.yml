@@ -8,7 +8,7 @@ jobs:
   lychee:
     runs-on: ubuntu-latest
     steps:
-      - uses: Project-Tick-Infrastructure/checkout@v1
+      - uses: Project-Tick-Infrastructure/checkout@v2
       - name: Run Lychee
         uses: lycheeverse/lychee-action@v2
         with:

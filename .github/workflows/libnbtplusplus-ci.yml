@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
 
       - name: Install cxxtest (Linux)
         if: runner.os == 'Linux'
@@ -99,6 +99,6 @@ jobs:
   lint-reuse:
     runs-on: ubuntu-latest
     steps:
-      - uses: Project-Tick-Infrastructure/checkout@v1
+      - uses: Project-Tick-Infrastructure/checkout@v2
       - name: REUSE Compliance Check
         uses: fsfe/reuse-action@v6
