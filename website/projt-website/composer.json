@@ -16,7 +16,7 @@
         "knplabs/github-api": "^3.16",
         "knpuniversity/oauth2-client-bundle": "^2.20",
         "league/oauth2-github": "^3.1",
-        "phpdocumentor/reflection-docblock": "^5.3",
+        "phpdocumentor/reflection-docblock": "^6.0",
         "phpstan/phpdoc-parser": "^1.26",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
