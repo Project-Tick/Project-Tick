@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM fedora:42
+FROM fedora:45
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
