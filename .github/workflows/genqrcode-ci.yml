@@ -21,7 +21,7 @@ jobs:
       - uses: Project-Tick-Infrastructure/checkout@v1
       - name: Install vcpkg deps (Windows)
         if: matrix.os == 'windows-latest'
-        uses: lukka/run-vcpkg@v11
+        uses: lukka/run-vcpkg@v11.6
         with:
           vcpkgGitCommitId: '77df67cfff9c12ccfdb52284e07c87c75092f723'
       - name: Install vcpkg packages (Windows)
