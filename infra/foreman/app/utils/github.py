@@ -2,7 +2,7 @@ import asyncio
 import time
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable
-
+from datetime import datetime
 import httpx
 import structlog
 
@@ -736,7 +736,7 @@ async def create_gitlab_tag(git_repo: str, tag_name: str, sha: str) -> bool:
 
     if result.response is None:
         logger.warning(
-            "Failed to create GitLab tag — no response",
+            "Failed to create GitLab tag - no response",
             tag_name=tag_name,
             git_repo=git_repo,
         )
