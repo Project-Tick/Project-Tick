@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM devuan/devuan:daedalus
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM devuan/devuan:daedalus@sha256:2ead396b41a76eb03b9f0074742051b5b7194253b8116083388fdb1838358291
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

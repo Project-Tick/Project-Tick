@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM debian:stable-slim
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM debian:stable-slim@sha256:8f0c555de6a2f9c2bda1b170b67479d11f7f5e3b66bb4a7a1d8843361c9dd3ff
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

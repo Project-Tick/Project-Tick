@@ -1,4 +1,4 @@
-ARG DEBIAN_VERSION=stable-slim
+ARG DEBIAN_VERSION=stable-slim@sha256:8f0c555de6a2f9c2bda1b170b67479d11f7f5e3b66bb4a7a1d8843361c9dd3ff
 
 FROM docker.io/library/debian:${DEBIAN_VERSION}
 

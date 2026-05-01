@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM debian:trixie-slim
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM debian:trixie-slim@sha256:cedb1ef40439206b673ee8b33a46a03a0c9fa90bf3732f54704f99cb061d2c5a
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
