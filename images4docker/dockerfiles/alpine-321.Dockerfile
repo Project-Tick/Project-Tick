@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM alpine:3.21
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM alpine:3.21@sha256:48b0309ca019d89d40f670aa1bc06e426dc0931948452e8491e3d65087abc07d
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

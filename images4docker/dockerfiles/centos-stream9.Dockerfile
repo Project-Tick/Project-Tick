@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM quay.io/centos/centos:stream9
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM quay.io/centos/centos:stream9@sha256:3b1baf27c963e696f98774156b35de0de8f23c7ae61ced3ff0b27ddeca524717
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

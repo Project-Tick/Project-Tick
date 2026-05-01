@@ -1,6 +1,6 @@
 # Self-Hosted IBM Z Github Actions Runner.
 
-FROM    almalinux:10
+FROM    almalinux:10@sha256:3b2d72cdbeced8720f97fe173924b930260b6acde8c68be1025d8c3710788cf4
 
 RUN     dnf update -y -q && \
         dnf install -y -q --enablerepo=crb wget git which sudo jq sed \

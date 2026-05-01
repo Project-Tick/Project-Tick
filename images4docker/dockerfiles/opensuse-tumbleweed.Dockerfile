@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM opensuse/tumbleweed:latest
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM opensuse/tumbleweed:latest@sha256:e49b03a788e9b17c516a0778ef68c887a36bdb4afce5bcd02a2a145afdb70161
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

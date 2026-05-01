@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM debian:bullseye-20260421
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM debian:bullseye-20260421@sha256:19d6c1c4e66453a5d729cf13c3dcdb4708aeff1b2ed9886805afcda191f064b7
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

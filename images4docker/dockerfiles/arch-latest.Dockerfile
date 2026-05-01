@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM archlinux:latest
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM archlinux:latest@sha256:5ba8bb318666baef4d33afefc0e65db80f38b23503cb8e7b150d315cc2d4d5da
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

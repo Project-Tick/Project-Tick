@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM rockylinux/rockylinux:9
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM rockylinux/rockylinux:9@sha256:53f4c6dcb34e1403bd93207351f0af9a593610faeb7165cb8a037346765199b0
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

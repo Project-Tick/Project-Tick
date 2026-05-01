@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM ubuntu:20.04
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM ubuntu:20.04@sha256:8feb4d8ca5354def3d8fce243717141ce31e2c428701f6682bd2fafe15388214
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

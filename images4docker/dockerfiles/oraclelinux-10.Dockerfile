@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM oraclelinux:10
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM oraclelinux:10@sha256:00c0fd22d1dcd2d826471edf08986898439f134ccafaa49837ff9925c035016f
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
