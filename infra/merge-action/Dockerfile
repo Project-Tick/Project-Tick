@@ -1,4 +1,4 @@
-FROM python:3.14 AS builder
+FROM python:3.14@sha256:0ba001803c72c128063cfa88863755f905cefabe73c026c66a5a86d8f1d63e98 AS builder
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -14,7 +14,7 @@ RUN uv export --no-emit-workspace --no-dev --no-annotate --no-header \
 RUN python -m venv /venv && \
     /venv/bin/python -m pip install -r /requirements.txt
 
-FROM python:3.14-slim
+FROM python:3.14-slim@sha256:5b3879b6f3cb77e712644d50262d05a7c146b7312d784a18eff7ff5462e77033
 ENV PATH="/venv/bin:$PATH"
 
 RUN apt-get update && \

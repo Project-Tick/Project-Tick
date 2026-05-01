@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM gentoo/stage3:latest
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM gentoo/stage3:latest@sha256:2b708841de62f67378f9ce3ecf1b4b1c697cde57bc32cb52b766c76173978f73
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

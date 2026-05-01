@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM almalinux:9
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM almalinux:9@sha256:32468d75602dce128c5dcba6235978cf0fcb43616585699b481c1349fa3fd3e7
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

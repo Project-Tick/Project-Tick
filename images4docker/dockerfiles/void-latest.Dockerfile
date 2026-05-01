@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM voidlinux/voidlinux:latest
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM voidlinux/voidlinux:latest@sha256:26ba972f0c06beadcec4796ec3037e0bec32af4d255edb68a528bd98304c74f4
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

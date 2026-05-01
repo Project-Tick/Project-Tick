@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM fedora:latest
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM fedora:latest@sha256:498c452f32a739b61f0ef215bce9924ebc4866cbe44710f58157d77723b7a6d2
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=

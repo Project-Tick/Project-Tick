@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1.7
-FROM debian:bookworm-20260421
+# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+FROM debian:bookworm-20260421@sha256:8a8cd02c5912770b4980228a54d4aff9e4f986f1eb2525d2d371dec5232cefcc
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
