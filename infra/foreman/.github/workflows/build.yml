@@ -65,7 +65,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: project-tick/${{ inputs.app_id }}
           fetch-depth: 1
@@ -144,7 +144,7 @@ jobs:
           chmod -R 777 ${GITHUB_WORKSPACE}/work
 
       - name: Checkout foreman (for justfile and seccomp profile)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: foreman
 
