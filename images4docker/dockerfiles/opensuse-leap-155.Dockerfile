@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.23
 FROM opensuse/leap:15.5
 
 ARG PACKAGES=

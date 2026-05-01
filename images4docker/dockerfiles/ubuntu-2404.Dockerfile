@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.23
 FROM ubuntu:24.04
 
 ARG PACKAGES=
