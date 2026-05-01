@@ -27,7 +27,6 @@
   "semanticCommitType": "chore",
   "rollbackPrs": true,
   "osvVulnerabilityAlerts": true,
-  "dependencyDashboardOSVVulnerabilitySummary": true,
   "rangeStrategy": "bump",
   "abandonmentThreshold": "1 year",
   "fetchChangeLogs": "pr",
@@ -45,11 +44,6 @@
         "major"
       ],
       "dependencyDashboardApproval": true
-    },
-    {
-      "matchUpdateTypes": [
-        "patch"
-      ]
     },
     {
       "matchManagers": [
