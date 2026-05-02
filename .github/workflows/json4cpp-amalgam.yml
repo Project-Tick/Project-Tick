@@ -40,7 +40,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout pull request
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 

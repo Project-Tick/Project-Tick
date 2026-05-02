@@ -23,7 +23,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: Project-Tick-Infrastructure/checkout@v1
+      uses: Project-Tick-Infrastructure/checkout@v2
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v4
