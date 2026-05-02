@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+# syntax=docker/dockerfile:1.23@sha256:2780b5c3bab67f1f76c781860de469442999ed1a0d7992a5efdf2cffc0e3d769
 FROM oraclelinux:10@sha256:00c0fd22d1dcd2d826471edf08986898439f134ccafaa49837ff9925c035016f
 
 ARG PACKAGES=
