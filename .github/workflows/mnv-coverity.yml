@@ -23,7 +23,7 @@ jobs:
     steps:
       - name: Checkout repository
         if: env.TOKEN
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
 
       - name: Download Coverity
         if: env.TOKEN

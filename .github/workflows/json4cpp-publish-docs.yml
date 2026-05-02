@@ -19,7 +19,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: Project-Tick-Infrastructure/checkout@v1
+      - uses: Project-Tick-Infrastructure/checkout@v2
 
       - name: Install virtual environment
         working-directory: json4cpp

@@ -102,7 +102,7 @@ jobs:
       ##
 
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v1
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || '' }}
           submodules: true
