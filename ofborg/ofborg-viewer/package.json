@@ -8,12 +8,12 @@
   },
   "devDependencies": {
     "esbuild": "^0.28.0",
-    "less": "^4.2.0"
+    "less": "^4.6.4"
   },
   "dependencies": {
-    "@stomp/stompjs": "^7.0.0",
-    "lodash": "^4.17.21",
-    "query-string": "^9.0.0",
+    "@stomp/stompjs": "^7.3.0",
+    "lodash": "^4.18.1",
+    "query-string": "^9.3.1",
     "websocket": "^1.0.35"
   }
 }
