@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
-FROM kalilinux/kali-rolling:latest@sha256:ab7f9873e9d976d62f59e172350604dd980339f567bfb2eaa5c2bdfaa2dc42b7
+FROM kalilinux/kali-rolling:latest@sha256:1fd0364490011f245688c6ed9fee498a11cd779badfbb0b1d3a721d0f49f2d15
 
 ARG PACKAGES=
 ARG CUSTOM_INSTALL=
