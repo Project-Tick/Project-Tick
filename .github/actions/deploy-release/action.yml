@@ -1,0 +1,158 @@
+# Copyright (C) Project Tick
+# SPDX-License-Identifier: MIT
+name: Deploy Release Artifacts
+description: >
+  Stage and deploy release artifacts to the FTP server.
+  Handles both binary+source (meshmc, neozip) and source-only projects.
+
+inputs:
+  version:
+    description: Release version string
+    required: true
+  product:
+    description: Product name (meshmc, neozip, etc.)
+    required: true
+  beta-source-only:
+    description: Skip binary packaging (beta source-only release)
+    required: false
+    default: "false"
+  ftp-host:
+    description: FTP server hostname
+    required: true
+  ftp-user:
+    description: FTP server username
+    required: true
+  ftp-port:
+    description: FTP server SSH port
+    required: false
+    default: "22"
+  ftp-key:
+    description: FTP server SSH private key
+    required: true
+  remote-base:
+    description: Remote base directory
+    required: false
+    default: /var/www/ftp/Project-Tick
+
+runs:
+  using: composite
+  steps:
+    - name: Prepare SSH credentials
+      shell: bash
+      env:
+        FTP_KEY: ${{ inputs.ftp-key }}
+        FTP_HOST: ${{ inputs.ftp-host }}
+        FTP_PORT: ${{ inputs.ftp-port }}
+      run: |
+        install -d -m 700 ~/.ssh
+        printf '%s\n' "$FTP_KEY" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -p "$FTP_PORT" -H "$FTP_HOST" >> ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/known_hosts
+
+    - name: Package MeshMC binaries
+      if: inputs.product == 'meshmc' && inputs.beta-source-only != 'true'
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        mv MeshMC-Linux-Portable*/MeshMC-portable.tar.gz "MeshMC-Linux-Portable-${VERSION}.tar.gz" 2>/dev/null || true
+        mv MeshMC-Linux-aarch64-Portable*/MeshMC-portable.tar.gz "MeshMC-Linux-aarch64-Portable-${VERSION}.tar.gz" 2>/dev/null || true
+        mv MeshMC-*.AppImage/MeshMC-*-x86_64.AppImage MeshMC-Linux-x86_64.AppImage 2>/dev/null || true
+        mv MeshMC-*.AppImage.zsync/MeshMC-*-x86_64.AppImage.zsync MeshMC-Linux-x86_64.AppImage.zsync 2>/dev/null || true
+        mv MeshMC-*.AppImage/MeshMC-*-aarch64.AppImage MeshMC-Linux-aarch64.AppImage 2>/dev/null || true
+        mv MeshMC-*.AppImage.zsync/MeshMC-*-aarch64.AppImage.zsync MeshMC-Linux-aarch64.AppImage.zsync 2>/dev/null || true
+        mv MeshMC-macOS*/MeshMC.zip "MeshMC-macOS-${VERSION}.zip" 2>/dev/null || true
+        mv MeshMC-macOS*/MeshMC.dmg "MeshMC-macOS-${VERSION}.dmg" 2>/dev/null || true
+
+        for d in MeshMC-Windows-MSVC*; do
+          [[ -d "$d" ]] || continue
+          cd "$d"
+          LEGACY="$(echo -n "$d" | grep -o Legacy || true)"
+          ARM64="$(echo -n "$d" | grep -o arm64 || true)"
+          INST="$(echo -n "$d" | grep -o Setup || true)"
+          PORT="$(echo -n "$d" | grep -o Portable || true)"
+          NAME="MeshMC-Windows-MSVC"
+          [[ -z "$LEGACY" ]] || NAME="${NAME}-Legacy"
+          [[ -z "$ARM64" ]] || NAME="${NAME}-arm64"
+          [[ -z "$PORT" ]] || NAME="${NAME}-Portable"
+          [[ -z "$INST" ]] || mv MeshMC-*.exe "../${NAME}-Setup-${VERSION}.exe"
+          [[ -n "$INST" ]] || zip -r -9 "../${NAME}-${VERSION}.zip" -- *
+          cd ..
+        done
+
+        for d in MeshMC-Windows-MinGW-w64* MeshMC-Windows-MinGW-arm64*; do
+          [[ -d "$d" ]] || continue
+          cd "$d"
+          INST="$(echo -n "$d" | grep -o Setup || true)"
+          PORT="$(echo -n "$d" | grep -o Portable || true)"
+          if echo "$d" | grep -q arm64; then
+            NAME="MeshMC-Windows-MinGW-arm64"
+          else
+            NAME="MeshMC-Windows-MinGW-w64"
+          fi
+          [[ -z "$PORT" ]] || NAME="${NAME}-Portable"
+          [[ -z "$INST" ]] || mv MeshMC-*.exe "../${NAME}-Setup-${VERSION}.exe"
+          [[ -n "$INST" ]] || zip -r -9 "../${NAME}-${VERSION}.zip" -- *
+          cd ..
+        done
+
+    - name: Stage deployment bundle
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        PRODUCT: ${{ inputs.product }}
+        BETA_SOURCE_ONLY: ${{ inputs.beta-source-only }}
+      run: |
+        set -euo pipefail
+        mkdir -p "deploy-bundle/${PRODUCT}"
+
+        # Kaynak arşivleri
+        if [[ -d "${PRODUCT}-source-archives" ]]; then
+          cp -a "${PRODUCT}-source-archives/." "deploy-bundle/${PRODUCT}/"
+        elif [[ -d "source-${PRODUCT}" ]]; then
+          cp -a "source-${PRODUCT}/." "deploy-bundle/${PRODUCT}/"
+        fi
+
+        # MeshMC binary'leri
+        if [[ "$PRODUCT" == "meshmc" && "$BETA_SOURCE_ONLY" != "true" ]]; then
+          find . -maxdepth 1 -type f -name 'MeshMC-*' -exec cp {} "deploy-bundle/${PRODUCT}/" \;
+        fi
+
+        # NeoZip binary'leri
+        if [[ "$PRODUCT" == "neozip" ]]; then
+          for d in neozip-win-*; do
+            [[ -d "$d" ]] || continue
+            cp -a "$d"/. "deploy-bundle/${PRODUCT}/"
+          done
+        fi
+
+        # SHA-256 checksums
+        find "deploy-bundle" -type f ! -name '*.sha256' | while read -r f; do
+          sha256sum "$f" > "${f}.sha256"
+        done
+
+        echo "=== Deployment bundle ==="
+        find "deploy-bundle" -type f | sort
+
+    - name: Deploy to FTP
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        PRODUCT: ${{ inputs.product }}
+        FTP_HOST: ${{ inputs.ftp-host }}
+        FTP_USER: ${{ inputs.ftp-user }}
+        FTP_PORT: ${{ inputs.ftp-port }}
+        REMOTE_BASE: ${{ inputs.remote-base }}
+      run: |
+        set -euo pipefail
+        remote="${REMOTE_BASE}/${PRODUCT}/releases/download/${VERSION}"
+
+        ssh -p "$FTP_PORT" "$FTP_USER@$FTP_HOST" "mkdir -p '${remote}'"
+        rsync -av --chmod=D755,F644 \
+          -e "ssh -p ${FTP_PORT} -o StrictHostKeyChecking=yes" \
+          "deploy-bundle/${PRODUCT}/" \
+          "${FTP_USER}@${FTP_HOST}:${remote}/"
+
+        echo "✅ Deployed ${PRODUCT} ${VERSION} to ${remote}"

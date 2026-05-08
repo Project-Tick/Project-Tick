@@ -1,8 +1,8 @@
 # Copyright (C) Project Tick
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 name: "Release: Package Source Archives"
 #
-# Polyrepo-aware release workflow.
+# Polyrepo-aware release dispatcher.
 #
 # Foreman dispatches this workflow for both monorepo and polyrepo releases.
 # The key difference is the `source-repository` input:
@@ -15,27 +15,22 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Optional version string override. Defaults to source-ref or the workflow ref name."
+        description: "Optional version string override."
         required: false
+        type: string
+        default: ""
       source-ref:
-        description: "Source ref to package (e.g. refs/tags/meshmc-1.0.0 or refs/tags/v1.2.3)"
+        description: "Source ref (e.g. refs/tags/meshmc-1.0.0)"
         required: false
         type: string
         default: ""
       source-repository:
-        description: >
-          Source repository URL to checkout (GitLab URL).
-          Foreman always sends this. Leave empty for monorepo default.
+        description: "Source repository URL (GitLab). Foreman always sends this."
         required: false
         type: string
         default: ""
-      emit-callbacks:
-        description: Whether this standalone run should report callbacks to Foreman
-        required: false
-        type: boolean
-        default: true
       beta_source_only:
-        description: "Beta release: skip MeshMC binary build, package source artifacts only"
+        description: "Beta release: skip binary build, source archives only"
         required: false
         type: boolean
         default: false
@@ -52,39 +47,30 @@ on:
   workflow_call:
     inputs:
       version:
-        description: "Version string override. Defaults to the caller ref name."
+        description: "Version string override."
         required: false
         type: string
         default: ""
       source-ref:
-        description: "Source ref to package (e.g. refs/tags/meshmc-1.0.0 or refs/tags/v1.2.3)"
+        description: "Source ref (e.g. refs/tags/meshmc-1.0.0)"
         required: false
         type: string
         default: ""
       source-repository:
-        description: >
-          Source repository URL to checkout (GitLab URL).
-          Foreman always sends this for polyrepo builds.
+        description: "Source repository URL (GitLab). Foreman always sends this."
         required: false
         type: string
         default: ""
-      emit-callbacks:
-        description: Whether this reusable invocation should report callbacks to Foreman
-        required: false
-        type: boolean
-        default: false
       beta_source_only:
-        description: "Beta release: skip MeshMC binary build, package source artifacts only"
+        description: "Beta release: skip binary build, source archives only"
         required: false
         type: boolean
         default: false
       callback_url:
-        description: Optional Foreman callback base URL
         required: false
         type: string
         default: ""
       callback_token:
-        description: Optional Foreman callback bearer token
         required: false
         type: string
         default: ""
@@ -93,59 +79,54 @@ permissions: {}
 
 jobs:
 
-  callback-start:
-    name: "Callback Start"
-    if: ${{ inputs.emit-callbacks }}
+  # ── Resolve: hangi proje release ediliyor? ──────────────────────────────────
+  resolve:
+    name: "Resolve Project"
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    permissions: {}
     outputs:
-      callback_url: ${{ steps.prepare.outputs.callback_url }}
-      pipeline_id: ${{ steps.prepare.outputs.pipeline_id }}
+      project: ${{ steps.detect.outputs.project }}
+      version: ${{ steps.detect.outputs.version }}
     steps:
-      - uses: Project-Tick-Infrastructure/checkout@v2
-        with:
-          ref: ${{ inputs.source-ref || github.ref }}
-          source-repository: ${{ inputs.source-repository || '' }}
-
-      - name: Resolve source revision
-        id: source
+      - name: Detect project from source-repository
+        id: detect
         shell: bash
         env:
+          SOURCE_REPOSITORY: ${{ inputs.source-repository || '' }}
           SOURCE_REF: ${{ inputs.source-ref || github.ref }}
+          INPUT_VERSION: ${{ inputs.version || '' }}
         run: |
           set -euo pipefail
-          echo "ref=$SOURCE_REF" >> "$GITHUB_OUTPUT"
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare callback destination
-        id: prepare
-        uses: ./.github/actions/foreman-prepare-callback
-        with:
-          callback_url: ${{ inputs.callback_url || github.event.inputs.callback_url || '' }}
-          callback_token: ${{ inputs.callback_token || github.event.inputs.callback_token || '' }}
-          foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
-          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
-          repository: ${{ github.repository }}
-          workflow_name: ${{ github.workflow }}
-          event_name: ${{ github.event_name }}
-          ref: ${{ steps.source.outputs.ref }}
-          sha: ${{ steps.source.outputs.sha }}
+          # Proje adını URL'den çıkar
+          # https://git.projecttick.org/project-tick/projects/meshmc.git → meshmc
+          project=""
+          if [[ -n "$SOURCE_REPOSITORY" ]]; then
+            project="$(basename "$SOURCE_REPOSITORY" .git)"
+          fi
 
-      - name: Report workflow run URL
-        uses: ./.github/actions/foreman-send-callback
-        with:
-          callback_url: ${{ steps.prepare.outputs.callback_url }}
-          callback_token: ${{ steps.prepare.outputs.cb_auth }}
-          endpoint: log_url
-          payload_json: ${{ format('{{"log_url":"{0}/{1}/actions/runs/{2}"}}', github.server_url, github.repository, github.run_id) }}
+          # Version: input > tag'den > ref'den
+          version="$INPUT_VERSION"
+          if [[ -z "$version" ]]; then
+            version="${SOURCE_REF#refs/tags/}"
+            version="${version#refs/heads/}"
+          fi
+          if [[ -z "$version" ]]; then
+            version="$GITHUB_REF_NAME"
+          fi
 
-  meshmc_build:
-    name: MeshMC Build
-    if: ${{ !inputs.beta_source_only }}
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "::notice::Releasing project=$project version=$version"
+
+  # ── MeshMC ──────────────────────────────────────────────────────────────────
+  meshmc:
+    name: "MeshMC Release"
+    needs: resolve
+    if: needs.resolve.outputs.project == 'meshmc'
     uses: ./.github/workflows/meshmc-release.yml
     with:
-      source-ref: ${{ inputs.source-ref }}
+      source-ref: ${{ inputs.source-ref || github.ref }}
       source-repository: ${{ inputs.source-repository || '' }}
     permissions:
       contents: read
@@ -153,122 +134,10 @@ jobs:
       packages: write
     secrets: inherit
 
-
-  neozip_build:
-    name: neozip Build (${{ matrix.name }})
-    runs-on: ${{ matrix.os }}
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Windows MSVC Win32
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A Win32
-            deploy-name: win-x86
-
-          - name: Windows MSVC Win32 Compat
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A Win32 -DZLIB_COMPAT=ON
-            deploy-name: win-x86-compat
-
-          - name: Windows MSVC Win64
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A x64
-            deploy-name: win-x86-64
-
-          - name: Windows MSVC Win64 Compat
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A x64 -DZLIB_COMPAT=ON
-            deploy-name: win-x86-64-compat
-
-          - name: Windows MSVC ARM
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A ARM,version=10.0.22621.0
-            deploy-name: win-arm
-
-          - name: Windows MSVC ARM Compat
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A ARM,version=10.0.22621.0 -DZLIB_COMPAT=ON
-            deploy-name: win-arm-compat
-
-          - name: Windows MSVC ARM64
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A ARM64
-            deploy-name: win-arm64
-
-          - name: Windows MSVC ARM64 Compat
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A ARM64 -DZLIB_COMPAT=ON
-            deploy-name: win-arm64-compat
-
-          - name: Windows MSVC ARM64EC
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A ARM64EC
-            deploy-name: win-arm64ec
-
-          - name: Windows MSVC ARM64EC Compat
-            os: windows-latest
-            compiler: cl
-            cmake-args: -A ARM64EC -DZLIB_COMPAT=ON
-            deploy-name: win-arm64ec-compat
-
-    steps:
-      - name: Checkout repository
-        uses: Project-Tick-Infrastructure/checkout@v2
-        with:
-          ref: ${{ inputs.source-ref || github.ref }}
-          source-repository: ${{ inputs.source-repository || '' }}
-          show-progress: 'false'
-
-      - name: Install Windows 11 SDK (ARM)
-        if: matrix.name == 'Windows MSVC ARM' || matrix.name == 'Windows MSVC ARM Compat'
-        run: |
-          # Windows 11 SDK (10.0.22621.2428)
-          # https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/index-legacy
-          Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=2250105 -OutFile sdksetup.exe -UseBasicParsing
-          Unblock-File sdksetup.exe
-          Start-Process -Wait sdksetup.exe -ArgumentList "/q", "/norestart", "/ceip off"
-
-      - name: Generate project files
-        shell: bash
-        run: |
-          cmake . ${{ matrix.cmake-args }} \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DZLIB_ENABLE_TESTS=ON \
-            -DCMAKE_INSTALL_PREFIX=out \
-            -DINSTALL_UTILS=ON
-        env:
-          CC: ${{ matrix.compiler }}
-          CI: true
-
-      - name: Compile source code
-        working-directory: neozip
-        run: cmake --build . -j5 --config Release --target install
-
-      - name: Package release
-        working-directory: neozip/out
-        run: 7z a -tzip ../neozip-${{ matrix.deploy-name }}.zip bin include lib ../LICENSE.md ../PORTING.md ../README.md
-
-      - name: Upload binary artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: neozip-${{ matrix.deploy-name }}
-          path: neozip/neozip-${{ matrix.deploy-name }}.zip
-          if-no-files-found: error
-
-  meshmc_prepare_source:
-    name: MeshMC Source Archives
+  meshmc-source:
+    name: "MeshMC Source Archives"
+    needs: resolve
+    if: needs.resolve.outputs.project == 'meshmc'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -283,29 +152,20 @@ jobs:
       - name: Set version
         shell: bash
         env:
-          INPUT_VERSION: ${{ inputs.version || '' }}
-          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
-        run: |
-          set -euo pipefail
-          version="$INPUT_VERSION"
-          if [[ -z "$version" ]]; then
-            version="${SOURCE_REF#refs/tags/}"
-            version="${version#refs/heads/}"
-          fi
-          if [[ -z "$version" ]]; then
-            version="$GITHUB_REF_NAME"
-          fi
-          echo "VERSION=$version" >> "$GITHUB_ENV"
+          VERSION: ${{ needs.resolve.outputs.version }}
+        run: echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       # FIXME FIXME FIXME: Fix Patch
       - name: Patch CMakeLists.txt for bundled libraries
         shell: bash
         run: |
-          git apply .github/patches/0001-GHA-RELEASE-Prepare-tarball-with-libraries-in-CMake.patch
+          if [[ -f ".github/patches/0001-GHA-RELEASE-Prepare-tarball-with-libraries-in-CMake.patch" ]]; then
+            git apply .github/patches/0001-GHA-RELEASE-Prepare-tarball-with-libraries-in-CMake.patch
+          fi
 
       - name: Prepare source tree
         id: prepare
-        uses: ./.github/actions/prepare-source-tree
+        uses: Project-Tick/Project-Tick/.github/actions/prepare-source-tree@master
         with:
           project: meshmc
           source-repository: ${{ inputs.source-repository || '' }}
@@ -326,7 +186,7 @@ jobs:
             gitlab:project-tick/projects/xz-embedded:libraries/xz-embedded
 
       - name: Package source archives
-        uses: ./.github/actions/package-source
+        uses: Project-Tick/Project-Tick/.github/actions/package-source@master
         with:
           project: meshmc
           version: ${{ env.VERSION }}
@@ -342,38 +202,57 @@ jobs:
           path: release-artifacts/
           if-no-files-found: error
 
-  package_sources:
-    name: Source Archives (${{ matrix.project }})
+  meshmc-publish:
+    name: "MeshMC Publish"
+    needs: [resolve, meshmc, meshmc-source]
+    if: |
+      always() &&
+      needs.resolve.outputs.project == 'meshmc' &&
+      (needs.meshmc.result == 'success' || needs.meshmc.result == 'skipped') &&
+      needs.meshmc-source.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v2
+        with:
+          ref: ${{ inputs.source-ref || github.ref }}
+          source-repository: ${{ inputs.source-repository || '' }}
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v8
+
+      - name: Stage and deploy
+        uses: Project-Tick/Project-Tick/.github/actions/deploy-release@master
+        with:
+          version: ${{ needs.resolve.outputs.version }}
+          product: meshmc
+          beta-source-only: ${{ inputs.beta_source_only && 'true' || 'false' }}
+          ftp-host: ${{ secrets.FTP_HOST }}
+          ftp-user: ${{ secrets.FTP_USER }}
+          ftp-port: ${{ secrets.FTP_SSH_PORT || '22' }}
+          ftp-key: ${{ secrets.FTP_SSH_PRIVATE_KEY }}
+
+  # ── NeoZip ──────────────────────────────────────────────────────────────────
+  neozip:
+    name: "NeoZip Release"
+    needs: resolve
+    if: needs.resolve.outputs.project == 'neozip'
+    uses: ./.github/workflows/neozip-release.yml
+    with:
+      source-repository: ${{ inputs.source-repository || '' }}
+    permissions:
+      contents: read
+    secrets: inherit
+
+  neozip-source:
+    name: "NeoZip Source Archives"
+    needs: resolve
+    if: needs.resolve.outputs.project == 'neozip'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        project:
-          - cgit
-          - cmark
-          - corebinutils
-          - forgewrapper
-          - genqrcode
-          - images4docker
-          - json4cpp
-          - libnbtplusplus
-          - mnv
-          - tomlplusplus
-          - LocalPeer
-          - classparser
-          - ganalytics
-          - iconfix
-          - javacheck
-          - javalauncher
-          - katabasis
-          - optional-bare
-          - rainbow
-          - systeminfo
-          - xz-embedded
-          - neozip
-
     steps:
       - name: Checkout
         uses: Project-Tick-Infrastructure/checkout@v2
@@ -385,31 +264,20 @@ jobs:
       - name: Set version
         shell: bash
         env:
-          INPUT_VERSION: ${{ inputs.version || '' }}
-          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
-        run: |
-          set -euo pipefail
-          version="$INPUT_VERSION"
-          if [[ -z "$version" ]]; then
-            version="${SOURCE_REF#refs/tags/}"
-            version="${version#refs/heads/}"
-          fi
-          if [[ -z "$version" ]]; then
-            version="$GITHUB_REF_NAME"
-          fi
-          echo "VERSION=$version" >> "$GITHUB_ENV"
+          VERSION: ${{ needs.resolve.outputs.version }}
+        run: echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - name: Prepare source tree
         id: prepare
-        uses: ./.github/actions/prepare-source-tree
+        uses: Project-Tick/Project-Tick/.github/actions/prepare-source-tree@master
         with:
-          project: ${{ matrix.project }}
+          project: neozip
           source-repository: ${{ inputs.source-repository || '' }}
 
       - name: Package source archives
-        uses: ./.github/actions/package-source
+        uses: Project-Tick/Project-Tick/.github/actions/package-source@master
         with:
-          project: ${{ matrix.project }}
+          project: neozip
           version: ${{ env.VERSION }}
           source-dir: ${{ steps.prepare.outputs.source-dir }}
           output-dir: release-artifacts
@@ -419,290 +287,172 @@ jobs:
       - name: Upload source artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: source-${{ matrix.project }}
+          name: neozip-source-archives
           path: release-artifacts/
           if-no-files-found: error
 
-
-  create_release:
-    name: Create Release
-    needs: [meshmc_build, neozip_build, meshmc_prepare_source, package_sources]
+  neozip-publish:
+    name: "NeoZip Publish"
+    needs: [resolve, neozip, neozip-source]
     if: |
       always() &&
-      (needs.meshmc_build.result == 'success' || needs.meshmc_build.result == 'skipped') &&
-      needs.neozip_build.result == 'success' &&
-      needs.meshmc_prepare_source.result == 'success' &&
-      needs.package_sources.result == 'success'
-
+      needs.resolve.outputs.project == 'neozip' &&
+      (needs.neozip.result == 'success' || needs.neozip.result == 'skipped') &&
+      needs.neozip-source.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout (for component version extraction)
+      - name: Checkout
         uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           source-repository: ${{ inputs.source-repository || '' }}
 
-      - name: Set version
-        shell: bash
-        env:
-          INPUT_VERSION: ${{ inputs.version || '' }}
-          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
-        run: |
-          set -euo pipefail
-          version="$INPUT_VERSION"
-          if [[ -z "$version" ]]; then
-            version="${SOURCE_REF#refs/tags/}"
-            version="${version#refs/heads/}"
-          fi
-          if [[ -z "$version" ]]; then
-            version="$GITHUB_REF_NAME"
-          fi
-          echo "VERSION=$version" >> "$GITHUB_ENV"
-
-      - name: Generate components.json
-        shell: bash
-        run: |
-          # Extract MeshMC version from CMakeLists.txt
-          MESHMC_MAJOR=$(grep 'set(MeshMC_VERSION_MAJOR' meshmc/CMakeLists.txt | sed 's/[^0-9]//g')
-          MESHMC_MINOR=$(grep 'set(MeshMC_VERSION_MINOR' meshmc/CMakeLists.txt | sed 's/[^0-9]//g')
-          MESHMC_HOTFIX=$(grep 'set(MeshMC_VERSION_HOTFIX' meshmc/CMakeLists.txt | sed 's/[^0-9]//g')
-          MESHMC_VER="${MESHMC_MAJOR}.${MESHMC_MINOR}.${MESHMC_HOTFIX}"
-
-          # Extract neozip version from zlib.h.in
-          NEOZIP_VER=$(grep '#define NEOZIP_VERSION' neozip/zlib.h.in | sed 's/.*"\(.*\)".*/\1/')
-
-          RELEASE_DATE=$(date -u +%Y-%m-%d)
-
-          cat > components.json <<EOF
-          {
-            "schema_version": 1,
-            "release_tag": "${{ env.VERSION }}",
-            "release_date": "${RELEASE_DATE}",
-            "components": {
-              "meshmc": {
-                "version": "${MESHMC_VER}"
-              },
-              "neozip": {
-                "version": "${NEOZIP_VER}"
-              }
-            }
-          }
-          EOF
-
-          # Remove leading whitespace from heredoc
-          python3 -c "
-          import json, sys
-          with open('components.json') as f:
-              data = json.load(f)
-          with open('components.json', 'w') as f:
-              json.dump(data, f, indent=2)
-              f.write('\n')
-          "
-
-          echo "=== components.json ==="
-          cat components.json
-
       - name: Download all artifacts
         uses: actions/download-artifact@v8
 
-      # ── MeshMC binary packaging ──────────────────────────────────
-      - name: Package MeshMC binary artifacts
-        if: ${{ !inputs.beta_source_only }}
-        run: |
-          # shellcheck disable=SC2086,SC2035
-          mv MeshMC-Linux-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-Portable-${{ env.VERSION }}.tar.gz
-          mv MeshMC-Linux-aarch64-Portable*/MeshMC-portable.tar.gz MeshMC-Linux-aarch64-Portable-${{ env.VERSION }}.tar.gz
-          mv MeshMC-*.AppImage/MeshMC-*-x86_64.AppImage MeshMC-Linux-x86_64.AppImage
-          mv MeshMC-*.AppImage.zsync/MeshMC-*-x86_64.AppImage.zsync MeshMC-Linux-x86_64.AppImage.zsync
-          mv MeshMC-*.AppImage/MeshMC-*-aarch64.AppImage MeshMC-Linux-aarch64.AppImage
-          mv MeshMC-*.AppImage.zsync/MeshMC-*-aarch64.AppImage.zsync MeshMC-Linux-aarch64.AppImage.zsync
-          mv MeshMC-macOS*/MeshMC.zip MeshMC-macOS-${{ env.VERSION }}.zip
-          mv MeshMC-macOS*/MeshMC.dmg MeshMC-macOS-${{ env.VERSION }}.dmg
-
-          for d in MeshMC-Windows-MSVC*; do
-            cd "${d}" || continue
-            LEGACY="$(echo -n "${d}" | grep -o Legacy || true)"
-            ARM64="$(echo -n "${d}" | grep -o arm64 || true)"
-            INST="$(echo -n "${d}" | grep -o Setup || true)"
-            PORT="$(echo -n "${d}" | grep -o Portable || true)"
-            NAME="MeshMC-Windows-MSVC"
-            test -z "${LEGACY}" || NAME="${NAME}-Legacy"
-            test -z "${ARM64}" || NAME="${NAME}-arm64"
-            test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv MeshMC-*.exe "../${NAME}-Setup-${{ env.VERSION }}.exe"
-            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" -- *
-            cd ..
-          done
-
-          for d in MeshMC-Windows-MinGW-w64*; do
-            cd "${d}" || continue
-            INST="$(echo -n "${d}" | grep -o Setup || true)"
-            PORT="$(echo -n "${d}" | grep -o Portable || true)"
-            NAME="MeshMC-Windows-MinGW-w64"
-            test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv MeshMC-*.exe "../${NAME}-Setup-${{ env.VERSION }}.exe"
-            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" -- *
-            cd ..
-          done
-
-          for d in MeshMC-Windows-MinGW-arm64*; do
-            cd "${d}" || continue
-            INST="$(echo -n "${d}" | grep -o Setup || true)"
-            PORT="$(echo -n "${d}" | grep -o Portable || true)"
-            NAME="MeshMC-Windows-MinGW-arm64"
-            test -z "${PORT}" || NAME="${NAME}-Portable"
-            test -z "${INST}" || mv MeshMC-*.exe "../${NAME}-Setup-${{ env.VERSION }}.exe"
-            test -n "${INST}" || zip -r -9 "../${NAME}-${{ env.VERSION }}.zip" -- *
-            cd ..
-          done
-
-      # ── Stage deployment bundle ──────────────────────────────────
-      - name: Stage deployment bundle
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p deploy-bundle
-
-          # MeshMC — packaged binaries (files only, not artifact dirs) + source archives
-          mkdir -p deploy-bundle/meshmc
-          if [[ "${{ inputs.beta_source_only }}" != 'true' ]]; then
-            find . -maxdepth 1 -type f -name 'MeshMC-*' -exec cp {} deploy-bundle/meshmc/ \;
-          fi
-          cp -a meshmc-source-archives/. deploy-bundle/meshmc/
-
-          # NeoZip — binary artifacts + source archives
-          mkdir -p deploy-bundle/neozip
-          for d in neozip-win-*; do
-            [[ -d "$d" ]] || continue
-            cp -a "$d"/. deploy-bundle/neozip/
-          done
-          cp -a source-neozip/. deploy-bundle/neozip/
-
-          # Source-only projects (from package_sources matrix)
-          for project in cgit cmark corebinutils forgewrapper genqrcode images4docker json4cpp libnbtplusplus mnv tomlplusplus LocalPeer classparser ganalytics iconfix javacheck javalauncher katabasis optional-bare rainbow systeminfo xz-embedded; do
-            if [[ -d "source-${project}" ]]; then
-              mkdir -p "deploy-bundle/${project}"
-              cp -a "source-${project}"/. "deploy-bundle/${project}/"
-            fi
-          done
-
-          # Include components.json at root level
-          cp components.json deploy-bundle/
-
-          # Generate SHA-256 checksums for all files in the deploy bundle
-          find deploy-bundle -type f ! -name '*.sha256' | while read -r f; do
-            sha256sum "$f" > "${f}.sha256"
-          done
-
-          echo "=== Deployment bundle ==="
-          find deploy-bundle -type f | sort
-
-      # TODO: refactor this!
-      - name: Upload deployment bundle
-        uses: actions/upload-artifact@v7
+      - name: Stage and deploy
+        uses: Project-Tick/Project-Tick/.github/actions/deploy-release@master
         with:
-          name: deploy-bundle
-          path: deploy-bundle/
-          if-no-files-found: error
+          version: ${{ needs.resolve.outputs.version }}
+          product: neozip
+          ftp-host: ${{ secrets.FTP_HOST }}
+          ftp-user: ${{ secrets.FTP_USER }}
+          ftp-port: ${{ secrets.FTP_SSH_PORT || '22' }}
+          ftp-key: ${{ secrets.FTP_SSH_PRIVATE_KEY }}
 
-      - name: Set version
-        shell: bash
-        env:
-          INPUT_VERSION: ${{ inputs.version || '' }}
-          SOURCE_REF: ${{ inputs.source-ref || github.ref }}
-        run: |
-          set -euo pipefail
-          version="$INPUT_VERSION"
-          if [[ -z "$version" ]]; then
-            version="${SOURCE_REF#refs/tags/}"
-            version="${version#refs/heads/}"
-          fi
-          if [[ -z "$version" ]]; then
-            version="$GITHUB_REF_NAME"
-          fi
-          echo "VERSION=$version" >> "$GITHUB_ENV"
-
-      - name: Download deployment bundle
-        uses: actions/download-artifact@v8
-        with:
-          name: deploy-bundle
-          path: deploy-bundle
-
-      - name: Prepare SSH credentials
-        shell: bash
-        env:
-          FTP_SSH_KEY: ${{ secrets.FTP_SSH_PRIVATE_KEY }}
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_PORT: ${{ secrets.FTP_SSH_PORT || '22' }}
-        run: |
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$FTP_SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -p "$FTP_PORT" -H "$FTP_HOST" >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Deploy artifacts to server
-        shell: bash
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PORT: ${{ secrets.FTP_SSH_PORT || '22' }}
-          REMOTE_BASE: /var/www/ftp/Project-Tick
-        run: |
-          set -euo pipefail
-
-          # Deploy components.json to release base directory
-          if [[ -f deploy-bundle/components.json ]]; then
-            ssh -p "$FTP_PORT" "$FTP_USER@$FTP_HOST" "mkdir -p '${REMOTE_BASE}'"
-            rsync -av --chmod=F644 \
-              -e "ssh -p ${FTP_PORT} -o StrictHostKeyChecking=yes" \
-              deploy-bundle/components.json \
-              "${FTP_USER}@${FTP_HOST}:${REMOTE_BASE}/components-${VERSION}.json"
-          fi
-
-          # Deploy per-product artifacts
-          for product_dir in deploy-bundle/*/; do
-            [[ -d "$product_dir" ]] || continue
-            product="$(basename "$product_dir")"
-            remote="${REMOTE_BASE}/${product}/releases/download/${VERSION}"
-
-            echo "::group::Deploying ${product} → ${remote}"
-            ssh -p "$FTP_PORT" "$FTP_USER@$FTP_HOST" "mkdir -p '${remote}'"
-            rsync -av --chmod=D755,F644 \
-              -e "ssh -p ${FTP_PORT} -o StrictHostKeyChecking=yes" \
-              "${product_dir}" \
-              "${FTP_USER}@${FTP_HOST}:${remote}/"
-            echo "::endgroup::"
-          done
-
-  callback-status:
-    name: "Callback Status"
-    if: ${{ inputs.emit-callbacks && always() }}
-    needs:
-      - callback-start
-      - meshmc_build
-      - neozip_build
-      - meshmc_prepare_source
-      - package_sources
-      - create_release
+  # ── Source-only projects ─────────────────────────────────────────
+  # cgit, cmark, corebinutils, forgewrapper, genqrcode,
+  # json4cpp, libnbtplusplus, mnv, tomlplusplus
+  source-only:
+    name: "Source Archives (${{ needs.resolve.outputs.project }})"
+    needs: resolve
+    if: |
+      needs.resolve.outputs.project != '' &&
+      needs.resolve.outputs.project != 'meshmc' &&
+      needs.resolve.outputs.project != 'neozip'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: Project-Tick-Infrastructure/checkout@v2
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v2
+        with:
+          ref: ${{ inputs.source-ref || github.ref }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: recursive
+
+      - name: Set version
+        shell: bash
+        env:
+          VERSION: ${{ needs.resolve.outputs.version }}
+        run: echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Prepare source tree
+        id: prepare
+        uses: Project-Tick/Project-Tick/.github/actions/prepare-source-tree@master
+        with:
+          project: ${{ needs.resolve.outputs.project }}
+          source-repository: ${{ inputs.source-repository || '' }}
+
+      - name: Package source archives
+        uses: Project-Tick/Project-Tick/.github/actions/package-source@master
+        with:
+          project: ${{ needs.resolve.outputs.project }}
+          version: ${{ env.VERSION }}
+          source-dir: ${{ steps.prepare.outputs.source-dir }}
+          output-dir: release-artifacts
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-private-key-id: ${{ secrets.GPG_PRIVATE_KEY_ID }}
+
+      - name: Upload source artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-${{ needs.resolve.outputs.project }}
+          path: release-artifacts/
+          if-no-files-found: error
+
+  source-only-publish:
+    name: "Publish (${{ needs.resolve.outputs.project }})"
+    needs: [resolve, source-only]
+    if: |
+      always() &&
+      needs.resolve.outputs.project != '' &&
+      needs.resolve.outputs.project != 'meshmc' &&
+      needs.resolve.outputs.project != 'neozip' &&
+      needs.source-only.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v2
         with:
           ref: ${{ inputs.source-ref || github.ref }}
           source-repository: ${{ inputs.source-repository || '' }}
 
-      - name: Resolve cancelled workflow status
-        id: resolve-status-cancelled
-        if: ${{ cancelled() }}
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: source-${{ needs.resolve.outputs.project }}
+          path: deploy-artifacts
+
+      - name: Deploy to FTP
         shell: bash
+        env:
+          VERSION: ${{ needs.resolve.outputs.version }}
+          PRODUCT: ${{ needs.resolve.outputs.project }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PORT: ${{ secrets.FTP_SSH_PORT || '22' }}
+          FTP_KEY: ${{ secrets.FTP_SSH_PRIVATE_KEY }}
+          REMOTE_BASE: /var/www/ftp/Project-Tick
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$FTP_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$FTP_PORT" -H "$FTP_HOST" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+          remote="${REMOTE_BASE}/${PRODUCT}/releases/download/${VERSION}"
+          ssh -p "$FTP_PORT" "$FTP_USER@$FTP_HOST" "mkdir -p '${remote}'"
+          rsync -av --chmod=D755,F644 \
+            -e "ssh -p ${FTP_PORT} -o StrictHostKeyChecking=yes" \
+            deploy-artifacts/ \
+            "${FTP_USER}@${FTP_HOST}:${remote}/"
+
+  # ── Callback Status ──────────────────────────────────────────────────────────
+  callback-status:
+    name: "Callback Status"
+    if: always()
+    needs:
+      - resolve
+      - meshmc
+      - meshmc-source
+      - meshmc-publish
+      - neozip
+      - neozip-source
+      - neozip-publish
+      - source-only
+      - source-only-publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v2
+        with:
+          ref: ${{ inputs.source-ref || github.ref }}
+          source-repository: ${{ inputs.source-repository || '' }}
+
+      - name: Resolve cancelled status
+        id: resolve-cancelled
+        if: cancelled()
         run: echo "status=cancelled" >> "$GITHUB_OUTPUT"
 
-      - name: Resolve final workflow status
+      - name: Resolve final status
         id: resolve-status
         if: ${{ !cancelled() }}
         shell: bash
@@ -710,23 +460,22 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           set -euo pipefail
-
           status="success"
-          if jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
+          if jq -e 'to_entries[] | select(.value.result == "failure")' <<< "$NEEDS_JSON" >/dev/null; then
             status="failure"
-          elif jq -e 'to_entries[] | select(.key != "callback-start" and .value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
+          elif jq -e 'to_entries[] | select(.value.result == "cancelled")' <<< "$NEEDS_JSON" >/dev/null; then
             status="cancelled"
           fi
-
           echo "status=$status" >> "$GITHUB_OUTPUT"
 
-      - name: Report final workflow status
-        if: ${{ always() }}
-        uses: ./.github/actions/foreman-send-callback
+      - name: Report final status
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-send-callback@master
         with:
-          callback_url: ${{ needs.callback-start.outputs.callback_url }}
-          pipeline_id: ${{ needs.callback-start.outputs.pipeline_id }}
+          callback_url: ${{ inputs.callback_url || '' }}
+          callback_token: ${{ inputs.callback_token || '' }}
+          pipeline_id: ""
           foreman_base_url: ${{ vars.FOREMAN_BASE_URL || 'https://builds.projecttick.net' }}
           foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
           endpoint: status
-          payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-status-cancelled.outputs.status || steps.resolve-status.outputs.status || 'failure') }}
+          payload_json: ${{ format('{{"status":"{0}"}}', steps.resolve-cancelled.outputs.status || steps.resolve-status.outputs.status || 'failure') }}

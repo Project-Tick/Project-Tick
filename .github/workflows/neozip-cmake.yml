@@ -97,7 +97,7 @@ jobs:
       - name: Generate project files
         shell: bash
         run: |
-          cmake -S neozip -B build \
+          cmake -S . -B build \
             ${{ matrix.cmake-args }} \
             -DCMAKE_BUILD_TYPE=Release \
             -DWITH_MAINTAINER_WARNINGS=ON

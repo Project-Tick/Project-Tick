@@ -30,8 +30,8 @@ runs:
       if: ${{ inputs.msystem != '' }}
       shell: msys2 {0}
       env:
-        BUILD_DIR: meshmc/build
-        INSTALL_DIR: meshmc/install
+        BUILD_DIR: build
+        INSTALL_DIR: install
       run: |
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
         touch ${{ env.INSTALL_DIR }}/manifest.txt
@@ -41,8 +41,8 @@ runs:
       if: ${{ inputs.msystem == '' }}
       shell: pwsh
       env:
-        BUILD_DIR: meshmc/build
-        INSTALL_DIR: meshmc/install
+        BUILD_DIR: build
+        INSTALL_DIR: install
       run: |
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
 
@@ -58,7 +58,7 @@ runs:
     - name: Sign executable
       shell: pwsh
       env:
-        INSTALL_DIR: meshmc/install
+        INSTALL_DIR: install
       run: |
         if (Get-Content ./codesign.pfx){
           cd ${{ env.INSTALL_DIR }}
@@ -72,9 +72,9 @@ runs:
       if: ${{ inputs.msystem != '' }}
       shell: msys2 {0}
       env:
-        BUILD_DIR: meshmc/build
-        INSTALL_DIR: meshmc/install
-        INSTALL_PORTABLE_DIR: meshmc/install-portable
+        BUILD_DIR: build
+        INSTALL_DIR: install
+        INSTALL_PORTABLE_DIR: install-portable
       run: |
         cp -r ${{ env.INSTALL_DIR }} ${{ env.INSTALL_PORTABLE_DIR }}  # cmake install on Windows is slow, let's just copy instead
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_PORTABLE_DIR }} --component portable
@@ -84,9 +84,9 @@ runs:
       if: ${{ inputs.msystem == '' }}
       shell: pwsh
       env:
-        BUILD_DIR: meshmc/build
-        INSTALL_DIR: meshmc/install
-        INSTALL_PORTABLE_DIR: meshmc/install-portable
+        BUILD_DIR: build
+        INSTALL_DIR: install
+        INSTALL_PORTABLE_DIR: install-portable
       run: |
         cp -r ${{ env.INSTALL_DIR }} ${{ env.INSTALL_PORTABLE_DIR }}  # cmake install on Windows is slow, let's just copy instead
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_PORTABLE_DIR }} --component portable
@@ -96,8 +96,8 @@ runs:
     - name: Package (installer)
       shell: pwsh
       env:
-        BUILD_DIR: meshmc/build
-        INSTALL_DIR: meshmc/install
+        BUILD_DIR: build
+        INSTALL_DIR: install
 
         NSCURL_VERSION: "v24.9.26.122"
         NSCURL_SHA256: "AEE6C4BE3CB6455858E9C1EE4B3AFE0DB9960FA03FE99CCDEDC28390D57CCBB0"
@@ -118,7 +118,7 @@ runs:
       shell: pwsh
       run: |
           if (Get-Content ./codesign.pfx){
-            SignTool sign /fd sha256 /td sha256 /f codesign.pfx /p '${{ inputs.windows-codesign-password }}' /tr http://timestamp.digicert.com meshmc/MeshMC-Setup.exe
+            SignTool sign /fd sha256 /td sha256 /f codesign.pfx /p '${{ inputs.windows-codesign-password }}' /tr http://timestamp.digicert.com MeshMC-Setup.exe
           } else {
             ":warning: Skipped code signing for Windows, as certificate was not present." >> $env:GITHUB_STEP_SUMMARY
           }
@@ -127,16 +127,16 @@ runs:
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ inputs.artifact-name }}-${{ inputs.version }}-${{ inputs.build-type }}
-        path: meshmc/install/**
+        path: install/**
 
     - name: Upload portable zip
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ inputs.artifact-name }}-Portable-${{ inputs.version }}-${{ inputs.build-type }}
-        path: meshmc/install-portable/**
+        path: install-portable/**
 
     - name: Upload installer
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ inputs.artifact-name }}-Setup-${{ inputs.version }}-${{ inputs.build-type }}
-        path: meshmc/MeshMC-Setup.exe
+        path: MeshMC-Setup.exe

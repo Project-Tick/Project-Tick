@@ -65,7 +65,7 @@ jobs:
     env:
       GPG_KEY_ID: ${{ secrets.FLATPAK_GPG_PRIVATE_KEY != '' && vars.GPG_KEY_ID || '' }}
       REPOSITORY_DIR: repo
-      REPOSITORY_PATH: meshmc/flatpak/repo
+      REPOSITORY_PATH: flatpak/repo
 
     steps:
       - name: Free up disk space
@@ -114,7 +114,7 @@ jobs:
         # TODO(@YongDo-Hyun): Pin this to a tag when https://github.com/flatpak/flatpak-github-actions/pull/237 is included in a release!
         uses: flatpak/flatpak-github-actions/flatpak-builder@0a631396999e4243489a8a6ecf54fcb9f0575078
         with:
-          manifest-path: meshmc/flatpak/org.projecttick.MeshMC.yml
+          manifest-path: flatpak/org.projecttick.MeshMC.yml
           arch: ${{ matrix.arch }}
           branch: nightly
           bundle: MeshMC-${{ env.VERSION }}-${{ matrix.arch }}.flatpak

@@ -39,7 +39,7 @@ jobs:
         run: cmake --build zlib/build -j5 --config Release
 
       - name: Generate project files (native)
-        run: cmake -S neozip -B build-native -DZLIB_COMPAT=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DZLIB_LIBRARIES=../zlib/build/libz.a -DZLIB_INCLUDE_DIR="../zlib/build;../zlib"
+        run: cmake -S . -B build-native -DZLIB_COMPAT=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DZLIB_LIBRARIES=../zlib/build/libz.a -DZLIB_INCLUDE_DIR="../zlib/build;../zlib"
 
       - name: Compile source code (native)
         run: cmake --build build-native -j5 --config Release
@@ -64,13 +64,13 @@ jobs:
           show-progress: 'false'
 
       - name: Generate project files (compat)
-        run: cmake -S neozip -B build-compat -DZLIB_COMPAT=ON -DZLIB_ENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DWITH_MAINTAINER_WARNINGS=ON
+        run: cmake -S . -B build-compat -DZLIB_COMPAT=ON -DZLIB_ENABLE_TESTS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DWITH_MAINTAINER_WARNINGS=ON
 
       - name: Compile source code (compat)
         run: cmake --build build-compat -j5 --config Release
 
       - name: Generate project files (native)
-        run: cmake -S neozip -B build-native -DZLIB_COMPAT=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DZLIB_LIBRARIES=../build-compat/libz.a -DZLIB_INCLUDE_DIR=../build-compat
+        run: cmake -S . -B build-native -DZLIB_COMPAT=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DZLIB_LIBRARIES=../build-compat/libz.a -DZLIB_INCLUDE_DIR=../build-compat
 
       - name: Compile source code (native)
         run: cmake --build build-native -j5 --config Release

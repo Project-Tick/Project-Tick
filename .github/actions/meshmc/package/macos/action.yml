@@ -56,8 +56,8 @@ runs:
     - name: Package
       shell: bash
       env:
-        BUILD_DIR: meshmc/build
-        INSTALL_DIR: meshmc/install
+        BUILD_DIR: build
+        INSTALL_DIR: install
       run: |
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }}
 
@@ -77,7 +77,7 @@ runs:
     - name: Notarize
       shell: bash
       env:
-        INSTALL_DIR: meshmc/install
+        INSTALL_DIR: install
       run: |
         cd ${{ env.INSTALL_DIR }}
 
@@ -98,7 +98,7 @@ runs:
     - name: Create DMG
       shell: bash
       env:
-        INSTALL_DIR: meshmc/install
+        INSTALL_DIR: install
       run: |
         cd ${{ env.INSTALL_DIR }}
 
@@ -118,8 +118,8 @@ runs:
       run: |
         if [ '${{ inputs.sparkle-ed25519-key }}' != '' ]; then
           echo '${{ inputs.sparkle-ed25519-key }}' > ed25519-priv.pem
-          signature_zip=$(/opt/homebrew/opt/openssl@3/bin/openssl pkeyutl -sign -rawin -in ${{ github.workspace }}/meshmc/MeshMC.zip -inkey ed25519-priv.pem | openssl base64 | tr -d \\n)
-          signature_dmg=$(/opt/homebrew/opt/openssl@3/bin/openssl pkeyutl -sign -rawin -in ${{ github.workspace }}/meshmc/MeshMC.dmg -inkey ed25519-priv.pem | openssl base64 | tr -d \\n) 
+          signature_zip=$(/opt/homebrew/opt/openssl@3/bin/openssl pkeyutl -sign -rawin -in ${{ github.workspace }}/MeshMC.zip -inkey ed25519-priv.pem | openssl base64 | tr -d \\n)
+          signature_dmg=$(/opt/homebrew/opt/openssl@3/bin/openssl pkeyutl -sign -rawin -in ${{ github.workspace }}/MeshMC.dmg -inkey ed25519-priv.pem | openssl base64 | tr -d \\n) 
           rm ed25519-priv.pem
           cat >> $GITHUB_STEP_SUMMARY << EOF
         ### Artifact Information :information_source:
@@ -137,10 +137,10 @@ runs:
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ inputs.artifact-name }}-${{ inputs.version }}-${{ inputs.build-type }}
-        path: meshmc/MeshMC.zip
+        path: MeshMC.zip
 
     - name: Upload disk image
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ inputs.artifact-name }}-${{ inputs.version }}-${{ inputs.build-type }}.dmg
-        path: meshmc/MeshMC.dmg
+        path: MeshMC.dmg

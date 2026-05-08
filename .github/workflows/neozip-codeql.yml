@@ -47,13 +47,13 @@ jobs:
       - name: Build default config
         shell: bash
         run: |
-          cmake -B build-default -S neozip ${{ runner.os == 'Windows' && '-A x64' || '' }}
+          cmake -B build-default -S . ${{ runner.os == 'Windows' && '-A x64' || '' }}
           cmake --build build-default -j4
 
       - name: Build compat config
         shell: bash
         run: |
-          cmake -B build-compat -S neozip -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_REDUCED_MEM=ON ${{ runner.os == 'Windows' && '-A x64' || '' }}
+          cmake -B build-compat -S . -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_REDUCED_MEM=ON ${{ runner.os == 'Windows' && '-A x64' || '' }}
           cmake --build build-compat -j4
 
       - name: Perform CodeQL Analysis

@@ -65,8 +65,8 @@ runs:
       shell: bash
       env:
         VERSION: ${{ github.ref_type == 'tag' && github.ref_name || inputs.version }}
-        BUILD_DIR: meshmc/build
-        INSTALL_APPIMAGE_DIR: meshmc/install-appdir
+        BUILD_DIR: build
+        INSTALL_APPIMAGE_DIR: install-appdir
 
         GPG_PRIVATE_KEY: ${{ inputs.gpg-private-key }}
       run: |
@@ -101,9 +101,9 @@ runs:
         ls -la "$INSTALL_APPIMAGE_DIR"
 
         if [[ "${{ github.ref_type }}" == "tag" ]]; then
-          APPIMAGE_DEST="meshmc/MeshMC-Linux-$APPIMAGE_ARCH.AppImage"
+          APPIMAGE_DEST="MeshMC-Linux-$APPIMAGE_ARCH.AppImage"
         else
-          APPIMAGE_DEST="meshmc/MeshMC-Linux-$VERSION-${{ inputs.build-type }}-$APPIMAGE_ARCH.AppImage"
+          APPIMAGE_DEST="MeshMC-Linux-$VERSION-${{ inputs.build-type }}-$APPIMAGE_ARCH.AppImage"
         fi
 
         mkappimage \
@@ -114,9 +114,9 @@ runs:
     - name: Package portable tarball
       shell: bash
       env:
-        BUILD_DIR: meshmc/build
+        BUILD_DIR: build
 
-        INSTALL_PORTABLE_DIR: meshmc/install-portable
+        INSTALL_PORTABLE_DIR: install-portable
       run: |
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_PORTABLE_DIR }}
         cmake --install ${{ env.BUILD_DIR }} --config ${{ inputs.build-type }} --prefix ${{ env.INSTALL_PORTABLE_DIR }} --component portable
@@ -154,16 +154,16 @@ runs:
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ inputs.artifact-name }}-Portable-${{ inputs.version }}-${{ inputs.build-type }}
-        path: meshmc/MeshMC-portable.tar.gz
+        path: MeshMC-portable.tar.gz
 
     - name: Upload AppImage
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ runner.os }}-${{ inputs.version }}-${{ inputs.build-type }}-${{ env.APPIMAGE_ARCH }}.AppImage
-        path: meshmc/MeshMC-${{ runner.os }}-*${{ env.APPIMAGE_ARCH }}.AppImage
+        path: MeshMC-${{ runner.os }}-*${{ env.APPIMAGE_ARCH }}.AppImage
 
     - name: Upload AppImage Zsync
       uses: actions/upload-artifact@v7
       with:
         name: MeshMC-${{ runner.os }}-${{ inputs.version }}-${{ inputs.build-type }}-${{ env.APPIMAGE_ARCH }}.AppImage.zsync
-        path: meshmc/MeshMC-${{ runner.os }}-*${{ env.APPIMAGE_ARCH }}.AppImage.zsync
+        path: MeshMC-${{ runner.os }}-*${{ env.APPIMAGE_ARCH }}.AppImage.zsync

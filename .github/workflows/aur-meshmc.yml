@@ -1,5 +1,5 @@
 # Copyright (C) Project Tick
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 name: "AUR: Update meshmc"
 
 on:
@@ -39,15 +39,15 @@ jobs:
       - name: Extract MeshMC version
         shell: bash
         run: |
-          MAJOR=$(grep 'set(MeshMC_VERSION_MAJOR' meshmc/CMakeLists.txt | sed 's/[^0-9]//g')
-          MINOR=$(grep 'set(MeshMC_VERSION_MINOR' meshmc/CMakeLists.txt | sed 's/[^0-9]//g')
-          HOTFIX=$(grep 'set(MeshMC_VERSION_HOTFIX' meshmc/CMakeLists.txt | sed 's/[^0-9]//g')
+          MAJOR=$(grep 'set(MeshMC_VERSION_MAJOR' CMakeLists.txt | sed 's/[^0-9]//g')
+          MINOR=$(grep 'set(MeshMC_VERSION_MINOR' CMakeLists.txt | sed 's/[^0-9]//g')
+          HOTFIX=$(grep 'set(MeshMC_VERSION_HOTFIX' CMakeLists.txt | sed 's/[^0-9]//g')
           echo "PKGVER=${MAJOR}.${MINOR}.${HOTFIX}" >> "$GITHUB_ENV"
 
       - name: Download tarball and compute b2sum
         shell: bash
         run: |
-          TARBALL_URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/meshmc-${TAG}.tar.gz"
+          TARBALL_URL="https://ftp.projecttick.org/Project-Tick/meshmc/releases/download/${TAG}/meshmc-${TAG}.tar.gz"
           curl -fSL -o /tmp/meshmc-tarball.tar.gz "${TARBALL_URL}"
           B2SUM=$(b2sum /tmp/meshmc-tarball.tar.gz | awk '{print $1}')
           echo "TARBALL_B2SUM=${B2SUM}" >> "$GITHUB_ENV"

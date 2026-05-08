@@ -27,7 +27,7 @@ jobs:
 
       - name: Generate project files (neozip)
         run: |
-          cmake -S neozip -B build-neozip \
+          cmake -S . -B build-neozip \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DZLIB_COMPAT=ON \

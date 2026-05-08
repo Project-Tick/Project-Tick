@@ -56,18 +56,18 @@ jobs:
             -DZLIB_ROOT=../.. \
             -DWITH_CODE_COVERAGE=OFF \
             -DWITH_MAINTAINER_WARNINGS=ON
-        working-directory: neozip/test/pigz
+        working-directory: test/pigz
         env:
           CC: ${{ matrix.compiler }}
           CI: true
 
       - name: Compile source code
         run: cmake --build . -j5 --config Release
-        working-directory: neozip/test/pigz
+        working-directory: test/pigz
 
       - name: Run test cases
         run: ctest --verbose -C Release --output-on-failure --max-width 120 -j 5
-        working-directory: neozip/test/pigz
+        working-directory: test/pigz
 
       - name: Upload build errors
         uses: actions/upload-artifact@v7

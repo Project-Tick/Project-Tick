@@ -60,21 +60,18 @@ jobs:
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Compare builds
-        working-directory: neozip
         run: sh test/pkgcheck.sh
         env:
           CC: ${{ matrix.compiler }}
           CXX: ${{ matrix.cxx-compiler }}
 
       - name: Compare builds (compat)
-        working-directory: neozip
         run: sh test/pkgcheck.sh --zlib-compat
         env:
           CC: ${{ matrix.compiler }}
 
       - name: Check ABI
         if: runner.os != 'macOS'
-        working-directory: neozip
         run: sh test/abicheck.sh --refresh-if
         env:
           CC: ${{ matrix.compiler }}
@@ -82,7 +79,6 @@ jobs:
 
       - name: Check ABI (compat)
         if: runner.os != 'macOS'
-        working-directory: neozip
         run: sh test/abicheck.sh --zlib-compat --refresh-if
         env:
           CC: ${{ matrix.compiler }}
@@ -94,7 +90,7 @@ jobs:
         with:
           name: ${{ matrix.name }}
           path: |
-            neozip/**/*.abi
-            neozip/btmp1/configure.log
-            neozip/btmp2/configure.log
+            ./**/*.abi
+            ./btmp1/configure.log
+            ./btmp2/configure.log
           retention-days: 30

@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate project files
         run: |
-          cmake -S neozip -B build \
+          cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF \
             -DWITH_FUZZERS=OFF \
@@ -76,7 +76,7 @@ jobs:
       - name: Generate project files
         run: |
           scan-build --status-bugs \
-            cmake -S neozip -B build \
+            cmake -S . -B build \
               -DCMAKE_BUILD_TYPE=Release \
               -DBUILD_SHARED_LIBS=OFF \
               -DWITH_FUZZERS=OFF \

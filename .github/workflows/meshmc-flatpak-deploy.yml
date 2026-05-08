@@ -54,7 +54,7 @@ jobs:
 
       - name: Prepare callback destination
         id: prepare
-        uses: ./.github/actions/foreman-prepare-callback
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-prepare-callback@master
         with:
           callback_url: ${{ inputs.callback_url || github.event.inputs.callback_url || '' }}
           callback_token: ${{ inputs.callback_token || github.event.inputs.callback_token || '' }}
@@ -68,7 +68,7 @@ jobs:
           schedule: ${{ github.event.schedule || '' }}
 
       - name: Report workflow run URL
-        uses: ./.github/actions/foreman-send-callback
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-send-callback@master
         with:
           callback_url: ${{ steps.prepare.outputs.callback_url }}
           cb_auth: ${{ steps.prepare.outputs.cb_auth }}
@@ -224,7 +224,7 @@ jobs:
 
       - name: Report final workflow status
         if: ${{ always() }}
-        uses: ./.github/actions/foreman-send-callback
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-send-callback@master
         with:
           callback_url: ${{ needs.callback-start.outputs.callback_url }}
           pipeline_id: ${{ needs.callback-start.outputs.pipeline_id }}

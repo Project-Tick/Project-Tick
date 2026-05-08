@@ -62,7 +62,6 @@ jobs:
           HOMEBREW_NO_INSTALL_CLEANUP: 1
 
       - name: Generate project files
-        working-directory: neozip
         run: ./configure ${{ matrix.configure-args }}
         env:
           CC: ${{ matrix.compiler }}
@@ -72,11 +71,9 @@ jobs:
 
       - name: Compile source code
         run: make -j5
-        working-directory: neozip
 
       - name: Run test cases
         run: make test
-        working-directory: neozip
 
       - name: Upload build errors
         uses: actions/upload-artifact@v7
@@ -84,6 +81,6 @@ jobs:
         with:
           name: ${{ matrix.name }} (configure)
           path: |
-            neozip/Makefile
-            neozip/configure.log
+            Makefile
+            configure.log
           retention-days: 30

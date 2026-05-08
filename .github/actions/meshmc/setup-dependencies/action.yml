@@ -40,19 +40,19 @@ runs:
   steps:
     - name: Setup Linux dependencies
       if: ${{ runner.os == 'Linux' }}
-      uses: ./.github/actions/meshmc/setup-dependencies/linux
+      uses: Project-Tick/Project-Tick/.github/actions/meshmc/setup-dependencies/linux@master
       with:
         github-token: ${{ inputs.github-token }}
 
     - name: Setup macOS dependencies
       if: ${{ runner.os == 'macOS' }}
-      uses: ./.github/actions/meshmc/setup-dependencies/macos
+      uses: Project-Tick/Project-Tick/.github/actions/meshmc/setup-dependencies/macos@master
       with:
         build-type: ${{ inputs.build-type }}
 
     - name: Setup Windows dependencies
       if: ${{ runner.os == 'Windows' }}
-      uses: ./.github/actions/meshmc/setup-dependencies/windows
+      uses: Project-Tick/Project-Tick/.github/actions/meshmc/setup-dependencies/windows@master
       with:
         build-type: ${{ inputs.build-type }}
         msystem: ${{ inputs.msystem }}
