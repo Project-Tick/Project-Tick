@@ -5,7 +5,7 @@ name: "Dependency Review"
 on:
   workflow_dispatch:
   workflow_call:
-      inputs:
+    inputs:
       foreman-pipeline-id:
         description: Foreman pipeline ID for log streaming.
         type: string

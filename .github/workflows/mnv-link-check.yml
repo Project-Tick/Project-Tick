@@ -3,12 +3,12 @@ name: "mnv: Check Links"
 on:
   workflow_dispatch:
   workflow_call:
-
-      inputs:
+    inputs:
       foreman-pipeline-id:
         description: Foreman pipeline ID for log streaming.
         type: string
         default: ""
+
 jobs:
   lychee:
     runs-on: ubuntu-latest
