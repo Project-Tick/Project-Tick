@@ -82,21 +82,21 @@ runs:
           cd ..
         done
 
-        for d in MeshMC-Windows-MinGW-w64* MeshMC-Windows-MinGW-arm64*; do
-          [[ -d "$d" ]] || continue
-          cd "$d"
-          INST="$(echo -n "$d" | grep -o Setup || true)"
-          PORT="$(echo -n "$d" | grep -o Portable || true)"
-          if echo "$d" | grep -q arm64; then
-            NAME="MeshMC-Windows-MinGW-arm64"
-          else
-            NAME="MeshMC-Windows-MinGW-w64"
-          fi
-          [[ -z "$PORT" ]] || NAME="${NAME}-Portable"
-          [[ -z "$INST" ]] || mv MeshMC-*.exe "../${NAME}-Setup-${VERSION}.exe"
-          [[ -n "$INST" ]] || zip -r -9 "../${NAME}-${VERSION}.zip" -- *
-          cd ..
-        done
+        # for d in MeshMC-Windows-MinGW-w64* MeshMC-Windows-MinGW-arm64*; do
+        #   [[ -d "$d" ]] || continue
+        #   cd "$d"
+        #   INST="$(echo -n "$d" | grep -o Setup || true)"
+        #   PORT="$(echo -n "$d" | grep -o Portable || true)"
+        #   if echo "$d" | grep -q arm64; then
+        #     NAME="MeshMC-Windows-MinGW-arm64"
+        #   else
+        #     NAME="MeshMC-Windows-MinGW-w64"
+        #   fi
+        #   [[ -z "$PORT" ]] || NAME="${NAME}-Portable"
+        #   [[ -z "$INST" ]] || mv MeshMC-*.exe "../${NAME}-Setup-${VERSION}.exe"
+        #   [[ -n "$INST" ]] || zip -r -9 "../${NAME}-${VERSION}.zip" -- *
+        #   cd ..
+        # done
 
     - name: Stage deployment bundle
       shell: bash
