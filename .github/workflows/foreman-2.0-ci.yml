@@ -71,6 +71,7 @@ jobs:
         uses: Project-Tick-Infrastructure/checkout@v3
         with:
           source-repository: ${{ inputs.source-repository || '' }}
+          object-format: sha256
           submodules: true
 
       - name: Set up Ruby
@@ -144,6 +145,7 @@ jobs:
         uses: Project-Tick-Infrastructure/checkout@v3
         with:
           source-repository: ${{ inputs.source-repository || '' }}
+          object-format: sha256
           submodules: true
 
       - name: Set up Ruby
