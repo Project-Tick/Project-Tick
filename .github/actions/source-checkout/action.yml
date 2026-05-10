@@ -70,16 +70,13 @@ inputs:
     description: >
       Token used to authenticate against the external source repository over
       HTTPS. Composite actions cannot read `secrets.*` directly, so the calling
-      workflow must forward the secret explicitly, e.g.
-      `source-auth-token: ${{ secrets.PT_GITLAB_SOURCE_TOKEN }}`.
-      Ignored when source-repository is empty or not an https:// URL.
+      workflow must forward the secret explicitly.
     default: ""
   source-auth-username:
     description: >
       Username paired with source-auth-token for HTTPS basic auth. Defaults to
       "oauth2" which is the convention for GitLab personal/project access
-      tokens. Override via the calling workflow if needed, e.g.
-      `source-auth-username: ${{ vars.PT_GITLAB_SOURCE_USERNAME }}`.
+      tokens. Override via the calling workflow if needed.
     default: "oauth2"
 
 outputs:

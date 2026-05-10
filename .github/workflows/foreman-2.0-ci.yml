@@ -68,7 +68,7 @@ jobs:
           job_name: ${{ github.job }}
 
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v4
+        uses: Project-Tick-Infrastructure/checkout@v5
         with:
           source-repository: ${{ inputs.source-repository || '' }}
           object-format: sha256
@@ -142,7 +142,7 @@ jobs:
           job_name: ${{ github.job }}
 
       - name: Checkout
-        uses: Project-Tick-Infrastructure/checkout@v4
+        uses: Project-Tick-Infrastructure/checkout@v5
         with:
           source-repository: ${{ inputs.source-repository || '' }}
           object-format: sha256
