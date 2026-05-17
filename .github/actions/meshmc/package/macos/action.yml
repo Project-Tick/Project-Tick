@@ -86,6 +86,114 @@ runs:
                               "$_fw"
               done
         fi
+
+        # ─────────────────────────────────────────────────────────────
+        # Sign each .mmco loadable bundle.
+        #
+        # This is the part that took us four CI rounds to get right.
+        # The fundamental tension:
+        #
+        #   * Every .mmco is a Mach-O loadable bundle with a custom
+        #     RSA trailer appended after the image (see
+        #     scripts/mmco_sign.py). The trailer carries our own
+        #     plugin-trust signature; the launcher refuses to load
+        #     a .mmco whose trailer is missing or doesn't verify.
+        #
+        #   * Apple's codesign --strict (which notarization enforces
+        #     implicitly when it walks the bundle) demands that
+        #     every Mach-O under Contents/PlugIns/ carry an Apple
+        #     signature in its LC_CODE_SIGNATURE / __LINKEDIT
+        #     region. If it doesn't, sealing the parent fails with
+        #         "code object is not signed at all
+        #          In subcomponent: .../mmcmodules/Foo.mmco"
+        #     — the exact failure we kept hitting.
+        #
+        # The two signatures land in different physical regions of
+        # the file:
+        #
+        #   * Apple's signature lives inside __LINKEDIT, and the
+        #     Mach-O load commands describe the image as ending at
+        #     __LINKEDIT.fileoff + __LINKEDIT.filesize. codesign
+        #     verifies bytes up to that boundary.
+        #
+        #   * Our MMCS trailer is appended *after* that boundary —
+        #     it's trailing data from the linker's point of view,
+        #     ignored by codesign's hash computation but covered by
+        #     the parent bundle's CodeResources seal (so it is
+        #     tamper-detected via the outer signature instead).
+        #
+        # So the recipe is: strip our trailer, let codesign add the
+        # Apple signature, then re-append our trailer byte-for-byte.
+        # No GPG keys touched here — we preserve the trailer the
+        # CMake install step already produced.
+        if [ -d "MeshMC.app/Contents/PlugIns/mmcmodules" ]; then
+          echo "Apple-signing .mmco loadable bundles (trailer-preserving)"
+          find "MeshMC.app/Contents/PlugIns/mmcmodules" \
+               -type f -name "*.mmco" -print0 \
+            | while IFS= read -r -d '' _mmco; do
+                echo "  -> $_mmco"
+
+                # Detach the MMCS trailer (if any) into a sidecar
+                # file so we can splice it back on after codesign
+                # has had its way with the Mach-O. The helper is
+                # inlined as a Python one-liner to avoid pulling in
+                # another script-finding step on the macOS runner.
+                _trailer="$(mktemp)"
+                sudo python3 - "$_mmco" "$_trailer" <<'PYEOF'
+        import struct, sys, pathlib
+        # MMCS = ASCII "MMCS" in little-endian; matches
+        # MMCO_TRAILER_MAGIC in scripts/mmco_sign.py.
+        MAGIC = 0x53434D4D
+        FOOTER_FMT = "<QI"
+        FOOTER_SIZE = struct.calcsize(FOOTER_FMT)
+        mod = pathlib.Path(sys.argv[1])
+        out = pathlib.Path(sys.argv[2])
+        data = mod.read_bytes()
+        if len(data) < FOOTER_SIZE:
+            out.write_bytes(b"")
+            sys.exit(0)
+        sig_size, magic = struct.unpack(FOOTER_FMT, data[-FOOTER_SIZE:])
+        if magic != MAGIC:
+            # No MMCS trailer present (e.g. MESHMC_SKIP_INSTALL_RESIGN=1
+            # was set, or a manual rebuild dropped one). Nothing to
+            # preserve; codesign will operate on the raw Mach-O.
+            out.write_bytes(b"")
+            sys.exit(0)
+        trailer_start = len(data) - FOOTER_SIZE - sig_size
+        if trailer_start < 0:
+            # Malformed trailer; bail rather than corrupt the file.
+            sys.stderr.write(
+                f"mmco_sign trailer in {mod} is malformed "
+                f"(sig_size={sig_size}, file_size={len(data)})\n")
+            sys.exit(2)
+        # Save the trailer bytes verbatim and truncate the module
+        # back to the raw Mach-O image codesign expects.
+        out.write_bytes(data[trailer_start:])
+        mod.write_bytes(data[:trailer_start])
+        PYEOF
+
+                # Apple-sign the raw Mach-O. No entitlements here:
+                # plugins inherit the launcher's sandbox, and giving
+                # them their own entitlement blob would trip
+                # notarization with a different error.
+                sudo codesign --sign "$APPLE_CODESIGN_ID" --force \
+                              --options runtime $TIMESTAMP_FLAG \
+                              "$_mmco"
+
+                # Re-attach the MMCS trailer byte-for-byte. Apple's
+                # __LINKEDIT.filesize defines where its signed
+                # region ends, so appending data past that point
+                # leaves the Apple signature valid. The outer bundle
+                # seal will hash the full file (trailer included)
+                # via CodeResources, so tamper-detection on the
+                # trailer is delegated to the parent signature.
+                if [ -s "$_trailer" ]; then
+                  sudo bash -c "cat \"$_trailer\" >> \"$_mmco\""
+                fi
+                rm -f "$_trailer"
+              done
+        fi
+
         # Bundle-layout guard.
         #
         # Apple's signing tooling reserves Contents/MacOS/ for the
