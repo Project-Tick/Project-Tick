@@ -76,7 +76,7 @@ jobs:
         shell: bash
         env:
           SOURCE_REPOSITORY: ${{ inputs.source-repository || '' }}
-          GITLAB_BASE: "https://git.projecttick.org/project-tick"
+          GITLAB_BASE: "https://gitlab.com/project-tick"
           SOURCE_AUTH_TOKEN: ${{ secrets.PT_GITLAB_SOURCE_TOKEN || '' }}
           SOURCE_AUTH_USERNAME: ${{ vars.PT_GITLAB_SOURCE_USERNAME || 'oauth2' }}
         run: |

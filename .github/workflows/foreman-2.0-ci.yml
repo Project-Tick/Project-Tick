@@ -37,7 +37,7 @@ defaults:
     shell: bash
 
 env:
-  REGISTRY: registry.projecttick.org
+  REGISTRY: registry.gitlab.com
 
 jobs:
   rspec:
@@ -214,7 +214,7 @@ jobs:
         image:
           # Each microservice is its own image under the foreman project's
           # GitLab Container Registry path
-          # (registry.projecttick.org/project-tick/infra/foreman/<name>).
+          # (registry.gitlab.com/project-tick/infra/foreman/<name>).
           # GitLab registry requires the path to live under a real project,
           # so the repo is the project path + a per-image sub-path; the
           # sub-paths are auto-created on first push.

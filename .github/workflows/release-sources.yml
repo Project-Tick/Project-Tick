@@ -129,7 +129,7 @@ jobs:
           set -euo pipefail
 
           # Proje adını URL'den çıkar
-          # https://git.projecttick.org/project-tick/projects/meshmc.git → meshmc
+          # https://gitlab.com/project-tick/projects/meshmc.git → meshmc
           project=""
           if [[ -n "$SOURCE_REPOSITORY" ]]; then
             project="$(basename "$SOURCE_REPOSITORY" .git)"
