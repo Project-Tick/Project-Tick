@@ -144,7 +144,7 @@ jobs:
           job_name: ${{ github.job }}
       - name: Restore local repository
         if: steps.validate.outputs.configured == 'true'
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.SOURCE_REPOSITORY }}
           key: ${{ needs.build.outputs.repository-cache-key }}

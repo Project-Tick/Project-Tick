@@ -130,7 +130,7 @@ jobs:
       - name: Restore local repository
         id: restore-repository
         if: ${{ inputs.cache-repository }}
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.REPOSITORY_PATH }}
           key: repository-${{ github.run_id }}-${{ runner.arch }}
@@ -177,7 +177,7 @@ jobs:
 
       - name: Cache local repository
         if: ${{ inputs.cache-repository }}
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ${{ env.REPOSITORY_PATH }}
           key: ${{ steps.restore-repository.outputs.cache-primary-key }}
