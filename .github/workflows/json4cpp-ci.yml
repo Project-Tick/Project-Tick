@@ -58,7 +58,7 @@ jobs:
         with:
           source-repository: ${{ inputs.source-repository || '' }}
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.3
+        uses: lukka/get-cmake@v4.3.4
       - name: Run CMake
         run: cmake -S ${{ inputs.source-repository != '' && '.' || 'json4cpp' }} -B build -DJSON_CI=On
       - name: Build
@@ -97,7 +97,7 @@ jobs:
       - name: Install Valgrind
         run: sudo apt-get update ; sudo apt-get install -y valgrind
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.3
+        uses: lukka/get-cmake@v4.3.4
       - name: Run CMake
         run: cmake -S ${{ inputs.source-repository != '' && '.' || 'json4cpp' }} -B build -DJSON_CI=On
       - name: Build
@@ -137,7 +137,7 @@ jobs:
         with:
           source-repository: ${{ inputs.source-repository || '' }}
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.3
+        uses: lukka/get-cmake@v4.3.4
       - name: Run CMake
         run: cmake -S ${{ inputs.source-repository != '' && '.' || 'json4cpp' }} -B build -DJSON_CI=On
       - name: Build
@@ -175,7 +175,7 @@ jobs:
         with:
           source-repository: ${{ inputs.source-repository || '' }}
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.3
+        uses: lukka/get-cmake@v4.3.4
       - name: Run CMake
         run: cmake -S ${{ inputs.source-repository != '' && '.' || 'json4cpp' }} -B build -DJSON_CI=On
       - name: Build
@@ -215,7 +215,7 @@ jobs:
         with:
           source-repository: ${{ inputs.source-repository || '' }}
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@v4.3.3
+        uses: lukka/get-cmake@v4.3.4
       - name: Run CMake
         run: cmake -S ${{ inputs.source-repository != '' && '.' || 'json4cpp' }} -B build -DJSON_CI=On
       - name: Build

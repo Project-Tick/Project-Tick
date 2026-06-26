@@ -115,7 +115,7 @@ jobs:
           job_name: ${{ github.job }}
       - name: Checkout repository
         if: steps.creds.outputs.has_token == 'true'
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.0
         with:
           token: ${{ secrets.FLATPAK_PAT_TOKEN }}
 
