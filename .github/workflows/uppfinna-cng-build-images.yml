@@ -15,6 +15,21 @@ on:
       cng-repository:
         type: string
         default: ""
+      gitaly-version:
+        type: string
+        default: ""
+      gitlab-shell-version:
+        type: string
+        default: ""
+      gitlab-pages-version:
+        type: string
+        default: ""
+      gitlab-kas-version:
+        type: string
+        default: ""
+      gitlab-elasticsearch-indexer-version:
+        type: string
+        default: ""
   workflow_dispatch:
     inputs:
       gitlab-version:
@@ -33,333 +48,183 @@ on:
 permissions: {}
 
 jobs:
-  gitlab-go:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-zero:
+    name: "phase-zero: ${{ matrix.image }}"
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-go
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [gitlab-go, gitlab-rust]
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: ${{ matrix.image }}
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          gitaly-version: ${{ inputs.gitaly-version }}
+          gitlab-shell-version: ${{ inputs.gitlab-shell-version }}
+          gitlab-pages-version: ${{ inputs.gitlab-pages-version }}
+          gitlab-kas-version: ${{ inputs.gitlab-kas-version }}
+          gitlab-elasticsearch-indexer-version: ${{ inputs.gitlab-elasticsearch-indexer-version }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}
 
-  gitlab-rust:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-one:
+    name: "phase-one: ${{ matrix.image }}"
+    needs: phase-zero
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-rust
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [gitlab-logger, gitlab-gomplate, gitlab-graphicsmagick, gitlab-python, postgresql, cfssl-self-sign, kubectl]
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: ${{ matrix.image }}
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          gitaly-version: ${{ inputs.gitaly-version }}
+          gitlab-shell-version: ${{ inputs.gitlab-shell-version }}
+          gitlab-pages-version: ${{ inputs.gitlab-pages-version }}
+          gitlab-kas-version: ${{ inputs.gitlab-kas-version }}
+          gitlab-elasticsearch-indexer-version: ${{ inputs.gitlab-elasticsearch-indexer-version }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}
 
-  gitlab-logger:
-    needs: gitlab-go
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-two:
+    name: "phase-two: gitlab-base"
+    needs: phase-one
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-logger
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: gitlab-base
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}
 
-  gitlab-gomplate:
-    needs: gitlab-go
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-three:
+    name: "phase-three: ${{ matrix.image }}"
+    needs: phase-two
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-gomplate
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [certificates, gitlab-exiftool, gitlab-cosign, gitlab-ruby]
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: ${{ matrix.image }}
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}
 
-  gitlab-base:
-    needs: [gitlab-logger, gitlab-gomplate]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-four:
+    name: "phase-four: ${{ matrix.image }}"
+    needs: phase-three
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-base
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [gitlab-exporter, gitlab-mailroom, gitaly, gitlab-container-registry, gitlab-kas, gitlab-pages, gitlab-shell]
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: ${{ matrix.image }}
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          gitaly-version: ${{ inputs.gitaly-version }}
+          gitlab-shell-version: ${{ inputs.gitlab-shell-version }}
+          gitlab-pages-version: ${{ inputs.gitlab-pages-version }}
+          gitlab-kas-version: ${{ inputs.gitlab-kas-version }}
+          gitlab-elasticsearch-indexer-version: ${{ inputs.gitlab-elasticsearch-indexer-version }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}
 
-  gitlab-graphicsmagick:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-five:
+    name: "phase-five: gitlab-rails-ce"
+    needs: phase-four
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-graphicsmagick
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: gitlab-rails-ce
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}
 
-  gitlab-python:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
+  phase-six:
+    name: "phase-six: ${{ matrix.image }}"
+    needs: phase-five
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
-    with:
-      image: gitlab-python
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  postgresql:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: postgresql
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  cfssl-self-sign:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: cfssl-self-sign
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  kubectl:
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: kubectl
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  certificates:
-    needs: gitlab-base
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: certificates
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-exiftool:
-    needs: gitlab-base
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-exiftool
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-cosign:
-    needs: gitlab-base
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-cosign
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-ruby:
-    needs: [gitlab-base, gitlab-rust]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-ruby
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-exporter:
-    needs: gitlab-ruby
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-exporter
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-mailroom:
-    needs: gitlab-ruby
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-mailroom
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitaly:
-    needs: [gitlab-go, gitlab-base, gitlab-python]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitaly
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-container-registry:
-    needs: [gitlab-base, gitlab-go]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-container-registry
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-kas:
-    needs: gitlab-go
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-kas
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-pages:
-    needs: [gitlab-base, gitlab-go]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-pages
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-shell:
-    needs: [gitlab-base, gitlab-go]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-shell
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-rails-ce:
-    needs: [postgresql, gitlab-graphicsmagick, gitlab-exiftool, gitlab-ruby, gitlab-rust]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-rails-ce
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-sidekiq-ce:
-    needs: [gitlab-rails-ce, gitlab-python, gitlab-cosign]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-sidekiq-ce
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-toolbox-ce:
-    needs: [gitlab-rails-ce, gitlab-python, gitaly]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-toolbox-ce
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-webservice-ce:
-    needs: [gitlab-rails-ce, gitlab-python]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-webservice-ce
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
-
-  gitlab-workhorse-ce:
-    needs: [gitlab-go, gitlab-exiftool, gitlab-rails-ce]
-    uses: ./.github/workflows/uppfinna-cng-image.yml
-    permissions:
-      contents: read
-    with:
-      image: gitlab-workhorse-ce
-      gitlab-version: ${{ inputs.gitlab-version }}
-      image-tag: ${{ inputs.image-tag }}
-      cng-ref: ${{ inputs.cng-ref }}
-      cng-repository: ${{ inputs.cng-repository }}
-    secrets: inherit
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [gitlab-sidekiq-ce, gitlab-toolbox-ce, gitlab-webservice-ce, gitlab-workhorse-ce]
+    steps:
+      - uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          source-repository: ${{ inputs.cng-repository != '' && inputs.cng-repository || 'https://git.projecttick.org/project-tick/uppfinna/cng' }}
+          ref: ${{ inputs.cng-ref || 'master' }}
+          submodules: true
+      - uses: Project-Tick/Project-Tick/.github/actions/uppfinna-cng-image
+        with:
+          image: ${{ matrix.image }}
+          gitlab-version: ${{ inputs.gitlab-version }}
+          image-tag: ${{ inputs.image-tag }}
+          registry-user: ${{ secrets.CNG_REGISTRY_USER }}
+          registry-password: ${{ secrets.CNG_REGISTRY_PASSWORD }}
+          fetch-artifacts-pat: ${{ secrets.CNG_FETCH_ARTIFACTS_PAT }}

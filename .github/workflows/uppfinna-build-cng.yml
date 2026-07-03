@@ -50,9 +50,6 @@ jobs:
       image_tag: ${{ steps.versions.outputs.image_tag }}
     env:
       GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
-      # Hard-fork's own CNG repository (mirror of Cloud Native GitLab), and the
-      # registry its build pipeline pushes to.
-      CNG_REPO: ${{ vars.CNG_REPO || 'Project-Tick/CNG' }}
     defaults:
       run:
         shell: bash
@@ -92,30 +89,6 @@ jobs:
             echo "gitlab_kas_version=$(cat GITLAB_KAS_VERSION)"
             echo "gitlab_elasticsearch_indexer_version=$(cat GITLAB_ELASTICSEARCH_INDEXER_VERSION)"
           } >> "$GITHUB_OUTPUT"
-
-      # Trigger the fork's CNG repository build (the faithful equivalent of GitLab's
-      # `.build-cng` job, which does `trigger: project: <CNG> strategy: depend`).
-      # The CNG repo's own pipeline builds and pushes every component image
-      # (webservice, gitaly, workhorse, sidekiq, toolbox, ...) tagged with image_tag.
-      - name: Trigger CNG image build
-        env:
-          GH_TOKEN: ${{ secrets.CNG_TRIGGER_TOKEN }}
-        run: |
-          set -euo pipefail
-          if [ -z "${GH_TOKEN:-}" ]; then
-            echo "CNG_TRIGGER_TOKEN not set; skipping CNG dispatch."
-            exit 0
-          fi
-          gh api "repos/${CNG_REPO}/dispatches" \
-            -f event_type=build-cng \
-            -F "client_payload[gitlab_version]=${{ steps.versions.outputs.gitlab_version }}" \
-            -F "client_payload[image_tag]=${{ steps.versions.outputs.image_tag }}" \
-            -F "client_payload[gitaly_version]=${{ steps.versions.outputs.gitaly_version }}" \
-            -F "client_payload[gitlab_shell_version]=${{ steps.versions.outputs.gitlab_shell_version }}" \
-            -F "client_payload[gitlab_workhorse_version]=${{ steps.versions.outputs.gitlab_workhorse_version }}" \
-            -F "client_payload[gitlab_pages_version]=${{ steps.versions.outputs.gitlab_pages_version }}" \
-            -F "client_payload[gitlab_kas_version]=${{ steps.versions.outputs.gitlab_kas_version }}" \
-            -F "client_payload[gitlab_elasticsearch_indexer_version]=${{ steps.versions.outputs.gitlab_elasticsearch_indexer_version }}"
 
       - name: Foreman job finalize
         if: always()
