@@ -1,0 +1,149 @@
+name: "Uppfinna: Workhorse Test (Go)"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  workhorse-test:
+    name: Workhorse Test (Go)
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bookworm-ruby-3.3.11-golang-1.25-rust-1.89:rubygems-3.6-git-2.51-exiftool-12.60
+    permissions:
+      contents: read
+    services:
+      redis:
+        image: redis:7.2-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 6
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      RAILS_ENV: test
+      NODE_ENV: test
+      CI: "true"
+      RUBYOPT: "--yjit"
+      BUNDLE_WITHOUT: "development"
+      BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
+      BUNDLE_FROZEN: "true"
+      SETUP_DB: "false"
+      GITALY_TRANSACTIONS_ENABLED: "true"
+      GITALY_ADDRESS: "tcp://127.0.0.1:8075"
+      GLCI_TEST_METRICS_RUN_TYPE: workhorse-go-1.25-redis-7.2
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Cache Ruby gems
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/vendor/ruby
+          key: uppfinna-ruby-gems-workhorse-test-${{ runner.os }}-${{ hashFiles(format('{0}/Gemfile.lock', env.GITLAB_DIR), format('{0}/Gemfile.checksum', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-ruby-gems-workhorse-test-${{ runner.os }}-
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/.go/pkg/mod
+          key: uppfinna-workhorse-go-${{ runner.os }}-${{ hashFiles(format('{0}/workhorse/go.sum', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-workhorse-go-${{ runner.os }}-
+
+      - name: Prepare build
+        run: source scripts/prepare_build.sh
+
+      - name: Set up test environment
+        run: scripts/setup-test-env
+
+      - name: Build Gitaly binaries
+        run: scripts/gitaly-test-build
+
+      - name: Configure workhorse
+        run: |
+          cp workhorse/config.toml.example workhorse/config.toml
+          sed -i 's|URL.*$|URL = "redis://redis:6379"|g' workhorse/config.toml
+
+      - name: Run workhorse tests
+        run: |
+          export GOPATH="$(pwd)/.go"
+          make -C workhorse test-coverage 2>&1 | tee workhorse/test-output.txt
+          make -C workhorse TEST_OPTIONS="-json" test 2>workhorse/test-output.err \
+            | go -C workhorse tool gitlab-test-metrics-exporter > workhorse/test-output.json || true
+          cd workhorse && go run ../scripts/workhorse/go_coverage_to_lcov.go cover.out coverage.lcov
+
+      - name: Upload workhorse test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uppfinna-workhorse-test-report
+          path: |
+            ${{ env.GITLAB_DIR }}/workhorse/coverage.html
+            ${{ env.GITLAB_DIR }}/workhorse/cover.out
+            ${{ env.GITLAB_DIR }}/workhorse/coverage.lcov
+            ${{ env.GITLAB_DIR }}/workhorse/test-output.json
+            ${{ env.GITLAB_DIR }}/workhorse/test-output.err
+            ${{ env.GITLAB_DIR }}/log/gitaly-test.log
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}

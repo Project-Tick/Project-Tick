@@ -1,0 +1,125 @@
+name: "Uppfinna: Compile Test Assets"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  compile-test-assets:
+    name: Compile Test Assets
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-node-22.12:rubygems-3.6-git-2.51-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
+    permissions:
+      contents: read
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      RAILS_ENV: test
+      NODE_ENV: test
+      CI: "true"
+      RUBYOPT: "--yjit"
+      NODE_OPTIONS: "--max-old-space-size=10240"
+      BUNDLE_WITHOUT: "development"
+      BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
+      BUNDLE_FROZEN: "true"
+      SETUP_DB: "false"
+      USE_BUNDLE_INSTALL: "false"
+      WEBPACK_VENDOR_DLL: "true"
+      BROWSERSLIST_IGNORE_OLD_DATA: "true"
+      WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
+      GLCI_GITLAB_ASSETS_HASH_FILE: "cached-assets-hash.txt"
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Cache Ruby gems
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/vendor/ruby
+          key: uppfinna-ruby-gems-compile-assets-${{ runner.os }}-${{ hashFiles(format('{0}/Gemfile.lock', env.GITLAB_DIR), format('{0}/Gemfile.checksum', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-ruby-gems-compile-assets-${{ runner.os }}-
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/node_modules
+          key: uppfinna-node-modules-${{ runner.os }}-${{ hashFiles(format('{0}/yarn.lock', env.GITLAB_DIR), format('{0}/package.json', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-node-modules-${{ runner.os }}-
+
+      - name: Prepare build
+        run: source scripts/prepare_build.sh
+
+      - name: Compile assets
+        run: scripts/compile_assets
+
+      - name: Upload assets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uppfinna-test-assets
+          path: |
+            ${{ env.GITLAB_DIR }}/public/assets/
+            ${{ env.GITLAB_DIR }}/config/helpers/tailwind/
+            ${{ env.GITLAB_DIR }}/tmp/webpack-output.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}

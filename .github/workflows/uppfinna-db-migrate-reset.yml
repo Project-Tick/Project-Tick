@@ -1,0 +1,120 @@
+name: "Uppfinna: DB Migrate Reset (single-db)"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  db-migrate-reset:
+    name: DB Migrate Reset (single-db)
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-138-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: registry.gitlab.com/gitlab-org/gitlab-build-images:postgres-17
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 6
+      rediscluster:
+        image: registry.gitlab.com/gitlab-org/gitlab-build-images:redis-cluster-7.0.11
+      redis:
+        image: redis:7.2-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 6
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      RAILS_ENV: test
+      NODE_ENV: test
+      CI: "true"
+      RUBYOPT: "--yjit"
+      BUNDLE_WITHOUT: "development"
+      BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
+      BUNDLE_FROZEN: "true"
+      DECOMPOSED_DB: "false"
+      SEC_DECOMPOSED_DB: "false"
+      SETUP_DB: "true"
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Cache Ruby gems
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/vendor/ruby
+          key: uppfinna-ruby-gems-db-migrate-reset-${{ runner.os }}-${{ hashFiles(format('{0}/Gemfile.lock', env.GITLAB_DIR), format('{0}/Gemfile.checksum', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-ruby-gems-db-migrate-reset-${{ runner.os }}-
+
+      - name: Prepare build
+        run: source scripts/prepare_build.sh
+
+      - name: Reset migrations
+        run: bundle exec rake db:migrate:reset
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}

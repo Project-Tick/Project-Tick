@@ -1,0 +1,365 @@
+name: "CNG: Build Images"
+
+on:
+  workflow_call:
+    inputs:
+      gitlab-version:
+        type: string
+        default: "master"
+      image-tag:
+        type: string
+        default: ""
+      cng-ref:
+        type: string
+        default: "master"
+      cng-repository:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      gitlab-version:
+        type: string
+        default: "master"
+      image-tag:
+        type: string
+        default: ""
+      cng-ref:
+        type: string
+        default: "master"
+      cng-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  gitlab-go:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-go
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-rust:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-rust
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-logger:
+    needs: gitlab-go
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-logger
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-gomplate:
+    needs: gitlab-go
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-gomplate
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-base:
+    needs: [gitlab-logger, gitlab-gomplate]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-base
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-graphicsmagick:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-graphicsmagick
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-python:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-python
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  postgresql:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: postgresql
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  cfssl-self-sign:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: cfssl-self-sign
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  kubectl:
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: kubectl
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  certificates:
+    needs: gitlab-base
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: certificates
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-exiftool:
+    needs: gitlab-base
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-exiftool
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-cosign:
+    needs: gitlab-base
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-cosign
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-ruby:
+    needs: [gitlab-base, gitlab-rust]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-ruby
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-exporter:
+    needs: gitlab-ruby
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-exporter
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-mailroom:
+    needs: gitlab-ruby
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-mailroom
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitaly:
+    needs: [gitlab-go, gitlab-base, gitlab-python]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitaly
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-container-registry:
+    needs: [gitlab-base, gitlab-go]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-container-registry
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-kas:
+    needs: gitlab-go
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-kas
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-pages:
+    needs: [gitlab-base, gitlab-go]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-pages
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-shell:
+    needs: [gitlab-base, gitlab-go]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-shell
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-rails-ce:
+    needs: [postgresql, gitlab-graphicsmagick, gitlab-exiftool, gitlab-ruby, gitlab-rust]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-rails-ce
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-sidekiq-ce:
+    needs: [gitlab-rails-ce, gitlab-python, gitlab-cosign]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-sidekiq-ce
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-toolbox-ce:
+    needs: [gitlab-rails-ce, gitlab-python, gitaly]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-toolbox-ce
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-webservice-ce:
+    needs: [gitlab-rails-ce, gitlab-python]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-webservice-ce
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit
+
+  gitlab-workhorse-ce:
+    needs: [gitlab-go, gitlab-exiftool, gitlab-rails-ce]
+    uses: ./.github/workflows/uppfinna-cng-image.yml
+    permissions:
+      contents: read
+    with:
+      image: gitlab-workhorse-ce
+      gitlab-version: ${{ inputs.gitlab-version }}
+      image-tag: ${{ inputs.image-tag }}
+      cng-ref: ${{ inputs.cng-ref }}
+      cng-repository: ${{ inputs.cng-repository }}
+    secrets: inherit

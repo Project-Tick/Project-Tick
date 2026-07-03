@@ -380,6 +380,7 @@ jobs:
                 genqrcode: true, neozip: true, json4cpp: true,
                 libnbtplusplus: true, tomlplusplus: true,
                 meshmc: true, forgewrapper: true, imagesplusplus: true,
+                uppfinna: true,
                 cmark_fuzz: false, json4cpp_fuzz: false,
                 json4cpp_amalgam: false, tomlplusplus_fuzz: false,
                 neozip_fuzz: false, mnv_codeql: false, neozip_codeql: false,
@@ -763,6 +764,26 @@ jobs:
       (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
       fromJSON(needs.gate.outputs.jobs_json).forgewrapper
     uses: ./.github/workflows/forgewrapper-build.yml
+    permissions:
+      contents: read
+    with:
+      source-repository: ${{ github.event.inputs.source-repository || '' }}
+      foreman-pipeline-id: ${{ needs.gate.outputs.pipeline_id }}
+      foreman-plan: ${{ needs.gate.outputs.foreman_plan }}
+      foreman-callback-url: ${{ needs.gate.outputs.callback_url }}
+      foreman-callback-token: ${{ needs.gate.outputs.callback_token }}
+    secrets: inherit
+
+  # ── GitLab Fork (Ruby/Rails) ─────────────────────────────────────
+  uppfinna:
+    name: "Uppfinna (GitLab fork)"
+    needs: [gate, lint]
+    if: >-
+      always() &&
+      !cancelled() &&
+      (needs.lint.result == 'success' || needs.lint.result == 'skipped') &&
+      fromJSON(needs.gate.outputs.jobs_json).uppfinna
+    uses: ./.github/workflows/uppfinna-ci.yml
     permissions:
       contents: read
     with:
@@ -1212,6 +1233,21 @@ jobs:
           status: ${{ needs.forgewrapper.result == 'success' && 'success' || (needs.forgewrapper.result == 'skipped' && 'skipped' || (needs.forgewrapper.result == 'cancelled' && 'cancelled' || 'failure')) }}
           conclusion: ${{ needs.forgewrapper.result }}
 
+  report-uppfinna:
+    name: "Report: Uppfinna"
+    needs: [callback-start, uppfinna]
+    if: always() && needs.callback-start.outputs.pipeline_id != '' && needs.uppfinna.result != 'skipped'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: Project-Tick/Project-Tick/.github/actions/foreman-job-callback@master
+        with:
+          pipeline_id: ${{ needs.callback-start.outputs.pipeline_id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN || '' }}
+          job_name: Uppfinna
+          status: ${{ needs.uppfinna.result == 'success' && 'success' || (needs.uppfinna.result == 'skipped' && 'skipped' || (needs.uppfinna.result == 'cancelled' && 'cancelled' || 'failure')) }}
+          conclusion: ${{ needs.uppfinna.result }}
+
   report-imagesplusplus:
     name: "Report: Docker Images"
     needs: [callback-start, imagesplusplus]
@@ -1319,6 +1355,7 @@ jobs:
       - tomlplusplus
       - meshmc
       - forgewrapper
+      - uppfinna
       - imagesplusplus
       - cmark-fuzz
       - json4cpp-fuzz
@@ -1382,6 +1419,7 @@ jobs:
           check_job "TOML++"         "${{ needs.tomlplusplus.result }}"
           check_job "MeshMC"         "${{ needs.meshmc.result }}"
           check_job "ForgeWrapper"   "${{ needs.forgewrapper.result }}"
+          check_job "Uppfinna"       "${{ needs.uppfinna.result }}"
           check_job "Docker Images"  "${{ needs.imagesplusplus.result }}"
           check_job "CMark Fuzz"     "${{ needs.cmark-fuzz.result }}"
           check_job "JSON4CPP Fuzz"  "${{ needs.json4cpp-fuzz.result }}"
@@ -1431,6 +1469,7 @@ jobs:
       - tomlplusplus
       - meshmc
       - forgewrapper
+      - uppfinna
       - imagesplusplus
       - cmark-fuzz
       - json4cpp-fuzz

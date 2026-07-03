@@ -1,0 +1,138 @@
+name: "Uppfinna: Vendored Gems"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  vendored-gems:
+    name: "Vendored Gem: ${{ matrix.gem_name }}"
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        gem_name:
+          - microsoft_graph_mailer
+          - omniauth_crowd
+          - omniauth-gitlab
+          - omniauth-salesforce
+          - devise-pbkdf2-encryptable
+          - sidekiq-reliable-fetch
+          - diff_match_patch
+          - gitlab-topology-service-client
+          - gitlab-duo-workflow-service-client
+          - sidekiq
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      BUNDLE_FROZEN: "true"
+      GLCI_TEST_METRICS_RUN_TYPE: "${{ matrix.gem_name }}-tests"
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          "gems ${{ matrix.gem_name }}"
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.11"
+
+      - name: Cache gem bundle
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/vendor/gems/${{ matrix.gem_name }}/vendor/ruby
+          key: uppfinna-vendored-gem-${{ matrix.gem_name }}-${{ runner.os }}-${{ hashFiles(format('{0}/vendor/gems/{1}/Gemfile.lock', env.GITLAB_DIR, matrix.gem_name)) }}
+          restore-keys: |
+            uppfinna-vendored-gem-${{ matrix.gem_name }}-${{ runner.os }}-
+
+      - name: Bundle install
+        run: |
+          cd "vendor/gems/${{ matrix.gem_name }}"
+          ruby -v
+          gem update --system
+          bundle_version=$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1 | sed -e 's/[[:space:]]//')
+          gem install bundler --version "$bundle_version" --no-document
+          bundle config set --local path vendor
+          bundle config
+          bundle install --jobs=$(nproc) --retry=3
+
+      - name: RuboCop
+        run: |
+          cd "vendor/gems/${{ matrix.gem_name }}"
+          if [ -f .rubocop.yml ]; then
+            bundle exec rubocop
+          else
+            echo "No .rubocop.yml, skipping RuboCop."
+          fi
+
+      - name: RSpec
+        run: |
+          cd "vendor/gems/${{ matrix.gem_name }}"
+          RAILS_ENV=test bundle exec rspec
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uppfinna-vendored-gem-${{ matrix.gem_name }}-coverage
+          path: ${{ env.GITLAB_DIR }}/vendor/gems/${{ matrix.gem_name }}/coverage/
+          if-no-files-found: ignore
+          retention-days: 31
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          "gems ${{ matrix.gem_name }}"
+          job_status:        ${{ job.status }}

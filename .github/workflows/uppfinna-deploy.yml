@@ -1,0 +1,139 @@
+name: "Uppfinna: Deploy"
+
+on:
+  workflow_call:
+    inputs:
+      image-tag:
+        description: CNG image tag to deploy (from Build CNG).
+        type: string
+        required: true
+      environment:
+        description: Deploy target environment.
+        type: string
+        default: production
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      image-tag:
+        description: CNG image tag to deploy.
+        type: string
+        required: true
+      environment:
+        description: Deploy target environment.
+        type: string
+        default: production
+
+permissions: {}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+    env:
+      HELM_RELEASE: ${{ vars.HELM_RELEASE || 'gitlab' }}
+      HELM_NAMESPACE: ${{ vars.HELM_NAMESPACE || 'gitlab' }}
+      HELM_CHART: ${{ vars.HELM_CHART || 'gitlab/gitlab' }}
+      IMAGE_REGISTRY: ${{ vars.CNG_IMAGE_REGISTRY || 'registry.projecttick.org/project-tick/cng' }}
+      IMAGE_TAG: ${{ inputs.image-tag }}
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ vars.DEPLOY_USER || 'deploy' }}
+      HELM_DRY_RUN: ${{ vars.HELM_DRY_RUN || 'true' }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Set up SSH
+        run: |
+          set -euo pipefail
+          if [ -z "${SSH_PRIVATE_KEY:-}" ] || [ -z "${DEPLOY_HOST:-}" ]; then
+            echo "SSH_PRIVATE_KEY secret or DEPLOY_HOST var not set; cannot deploy." >&2
+            exit 1
+          fi
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/id_deploy"
+          chmod 600 "$HOME/.ssh/id_deploy"
+          if [ -n "${SSH_KNOWN_HOSTS:-}" ]; then
+            printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          else
+            ssh-keyscan -H "$DEPLOY_HOST" >> "$HOME/.ssh/known_hosts" 2>/dev/null
+          fi
+          chmod 600 "$HOME/.ssh/known_hosts"
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+
+      - name: Verify cluster connectivity (over SSH)
+        run: |
+          set -euo pipefail
+          ssh -i "$HOME/.ssh/id_deploy" "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            'kubectl cluster-info && kubectl version'
+
+      - name: Deploy CNG images via Helm (over SSH)
+        run: |
+          set -euo pipefail
+          DRY_RUN_FLAG=""
+          if [ "${HELM_DRY_RUN}" = "true" ]; then
+            echo "HELM_DRY_RUN=true: rendering the release without applying changes."
+            DRY_RUN_FLAG="--dry-run"
+          fi
+          ssh -i "$HOME/.ssh/id_deploy" "${DEPLOY_USER}@${DEPLOY_HOST}" bash -s <<REMOTE
+          set -euo pipefail
+          helm repo add gitlab https://charts.gitlab.io/ >/dev/null 2>&1 || true
+          helm repo update >/dev/null
+          helm upgrade --install "${HELM_RELEASE}" "${HELM_CHART}" \
+            --namespace "${HELM_NAMESPACE}" \
+            --create-namespace \
+            --set global.image.repository="${IMAGE_REGISTRY}" \
+            --set global.gitlabVersion="${IMAGE_TAG}" \
+            --set gitlab.webservice.image.tag="${IMAGE_TAG}" \
+            --set gitlab.sidekiq.image.tag="${IMAGE_TAG}" \
+            --set gitlab.toolbox.image.tag="${IMAGE_TAG}" \
+            --set gitlab.migrations.image.tag="${IMAGE_TAG}" \
+            --set gitlab.gitaly.image.tag="${IMAGE_TAG}" \
+            --set gitlab.gitlab-shell.image.tag="${IMAGE_TAG}" \
+            ${DRY_RUN_FLAG} \
+            --wait --timeout 15m
+          REMOTE
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}

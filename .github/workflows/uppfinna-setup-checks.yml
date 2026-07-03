@@ -1,0 +1,129 @@
+name: "Uppfinna: Setup Checks"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  verify-tests-yml:
+    name: Verify tests.yml
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-138-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2
+    permissions:
+      contents: read
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Verify TFF mapping
+        run: |
+          source scripts/utils.sh
+          install_tff_gem
+          scripts/verify-tff-mapping
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}
+
+  gitlab-git-test:
+    name: GitLab Git Test
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-138-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2
+    permissions:
+      contents: read
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Check gitlab-git-test for changes
+        run: spec/support/prepare-gitlab-git-test-for-commit --check-for-changes
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}

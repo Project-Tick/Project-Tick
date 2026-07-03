@@ -1,0 +1,189 @@
+name: "Uppfinna: RSpec (FOSS pg17 redis70)"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  rspec:
+    name: "${{ matrix.job_name }}"
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-138-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: registry.gitlab.com/gitlab-org/gitlab-build-images:postgres-17
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 6
+      rediscluster:
+        image: registry.gitlab.com/gitlab-org/gitlab-build-images:redis-cluster-7.0.11
+      redis:
+        image: redis:7.0-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 6
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { job_name: "rspec unit pg17 redis70", level: unit }
+          - { job_name: "rspec integration pg17 redis70", level: integration }
+          - { job_name: "rspec system pg17 redis70", level: system }
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      RAILS_ENV: test
+      NODE_ENV: test
+      CI: "true"
+      GITALY_TESTING_LOG_LEVEL: debug
+      RUBYOPT: "--yjit"
+      BUNDLE_WITHOUT: "development"
+      BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
+      BUNDLE_FROZEN: "true"
+      RUBY_GC_MALLOC_LIMIT: "67108864"
+      RUBY_GC_MALLOC_LIMIT_MAX: "134217728"
+      GEO_SECONDARY_PROXY: "0"
+      SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: "137"
+      EVENT_PROF: "sql.active_record"
+      DECOMPOSED_DB: "true"
+      SEC_DECOMPOSED_DB: "true"
+      SETUP_DB: "true"
+      GITALY_TRANSACTIONS_ENABLED: "true"
+      RSPEC_FAIL_FAST_THRESHOLD: "20"
+      RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
+      RSPEC_LAST_RUN_RESULTS_FILE: "rspec/rspec_last_run_results.txt"
+      KNAPSACK_RSPEC_SUITE_REPORT_PATH: "knapsack/report-master.json"
+      FLAKY_RSPEC_SUITE_REPORT_PATH: "rspec/flaky/report-suite.json"
+      CI_NODE_TOTAL: "1"
+      CI_NODE_INDEX: "1"
+      CI_JOB_ID: ${{ github.run_id }}
+      CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      CI_JOB_NAME: ${{ matrix.job_name }}
+      RSPEC_OPTS: "--tag ~level:background_migration --tag ~click_house --tag ~duo_workflow_service --tag ~partition_tz"
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ matrix.job_name }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Cache Ruby gems
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/vendor/ruby
+          key: uppfinna-ruby-gems-${{ runner.os }}-${{ hashFiles(format('{0}/Gemfile.lock', env.GITLAB_DIR), format('{0}/Gemfile.checksum', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-ruby-gems-${{ runner.os }}-
+
+      - name: Cache Gitaly / Workhorse / test fixtures
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/tmp/tests
+          key: uppfinna-tmp-tests-${{ runner.os }}-${{ hashFiles(format('{0}/GITALY_SERVER_VERSION', env.GITLAB_DIR)) }}-${{ hashFiles(format('{0}/workhorse/**', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-tmp-tests-${{ runner.os }}-
+
+      - name: Prepare build
+        run: source scripts/prepare_build.sh
+
+      - name: Set up test environment
+        run: scripts/setup-test-env
+
+      - name: Build Gitaly binaries
+        run: scripts/gitaly-test-build
+
+      - name: Compile test assets
+        if: ${{ matrix.level == 'system' }}
+        run: scripts/compile_assets
+
+      - name: Install knapsack
+        run: gem install knapsack --no-document
+
+      - name: Spawn Gitaly
+        run: scripts/gitaly-test-spawn
+
+      - name: Run RSpec
+        run: |
+          mkdir -p rspec knapsack rspec/flaky
+          source scripts/utils.sh
+          source scripts/rspec_helpers.sh
+          export RSPEC_SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests-${CI_JOB_ID}.txt"
+          export RSPEC_RETRIED_TESTS_REPORT_PATH="rspec/retried_tests-${CI_JOB_ID}.txt"
+          rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} ${RSPEC_OPTS}"
+
+      - name: Upload RSpec artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uppfinna-rspec-redis70-${{ strategy.job-index }}
+          path: |
+            ${{ env.GITLAB_DIR }}/coverage/
+            ${{ env.GITLAB_DIR }}/knapsack/
+            ${{ env.GITLAB_DIR }}/rspec/
+            ${{ env.GITLAB_DIR }}/tmp/capybara/
+            ${{ env.GITLAB_DIR }}/log/*.log
+          if-no-files-found: ignore
+          retention-days: 31
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ matrix.job_name }}
+          job_status:        ${{ job.status }}

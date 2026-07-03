@@ -1,0 +1,129 @@
+name: "Uppfinna: Build CNG"
+
+on:
+  workflow_call:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+      foreman-pipeline-id:
+        type: string
+        default: ""
+      foreman-plan:
+        type: string
+        default: ""
+      foreman-callback-url:
+        type: string
+        default: ""
+      foreman-callback-token:
+        type: string
+        default: ""
+    outputs:
+      gitlab_version:
+        description: Full GitLab source SHA.
+        value: ${{ jobs.build-cng.outputs.gitlab_version }}
+      image_tag:
+        description: CNG image tag built.
+        value: ${{ jobs.build-cng.outputs.image_tag }}
+  workflow_dispatch:
+    inputs:
+      source-ref:
+        type: string
+        default: ""
+      source-repository:
+        type: string
+        default: ""
+
+permissions: {}
+
+jobs:
+  build-cng:
+    name: Build CNG
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      gitlab_version: ${{ steps.versions.outputs.gitlab_version }}
+      image_tag: ${{ steps.versions.outputs.image_tag }}
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      # Hard-fork's own CNG repository (mirror of Cloud Native GitLab), and the
+      # registry its build pipeline pushes to.
+      CNG_REPO: ${{ vars.CNG_REPO || 'Project-Tick/CNG' }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Foreman job init
+        id: foreman
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-wrapper@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          plan_json:         ${{ inputs.foreman-plan }}
+
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Resolve component versions
+        id: versions
+        run: |
+          set -euo pipefail
+          gitlab_sha="$(git rev-parse HEAD)"
+          image_tag="${gitlab_sha:0:11}"
+          {
+            echo "gitlab_version=${gitlab_sha}"
+            echo "image_tag=${image_tag}"
+            echo "gitaly_version=$(cat GITALY_SERVER_VERSION)"
+            echo "gitlab_shell_version=$(cat GITLAB_SHELL_VERSION)"
+            echo "gitlab_workhorse_version=$(cat VERSION)"
+            echo "gitlab_pages_version=$(cat GITLAB_PAGES_VERSION)"
+            echo "gitlab_kas_version=$(cat GITLAB_KAS_VERSION)"
+            echo "gitlab_elasticsearch_indexer_version=$(cat GITLAB_ELASTICSEARCH_INDEXER_VERSION)"
+          } >> "$GITHUB_OUTPUT"
+
+      # Trigger the fork's CNG repository build (the faithful equivalent of GitLab's
+      # `.build-cng` job, which does `trigger: project: <CNG> strategy: depend`).
+      # The CNG repo's own pipeline builds and pushes every component image
+      # (webservice, gitaly, workhorse, sidekiq, toolbox, ...) tagged with image_tag.
+      - name: Trigger CNG image build
+        env:
+          GH_TOKEN: ${{ secrets.CNG_TRIGGER_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "CNG_TRIGGER_TOKEN not set; skipping CNG dispatch."
+            exit 0
+          fi
+          gh api "repos/${CNG_REPO}/dispatches" \
+            -f event_type=build-cng \
+            -F "client_payload[gitlab_version]=${{ steps.versions.outputs.gitlab_version }}" \
+            -F "client_payload[image_tag]=${{ steps.versions.outputs.image_tag }}" \
+            -F "client_payload[gitaly_version]=${{ steps.versions.outputs.gitaly_version }}" \
+            -F "client_payload[gitlab_shell_version]=${{ steps.versions.outputs.gitlab_shell_version }}" \
+            -F "client_payload[gitlab_workhorse_version]=${{ steps.versions.outputs.gitlab_workhorse_version }}" \
+            -F "client_payload[gitlab_pages_version]=${{ steps.versions.outputs.gitlab_pages_version }}" \
+            -F "client_payload[gitlab_kas_version]=${{ steps.versions.outputs.gitlab_kas_version }}" \
+            -F "client_payload[gitlab_elasticsearch_indexer_version]=${{ steps.versions.outputs.gitlab_elasticsearch_indexer_version }}"
+
+      - name: Foreman job finalize
+        if: always()
+        uses: Project-Tick/Project-Tick/.github/actions/foreman-job-finalize@master
+        with:
+          callback_url:      ${{ inputs.foreman-callback-url }}
+          callback_token:    ${{ inputs.foreman-callback-token }}
+          pipeline_id:       ${{ inputs.foreman-pipeline-id }}
+          foreman_api_token: ${{ secrets.FOREMAN_API_TOKEN }}
+          job_name:          ${{ github.job }}
+          job_status:        ${{ job.status }}
