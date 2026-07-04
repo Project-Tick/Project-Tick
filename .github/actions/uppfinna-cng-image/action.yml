@@ -148,7 +148,7 @@ runs:
         CI_DEFAULT_BRANCH: master
         FETCH_DEV_ARTIFACTS_PAT: ${{ inputs.fetch-artifacts-pat }}
       run: |
-        set -euo pipefail
+        set -eo pipefail
         mkdir -p artifacts/images artifacts/container_versions artifacts/final
         source build-scripts/build.sh
         source build-scripts/container_versions.sh
