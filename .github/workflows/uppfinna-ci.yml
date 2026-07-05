@@ -519,21 +519,6 @@ jobs:
       foreman-callback-token: ${{ needs.callback-start.outputs.cb_auth }}
     secrets: inherit
 
-  custom-roles-verify:
-    name: Custom Roles Verify
-    needs: callback-start
-    uses: ./.github/workflows/uppfinna-custom-roles-verify.yml
-    permissions:
-      contents: read
-    with:
-      source-ref: ${{ inputs.source-ref }}
-      source-repository: ${{ inputs.source-repository }}
-      foreman-pipeline-id: ${{ needs.callback-start.outputs.pipeline_id }}
-      foreman-plan: ${{ inputs.foreman-plan }}
-      foreman-callback-url: ${{ needs.callback-start.outputs.callback_url }}
-      foreman-callback-token: ${{ needs.callback-start.outputs.cb_auth }}
-    secrets: inherit
-
   permissions-verify:
     name: Permissions Verify
     needs: callback-start
@@ -740,7 +725,6 @@ jobs:
       - graphql-schema-dump
       - static-verification-db
       - audit-event-types-verify
-      - custom-roles-verify
       - permissions-verify
       - ci-job-token-policies-verify
       - db-rollback

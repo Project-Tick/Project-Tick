@@ -33,8 +33,68 @@ on:
 permissions: {}
 
 jobs:
+  # Mirrors the `generate-apollo-graphql-schema` job in
+  # .gitlab/ci/static-analysis.gitlab-ci.yml. The `graphql-eslint` plugin (see
+  # eslint.config.mjs) reads its schema from gitlab_schema_apollo.graphql, which
+  # the apollo CLI produces from the Rails-dumped gitlab_schema.graphql. Without
+  # it every *.graphql file fails to parse. Runs in the apollo build image and
+  # hands the file to the ESLint job as an artifact.
+  generate-apollo-graphql-schema:
+    name: Generate Apollo GraphQL schema
+    runs-on: ubuntu-24.04
+    container:
+      image: registry.gitlab.com/gitlab-org/gitlab-build-images:apollo
+      options: --entrypoint ""
+    permissions:
+      contents: read
+    env:
+      GITLAB_DIR: ${{ inputs.source-repository != '' && '.' || 'gitlab' }}
+      RAILS_ENV: test
+      NODE_ENV: test
+      CI: "true"
+      USE_BUNDLE_INSTALL: "false"
+      SETUP_DB: "false"
+      GRAPHQL_SCHEMA_APOLLO_FILE: "tmp/tests/graphql/gitlab_schema_apollo.graphql"
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.GITLAB_DIR }}
+    steps:
+      - name: Checkout
+        uses: Project-Tick-Infrastructure/checkout@v5
+        with:
+          ref: ${{ inputs.source-ref || '' }}
+          source-repository: ${{ inputs.source-repository || '' }}
+          submodules: true
+
+      - name: Cache Ruby gems
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.GITLAB_DIR }}/vendor/ruby
+          key: uppfinna-ruby-gems-${{ runner.os }}-${{ hashFiles(format('{0}/Gemfile.lock', env.GITLAB_DIR), format('{0}/Gemfile.checksum', env.GITLAB_DIR)) }}
+          restore-keys: |
+            uppfinna-ruby-gems-${{ runner.os }}-
+
+      - name: Prepare build
+        run: source scripts/prepare_build.sh
+
+      - name: Dump GraphQL schema
+        run: bundle exec rake gitlab:graphql:schema:dump
+
+      - name: Generate Apollo GraphQL schema
+        run: apollo client:download-schema --config=config/apollo.config.js "${GRAPHQL_SCHEMA_APOLLO_FILE}"
+
+      - name: Upload Apollo GraphQL schema
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphql-schema-apollo
+          path: ${{ env.GITLAB_DIR }}/tmp/tests/graphql/gitlab_schema_apollo.graphql
+          if-no-files-found: error
+          retention-days: 30
+
   eslint:
     name: ESLint
+    needs: generate-apollo-graphql-schema
     runs-on: ubuntu-24.04
     container:
       image: registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-slim-ruby-3.3.11-golang-1.25-node-22.12-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-138-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2
@@ -101,6 +161,12 @@ jobs:
 
       - name: Prepare build
         run: source scripts/prepare_build.sh
+
+      - name: Download Apollo GraphQL schema
+        uses: actions/download-artifact@v4
+        with:
+          name: graphql-schema-apollo
+          path: ${{ env.GITLAB_DIR }}/tmp/tests/graphql
 
       - name: Yarn install
         run: |
