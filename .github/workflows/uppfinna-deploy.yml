@@ -111,11 +111,9 @@ jobs:
           fi
           ssh -i "$HOME/.ssh/id_deploy" "${DEPLOY_USER}@${DEPLOY_HOST}" bash -s <<REMOTE
           set -euo pipefail
-          helm repo add gitlab https://charts.gitlab.io/ >/dev/null 2>&1 || true
-          helm repo update >/dev/null
-          helm upgrade --install "${HELM_RELEASE}" "${HELM_CHART}" \
+          helm repo update 2>/dev/null
+          helm upgrade "${HELM_RELEASE}" "${HELM_CHART}" \
             --namespace "${HELM_NAMESPACE}" \
-            --create-namespace \
             --set global.image.repository="${IMAGE_REGISTRY}" \
             --set global.gitlabVersion="${IMAGE_TAG}" \
             --set gitlab.webservice.image.tag="${IMAGE_TAG}" \
@@ -125,6 +123,7 @@ jobs:
             --set gitlab.gitaly.image.tag="${IMAGE_TAG}" \
             --set gitlab.gitlab-shell.image.tag="${IMAGE_TAG}" \
             ${DRY_RUN_FLAG} \
+            --reuse-values \
             --wait --timeout 15m
           REMOTE
 
